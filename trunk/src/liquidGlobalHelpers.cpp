@@ -377,12 +377,8 @@ MObject findFacetShader( MObject mesh, int polygonIndex ){
 /* Check to see if a file exists - seems to work correctly for both platforms */
 bool fileExists( MString & filename ) {
     struct stat sbuf;
-#ifdef _WIN32
-    bool exists = !( 1 + (stat(filename.asChar(), &sbuf)));
-#else
-    bool exists = !(stat(filename.asChar(), &sbuf));
-#endif
-    return exists;
+    int result = stat(filename.asChar(), &sbuf);
+    return (result == 0);
 }
 
 // function to parse strings sent to liquid to replace defined 
