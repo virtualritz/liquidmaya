@@ -89,13 +89,13 @@ void liquidInfo( MString info )
 // maya console or the shell for user feedback	
 //
 {
-    if ( !liquidBin ) {
-	MString infoOutput( "Liquid: " );
-	infoOutput += info;
-	MGlobal::displayInfo( infoOutput );
-    } else {
-	std::cout << "Liquid: " << info.asChar() << "\n" << std::flush;
-    }
+  if ( !liquidBin ) {
+    MString infoOutput( "Liquid: " );
+    infoOutput += info;
+    MGlobal::displayInfo( infoOutput );
+  } else {
+    std::cout << "Liquid: " << info.asChar() << "\n" << std::flush;
+  }
 }
 
 MStringArray FindAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn )
@@ -105,16 +105,16 @@ MStringArray FindAttributesByPrefix(const char* pPrefix, MFnDependencyNode& Node
 //	in Matches to return
 //
 {
-    MStringArray Matches;
-	
-    for( int i = 0; i < NodeFn.attributeCount(); i++ )
-    {
-        MFnAttribute AttributeFn = NodeFn.attribute(i);
-        MString AttributeName = AttributeFn.name();
-        if (!strncmp(AttributeName.asChar(), pPrefix, strlen(pPrefix) ))
-            Matches.append(AttributeName);
+  MStringArray Matches;
+
+  for( int i = 0; i < NodeFn.attributeCount(); i++ ) {
+    MFnAttribute AttributeFn = NodeFn.attribute(i);
+    MString AttributeName = AttributeFn.name();
+    if (!strncmp(AttributeName.asChar(), pPrefix, strlen(pPrefix) )) {
+      Matches.append(AttributeName);
     }
-    return Matches;
+  }
+  return Matches;
 }
 
 bool isObjectTwoSided( const MDagPath & path )
@@ -123,14 +123,14 @@ bool isObjectTwoSided( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-    MStatus status;
-    MFnDagNode fnDN( path );
-    MPlug dPlug = fnDN.findPlug( "doubleSided", &status );
-    bool doubleSided = true;
-	if ( status == MS::kSuccess ) {
-		dPlug.getValue( doubleSided );
-	}
-    return  doubleSided;
+  MStatus status;
+  MFnDagNode fnDN( path );
+  MPlug dPlug = fnDN.findPlug( "doubleSided", &status );
+  bool doubleSided = true;
+  if ( status == MS::kSuccess ) {
+    dPlug.getValue( doubleSided );
+  }
+  return  doubleSided;
 }
 
 
@@ -140,33 +140,33 @@ bool isObjectVisible( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-	MStatus status;
-    MFnDagNode fnDN( path );
-    // Check the visibility attribute of the node
-    //
-    if ( debugMode ) { printf("-> checking visibility attribute\n"); }
-    MPlug vPlug = fnDN.findPlug( "visibility", &status );
-    if ( debugMode ) { printf("-> checking visibility setting\n"); }
-	bool visible = true;
-	if ( status == MS::kSuccess ) {
-		vPlug.getValue( visible );
-	}
-	status.clear();
-    if ( debugMode ) { printf("-> done checking visibility attribute\n"); }
-    // Also check to see if the node is an intermediate object in
-    // a computation.  For example, it could be in the middle of a 
-    // chain of deformations.  Intermediate objects are not visible.
-    //
-    if ( debugMode ) { printf("-> checking intermediate object\n"); }
-    MPlug iPlug = fnDN.findPlug( "intermediateObject", &status );
-    bool intermediate = false;
-	if ( status == MS::kSuccess ) {
-		iPlug.getValue( intermediate );
-	}
-	status.clear();
-    if ( debugMode ) { printf("-> done checking intermediate object\n"); }
-	
-    return  visible && !intermediate;
+  MStatus status;
+  MFnDagNode fnDN( path );
+  // Check the visibility attribute of the node
+  //
+  if ( debugMode ) { printf("-> checking visibility attribute\n"); }
+  MPlug vPlug = fnDN.findPlug( "visibility", &status );
+  if ( debugMode ) { printf("-> checking visibility setting\n"); }
+  bool visible = true;
+  if ( status == MS::kSuccess ) {
+    vPlug.getValue( visible );
+  }
+  status.clear();
+  if ( debugMode ) { printf("-> done checking visibility attribute\n"); }
+  // Also check to see if the node is an intermediate object in
+  // a computation.  For example, it could be in the middle of a 
+  // chain of deformations.  Intermediate objects are not visible.
+  //
+  if ( debugMode ) { printf("-> checking intermediate object\n"); }
+  MPlug iPlug = fnDN.findPlug( "intermediateObject", &status );
+  bool intermediate = false;
+  if ( status == MS::kSuccess ) {
+    iPlug.getValue( intermediate );
+  }
+  status.clear();
+  if ( debugMode ) { printf("-> done checking intermediate object\n"); }
+
+  return  visible && !intermediate;
 }
 
 bool isObjectPrimaryVisible( const MDagPath & path )
@@ -175,31 +175,31 @@ bool isObjectPrimaryVisible( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-	MStatus status;
-    MFnDagNode fnDN( path );
-	MObject obj = path.node();
-    if ( debugMode ) { printf("-> checking overrideEnabled\n"); }
-	status.clear();
-	MPlug oPlug = fnDN.findPlug( MString( "overrideEnabled" ), &status );
-	bool isOver = false;
-	if ( status == MS::kSuccess ) {
-		oPlug.getValue( isOver );
-	}
-    if ( debugMode ) { printf("-> done checking overrideEnabled\n"); }
-	status.clear();
-    MPlug vPlug = fnDN.findPlug( MString( "primaryVisibility" ), &status );
-    bool primaryVisibility = true;
+  MStatus status;
+  MFnDagNode fnDN( path );
+  MObject obj = path.node();
+  if ( debugMode ) { printf("-> checking overrideEnabled\n"); }
+  status.clear();
+  MPlug oPlug = fnDN.findPlug( MString( "overrideEnabled" ), &status );
+  bool isOver = false;
+  if ( status == MS::kSuccess ) {
+    oPlug.getValue( isOver );
+  }
+  if ( debugMode ) { printf("-> done checking overrideEnabled\n"); }
+  status.clear();
+  MPlug vPlug = fnDN.findPlug( MString( "primaryVisibility" ), &status );
+  bool primaryVisibility = true;
+  if ( status == MS::kSuccess ) {
+    vPlug.getValue( primaryVisibility );
+  }
+  if ( primaryVisibility && isOver ) {
+    status.clear();
+    MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
     if ( status == MS::kSuccess ) {
-	vPlug.getValue( primaryVisibility );
+      oPlug.getValue( primaryVisibility );
     }
-    if ( primaryVisibility && isOver ) {
-	status.clear();
-	MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
-	if ( status == MS::kSuccess ) {
-	    oPlug.getValue( primaryVisibility );
-	}
-    }
-    return  primaryVisibility;
+  }
+  return  primaryVisibility;
 }
 
 bool isObjectTemplated( const MDagPath & path )
@@ -208,15 +208,15 @@ bool isObjectTemplated( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-    MStatus status;
-    MFnDagNode fnDN( path );
-    MPlug vPlug = fnDN.findPlug( "template", &status );
-    bool templated = false;
-    if ( status == MS::kSuccess ) {
-	vPlug.getValue( templated );
-    }
-    status.clear();
-    return  templated;
+  MStatus status;
+  MFnDagNode fnDN( path );
+  MPlug vPlug = fnDN.findPlug( "template", &status );
+  bool templated = false;
+  if ( status == MS::kSuccess ) {
+    vPlug.getValue( templated );
+  }
+  status.clear();
+  return  templated;
 }
 
 bool isObjectCastsShadows( const MDagPath & path )
@@ -225,31 +225,31 @@ bool isObjectCastsShadows( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-    MStatus status;
-    MFnDagNode fnDN( path );
-    // Check the visibility attribute of the node
-    //
-    MPlug vPlug = fnDN.findPlug( MString( "castsShadows" ), &status );
-    bool castsShadows = true;
+  MStatus status;
+  MFnDagNode fnDN( path );
+  // Check the visibility attribute of the node
+  //
+  MPlug vPlug = fnDN.findPlug( MString( "castsShadows" ), &status );
+  bool castsShadows = true;
+  if ( status == MS::kSuccess ) {
+    vPlug.getValue( castsShadows );
+  }
+  status.clear();
+  MPlug oPlug = fnDN.findPlug( MString( "overrideEnabled" ), &status );
+  bool isOver = false;
+  if ( status == MS::kSuccess ) {
+    oPlug.getValue( isOver );
+  }
+  status.clear();
+  if ( castsShadows && isOver ) {
+    MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
     if ( status == MS::kSuccess ) {
-	vPlug.getValue( castsShadows );
+      oPlug.getValue( castsShadows );
     }
-    status.clear();
-    MPlug oPlug = fnDN.findPlug( MString( "overrideEnabled" ), &status );
-    bool isOver = false;
-    if ( status == MS::kSuccess ) {
-	oPlug.getValue( isOver );
-    }
-    status.clear();
-    if ( castsShadows && isOver ) {
-	MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
-	if ( status == MS::kSuccess ) {
-	    oPlug.getValue( castsShadows );
-	}
-    }
-    status.clear();
-    
-    return  castsShadows;
+  }
+  status.clear();
+
+  return  castsShadows;
 }
 
 bool isObjectMotionBlur( const MDagPath & path )
@@ -258,18 +258,18 @@ bool isObjectMotionBlur( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-    MStatus status;
-    MFnDagNode fnDN( path );
-    // Check the visibility attribute of the node
-    //
-    MPlug vPlug = fnDN.findPlug( "motionBlur", &status );
-    bool motionBlur = false;
-    if ( status == MS::kSuccess ) {
-	vPlug.getValue( motionBlur );
-    }
-    status.clear();
-    
-    return  motionBlur;
+  MStatus status;
+  MFnDagNode fnDN( path );
+  // Check the visibility attribute of the node
+  //
+  MPlug vPlug = fnDN.findPlug( "motionBlur", &status );
+  bool motionBlur = false;
+  if ( status == MS::kSuccess ) {
+    vPlug.getValue( motionBlur );
+  }
+  status.clear();
+
+  return  motionBlur;
 }
 
 bool areObjectAndParentsVisible( const MDagPath & path )
@@ -280,23 +280,22 @@ bool areObjectAndParentsVisible( const MDagPath & path )
 //      parents is invisible, then so is the node.
 //  
 {
-    bool result = true;
-    if ( debugMode ) { printf("-> getting searchpath\n"); }
-    MDagPath searchPath( path );
-    
-    if ( debugMode ) { printf("-> stepping through search path\n"); }
-	bool searching = true;
-    while ( searching ) {
-	if ( debugMode ) { printf("-> checking visibility\n"); }
+  bool result = true;
+  if ( debugMode ) { printf("-> getting searchpath\n"); }
+  MDagPath searchPath( path );
 
-        if ( !isObjectVisible( searchPath )  ){
-            result = false;
-            searching = false;
-        }
-        if ( searchPath.length() == 1 ) searching = false;
-        searchPath.pop();
+  if ( debugMode ) { printf("-> stepping through search path\n"); }
+  bool searching = true;
+  while ( searching ) {
+    if ( debugMode ) { printf("-> checking visibility\n"); }
+    if ( !isObjectVisible( searchPath ) ) {
+      result = false;
+      searching = false;
     }
-    return result;
+    if ( searchPath.length() == 1 ) searching = false;
+    searchPath.pop();
+  }
+  return result;
 }
 
 bool areObjectAndParentsTemplated( const MDagPath & path )
@@ -307,35 +306,33 @@ bool areObjectAndParentsTemplated( const MDagPath & path )
 //      parents is invisible, then so is the node.
 //  
 {
-    bool result = true;
-    MDagPath searchPath( path );
-    
-    while ( true ) {
-	if ( isObjectTemplated( searchPath )  ){
-	    result = false;
-	    break;
-	}
-	if ( searchPath.length() == 1 ) break;
-	searchPath.pop();
+  bool result = true;
+  MDagPath searchPath( path );
+
+  while ( true ) {
+    if ( isObjectTemplated( searchPath ) ) {
+      result = false;
+      break;
     }
-    return result;
+  if ( searchPath.length() == 1 ) break;
+  searchPath.pop();
+  }
+  return result;
 }
 
 /* Build the correct token/array pairs from the scene data to correctly pass to Renderman. */
 void assignTokenArrays( unsigned int numTokens, liqTokenPointer tokenPointerArray[],  RtToken tokens[], RtPointer pointers[] )
 {
-    unsigned i;
-    char declare[256];
-    for ( i = 0; i < numTokens; i++ ) 
-    {
-	tokens[i] = tokenPointerArray[i].getTokenName();
-	pointers[i] = tokenPointerArray[i].getRtPointer();
-	if( ! tokenPointerArray[i].isBasicST() )
-	{
-	    tokenPointerArray[i].getRiDeclare( declare );
-	     RiDeclare( tokens[i], declare );
-	}
+  unsigned i;
+  char declare[256];
+  for ( i = 0; i < numTokens; i++ ) {
+    tokens[i] = tokenPointerArray[i].getTokenName();
+    pointers[i] = tokenPointerArray[i].getRtPointer();
+    if( ! tokenPointerArray[i].isBasicST() ) {
+      tokenPointerArray[i].getRiDeclare( declare );
+      RiDeclare( tokens[i], declare );
     }
+  }
 }
 
 /* Build the correct token/array pairs from the scene data to correctly pass
@@ -343,35 +340,34 @@ void assignTokenArrays( unsigned int numTokens, liqTokenPointer tokenPointerArra
  * instead of a static array */
 void assignTokenArraysV( std::vector<liqTokenPointer> *tokenPointerArray, RtToken tokens[], RtPointer pointers[] )
 {
-    unsigned i = 0;
-    char declare[256];
-    std::vector<liqTokenPointer>::iterator iter = tokenPointerArray->begin();
-    while ( iter != tokenPointerArray->end() )
-    {
-	tokens[i] = iter->getTokenName();
-	pointers[i] = iter->getRtPointer();
-	if( ! iter->isBasicST() )
-	{
-	    iter->getRiDeclare( declare );
-	     RiDeclare( tokens[i], declare );
-	}
-	++iter;
-	i++;
+  unsigned i = 0;
+  char declare[256];
+  std::vector<liqTokenPointer>::iterator iter = tokenPointerArray->begin();
+  while ( iter != tokenPointerArray->end() ) {
+    tokens[i] = iter->getTokenName();
+    pointers[i] = iter->getRtPointer();
+    if( ! iter->isBasicST() ) {
+      iter->getRiDeclare( declare );
+      RiDeclare( tokens[i], declare );
     }
+    ++iter;
+    i++;
+  }
 }
 
 MObject findFacetShader( MObject mesh, int polygonIndex ){
-    MFnMesh     fnMesh( mesh );
-    MObjectArray shaders;
-    MIntArray indices;
-    MDagPath path;
-    
-    if (!fnMesh.getConnectedShaders( 0, shaders, indices ))
-	std::cerr << "ERROR: MFnMesh::getConnectedShaders\n" << std::flush;
+  MFnMesh     fnMesh( mesh );
+  MObjectArray shaders;
+  MIntArray indices;
+  MDagPath path;
 
-    MObject shaderNode = shaders[ indices[ polygonIndex ] ];
-    
-    return shaderNode;    
+  if (!fnMesh.getConnectedShaders( 0, shaders, indices )) {
+    std::cerr << "ERROR: MFnMesh::getConnectedShaders\n" << std::flush;
+  }
+
+  MObject shaderNode = shaders[ indices[ polygonIndex ] ];
+
+  return shaderNode;    
 }
 
 /* Check to see if a file exists - seems to work correctly for both platforms */
@@ -392,118 +388,124 @@ bool fileExists(const MString & filename) {
 // characters with specific variables
 MString parseString( MString & inputString )
 {
-    MString constructedString;
-    MString tokenString;
-    bool inToken = false;
-    int sLength = inputString.length();
-    int i;
+  MString constructedString;
+  MString tokenString;
+  bool inToken = false;
+  int sLength = inputString.length();
+  int i;
 
-    for ( i = 0; i < sLength; i++ ) {
-	if ( inputString.substring(i, i) == "$" ) {
-	    tokenString.clear();
-	    inToken = true;
-	} else if ( inToken ) {
-	    tokenString += inputString.substring(i, i);
-	    if ( tokenString == "F" ) {
-		constructedString += (int)liqglo_lframe;
-		inToken = false;
-		tokenString.clear();
-	    } else if ( tokenString == "SCN" ) {
-		constructedString += liqglo_sceneName;
-		inToken = false;
-		tokenString.clear();
-	    } else if ( tokenString == "IMG" ) {
-		constructedString += liqglo_DDimageName[0];
-		inToken = false;
-		tokenString.clear();
-	    } else if ( tokenString == "PDIR" ) {
-		constructedString += liqglo_projectDir;
-		inToken = false;
-		tokenString.clear();
-	    } else if ( tokenString == "RDIR" ) {
-		constructedString += liqglo_ribDir;
-		inToken = false;
-		tokenString.clear();
-	    } else {
-		constructedString += "$";
-		constructedString += tokenString; 
-		tokenString.clear();
-		inToken = false;
-	    }
-	} else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
-	    constructedString += (int)liqglo_lframe;
-	} else if ( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
-	    int paddingSize = 0;
-	    while ( inputString.substring(i, i) == "#" ) {
-		paddingSize++;
-		i++;
-	    }
-	    i--;
-	    if ( paddingSize == 1 ) paddingSize = 4;
-	    if ( paddingSize > 20 ) paddingSize = 20;
-	    char paddedFrame[20];
-	    sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
-	    constructedString += paddedFrame;
-	} else if ( inputString.substring(i, i) == "%" && inputString.substring(i - 1, i - 1) != "\\" ) {
-	    MString	envString;
-	    char*	envVal = NULL;
+  for ( i = 0; i < sLength; i++ ) {
+    if ( inputString.substring(i, i) == "$" ) {
+      tokenString.clear();
+      inToken = true;
+    } else if ( inToken ) {
+      tokenString += inputString.substring(i, i);
+      if ( tokenString == "F" ) {
+        constructedString += (int)liqglo_lframe;
+        inToken = false;
+        tokenString.clear();
+      } else if ( tokenString == "SCN" ) {
+        constructedString += liqglo_sceneName;
+        inToken = false;
+        tokenString.clear();
+      } else if ( tokenString == "IMG" ) {
+        constructedString += liqglo_DDimageName[0];
+        inToken = false;
+        tokenString.clear();
+      } else if ( tokenString == "PDIR" ) {
+        constructedString += liqglo_projectDir;
+        inToken = false;
+        tokenString.clear();
+      } else if ( tokenString == "RDIR" ) {
+        constructedString += liqglo_ribDir;
+        inToken = false;
+        tokenString.clear();
+      } else {
+        constructedString += "$";
+        constructedString += tokenString; 
+        tokenString.clear();
+        inToken = false;
+      }
+    } else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
+      constructedString += (int)liqglo_lframe;
+    } else if ( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
+      int paddingSize = 0;
+      while ( inputString.substring(i, i) == "#" ) {
+        paddingSize++;
+        i++;
+      }
+      i--;
+      if ( paddingSize == 1 ) {
+        paddingSize = 4;
+      }
+      if ( paddingSize > 20 ) {
+        paddingSize = 20;
+      }
+      char paddedFrame[20];
+      sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
+      constructedString += paddedFrame;
+    } else if ( inputString.substring(i, i) == "%" && inputString.substring(i - 1, i - 1) != "\\" ) {
+      MString	envString;
+      char*	envVal = NULL;
 
-	    i++;
+      i++;
 
-	    // loop through the string looking for the closing %
-	    if (i < sLength)
-	    {
-		while (   i < sLength
-		       && inputString.substring(i, i) != "%" ) {
-		    envString += inputString.substring(i, i);
-		    i++;
-		}
+      // loop through the string looking for the closing %
+      if (i < sLength) {
+        while (   i < sLength && inputString.substring(i, i) != "%" ) {
+          envString += inputString.substring(i, i);
+          i++;
+        }
 
-		envVal = getenv( envString.asChar() );
-		
-		if (envVal != NULL)
-		    constructedString += envVal;
-		// else environment variable doesn't exist.. do nothing
-	    }
-	    // else early exit: % was the last character in the string.. do nothing
-	    
-	} else if ( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
-	    // do nothing
-	} else {
-	    constructedString += inputString.substring(i, i);
-	}
+        envVal = getenv( envString.asChar() );
+
+        if (envVal != NULL) {
+          constructedString += envVal;
+        }
+        // else environment variable doesn't exist.. do nothing
+      }
+      // else early exit: % was the last character in the string.. do nothing
+
+    } else if ( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
+      // do nothing
+    } else if ( inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
+      constructedString += "\n";
+      i++;
+    } else {
+      constructedString += inputString.substring(i, i);
     }
-    return constructedString;
+  }
+  return constructedString;
 }
 
 MString liquidTransGetSceneName() 
 {
-    MString fullName;
-    MString fileName;
-    MGlobal::executeCommand( "file -q -a", fullName );
+  MString fullName;
+  MString fileName;
+  MGlobal::executeCommand( "file -q -a", fullName );
 
-    // move backwards across the string until we hit a dirctory / and
-    // take the info from there on
-    int i = fullName.rindex( '/' );
-    int j = fullName.rindex( '.' );
-    fileName = fullName.substring( i + 1, j - 1 );
-    return fileName;
+  // move backwards across the string until we hit a dirctory / and
+  // take the info from there on
+  int i = fullName.rindex( '/' );
+  int j = fullName.rindex( '.' );
+  fileName = fullName.substring( i + 1, j - 1 );
+  return fileName;
 }
 
 MString liquidTransGetFullSceneName() 
 {
-    MString fileName;
-    MGlobal::executeCommand( "file -q -sn", fileName );
+  MString fileName;
+  MGlobal::executeCommand( "file -q -sn", fileName );
 
-    return fileName;
+  return fileName;
 }
 
 MString liquidResolveWinPaths( MString inPath ) 
 {
-    MString newName;
-    for ( unsigned int i = 0; i < inPath.length(); i++ ) {
-    }
-    return newName;
+  MString newName;
+  for ( unsigned int i = 0; i < inPath.length(); i++ ) {
+  }
+  return newName;
 }
 
 liquidlong liquidHash(const char *str)
@@ -512,14 +514,14 @@ liquidlong liquidHash(const char *str)
 //      hash function for strings
 //
 {
-    if ( debugMode ) { printf("-> hashing\n"); }
-    liquidlong hc = 0;
-    
-    while(*str) {
-	//hc = hc * 13 + *str * 27;   // old hash function
-	hc = hc + *str;   // change this to a better hash func
-	str++;
-    }
-	
-    return (liquidlong)hc;
+  if ( debugMode ) { printf("-> hashing\n"); }
+  liquidlong hc = 0;
+
+  while(*str) {
+    //hc = hc * 13 + *str * 27;   // old hash function
+    hc = hc + *str;   // change this to a better hash func
+    str++;
+  }
+
+  return (liquidlong)hc;
 }
