@@ -224,13 +224,15 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         nPlug = nodePeeker.findPlug( MString( "template" ), &status );
         if ( status == MS::kSuccess ) {
           nPlug.getValue( invisible );
-          break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
+	  if( invisible )
+            break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
         } else {
           status.clear();
           nPlug = nodePeeker.findPlug( MString( "liqInvisible" ), &status );
           if ( status == MS::kSuccess ) {
             nPlug.getValue( invisible );
-            break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
+	    if( invisible )
+              break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
           }
         }
       }      
@@ -268,7 +270,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqTraceBias" ), &status );
         if ( status == MS::kSuccess )
-          nPlug.getValue( trace.bias );
+          nPlug.getValue( trace.bias );	
       }
 
       if ( trace.maxDiffuseDepth == 1 ) {
@@ -382,7 +384,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       MStringArray normalAttributesFound = findAttributesByPrefix( "rmanN", nodeFn );
       MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodeFn );
       MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );*/
-    }
+    } // if ( dagSearcher.apiType( &status ) == MFn::kTransform ) 
   }
   while( dagSearcher.length() > 0 );
 

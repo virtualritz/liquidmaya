@@ -3286,11 +3286,23 @@ MStatus liqRibTranslator::ribPrologue()
     } else {
       RtString hiderName;
       switch( liqglo_hider ) {
-        case htHidden:  hiderName = "hidden"; break;
-        case htPhoton:  hiderName = "photon"; break;
-        case htRaytrace: hiderName = "raytrace"; break;
-        case htOpenGL:  hiderName = "OpenGL"; break;
-        case htZbuffer: hiderName = "zbuffer"; break;
+        case htHidden:
+	  hiderName = "hidden";
+	  break;
+        case htPhoton:
+          hiderName = "photon";
+	  break;
+        case htRaytrace:
+	  hiderName = "raytrace";
+	  break;
+        case htOpenGL:
+	  hiderName = "OpenGL";
+	  break;
+        case htZbuffer:
+	  hiderName = "zbuffer";
+	  break;
+	default:
+	  hiderName = "hidden";
       }
       RiHider( hiderName, "jitter", &liqglo_jitter, RI_NULL );
 
@@ -4210,15 +4222,15 @@ MStatus liqRibTranslator::objectBlock()
 
     // If this is a matte object, then turn that on if it isn't currently set
     if ( ribNode->matteMode ) {
-      if ( !m_currentMatteMode ) RiMatte(RI_TRUE);
+      if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
       m_currentMatteMode = true;
     } else {
-      if ( m_currentMatteMode ) RiMatte(RI_FALSE);
+      if ( m_currentMatteMode ) RiMatte( RI_FALSE );
       m_currentMatteMode = false;
     }
     // If this is a single sided object, then turn that on (RMan default is Sides 2)
     if ( !ribNode->doubleSided ) {
-      RiSides(1);
+      RiSides( 1 );
     }
 
     LIQDEBUGPRINTF( "-> object name: " );
@@ -4369,13 +4381,16 @@ MStatus liqRibTranslator::objectBlock()
           RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * currentShader.numTPV );
           assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
           char *shaderFileName;
-          LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
+          LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
           RiAtmosphereV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
         }
       }
 
       // RtFloat currentNodeShadingRate = shadingRate;
 
+      LIQDEBUGPRINTF( "-> writing node attributes" );
+      MGlobal::displayInfo( "writing node attributes" );
+      
       if( ribNode->shading.shadingRate != shadingRate )
         RiShadingRate ( ribNode->shading.shadingRate );
 
@@ -4393,8 +4408,8 @@ MStatus liqRibTranslator::objectBlock()
         RtInt on = 1;
         RiAttribute( "trace", (RtToken) "displacements", &on, RI_NULL );
       }
-
-      if( ribNode->trace.bias != 0.01 ) {
+      
+      if( ribNode->trace.bias != 0.01f ) {
         RtFloat bias = ribNode->trace.bias;
         RiAttribute( "trace", (RtToken) "bias", &bias, RI_NULL );
       }
