@@ -205,7 +205,7 @@ global proc string liquidDuplicateShaderNode( string $nodename )
   }
 	
 	int $numOfArgs = `liquidGetSloInfo -numParam $shaderFileName`;
-	for ( $i = 1; $i <= $numOfArgs ; $i++ )
+	for ( $i = 0; $i < $numOfArgs ; $i++ )
 	{
 		string $argName = `liquidGetSloInfo -argName $i $shaderFileName`;
 		string $argType = `liquidGetSloInfo -argType $i $shaderFileName`;
