@@ -3017,7 +3017,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 						if ( iter->pointDir == pNZ ) { double rotation[] = { 0, M_PI, 0 }; xform.setRotation( rotation, MTransformationMatrix::kXYZ ); }
 					} 
 					iter->camera[sample].mat = xform.asMatrixInverse();
-					iter->camera[sample].neardb    = 0.0001;
+					iter->camera[sample].neardb    = 0.00015;
 					iter->camera[sample].fardb	   = 10000.0;
 					if ( fnLight.dagPath().hasFn( MFn::kDirectionalLight ) ) {
 						iter->camera[sample].isOrtho = true;
@@ -3026,7 +3026,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 					} else {
 						iter->camera[sample].isOrtho = false;
 						iter->camera[sample].orthoWidth = 0.0;
-					}						
+					}
 				}
 				
 				iter->camera[sample].shutter = 0;
@@ -3170,8 +3170,9 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     }
 
     if ( liqglo_currentJob.isMidPointShadow ) {
+      RtInt zero = 0;
       RtString midPoint = "midpoint";
-      RiHider("hidden", "depthfilter", &midPoint, RI_NULL );
+      RiHider("hidden", "jitter", &zero, "depthfilter", &midPoint, RI_NULL );
     }
     
     if ( debugMode ) printf( "-> Setting Display Options\n" );
