@@ -1582,7 +1582,11 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     LIQ_ADD_SLASH_IF_NEEDED( m_tmpDir );
 
     // setup the error handler
+#ifdef AQSIS
+    if ( m_errorMode ) RiErrorHandler( (void(__cdecl*)(int,int,char*))liqRibTranslatorErrorHandler );
+#else
     if ( m_errorMode ) RiErrorHandler( liqRibTranslatorErrorHandler );
+#endif
 
     // Setup helper variables for alfred
     MString alfredCleanUpCommand;

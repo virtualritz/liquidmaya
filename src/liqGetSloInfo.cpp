@@ -432,28 +432,28 @@ int liqGetSloInfo::setShader( MString shaderName )
                             break;
                         }
                         case SLX_TYPE_MATRIX: {
-                            printf("\"%s\" [%f %f %f %f\n",
-                                   arg->svd_spacename,
-                                   (double) (arg->svd_default.matrixval[0]),
-                                   (double) (arg->svd_default.matrixval[1]),
-                                   (double) (arg->svd_default.matrixval[2]),
-                                   (double) (arg->svd_default.matrixval[3]));
-                            printf("\t\t\t%f %f %f %f\n",
-                                   (double) (arg->svd_default.matrixval[4]),
-                                   (double) (arg->svd_default.matrixval[5]),
-                                   (double) (arg->svd_default.matrixval[6]),
-                                   (double) (arg->svd_default.matrixval[7]));
-                            printf("\t\t\t%f %f %f %f\n",
-                                   (double) (arg->svd_default.matrixval[8]),
-                                   (double) (arg->svd_default.matrixval[9]),
-                                   (double) (arg->svd_default.matrixval[10]),
-                                   (double) (arg->svd_default.matrixval[11]));
-                            printf("\t\t\t%f %f %f %f]\n",
-                                   (double) (arg->svd_default.matrixval[12]),
-                                   (double) (arg->svd_default.matrixval[13]),
-                                   (double) (arg->svd_default.matrixval[14]),
-                                   (double) (arg->svd_default.matrixval[15]));
-                            break;
+                            printf("\"%s\" [%f %f %f %f\n",   
+                                   arg->svd_spacename,   
+                                   (double) (arg->svd_default.matrixval->val[0][0]),   
+                                   (double) (arg->svd_default.matrixval->val[0][1]),   
+                                   (double) (arg->svd_default.matrixval->val[0][2]),   
+                                   (double) (arg->svd_default.matrixval->val[0][3]));   
+                            printf("\t\t\t%f %f %f %f\n",   
+                                   (double) (arg->svd_default.matrixval->val[1][0]),   
+                                   (double) (arg->svd_default.matrixval->val[1][1]),   
+                                   (double) (arg->svd_default.matrixval->val[1][2]),   
+                                   (double) (arg->svd_default.matrixval->val[1][3]));   
+                            printf("\t\t\t%f %f %f %f\n",   
+                                   (double) (arg->svd_default.matrixval->val[2][0]),   
+                                   (double) (arg->svd_default.matrixval->val[2][1]),   
+                                   (double) (arg->svd_default.matrixval->val[2][2]),   
+                                   (double) (arg->svd_default.matrixval->val[2][3]));   
+                            printf("\t\t\t%f %f %f %f]\n",   
+                                   (double) (arg->svd_default.matrixval->val[3][0]),   
+                                   (double) (arg->svd_default.matrixval->val[3][1]),   
+                                   (double) (arg->svd_default.matrixval->val[3][2]),   
+                                   (double) (arg->svd_default.matrixval->val[3][3]));   
+                            break;   
                         }
                         default: {
                             argDefault.push_back( NULL );
