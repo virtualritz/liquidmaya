@@ -48,7 +48,7 @@ public:
     liqRibNode( liqRibNode * instanceOfNode = NULL );
     ~liqRibNode();
 			
-    void set( MDagPath &, int, ObjectType objType );
+    void set( const MDagPath &, int, ObjectType objType );
 			   
     liqRibNode *	    next;
     MString name;
