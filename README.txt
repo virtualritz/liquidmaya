@@ -12,20 +12,30 @@ Note from the original developer, Colin Doncaster.
 	Thanks - Colin Doncaster
 	colin@nomadicmonkey.com
 
-Compiling
----------
+Compiling For Linux
+-------------------
 
-    	Liquid has been succesfully compiled against Aqsis, Entropy and PRman libraries on linux.
-	To compile : 
-	    - Go in a shell into the src directory. 
-	    - Set the below environment variables as desired.
-		LIQRMAN : which library to compile against. Can be aqsis ( default if not set ), entropy or prman.
-		MAYA_LOCATION : specify where is the main directory of maya ( /usr/aw/maya if not set )
-		AW_LOCATION : specify where various versions of maya are installed ( /usr/aw if not set )
-	    - Type :
-		make debug to get a version of Liquid compiled with debugging flags ( use MAYA_LOCATION )
-		make release to get a version of Liquid compiled with release flags ( use MAYA_LOCATION )
-		make newversion to get a set of version of Liquid compiled agaisnt different version of maya installed ( use AW_LOCATION )
+Liquid has been succesfully compiled against Aqsis, Entropy and PRman libraries on linux.
+To compile : 
+  - Go in a shell into the src directory. 
+  - Set the below environment variables as desired.
+    LIQRMAN : which library to compile against. Can be aqsis ( default if not set ), entropy or prman.
+    MAYA_LOCATION : specify where is the main directory of maya ( /usr/aw/maya if not set )
+    AW_LOCATION : specify where various versions of maya are installed ( /usr/aw if not set )
+  - Type :
+    make debug to get a version of Liquid compiled with debugging flags ( use MAYA_LOCATION )
+    make release to get a version of Liquid compiled with release flags ( use MAYA_LOCATION )
+    make newversion to get a set of version of Liquid compiled agaisnt different version of maya installed ( use AW_LOCATION )
+
+Compiling For Windows
+---------------------
+
+In the src directory you will find a Microsoft Visual C++ project for compiling Liquid. It is currently 
+setup to compile against the PRMan libraries, but targets will be added for other renderers.
+To compile:
+  - Ensure your MAYA_LOCATION and RMANTREE environment variables are set correctly (e.g. c:\aw\maya4.5 and c:\program files\pixar\prman-10)
+  - Build either the 'Release' or 'Debug' targets from within MSVC++
+  - the plugin will be compiled to <LIQUID>/bin/win32/Release or <LIQUID>/bin/win32/Debug
 
 Thanks
 ------
