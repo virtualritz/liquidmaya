@@ -449,7 +449,7 @@ liqRibTranslator::~liqRibTranslator()
 //	if ( debugMode ) ldumpUnfreed();
 }   
 
-#if defined ENTROPY || PRMAN
+#if defined ENTROPY || PRMAN || PIXIE
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
 #else
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
@@ -1720,6 +1720,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 					if ( debugMode ) { printf("-> setting RiOptions\n"); }
 
 					// Rib client file creation options MUST be done before RiBegin
+#ifdef PRMAN
 					if ( debugMode ) { printf("-> setting binary option\n"); }
 					if ( liqglo_doBinary )
 					{
@@ -1739,6 +1740,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 							RtString comp = "none";
 						RiOption(( RtToken ) "rib", ( RtToken ) "compression", &comp, RI_NULL);
 					}
+#endif // PRMAN
 
 					// world RiReadArchives and Rib Boxes
 					if ( liqglo_currentJob.isShadow && !m_shadowRibGen && !fullShadowRib ) {
@@ -1986,9 +1988,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
 		if ( outputpreview ) {
 			if ( useAlfred ) {
-				liqProcessLauncher::execute( "alfred", alfredFileName );
+			  liqProcessLauncher::execute( "alfred", alfredFileName );
 			} else {
-				liqProcessLauncher::execute( m_renderCommand, liqglo_currentJob.ribFileName );
+			  liqProcessLauncher::execute( m_renderCommand, liqglo_currentJob.ribFileName );
 			}
 		}
 

@@ -82,6 +82,8 @@ extern int debugMode;
     const char * liqPreviewShader::m_default_previewer = "aqsis";
 #elif defined(ENTROPY)
     const char * liqPreviewShader::m_default_previewer = "entropy";
+#elif defined(PIXIE)
+    const char * liqPreviewShader::m_default_previewer = "pixie";
 #else
     // Force error at compile time
       error - unknown renderer

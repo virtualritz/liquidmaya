@@ -35,7 +35,11 @@
 class liqRenderer
 {
 public:
-  enum e_renderer   { REN_PRMAN, REN_ENTROPY, REN_AQSIS, REN_DELIGHT };
+  enum e_renderer   { REN_PRMAN, 
+		      REN_ENTROPY, 
+		      REN_AQSIS,
+		      REN_DELIGHT, 
+		      REN_PIXIE };
   enum e_capability { BLOBBIES, POINTS, EYESPLITS };
 
   enum e_requirement	{
