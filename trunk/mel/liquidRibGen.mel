@@ -127,4 +127,4 @@ global proc liquidAssignRibGenCMD()
   }
 }
 
-print "Initialized Liquid RibGen Interface...\n";
+//print "Initialized Liquid RibGen Interface...\n";

@@ -578,4 +578,4 @@ global proc liquidFluid ()
   showWindow liquidFluidWindow;
 }
 
-print "Initialized Fluid...\n";
+//print "Initialized Fluid...\n";

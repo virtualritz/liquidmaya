@@ -263,4 +263,4 @@ global proc string liquidDuplicateShaderNode( string $nodename )
   return $currentNodeName;
 }
 
-print "Initialized Liquid Shaders Interface...\n";
+//print "Initialized Liquid Shaders Interface...\n";

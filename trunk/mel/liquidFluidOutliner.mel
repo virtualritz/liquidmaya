@@ -412,4 +412,4 @@ global proc slimAlwaysToggleSelectProc( string $outliner, string $alwaysToggleSe
 	menuItem -e -checkBox $value $alwaysToggleSelectItem;	
 }  
 
-print "Initialized Fluid Outliner Interface...\n";
+//print "Initialized Fluid Outliner Interface...\n";
