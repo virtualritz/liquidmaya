@@ -204,7 +204,6 @@ global proc liquidCreateMenus()
         menuItem -c liquidSubdivHoleUI -ob true;
         menuItem -label "Add Stitch Seam" -command liquidSubdivStitchApply -aob true -ann "Add Stitch to selected vertices (new tag in PRman 11)";
         menuItem -c liquidSubdivStitchUI -ob true;
-        menuItem -label "Add UV Interpolation" -command liquidAddUVInterpolation;
         menuItem -d true;
         menuItem -label "Subdivison Surface Inspector..." -command liquidSubdivInspector;
       setParent -menu ..;

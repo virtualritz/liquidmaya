@@ -31,38 +31,43 @@
 //
 
 global proc liquidMakeSubdivUI() {
-  window -t "Liquid Subdivision Surfaces Attributes" -rtf true "liqSubdivWindow";
-  columnLayout c1;
-      frameLayout -labelVisible false -mw 20 -mh 10 f1;
-        columnLayout parameters;
-        int $ck = `optionVar -q liqSubdiv`;
-        checkBoxGrp -label "Subdivison Mesh" -l1 "" -v1 $ck liqSubdiv;            
-        
-        $ck = `optionVar -q liqSubdivInterpolateBoundary`;
-        checkBoxGrp -label "Interpolate Boundary" -l1 "" -v1 $ck liqSubdivInterpolate;
+  if (`window -exists liqSubdivWindow`)
+    deleteUI liqSubdivWindow;
+  if (`windowPref -ex liqSubdivWindow`)
+    windowPref -r liqSubdivWindow;
+  
+  window -widthHeight 320 60 -t "Liquid Subdivision Surface Attributes" -rtf true "liqSubdivWindow";
+  columnLayout -co "both" 5 -adj 1 -rs 5 c1;
+    columnLayout parameters;
+      int $ck = `optionVar -q liqSubdiv`;
+      checkBoxGrp -label "Subdivison Mesh" -l1 "" -v1 $ck liqSubdiv;            
+      
+      $ck = `optionVar -q liqSubdivInterpolateBoundary`;
+      checkBoxGrp -label "Interpolate Boundary" -l1 "" -v1 $ck liqSubdivInterpolate;
 
-        $ck = `optionVar -q liqSubdivUVInterpolation` + 1;
+      $ck = `optionVar -q liqSubdivUVInterpolation` + 1;
 
-        string $liqUVinterpModes[];
+      string $liqUVinterpModes[];
 
-        $liqUVinterpModes = {
-          "True Facevarying",
-          "PRMan Facevarying",
-          "Facevertex"
-        };
+      $liqUVinterpModes = {
+        "True Facevarying",
+        "PRMan Facevarying",
+        "Facevertex"
+      };
 
-        string $menu = `optionMenuGrp -label "UV Intepolation" -cal 1 "right" liqSubdivUV`;
-        int $i;
-        for( $i = 0; $i < 3; ++$i ) {
-          menuItem -data $i -label $liqUVinterpModes[ $i ];
-        }
-        
-        separator;
-        rowColumnLayout -nc 2 -cw 1 200 -cw 2 200 buttons;
-          button -l "Close" cancelButton;
-          button -e -c "deleteUI liqSubdivWindow" cancelButton;
-          button -l "Apply" okButton;
-          button -e -c "liquidMakeSubdivDoIt" okButton;
+      string $menu = `optionMenuGrp -label "UV Intepolation" -cal 1 "right" liqSubdivUV`;
+      int $i;
+      for( $i = 0; $i < 3; ++$i ) {
+        menuItem -data $i -label $liqUVinterpModes[ $i ];
+      }
+    setParent ..;
+    separator;
+    rowColumnLayout -nc 2 -cw 1 160 -cw 2 160 buttons;
+      button -l "Close" cancelButton;
+      button -l "Apply" okButton;
+      button -e -c "liquidMakeSubdivDoIt" okButton;
+      button -e -c "deleteUI liqSubdivWindow" cancelButton;
+    setParent ..;
 
   showWindow liqSubdivWindow;
 }
@@ -155,7 +160,7 @@ global proc liquidSubdivCreaseUI() {
     deleteUI liqSubdivCreaseWin;
   if (`windowPref -ex liqSubdivCreaseWin`)
     windowPref -r liqSubdivCreaseWin;
-      window -widthHeight 320 60 -t "Liquid Subdivision Creases" -rtf true "liqSubdivCreaseWin";
+  window -widthHeight 320 60 -t "Liquid Subdivision Crease" -rtf true "liqSubdivCreaseWin";
   columnLayout -co "both" 5 -adj 1 -rs 5 c1;
     rowLayout -nc 3 parameters;
       floatSliderGrp -width 340 -cw 1 100 -cw 2 40
@@ -165,12 +170,12 @@ global proc liquidSubdivCreaseUI() {
         hardness;
     setParent ..;
     separator;
-        rowColumnLayout -nc 2 -cw 1 100 -cw 2 100 buttons;
-    button -l "Close" cancelButton;
-    button -l "Apply" okButton;
-    button -e -c "deleteUI liqSubdivCreaseWin" cancelButton;
-    button -e -c "liquidSubdivCreaseDoIt" okButton;
-  setParent ..;
+    rowColumnLayout -nc 2 -cw 1 160 -cw 2 160 buttons;
+      button -l "Close" cancelButton;
+      button -l "Apply" okButton;
+      button -e -c "deleteUI liqSubdivCreaseWin" cancelButton;
+      button -e -c "liquidSubdivCreaseDoIt" okButton;
+    setParent ..;
   showWindow liqSubdivCreaseWin;
 }
 
@@ -213,12 +218,12 @@ global proc liquidSubdivCornerUI() {
         hardness;
     setParent ..;
     separator;
-        rowColumnLayout -nc 2 -cw 1 100 -cw 2 100 buttons;
-    button -l "Close" cancelButton;
-    button -l "Apply" okButton;
-    button -e -c "deleteUI liqSubdivCornerWin" cancelButton;
-    button -e -c "liquidSubdivCornerDoIt" okButton;
-  setParent ..;
+    rowColumnLayout -nc 2 -cw 1 160 -cw 2 160 buttons;
+      button -l "Close" cancelButton;
+      button -l "Apply" okButton;
+      button -e -c "deleteUI liqSubdivCornerWin" cancelButton;
+      button -e -c "liquidSubdivCornerDoIt" okButton;
+    setParent ..;
   showWindow liqSubdivCornerWin;
 }
 
@@ -255,15 +260,15 @@ global proc liquidSubdivHoleUI() {
   columnLayout -co "both" 5 -adj 1 -rs 5 c1;
     rowLayout -nc 3 parameters;
       int $ck = `optionVar -q liqSubdivHole`;
-      checkBox -label "Hole Enabled" -align "right" -value $ck hole;
+      checkBoxGrp -label "Hole" -l1 "" -v1 $ck hole;
     setParent ..;
     separator;
-        rowColumnLayout -nc 2 -cw 1 100 -cw 2 100 buttons;
-    button -l "Close" cancelButton;
-    button -l "Apply" okButton;
-    button -e -c "deleteUI liqSubdivHoleWin" cancelButton;
-    button -e -c "liquidSubdivHoleDoIt" okButton;
-  setParent ..;
+    rowColumnLayout -nc 2 -cw 1 160 -cw 2 160 buttons;
+      button -l "Close" cancelButton;
+      button -l "Apply" okButton;
+      button -e -c "deleteUI liqSubdivHoleWin" cancelButton;
+      button -e -c "liquidSubdivHoleDoIt" okButton;
+    setParent ..;
   showWindow liqSubdivHoleWin;
 }
 
@@ -306,12 +311,12 @@ global proc liquidSubdivStitchUI() {
         uid;
     setParent ..;
     separator;
-        rowColumnLayout -nc 2 -cw 1 100 -cw 2 100 buttons;
-    button -l "Close" cancelButton;
-    button -l "Apply" okButton;
-    button -e -c "deleteUI liqSubdivStitchWin" cancelButton;
-    button -e -c "liquidSubdivStitchDoIt" okButton;
-  setParent ..;
+    rowColumnLayout -nc 2 -cw 1 160 -cw 2 160 buttons;
+      button -l "Close" cancelButton;
+      button -l "Apply" okButton;
+      button -e -c "deleteUI liqSubdivStitchWin" cancelButton;
+      button -e -c "liquidSubdivStitchDoIt" okButton;
+    setParent ..;
   showWindow liqSubdivStitchWin;
 }
 
