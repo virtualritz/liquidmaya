@@ -39,12 +39,12 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidRibTranslator.$(OBJEXT) \
     	    	    liqRibParticleData.$(OBJEXT) \
     	    	    liqTokenPointer.$(OBJEXT) \
-		    liqWriteArchive.$(OBJEXT) \
+    	    	    liqWriteArchive.$(OBJEXT) \
     	    	    liqRibSurfaceData.$(OBJEXT) \
     	    	    liqPreviewShader.$(OBJEXT) \
     	    	    liquidRibObj.$(OBJEXT) \
     	    	    liquidRibNode.$(OBJEXT) \
-    	    	    liquidRibData.$(OBJEXT) \
+    	    	    liqRibData.$(OBJEXT) \
     	    	    liqGlobalHelpers.$(OBJEXT) \
     	    	    liquidRibNuCurveData.$(OBJEXT) \
     	    	    liquidRibMeshData.$(OBJEXT) \
@@ -54,7 +54,7 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidRibHT.$(OBJEXT) \
     	    	    liqGetSloInfo.$(OBJEXT) \
     	    	    liqGetAttr.$(OBJEXT) \
-    	    	    liquidRibGenData.$(OBJEXT) \
+    	    	    liqRibGenData.$(OBJEXT) \
     	    	    liquidRibSubdivisionData.$(OBJEXT) \
     	    	    liqMemory.$(OBJEXT) \
     	    	    liqProcessLauncher.$(OBJEXT)
@@ -73,7 +73,7 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibTranslator.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibObj.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibNode.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibData.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibData.$(OBJEXT) \
     	    	    $(VPATH)/liqGlobalHelpers.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibNuCurveData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibMeshData.$(OBJEXT) \
@@ -83,7 +83,7 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibHT.$(OBJEXT) \
     	    	    $(VPATH)/liqGetSloInfo.$(OBJEXT) \
     	    	    $(VPATH)/liqGetAttr.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibGenData.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibGenData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibSubdivisionData.$(OBJEXT) \
     	    	    $(VPATH)/liqMemory.$(OBJEXT) \
     	    	    $(VPATH)/liqProcessLauncher.$(OBJEXT)

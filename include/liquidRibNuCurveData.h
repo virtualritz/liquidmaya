@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 #ifndef liquidRibNuCurveData_H
@@ -34,14 +35,14 @@
 */
 
 
-class liquidRibNuCurveData : public liquidRibData {
+class liquidRibNuCurveData : public liqRibData {
 public: // Methods
     
             liquidRibNuCurveData( MObject curve );
     virtual ~liquidRibNuCurveData();
         
     virtual void       write();
-    virtual bool       compare( const liquidRibData & other ) const;
+    virtual bool       compare( const liqRibData & other ) const;
     virtual ObjectType type() const;
     
 private: // Data

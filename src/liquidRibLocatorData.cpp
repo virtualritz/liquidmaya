@@ -99,7 +99,7 @@ void liquidRibLocatorData::write()
 	if ( debugMode ) { printf("-> writing locator"); }
 }
 
-bool liquidRibLocatorData::compare( const liquidRibData & otherObj ) const
+bool liquidRibLocatorData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this mesh to the other for the purpose of determining

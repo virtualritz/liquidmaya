@@ -16,12 +16,7 @@
 ** Contributor(s): Berj Bannayan. 
 **
 ** 
-** The RenderMan (R) Interface Procedures and Protocol are:
-** Copyright 1988, 1989, Pixar
-** All Rights Reserved
-**
-**
-** RenderMan (R) is a registered trademark of Pixar
+** The RenderMan (R) Interface Procedures and Protocol are:** Copyright 1988, 1989, Pixar** All Rights Reserved****** RenderMan (R) is a registered trademark of Pixar
 */
 
 #ifndef liquidRibLocatorData_H
@@ -33,16 +28,16 @@
 ** ______________________________________________________________________
 */
 
-#include <liquidRibData.h>
+#include <liqRibData.h>
 
-class liquidRibLocatorData : public liquidRibData {
+class liquidRibLocatorData : public liqRibData {
 public: // Methods
     
             liquidRibLocatorData( MObject locator );
     virtual ~liquidRibLocatorData();
         
     virtual void       write();
-    virtual bool       compare( const liquidRibData & other ) const;
+    virtual bool       compare( const liqRibData & other ) const;
     virtual ObjectType type() const;
     
 private: // Data

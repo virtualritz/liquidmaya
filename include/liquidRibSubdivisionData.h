@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 #ifndef liquidRibSubdivisionData_H
@@ -33,16 +34,16 @@
 ** ______________________________________________________________________
 */
 
-#include <liquidRibData.h>
+#include <liqRibData.h>
 
-class liquidRibSubdivisionData : public liquidRibData {
+class liquidRibSubdivisionData : public liqRibData {
 public: // Methods
     
             liquidRibSubdivisionData( MObject mesh );
     virtual ~liquidRibSubdivisionData();
         
     virtual void       write();
-	virtual bool       compare( const liquidRibData & other ) const;
+	virtual bool       compare( const liqRibData & other ) const;
 	virtual ObjectType type() const;
     
 private: // Data

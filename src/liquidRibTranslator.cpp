@@ -181,7 +181,7 @@ static const char * LIQUIDVERSION =
 #include <liquidRibObj.h>
 #include <liquidRibNode.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibData.h>
+#include <liqRibData.h>
 #include <liquidRibNuCurveData.h>
 #include <liquidRibMeshData.h>
 #include <liquidRibLocatorData.h>
@@ -192,7 +192,7 @@ static const char * LIQUIDVERSION =
 #include <liqGetSloInfo.h>
 #include <liquidRIBStatus.h>
 #include <liquidRIBGen.h>
-#include <liquidRibGenData.h>
+#include <liqRibGenData.h>
 #include <liqMemory.h>
 #include <liqProcessLauncher.h>
 #include <liqEntropyRenderer.h>

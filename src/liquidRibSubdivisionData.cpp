@@ -215,7 +215,7 @@ void liquidRibSubdivisionData::write()
     RiSubdivisionMeshV( "catmull-clark", npolys, nverts, verts, 0, tags, nargs, intargs, floatargs, numTokens, tokenArray, pointerArray ); 
 }
 
-bool liquidRibSubdivisionData::compare( const liquidRibData & otherObj ) const
+bool liquidRibSubdivisionData::compare( const liqRibData & otherObj ) const
 /* Description: Compare this mesh to the other for the purpose of determining if its animated */
 {
     if ( debugMode ) { printf("-> comparing mesh\n"); }

@@ -76,7 +76,7 @@ extern "C" {
 #include <liquidRibSubdivisionData.h>
 #include <liqRibCoordData.h>
 #include <liquidRIBStatus.h>
-#include <liquidRibGenData.h>
+#include <liqRibGenData.h>
 #include <liqMemory.h>
 
 extern int debugMode;
@@ -133,7 +133,7 @@ data( NULL )
     if ( !ignore || !ignoreShadow ) {  
 	    if ( objType == MRT_RibGen ) {
 		    type = MRT_RibGen;
-		    data = new liquidRibGenData( obj, path );
+		    data = new liqRibGenData( obj, path );
 	    } else {
 		    // Store the geometry/light/shader data for this object in RIB format
 		    if ( obj.hasFn(MFn::kNurbsSurface) ) {
@@ -170,7 +170,7 @@ data( NULL )
 			    data = new liquidRibLightData( path );
 		    } else if ( obj.hasFn(MFn::kPlace3dTexture)) {
 			    type = MRT_Coord;
-			    data = new liquidRibCoordData( obj );
+			    data = new liqRibCoordData( obj );
 		    } else if ( obj.hasFn(MFn::kLocator) ) {
 			    type = MRT_Locator;
 			    data = new liquidRibLocatorData( obj );

@@ -16,12 +16,7 @@
 ** Contributor(s): Berj Bannayan. 
 **
 ** 
-** The RenderMan (R) Interface Procedures and Protocol are:
-** Copyright 1988, 1989, Pixar
-** All Rights Reserved
-**
-**
-** RenderMan (R) is a registered trademark of Pixar
+** The RenderMan (R) Interface Procedures and Protocol are:** Copyright 1988, 1989, Pixar** All Rights Reserved****** RenderMan (R) is a registered trademark of Pixar
 */
 
 #ifndef liquidRibObject_H
@@ -33,7 +28,7 @@
 ** ______________________________________________________________________
 */
 
-#include <liquidRibData.h>
+#include <liqRibData.h>
 
 class liquidRibObj {
 public:
@@ -63,7 +58,7 @@ private:
     MMatrix *       instanceMatrices; 	// Matrices for all instances of this object
     RtObjectHandle  objectHandle;     	// Handle used by RenderMan to refer to defined geometry
     int             referenceCount;   // Object's reference count
-    liquidRibData * 	data;	    	// Geometry or light data	
+    liqRibData * 	data;	    	// Geometry or light data	
 };
 
 #endif

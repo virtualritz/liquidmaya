@@ -81,12 +81,12 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibData.h>
+#include <liqRibData.h>
 #include <liqMemory.h>
 
 extern int debugMode;
 
-liquidRibData::~liquidRibData() 
+liqRibData::~liqRibData() 
 {
     // clean up and additional data
     LIQDEBUGPRINTF("-> freeing additional ribdata: " );
@@ -115,7 +115,7 @@ liquidRibData::~liquidRibData()
     LIQDEBUGPRINTF("\n" );
 }
 
-void liquidRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringArray & strArray, ParameterType pType )
+void liqRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringArray & strArray, ParameterType pType )
 {
     int i;
     MStatus status;
@@ -162,7 +162,7 @@ void liquidRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringAr
     }
 }
 
-void liquidRibData::addAdditionalSurfaceParameters( MObject node )
+void liqRibData::addAdditionalSurfaceParameters( MObject node )
 {
 	
     LIQDEBUGPRINTF("-> scanning for additional rman surface attributes \n");

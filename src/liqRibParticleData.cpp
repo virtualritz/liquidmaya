@@ -75,7 +75,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibData.h>
+#include <liqRibData.h>
 #include <liqRibParticleData.h>
 #include <liqMemory.h>
 
@@ -531,7 +531,7 @@ void liqRibParticleData::write()
     }
 }
 
-bool liqRibParticleData::compare( const liquidRibData & otherObj ) const
+bool liqRibParticleData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this curve to the other for the purpose of determining

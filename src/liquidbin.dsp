@@ -210,11 +210,11 @@ SOURCE=.\liqRibCoordData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibData.cpp
+SOURCE=.\liqRibData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibGenData.cpp
+SOURCE=.\liqRibGenData.cpp
 # End Source File
 # Begin Source File
 

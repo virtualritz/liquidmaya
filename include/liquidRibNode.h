@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 #ifndef liquidRibNode_H
@@ -33,7 +34,7 @@
 ** ______________________________________________________________________
 */
 
-#include <liquidRibData.h>
+#include <liqRibData.h>
 #include <liquidRibObj.h>
 #include <maya/MColor.h>
 #include <maya/MFnDependencyNode.h>

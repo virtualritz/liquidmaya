@@ -70,7 +70,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibGenData.h>
+#include <liqRibGenData.h>
 #include <liqMemory.h>
 #include <liquidRIBGen.h>
 
@@ -87,7 +87,7 @@ extern RtFloat liqglo_sampleTimes[5];
 extern liquidlong liqglo_motionSamples;
 extern float liqglo_shutterTime;
 
-liquidRibGenData::liquidRibGenData( MObject obj, MDagPath path )
+liqRibGenData::liqRibGenData( MObject obj, MDagPath path )
 //
 //  Description:
 //      create a RIB Gen
@@ -123,7 +123,7 @@ liquidRibGenData::liquidRibGenData( MObject obj, MDagPath path )
 	ribStatus.dagPath = path;
 }
 
-liquidRibGenData::~liquidRibGenData()
+liqRibGenData::~liqRibGenData()
 //
 //  Description:
 //      class destructor
@@ -134,7 +134,7 @@ liquidRibGenData::~liquidRibGenData()
 		ribStatus.objectName = NULL; 
 }
 
-void liquidRibGenData::write()
+void liqRibGenData::write()
 {
 	if ( debugMode ) { printf("-> writing ribgen\n"); }
 #ifdef PRMAN
@@ -232,7 +232,7 @@ void liquidRibGenData::write()
 #endif
 }
 		
-bool liquidRibGenData::compare( const liquidRibData & otherObj ) const
+bool liqRibGenData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this ribgen to the other for the purpose of determining
@@ -244,7 +244,7 @@ bool liquidRibGenData::compare( const liquidRibData & otherObj ) const
 	return true;
 }
 		
-ObjectType liquidRibGenData::type() const
+ObjectType liqRibGenData::type() const
 //
 //  Description:
 //      return the geometry type

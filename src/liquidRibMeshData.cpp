@@ -277,7 +277,7 @@ void liquidRibMeshData::write()
 	}
 }
 
-bool liquidRibMeshData::compare( const liquidRibData & otherObj ) const
+bool liquidRibMeshData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this mesh to the other for the purpose of determining
