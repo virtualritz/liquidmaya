@@ -245,7 +245,7 @@ void liquidRibMeshData::write()
 //
 {
 	if ( debugMode ) { printf("-> writing mesh\n"); }
-	RtLightHandle handle;	
+	RtLightHandle handle = NULL;
 	if ( areaLight ) { 
 		if ( debugMode ) { printf("-> mesh is area light\n"); }
 		//	RiAttributeBegin();
