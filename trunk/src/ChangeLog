@@ -1,21 +1,23 @@
+Release 1.6.7 ------------------------------------------------------------------
 
 2005-01-20 geohar
-	- Merge to SF repository
-	  * Fix LIQDEBUGPRINTF for OSX
-	  * swapped final fallback for temp location, as it had windows and nonwindows cases swapped
-	  * Fixed Mixed line ending issues - (lots of)
-	  * Fixed the Tag as Subdivision surface menu + GUI
+    - Merge to SF repository
+      * Fix LIQDEBUGPRINTF for OSX
+      * swapped final fallback for temp location, as it had windows and nonwindows cases swapped
+      * Fixed Mixed line ending issues - (lots of)
+      * Fixed the Tag as Subdivision surface menu + GUI
+
 
 Release 1.6.6 ------------------------------------------------------------------
 
 2005-01-11 mauritio
-  - Fixed a missing motiob blur data initialization bug in the ribNode constructor
+  - Fixed a missing motion blur data initialization bug in the ribNode constructor
 
 2005-01-09 mauritio
   - Merged first batch of Yuri Meshalkin's cool additions
-	* New subdiv crease interface works for mesh-based subdivs
-	* Selection of different target renderers basically works
-	* New Hider and Jitter globals
+    * New subdiv crease interface works for mesh-based subdivs
+    * Selection of different target renderers basically works
+    * New Hider and Jitter globals
 
 
 Release 1.6.5 ------------------------------------------------------------------
@@ -23,8 +25,8 @@ Release 1.6.5 ------------------------------------------------------------------
 2005-01-06 mauritio
   - Fixed a typo in liquidAttributes.mel
   - Added support for certain ray tracing attributes on lights:
-	* lightsoures are now enclosed in Attribute blocks in the RIB
-	* RiIlluminate() is used to switch the light on after the block
+    * lightsoures are now enclosed in Attribute blocks in the RIB
+    * RiIlluminate() is used to switch the light on after the block
   - RIB & display filename from the globals is handled more logical now (I hope):
     * the scene's name is used as the display name if the latter was omitted
     * the display name is never used as the RIB basename
@@ -45,7 +47,7 @@ Release 1.6.5 ------------------------------------------------------------------
 2005-01-02 mauritio
   - Added code for trace set membership management in liqRibNode, liqRibTranslator and added new support MEL scripts
     * setting .liqTraceSet on a Maya Set to true puts all members of this set into a trace group of the same name in the RIB
-    * the object's full dag path itself is also added to the trace set, thus making it possible to dtermine self intersections in SL
+    * the object's full dag path itself is also added to the trace set, thus making it possible to determine self intersections in SL
   - Makefile now also puts the build date into LIQUIDVERSION
 
 2004-12-29 mauritio
