@@ -87,9 +87,9 @@ extern "C" {
 
 extern  bool	liquidBin;
 
-const char* usage = 
-"usage: liquid [options] filename ...\n\
-please see the liquid documentation for command line parameters. \n";
+static const char* usage = 
+"usage: liquid [options] -mf filename\n\
+please see the liquid documentation for command line parameters.\n";
 
 void signalHandler(int sig)
 {
@@ -145,16 +145,18 @@ int main(int argc, char **argv)
 
     // scan the command line arguments
     for (i = 0; i < argc; i++) {
-	if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help")) {
-		cerr << usage;
-		return(1);
-	} else if ( !strcmp(argv[i], "-mf")  ) {
-		i++;
-		fileName = argv[i];  // set the fileName
-	} else {
-		MString newArg = argv[i];
-		myArgs.addArg( newArg );
-	}
+      if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help") || !strcmp(argv[i], "--help")) {
+        cerr << usage;
+        return(1);
+      } else if ( !strcmp(argv[i], "-mf")  ) {
+        i++;
+        if (i < argc) {
+          fileName = argv[i];  // set the fileName
+        }
+      } else {
+        MString newArg = argv[i];
+        myArgs.addArg( newArg );
+      }
     }
 
     // check that the filename has been specified and exists	
@@ -164,7 +166,7 @@ int main(int argc, char **argv)
       MLibrary::cleanup( 1 );
       return (1);
     } else if ( !fileExists( fileName ) ) {
-      status.perror("Liquid -> file not found!\n");
+      status.perror("Liquid -> file not found: " + fileName + "\n");
       printf( "ALF_EXIT_STATUS 1\n" );
       MLibrary::cleanup( 1 );
       return ( 1 );
