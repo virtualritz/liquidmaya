@@ -315,6 +315,9 @@
 				RelativePath=".\liqRibLocatorData.cpp">
 			</File>
 			<File
+				RelativePath="liqRibMayaSubdivisionData.cpp">
+			</File>
+			<File
 				RelativePath=".\liqRibMeshData.cpp">
 			</File>
 			<File
@@ -348,12 +351,30 @@
 				RelativePath=".\liqWriteArchive.cpp">
 			</File>
 			<File
+				RelativePath="liquidBin.cpp">
+			</File>
+			<File
 				RelativePath=".\liquidPlug.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\include\liqAqsisRenderer.h">
+			</File>
+			<File
+				RelativePath="..\include\liqAttachPrefAttribute.h">
+			</File>
+			<File
+				RelativePath="..\include\liqCustomNode.h">
+			</File>
+			<File
+				RelativePath="..\include\liqDelightRenderer.h">
+			</File>
+			<File
+				RelativePath="..\include\liqEntropyRenderer.h">
+			</File>
 			<File
 				RelativePath="..\include\liqGetAttr.h">
 			</File>
@@ -370,16 +391,34 @@
 				RelativePath="..\include\liqMemory.h">
 			</File>
 			<File
+				RelativePath="..\include\liqPixieRenderer.h">
+			</File>
+			<File
 				RelativePath="..\include\liqPreviewShader.h">
+			</File>
+			<File
+				RelativePath="..\include\liqPrmanRenderer.h">
 			</File>
 			<File
 				RelativePath="..\include\liqProcessLauncher.h">
 			</File>
 			<File
+				RelativePath="..\include\liqRenderScript.h">
+			</File>
+			<File
+				RelativePath="..\include\liqRenderer.h">
+			</File>
+			<File
 				RelativePath="..\include\liqRibCoordData.h">
 			</File>
 			<File
+				RelativePath="..\include\liqRibCustomNode.h">
+			</File>
+			<File
 				RelativePath="..\include\liqRibData.h">
+			</File>
+			<File
+				RelativePath="..\include\liqRibGen.h">
 			</File>
 			<File
 				RelativePath="..\include\liqRibGenData.h">
@@ -392,6 +431,9 @@
 			</File>
 			<File
 				RelativePath="..\include\liqRibLocatorData.h">
+			</File>
+			<File
+				RelativePath="..\include\liqRibMayaSubdivisionData.h">
 			</File>
 			<File
 				RelativePath="..\include\liqRibMeshData.h">
@@ -409,7 +451,13 @@
 				RelativePath="..\include\liqRibParticleData.h">
 			</File>
 			<File
+				RelativePath="..\include\liqRibStatus.h">
+			</File>
+			<File
 				RelativePath="..\include\liqRibSubdivisionData.h">
+			</File>
+			<File
+				RelativePath="..\include\liqRibSurfaceData.h">
 			</File>
 			<File
 				RelativePath="..\include\liqRibTranslator.h">
@@ -447,63 +495,183 @@
 			Filter="*.mel">
 			<File
 				RelativePath="..\mel\getMultiListerSelection.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidAttachParams.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidAttrWindow.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidConvMTOR.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidDelayedReadArchive.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidFileBrowser.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidFluid.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidGlobals.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidHelpers.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidMenuHelp.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidParamDialogWindow.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidPrefAttribute.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidReAttachParams.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidReadArchive.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidRibBox.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidRibGen.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidShaders.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidShutdown.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidStartup.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidSubD.mel">
+				<FileConfiguration
+					Name="PRMan 11 Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
