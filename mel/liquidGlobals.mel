@@ -222,7 +222,7 @@ global proc liquidInitGlobalVals()
     // This is the list of filters supported by the renderer
     ,"bits_filters",  "string", "Box Triangle CatmullRom Bessel Gaussian Sinc BlackmanHarris Mitchell" // -SeparableCatmullRom -Lanczos -Disk
     ,"bits_features", "string", "Blobbies Points Eyesplits Raytrace DepthOfField"
-    ,"bits_required", "string", "SwapUVs __Pref " // -MakeShadow
+    ,"bits_required", "string", "Swap_UV __Pref " // -MakeShadow
     ,"dshDisplayName","string", "dsm"    // Deep Shadow Display name
     ,"dshImageMode",  "string", "rgbaz" // Deep Shadow Display image mode
   };
@@ -265,7 +265,7 @@ global proc liquidInitGlobalVals()
 
   global string $liqRequiredList[5];
   $liqRequiredList = {
-    "Swap UVs",
+    "Swap_UV",
     "__Pref",
     "MakeShadow"
   };
