@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 #ifndef liquidRibData_H
@@ -39,11 +40,11 @@
 #include <vector>
 #include <liqTokenPointer.h>
 
-class liquidRibData {
+class liqRibData {
 public:
-    virtual ~liquidRibData();
+    virtual ~liqRibData();
     virtual void    write() = 0;
-    virtual bool    compare( const liquidRibData & other ) const = 0;
+    virtual bool    compare( const liqRibData & other ) const = 0;
     virtual ObjectType type() const = 0;
     virtual void    addAdditionalSurfaceParameters( MObject node );
     std::vector<liqTokenPointer> tokenPointerArray;

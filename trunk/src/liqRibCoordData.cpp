@@ -71,7 +71,7 @@ extern "C" {
 
 extern int debugMode;
 
-liquidRibCoordData::liquidRibCoordData( MObject coord )
+liqRibCoordData::liqRibCoordData( MObject coord )
 //
 //  Description:
 //      create a RIB compatible representation of a Maya polygon mesh
@@ -83,7 +83,7 @@ liquidRibCoordData::liquidRibCoordData( MObject coord )
 	this->name = fnNode.name();
 }
 
-liquidRibCoordData::~liquidRibCoordData()
+liqRibCoordData::~liqRibCoordData()
 //
 //  Description:
 //      class destructor
@@ -92,7 +92,7 @@ liquidRibCoordData::~liquidRibCoordData()
 	if ( debugMode ) { printf("-> killing coord\n"); }
 }
 
-void liquidRibCoordData::write()
+void liqRibCoordData::write()
 //
 //  Description:
 //      Write the RIB for this mesh
@@ -106,7 +106,7 @@ void liquidRibCoordData::write()
 	lfree( coordName );
 }
 
-bool liquidRibCoordData::compare( const liquidRibData & otherObj ) const
+bool liqRibCoordData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this mesh to the other for the purpose of determining
@@ -118,7 +118,7 @@ bool liquidRibCoordData::compare( const liquidRibData & otherObj ) const
     return true;
 }
 
-ObjectType liquidRibCoordData::type() const
+ObjectType liqRibCoordData::type() const
 //
 //  Description:
 //      return the geometry type

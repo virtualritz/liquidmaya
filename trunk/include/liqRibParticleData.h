@@ -34,14 +34,14 @@
 */
 
 
-class liqRibParticleData : public liquidRibData {
+class liqRibParticleData : public liqRibData {
 public: // Methods
     
             liqRibParticleData( MObject curve );
     virtual ~liqRibParticleData();
         
     virtual void	write();
-    virtual bool	compare( const liquidRibData & other ) const;
+    virtual bool	compare( const liqRibData & other ) const;
     virtual ObjectType	type() const;
 
     void		addAdditionalParticleParameters( MObject node );

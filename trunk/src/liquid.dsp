@@ -221,11 +221,11 @@ SOURCE=.\liqRibCoordData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibData.cpp
+SOURCE=.\liqRibData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibGenData.cpp
+SOURCE=.\liqRibGenData.cpp
 # End Source File
 # Begin Source File
 
@@ -321,7 +321,7 @@ SOURCE=..\include\liqRibCoordData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibData.h
+SOURCE=..\include\liqRibData.h
 # End Source File
 # Begin Source File
 
@@ -329,7 +329,7 @@ SOURCE=..\include\liquidRIBGen.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibGenData.h
+SOURCE=..\include\liqRibGenData.h
 # End Source File
 # Begin Source File
 

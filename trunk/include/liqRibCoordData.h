@@ -28,16 +28,16 @@
 ** ______________________________________________________________________
 */
 
-#include <liquidRibData.h>
+#include <liqRibData.h>
 
-class liquidRibCoordData : public liquidRibData {
+class liqRibCoordData : public liqRibData {
 public: // Methods
     
-            liquidRibCoordData( MObject locator );
-    virtual ~liquidRibCoordData();
+    liqRibCoordData( MObject locator );
+    virtual ~liqRibCoordData();
         
     virtual void       write();
-    virtual bool       compare( const liquidRibData & other ) const;
+    virtual bool       compare( const liqRibData & other ) const;
     virtual ObjectType type() const;
     
 private: // Data

@@ -64,7 +64,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibData.h>
+#include <liqRibData.h>
 #include <liquidRibNuCurveData.h>
 #include <liqMemory.h>
 
@@ -191,7 +191,7 @@ void liquidRibNuCurveData::write()
 	RiCurvesV( "cubic", ncurves, nverts, "nonperiodic", numTokens, tokenArray, pointerArray );
 }
 
-bool liquidRibNuCurveData::compare( const liquidRibData & otherObj ) const
+bool liquidRibNuCurveData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this curve to the other for the purpose of determining

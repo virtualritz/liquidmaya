@@ -34,16 +34,16 @@
 ** ______________________________________________________________________
 */
 
-#include <liquidRibData.h>
+#include <liqRibData.h>
 
-class liqRibSurfaceData : public liquidRibData {
+class liqRibSurfaceData : public liqRibData {
 public: // Methods
     
             liqRibSurfaceData( MObject surface );
     virtual ~liqRibSurfaceData();
         
     virtual void	write();
-    virtual bool	compare( const liquidRibData & other ) const;
+    virtual bool	compare( const liqRibData & other ) const;
     virtual ObjectType	type() const;
     
     bool		hasTrimCurves() const;

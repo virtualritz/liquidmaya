@@ -410,7 +410,7 @@ void liqRibSurfaceData::write()
     if ( debugMode ) { printf("-> done writing nurbs surface\n"); }
 }
 
-bool liqRibSurfaceData::compare( const liquidRibData & otherObj ) const
+bool liqRibSurfaceData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this surface to the other for the purpose of determining

@@ -499,7 +499,7 @@ void liquidRibLightData::write()
 	}
 }
 
-bool liquidRibLightData::compare( const liquidRibData & otherObj ) const
+bool liquidRibLightData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Light comparisons are not supported in this version.
