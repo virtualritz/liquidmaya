@@ -79,7 +79,7 @@ void removeTrack( long addr )
 	while ( i != allocList.end() ) {
 		if( i->address == addr )
 		{
-			printf( "-> liquidMemory FREE: %d FILE: %s LINE: %d\n", i->address, i->file, i->line );
+			printf( "-> liquidMemory FREE: %ld FILE: %s LINE: %ld\n", i->address, i->file, i->line );
 			allocList.erase( i );
 			break;
     }
@@ -95,12 +95,12 @@ void ldumpUnfreed()
 
     std::list<ALLOC_INFO>::iterator i = allocList.begin();
     while ( i != allocList.end() ) {
-	    printf("%-50s:\t\tLINE %d,\t\tADDRESS %d\t%d unfreed\n", i->file, i->line, i->address, i->size);
-    	    totalSize += i->size;
-	    ++i;
+		printf("%-50s:\t\tLINE %ld,\t\tADDRESS %ld\t%ld unfreed\n", i->file, i->line, i->address, i->size);
+		totalSize += i->size;
+		++i;
     }
     printf("-----------------------------------------------------------\n");
-    printf("Total Unfreed: %d bytes\n", totalSize);
+    printf("Total Unfreed: %ld bytes\n", totalSize);
 }
 
 int lmemUsage() 
@@ -145,7 +145,7 @@ void *ldcalloc( size_t nelem, size_t elsize, const char *fileName, const long li
 }
 
 // wrapper for free that keeps track of freed memory
-void ldfree( void *ptr, const char *fileName, const long line )
+void ldfree( void *ptr )
 {
 	if ( debugMode ) removeTrack( (long)ptr );
 	free( ptr );

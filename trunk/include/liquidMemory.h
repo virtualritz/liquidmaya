@@ -52,6 +52,6 @@ void ldumpUnfreed();
 
 void *ldmalloc( size_t size, const char *fileName, const long line );
 void *ldcalloc( size_t nelem, size_t elsize, const char *fileName, const long line );
-void ldfree( void *ptr, const char *fileName, const long line );
+void  ldfree( void *ptr );
 
 #endif
