@@ -97,10 +97,10 @@ cd ..
 rm ../${LIQUIDVERSION}.tar
 
 echo Creating final archive...
-tar -cjf ../${LIQUIDVERSION}.tar.bz2 ${LIQUIDVERSION}/
+tar -cjf ../${LIQUIDVERSION}-osx.tar.bz2 ${LIQUIDVERSION}/
 rm -r ${LIQUIDVERSION}/
 
-if [ -f ../${LIQUIDVERSION}.tar.bz2 ]; then
+if [ -f ../${LIQUIDVERSION}-osx.tar.bz2 ]; then
   echo
   echo Successfully created archive ${LIQUIDVERSION}.tar.bz2.
   echo
