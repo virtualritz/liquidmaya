@@ -86,6 +86,14 @@ extern  bool	liquidBin;
 
 #define LIQVENDOR "Colin_Doncaster_and_friends"
 
+#ifdef _WIN32
+// unix build gets this from the Makefile
+static const char * LIQUIDVERSION = 
+#include "liquid.version"
+;
+#endif
+
+
 ////////////////////// EXPORTS /////////////////////////////////////////////////////////
 LIQUID_EXPORT MStatus initializePlugin(MObject obj)
 //
@@ -103,7 +111,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
 
     MGlobal::displayInfo("\nLiquid by Colin Doncaster\n");
 
-    status = plugin.registerCommand("liquid", liquidRibTranslator::creator );
+    status = plugin.registerCommand("liquid", liquidRibTranslator::creator, liquidRibTranslator::syntax );
     LIQCHECKSTATUS( status, "Can't register liquid translator command" );
 
     // register the liquidAttachPrefAttribute command
