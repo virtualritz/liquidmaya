@@ -532,7 +532,7 @@ void liquidRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * m
 //  Description:
 //  Error handling function.  This gets called when the RIB library detects an error.  
 {
-    printf( "The renderman library is reporting and error!" );
+    printf( "The renderman library is reporting and error! Code: %d  Severity: %d", code, severity );
     MString error( message );
     throw error;
 }
@@ -634,8 +634,8 @@ MStatus liquidRibTranslator::liquidDoArgs( MArgList args )
 	liqglo_sceneName = liquidTransGetSceneName();
 
 	// setup default animation parameters
-	frameFirst = MAnimControl::currentTime().as( MTime::uiUnit() );
-	frameLast  = MAnimControl::currentTime().as( MTime::uiUnit() );
+	frameFirst = (int) MAnimControl::currentTime().as( MTime::uiUnit() );
+	frameLast  = (int) MAnimControl::currentTime().as( MTime::uiUnit() );
 	frameBy    = 1;
 
 	// check to see if the correct project directory was found
@@ -2192,7 +2192,7 @@ void liquidRibTranslator::getCameraInfo( MFnCamera& cam )
 				cam.verticalFilmAperture());
 			
 			if ( new_height < cam_height ) {
-				cam_height = new_height;
+				cam_height = (int)new_height;
 			}
 		}
 		
@@ -2210,28 +2210,28 @@ void liquidRibTranslator::getCameraInfo( MFnCamera& cam )
 		// case 1 : film-gate smaller than resolution
 		//	        film-gate on
 		if ( (new_width < cam_width) && (!ignoreFilmGate) ) {
-			cam_width = new_width;
+			cam_width = (int)new_width;
 			fov_ratio = 1.0;		
 		}
 		
 		// case 2 : film-gate smaller than resolution
 		//	        film-gate off
 		else if ( (new_width < cam_width) && (ignoreFilmGate) ) {
-			portFieldOfView( new_width, cam_height, hfov, vfov, cam );
-			fov_ratio = hfov/vfov;		
+			portFieldOfView( (int)new_width, cam_height, hfov, vfov, cam );
+			fov_ratio = hfov/vfov;
 		}
-		
+
 		// case 3 : film-gate larger than resolution
 		//	        film-gate on
 		else if ( !ignoreFilmGate ) {
-			portFieldOfView( new_width, cam_height, hfov, vfov, cam );
-			fov_ratio = hfov/vfov;		
+			portFieldOfView( (int)new_width, cam_height, hfov, vfov, cam );
+			fov_ratio = hfov/vfov;
 		}
-		
+
 		// case 4 : film-gate larger than resolution
 		//	        film-gate off
 		else if ( ignoreFilmGate ) {
-			portFieldOfView( new_width, cam_height, hfov, vfov, cam );
+			portFieldOfView( (int)new_width, cam_height, hfov, vfov, cam );
 			fov_ratio = hfov/vfov;		
 		}
 		
@@ -2246,18 +2246,18 @@ void liquidRibTranslator::getCameraInfo( MFnCamera& cam )
 		
 		if ( new_width < cam_width ) {
 			if ( !ignoreFilmGate ) {
-				cam_width = new_width;
+				cam_width = (int) new_width;
 				fov_ratio = 1.0;
 			}
 			else {
 				double hfov, vfov;
-				portFieldOfView( new_width, cam_height, hfov, vfov, cam );
+				portFieldOfView( (int)new_width, cam_height, hfov, vfov, cam );
 				fov_ratio = hfov/vfov;		
 			}
 		}
 		else {
 			if ( !ignoreFilmGate )
-				cam_height = new_height;
+				cam_height = (int) new_height;
 			
 			double hfov, vfov;
 			portFieldOfView( cam_width, cam_height, hfov, vfov, cam );
@@ -2271,7 +2271,7 @@ void liquidRibTranslator::getCameraInfo( MFnCamera& cam )
 		double hfov, vfov;
 		
 		if ( new_width >= cam_width ) {
-			portFieldOfView( new_width, cam_height, hfov, vfov, cam );
+			portFieldOfView( (int)new_width, cam_height, hfov, vfov, cam );
 			fov_ratio = hfov/vfov;
 		}
 		else {						
@@ -2601,10 +2601,8 @@ MStatus liquidRibTranslator::ribPrologue()
 {
 	if ( !m_exportReadArchive ) {
 		if ( debugMode ) { printf("-> beginning to write prologue\n"); }
-		MStatus returnStatus = MS::kSuccess;
-		MStatus status;
-		
-		// set any rib options		
+
+		// set any rib options
 		RiOption( ( RtToken )"limits", ( RtToken )"bucketsize", (RtPointer)&bucketSize, RI_NULL );
 		RiOption( "limits", "gridsize", (RtPointer)&gridSize, RI_NULL );
 		RiOption( "limits", "texturememory", (RtPointer)&textureMemory, RI_NULL );
@@ -2622,11 +2620,11 @@ MStatus liquidRibTranslator::ribPrologue()
 			if ( m_BMRTusePrmanDisp ) {
 				RtInt prmanDisp = 1;
 				RiOption( "render", "integer useprmandspy", &prmanDisp, RI_NULL );
-			}							
+			}
 		}
 		/* BMRT OPTIONS: END */
-		
-		
+
+
 		RiOrientation( RI_RH );       // Right-hand coordinates
 		if ( liqglo_currentJob.isShadow ) {
 			RiPixelSamples( 1, 1 );
@@ -2649,7 +2647,7 @@ MStatus liquidRibTranslator::ribPrologue()
 			}
 		}
 	}
-    ribStatus = kRibBegin;   
+    ribStatus = kRibBegin;
     return MS::kSuccess;
 }
 
@@ -2950,7 +2948,7 @@ MStatus liquidRibTranslator::scanScene(float lframe, int sample )
 				MPlug lightPlug = fnLight.findPlug( "dmapResolution" );
 				float dmapSize;
 				lightPlug.getValue( dmapSize );
-				iter->height = iter->width = dmapSize;
+				iter->height = iter->width = (int)dmapSize;
 				if ( iter->hasShadowCam ) {
 					MFnCamera fnCamera( iter->shadowCamPath );
 					fnCamera.getPath(path);
@@ -3120,7 +3118,7 @@ MStatus liquidRibTranslator::framePrologue(long lframe)
 			RiShadingInterpolation( "smooth" );
 			// Quantization
 			if ( quantValue != 0 ) {
-				int whiteValue = pow( 2.0, (int)quantValue ) - 1;
+				int whiteValue = (int) pow( 2.0, quantValue ) - 1;
 				RiQuantize( RI_RGBA, whiteValue, 0, whiteValue, 0.5 );
 			} else {
 				RiQuantize( RI_RGBA, 0, 0, 0, 0 );
