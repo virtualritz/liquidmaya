@@ -1,12 +1,20 @@
+1005-02-12 geohar
+	- Changed liquidPlug to source liquidStartup.mel from LIQUIDHOME if it exists
+	- Updated OSX build to include 3Delight + some tidying
+
 Release 1.6.7 ------------------------------------------------------------------
 
 2005-02-11 mauritio
     - Fixed liqPreviewShader on Linux -- untested on OS X
     - Linux installer script now compiles Liquid's shaders
 
+
 2005-02-09 mauritio
+
     - Added global/fixed code for separate camera motion blur control
+
     - Various attribute UI improvements
+
 
 2005-02-08 mauritio
     - Fixed bug in liqRibNode that led to early exiting of the attribute scanning loop (and thus no attributes ever ending up in the RIB)
@@ -14,11 +22,17 @@ Release 1.6.7 ------------------------------------------------------------------
     - Merged usability enhancements contributed by Alexandre Paes to liquidGlobals, liquidFileBrowser and liquidParamaDialogWindow 
     - Added Slackware Makeopts and modified Makefile from Alexandre Paes
 
+
 2005-02-04 mauritio
+
     - Fixed orientation in liqPreviewShader (normals pointed inwards)
+
     
+
 2005-01-30 mauritio
+
     - Merged cubic point light shadow map support from Yuri in liqRibLightData (compiles ok but yet to be tested)
+
 
 2005-01-20 geohar
     - Merge to SF repository
@@ -249,6 +263,7 @@ Release 1.6 --------------------------------------------------------------------
     - added a pre-job command to the render globals (there was already a post-job and pre/post-frame, but no pre-job)
   - 'About' box added to Liquid menu with some basic info
   - fixed win32 build to use 'cmd.exe /c del' for cleanup commands rather than /bin/rm
+
 
 
 Release 1.5.5 ------------------------------------------------------------------
