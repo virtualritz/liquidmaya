@@ -58,10 +58,10 @@ extern int debugMode;
 
 #ifndef LIQCHECKSTATUS
 #define LIQCHECKSTATUS(stat,msg) \
-	if (!(stat)) { \
-	stat.perror((msg)); \
-	return (stat); \
-	}
+  if (!(stat)) { \
+    stat.perror((msg)); \
+    return (stat); \
+  }
 #endif
 
 // Set up a textcoord type for poly uv export routine
@@ -87,14 +87,14 @@ typedef long liquidlong;
 #define FLOAT_EPSILON 0.0001
 inline bool equiv( float val1, float val2 )
 {
-    return ( fabsf( val1 - val2 ) < FLOAT_EPSILON );
+  return ( fabsf( val1 - val2 ) < FLOAT_EPSILON );
 }
 
 // Specifies how the start/end frame is set
 //
-#define USE_TIMESLIDER   1
+#define USE_TIMESLIDER 1
 #ifndef  MM_TO_INCH
-#define MM_TO_INCH                     0.03937
+#define MM_TO_INCH 0.03937
 #endif 
 
 
@@ -102,41 +102,42 @@ inline bool equiv( float val1, float val2 )
 // Enums //
 ///////////
 enum ObjectType {
-  MRT_Unknown     	= 0, 
-  MRT_Nurbs	    	= 1, 
-  MRT_NuCurve     	= 5,
-  MRT_Mesh	    	= 2, 
-  MRT_Light	    	= 3,
-  MRT_Particles   	= 6,
-  MRT_Locator     	= 7,
-  MRT_RibGen	    	= 8,
-  MRT_Shader	    	= 9,
-  MRT_Coord	    	= 10,
-  MRT_Subdivision 	= 11,
-    MRT_MayaSubdivision = 12,
-  MRT_Weirdo	    	= 4
+  MRT_Unknown         = 0, 
+  MRT_Nurbs           = 1, 
+  MRT_Mesh            = 2, 
+  MRT_Light           = 3,
+  MRT_Weirdo          = 4,
+  MRT_NuCurve         = 5,
+  MRT_Particles       = 6,
+  MRT_Locator         = 7,
+  MRT_RibGen          = 8,
+  MRT_Shader          = 9,
+  MRT_Coord           = 10,
+  MRT_Subdivision     = 11,
+  MRT_MayaSubdivision = 12,
+  MRT_Custom          = 13
 };
 
 enum LightType {
-  MRLT_Unknown    	= 0, 
-  MRLT_Ambient    	= 1, 
-  MRLT_Distant    	= 2, 
-  MRLT_Point	    	= 3, 
-  MRLT_Spot	    	= 4, 
-  MRLT_Rman	    	= 5, 
-  MRLT_Area	    	= 6 
+  MRLT_Unknown  = 0, 
+  MRLT_Ambient  = 1, 
+  MRLT_Distant  = 2, 
+  MRLT_Point	  = 3, 
+  MRLT_Spot	    = 4, 
+  MRLT_Rman	    = 5, 
+  MRLT_Area	    = 6 
 };
 
 enum AnimType {
-  MRX_Const	    	= 0, 
-  MRX_Animated    	= 1, 
-  MRX_Incompatible	= 2
+  MRX_Const         = 0, 
+  MRX_Animated      = 1, 
+  MRX_Incompatible  = 2
 };
 
 enum RendererType {
-  PRMan   	= 0,
-  BMRT    	= 1,
-  RDC     	= 2
+  PRMan   = 0,
+  BMRT    = 1,
+  RDC     = 2
 };
 
 enum PointLightDirection {
@@ -150,26 +151,27 @@ enum PointLightDirection {
 
 
 enum PixelFilerType {
-  fBoxFilter	    	= 0,
-  fTriangleFilter 	= 1,
-  fCatmullRomFilter	= 2,
-  fGaussianFilter 	= 3,
-  fSincFilter     	= 4
+  fBoxFilter        = 0,
+  fTriangleFilter   = 1,
+  fCatmullRomFilter = 2,
+  fGaussianFilter   = 3,
+  fSincFilter       = 4
 };
 
 struct structCamera {
-  MMatrix	mat;
-  double	neardb, fardb;
-  double	hFOV;
-  int		isOrtho;
-  double	orthoWidth;
-  double 	orthoHeight;
-  MString	name;
-  bool	motionBlur;
-  double	shutter;
-  double	fStop;
-  double	focalDistance;
-  double	focalLength;
+  MMatrix mat;
+  double  neardb;
+  double  fardb;
+  double  hFOV;
+  int     isOrtho;
+  double  orthoWidth;
+  double  orthoHeight;
+  MString name;
+  bool    motionBlur;
+  double  shutter;
+  double  fStop;
+  double  focalDistance;
+  double  focalLength;
 };
 
 struct structJob {
@@ -194,7 +196,6 @@ struct structJob {
   MString  jobOptions;
   bool     gotJobOptions;
 };
-
 
 
 #endif
