@@ -89,7 +89,9 @@ extern int debugMode;
 liquidRibData::~liquidRibData() 
 {
     // clean up and additional data
-    LIQDEBUGPRINTF("-> freeing addition ribdata.\n" );
+    LIQDEBUGPRINTF("-> freeing additional ribdata: " );
+    LIQDEBUGPRINTF(objDagPath.fullPathName().asChar());
+    LIQDEBUGPRINTF("\n" );
     // Class destructor should be called
 #if 0	
 	std::vector<rTokenPointer>::iterator iter = tokenPointerArray.begin();
@@ -108,7 +110,9 @@ liquidRibData::~liquidRibData()
 	}
 #endif
     tokenPointerArray.clear();
-    LIQDEBUGPRINTF("-> finished freeing addition ribdata.\n" );
+    LIQDEBUGPRINTF("-> finished freeing additional ribdata: " );
+    LIQDEBUGPRINTF(objDagPath.fullPathName().asChar());
+    LIQDEBUGPRINTF("\n" );
 }
 
 void liquidRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringArray & strArray, ParameterType pType )
