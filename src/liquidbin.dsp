@@ -174,6 +174,10 @@ SOURCE=.\liqGlobalHelpers.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\liqMemory.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\liqPrmanRenderer.cpp
 # End Source File
 # Begin Source File
@@ -182,27 +186,7 @@ SOURCE=.\liqProcessLauncher.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liqRibParticleData.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqRibSurfaceData.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqShader.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqTokenPointer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liquidBin.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqMemory.cpp
+SOURCE=.\liqRenderer.cpp
 # End Source File
 # Begin Source File
 
@@ -246,11 +230,31 @@ SOURCE=.\liqRibObj.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\liqRibParticleData.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\liqRibSubdivisionData.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\liqRibSurfaceData.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\liqRibTranslator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqShader.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqTokenPointer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liquidBin.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
