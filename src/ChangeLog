@@ -65,6 +65,9 @@ Release 1.5.3 ------------------------------------------------------------------
 	and RibMesh output code.
 	- renamed a couple of classes using the new liq prefix
 
+2003-3-4 sdeverly
+    	Fixed help search path in liquidMenuHelp.mel using LIQUIDHOME or LIQUIDHELPHOME env vars
+
 TODO :
 	--- Compilation ok with PRman
 	--- Compilation ok with Air
