@@ -517,6 +517,7 @@ bool liqRibLightData::compare( const liqRibData & otherObj ) const
 //      Light comparisons are not supported in this version.
 //
 {
+  otherObj.type(); // reference it to avoid unused param compiler warning
   if ( debugMode ) { printf("-> comparing light\n"); }
   return true;  
 }
