@@ -630,7 +630,7 @@ setParent liquidGlobalsWindow;
 					liquidShowBoolGlobal "netRManRender" "Net Renderman";
 					liquidShowIntGlobal "minCPU" "Min CPU";
 					liquidShowIntGlobal "maxCPU" "Max CPU";
-					liquidShowBoolGlobal "previewMode" "Execute Alfred Script";
+					liquidShowBoolGlobal "previewMode" "Launch Render";
 					liquidShowStringGlobal "renderCommand" "Render Command";
 					liquidShowStringGlobal "ribgenCommand" "Rib Gen Command";
 					liquidShowStringGlobal "preCommand" "Pre Command";
