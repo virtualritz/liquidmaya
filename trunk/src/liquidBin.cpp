@@ -54,34 +54,23 @@ extern "C" {
 #include <ri.h>
 }
 
-// STL headers
-#include <list>
-#include <vector>
-#include <string>
-
 #ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
+#  include <process.h>
+#  include <malloc.h>
 #else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#include <signal.h>
+#  include <unistd.h>
+#  include <stdlib.h>
+#  include <alloca.h>
+#  include <signal.h>
 #endif
 
 // Maya's Headers
-#include <maya/MGlobal.h>
-#include <maya/MPxCommand.h>
 #include <maya/MArgList.h>
 #include <maya/MLibrary.h>
 #include <maya/MFileIO.h>
 
 #include <liquid.h>
 #include <liqRibTranslator.h>
-#include <liqGetSloInfo.h>
-#include <liqGetAttr.h>
-#include <liqPreviewShader.h>
-#include <liqMemory.h>
 #include <liqGlobalHelpers.h>
 
 #ifdef _WIN32
@@ -91,20 +80,30 @@ static const char * LIQUIDVERSION =
 ;
 #endif
 
-extern  bool	liquidBin;
+
+extern  bool liquidBin;
 
 static const char* usage = 
-"usage: liquid [options] -mf filename\n\
-please see the liquid documentation for command line parameters.\n";
+"Usage: liquid [options] filename\n\
+Please see the Liquid documentation for command line options.\n\
+The options match the liquid MEL command parameters.\n";
+
 
 void signalHandler(int sig)
 {
   if (sig == SIGTERM) {
-    throw( MString( "Terminated!\n" ) );
-  }
-  else {
+    throw( MString( "Liquid command terminated!\n" ) );
+  } else {
     signal(sig, signalHandler);
   }
+}
+
+static bool isHelpArg(const char *arg) {
+  return (
+    !strcmp(arg, "-h")     ||
+    !strcmp(arg, "-help")  || 
+    !strcmp(arg, "--help") 
+  );
 }
 
 int main(int argc, char **argv)
@@ -113,93 +112,84 @@ int main(int argc, char **argv)
 //      Register the command when the plug-in is loaded
 //
 {
-    MStatus status;
-    MString command;
-    MString UserClassify;
-    MString	fileName;
+  MStatus status;
+  MString command;
+  MString UserClassify;
+  MString fileName;
+  unsigned int i;
 
-    // initialize the maya library
-    status = MLibrary::initialize (argv[0], true );
-    if (!status) {
-	status.perror("MLibrary::initialize");
-	return 1;
-    }
+  liquidBin = true;
+  printf( "Liquid v%s\n", LIQUIDVERSION );
+  
+  // initialize the maya library
+  status = MLibrary::initialize (argv[0], true );
+  if (!status) {
+    status.perror("MLibrary::initialize");
+    return 1;
+  }
 
-    // we are now running a "virtual" maya
-
-    // maya's argument list
-    MArgList myArgs;
-    MString mainArg = "-GL";
-    myArgs.addArg( mainArg );
-
-    liquidBin = true;
-    printf( "Liquid v%s\n", LIQUIDVERSION );
-
-    uint i;
+  // start building an argument list to
+  // pass to the Maya liquid command
+  MArgList myArgs;
+  MString mainArg = "-GL";
+  myArgs.addArg( mainArg );
 
 #ifndef _WIN32
-    for (i = 0; i <= SIGRTMAX; i++) 
-    	signal(i, signalHandler);
+  for (i = 0; i <= SIGRTMAX; i++) {
+    signal(i, signalHandler);
+  }
 #endif
-	
-    argc--, argv++;
 
-    if (argc == 0) {
-	    cerr << usage;
-	    return(1);
-    }
+  // user must at least specify the Maya scene file to render
+  if ((argc < 2) || isHelpArg(argv[1])) {
+    cerr << usage;
+    return 1;
+  }
+  
+  // now we grab the last argument as the Maya scene filename
+  // and all the rest in the middle we gather to pass straight
+  // through to the liquid Maya command
+  fileName = argv[argc-1];
+  for( i=1; i<(argc-1); ++i ) {
+    MString newArg = argv[i];
+    myArgs.addArg( newArg );
+  }
 
-    // scan the command line arguments
-    for (i = 0; i < argc; i++) {
-      if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help") || !strcmp(argv[i], "--help")) {
-        cerr << usage;
-        return(1);
-      } else if ( !strcmp(argv[i], "-mf")  ) {
-        i++;
-        if (i < argc) {
-          fileName = argv[i];  // set the fileName
-        }
-      } else {
-        MString newArg = argv[i];
-        myArgs.addArg( newArg );
-      }
-    }
-
-    // check that the filename has been specified and exists	
-    if ( fileName == "" ) {
-      status.perror("Liquid -> no filename specified!\n" );
+  // check that the filename has been specified and exists	
+  if ( fileName == "" ) {
+    status.perror("Liquid -> no filename specified!\n" );
+    printf( "ALF_EXIT_STATUS 1\n" );
+    MLibrary::cleanup( 1 );
+    return (1);
+  } else if ( !fileExists( fileName ) ) {
+    status.perror("Liquid -> file not found: " + fileName + "\n");
+    printf( "ALF_EXIT_STATUS 1\n" );
+    MLibrary::cleanup( 1 );
+    return ( 1 );
+  } else {
+    // load the file into liquid's virtual maya
+    status = MFileIO::open( fileName );
+    if ( !status ) {
+      MString error = " Error opening file: ";
+      error += fileName.asChar();
+      status.perror( error );
       printf( "ALF_EXIT_STATUS 1\n" );
       MLibrary::cleanup( 1 );
-      return (1);
-    } else if ( !fileExists( fileName ) ) {
-      status.perror("Liquid -> file not found: " + fileName + "\n");
-      printf( "ALF_EXIT_STATUS 1\n" );
-      MLibrary::cleanup( 1 );
-      return ( 1 );
-    } else {
-      // load the file into liquid's virtual maya
-      status = MFileIO::open( fileName );
-      if ( !status ) {
-        MString error = " Error opening file: ";
-        error += fileName.asChar();
-        status.perror( error );
-        printf( "ALF_EXIT_STATUS 1\n" );
-        MLibrary::cleanup( 1 );
-        return( 1 ) ;
-      }
+      return( 1 ) ;
+    }
 
-      liqRibTranslator liquidTrans;
+    liqRibTranslator liquidTrans;
 
 #ifndef _WIN32
-      for (unsigned i = 0; i <= SIGRTMAX; i++) 
-        signal(i, signalHandler);
+    for (i = 0; i <= SIGRTMAX; i++) {
+      signal(i, signalHandler);
+    }
 #endif
 
-      liquidTrans.doIt( myArgs );
-    }
+    liquidTrans.doIt( myArgs );
+  }
 
-    printf( "ALF_EXIT_STATUS 0\n" );
-    MLibrary::cleanup( 0 );
-    return (0);
+  printf( "ALF_EXIT_STATUS 0\n" );
+  MLibrary::cleanup( 0 );
+  return (0);
 }
-
