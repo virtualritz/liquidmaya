@@ -48,6 +48,21 @@
 #include <libgen.h>
 #endif
 
+#ifdef _WIN32
+#define M_PI 3.1415926535897932384626433832795
+#endif
+
+#ifdef _WIN32
+#pragma warning(disable:4786)
+#endif
+
+// win32 mkdir only has name arg
+#ifdef WIN32
+#define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_))
+#else
+#define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_, _MODE_))
+#endif
+
 // Renderman Headers
 extern "C" {
 #include <ri.h>
@@ -185,7 +200,9 @@ int debugMode;
 #define LIQ_GET_SHADER_FILE_NAME(a, b, c) a = const_cast<char *>(c.file.c_str());
 #endif
 
+#ifndef _WIN32
 const char *liquidRibTranslator::m_default_tmp_dir = "/tmp";
+#endif
 
 // Kept global for liquidRigGenData and liquidRibParticleData
 FILE	    	*liqglo_ribFP;
@@ -498,11 +515,12 @@ liquidRibTranslator::~liquidRibTranslator()
 //  Description:
 //      Class destructor
 {
-#ifdef _WIN32
-	lfree( m_systemTempDirectory );
-#endif
-	if ( debugMode ) { printf("-> dumping unfreed memory.\n" ); }
-	if ( debugMode ) ldumpUnfreed();
+// this is crashing under Win32
+//#ifdef _WIN32
+//	lfree( m_systemTempDirectory );
+//#endif
+//	if ( debugMode ) { printf("-> dumping unfreed memory.\n" ); }
+//	if ( debugMode ) ldumpUnfreed();
 }   
 
 #if defined ENTROPY || PRMAN
@@ -1421,14 +1439,16 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 	try {
 		m_escHandler.beginComputation();
 		
-#ifndef _WIN32
+#ifdef _WIN32
+    int dirMode = 0; // dummy arg
+#else
 		mode_t dirMode;
 		dirMode = S_IRWXU|S_IRWXG|S_IRWXO;
 #endif
 		// check to see if all the directories we are working with actually exist. 	
 		if ( ( access( liqglo_ribDir.asChar(), 0 )) == -1 ) {
 			if ( createOutputDirectories ) {
-					if ( mkdir( liqglo_ribDir.asChar(), dirMode ) != 0 ) {
+					if ( MKDIR( liqglo_ribDir.asChar(), dirMode ) != 0 ) {
 						printf( "Liquid -> had trouble creating rib dir, defaulting to system temp directory!\n" );
 						liqglo_ribDir = m_systemTempDirectory; 
 					}
@@ -1439,7 +1459,7 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 			}
 			if ( (access( liqglo_texDir.asChar(), 0 )) == -1 ) { 
 				if ( createOutputDirectories ) {
-						if ( mkdir( liqglo_texDir.asChar(), dirMode ) != 0 ) {
+						if ( MKDIR( liqglo_texDir.asChar(), dirMode ) != 0 ) {
 							printf( "Liquid -> had trouble creating tex dir, defaulting to system temp directory!\n" );
 							liqglo_texDir = m_systemTempDirectory; 
 						}
@@ -1450,7 +1470,7 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 				}
 				if ( (access( m_pixDir.asChar(), 0 )) == -1 ) { 
 					if ( createOutputDirectories ) {
-							if ( mkdir( m_pixDir.asChar(), dirMode ) != 0 ) {
+							if ( MKDIR( m_pixDir.asChar(), dirMode ) != 0 ) {
 								printf( "Liquid -> had trouble creating pix dir, defaulting to system temp directory!\n" );
 								m_pixDir = m_systemTempDirectory; 
 							}
@@ -1461,7 +1481,7 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 					}
 					if ( (access( m_tmpDir.asChar(), 0 )) == -1 ) { 
 						if ( createOutputDirectories ) {
-								if ( mkdir( m_tmpDir.asChar(), dirMode ) != 0 ) {
+								if ( MKDIR( m_tmpDir.asChar(), dirMode ) != 0 ) {
 									printf( "Liquid -> had trouble creating tmp dir, defaulting to system temp directory!\n" );
 									m_tmpDir = m_systemTempDirectory; 
 								}
