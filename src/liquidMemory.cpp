@@ -90,7 +90,6 @@ void removeTrack( long addr )
 void ldumpUnfreed()
 {
     long totalSize = 0;
-    char buf[1024];
 
     printf("-------------- Liquid - Current Memory Usage --------------\n");
 
