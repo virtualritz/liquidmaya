@@ -55,6 +55,8 @@ const char * liqTokenPointer::StringDetailType[] = {
 
 liqTokenPointer::liqTokenPointer() 
 {
+    m_pType = rFloat;
+    m_tokenName[0] = '\0';
     m_tokenFloats = NULL;
     m_tokenString = NULL;
     m_isArray = false;
@@ -71,6 +73,10 @@ liqTokenPointer::liqTokenPointer()
 
 liqTokenPointer::liqTokenPointer( const liqTokenPointer &src)
 {
+    LIQDEBUGPRINTF("-> copy constructing additional ribdata: " );
+    LIQDEBUGPRINTF(src.m_tokenName);
+    LIQDEBUGPRINTF("\n" );
+
     m_tokenFloats = NULL;
     m_tokenString = NULL;
     m_isArray = false;
@@ -94,10 +100,18 @@ liqTokenPointer::liqTokenPointer( const liqTokenPointer &src)
     	if( src.m_tokenString )
     	    setTokenString( src.m_tokenString, strlen( src.m_tokenString) );
     }
+
+    LIQDEBUGPRINTF("-> done copy constructing additional ribdata: " );
+    LIQDEBUGPRINTF(src.m_tokenName);
+    LIQDEBUGPRINTF("\n" );
 }    
 
 liqTokenPointer & liqTokenPointer::operator=( const liqTokenPointer &src)
 {
+    LIQDEBUGPRINTF("-> copying additional ribdata: " );
+    LIQDEBUGPRINTF(src.m_tokenName);
+    LIQDEBUGPRINTF("\n" );
+
     reset();
     set( src.m_tokenName, src.m_pType, src.m_isNurbs, src.m_isArray, src.m_isUArray, src.m_arraySize );
     m_dType = src.m_dType;
@@ -110,13 +124,19 @@ liqTokenPointer & liqTokenPointer::operator=( const liqTokenPointer &src)
     	if( src.m_tokenString )
     	    setTokenString( src.m_tokenString, strlen( src.m_tokenString) );
     }
+
+    LIQDEBUGPRINTF("-> done copying additional ribdata: " );
+    LIQDEBUGPRINTF(src.m_tokenName);
+    LIQDEBUGPRINTF("\n" );
     return *this;
 }
 
 liqTokenPointer::~liqTokenPointer() 
 {
-    LIQDEBUGPRINTF("-> freeing addition ribdata :" );
+    LIQDEBUGPRINTF("-> freeing additional ribdata: " );
     LIQDEBUGPRINTF(m_tokenName);
+    LIQDEBUGPRINTF("\n" );
+
     if( m_tokenFloats ) { lfree( m_tokenFloats ); m_tokenFloats = NULL; }
     if( m_tokenString ) { lfree( m_tokenString ); m_tokenString = NULL; }
 };
@@ -135,6 +155,8 @@ void liqTokenPointer::reset()
     m_eltSize = 0;
     m_tokenSize = 0;
     m_stringSize = 0;
+    m_pType = rFloat;
+    m_tokenName[0] = '\0';
 }
 
 int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, bool asArray, bool asUArray, unsigned int arraySize )
