@@ -73,3 +73,21 @@ bool liqProcessLauncher::execute(const MString &command, const MString &argument
   return true;
 }
 #endif // _WIN32
+
+/* ______________________________________________________________________
+** 
+** OSX implementation of liqProcessLauncher::execute()
+** ______________________________________________________________________
+*/ 
+#if defined(OSX)
+
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+bool liqProcessLauncher::execute(const MString &command, const MString &arguments)
+{
+  int returnCode = system((command + " " + arguments + "&").asChar());
+  return (returnCode != -1);
+}
+#endif // OSX
