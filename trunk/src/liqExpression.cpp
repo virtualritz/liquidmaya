@@ -25,8 +25,7 @@
 
 */
 
-#include <iostream>
-//#include <iostream.h>
+#include <liqIOStream.h>
 #include <liqGlobalHelpers.h>
 #include <liqExpression.h>
 
