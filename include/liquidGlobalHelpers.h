@@ -22,7 +22,6 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
-
 */
 
 #ifndef liquidGlobalHelpers_H
@@ -33,6 +32,7 @@
 ** Liquid Liquid Global Helpers Header File
 ** ______________________________________________________________________
 */
+
 #include <string>
 #include <iostream>
 #include <vector>
@@ -43,8 +43,8 @@
 #include <liquid.h>
 #include <liqTokenPointer.h>
 #include <liqShader.h>
-/* The maya object that represents the liquid render globals */
-extern "C" {
+
+
 MStringArray FindAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
 bool isObjectTwoSided( const MDagPath & path );
 bool isObjectVisible( const MDagPath & path );
@@ -64,5 +64,6 @@ MString liquidTransGetFullSceneName();
 void liquidInfo( MString info );
 void liquidGetGlobal( MString globalName, double &value, MStatus &returnStatus );
 liquidlong liquidHash(const char *str);
-}
+
+
 #endif
