@@ -35,38 +35,35 @@
 
 #include <liquidRibData.h>
 
-class RibObj {
+class liquidRibObj {
 public:
-	RibObj( const MDagPath &, ObjectType objType );
-	~RibObj();
+    liquidRibObj( const MDagPath &, ObjectType objType );
+    ~liquidRibObj();
 			   
-	AnimType		compareMatrix(const RibObj *, int instance);
-	AnimType		compareBody(const RibObj *);
-	void		    writeObject();            // Write geometry directly
+    AnimType	compareMatrix(const liquidRibObj *, int instance);
+    AnimType	compareBody(const liquidRibObj *);
+    void    writeObject();            // Write geometry directly
 		
-	int		        type;
-	int		        written;
-	bool		    ignore;
-	bool		    ignoreShadow;
-	char **		    lightSources;
+    int     	type;
+    int     	written;
+    bool    	ignore;
+    bool    	ignoreShadow;
+    char ** lightSources;
     
-  MMatrix         matrix( int instance ) const;
+    MMatrix matrix( int instance ) const;
     
-  void            ref();
-  void            unref();
+    void    ref();
+    void    unref();
     
-  RtObjectHandle  handle() const;
-  void            setHandle( RtObjectHandle handle );
-  RtLightHandle   lightHandle() const;
+    RtObjectHandle  handle() const;
+    void    setHandle( RtObjectHandle handle );
+    RtLightHandle   lightHandle() const;
     
 private:
-  MMatrix *       instanceMatrices; // Matrices for all instances of this
-                                    // object
-	RtObjectHandle  objectHandle;     // Handle used by RenderMan to refer to
-                                    // defined geometry
-	int             referenceCount;   // Object's reference count
-	RibData *	    data;           		// Geometry or light data
-	
+    MMatrix *       instanceMatrices; 	// Matrices for all instances of this object
+    RtObjectHandle  objectHandle;     	// Handle used by RenderMan to refer to defined geometry
+    int             referenceCount;   // Object's reference count
+    liquidRibData * 	data;	    	// Geometry or light data	
 };
 
 #endif

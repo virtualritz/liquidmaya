@@ -23,33 +23,41 @@
 **
 ** RenderMan (R) is a registered trademark of Pixar
 */
+#ifndef liqShader_H_
+#define liqShader_H_
 
-#ifndef liquidRibData_H
-#define liquidRibData_H
-
-/* ______________________________________________________________________
-** 
-** Liquid RibData Header File
-** ______________________________________________________________________
-*/
-
-#include <maya/MDagPath.h>
-#include <maya/MFnDependencyNode.h>
-#include <maya/MStringArray.h>
+#include <string>
 #include <vector>
+
+#include <maya/MColor.h>
+#include <maya/MFnDependencyNode.h>
+#include <maya/MDagPath.h>
+
 #include <liqTokenPointer.h>
+#include <liquidGetSloInfo.h>
+#define MR_SURFPARAMSIZE 1024
 
-class liquidRibData {
-public:
-    virtual ~liquidRibData();
-    virtual void    write() = 0;
-    virtual bool    compare( const liquidRibData & other ) const = 0;
-    virtual ObjectType type() const = 0;
-    virtual void    addAdditionalSurfaceParameters( MObject node );
-    std::vector<liqTokenPointer> tokenPointerArray;
-    MDagPath	objDagPath;
-private:
-    void parseVectorAttributes( MFnDependencyNode &nodeFn, MStringArray & strArray, ParameterType pType );
+class liqShader 
+{
+public :
+    liqShader();
+    liqShader( const liqShader & src );
+    liqShader & operator=( const liqShader & src );
+    liqShader ( MObject shaderObj );
+    MStatus liqShaderParseVectorAttr ( MFnDependencyNode & shaderNode, const char * argName, ParameterType pType );
+    ~liqShader();
+    void freeShader( void );
+    int numTPV;
+    liqTokenPointer	tokenPointerArray[MR_SURFPARAMSIZE];
+    std::string name;
+    std::string file;
+    RtColor rmColor;
+    RtColor rmOpacity;
+    bool hasShadingRate;
+    RtFloat shadingRate;
+    bool hasDisplacementBound;
+    RtFloat displacementBound;
+    bool hasErrors;
+    SHADER_TYPE shader_type;
 };
-
-#endif
+#endif // liqShader_H_

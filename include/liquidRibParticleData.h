@@ -35,55 +35,51 @@
 
 #include <liquidRibData.h>
 
-class RibParticleData : public RibData {
+class liquidRibParticleData : public liquidRibData {
 public: // Methods
     
-            RibParticleData( MObject curve );
-    virtual ~RibParticleData();
+            liquidRibParticleData( MObject curve );
+    virtual ~liquidRibParticleData();
         
     virtual void       write();
-	virtual bool       compare( const RibData & other ) const;
-	virtual ObjectType type() const;
+    virtual bool       compare( const liquidRibData & other ) const;
+    virtual ObjectType type() const;
 
 /* FEATURE: August 8th 2001 - added in for custom particle parameters */
 
-	void		addAdditionalParticleParameters( MObject node );
+    void		addAdditionalParticleParameters( MObject node );
 
 /* FEATURE: August 8th 2001 - initial implementation of multiple particle types */
 
-	// pType data type, these values corrospond to the types of particleRenderType in maya!
-	enum pType {
-		MPTMultiPoint = 0,
-		MPTMultiStreak = 1,
-		MPTNumeric = 2,
-		MPTPoints = 3,
-		MPTSpheres = 4,
-		MPTSprites = 5,
-		MPTStreak = 6,
-		MPTBlobbies = 7,
-		MPTCloudy = 8,
-		MPTTube = 9
-	};
+    // pType data type, these values corrospond to the types of particleRenderType in maya!
+    enum pType {
+	    MPTMultiPoint = 0,
+	    MPTMultiStreak = 1,
+	    MPTNumeric = 2,
+	    MPTPoints = 3,
+	    MPTSpheres = 4,
+	    MPTSprites = 5,
+	    MPTStreak = 6,
+	    MPTBlobbies = 7,
+	    MPTCloudy = 8,
+	    MPTTube = 9
+    };
 
-	pType particleType; 
+    pType particleType; 
     
 private: // Data
         
     RtInt     nparticles;
-	RtFloat * particles;
-	RtFloat * pcolor;
-	RtFloat * pwidth;
-	RtFloat * popac;
 
 /* FEATURE: August 8th 2001 - initial implementation of multiple particle types */
 
-	// Data storage for blobby particles 
-	RtInt	  bCodeArraySize;
+    // Data storage for blobby particles 
+    RtInt	  bCodeArraySize;
     RtInt	* bCodeArray;	
-	RtInt	  bFloatArraySize;
-	RtFloat * bFloatArray;
-	RtInt     bStringArraySize;
-	RtString *bStringArray;
+    RtInt	  bFloatArraySize;
+    RtFloat 	* bFloatArray;
+    RtInt     	bStringArraySize;
+    RtString 	*bStringArray;
 };
 
 #endif

@@ -35,18 +35,18 @@
 
 #include <liquidRibData.h>
 
-class RibSurfaceData : public RibData {
+class liquidRibSurfaceData : public liquidRibData {
 public: // Methods
     
-            RibSurfaceData( MObject surface );
-    virtual ~RibSurfaceData();
+            liquidRibSurfaceData( MObject surface );
+    virtual ~liquidRibSurfaceData();
         
     virtual void       write();
-    virtual bool       compare( const RibData & other ) const;
+    virtual bool       compare( const liquidRibData & other ) const;
     virtual ObjectType type() const;
     
-    bool               hasTrimCurves() const;
-    void               writeTrimCurves() const;
+    bool    	hasTrimCurves() const;
+    void    writeTrimCurves() const;
     
 private: // Data
     bool hasTrims;
