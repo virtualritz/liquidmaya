@@ -1,5 +1,9 @@
 Release 1.6.7 ------------------------------------------------------------------
 
+2005-02-11 mauritio
+    - Fixed liqPreviewShader on Linux -- untested on OS X
+    - Linux installer script now compiles Liquid's shaders
+
 2005-02-09 mauritio
     - Added global/fixed code for separate camera motion blur control
     - Various attribute UI improvements
