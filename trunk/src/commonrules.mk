@@ -85,6 +85,8 @@ default: $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
 
 debug : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
 
+newversion : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
+
 $(VPATH) :
 	@sh -c "if( test -d $(VPATH) ); then \
 	    echo '$(VPATH) already exist'; \
