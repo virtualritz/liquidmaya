@@ -3,21 +3,21 @@
 ** The contents of this file are subject to the Mozilla Public License Version
 ** 1.1 (the "License"); you may not use this file except in compliance with
 ** the License. You may obtain a copy of the License at
-** http://www.mozilla.org/MPL/ 
-** 
+** http://www.mozilla.org/MPL/
+**
 ** Software distributed under the License is distributed on an "AS IS" basis,
 ** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
 ** for the specific language governing rights and limitations under the
-** License. 
+** License.
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
-** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** 
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -27,8 +27,8 @@
 */
 
 /* ______________________________________________________________________
-** 
-** Liquid Rib Mesh Data Source 
+**
+** Liquid Rib Mesh Data Source
 ** ______________________________________________________________________
 */
 
@@ -80,32 +80,27 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
 //  Description:
 //      create a RIB compatible representation of a Maya polygon mesh
 //
-: npolys( 0 ),
+: numFaces( 0 ),
+  numPoints ( 0 ),
+  numNormals ( 0 ),
   nverts( NULL ),
   verts( NULL ),
   vertexParam( NULL ),
-  normalParam( NULL ),
-  totalNumOfVertices( 0 )
+  normalParam( NULL )
 {
   areaLight = false;
   if ( debugMode ) { printf("-> creating mesh\n"); }
-  MFnMesh     fnMesh( mesh );
+  MFnMesh fnMesh( mesh );
   objDagPath = fnMesh.dagPath();
 
   name = fnMesh.name();
 
-  // To handle the cases where there are multiple normals per
-  // vertices (hard-edges) we store a vertex for each normal.
-  //
-  npolys = fnMesh.numPolygons();
-  nverts = (RtInt*) lmalloc( sizeof( RtInt ) * npolys );
-
-  MStatus status;
+//  MStatus status;
   MStatus astatus;
   astatus == MS::kFailure;
 
   MPlug areaPlug = fnMesh.findPlug( "areaIntensity", &astatus );
-  if ( astatus == MS::kSuccess ) { 
+  if ( astatus == MS::kSuccess ) {
     areaLight = true;
   } else {
     areaLight = false;
@@ -115,113 +110,123 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
     MDagPath meshDagPath;
     meshDagPath = fnMesh.dagPath();
     MTransformationMatrix worldMatrix = meshDagPath.inclusiveMatrix();
-    MMatrix worldMatrixM = worldMatrix.asMatrix();    	
+    MMatrix worldMatrixM = worldMatrix.asMatrix();
     worldMatrixM.get( transformationMatrix );
     areaPlug.getValue( areaIntensity );
   }
 
-  bool altMeshMethod;
-  altMeshMethod = false;
-  MPlug altMeshPlug = fnMesh.findPlug( "altMeshExport", &status );
-  if ( status == MS::kSuccess ) altMeshMethod = true;
+  numPoints = fnMesh.numVertices();
+  numNormals = fnMesh.numNormals();
+  const unsigned numSTs = fnMesh.numUVs();
+  numFaces = fnMesh.numPolygons();
+  const unsigned numFaceVertices = fnMesh.numFaceVertices();
+  unsigned face = 0;
+  unsigned faceVertex = 0;
+  unsigned count;
+  unsigned vertex;
+  unsigned normal;
+  float S;
+  float T;
+  MPoint point;
+  liqTokenPointer pointsPointerPair;
+  liqTokenPointer normalsPointerPair;
+  liqTokenPointer* pVertexSTPointerPair = NULL;
+  liqTokenPointer* pFaceVertexSPointer = NULL;
+  liqTokenPointer* pFaceVertexTPointer = NULL;
 
-  MFloatPointArray pos;
-  if ( altMeshMethod ) {
-    totalNumOfVertices = 0;
-    for ( uint pOn = 0; pOn < npolys; pOn++ ) {
-      nverts[ pOn ] = fnMesh.polygonVertexCount( pOn );
-      totalNumOfVertices += nverts[ pOn ];
-    }
+  // Allocate memory and tokens
+  numFaces = numFaces;
+  nverts = (RtInt*) lmalloc( sizeof( RtInt ) * numFaces );
+  verts = (RtInt*) lmalloc( sizeof( RtInt ) * numFaceVertices );
+
+  pointsPointerPair.set( "P", rPoint, false, true, false, numPoints );
+  pointsPointerPair.setDetailType( rVertex );
+
+  if ( numNormals == numPoints ) {
+    normalsPointerPair.set( "N", rNormal, false, true, false, numPoints );
+    normalsPointerPair.setDetailType( rVertex );
   } else {
-    totalNumOfVertices = fnMesh.numNormals();
+    normalsPointerPair.set( "N", rNormal, false, true, false, numFaceVertices );
+    normalsPointerPair .setDetailType( rFaceVarying );
   }
 
-  // Allocate memory for arrays
-  //
-  liqTokenPointer vertextpp;
-  vertextpp.set( "P", rPoint, false, true, false, totalNumOfVertices );
-  vertextpp.setDetailType( rVertex );
-  vertexParam = vertextpp.getTokenFloatArray();;
+  if ( numSTs > 0 ) {
+    if ( numSTs == numPoints ) {
+      pVertexSTPointerPair = new liqTokenPointer;
+      pVertexSTPointerPair->set( "st", rFloat, false, true, true, 2 * numPoints );
+      pVertexSTPointerPair->setDetailType( rVertex );
+    } else {
+      pFaceVertexSPointer = new liqTokenPointer;
+      pFaceVertexSPointer->set( "s", rFloat, false, true, false, numFaceVertices );
+      pFaceVertexSPointer->setDetailType( rFaceVarying );
+      pFaceVertexTPointer = new liqTokenPointer;
+      pFaceVertexTPointer->set( "t", rFloat, false, true, false, numFaceVertices );
+      pFaceVertexTPointer->setDetailType( rFaceVarying );
+    }
+  }
 
-  liqTokenPointer uvtpp;
-  uvtpp.set( "st", rFloat, false, true, false, 2 * totalNumOfVertices );
-  uvtpp.setDetailType( rVertex );
+  vertexParam = pointsPointerPair.getTokenFloatArray();
+  normalParam = normalsPointerPair.getTokenFloatArray();
 
+  // Read the mesh from Maya
+  MFloatVectorArray normals;
+  fnMesh.getNormals( normals );
 
-  liqTokenPointer normaltpp;
-  normaltpp.set( "N", rNormal, false, true, false, totalNumOfVertices );
-  normaltpp.setDetailType( rVertex );
-  normalParam = normaltpp.getTokenFloatArray();
+  for ( MItMeshPolygon polyIt ( mesh ); polyIt.isDone() == false; polyIt.next() ) {
+    count = polyIt.polygonVertexCount();
+    nverts[face] = count;
 
-  MIntArray perPolyVertices;
-  float uval, vval;
-  MPoint position;
-  unsigned count, index = 0, vindex = 0;
+    while ( count > 0 ) {
+      --count;
+      vertex = polyIt.vertexIndex( count );
+      verts[faceVertex] = vertex;
+      point = polyIt.point( count, MSpace::kObject );
+      pointsPointerPair.setTokenFloat( vertex, point.x, point.y, point.z );
+      normal = polyIt.normalIndex( count );
 
-  // If the altMeshExport attribute was found on the object then use an alternative 
-  // way of storing the data.  It takes more memory but combats problems with mesh's that
-  // store face/vertex specific uv values in maya.  MTOR still has this problem.  
-
-  if ( altMeshMethod ) {
-    if ( debugMode ) { printf("-> using altMeshExport!\n"); }
-    MFloatVectorArray normals;
-    fnMesh.getNormals( normals );
-
-    long pOn = 0;
-    for ( MItMeshPolygon polyIt( mesh ); !polyIt.isDone(); polyIt.next() ) {
-      MIntArray pVs;
-      fnMesh.getPolygonVertices( pOn, pVs );
-      for ( long vOn = ( nverts[ pOn ] - 1 ); vOn >= 0; vOn-- ) {
-        MPoint position;
-        fnMesh.getPoint( pVs[vOn], position );
-        vertextpp.setTokenFloat( vindex, position.x, position.y, position.z );
-        int nIndex = polyIt.normalIndex( vOn );
-        normaltpp.setTokenFloat( vindex, normals[ nIndex ].x, normals[ nIndex ].y, normals[ nIndex ].z );
-        fnMesh.getPolygonUV( pOn, vOn, uval, vval);
-        uvtpp.setTokenFloat( vindex * 2, uval );
-        uvtpp.setTokenFloat( vindex * 2 +1, 1 - vval );
-        perPolyVertices.append( vindex );
-        vindex++;
+      if( numNormals == numPoints ) {
+        normalsPointerPair.setTokenFloat( vertex, normals[normal].x, normals[normal].y, normals[normal].z );
+      } else {
+        normalsPointerPair.setTokenFloat( faceVertex, normals[normal].x, normals[normal].y, normals[normal].z );
       }
-      pOn++;
-    }
-  } else {
-    if ( debugMode ) { printf("-> not using altMeshExport!\n"); }
-    for ( MItMeshPolygon polyIt( mesh ); !polyIt.isDone(); polyIt.next() ) {
-      count = polyIt.polygonVertexCount();
-      nverts[index] = count;
 
-      // Note that we need to reverse the normals for RIB so we
-      // get the vertex id's in reverse order
-      do {
-        count--;
-        unsigned normalIndex = polyIt.normalIndex( count );
-        perPolyVertices.append( normalIndex );
-        position = polyIt.point( count );
-        vertextpp.setTokenFloat( normalIndex, position.x, position.y, position.z );
-        //this next step outputs the texture uv coordinates for the mesh
-        fnMesh.getPolygonUV( index, count, uval, vval);
-        uvtpp.setTokenFloat( normalIndex * 2 + 0, uval );
-        uvtpp.setTokenFloat( normalIndex * 2 + 1, 1 - vval );
-      } while (count != 0);
-      ++index;
+      if( numSTs > 0 ) {
+        fnMesh.getPolygonUV( face, count, S, T );
+
+        if( numSTs == numPoints ) {
+          pVertexSTPointerPair->setTokenFloat( vertex * 2 + 0, S );
+          pVertexSTPointerPair->setTokenFloat( vertex * 2 + 1, 1 - T );
+        } else {
+          pFaceVertexSPointer->setTokenFloat( faceVertex, S );
+          pFaceVertexTPointer->setTokenFloat( faceVertex, 1 - T );
+        }
+      }
+
+      ++faceVertex;
     }
 
-    // write out the correct shading normals
-    MFloatVectorArray normals;
-    fnMesh.getNormals( normals );
-    for ( index = 0; index<totalNumOfVertices; index++ ) {
-      normaltpp.setTokenFloat( index, normals[ index ].x, normals[ index ].y, normals[ index ].z );
-    }
+    ++face;
   }
-    
-  verts = (RtInt*)lmalloc( sizeof( RtInt ) * perPolyVertices.length() );
-  perPolyVertices.get( (int*)verts );
 
-  // add all of our surface parameters to the vector container
-  tokenPointerArray.push_back( vertextpp );
-  tokenPointerArray.push_back( uvtpp );	
-  tokenPointerArray.push_back( normaltpp );	
+  // Add tokens to array and clean up after
+  tokenPointerArray.push_back( pointsPointerPair );
+  tokenPointerArray.push_back( normalsPointerPair );
+
+  if( pVertexSTPointerPair != NULL ) {
+    tokenPointerArray.push_back( *pVertexSTPointerPair );
+    delete pVertexSTPointerPair;
+  }
+
+  if( pFaceVertexSPointer != NULL ) {
+    tokenPointerArray.push_back( *pFaceVertexSPointer );
+    delete pFaceVertexSPointer;
+  }
+
+  if( pFaceVertexTPointer != NULL ) {
+    tokenPointerArray.push_back( *pFaceVertexTPointer );
+    delete pFaceVertexTPointer;
+  }
+
   addAdditionalSurfaceParameters( mesh );
 }
 
@@ -244,7 +249,7 @@ void liqRibMeshData::write()
 {
   if ( debugMode ) { printf("-> writing mesh\n"); }
   RtLightHandle handle = NULL;
-  if ( areaLight ) { 
+  if ( areaLight ) {
     if ( debugMode ) { printf("-> mesh is area light\n"); }
     //	RiAttributeBegin();
     const char * namePtr = name.asChar();
@@ -256,8 +261,8 @@ void liqRibMeshData::write()
 
   // Each loop has one polygon, so we just want an array of 1's of
   // the correct size
-  RtInt * nloops = (RtInt*)alloca( sizeof( RtInt ) * npolys );
-  for ( unsigned i = 0; i < npolys; ++i ) {
+  RtInt * nloops = (RtInt*)alloca( sizeof( RtInt ) * numFaces );
+  for ( unsigned i = 0; i < numFaces; ++i ) {
     nloops[i] = 1;
   }
 
@@ -267,9 +272,9 @@ void liqRibMeshData::write()
 
   assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
 
-  RiPointsGeneralPolygonsV( npolys, nloops, nverts, verts, numTokens, tokenArray, pointerArray ); 
+  RiPointsGeneralPolygonsV( numFaces, nloops, nverts, verts, numTokens, tokenArray, pointerArray );
 
-  if ( areaLight ) { 
+  if ( areaLight ) {
     // RiAttributeEnd();
     RiIlluminate( handle, 1 );
   }
@@ -282,37 +287,50 @@ bool liqRibMeshData::compare( const liqRibData & otherObj ) const
 //      if its animated
 //
 {
+  unsigned i;
+  unsigned numFaceVertices = 0;
+
   if ( debugMode ) { printf("-> comparing mesh\n"); }
   if ( otherObj.type() != MRT_Mesh ) return false;
-  const liqRibMeshData & other = (liqRibMeshData&)otherObj;
+  const liqRibMeshData& other = (liqRibMeshData&)otherObj;
 
-  if ( npolys != other.npolys ) return false;
+  if ( numFaces != other.numFaces ) return false;
+  if ( numPoints != other.numPoints ) return false;
+  if ( numNormals != other.numNormals ) return false;
 
-  unsigned i;
-  unsigned totalPolyVerts = 0;
-  for ( i = 0; i < npolys; ++i ) {
+  for ( i = 0; i < numFaces; ++i ) {
     if ( nverts[i] != other.nverts[i] ) return false;
-    totalPolyVerts += nverts[i];
+    numFaceVertices += nverts[i];
   }
 
-  for ( i = 0; i < totalPolyVerts; ++i ) {
+  for ( i = 0; i < numFaceVertices; ++i ) {
     if ( verts[i] != other.verts[i] ) return false;
   }
 
-  for ( i = 0; i < totalNumOfVertices; ++i ) {
-    unsigned a = i * 3;
-    unsigned b = a + 1;
-    unsigned c = a + 2;
+  for ( i = 0; i < numPoints; ++i ) {
+    const unsigned a = i * 3;
+    const unsigned b = a + 1;
+    const unsigned c = a + 2;
     if ( !equiv( vertexParam[a], other.vertexParam[a] ) ||
-         !equiv( vertexParam[b], other.vertexParam[b] ) ||
-         !equiv( vertexParam[c], other.vertexParam[c] ) ||
-         !equiv( normalParam[a], other.normalParam[a] ) ||
-         !equiv( normalParam[b], other.normalParam[b] ) ||
-         !equiv( normalParam[c], other.normalParam[c] ) )
+      !equiv( vertexParam[b], other.vertexParam[b] ) ||
+      !equiv( vertexParam[c], other.vertexParam[c] ) )
     {
       return false;
     }
   }
+
+  for ( i = 0; i < numNormals; ++i ) {
+    const unsigned a = i * 3;
+    const unsigned b = a + 1;
+    const unsigned c = a + 2;
+    if ( !equiv( normalParam[a], other.normalParam[a] ) ||
+      !equiv( normalParam[b], other.normalParam[b] ) ||
+      !equiv( normalParam[c], other.normalParam[c] ) )
+    {
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -326,6 +344,7 @@ ObjectType liqRibMeshData::type() const
   if ( areaLight ) {
     return MRT_Light;
   } else {
-    return MRT_Mesh;
+   return MRT_Mesh;
   }
 }
+

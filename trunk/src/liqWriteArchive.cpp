@@ -39,7 +39,7 @@
 
 #include <ri.h>
 
-// RI_VERBATIM is in the current RenderMan spec but 
+// RI_VERBATIM is in the current RenderMan spec but
 // some RIB libraries don't know about it
 #ifndef RI_VERBATIM
   #define RI_VERBATIM "verbatim"
@@ -70,7 +70,7 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 {
   MStatus status;
   MArgParser argParser(syntax(), args);
-    
+
   MString tempStr;
   status = argParser.getCommandArgument(0, tempStr);
   if (!status) {
@@ -96,7 +96,7 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
   if (flagIndex != MArgList::kInvalidArgIndex) {
     outputChildTransforms = true;
   }
-  
+
   debug = false;
   flagIndex = args.flagIndex("d", "debug");
   if (flagIndex != MArgList::kInvalidArgIndex) {
@@ -153,10 +153,10 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
   if (objDagPath.node().hasFn(MFn::kShape) || objDagPath.node().hasFn(MFn::kPlace3dTexture)) {
     // we're looking at a shape node, so write out the geometry to the RIB
     outputObjectName(objDagPath);
-    
+
     liqRibNode ribNode;
     ribNode.set(objDagPath, 0, MRT_Unknown);
-    
+
     if ( ribNode.isRibBox ) {
       RiArchiveRecord( RI_COMMENT, "Additional Rib:\n%s", ribNode.ribBoxString.asChar() );
     }
@@ -165,6 +165,11 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
     }
     if ( ribNode.isDelayedArchive ) {
       RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.delayedArchiveString.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
+    }
+
+    // If it's a curve we should write the basis function
+    if ( ribNode.object(0)->type == MRT_NuCurve ) {
+      RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
     }
 
     if (!ribNode.object(0)->ignore) {
