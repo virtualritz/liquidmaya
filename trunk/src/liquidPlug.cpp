@@ -44,11 +44,21 @@
 #include <dlfcn.h>
 #endif
 
+#ifdef _WIN32
+#pragma warning(disable:4786)
+#endif
+
+// DLL export symbols must be specified under Win32
+#ifdef _WIN32
+#define LIQUID_EXPORT _declspec(dllexport)
+#else
+#define LIQUID_EXPORT
+#endif
+
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 }
-
 
 #ifdef _WIN32
 #include <process.h>
@@ -71,10 +81,13 @@ extern "C" {
 #include <liquidAttachPrefAttribute.h>
 #include <liquidPreviewShader.h>
 #include <liquidMemory.h>
+
 extern  bool	liquidBin;
+
 #define LIQVENDOR "Colin_Doncaster_and_friends"
+
 ////////////////////// EXPORTS /////////////////////////////////////////////////////////
-MStatus initializePlugin(MObject obj)
+LIQUID_EXPORT MStatus initializePlugin(MObject obj)
 //
 //  Description:
 //      Register the command when the plug-in is loaded
@@ -121,7 +134,7 @@ MStatus initializePlugin(MObject obj)
     return MS::kSuccess;
 }
 
-MStatus uninitializePlugin(MObject obj)
+LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
 //
 //  Description:
 //      Deregister the command when the plug-in is deloaded
