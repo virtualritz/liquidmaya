@@ -75,6 +75,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liquidGlobalHelpers.h>
+#include <liquidRibData.h>
 #include <liqRibParticleData.h>
 #include <liquidMemory.h>
 

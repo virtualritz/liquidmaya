@@ -64,6 +64,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liquidGlobalHelpers.h>
+#include <liquidRibData.h>
 #include <liquidRibNuCurveData.h>
 #include <liquidMemory.h>
 

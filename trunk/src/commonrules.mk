@@ -49,7 +49,7 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidGetAttr.$(OBJEXT) \
     	    	    liquidAttachPrefAttribute.$(OBJEXT) \
     	    	    liquidRibGenData.$(OBJEXT) \
-    	    	    liquidPreviewShader.$(OBJEXT) \
+    	    	    liqPreviewShader.$(OBJEXT) \
     	    	    liquidRibSubdivisionData.$(OBJEXT) \
     	    	    liquidMemory.$(OBJEXT) \
     	    	    liquidProcessLauncher.$(OBJEXT)
@@ -73,7 +73,7 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidGetAttr.$(OBJEXT) \
     	    	    $(VPATH)/liquidAttachPrefAttribute.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibGenData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidPreviewShader.$(OBJEXT) \
+    	    	    $(VPATH)/liqPreviewShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibSubdivisionData.$(OBJEXT) \
     	    	    $(VPATH)/liquidMemory.$(OBJEXT) \
     	    	    $(VPATH)/liquidProcessLauncher.$(OBJEXT)
@@ -82,14 +82,17 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
 
 LIQUIDPLUG = liquid.$(PLUGSUF)
 LIQUIDBIN = liquid
+LIQUIDLIB = libliquid.a
 
-default: $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
+default: $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN) lib
 
 debug : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
 
 newversion : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
 
 release : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
+
+lib : $(LIQUIDLIB)
 
 $(VPATH) :
 	@sh -c "if( test -d $(VPATH) ); then \
@@ -101,14 +104,16 @@ $(VPATH) :
 
 liquidPlug : $(LIQUIDPLUG)
 
-$(LIQUIDPLUG) : liquidPlug.$(OBJEXT) $(LIQUIDMAINOBJS)
+$(LIQUIDPLUG) : liquidPlug.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
-	@$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDOUTMAINOBJS) $(LIBS)
+	$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIBS)
 	
-$(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDMAINOBJS)
+$(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
-	@$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(VPATH)/$(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDOUTMAINOBJS) $(LIQUIDBINLIBS)
+	$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(VPATH)/$(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIQUIDBINLIBS)
 
+$(LIQUIDLIB) : $(LIQUIDMAINOBJS)
+	$(AR) $(VPATH)/$(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
 
 $(LIQUIDMAINOBJS) : ../include/liquid.h
 

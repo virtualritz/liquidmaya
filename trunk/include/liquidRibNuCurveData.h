@@ -33,7 +33,6 @@
 ** ______________________________________________________________________
 */
 
-#include <liquidRibData.h>
 
 class liquidRibNuCurveData : public liquidRibData {
 public: // Methods

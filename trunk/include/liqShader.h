@@ -26,8 +26,6 @@
 #ifndef liqShader_H_
 #define liqShader_H_
 
-#include <string>
-#include <vector>
 
 #include <maya/MColor.h>
 #include <maya/MFnDependencyNode.h>
@@ -36,6 +34,9 @@
 #include <liqTokenPointer.h>
 #include <liquidGetSloInfo.h>
 #define MR_SURFPARAMSIZE 1024
+
+#include <string>
+#include <vector>
 
 
 #ifndef _WIN32

@@ -143,9 +143,9 @@ float liquidGetSloInfo::getArgFloatDefault( int num, int entry )
 int liquidGetSloInfo::setShader( MString shaderName )
 {
     int rstatus = 0;
-	resetIt();
-	MString shaderExtension = shaderName.substring( shaderName.length() - 3, shaderName.length() - 1 );
-	MString shaderFileName = shaderName.substring( 0, shaderName.length() - 5 );
+    resetIt();
+    MString shaderExtension = shaderName.substring( shaderName.length() - 3, shaderName.length() - 1 );
+    MString shaderFileName = shaderName.substring( 0, shaderName.length() - 5 );
 #ifdef PRMAN
 	if ( shaderExtension == MString( "slo" ) ) {
 		/* Pixar's Photorealistic Renderman Shader */

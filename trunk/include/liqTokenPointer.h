@@ -25,8 +25,9 @@
 */
 #ifndef liqTokenPointer_H
 #define liqTokenPointer_H
+extern "C" {
 #include <ri.h>
-
+}
 // token/pointer pairs structure
 
 enum ParameterType {
