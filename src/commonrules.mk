@@ -59,7 +59,8 @@ LIQUIDMAINOBJS =  liqShader.$(OBJEXT) \
                   liqRibMayaSubdivisionData.$(OBJEXT) \
                   liqMemory.$(OBJEXT) \
                   liqProcessLauncher.$(OBJEXT) \
-                  liqRenderer.$(OBJEXT)
+                  liqRenderer.$(OBJEXT) \
+		  liqPixieRenderer.$(OBJEXT)
 
 LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
                     $(VPATH)/liqAttachPrefAttribute.$(OBJEXT) \
@@ -90,7 +91,8 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
                     $(VPATH)/liqRibMayaSubdivisionData.$(OBJEXT) \
                     $(VPATH)/liqMemory.$(OBJEXT) \
                     $(VPATH)/liqProcessLauncher.$(OBJEXT) \
-                    $(VPATH)/liqRenderer.$(OBJEXT)
+                    $(VPATH)/liqRenderer.$(OBJEXT) \
+                    $(VPATH)/liqPixieRenderer.$(OBJEXT)
 
 .SUFFIXES: .cpp .$(OBJEXT) .$(PLUGSUF) .c
 
@@ -121,7 +123,7 @@ liquidPlug : $(LIQUIDPLUG)
 $(LIQUIDPLUG) : liquidPlug.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
 	@$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIBS)
-	
+
 $(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
 	@$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(VPATH)/$(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIQUIDBINLIBS)

@@ -31,6 +31,7 @@
 #include <liqPrmanRenderer.h>
 #include <liqAqsisRenderer.h>
 #include <liqDelightRenderer.h>
+#include <liqPixieRenderer.h>
 
 
 const liqRenderer & liquidRenderer()
@@ -47,6 +48,8 @@ const liqRenderer & liquidRenderer()
   static liqAqsisRenderer   renderer("0.7.4");
 #elif defined(DELIGHT)
   static liqDelightRenderer renderer("1.0.0");
+#elif defined(PIXIE)
+  static liqPixieRenderer   renderer("1.2.1");
 #else
   ERROR: unknown renderer
 #endif

@@ -22,6 +22,7 @@ lib newversion clean debug release :
 	    entropy) LIQRMANPATH=$${ENTROPYHOME:=/usr/local/exluna/Entropy} LIQRMANFLAGS=-DENTROPY LIQRMANLIBS="-lribout -lsleargs" USEDVAR=ENTROPYHOME;; \
 	    prman) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lrib -lsloargs -llkm -ltarget -lzip" USEDVAR=RMANTREE;; \
 	    prman11) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lrib -lsloargs -llkm -ltarget -lzip -lprmutil" USEDVAR=RMANTREE;; \
+	    pixie) LIQRMANPATH=$${PIXIEHOME:=/usr/local/Pixie} LIQRMANFLAGS=-DPIXIE LIQRMANLIBS="-lri -lsdr" USEDVAR=PIXIEHOME;; \
 	    (*) echo "Do not know how to handle" $${LIQRMAN}". Set LIQRMAN to either aqsis entropy or prman"; exit 1;; \
 	esac; \
 	if( test ! -d  $${LIQRMANPATH} ); then \
