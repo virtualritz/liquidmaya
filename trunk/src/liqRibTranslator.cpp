@@ -2074,13 +2074,12 @@ void liqRibTranslator::computeViewingFrustum ( double     window_aspect,
     //      Calculate the viewing frustrum for the camera
     //
 {
-    double film_aspect = cam.aspectRatio();
-    double aperture_x = cam.horizontalFilmAperture();
-    double aperture_y = cam.verticalFilmAperture();
-    double offset_x = cam.horizontalFilmOffset();
-    double offset_y = cam.verticalFilmOffset();
-    double focal_to_near = cam.nearClippingPlane() /
-        (cam.focalLength() * MM_TO_INCH);
+    double film_aspect   = cam.aspectRatio();
+    double aperture_x    = cam.horizontalFilmAperture();
+    double aperture_y    = cam.verticalFilmAperture();
+    double offset_x      = cam.horizontalFilmOffset();
+    double offset_y      = cam.verticalFilmOffset();
+    double focal_to_near = cam.nearClippingPlane() / (cam.focalLength() * MM_TO_INCH);
 
     focal_to_near *= cam.cameraScale();
 
@@ -2088,7 +2087,6 @@ void liqRibTranslator::computeViewingFrustum ( double     window_aspect,
     double scale_y = 1.0;
     double translate_x = 0.0;
     double translate_y = 0.0;
-
 
     switch (cam.filmFit()) {
     case MFnCamera::kFillFilmFit:
@@ -2098,30 +2096,21 @@ void liqRibTranslator::computeViewingFrustum ( double     window_aspect,
         else {
             scale_y = film_aspect / window_aspect;
         }
-
         break;
-
     case MFnCamera::kHorizontalFilmFit:
         scale_y = film_aspect / window_aspect;
-
         if (scale_y > 1.0) {
             translate_y = cam.filmFitOffset() *
                 (aperture_y - (aperture_y * scale_y)) / 2.0;
         }
-
         break;
-
     case MFnCamera::kVerticalFilmFit:
         scale_x = window_aspect / film_aspect;
-
-
         if (scale_x > 1.0) {
             translate_x = cam.filmFitOffset() *
                 (aperture_x - (aperture_x * scale_x)) / 2.0;
         }
-
         break;
-
     case MFnCamera::kOverscanFilmFit:
         if (window_aspect < film_aspect) {
             scale_y = film_aspect / window_aspect;
@@ -2129,10 +2118,8 @@ void liqRibTranslator::computeViewingFrustum ( double     window_aspect,
         else {
             scale_x = window_aspect / film_aspect;
         }
-
         break;
     }
-
 
     left   = focal_to_near * (-.5*aperture_x*scale_x+offset_x+translate_x);
     right  = focal_to_near * ( .5*aperture_x*scale_x+offset_x+translate_x);
@@ -2153,10 +2140,9 @@ void liqRibTranslator::getCameraInfo( MFnCamera& cam )
     cam_width  = width;
     cam_height = height;
 
- // If we are using a film-gate then we may need to
- // adjust the resolution to simulate the 'letter-boxed'
- // effect.
- //
+    // If we are using a film-gate then we may need to
+    // adjust the resolution to simulate the 'letter-boxed'
+    // effect.
     if ( cam.filmFit() == MFnCamera::kHorizontalFilmFit ) {
         if ( !ignoreFilmGate ) {
             double new_height = cam_width /
@@ -2641,10 +2627,16 @@ MStatus liqRibTranslator::ribPrologue()
                     RiPixelFilter( RiSincFilter, m_rFilterX, m_rFilterY );
                     break;
                 case fBlackmanHarrisFilter:
-                    RiPixelFilter( RiBlackmanHarrisFilter, m_rFilterX, m_rFilterY );
+                    RiArchiveRecord( RI_VERBATIM, "PixelFilter \"blackman-harris\" %g %g\n", m_rFilterX, m_rFilterY);                
                     break;
                 case fMitchellFilter:
-                    RiPixelFilter( RiMitchellFilter, m_rFilterX, m_rFilterY );
+                    RiArchiveRecord( RI_VERBATIM, "PixelFilter \"mitchell\" %g %g\n", m_rFilterX, m_rFilterY);                
+                    break;
+                case fSepCatmullRomFilter:
+                    RiArchiveRecord( RI_VERBATIM, "PixelFilter \"separable-catmull-rom\" %g %g\n", m_rFilterX, m_rFilterY); 
+                    break;
+                default:
+                    RiArchiveRecord( RI_COMMENT, "Unknown filter type selected" );
                     break;
                 }
             }
