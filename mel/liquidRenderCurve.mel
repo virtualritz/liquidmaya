@@ -52,11 +52,11 @@ global proc liquidUnMakeRenderCurve() {
   string $selected[] = `ls -dag -type "nurbsCurve" -sl`;
   string $current;
   for ( $current in $selected ) {
-    if ( `attributeQuery -node $current -ex "renderCurve"`) {
-      deleteAttr ( $current + ".renderCurve" );
+    if ( `attributeQuery -node $current -ex "liquidCurve"`) {
+      deleteAttr ( $current + ".liquidCurve" );
     }
-    if ( `attributeQuery -node $current -ex "width"`) {
-      deleteAttr ( $current + ".width" );
+    if ( `attributeQuery -node $current -ex "liquidCurveWidth"`) {
+      deleteAttr ( $current + ".liquidCurveWidth" );
     }
   }
 }
