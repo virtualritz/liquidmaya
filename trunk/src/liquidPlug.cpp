@@ -84,6 +84,7 @@ extern "C" {
 #include <liqMemory.h>
 #include <liqPreviewShader.h>
 #include <liqWriteArchive.h>
+#include <liqGlobalHelpers.h>
 
 extern bool liquidBin;
 
@@ -136,7 +137,15 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   LIQCHECKSTATUS( status, "Can't register liquidWriteArchive command" );
 
   // setup all of the base liquid interface
-  status = MGlobal::executeCommand("source liquidStartup.mel");
+  MString sourceLine("source ");
+  MString tmphome(getenv( "LIQUIDHOME" ));
+  if( tmphome != "" ) {
+  	sourceLine += "\"" + liquidSanitizePath( tmphome ) + "/mel/" + "liquidStartup.mel\"";
+  } else {
+	  sourceLine += "liquidStartup.mel";
+  }
+  
+  status = MGlobal::executeCommand(sourceLine);
 
   status = plugin.registerUI("liquidStartup", "liquidShutdown");
   LIQCHECKSTATUS( status, "Can't register liquidStartup and liquidShutdown interface scripts" );
