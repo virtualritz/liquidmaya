@@ -105,10 +105,6 @@ SOURCE=.\liquidAttachPrefAttribute.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidBin.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\liquidGetAttr.cpp
 # End Source File
 # Begin Source File
@@ -146,11 +142,6 @@ SOURCE=.\liquidRibGenData.cpp
 # Begin Source File
 
 SOURCE=.\liquidRibHT.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liquidRibItHT.cpp
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
