@@ -77,7 +77,7 @@ extern "C" {
 #include <liquidGlobalHelpers.h>
 #include <liquidRibLightData.h>
 #include <liquidMemory.h>
-#include <liquidGetSloInfo.h>
+#include <liqGetSloInfo.h>
 
 extern int debugMode;
 
@@ -148,7 +148,7 @@ liquidRibLightData::liquidRibLightData( const MDagPath & light )
 		strcpy(assignedRManShader, rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar());
 		if ( debugMode ) { printf("-> Using Renderman Shader %s. \n", assignedRManShader ) ;}
 
-		liquidGetSloInfo shaderInfo;
+		liqGetSloInfo shaderInfo;
 		int success = shaderInfo.setShader( rmShaderStr );
 		if ( !success ) {
 			perror("Slo_SetShader");

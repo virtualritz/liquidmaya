@@ -93,7 +93,7 @@ liqShader::liqShader( MObject shaderObj )
     name = shaderNode.name().asChar();
     file = rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar();
 
-    liquidGetSloInfo shaderInfo;
+    liqGetSloInfo shaderInfo;
     int success = shaderInfo.setShader( rmShaderStr );
     if ( !success ) {
 	fprintf(stderr, "Error Using Shader %s!\n", shaderNode.name().asChar() );

@@ -189,7 +189,7 @@ static const char * LIQUIDVERSION =
 #include <liquidRibCoordData.h>
 #include <liquidRibHT.h>
 #include <liquidRibTranslator.h>
-#include <liquidGetSloInfo.h>
+#include <liqGetSloInfo.h>
 #include <liquidRIBStatus.h>
 #include <liquidRIBGen.h>
 #include <liquidRibGenData.h>

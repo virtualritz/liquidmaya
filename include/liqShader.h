@@ -32,7 +32,7 @@
 #include <maya/MDagPath.h>
 
 #include <liqTokenPointer.h>
-#include <liquidGetSloInfo.h>
+#include <liqGetSloInfo.h>
 #define MR_SURFPARAMSIZE 1024
 
 #include <string>
