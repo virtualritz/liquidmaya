@@ -1,22 +1,29 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
 ** 
-** The RenderMan (R) Interface Procedures and Protocol are:** Copyright 1988, 1989, Pixar** All Rights Reserved****** RenderMan (R) is a registered trademark of Pixar
+** The RenderMan (R) Interface Procedures and Protocol are:
+** Copyright 1988, 1989, Pixar
+** All Rights Reserved
+**
+**
+** RenderMan (R) is a registered trademark of Pixar
 */
 
 /* ______________________________________________________________________
@@ -175,7 +182,6 @@ static const char * LIQUIDVERSION =
 #include <liquidRibNode.h>
 #include <liquidGlobalHelpers.h>
 #include <liquidRibData.h>
-#include <liquidRibSurfaceData.h>
 #include <liquidRibNuCurveData.h>
 #include <liquidRibMeshData.h>
 #include <liquidRibLocatorData.h>
@@ -189,6 +195,10 @@ static const char * LIQUIDVERSION =
 #include <liquidRibGenData.h>
 #include <liquidMemory.h>
 #include <liquidProcessLauncher.h>
+#include <liqEntropyRenderer.h>
+#include <liqPrmanRenderer.h>
+#include <liqAqsisRenderer.h>
+#include <liqDelightRenderer.h>
 
 typedef int RtError;
 
@@ -236,6 +246,9 @@ MStringArray liqglo_preReadArchive;
 MStringArray liqglo_preRibBox;
 MStringArray liqglo_preReadArchiveShadow;
 MStringArray liqglo_preRibBoxShadow;
+
+// our global renderer object
+liqRenderer *liqglo_renderer = NULL;
 
 #if 0
 
@@ -522,6 +535,8 @@ liquidRibTranslator::~liquidRibTranslator()
 //#endif
 //	if ( debugMode ) { printf("-> dumping unfreed memory.\n" ); }
 //	if ( debugMode ) ldumpUnfreed();
+
+    delete liqglo_renderer;
 }   
 
 #if defined ENTROPY || PRMAN
@@ -1490,6 +1505,26 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 //  Description:
 //      This method actually does the renderman output
 {
+    // first thing we should do is setup our renderer
+    
+    // TODO: got to make this much better in the future -- get the renderer
+    // and version from the globals UI
+#ifdef ENTROPY
+    liqglo_renderer = new liqEntropyRenderer("3.1");
+#endif
+
+#ifdef PRMAN
+    liqglo_renderer = new liqPrmanRenderer("3.9");
+#endif
+
+#ifdef AQSIS
+    liqglo_renderer = new liqAqsisRenderer("0.7.4");
+#endif
+
+#ifdef DELIGHT
+    liqglo_renderer = new liqDelightRenderer("1.0.0");
+#endif
+
     MStatus status;
     MString lastRibName;
 
@@ -2601,12 +2636,17 @@ MStatus liquidRibTranslator::ribPrologue()
 {
 	if ( !m_exportReadArchive ) {
 		if ( debugMode ) { printf("-> beginning to write prologue\n"); }
-
-		// set any rib options
-		RiOption( ( RtToken )"limits", ( RtToken )"bucketsize", (RtPointer)&bucketSize, RI_NULL );
+		// set any rib options		
+		RiOption( "limits", "bucketsize", (RtPointer)&bucketSize, RI_NULL );
 		RiOption( "limits", "gridsize", (RtPointer)&gridSize, RI_NULL );
 		RiOption( "limits", "texturememory", (RtPointer)&textureMemory, RI_NULL );
-		RiOption( "limits", "eyesplits", (RtPointer)&eyeSplits, RI_NULL );
+		if (liqglo_renderer->supports(liqRenderer::EYESPLITS)) {
+		    RiOption( "limits",
+			      "eyesplits",
+			      (RtPointer)&eyeSplits,
+			      RI_NULL );
+		}
+
 		RiArchiveRecord( RI_COMMENT, "Shader Path\nOption \"searchpath\" \"shader\" [\"%s\"]\n", m_shaderPath.asChar() );
 
 		/* BMRT OPTIONS: BEGIN */
