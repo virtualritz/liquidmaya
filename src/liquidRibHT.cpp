@@ -71,7 +71,7 @@ extern "C" {
 #include <liquid.h>
 #include <liquidRibNode.h>
 #include <liquidRibHT.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 
 extern int debugMode;
 

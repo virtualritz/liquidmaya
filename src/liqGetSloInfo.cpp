@@ -71,7 +71,7 @@ extern "C" {
 #include <maya/MGlobal.h>
 
 #include <liqGetSloInfo.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 
 extern int debugMode;
 // Entropy to PRman type conversion : numbering has a break between

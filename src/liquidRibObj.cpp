@@ -77,7 +77,7 @@ extern "C" {
 #include <liquidRibCoordData.h>
 #include <liquidRIBStatus.h>
 #include <liquidRibGenData.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 
 extern int debugMode;
 

@@ -202,7 +202,7 @@ SOURCE=.\liquidBin.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidMemory.cpp
+SOURCE=.\liqMemory.cpp
 # End Source File
 # Begin Source File
 

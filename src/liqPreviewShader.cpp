@@ -70,7 +70,7 @@ extern int debugMode;
 
 #include <liqShader.h>
 #include <liqPreviewShader.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 

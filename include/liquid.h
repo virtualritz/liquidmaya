@@ -43,7 +43,7 @@
 
 #include <malloc.h>
 
-#include <liquidMemory.h>
+#include <liqMemory.h>
 
 ////////////////////////
 // Macros and Defines //

@@ -77,7 +77,7 @@ extern "C" {
 #include <liqGlobalHelpers.h>
 #include <liquidRibData.h>
 #include <liqRibParticleData.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 
 extern int debugMode;
 

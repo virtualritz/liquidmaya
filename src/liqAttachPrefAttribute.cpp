@@ -79,7 +79,7 @@ extern "C" {
 #include <liqPrmanRenderer.h>
 #include <liqAqsisRenderer.h>
 #include <liqDelightRenderer.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 
 liqAttachPrefAttribute::~liqAttachPrefAttribute()
 {
