@@ -4515,10 +4515,13 @@ MStatus liqRibTranslator::objectBlock()
         RiAttribute( "photon", (RtToken) "estimator", &estimator, RI_NULL );
       }
 
+#ifndef PIXIE
+	  // Pixie doesn't currently support this
       if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur &&
           ribNode->motion.factor != 2.0f ) {
         RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
-      }      
+      }
+#endif
       
       if ( hasSurfaceShader && !m_ignoreSurfaces ) {
 
