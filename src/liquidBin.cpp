@@ -81,7 +81,7 @@ extern "C" {
 #include <liquidGetSloInfo.h>
 #include <liquidGetAttr.h>
 #include <liquidAttachPrefAttribute.h>
-#include <liqPreviewShader.h>
+#include <liquidPreviewShader.h>
 #include <liquidMemory.h>
 #include <liquidGlobalHelpers.h>
 

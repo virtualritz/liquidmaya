@@ -79,7 +79,7 @@ extern "C" {
 #include <liquidGetSloInfo.h>
 #include <liquidGetAttr.h>
 #include <liquidAttachPrefAttribute.h>
-#include <liqPreviewShader.h>
+#include <liquidPreviewShader.h>
 #include <liquidMemory.h>
 
 extern  bool	liquidBin;
@@ -111,7 +111,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     LIQCHECKSTATUS( status, "Can't register liquidAttachPrefAttribute plugin" );
 
     // register the liquidAttachPrefAttribute command
-    status = plugin.registerCommand( "liquidPreviewShader", liqPreviewShader::creator );
+    status = plugin.registerCommand( "liquidPreviewShader", liquidPreviewShader::creator );
     LIQCHECKSTATUS( status, "Can't register liquidPreviewShader plugin" );
 
     // register the liquidGetSloInfo command
