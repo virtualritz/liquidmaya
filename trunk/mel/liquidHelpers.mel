@@ -45,7 +45,13 @@ global proc liquidViewLastRib()
   string $ribFileName = `getAttr liquidGlobals.lastRibFile`;
   if ( `file -q -exists $ribFileName` ) {
     print("Viewing RIB file: " + $ribFileName + "\n");
-    system ( "nedit " + $ribFileName + " &");
+    if (`about -win`) {
+      system ( "notepad " + $ribFileName + " &");
+    } else if(`about -mac`) {
+      system ( "open " + $ribFileName + " & ");
+    } else {
+      system ( "nedit " + $ribFileName + " &");
+    }
   } else {
     warning("RIB file not found - " + $ribFileName);
   }
@@ -61,7 +67,13 @@ global proc liquidViewLastRenderScript()
   string $renderScriptName = `getAttr liquidGlobals.lastRenderScript`;
   if ( `file -q -exists $renderScriptName` ) {
     print("Viewing render script: " + $renderScriptName + "\n");
-    system ( "nedit " + $renderScriptName + " &");
+    if (`about -win`) {
+      system ( "notepad " + $renderScriptName + " &");
+    } else if(`about -mac`) {
+      system ( "open " + $renderScriptName + " & ");
+    } else {
+      system ( "nedit " + $renderScriptName + " &");
+    }
   } else {
     warning("render script file not found - " + $renderScriptName);
   }
