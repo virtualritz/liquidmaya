@@ -45,6 +45,10 @@
 #include <dlfcn.h>
 #endif
 
+#ifdef _WIN32
+#pragma warning(disable:4786)
+#endif
+
 // Renderman Headers
 extern "C" {
 #include <ri.h>
@@ -125,8 +129,12 @@ int main(int argc, char **argv)
     liquidBin = true;
     printf( "Liquid v%s\n", LIQUIDVERSION );
 
-    for (unsigned i = 0; i <= SIGRTMAX; i++) 
+    uint i;
+
+#ifndef _WIN32
+    for (i = 0; i <= SIGRTMAX; i++) 
     	signal(i, signalHandler);
+#endif
 	
     argc--, argv++;
 
@@ -136,8 +144,7 @@ int main(int argc, char **argv)
     }
 
     // scan the command line arguments
-    uint i;
-    for ( i = 0; i < argc; i++) {
+    for (i = 0; i < argc; i++) {
 	if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help")) {
 		cerr << usage;
 		return(1);
@@ -152,31 +159,35 @@ int main(int argc, char **argv)
 
     // check that the filename has been specified and exists	
     if ( fileName == "" ) {
-	status.perror("Liquid -> no filename specified!\n" );
-	printf( "ALF_EXIT_STATUS 1\n" );
-	MLibrary::cleanup( 1 );
-	return (1);
+      status.perror("Liquid -> no filename specified!\n" );
+      printf( "ALF_EXIT_STATUS 1\n" );
+      MLibrary::cleanup( 1 );
+      return (1);
     } else if ( !fileExists( fileName ) ) {
-	status.perror("Liquid -> file not found!\n");
-	printf( "ALF_EXIT_STATUS 1\n" );
-	MLibrary::cleanup( 1 );
-	return ( 1 );
-    }	else {
-	// load the file into liquid's virtual maya
-	status = MFileIO::open( fileName );
-	if ( !status ) {
-	    MString error = " Error opening file: ";
-	    error += fileName.asChar();
-	    status.perror( error );
-	    printf( "ALF_EXIT_STATUS 1\n" );
-	    MLibrary::cleanup( 1 );
-	    return( 1 ) ;
-	}
+      status.perror("Liquid -> file not found!\n");
+      printf( "ALF_EXIT_STATUS 1\n" );
+      MLibrary::cleanup( 1 );
+      return ( 1 );
+    } else {
+      // load the file into liquid's virtual maya
+      status = MFileIO::open( fileName );
+      if ( !status ) {
+        MString error = " Error opening file: ";
+        error += fileName.asChar();
+        status.perror( error );
+        printf( "ALF_EXIT_STATUS 1\n" );
+        MLibrary::cleanup( 1 );
+        return( 1 ) ;
+      }
 
-	liquidRibTranslator liquidTrans;
-    	for (unsigned i = 0; i <= SIGRTMAX; i++) 
-	    signal(i, signalHandler);
-	liquidTrans.doIt( myArgs );
+      liquidRibTranslator liquidTrans;
+
+#ifndef _WIN32
+      for (unsigned i = 0; i <= SIGRTMAX; i++) 
+        signal(i, signalHandler);
+#endif
+
+      liquidTrans.doIt( myArgs );
     }
 
     printf( "ALF_EXIT_STATUS 0\n" );
