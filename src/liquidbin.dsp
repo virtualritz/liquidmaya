@@ -206,7 +206,7 @@ SOURCE=.\liqMemory.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibCoordData.cpp
+SOURCE=.\liqRibCoordData.cpp
 # End Source File
 # Begin Source File
 

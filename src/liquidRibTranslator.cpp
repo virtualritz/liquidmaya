@@ -186,7 +186,7 @@ static const char * LIQUIDVERSION =
 #include <liquidRibMeshData.h>
 #include <liquidRibLocatorData.h>
 #include <liquidRibLightData.h>
-#include <liquidRibCoordData.h>
+#include <liqRibCoordData.h>
 #include <liquidRibHT.h>
 #include <liquidRibTranslator.h>
 #include <liqGetSloInfo.h>

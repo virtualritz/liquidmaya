@@ -217,7 +217,7 @@ SOURCE=.\liquidPlug.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibCoordData.cpp
+SOURCE=.\liqRibCoordData.cpp
 # End Source File
 # Begin Source File
 
@@ -317,7 +317,7 @@ SOURCE=..\include\liqMemory.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibCoordData.h
+SOURCE=..\include\liqRibCoordData.h
 # End Source File
 # Begin Source File
 

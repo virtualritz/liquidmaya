@@ -74,7 +74,7 @@ extern "C" {
 #include <liqRibParticleData.h>
 #include <liquidRibNuCurveData.h>
 #include <liquidRibSubdivisionData.h>
-#include <liquidRibCoordData.h>
+#include <liqRibCoordData.h>
 #include <liquidRIBStatus.h>
 #include <liquidRibGenData.h>
 #include <liqMemory.h>
