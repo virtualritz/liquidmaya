@@ -85,12 +85,18 @@ extern int debugMode;
 
 typedef std::map<MUint64, int> IDMAP;
 
+
 liqRibMayaSubdivisionData::liqRibMayaSubdivisionData( MObject mesh )
-  //  Description: create a RIB compatible subdivision surface representation
+  // Description: create a RIB compatible subdivision surface representation
   // from Maya's version of subd's
-  : npolys( 0 ), nverts( NULL ), verts( NULL ), vertexParam( NULL ),
-		   stTexCordParam( NULL ), hasCreases(false),
-		   hasCorners( false ), numtexCords(0)
+  : npolys(0)
+  , nverts(NULL)
+  , verts(NULL)
+  , vertexParam(NULL)
+  , stTexCordParam(NULL)
+  , numtexCords(0)
+  , hasCreases(false)
+  , hasCorners(false)
 {
   if ( debugMode ) { printf("-> creating maya stylesubdivision surface\n"); }
   MStatus status;
