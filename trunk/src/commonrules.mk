@@ -49,7 +49,7 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidGetAttr.$(OBJEXT) \
     	    	    liquidAttachPrefAttribute.$(OBJEXT) \
     	    	    liquidRibGenData.$(OBJEXT) \
-    	    	    liqPreviewShader.$(OBJEXT) \
+    	    	    liquidPreviewShader.$(OBJEXT) \
     	    	    liquidRibSubdivisionData.$(OBJEXT) \
     	    	    liquidMemory.$(OBJEXT) \
     	    	    liquidProcessLauncher.$(OBJEXT)
@@ -73,7 +73,7 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidGetAttr.$(OBJEXT) \
     	    	    $(VPATH)/liquidAttachPrefAttribute.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibGenData.$(OBJEXT) \
-    	    	    $(VPATH)/liqPreviewShader.$(OBJEXT) \
+    	    	    $(VPATH)/liquidPreviewShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibSubdivisionData.$(OBJEXT) \
     	    	    $(VPATH)/liquidMemory.$(OBJEXT) \
     	    	    $(VPATH)/liquidProcessLauncher.$(OBJEXT)
