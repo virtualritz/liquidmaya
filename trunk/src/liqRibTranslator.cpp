@@ -192,6 +192,7 @@ static const char * LIQUIDVERSION =
 #include <liqPrmanRenderer.h>
 #include <liqAqsisRenderer.h>
 #include <liqDelightRenderer.h>
+#include <liqGlobalHelpers.h>
 
 typedef int RtError;
 
@@ -2331,9 +2332,8 @@ MStatus liqRibTranslator::buildJobs()
     if ( liqglo_doShadows ) {
 		MItDag dagIterator( MItDag::kDepthFirst, MFn::kLight, &returnStatus );
 		for (; !dagIterator.isDone(); dagIterator.next()) {
-			bool		usesDepthMap;
 			if ( !dagIterator.getPath(lightPath) ) continue;
-			usesDepthMap = false;
+			bool usesDepthMap = false;
 			MFnLight fnLightNode( lightPath );
 			fnLightNode.findPlug( "useDepthMapShadows" ).getValue( usesDepthMap );
 			if ( usesDepthMap && areObjectAndParentsVisible( lightPath ) ) {
