@@ -113,6 +113,7 @@ enum ObjectType {
   MRT_Shader	    	= 9,
   MRT_Coord	    	= 10,
   MRT_Subdivision 	= 11,
+    MRT_MayaSubdivision = 12,
   MRT_Weirdo	    	= 4
 };
 
