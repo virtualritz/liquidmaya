@@ -45,7 +45,6 @@
 #ifndef _WIN32
 // Dynamic Object Headers
 #include <dlfcn.h>
-#include <libgen.h>
 #endif
 
 #ifdef _WIN32
@@ -192,12 +191,6 @@ int debugMode;
 #define LIQ_CHECK_CANCEL_REQUEST    if ( m_escHandler.isInterruptRequested() ) throw( LIQ_CANCEL_FEEDBACK_MESSAGE )
 #define LIQ_ADD_SLASH_IF_NEEDED(a) if ( a.asChar()[a.length() - 1] != '/' ) a += "/"
 #define LIQ_ANIM_EXT MString( ".%0*d");
-
-#ifndef _WIN32
-#define LIQ_GET_SHADER_FILE_NAME(a, b, c) if( b ) a = basename( const_cast<char *>(c.file.c_str())); else a = const_cast<char *>(c.file.c_str());
-#else
-#define LIQ_GET_SHADER_FILE_NAME(a, b, c) a = const_cast<char *>(c.file.c_str());
-#endif
 
 #ifndef _WIN32
 const char *liquidRibTranslator::m_default_tmp_dir = "/tmp";

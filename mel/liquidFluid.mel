@@ -287,13 +287,30 @@ global proc liquidFluidRemoveUnusedCMD ()
 
 global proc liquidFluidPreviewSelectedShader()
 {
-	string $selectedNode[] = `textScrollList -q -si liquidFluidShaderList`;
-	if ( $selectedNode[0] == "" ) {
-		print "Fluid -> No Shader Selected...\n";
-	} else {
-		liquidPreviewShader -sphere -shader $selectedNode[0];
-	}
+    string $selectedNode[] = `textScrollList -q -si liquidFluidShaderList`;
+    if ( $selectedNode[0] == "" ) {
+	    print "Fluid -> No Shader Selected...\n";
+    } else {
+    	liquidFluidPreviewShader $selectedNode[0];
+    }
 }		
+
+global proc liquidFluidPreviewShader( string $shaderNode )
+{
+    if ( !`liquidGlobalsExists` ) {
+	    liquidCreateGlobals;
+    }
+    string $args = ( "liquidPreviewShader -sphere -shader " + $shaderNode );
+    int $sshn = `getAttr liquidGlobals.shortShaderNames`;
+    $args = $args + ( " -sshn " + $sshn );
+    string $previewCommand = `getAttr liquidGlobals.previewer`;
+    if( $previewCommand != "" )
+    {
+	$args = $args + ( " -renderer " + $previewCommand );
+    }
+    eval( $args );
+}		
+
 
 global proc liquidSelectNodeCMD() 
 {	

@@ -49,9 +49,9 @@ global string $liquidGlobalsVals[] = {
 	,"shaderPath", "string", ""
 	,"ribName", "string", ""
 	,"pictureDirectory", "string", ""
-  ,"textureDirectory", "string", ""
+    	,"textureDirectory", "string", ""
 	,"ribDirectory", "string", ""
-  ,"tempDirectory", "string", ""
+    	,"tempDirectory", "string", ""
 	,"deferredGen", "bool", "false"	
 	,"deferredBlock", "long", "1"
 	,"preframeMel", "string", ""
@@ -138,6 +138,7 @@ global string $liquidGlobalsVals[] = {
 	,"alfredJobName", "string", ""
 	,"shortShaderNames", "bool", "false"
 	,"expandAlfred", "bool", "false"
+	,"previewer", "string", ""
 };
 
 // WETA SPECIFIC: Start 
@@ -332,6 +333,8 @@ global proc liquidShowBoolGlobal( string $name, string $label )
 	}
 	if ( `attributeQuery -node liquidGlobals -ex $name` ) {
 		checkBoxGrp -label $label	-l1 "" -value1 `getAttr ("liquidGlobals." + $name)` -on1 $onCommand -of1 $offCommand ( "liquidGlobals" + $name + "Check" );
+	} else {
+	    print ( "Warning : global attribute " + $name + " does not exist\n" );
 	}
 }
 
@@ -346,6 +349,8 @@ global proc liquidShowStringGlobal( string $name, string $label )
 			-text ( $currentVal )
 			-cc $cmd
 			( "liquidGlobals" + $name + "Field" );
+	} else {
+	    print ( "Warning : global attribute " + $name + " does not exist\n" );
 	}
 }
 
@@ -353,6 +358,8 @@ global proc liquidShowIntGlobal( string $name, string $label )
 {
 	if ( `attributeQuery -node liquidGlobals -ex $name` ) {
 		attrFieldSliderGrp -label $label -attribute ( "liquidGlobals." + $name ) ( "liquidGlobals" + $name + "Field" );
+	} else {
+	    print ( "Warning : global attribute " + $name + " does not exist\n" );
 	}
 }	
 
@@ -360,6 +367,8 @@ global proc liquidShowFloatGlobal( string $name, string $label )
 {
 	if ( `attributeQuery -node liquidGlobals -ex $name` ) {
 		attrFieldSliderGrp -label $label -attribute ( "liquidGlobals." + $name ) ( "liquidGlobals" + $name + "Field" );
+	} else {
+	    print ( "Warning : global attribute " + $name + " does not exist\n" );
 	}
 }	
 
@@ -668,6 +677,10 @@ setParent liquidGlobalsWindow;
 					liquidShowBoolGlobal "cleanRib" "Clean Rib";
 					liquidShowBoolGlobal "cleanTex" "Clean Textures";
 					liquidShowBoolGlobal "cleanShad" "Clean Shadows (SHD/LTA)";
+					setParent ..; setParent ..;
+					frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-Shader preview-" -cll false;
+					columnLayout -adj true;
+					liquidShowStringGlobal "previewer" "Preview command";
 					setParent ..; setParent ..;
 					setParent ..;
 				columnLayout -cal left -adj true liquidGlobalsBMRTSet;

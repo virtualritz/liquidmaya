@@ -16,12 +16,7 @@
 // Contributor(s): Berj Bannayan. 
 //
 // 
-// The RenderMan (R) Interface Procedures and Protocol are:
-// Copyright 1988, 1989, Pixar
-// All Rights Reserved
-//
-//
-// RenderMan (R) is a registered trademark of Pixar
+// The RenderMan (R) Interface Procedures and Protocol are: // Copyright 1988, 1989, Pixar // All Rights Reserved////// RenderMan (R) is a registered trademark of Pixar
 //
 //  Creation Date:    May 11, 2000
 //
@@ -429,8 +424,8 @@ global proc liquidParamDialogWindow ( string $selectedObj, string $nodeType )
 				for ( $i = 0; $i < $numShaderArgs; $i++ ) {
 					if ( liquidHandleLIF( $i, $longShaderName, $selectedObj ) ) continue;
 			    string $argName = `liquidGetSloInfo -argName $i $longShaderName`; 
-	  			string $argType = `liquidGetSloInfo -argType $i $longShaderName`; 
-			    int $argArrayLen = `liquidGetSloInfo -argArraySize $i $longShaderName`; 
+	  			string $argType = `liquidGetSloInfo -argType $i $longShaderName`;
+			    int $argArrayLen = `liquidGetSloInfo -argArraySize $i $longShaderName`;
 			    if ( $argType == "float" && `attributeQuery -node $selectedObj -ex $argName` ) {
 						if ( $argArrayLen > 0 ) {
 							string $myCommand = ( "liquidChangeTextDoubleAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" ) ;
@@ -473,7 +468,7 @@ global proc liquidParamDialogWindow ( string $selectedObj, string $nodeType )
 			    }
 				}
 				setParent ( "paramForm" + $shortShaderName + $selectedObj );
-				button -label "Preview Shader" -w 110 -h 22 -command ( "liquidPreviewShader -sphere -shader " + $selectedObj ) ( "previewButton" + $shortShaderName + $selectedObj );
+				button -label "Preview Shader" -w 110 -h 22 -command ( "liquidFluidPreviewShader " + $selectedObj ) ( "previewButton" + $shortShaderName + $selectedObj );
 				string $auCheck = `checkBox -label "Auto-Update" ( "auButton" + $selectedObj )`;
 				button -label "Close" -command ( "deleteUI ParamWindow" + $shortShaderName + $selectedObj ) ( "paramButton" + $shortShaderName + $selectedObj ); 
 				formLayout -edit 
