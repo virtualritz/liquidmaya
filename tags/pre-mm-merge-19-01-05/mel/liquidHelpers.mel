@@ -1,0 +1,159 @@
+//
+//
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
+// "License"); you may not use this file except in compliance with the License. You may 
+// obtain a copy of the License at http://www.mozilla.org/MPL/ 
+// 
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
+// language governing rights and limitations under the License. 
+//
+// The Original Code is the Liquid Rendering Toolkit. 
+// 
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+// 
+// Contributor(s): Berj Bannayan. 
+//
+// 
+// The RenderMan (R) Interface Procedures and Protocol are:
+// Copyright 1988, 1989, Pixar
+// All Rights Reserved
+//
+//
+// RenderMan (R) is a registered trademark of Pixar
+//
+//  Creation Date:  June 7th, 2000
+//
+//
+//  Description:
+//      Liquids helper functions.
+//
+//  Input Arguments:
+//
+//  Returns:
+//
+
+
+global proc liquidViewLastRib()
+{
+  if (( !`attributeExists lastRibFile liquidGlobals` ) || (`getAttr liquidGlobals.lastRibFile` == "" )) {
+    warning("liquidGlobals.lastRibFile is not set - no RIB has been generated during this session");
+    return;
+  }
+
+  string $ribFileName = `getAttr liquidGlobals.lastRibFile`;
+  if ( `file -q -exists $ribFileName` ) {
+    print("Viewing RIB file: " + $ribFileName + "\n");
+    if (`about -win`) {
+      system ( "start notepad " + $ribFileName);
+    } else if(`about -mac`) {
+      system ( "open " + $ribFileName + " & ");
+    } else {
+      system ( "nedit " + $ribFileName + " &");
+    }
+  } else {
+    warning("RIB file not found - " + $ribFileName);
+  }
+}
+
+global proc liquidViewLastRenderScript()
+{
+  if (( !`attributeExists lastRenderScript liquidGlobals` ) || (`getAttr liquidGlobals.lastRenderScript` == "" )) {
+    warning("liquidGlobals.lastRenderScript is not set - no render script has been generated during this session");
+    return;
+  }
+    
+  string $renderScriptName = `getAttr liquidGlobals.lastRenderScript`;
+  if ( `file -q -exists $renderScriptName` ) {
+    print("Viewing render script: " + $renderScriptName + "\n");
+    if (`about -win`) {
+      system ( "start notepad " + $renderScriptName);
+    } else if(`about -mac`) {
+      system ( "open " + $renderScriptName + " & ");
+    } else {
+      system ( "nedit " + $renderScriptName + " &");
+    }
+  } else {
+    warning("render script file not found - " + $renderScriptName);
+  }
+}
+
+// This delete's any references to liquid in the scene. 
+global proc liquidCleanup()
+{
+  string $yesno = `confirmDialog -title "Confirm" 
+              -message ( "Are you sure you want to clear all references to liquid?" )
+              -button "Yes" -button "No" -defaultButton "Yes"
+              -cancelButton "No" -dismissString "No"`;
+              
+  if ( $yesno == "Yes" ) {
+    // delete the render globals
+    if ( `objExists liquidGlobals` ) {
+      delete liquidGlobals;
+    }
+    // delete the shaders in the scene and all connections
+    string $liquidShaders[] = `ls "*liquidSurface*" "*liquidLight*" "*liquidDisp*"`;
+    string $currentShader;
+    for ( $currentShader in $liquidShaders )
+    {
+      string $connections[];
+      if ( `attributeQuery -node $currentShader -ex "assignedObjects"`) {
+        $connections = `listConnections ( $currentShader + ".assignedObjects" )`;
+      }
+      string $type = `liquidGetShaderNodeType $currentShader`;
+      delete $currentShader;
+      string $nodeOn;
+      for ( $nodeOn in $connections ) {
+        deleteAttr ( $nodeOn + ".liquid" + $type + "ShaderNode" ); 
+      }
+    }
+    // delete the shaders in the scene and all connections
+    string $liquidShaders[] = `ls -type oldBlindDataBase -type blindDataTemplate`;
+    string $currentShader;
+    for ( $currentShader in $liquidShaders )
+    {
+      int $typeId = `getAttr ( $currentShader + ".typeId" )`;
+      if ( ( $typeId == 303126790 ) || ( $typeId == 303126791 ) || ( $typeId == 303126792 ) ) {
+        string $connections[];
+        if ( `attributeQuery -node $currentShader -ex "assignedObjects"`) {
+          $connections = `listConnections ( $currentShader + ".assignedObjects" )`;
+        }
+        string $type = `liquidGetShaderNodeType $currentShader`;
+        delete $currentShader;
+        string $nodeOn;
+        for ( $nodeOn in $connections ) {
+          deleteAttr ( $nodeOn + ".liquid" + $type + "ShaderNode" ); 
+        }
+      }
+    }
+    liquidFluidUpdateList;
+  }
+}
+
+global proc string liquidINIGet(string $component, string $var )
+{
+  string $returnValue;
+  string $homeDirectory = `getenv "HOME"`;
+  string $liquidDirectory = ( $homeDirectory + "/.liquid" );
+  if  ( `filetest -d $liquidDirectory` ) {
+    if ( `filetest -r ( $liquidDirectory + "/liquid.ini" )` ) {
+      $fileId = `fopen ( $liquidDirectory + "/liquid.ini" ) "r"`;
+      while ( !`feof $fileId` ) {
+        $line = `fgetline $fileId`;
+        string $buf[];
+        tokenize $line $buf;
+        if ( $buf[0] == ( "/" + $component + "/" + $var ) ) {
+          $returnValue = $buf[1];
+        }
+      }
+      fclose $fileId;
+    } 
+  }
+  return $returnValue;
+}
+
+global proc string liquidAddCoordSystem() {
+  string $name = `shadingNode -asUtility place3dTexture`;
+  return `rename $name "liquidCoordSys"`;
+}
