@@ -83,7 +83,9 @@ global proc liquidCreateMenus()
 				menuItem -label "Remove RiReadArchive" -command liquidDeleteReadArchive -ann "Remove A RiReadArchive Node";
 				menuItem -label "Add DelayedReadArchive" -command liquidDelayedReadArchive;
 				menuItem -label "Remove DelayedReadArchive" -command liquidDeleteDelayedReadArchive;
-				menuItem -label "Export Selected As Rib Archive" -ann "DISABLED";
+				menuItem -divider true;
+				menuItem -label "Export Selected as RibArchive" -ann "Write a RIB file for selected object only" -command "liquid -ra -sel";
+				menuItem -label "Export Selected as RibArchive without Shaders" -enable false -ann "Write a RIB file for selected object only without shaders";
 				setParent -menu ..;
 	    menuItem -label "Attributes" -subMenu true -tearOff true;
 				menuItem -label "Freeze __Pref" -command liquidAddPrefAttribute -ann "Lock __Pref Attribute To Current Position";
