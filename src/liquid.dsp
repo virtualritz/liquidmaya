@@ -189,7 +189,7 @@ SOURCE=.\liquidPlug.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidPreviewShader.cpp
+SOURCE=.\liqPreviewShader.cpp
 # End Source File
 # Begin Source File
 
@@ -289,7 +289,7 @@ SOURCE=..\include\liquidMemory.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidPreviewShader.h
+SOURCE=..\include\liqPreviewShader.h
 # End Source File
 # Begin Source File
 
