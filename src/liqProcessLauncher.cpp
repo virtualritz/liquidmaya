@@ -30,16 +30,12 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 bool liqProcessLauncher::execute(const MString &command, const MString &arguments)
 {
-	int res = vfork();
-  if (res == -1) {
-		return false;
-	} else if (res == 0) {
-	  execlp(command.asChar(), command.asChar(), arguments.asChar(), NULL);
-	}
-	return true;
+  int returnCode = system((command + " " + arguments + "&").asChar());
+  return (returnCode != -1);
 }
 #endif // LINUX
 
@@ -56,8 +52,8 @@ bool liqProcessLauncher::execute(const MString &command, const MString &argument
 
 bool liqProcessLauncher::execute(const MString &command, const MString &arguments)
 {
-	pcreatelp(command.asChar(), command.asChar(), arguments.asChar(), NULL);
-	return true;
+  pcreatelp(command.asChar(), command.asChar(), arguments.asChar(), NULL);
+  return true;
 }
 #endif // IRIX
 
@@ -73,7 +69,7 @@ bool liqProcessLauncher::execute(const MString &command, const MString &argument
 
 bool liqProcessLauncher::execute(const MString &command, const MString &arguments)
 {
-	ShellExecute(NULL, NULL, command.asChar(), arguments.asChar(), NULL, SW_SHOWNORMAL);
-	return true;
+  ShellExecute(NULL, NULL, command.asChar(), arguments.asChar(), NULL, SW_SHOWNORMAL);
+  return true;
 }
 #endif // _WIN32
