@@ -69,7 +69,7 @@ extern "C" {
 #include <liquid.h>
 #include <liquidGlobalHelpers.h>
 #include <liquidMemory.h>
-#include <liquidGetSloInfo.h>
+#include <liqGetSloInfo.h>
 
 extern int debugMode;
 extern bool liquidBin;

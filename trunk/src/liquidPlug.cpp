@@ -78,7 +78,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liquidRibTranslator.h>
-#include <liquidGetSloInfo.h>
+#include <liqGetSloInfo.h>
 #include <liqGetAttr.h>
 #include <liqAttachPrefAttribute.h>
 #include <liquidMemory.h>
@@ -125,8 +125,8 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     status = plugin.registerCommand( "liquidPreviewShader", liqPreviewShader::creator );
     LIQCHECKSTATUS( status, "Can't register liqPreviewShader command" );
 
-    // register the liquidGetSloInfo command
-    status = plugin.registerCommand( "liquidGetSloInfo", liquidGetSloInfo::creator );
+    // register the liqGetSloInfo command
+    status = plugin.registerCommand( "liquidGetSloInfo", liqGetSloInfo::creator );
     LIQCHECKSTATUS( status, "Can't register liquidGetSloInfo command" );
 
     // register the liquidGetAttr command
