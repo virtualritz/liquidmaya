@@ -58,10 +58,15 @@ extern "C" {
 
 #include <algorithm>
 
+
+
 #ifdef _WIN32
+
 #include <hash_map>
+
 #else
 #include <hash_map.h>
+
 #endif
 
 // Maya's Headers
@@ -186,12 +191,16 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
     MTime shutterClose ( (double)liqglo_sampleTimes[liqglo_motionSamples - 1], MTime::uiUnit() );
     MTime exportTime = MAnimControl::currentTime();
 
+
 #ifdef _WIN32
+
     stdext::hash_map<int, int> soParticles;
     stdext::hash_map<int, int> scParticles;    
+
 #else    
     hash_map<int, int> soParticles;
     hash_map<int, int> scParticles;
+
 #endif
 
     bool isCaching;
@@ -502,14 +511,23 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
   break;
 
 
+
   // 3Delight supports rendering RiPoints as spheres
+
   case MPTSpheres:
   {
+
 #ifdef DELIGHT      
+
     liqTokenPointer typeParameter;
+
     typeParameter.set( "type", rString, false );
+
     typeParameter.setTokenString( "sphere", 6 );
+
     tokenPointerArray.push_back( typeParameter );
+
+
 
 #else // Write real spheres
     liqTokenPointer Pparameter;
@@ -544,12 +562,17 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
     tokenPointerArray.push_back( Pparameter );
     tokenPointerArray.push_back(radiusParameter);
 
+
 #endif // #ifdef DELIGHT  
+
   }
   break;  
 
+
+
   case MPTMultiPoint:
   case MPTPoints:
+
   {
     liqTokenPointer Pparameter;
 
@@ -749,6 +772,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
   break;
 
   case MPTSprites: {
+
     
     liqTokenPointer Pparameter;
     liqTokenPointer spriteNumParameter;
@@ -937,6 +961,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
   case MPTCloudy:
   case MPTTube:
     // do nothing. These are not supported
+
     MGlobal::displayWarning ( "Numeric, Cloudy and Tube particle rendering types are not supported!" );
     break;
   }
@@ -1065,9 +1090,13 @@ void liqRibParticleData::write()
 
   case MPTMultiPoint:
   case MPTPoints:
+
 #ifdef DELIGHT
+
   case MPTSpheres:
+
 #endif
+
   {
     assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
     RiPointsV( m_numValidParticles*m_multiCount, numTokens, tokenArray, pointerArray );
@@ -1087,6 +1116,7 @@ void liqRibParticleData::write()
   }
   break;
 
+
 #ifndef DELIGHT
   case MPTSpheres: {
     int posAttr=-1,
@@ -1098,19 +1128,20 @@ void liqRibParticleData::write()
 
     for ( int i = 0; i < tokenPointerArray.size(); i++ )
     {
-      if ( strcmp(tokenArray[i], "P") == 0 )
+		  char *tokenName = tokenPointerArray[i].getTokenName();
+      if ( strcmp(tokenName, "P") == 0 )
       {
         posAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "radius") == 0 )
+      else if ( strcmp(tokenName, "radius") == 0 )
       {
         radAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "Cs") == 0 )
+      else if ( strcmp(tokenName, "Cs") == 0 )
       {
         colAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "Os") == 0 )
+      else if ( strcmp(tokenName, "Os") == 0 )
       {
         opacAttr = i;
       }
@@ -1138,9 +1169,12 @@ void liqRibParticleData::write()
   }
   break;
 #endif // #ifndef DELIGHT
+
   
   case MPTSprites: {
+
     
+
     int posAttr   = -1,
         numAttr    = -1,
         twistAttr  = -1,
@@ -1153,33 +1187,32 @@ void liqRibParticleData::write()
 
     for ( int i = 0; i < tokenPointerArray.size(); i++ )
     {
-      MGlobal::displayInfo( "Assigning P" );
-      if ( strcmp( tokenArray[ i ], "P") == 0 )
+		  char *tokenName = tokenPointerArray[i].getTokenName();
+      if ( strcmp( tokenName, "vertex point P") == 0 )
       {
-        MGlobal::displayInfo( "P Assigned!" );
         posAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "spriteNum") == 0 )
+      else if ( strcmp(tokenName, "spriteNum") == 0 )
       {
         numAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "spriteTwist") == 0 )
+      else if ( strcmp(tokenName, "spriteTwist") == 0 )
       {
         twistAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "spriteScaleX") == 0 )
+      else if ( strcmp(tokenName, "spriteScaleX") == 0 )
       {
         scaleXAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "spriteScaleY") == 0 )
+      else if ( strcmp(tokenName, "spriteScaleY") == 0 )
       {
         scaleYAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "Cs") == 0 )
+      else if ( strcmp(tokenName, "Cs") == 0 )
       {
         colAttr = i;
       }
-      else if ( strcmp(tokenArray[i], "Os") == 0 )
+      else if ( strcmp(tokenName, "Os") == 0 )
       {
         opacAttr = i;
       }
@@ -1195,7 +1228,9 @@ void liqRibParticleData::write()
 
     for( unsigned i = 0; i < m_numValidParticles; i++ )
     {
+
       MString str = MString( "I: " ) + ( (double) i );
+
       MGlobal::displayInfo( str );
       MVector up  = camUp;
       MVector right = camRight;
@@ -1226,7 +1261,7 @@ void liqRibParticleData::write()
       {
         spriteRadiusY *= ((RtFloat*)pointerArray[scaleYAttr])[i];
       }
-      MGlobal::displayInfo ( "Writing Sprites, Really" );
+
       if ( posAttr != -1 )
       {
         float *P = &( (RtFloat*) pointerArray[ posAttr ] )[ i * 3 ];
