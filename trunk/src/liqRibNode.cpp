@@ -94,12 +94,11 @@ extern MStringArray liqglo_preRibBox;
 extern MStringArray liqglo_preReadArchiveShadow;
 extern MStringArray liqglo_preRibBoxShadow;
 
+/**
+ * Class constructor.
+ */
 liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
                         const MString instanceOfNodeStr )
-//
-//  Description:
-//      construct a new hash table entry
-//
   :   next( NULL ),
       matXForm( MRX_Const ),
       bodyXForm( MRX_Const ),
@@ -150,11 +149,10 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
   invisible = false;
 }
 
+/**
+ * Class destructor.
+ */
 liqRibNode::~liqRibNode()
-//
-//  Description:
-//      class destructor
-//
 {
   LIQDEBUGPRINTF( "-> killing rib node %s\n", name.asChar() );
 
@@ -177,22 +175,23 @@ liqRibNode::~liqRibNode()
   LIQDEBUGPRINTF( "-> finished killing rib node.\n" );
 }
 
+/**
+ * Get the object referred to by this node.
+ * This returns the surface, mesh, light, etc. this node points to.
+ */
 liqRibObj * liqRibNode::object( unsigned interval )
-//
-//  Description:
-//      get the object (surface, mesh, light, etc) refered to by this node
-//
 {
   return objects[ interval ];
 }
 
+/** 
+ * Set this node with the given path.
+ * If this node already refers to the given object, then it is assumed that the
+ * path represents the object at the next frame.
+ * This method also scans the dag upwards and thereby sets any attributes
+ * Liquid knows that have non-default values and sets them for to this node.
+ */
 void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int particleId )
-//
-//  Description:
-//      set this node with the given path.  If this node already refers to
-//      given object, then it is assumed that the path represents the object
-//      at the next frame.
-//
 {
   LIQDEBUGPRINTF( "-> setting rib node\n");
   DagPath = path;
@@ -211,7 +210,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
   MDagPath dagSearcher( path );
 
   do { // while( dagSearcher.length() > 0 )
-    dagSearcher.pop(); // Go upwards to transform
+    dagSearcher.pop(); // Go upwards (should be a transform node)
     
     hierarchy.add( dagSearcher, MObject::kNullObj, true );
 
@@ -388,6 +387,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
   while( dagSearcher.length() > 0 );
 
   // Set membership handling
+  //
   if ( grouping.membership == "" ) {
     MObjectArray setArray;
     MGlobal::getAssociatedSets( hierarchy, setArray );
@@ -662,21 +662,18 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 }
 
 
+/**
+ * Return the path in the DAG to the instance that this node represents.
+ */
 MDagPath & liqRibNode::path()
-//
-//  Description:
-//      Return the path in the DAG to the instance that this node represents
-//
 {
   return DagPath;
 }
 
-
+/**
+ * Find the shading group assigned to the given object.
+ */
 MObject liqRibNode::findShadingGroup( const MDagPath& path )
-//
-//  Description:
-//      Find the shading group assigned to the given object
-//
 {
   LIQDEBUGPRINTF( "-> finding rib node shading group\n");
   MSelectionList objects;
@@ -703,12 +700,10 @@ MObject liqRibNode::findShadingGroup( const MDagPath& path )
   return MObject::kNullObj;
 }
 
-
+/**
+ * Find the shading node for the given shading group.
+ */
 MObject liqRibNode::findShader( MObject& group )
-//
-//  Description:
-//      Find the shading node for the given shading group
-//
 {
   LIQDEBUGPRINTF( "-> finding shader for rib node shading group\n");
   MFnDependencyNode fnNode( group );
@@ -729,12 +724,10 @@ MObject liqRibNode::findShader( MObject& group )
   return MObject::kNullObj;
 }
 
-
+/**
+ * Find the displacement node for the given shading group
+ */
 MObject liqRibNode::findDisp( MObject& group )
-//
-//  Description:
-//      Find the shading node for the given shading group
-//
 {
   LIQDEBUGPRINTF( "-> finding shader for rib node shading group\n");
   MFnDependencyNode fnNode( group );
@@ -755,12 +748,10 @@ MObject liqRibNode::findDisp( MObject& group )
   return MObject::kNullObj;
 }
 
-
+/**
+ * Find the volume shading node for the given shading group.
+ */
 MObject liqRibNode::findVolume( MObject& group )
-//
-//  Description:
-//      Find the shading node for the given shading group
-//
 {
   LIQDEBUGPRINTF( "-> finding shader for rib node shading group\n");
   MFnDependencyNode fnNode( group );
@@ -781,12 +772,10 @@ MObject liqRibNode::findVolume( MObject& group )
   return MObject::kNullObj;
 }
 
-
+/**
+ * Get the list of all ignored lights for the given shading group.
+ */
 void liqRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
-//
-//  Description:
-//      Get the list of all ignored lights for the given shading group
-//
 {
   LIQDEBUGPRINTF( "-> getting ignored lights\n");
   MFnDependencyNode fnNode( group );
@@ -817,12 +806,10 @@ void liqRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
   }
 }
 
-
+/**
+ * Get the list of all ignored lights for the given for this node.
+ */
 void liqRibNode::getIgnoredLights( MObjectArray& ignoredLights )
-//
-//  Description:
-//      Get the list of all ignored lights for the given for *this* node
-//
 {
   MStatus status;
   LIQDEBUGPRINTF( "-> getting ignored lights\n");
@@ -873,12 +860,10 @@ void liqRibNode::getIgnoredLights( MObjectArray& ignoredLights )
   }
 }
 
-
+/**
+ * Get the color of the given shading node.
+ */
 bool liqRibNode::getColor( MObject& shader, MColor& color )
-//
-//  Description:
-//      Get the color of the given shading node.
-//
 {
   LIQDEBUGPRINTF( "-> getting a shader color\n");
   switch ( shader.apiType() )
@@ -914,11 +899,10 @@ bool liqRibNode::getColor( MObject& shader, MColor& color )
   return true;
 }
 
+/**
+ * Check to see if we should make this a matte object.
+ */
 bool liqRibNode::getMatteMode( MObject& shader )
-//
-//  Description:
-//      check to see if we should make this a matte object.
-//
 {
   MObject matteModeObj;
   short matteModeInt;
@@ -938,6 +922,9 @@ bool liqRibNode::getMatteMode( MObject& shader )
   return false;
 }
 
+/**
+ * Checks if this node actually points to any objects.
+ */
 bool liqRibNode::hasNObjects( unsigned n )
 {
   for( int i = 0; i < n; i++ ) {
