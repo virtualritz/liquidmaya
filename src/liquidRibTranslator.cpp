@@ -91,6 +91,13 @@ extern "C" {
 #include <alloca.h>
 #endif
 
+#ifdef _WIN32
+// unix build gets this from the Makefile
+static const char * LIQUIDVERSION = 
+#include "liquid.version"
+;
+#endif
+
 // Maya's Headers
 #include <maya/MComputation.h>
 #include <maya/MFn.h>
@@ -161,6 +168,7 @@ extern "C" {
 #include <maya/MItSelectionList.h>
 #include <maya/MFileIO.h>
 #include <maya/MQuaternion.h>
+#include <maya/MSyntax.h>
 
 #include <liquid.h>
 #include <liquidRibObj.h>
@@ -522,12 +530,74 @@ void liquidRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message
 void liquidRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
 #endif
 //  Description:
-//      Error handling function.  This gets called when the RIB library
-//      detects an error.  
+//  Error handling function.  This gets called when the RIB library detects an error.  
 {
     printf( "The renderman library is reporting and error!" );
     MString error( message );
     throw error;
+}
+
+MSyntax liquidRibTranslator::syntax()
+{
+	MSyntax syntax;
+
+	syntax.addFlag("p",   "preview");
+	syntax.addFlag("nop", "noPreview");
+	syntax.addFlag("GL",  "useGlobals");
+	syntax.addFlag("sel", "selected");
+	syntax.addFlag("ra",  "readArchive");
+	syntax.addFlag("acv", "allCurves");
+	syntax.addFlag("tif", "tiff");
+	syntax.addFlag("dof", "dofOn");
+	syntax.addFlag("bin", "doBinary");
+	syntax.addFlag("sh",  "shadows");
+	syntax.addFlag("nsh", "noShadows");
+	syntax.addFlag("zip", "doCompression");
+	syntax.addFlag("cln", "cleanRib");
+	syntax.addFlag("pro", "progress");
+	syntax.addFlag("mb",  "motionBlur");
+	syntax.addFlag("db",  "deformationBlur");
+	syntax.addFlag("d",   "debug");
+	syntax.addFlag("nrm", "netRman");
+	syntax.addFlag("fsr", "fullShadowRib");
+	syntax.addFlag("rem", "remote");
+	syntax.addFlag("alf", "alfred");
+	syntax.addFlag("nal", "noAlfred");
+	syntax.addFlag("err", "errHandler");
+	syntax.addFlag("sdb", "shaderDB");
+	syntax.addFlag("n",   "animation", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+	syntax.addFlag("m",   "mbSamples", MSyntax::kLong);
+	syntax.addFlag("dbs", "defBlock");
+	syntax.addFlag("cam", "camera",  MSyntax::kString);
+	syntax.addFlag("s",   "samples", MSyntax::kLong);
+	syntax.addFlag("rnm", "ribName", MSyntax::kString);
+	syntax.addFlag("od",  "projDir", MSyntax::kString);
+	syntax.addFlag("prm", "preFrameMel",  MSyntax::kString);
+	syntax.addFlag("pom", "postFrameMel", MSyntax::kString);
+	syntax.addFlag("rid", "ribdir", MSyntax::kString);
+	syntax.addFlag("txd", "texdir", MSyntax::kString);
+	syntax.addFlag("tmd", "tmpdir", MSyntax::kString);
+	syntax.addFlag("pid", "picdir", MSyntax::kString);
+	syntax.addFlag("pec", "preCommand", MSyntax::kString);
+	syntax.addFlag("poc", "postJobCommand",   MSyntax::kString);
+	syntax.addFlag("pof", "postFrameCommand", MSyntax::kString);
+	syntax.addFlag("prf", "preFrameCommand",  MSyntax::kString);
+	syntax.addFlag("rec", "renderCommand",    MSyntax::kString);
+	syntax.addFlag("rgc", "ribgenCommand",    MSyntax::kString);
+	syntax.addFlag("blt", "blurTime",    MSyntax::kDouble);
+	syntax.addFlag("sr",  "shadingRate", MSyntax::kDouble);
+	syntax.addFlag("bs",  "bucketSize",  MSyntax::kLong, MSyntax::kLong);
+	syntax.addFlag("ps",  "pixelFilter", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+	syntax.addFlag("gs",  "gridSize",  MSyntax::kLong);
+	syntax.addFlag("txm", "texmem",    MSyntax::kLong);
+	syntax.addFlag("es",  "eyeSplits", MSyntax::kLong);
+	syntax.addFlag("ar",  "aspect",    MSyntax::kDouble);
+	syntax.addFlag("x",   "width",     MSyntax::kLong);
+	syntax.addFlag("y",   "height",    MSyntax::kLong);
+	syntax.addFlag("ndf", "noDef");
+	syntax.addFlag("pad", "padding", MSyntax::kLong);
+
+	return syntax;
 }
 
 MStatus liquidRibTranslator::liquidDoArgs( MArgList args ) 
@@ -538,6 +608,47 @@ MStatus liquidRibTranslator::liquidDoArgs( MArgList args )
 	int i;
 	MStatus status;
 	MString argValue;
+
+	if ( debugMode ) { printf("-> processing arguments\n"); }
+
+	// Parse the arguments and set the options.
+	if ( args.length() == 0 ) {
+		liquidInfo( "Doing nothing, no parameters given." );
+		return MS::kFailure;
+	}
+
+	// find the activeView for previews;
+	m_activeView = M3dView::active3dView();
+	width  = m_activeView.portWidth();
+	height = m_activeView.portHeight();
+
+	// get the current project directory
+	MString MELCommand = "workspace -q -rd";
+	MString MELReturn;
+	MGlobal::executeCommand( MELCommand, MELReturn );
+	liqglo_projectDir = MELReturn ;
+
+	if ( debugMode ) { printf("-> using path: %s\n", liqglo_projectDir.asChar() ); }
+
+	// get the current scene name
+	liqglo_sceneName = liquidTransGetSceneName();
+
+	// setup default animation parameters
+	frameFirst = MAnimControl::currentTime().as( MTime::uiUnit() );
+	frameLast  = MAnimControl::currentTime().as( MTime::uiUnit() );
+	frameBy    = 1;
+
+	// check to see if the correct project directory was found
+	if ( !fileExists( liqglo_projectDir ) ) liqglo_projectDir = m_systemTempDirectory;
+	LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
+	if ( !fileExists( liqglo_projectDir ) ) {
+	    cout << "Liquid -> Cannot find /project dir, defaulting to system temp directory!\n" << flush;
+	    liqglo_projectDir = m_systemTempDirectory;
+	}
+	liqglo_ribDir = liqglo_projectDir + "rib/";
+	liqglo_texDir = liqglo_projectDir + "rmantex/";
+	m_pixDir = liqglo_projectDir + "rmanpix/";
+	m_tmpDir = liqglo_projectDir + "rmantmp/";
 
 	for ( i = 0; i < args.length(); i++ ) {
 		if ( MString( "-p" ) == args.asString( i, &status ) )  {
@@ -1382,52 +1493,15 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
     MStatus status;
     MString lastRibName;
 
-	// Parse the arguments and set the options.
-	if ( args.length() == 0 ) {
-		liquidInfo( "Doing nothing, no parameters given." );
-		return MS::kFailure;
+	status = liquidDoArgs( args );
+	if (!status) {
+		return MS::kFailure;	
 	}
 
 	if ( !liquidBin ) liquidInfo("Creating Rib <Press ESC To Cancel> ...");
 
-	// find the activeView for previews;
-	m_activeView = M3dView::active3dView();
-	width = m_activeView.portWidth();
-	height = m_activeView.portHeight();
-
-
-	// get the current project directory
-	MString MELCommand = "workspace -q -rd";
-	MString MELReturn;
-	MGlobal::executeCommand( MELCommand, MELReturn );
-	liqglo_projectDir = MELReturn ;
-
-	if ( debugMode ) { printf("-> using path: %s\n", liqglo_projectDir.asChar() ); }
-
-	// get the current scene name
-	liqglo_sceneName = liquidTransGetSceneName();
-
 	// Remember the frame the scene was at so we can restore it later.
 	MTime currentFrame = MAnimControl::currentTime();
-
-	// setup default animation parameters
-	frameFirst = MAnimControl::currentTime().as( MTime::uiUnit() );
-	frameLast = MAnimControl::currentTime().as( MTime::uiUnit() );
-	frameBy = 1;
-
-	// check to see if the correct project directory was found
-	if ( !fileExists( liqglo_projectDir ) ) liqglo_projectDir = m_systemTempDirectory;
-	LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
-	if ( !fileExists( liqglo_projectDir ) ) {
-	    cout << "Liquid -> Cannot find /project dir, defaulting to system temp directory!\n" << flush;
-	    liqglo_projectDir = m_systemTempDirectory;
-	}
-	liqglo_ribDir = liqglo_projectDir + "rib/";
-	liqglo_texDir = liqglo_projectDir + "rmantex/";
-	m_pixDir = liqglo_projectDir + "rmanpix/";
-	m_tmpDir = liqglo_projectDir + "rmantmp/";
-
-	liquidDoArgs( args );
 
 	// append the progress flag for alfred feedback
 	if ( useAlfred ) {
@@ -2104,7 +2178,7 @@ void liquidRibTranslator::getCameraInfo( MFnCamera& cam )
 	// so we must keep camera width/height separate from render
 	// globals width/height.
 	//
-	cam_width = width;
+	cam_width  = width;
 	cam_height = height;
 	
 	// If we are using a film-gate then we may need to
