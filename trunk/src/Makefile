@@ -20,8 +20,8 @@ newversion clean debug release :
 	case $${LIQRMAN} in \
 	    aqsis) LIQRMANPATH=$${AQSIS_BASE_PATH:=/usr/local/aqsis} LIQRMANFLAGS=-DAQSIS LIQRMANLIBS="-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs" USEDVAR=AQSIS_BASE_PATH;; \
 	    entropy) LIQRMANPATH=$${ENTROPYHOME:=/usr/local/exluna/Entropy} LIQRMANFLAGS=-DENTROPY LIQRMANLIBS="-lribout -lsleargs" USEDVAR=ENTROPYHOME;; \
-	    prman) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lribwrite -lsloargs" USEDVAR=RMANTREE;; \
-	    prman11) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lribwrite -lsloargs" USEDVAR=RMANTREE;; \
+	    prman) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lrib -lsloargs -llkm -ltarget -lzip" USEDVAR=RMANTREE;; \
+	    prman11) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lrib -lsloargs -llkm -ltarget -lzip -lprmutil" USEDVAR=RMANTREE;; \
 	    (*) echo "Do not know how to handle" $${LIQRMAN}". Set LIQRMAN to either aqsis entropy or prman"; exit 1;; \
 	esac; \
 	if( test ! -d  $${LIQRMANPATH} ); then \
