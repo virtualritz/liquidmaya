@@ -31,21 +31,21 @@ extern "C" {
 // token/pointer pairs structure
 
 enum ParameterType {
-    rFloat  = 0,
-    rPoint  = 1,
-    rVector = 2,
-    rNormal = 3,
-    rColor  = 4,
-    rString = 5,
-    rHpoint = 6
+  rFloat  = 0,
+  rPoint  = 1,
+  rVector = 2,
+  rNormal = 3,
+  rColor  = 4,
+  rString = 5,
+  rHpoint = 6
 };
 
 enum DetailType {
-    rUniform	    = 0,
-    rVarying	    = 1,
-    rVertex 	    = 2,
-    rConstant	    = 3,
-    rFaceVarying    = 4
+  rUniform      = 0,
+  rVarying      = 1,
+  rVertex       = 2,
+  rConstant	    = 3,
+  rFaceVarying  = 4
 };
 
 class liqTokenPointer
@@ -55,30 +55,30 @@ public:
     liqTokenPointer(const liqTokenPointer &src);
     liqTokenPointer & operator=( const liqTokenPointer &src);
     ~liqTokenPointer();
-    void    	    setTokenName( const char * name );
-    char *  	    getTokenName( void );
-    int     	    set( const char * name, ParameterType ptype, bool asNurbs, bool asArray, bool asUArray, unsigned int arraySize );
-    int     	    adjustArraySize( unsigned int size );
-    void    	    setDetailType( DetailType dType );
-    DetailType	    	getDetailType( void );
-    void    	    setTokenFloat( unsigned int i, RtFloat val );
-    void    	    setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFloat z );
-    void    	    setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFloat z, RtFloat w );
-    void    	    setTokenFloats( const RtFloat * floatVals );
-    const RtFloat * getTokenFloatArray( );
-    void    	    setTokenString( const char *str, unsigned int length );
-    RtPointer 	    	getRtPointer( void );
-    void    	    getRiDeclare( char * declare );
-    bool    	    	isBasicST( void );
-    void    	    reset( void );
+    void           setTokenName( const char * name );
+    char          *getTokenName( void );
+    int            set( const char * name, ParameterType ptype, bool asNurbs, bool asArray, bool asUArray, unsigned int arraySize );
+    int            adjustArraySize( unsigned int size );
+    void           setDetailType( DetailType dType );
+    DetailType     getDetailType( void );
+    void           setTokenFloat( unsigned int i, RtFloat val );
+    void           setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFloat z );
+    void           setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFloat z, RtFloat w );
+    void           setTokenFloats( const RtFloat * floatVals );
+    const RtFloat *getTokenFloatArray( );
+    void           setTokenString( const char *str, unsigned int length );
+    RtPointer      getRtPointer( void );
+    void           getRiDeclare( char * declare );
+    bool           isBasicST( void );
+    void           reset( void );
 private:
-    RtFloat *   m_tokenFloats;
+    RtFloat *m_tokenFloats;
     char * m_tokenString;
     ParameterType m_pType;
     DetailType m_dType;
     char m_tokenName[256];
     unsigned int m_arraySize;
-    unsigned int  m_uArraySize;
+    unsigned int m_uArraySize;
     unsigned int m_eltSize;
     bool m_isArray;
     bool m_isUArray;
