@@ -3,7 +3,7 @@ global proc string liquidGetHome()
 {
   string $home = `getenv "LIQUIDHOME"`;
   if( !size( $home ) )
-    error("Environment variable LIQUIDHOME is not set!");
+    error("Environment variable LIQUIDHOME is not set - please set to the base Liquid directory (containing /mel, etc)");
 
   return $home;
 }
@@ -43,9 +43,9 @@ global proc liquidLoadScripts()
 
 global proc liquidAETemplateOverwrite()
 {
-    liquidDebugPrint("OVERWRITING DEFAULT AE TEMPLATES");
-    // eval( "source \"" + liquidGetHome() + "/mel/AEdagNodeInclude.mel\"" );
-    // eval( "source \"" + liquidGetHome() + "/mel/AEtransformTemplate.mel\"" );
+  //liquidDebugPrint("OVERWRITING DEFAULT AE TEMPLATES");
+  // eval( "source \"" + liquidGetHome() + "/mel/AEdagNodeInclude.mel\"" );
+  // eval( "source \"" + liquidGetHome() + "/mel/AEtransformTemplate.mel\"" );
 }
 
 
@@ -59,27 +59,27 @@ global proc liquidShowAbout()
   // the Liquid logo image is too
   string $liquidMelPath = match("/.*/", `whatIs liquidStartup`);
 
-  window -wh 420 240 -sizeable false -rtf true -bgc 1 1 1 -title "About Liquid" liquidAbout;
+  window -wh 470 210 -rtf true -bgc 1 1 1 -title "About Liquid" liquidAbout;
   formLayout -bgc 1 1 1 -numberOfDivisions 200 liquidAboutForm;
-    rowLayout -bgc 1 1 1 -nc 3 -cw3 164 8 240 liquidAboutContent;
-      columnLayout;
+    rowLayout -bgc 1 1 1 -nc 3 -cw3 170 12 280 liquidAboutContent;
+      columnLayout -co "left" 10;
         image -image ($liquidMelPath + "/liquidabout.png") -width 164 -height 186 -bgc 1 1 1;
       setParent ..;
       columnLayout;
       setParent ..;
       columnLayout;
-        text -width 240 -align "left" -bgc 1 0.7 0.5 -l ("Liquid " + `pluginInfo -q -v liquid`) -font "boldLabelFont" -height 25;
-        text -width 240 -align "left" -bgc 1 1 1 -l "Initial code by Colin Doncaster";
-        text -width 240 -bgc 1 1 1 -l "";
-        text -width 240 -align "left" -bgc 1 1 1 -l "Contributors:";
-        text -width 240 -align "left" -bgc 1 1 1 -l "Andrew Chapman, Berj Bannayan, Dan Bethell,";
-        text -width 240 -align "left" -bgc 1 1 1 -l "George Harker, Jamie McCarter, Ken McGaugh,";
-        text -width 240 -align "left" -bgc 1 1 1 -l "Michael Duffy, Moritz Moeller, Paul Scruby,";
-        text -width 240 -align "left" -bgc 1 1 1 -l "Richard Pickler, Rob Pieke, Stéphane Deverly,";
-        text -width 240 -align "left" -bgc 1 1 1 -l "Yuri Meshalkin";
-        text -width 240 -bgc 1 1 1 -l "";
-        text -width 240 -align "left" -bgc 1 1 1 -l "http://liquidmaya.sourceforge.net/";
-        text -width 240 -bgc 1 1 1 -l "";
+        text -width 280 -align "left" -bgc 1 0.7 0.5 -l ("Liquid " + `pluginInfo -q -v liquid`) -font "boldLabelFont" -height 25;
+        text -width 280 -align "left" -bgc 1 1 1 -l "Initial code by Colin Doncaster";
+        text -width 280 -height 10 -bgc 1 1 1 -l "";
+        text -width 280 -align "left" -bgc 1 1 1 -l "Contributors:";
+        text -width 280 -align "left" -bgc 1 1 1 -l "Andrew Chapman, Berj Bannayan, Dan Bethell,";
+        text -width 280 -align "left" -bgc 1 1 1 -l "George Harker, Jamie McCarter, Ken McGaugh,";
+        text -width 280 -align "left" -bgc 1 1 1 -l "Michael Duffy, Moritz Moeller, Paul Scruby,";
+        text -width 280 -align "left" -bgc 1 1 1 -l "Richard Pickler, Rob Pieke, Stephane Deverly,";
+        text -width 280 -align "left" -bgc 1 1 1 -l "Yuri Meshalkin";
+        text -width 280 -height 10 -bgc 1 1 1 -l "";
+        text -width 280 -align "left" -bgc 1 1 1 -l "http://liquidmaya.sourceforge.net/";
+        text -width 280 -bgc 1 1 1 -l "";
       setParent ..;
     setParent ..;
   setParent ..;
