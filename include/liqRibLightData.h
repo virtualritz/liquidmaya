@@ -38,33 +38,37 @@
 #include <liqRibData.h>
 
 class liqRibLightData : public liqRibData {
-public: // Methods
+public:
     
-            liqRibLightData( const MDagPath & light );
+    liqRibLightData( const MDagPath & light );
     virtual ~liqRibLightData();
-        
+
     virtual void       write();
     virtual bool       compare( const liqRibData & other ) const;
     virtual ObjectType type() const;
+
+    RtLightHandle lightHandle() const;
+    bool          rmanLight;
+    MString       assignedRManShader;
     
-    RtLightHandle   lightHandle() const;
-    bool    	    rmanLight;
-    char	  *assignedRManShader; 
+    MString       autoShadowName() const;
     
-private: // Data
+private:
     LightType     lightType;
     RtFloat       color[3];
     RtFloat       intensity, coneAngle, penumbraAngle, dropOff;
     RtPoint       from, to;
-    RtMatrix	  transformationMatrix;
+    RtMatrix      transformationMatrix;
+
+    RtLightHandle handle;
+    bool          usingShadow;
+    bool          raytraced;
+    bool          excludeFromRib;
+    MString       userShadowName;
+    MString       lightName;      
     
-    RtLightHandle   handle;
-    bool    	    usingShadow;
-    bool    	    raytraced;
-    bool    	    excludeFromRib;
-    MString 	    userShadowName;
-    MString 	    name;
-    MString 	    shadowName;
+    MString       shadowName;
 };
+
 
 #endif
