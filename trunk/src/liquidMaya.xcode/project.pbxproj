@@ -186,7 +186,7 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "../include/ $(MAYA_LOCATION)/devkit/include $(DELIGHT)/include";
 				INSTALL_PATH = ../bin/OSX/;
-				LIBRARY_SEARCH_PATHS = "\"$(DELIGHT)/lib\" \"$(MAYA_LOCATION)/MacOS\" \"$(SYSTEM_APPS_DIR)/Graphics/3Delight-3.0.0/lib\"";
+				LIBRARY_SEARCH_PATHS = "\"$(DELIGHT)/lib\" \"$(MAYA_LOCATION)/MacOS\" \"$(SYSTEM_APPS_DIR)/Graphics/3Delight-4.0.1/lib\"";
 				LIBRARY_STYLE = DYNAMIC;
 				MAYA_LOCATION = /Applications/Alias/maya6.0/Maya.app/Contents/;
 				OTHER_CFLAGS = "";
@@ -712,7 +712,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = "compiled.mach-o.dylib";
 			name = lib3delight.dylib;
-			path = "/Applications/Graphics/3Delight-3.0.0/lib/lib3delight.dylib";
+			path = "/Applications/Graphics/3Delight-4.0.1/lib/lib3delight.dylib";
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
