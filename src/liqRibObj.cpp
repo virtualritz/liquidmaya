@@ -39,7 +39,6 @@
 #include <time.h>
 #include <stdio.h>
 #include <sys/types.h>
-#include <iostream.h>
 
 #ifndef _WIN32
 // Dynamic Object Headers

@@ -39,7 +39,6 @@ extern "C" {
 #include <liqTokenPointer.h>
 #include <liqMemory.h>
 #include <liquid.h>
-#include <iostream.h>
 
 extern int debugMode;
 
