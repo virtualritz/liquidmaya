@@ -70,7 +70,7 @@ extern int debugMode;
 
 /* between Maya 3.0 /4.0/Linux/Other Platforms some functions changed their input type from long to int so 
 a stand-in type called liquidlong was created to get around the problem */
-#ifdef _LINUX
+#ifdef LINUX
 typedef int liquidlong;
 #else
 #if MAYA_API_VERSION > 300
