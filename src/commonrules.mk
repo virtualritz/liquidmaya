@@ -3,7 +3,7 @@ VPATH		= ../liquid$(LIQUIDVERSION)/bin/$(VBIN)/$(MAYA_VERSION)
 CPPFLAGS     	= $(LOCFLAGS) $(LIQRMANFLAGS) $(WARNFLAGS) $(EXTRAFLAGS) $(NO_TRANS_LINK)
 INCLUDES	= -I. -I.. -I$(MAYA_LOCATION)/include -I$(LIQRMANPATH)/include -I../include
 LDFLAGS     	= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib
-MAYALIBS  	= -lOpenMaya -lOpenMayaRender  -lOpenMayaUI -lOpenMayaAnim
+MAYALIBS  	= -lOpenMaya -lOpenMayaRender  -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX
 LIBS		= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
 # -lefence
 #-llkm -lzip -ltarget
@@ -27,6 +27,7 @@ LIQUIDBINLIBS    =  $(LIQRMANLIBS) $(MAYALIBS) \
           -lCommandEngine \
           -lFoundation \
           -lStringCatalog \
+          -lOpenMayaFX \
           $(EXTRA_LIBS) \
           -lm
 
@@ -122,7 +123,7 @@ liquidPlug : $(LIQUIDPLUG)
 
 $(LIQUIDPLUG) : liquidPlug.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
-	@$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIBS)
+	$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIBS)
 
 $(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
