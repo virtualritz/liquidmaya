@@ -1,6 +1,9 @@
 1.6.7 (on sourceforge again!)
 
 - Fix to Subdivision UI
+- Fixed a bug that led to attributes not being recorded properly for RIB output
+- UI improvements for all file browser dialogs (including Fluid's browser)
+    thanks to Alexandre Paes
 
 
 1.6.6 (not on sourceforge):
