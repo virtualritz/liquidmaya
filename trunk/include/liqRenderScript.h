@@ -30,8 +30,17 @@
 #define liqRenderScript_H
 
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <vector>
+
+#if defined(_WIN32) && !defined(LIQUIDVERSION_DEF)
+#define LIQUIDVERSION_DEF
+// unix build gets this from the Makefile
+static const char * LIQUIDVERSION =
+#include "liquid.version"
+;
+#endif
 
 
 /* ______________________________________________________________________
@@ -174,8 +183,8 @@ public:
         ss << indent << "  " << chaserCommand << endl;
         ss << indent << "}";
       }
-      
-      return ss.str();
+
+	  return ss.str();
     }
     
     std::string getXML(unsigned int indentLevel=0) const
@@ -306,8 +315,10 @@ public:
       for(std::vector<Cmd>::const_iterator cmd=cleanupCommands.begin(); cmd!=cleanupCommands.end(); ++cmd) {
         ss << "  " << cmd->getALF() << endl;
       }
-      ss << "}" << endl;
+      ss << "}";
     }
+
+	ss << endl;
     
     return ss.str();
   }
@@ -345,22 +356,22 @@ public:
   
   bool writeALF(const std::string &filename) const
   {
-    ofstream outFile(filename.c_str());
+    std::ofstream outFile(filename.c_str());
     if (!outFile) {
       return false;
     }
-    outFile << getALF();
+    outFile << getALF().c_str();
     outFile.close();
     return true;
   }
   
   bool writeXML(const std::string &filename) const
   {
-    ofstream outFile(filename.c_str());
+    std::ofstream outFile(filename.c_str());
     if (!outFile) {
       return false;
     }
-    outFile << getXML();
+    outFile << getXML().c_str();
     outFile.close();
     return true;
   }
