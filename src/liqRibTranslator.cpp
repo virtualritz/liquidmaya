@@ -1581,9 +1581,13 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   LIQ_ADD_SLASH_IF_NEEDED( m_pixDir );
   LIQ_ADD_SLASH_IF_NEEDED( m_tmpDir );
 
-  // setup the error handler
+  // setup the error handler (thanks Tobias)
 #ifdef AQSIS
+#  ifdef _WIN32
   if ( m_errorMode ) RiErrorHandler( (void(__cdecl*)(int,int,char*))liqRibTranslatorErrorHandler );
+#  else
+  if ( m_errorMode ) RiErrorHandler( (void(*)(int,int,char*))liqRibTranslatorErrorHandler );
+#  endif
 #else
   if ( m_errorMode ) RiErrorHandler( liqRibTranslatorErrorHandler );
 #endif
