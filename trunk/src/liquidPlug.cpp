@@ -101,11 +101,8 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     MString command;
     MString UserClassify;
 
-#ifdef _WIN32
-    printf("\nLiquid by Colin Doncaster\n");
-#else
     MGlobal::displayInfo("\nLiquid by Colin Doncaster\n");
-#endif
+
     status = plugin.registerCommand("liquid", liquidRibTranslator::creator );
     LIQCHECKSTATUS( status, "Can't register liquid translator plugin" );
 
