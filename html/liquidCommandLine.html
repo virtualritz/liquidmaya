@@ -15,7 +15,7 @@ all of the render globals are accessable through the command line interface.
 <br>-GL use the liquid render globals, this should ALWAYS come first!
 <br>-sel render the currently selected objects.&nbsp; This excludes lights,
 all current visible lights will still render.
-<br>-p preview mode, will write out a preview rib file and render it.
+<br>-lr launch render. Liquid will execute the render after writing out the RIB file(s)
 <br>-d debug mode - will print debug information to maya's Output Window
 <br>-err error checking on
 <p><b><font color="#666666"><font size=+1>Frame</font></font></b>
@@ -48,9 +48,8 @@ will be run after liquid generates any output at the current frame sample.
 <br>-texmem texture memory
 <br>-es eyesplits
 <p><b><font color="#666666"><font size=+1>Network</font></font></b>
-<br>-alfred use alfred to render
-<br>-noalfred if for some reason liquid is trying to call alfred, this
-forces it not to
+<br>-renderScript execute the render script (Alfred or XML), as opposed to executing the main render command directly
+<br>-noRenderScript opposite of above
 <br>-remote remote render if alfred is being used.
 <br>-netRman if alfred is being used then netrender the frames
 <p><b><font color="#666666"><font size=+1>Options</font></font></b>
