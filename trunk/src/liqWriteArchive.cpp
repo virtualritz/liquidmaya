@@ -37,6 +37,10 @@
 
 #include <ri.h>
 
+#ifndef RI_VERBATIM
+  #define RI_VERBATIM "verbatim"
+#endif
+
 
 void* liqWriteArchive::creator()
 {
@@ -99,32 +103,37 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 
 MStatus liqWriteArchive::redoIt()
 {
-  MString objName = objectNames[0]; // TEMP - just handling one object at the moment
+  try {
+    MString objName = objectNames[0]; // TEMP - just handling one object at the moment
 
-  // get a handle on the named object
-  MSelectionList selList;
-  selList.add(objName);
-  MDagPath objDagPath;
-  MStatus status = selList.getDagPath(0, objDagPath);
-  if (!status) {
-    MGlobal::displayError("Error retrieving object " + objName);
+    // get a handle on the named object
+    MSelectionList selList;
+    selList.add(objName);
+    MDagPath objDagPath;
+    MStatus status = selList.getDagPath(0, objDagPath);
+    if (!status) {
+      MGlobal::displayError("Error retrieving object " + objName);
+      return MS::kFailure;
+    }
+
+    // test that the output file is writable
+    FILE *f = fopen(outputFilename.asChar(), "w");
+    if (!f) {
+      MGlobal::displayError("Error writing to output file " + outputFilename + ". Check file permissions there");
+      return MS::kFailure;
+    }
+    fclose(f);
+
+    // write the RIB file
+    RiBegin(const_cast<char*>(outputFilename.asChar()));
+
+    writeObjectToRib(objDagPath, outputRootTransform);
+
+    RiEnd();
+  } catch (...) {
+    MGlobal::displayError("Caught exception in liqWriteArchive::redoIt()");
     return MS::kFailure;
   }
-
-  // test that the output file is writable
-  FILE *f = fopen(outputFilename.asChar(), "w");
-  if (!f) {
-    MGlobal::displayError("Error writing to output file " + outputFilename + ". Check file permissions there");
-    return MS::kFailure;
-  }
-  fclose(f);
-
-  // write the RIB file
-  RiBegin(const_cast<char*>(outputFilename.asChar()));
-
-  writeObjectToRib(objDagPath, outputRootTransform);
-
-  RiEnd();
 
   return MS::kSuccess;
 }
