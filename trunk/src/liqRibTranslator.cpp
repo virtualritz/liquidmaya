@@ -2341,6 +2341,40 @@ MStatus liqRibTranslator::buildJobs()
             MFnLight fnLightNode( lightPath );
             fnLightNode.findPlug( "useDepthMapShadows" ).getValue( usesDepthMap );
             if ( usesDepthMap && areObjectAndParentsVisible( lightPath ) ) {
+
+        //
+        // We have a shadow job, so find out if we need to use deep shadows,
+        // and the pixel sample count
+        //
+                
+        thisJob.deepShadows = false;
+        thisJob.shadowPixelSamples = 1;
+        thisJob.shadowVolumeInterpretation = 1;
+
+        // Get to our shader node.
+        //
+        MPlug liquidLightShaderNodeConnection;
+        MStatus liquidLightShaderStatus;
+        liquidLightShaderNodeConnection = fnLightNode.findPlug( "liquidLightShaderNode", &liquidLightShaderStatus );
+        if ( liquidLightShaderStatus == MS::kSuccess && liquidLightShaderNodeConnection.isConnected() )
+        {
+          MPlugArray liquidLightShaderNodePlugArray;
+          liquidLightShaderNodeConnection.connectedTo( liquidLightShaderNodePlugArray, true, true );
+          MFnDependencyNode fnLightShaderNode( liquidLightShaderNodePlugArray[0].node() );
+
+          // Now grab the parameters.
+          //
+          fnLightShaderNode.findPlug( "deepShadows" ).getValue( thisJob.deepShadows );
+
+          // Only use the pixel samples and volume interpretation  with deep shadows.
+          //
+          if ( thisJob.deepShadows )
+          {
+            fnLightShaderNode.findPlug( "pixelSamples" ).getValue( thisJob.shadowPixelSamples );
+            fnLightShaderNode.findPlug( "volumeInterpretation" ).getValue( thisJob.shadowVolumeInterpretation );
+          }
+        }
+
                 if ( lightPath.hasFn(MFn::kSpotLight) || lightPath.hasFn(MFn::kDirectionalLight) ) {
                     thisJob.hasShadowCam = false;
                     MPlug liquidLightShaderNodeConnection;
@@ -2415,7 +2449,14 @@ MStatus liqRibTranslator::buildJobs()
                             outNameLength += m_outPadding + 1;
                         }
                         outFileFmtString += ".";
+            if ( thisJob.deepShadows )
+            {
+              outFileFmtString += "shd";
+            }
+            else
+            {
                         outFileFmtString += "tex";
+            }
                         outNameLength = outFileFmtString.length();
                         // Hmmmmmm protect from buffer overflow ...
                         outNameLength = outNameLength + 8; // Space for the null character
@@ -2473,7 +2514,14 @@ MStatus liqRibTranslator::buildJobs()
                             outNameLength += m_outPadding + 1;
                         }
                         outFileFmtString += ".";
+            if ( thisJob.deepShadows )
+            {
+              outFileFmtString += "shd";
+            }
+            else
+            {
                         outFileFmtString += "tex";
+            }
                         outNameLength = outFileFmtString.length();
                         // Hmmmm protect from buffer overflow ....
                         outNameLength = outNameLength + 8; // Space for the null character
@@ -2593,7 +2641,14 @@ MStatus liqRibTranslator::buildJobs()
                     outFileFmtString += LIQ_ANIM_EXT;
                     outNameLength += m_outPadding + 1;
                 }
+        if ( thisJob.deepShadows )
+        {
+          outFileFmtString += ".shd";
+        }
+        else
+        {
                 outFileFmtString += ".tex";
+        }
                 outNameLength = outFileFmtString.length();
                 outNameLength = outNameLength + ( m_outPadding + 1 ); // Space for the null character
             }
@@ -2679,8 +2734,12 @@ MStatus liqRibTranslator::ribPrologue()
 
         RiOrientation( RI_RH ); // Right-hand coordinates
         if ( liqglo_currentJob.isShadow ) {
-            RiPixelSamples( 1, 1 );
+      RiPixelSamples( liqglo_currentJob.shadowPixelSamples,
+                      liqglo_currentJob.shadowPixelSamples );
             RiShadingRate( 1 );
+      // Need to use Box filter for deep shadows.
+      //
+      RiPixelFilter( RiBoxFilter, 1, 1 );
         } else {
             RiPixelSamples( pixelSamples, pixelSamples );
             RiShadingRate( shadingRate );
@@ -3070,8 +3129,17 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
                     }
                 }
 
+        if ( iter->deepShadows )
+        {
+          iter->camera[sample].shutter = liqglo_shutterTime;
+          iter->camera[sample].motionBlur = true;
+        }
+
+        else
+        {
                 iter->camera[sample].shutter = 0;
                 iter->camera[sample].motionBlur = false;
+        }
                 iter->camera[sample].focalLength = 0;
                 iter->camera[sample].focalDistance = 0;
                 iter->camera[sample].fStop = 0;
@@ -3100,9 +3168,17 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
                 // Determine what information to write out (RGB, alpha, zbuffer)
                 //
                 iter->imageMode.clear();
+        if ( iter->deepShadows )
+        {
+          iter->imageMode += "deepopacity";
+          iter->format = "deepshad";
+        }
+        else
+        {
                 iter->imageMode += "z";
                 iter->format = "shadow";
             }
+      }
 
             ++iter;
         }
@@ -3220,7 +3296,28 @@ MStatus liqRibTranslator::framePrologue(long lframe)
 
         if ( liqglo_currentJob.isShadow ) {
             if ( !liqglo_currentJob.isMinMaxShadow ) {
+        // Deep shadows cannot be the primary output driver. We need
+        // to create a null output zfile first, and use the deep shadows
+        // as a secondary output.
+        //
+        if ( liqglo_currentJob.deepShadows )
+        {
+          RiDeclare( "volumeinterpretation", "string" );
+          char *viContinuous = "continuous";
+          char *viDiscrete = "discrete";
+          RiDisplay( "null", "null", "z", RI_NULL );
+          MString deepFileImageName = "+" + liqglo_currentJob.imageName;
+          RiDisplay( const_cast<char *>(deepFileImageName.asChar()),
+                     const_cast<char *>(liqglo_currentJob.format.asChar()),
+                     (RtToken)liqglo_currentJob.imageMode.asChar(),
+                     "volumeinterpretation",
+                     ( liqglo_currentJob.shadowVolumeInterpretation == 2 ? &viContinuous : &viDiscrete ),
+                     RI_NULL ); 
+        }
+        else
+        {
                 RiDisplay( const_cast<char *>(liqglo_currentJob.imageName.asChar()), const_cast<char *>(liqglo_currentJob.format.asChar()), (RtToken)liqglo_currentJob.imageMode.asChar(), RI_NULL );
+        }
             } else {
                 RiArchiveRecord( RI_COMMENT, "Display Driver: \nDisplay \"%s\" \"%s\" \"%s\" \"minmax\" [ 1 ]", const_cast<char *>(liqglo_currentJob.imageName.asChar()), const_cast<char *>(liqglo_currentJob.format.asChar()), (RtToken)liqglo_currentJob.imageMode.asChar() );
             }
@@ -3367,14 +3464,14 @@ MStatus liqRibTranslator::framePrologue(long lframe)
             }
         }
 
-        if ( doCameraMotion && ( !liqglo_currentJob.isShadow )) {
+    if ( doCameraMotion && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows) ) {
             /*RiMotionBegin( 2, ( lframe - ( liqglo_currentJob.camera[0].shutter * m_blurTime * 0.5  )), ( lframe + ( liqglo_currentJob.camera[0].shutter * m_blurTime * 0.5  )) );*/
             RiMotionBegin( liqglo_motionSamples, liqglo_sampleTimes[0], liqglo_sampleTimes[1] , liqglo_sampleTimes[2], liqglo_sampleTimes[3], liqglo_sampleTimes[4] );
         }
         RtMatrix cameraMatrix;
         liqglo_currentJob.camera[0].mat.get( cameraMatrix );
         RiTransform( cameraMatrix );
-        if ( doCameraMotion && ( !liqglo_currentJob.isShadow ) ) {
+    if ( doCameraMotion && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {	
             int mm = 1;
             while ( mm < liqglo_motionSamples ) {
                 liqglo_currentJob.camera[mm].mat.get( cameraMatrix );
@@ -3520,8 +3617,9 @@ MStatus liqRibTranslator::frameBody()
 
         // If there is matrix motion blur, open a new motion block, the 5th element in the object will always
         // be there if matrix blur will occur!
-        if ( liqglo_doMotion && ribNode->doMotion && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_Locator )
-             && ( !liqglo_currentJob.isShadow ) ) {
+    if ( liqglo_doMotion && ribNode->doMotion && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_Locator ) &&
+         ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
+    {    
             if ( debugMode ) { printf("-> writing matrix motion blur data\n"); }
             RiMotionBegin( liqglo_motionSamples, liqglo_sampleTimes[0], liqglo_sampleTimes[1] , liqglo_sampleTimes[2], liqglo_sampleTimes[3], liqglo_sampleTimes[4] );
         }
@@ -3533,8 +3631,9 @@ MStatus liqRibTranslator::frameBody()
         // Output the world matrices for the motionblur
         // This will override the current transformation setting
         //
-        if ( liqglo_doMotion && ribNode->doMotion && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_Locator )
-             && ( !liqglo_currentJob.isShadow ) ) {
+    if ( liqglo_doMotion && ribNode->doMotion && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_Locator ) &&
+         ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
+    {    
             path = ribNode->path();
             int mm = 1;
             RtMatrix ribMatrix;
@@ -3731,13 +3830,13 @@ MStatus liqRibTranslator::frameBody()
         // If there is deformation motion blur, open a new motion block, the 5th element in the object will always
         // be there if deformation blur will occur!
         if (liqglo_doDef && ribNode->doDef && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
-            && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow ) ) {
+        && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
             RiMotionBegin( liqglo_motionSamples, liqglo_sampleTimes[0] , liqglo_sampleTimes[1] , liqglo_sampleTimes[2], liqglo_sampleTimes[3], liqglo_sampleTimes[4] );
         }
 
         ribNode->object(0)->writeObject();
         if ( liqglo_doDef && ribNode->doDef && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
-             && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow ) ) {
+         && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
             if ( debugMode ) { printf("-> writing deformation blur data\n"); }
             int msampleOn = 1;
             while ( msampleOn < liqglo_motionSamples ) {

@@ -159,7 +159,7 @@ void liqRibGenData::write()
 	liqglo_currentJob.camera[0].mat.get( ribStatus.cameraMatrix );
 	ribStatus.sampleTimes = liqglo_sampleTimes;
 	if ( liqglo_doMotion || liqglo_doDef ) {
-		if ( !liqglo_currentJob.isShadow ) {
+		if ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) {
 			ribStatus.motionSamples = liqglo_motionSamples;
 		} else {
 			ribStatus.motionSamples = 1;

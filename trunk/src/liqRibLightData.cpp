@@ -101,6 +101,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   : handle( NULL )
 {
   usingShadow = false;
+  deepShadows = false;
   raytraced = false;
   excludeFromRib = false;
   MStatus status;
@@ -148,6 +149,11 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
     // Hmmmmmmm this length is simply equal to rmShaderStr.length() - 5 + 1, no ?
     assignedRManShader = rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar();
     if ( debugMode ) { printf("-> Using Renderman Shader %s. \n", assignedRManShader.asChar() ) ;}
+
+    MPlug deepShadowsPlug = lightDepNode.findPlug( "deepShadows", &status );
+    if ( status == MS::kSuccess ) {
+        deepShadowsPlug.getValue( deepShadows );
+    }
 
     liqGetSloInfo shaderInfo;
     int success = shaderInfo.setShader( rmShaderStr );
@@ -553,6 +559,17 @@ MString liqRibLightData::autoShadowName() const
   //}
   shadowName += ".";
   shadowName += (int)liqglo_lframe;
-  shadowName += ".tex";
+
+  // Deepshadows need ".shd", and regular need ".tex"
+  //
+  if ( deepShadows )
+  {
+    shadowName += ".shd";
+  }
+  else
+  {
+    shadowName += ".tex";
+  }
+
   return shadowName;
 }
