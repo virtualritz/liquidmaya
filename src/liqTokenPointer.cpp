@@ -309,15 +309,12 @@ void liqTokenPointer::setTokenString( const char *str, unsigned int length )
 {
   if( m_tokenString ) lfree( m_tokenString );
   m_tokenString = NULL;
-  m_stringSize = 0;
-  if( length > 0 )
-  {
-    m_tokenString = ( char * ) lmalloc( ( length + 1 ) * sizeof( char ) ); // Need space for '\0' 
-    if( m_tokenString ) 
-    {
-      strcpy( m_tokenString, str );
-      m_stringSize = length + 1;
-    }
+  m_stringSize  = 0;
+  
+  m_tokenString = ( char * ) lmalloc( ( length + 1 ) * sizeof( char ) ); // Need space for '\0' 
+  if( m_tokenString ) {
+    strcpy( m_tokenString, str );
+    m_stringSize = length + 1;
   }
 }
 
@@ -336,8 +333,11 @@ char * liqTokenPointer::getTokenName( void )
 
 RtPointer liqTokenPointer::getRtPointer( void )
 {
-  if( m_pType == rString ) return ( RtPointer ) &m_tokenString;
-  else return ( RtPointer ) m_tokenFloats;
+  if( m_pType == rString ) {
+    return ( RtPointer ) &m_tokenString;
+  } else {
+    return ( RtPointer ) m_tokenFloats;
+  }
 }
 
 void liqTokenPointer::getRiDeclare( char *declare  )
