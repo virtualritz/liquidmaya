@@ -180,7 +180,7 @@ static const char * LIQUIDVERSION =
 #include <liquid.h>
 #include <liquidRibObj.h>
 #include <liquidRibNode.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liquidRibData.h>
 #include <liquidRibNuCurveData.h>
 #include <liquidRibMeshData.h>

@@ -80,7 +80,7 @@ extern "C" {
 #include <maya/MFnMesh.h>
 
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liquidRibData.h>
 #include <liquidMemory.h>
 

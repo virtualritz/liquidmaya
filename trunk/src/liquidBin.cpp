@@ -82,7 +82,7 @@ extern "C" {
 #include <liqGetAttr.h>
 #include <liqPreviewShader.h>
 #include <liquidMemory.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 
 extern  bool	liquidBin;
 

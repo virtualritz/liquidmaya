@@ -27,7 +27,7 @@
 #include <maya/MDoubleArray.h>
 #include <maya/MFnDoubleArrayData.h>
 #include <liqShader.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 
 
 extern int debugMode;

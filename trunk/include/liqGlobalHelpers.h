@@ -24,8 +24,8 @@
 ** RenderMan (R) is a registered trademark of Pixar
 */
 
-#ifndef liquidGlobalHelpers_H
-#define liquidGlobalHelpers_H
+#ifndef liqGlobalHelpers_H
+#define liqGlobalHelpers_H
 
 /* ______________________________________________________________________
 ** 

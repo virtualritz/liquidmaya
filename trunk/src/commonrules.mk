@@ -45,7 +45,7 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidRibObj.$(OBJEXT) \
     	    	    liquidRibNode.$(OBJEXT) \
     	    	    liquidRibData.$(OBJEXT) \
-    	    	    liquidGlobalHelpers.$(OBJEXT) \
+    	    	    liqGlobalHelpers.$(OBJEXT) \
     	    	    liquidRibNuCurveData.$(OBJEXT) \
     	    	    liquidRibMeshData.$(OBJEXT) \
     	    	    liquidRibLocatorData.$(OBJEXT) \
@@ -74,7 +74,7 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibObj.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibNode.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidGlobalHelpers.$(OBJEXT) \
+    	    	    $(VPATH)/liqGlobalHelpers.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibNuCurveData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibMeshData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibLocatorData.$(OBJEXT) \

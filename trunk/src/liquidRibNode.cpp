@@ -73,7 +73,7 @@ extern "C" {
 #include <maya/MFnAttribute.h>
 
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liquidRibNode.h>
 #include <liquidMemory.h>
 

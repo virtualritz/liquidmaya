@@ -72,7 +72,7 @@ extern int debugMode;
 #include <liqPreviewShader.h>
 #include <liquidMemory.h>
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 
 
     // Set default values
