@@ -100,6 +100,7 @@ typedef struct liqPreviewShoptions
 
 int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, const char *ddName );
 
+#ifndef _WIN32
 void liquidNewPreview( liqPreviewShoptions *options )
 {
     int val = 0;
@@ -142,6 +143,7 @@ void liquidNewPreview( liqPreviewShoptions *options )
     val = 1;	// Set a "all is ok" returned value
     pthread_exit( ( void * )&val);
 }
+#endif // ifndef _WIN32
 
 MStatus	liquidPreviewShader::doIt( const MArgList& args )
 {
@@ -170,7 +172,7 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
     free( systemTempDirectory );
     systemTempDirectory = (char *)malloc( sizeof( char ) * 256 );
     strcpy( systemTempDirectory, tempRibName.asChar() );
-    outpuPreviewShader( systemTempDirectory, shaderName.asChar(), useIt ? "it" : "framebuffer" );
+    liquidOutpuPreviewShader( systemTempDirectory, shaderName.asChar(), useIt ? "it" : "framebuffer" );
     // Hmmmmmmm should do something here for entropy and Aqsis
     _spawnlp(_P_DETACH, "prman", "prman", tempRibName.asChar(), NULL);
     free( systemTempDirectory );
