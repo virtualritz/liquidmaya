@@ -1,158 +1,146 @@
+1.6.7 (on sourceforge again!)
+
+- Fix to Subdivision UI
+
+
 1.6.6 (not on sourceforge):
 
-- Yuri Meshalkin: Support for creases/corners/holes on subdivison meshes
+- Support for creases/corners/holes on subdivison meshes
     including a nice Subdivision Surface Inspector panel    
-- Yuri Meshalkin: Support for arbitrary renderer configurations in the Liquid
+- Support for arbitrary renderer configurations in the Liquid
     Render Globals    
-- Yuri Meshalkin: Support for rendering dependent files w/o the need to use a
+- Support for rendering dependent files w/o the need to use a
     Job Script anymore (e.g. shadow passes)
-- Moritz: Several different Liquid plug-ins can now be installed on the same
+- Several different Liquid plug-ins can now be installed on the same
     machine
-- Moritz: Added support for certain ray tracing attributes on lights    
-- Moritz: RIB & display filename from the Liquid Render Globals is handled more
+- Added support for certain ray tracing attributes on lights    
+- RIB & display filename from the Liquid Render Globals is handled more
     logical now (hopefully):
     - The scene's name is used as the display name if the latter was omitted
     - The display name is never used as the RIB basename
     - The RIB basename is used as the display name if the latter was omitted
     - The scene's name is used as the RIB basename if the latter was omitted    
-- Moritz: Pathnames are now santized everywhere in the RIB
-- Moritz: Fixed a bug that caused motion blur to be switched off randomly
+- Pathnames are now santized everywhere in the RIB
+- Fixed a bug that caused motion blur to be switched off randomly
     (Thx for reporting & providing a Maya scene exposing it go to Christopher)
 
 
 1.6.5 (not on sourceforge):
 
-- Rob Pieke: New code for correct handling of particle motion blur
-- Moritz: Fixed a bad memory handling bug that led to crashes with the improved
+- New code for correct handling of particle motion blur
+- Fixed a bad memory handling bug that led to crashes with the improved
     uv code on subdivs and polygon-/subdivision meshes
-- Moritz: RIB size improvements (smaller RIBs):
+- RIB size improvements (smaller RIBs):
     - Liquid now uses RIB inline parameter declarations only
     - Support of 3Delight's more compact "sphere"-type RiPoint particles
-- Moritz: RIB Attribute support through a new 'Attributes' pop-up in the Liquid
+- RIB Attribute support through a new 'Attributes' pop-up in the Liquid
     menu and a new 'Liquid' roll-out in Maya's Attribute Editor
-- Moritz: Trace set membership support through a new 'Set Attributes' pop-up in
+- Trace set membership support through a new 'Set Attributes' pop-up in
     the Liquid menu and a new 'Liquid' roll-out for objectSets in Maya's
     Attribute Editor
-- Moritz: Buffed up Maya lights support. Point-, distant- and spotlights now
+- Buffed up Maya lights support. Point-, distant- and spotlights now
     use a liquid* variant of the resp. shader. Most Maya light attributes are
     handled as a user would expect (particularly Decay)
-- Moritz: New Liquid global 'Shutter Config'. Allows to choose if the shutter
+- New Liquid global 'Shutter Config'. Allows to choose if the shutter
     opens on frame, is centered on frame, is centered between frames or closes
     on the next frame (do I hear someone bitch about not enough shutter
     configurations? ;>)
-- Moritz: Lights too can now have ray tracing attributes attached through the
+- Lights too can now have ray tracing attributes attached through the
     Light menu
 
 
 1.6.4 (not on sourceforge):
 
-- Moritz: Added new Liquid global "Output Mesh UVs" to control writing of
+- Added new Liquid global "Output Mesh UVs" to control writing of
     redundant uv data to RIBs
-- Moritz: Fixed uv code for Maya subdivision surfaces
-- Moritz: Switched uv interpolation scheme for 3Delight from "facevarying" to
+- Fixed uv code for Maya subdivision surfaces
+- Switched uv interpolation scheme for 3Delight from "facevarying" to
     "facevertex" -- this should solve all uv warping/interpolation problems on
-    subdivsion surfaces
-- Moritz: Added default behaviour for undefined shader searchpath and added
+    subdivison surfaces
+- Added default behaviour for undefined shader searchpath and added
     default shader searchpath to the searchpath written to the RIB
 
 
 1.6.3 (not on sourceforge):
 
-- Moritz: Added new options to and buffed up Liquid's shader preview
-- Moritz: Moved Fluid options to their own tab in the Liquid Render Globals
-- Moritz: Minor bugfixes in Liquid's curve code
-- Moritz: Added code to support curves in 3Delight
+- Added new options to and buffed up Liquid's shader preview
+- Moved Fluid options to their own tab in the Liquid Render Globals
+- Minor bugfixes in Liquid's curve code
+- Added code to support curves in 3Delight
 
 
 1.6.2 (not on sourceforge):
 
-- Moritz: Liquid now automatically substitutes backslashes on Windows in
+- Liquid now automatically substitutes backslashes on Windows in
     Fluid's file chooser dialog
-- Moritz: Merged-in Rob Pieké's & George Harker's latest additions which
-    inlcude:
-    - full sprite particle support
-    - full Pixie support
-    - OSX support
-- Moritz: Added new Liquid global to control output of shaders in deep shadow
+- New sprite particle support
+- Pixie support
+- OSX support
+- Added new Liquid global to control output of shaders in deep shadow
     passes
-- Moritz: Fixed initialization and cleanup code to account for more than five
+- Fixed initialization and cleanup code to account for more than five
     motion samples
 
 
 1.6.1-5 (not on sourceforge):
 
-- Moritz: Deactivated the code in liquidReAttachParams.mel that led to flushing
+- Deactivated the code in liquidReAttachParams.mel that led to flushing
     of string paramater values on shader reload in Fluid
-- Cedric Paille: Fixed Maya Subdivision Surface code -- Maya subdivs now work,
+- Fixed Maya Subdivision Surface code -- Maya subdivs now work,
     including Maya's creasing system. Hardness is ignored, this is a limitation
     of the Maya API
-    Moritz: Creased edges and vertices are written with a hardness of 6.0 now
+    Creased edges and vertices are written with a hardness of 6.0 now
       -- this gives a nice, subtle bevel and ensures that surfaces are still
       tangent continous at creases
 
 
 1.6.1-4 (not on sourceforge):
 
-- Moritz: light linking is no longer (erratically) written out in a shadow pass
-- Moritz: lights and light linking can now be written out in a deep shadow pass
+- light linking is no longer (erratically) written out in a shadow pass
+- lights and light linking can now be written out in a deep shadow pass
     if the "Output Lightsources" in the "Deep Shadow Maps" rollout of the
     Liquid Render Globals is checked
-- Moritz: added full support (and new Liquid global) for relative pathnames;
+- added full support (and new Liquid global) for relative pathnames;
     RIBs, archives, the job script etc. now all contain relative pathnames if
     this option is switched on
-- Moritz: added command line support for rendering sequences to the dojob.py
+- added command line support for rendering sequences to the dojob.py
     Python script
 
 
 1.6.1-3 (not on sourceforge):
 
-- Moritz: Added simple MEL parameter expression scripting valid in all liquid
-    string input fields; syntax:
-    [MEL code]
-    square brackets must be escaped, e.g.:
-    [getAttr myobj.userArray\[3\]]
-    (CURRENTLY DEACTIVATED, NEEDS SOME FIXING IN THE PARSER!!!)
-- Moritz: Fixed uninitialized string array bug with blobbies; blobbies code
+- Fixed uninitialized string array bug with blobbies; blobbies code
     activated -- blobbies now actually work
-- Moritz: Replaced all if(debug... code with LIQDEBUGPRINTF(...
-    Todo: Check if this works everywhere
-- Moritz: Fixed Motion Samples glitch; now the maximum number of motion
-    samples is defined in liquid.h:
-    LIQMAXMOTIONSAMPLES 16
-    There's also a bounds check done against this, when the resp. Liquid global
-    is read, so no array out of bounds crash happens anymore when a user
-    specifies a value greater than this in the Liquid globals
-- Moritz: replaced 'endl' with 'std::endl' in liqRenderScript.h to solve endl
-    problem on win32
-- Moritz: Added quotes to render script filename in win32 build
-- Moritz: Added binary RIB output support for 3Delight
-- Moritz: Added deep shadow support for 3Delight's "dsm" driver
-- Moritz: Changed Opacity to be a color instead of a float
+- Fixed Motion Samples glitch; now the maximum number of motion
+    samples is 16
+- Added quotes to render script filename in win32 build
+- Added binary RIB output support for 3Delight
+- Added deep shadow support for 3Delight's "dsm" driver
+- Changed Opacity to be a color instead of a float
 
 
 1.6.1-2 (not on sourceforge):
 
-- Moritz: Fixed __Pref bug with subdiv-/polygon meshes; __Pref was not
+- Fixed __Pref bug with subdiv-/polygon meshes; __Pref was not
     initialized correctly and hence never got written out correctly to the RIB
-- Olivier Paquet: fixed buffer overflow bug with subdivs that have
-    "interpolateboundary" checked
-- Moritz: Fixed shader preview in Fluid
+- Interpolate Bboundary on subdivs works now
+- Fixed shader preview in Fluid
 
 
 1.6.1 (not on sourceforge):
 
-- Moritz: Displacement bounds are now explicitly specified in "shader" space;
+- Displacement bounds are now explicitly specified in "shader" space;
     there's no way to currently change this; maybe add another Liquid global?
-- Moritz: Added new Liquid global: compiledShaderExt; can be set to e.g. "sdl"
+- Added new Liquid global: compiledShaderExt; can be set to e.g. "sdl"
     for 3Delight or "slo" for PRMan
-- Moritz: Liquid now writes out all coordinate systems after the lights but
+- Liquid now writes out all coordinate systems after the lights but
     before any other stuff in the RIB; previously coordinate systems where
     written out scattered between the other geometry according to the order in
     the Maya Outliner
-- Moritz: If a Maya light has raytraced shadows switched on,
+- If a Maya light has raytraced shadows switched on,
     Attribute "light" "string shadows" [ "on" ]
     is now written to the RIB regardless of BMRT being used or not
-- Moritz: New attribute liquidInvisible; works as mtorInvisible -- tagged
+- New attribute liquidInvisible; works as mtorInvisible -- tagged
     objects are ignored by Liquid
 
 
@@ -168,18 +156,18 @@
 
 1.5.6 (not on sourceforge):
 
-- Moritz: Added quotes to all filenames for win32. Now pathnames with spaces
+- Added quotes to all filenames for win32. Now pathnames with spaces
     will work in bloody Windoze
-- Moritz: new Liquid global: preGeom; the contents of this string is written to
+- new Liquid global: preGeom; the contents of this string is written to
     the RIB after lights and coordinate systems, but before geometry
-- Moritz: Liquid now understands the mtorSubdiv attribute
-- Moritz: /Considerably/ buffed up resp. changed the entire MEL interface;
+- Liquid now understands the mtorSubdiv attribute
+- /Considerably/ buffed up resp. changed the entire MEL interface;
     changed naming to be more MtoR compatible: added separators and ellipses,
     reordered menus where appropriate and added support for file browser
     dialogs to Fluid string input fields
-- Moritz: Removed BMRT tab and options from MEL interface as they are obsolete
+- Removed BMRT tab and options from MEL interface as they are obsolete
     and should be replaced by a new set of raytrace options as e.g. in MtoR
-- Moritz: Fixed 3Delight settings in liqDelightRenderer.cpp (almost all where
+- Fixed 3Delight settings in liqDelightRenderer.cpp (almost all where
     wrong)
 - Aghiles Kheffache: VC++ project settings to compile Liquid with 3Delight
 
