@@ -2,6 +2,8 @@
 	- Changed liquidPlug to source liquidStartup.mel from LIQUIDHOME if it exists
 	- Updated OSX build to include 3Delight + some tidying
 	- liquidStartup.mel now sources liquidShutdown.mel
+	- Fixed unmake liquidRenderCurve
+	- changed liquid user home to ~/.liquid
 	
 Release 1.6.7 ------------------------------------------------------------------
 
