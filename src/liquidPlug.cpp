@@ -77,7 +77,7 @@ extern "C" {
 #include <maya/MPxCommand.h>
 
 #include <liquid.h>
-#include <liquidRibTranslator.h>
+#include <liqRibTranslator.h>
 #include <liqGetSloInfo.h>
 #include <liqGetAttr.h>
 #include <liqAttachPrefAttribute.h>
@@ -114,7 +114,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
 
     MGlobal::displayInfo("\nLiquid by Colin Doncaster\n");
 
-    status = plugin.registerCommand("liquid", liquidRibTranslator::creator, liquidRibTranslator::syntax );
+    status = plugin.registerCommand("liquid", liqRibTranslator::creator, liqRibTranslator::syntax );
     LIQCHECKSTATUS( status, "Can't register liquid translator command" );
 
     // register the liquidAttachPrefAttribute command

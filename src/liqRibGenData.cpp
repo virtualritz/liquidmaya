@@ -72,7 +72,7 @@ extern "C" {
 #include <liqGlobalHelpers.h>
 #include <liqRibGenData.h>
 #include <liqMemory.h>
-#include <liquidRIBGen.h>
+#include <liqRibGen.h>
 
 extern int debugMode;
 
@@ -148,9 +148,9 @@ void liqRibGenData::write()
 	ribStatus.ribFP = liqglo_ribFP;
 	ribStatus.frame = liqglo_lframe;
 	if ( liqglo_currentJob.isShadow ) {
-		ribStatus.renderPass = liquidRIBStatus::rpShadow;
+		ribStatus.renderPass = liqRIBStatus::rpShadow;
 	} else {
-		ribStatus.renderPass = liquidRIBStatus::rpFinal;
+		ribStatus.renderPass = liqRIBStatus::rpFinal;
 	}
 	ribStatus.transBlur = liqglo_doMotion;
 	ribStatus.defBlur = liqglo_doDef;
@@ -176,8 +176,8 @@ void liqRibGenData::write()
 	*/
 	//ribStatus.RiConnection = RiDetach();
 	
-	typedef liquidRIBGen *(*createRibGen)();
-	typedef void (*destroyRibGen)( liquidRIBGen * );
+	typedef liqRibGen *(*createRibGen)();
+	typedef void (*destroyRibGen)( liqRibGen * );
 	
 	createRibGen		createRibGenFunc;
 	destroyRibGen		destroyRibGenFunc;
@@ -197,7 +197,7 @@ void liqRibGenData::write()
 		destroyRibGenFunc = (destroyRibGen)GetProcAddress( handle, "RIBGenDestroy" );
 		if ( ( createRibGenFunc != NULL ) && ( destroyRibGenFunc != NULL ) ) {
 #endif
-			liquidRIBGen *ribGen = (*createRibGenFunc)();
+			liqRibGen *ribGen = (*createRibGenFunc)();
 			ribGen->_GenRIB( &ribStatus );
 			(*destroyRibGenFunc)( ribGen );
 		} else {

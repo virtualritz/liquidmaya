@@ -25,7 +25,7 @@
 
 #include <liquid.h>
 #include <liqWriteArchive.h>
-#include <liquidRibObj.h>
+#include <liqRibObj.h>
 
 #include <maya/MArgList.h>
 #include <maya/MSyntax.h>
@@ -144,10 +144,10 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
     // we're looking at a shape node, so write out the geometry to the RIB
     outputObjectName(objDagPath);
     if (objDagPath.hasFn(MFn::kMesh)) {
-      liquidRibObj ribObj(objDagPath, MRT_Mesh);
+      liqRibObj ribObj(objDagPath, MRT_Mesh);
       ribObj.writeObject();
     } else if (objDagPath.hasFn(MFn::kNurbsSurface)) {
-      liquidRibObj ribObj(objDagPath, MRT_Nurbs);
+      liqRibObj ribObj(objDagPath, MRT_Nurbs);
       ribObj.writeObject();
     } else {
       MGlobal::displayWarning("skipping unknown geometry type in liquidWriteArchive");

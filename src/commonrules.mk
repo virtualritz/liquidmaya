@@ -36,26 +36,26 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liqPrmanRenderer.$(OBJEXT) \
     	    	    liqAqsisRenderer.$(OBJEXT) \
     	    	    liqDelightRenderer.$(OBJEXT) \
-    	    	    liquidRibTranslator.$(OBJEXT) \
+    	    	    liqRibTranslator.$(OBJEXT) \
     	    	    liqRibParticleData.$(OBJEXT) \
     	    	    liqTokenPointer.$(OBJEXT) \
     	    	    liqWriteArchive.$(OBJEXT) \
     	    	    liqRibSurfaceData.$(OBJEXT) \
     	    	    liqPreviewShader.$(OBJEXT) \
-    	    	    liquidRibObj.$(OBJEXT) \
-    	    	    liquidRibNode.$(OBJEXT) \
+    	    	    liqRibObj.$(OBJEXT) \
+    	    	    liqRibNode.$(OBJEXT) \
     	    	    liqRibData.$(OBJEXT) \
     	    	    liqGlobalHelpers.$(OBJEXT) \
-    	    	    liquidRibNuCurveData.$(OBJEXT) \
-    	    	    liquidRibMeshData.$(OBJEXT) \
-    	    	    liquidRibLocatorData.$(OBJEXT) \
+    	    	    liqRibNuCurveData.$(OBJEXT) \
+    	    	    liqRibMeshData.$(OBJEXT) \
+    	    	    liqRibLocatorData.$(OBJEXT) \
     	    	    liqRibCoordData.$(OBJEXT) \
-    	    	    liquidRibLightData.$(OBJEXT) \
-    	    	    liquidRibHT.$(OBJEXT) \
+    	    	    liqRibLightData.$(OBJEXT) \
+    	    	    liqRibHT.$(OBJEXT) \
     	    	    liqGetSloInfo.$(OBJEXT) \
     	    	    liqGetAttr.$(OBJEXT) \
     	    	    liqRibGenData.$(OBJEXT) \
-    	    	    liquidRibSubdivisionData.$(OBJEXT) \
+    	    	    liqRibSubdivisionData.$(OBJEXT) \
     	    	    liqMemory.$(OBJEXT) \
     	    	    liqProcessLauncher.$(OBJEXT)
 
@@ -70,21 +70,21 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
 		    $(VPATH)/liqWriteArchive.$(OBJEXT) \
     	    	    $(VPATH)/liqPreviewShader.$(OBJEXT) \
     	    	    $(VPATH)/liqRibSurfaceData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibTranslator.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibObj.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibNode.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibTranslator.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibObj.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibNode.$(OBJEXT) \
     	    	    $(VPATH)/liqRibData.$(OBJEXT) \
     	    	    $(VPATH)/liqGlobalHelpers.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibNuCurveData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibMeshData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibLocatorData.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibNuCurveData.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibMeshData.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibLocatorData.$(OBJEXT) \
     	    	    $(VPATH)/liqRibCoordData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibLightData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibHT.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibLightData.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibHT.$(OBJEXT) \
     	    	    $(VPATH)/liqGetSloInfo.$(OBJEXT) \
     	    	    $(VPATH)/liqGetAttr.$(OBJEXT) \
     	    	    $(VPATH)/liqRibGenData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibSubdivisionData.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibSubdivisionData.$(OBJEXT) \
     	    	    $(VPATH)/liqMemory.$(OBJEXT) \
     	    	    $(VPATH)/liqProcessLauncher.$(OBJEXT)
 

@@ -77,7 +77,7 @@ extern "C" {
 #include <maya/MFileIO.h>
 
 #include <liquid.h>
-#include <liquidRibTranslator.h>
+#include <liqRibTranslator.h>
 #include <liqGetSloInfo.h>
 #include <liqGetAttr.h>
 #include <liqPreviewShader.h>
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
         return( 1 ) ;
       }
 
-      liquidRibTranslator liquidTrans;
+      liqRibTranslator liquidTrans;
 
 #ifndef _WIN32
       for (unsigned i = 0; i <= SIGRTMAX; i++) 
