@@ -1316,8 +1316,8 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 //  Description:
 //      This method actually does the renderman output 
 {
-	MStatus status;
-    	MString lastRibName;
+    MStatus status;
+    MString lastRibName;
 	
 	// Parse the arguments and set the options.
 	if ( args.length() == 0 ) {
@@ -1946,21 +1946,43 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 		nPlug.setValue( lastRibName );
 		
 		if ( debugMode ) { printf("-> spawning command.\n" ); }
-		if ( useAlfred && ( outputpreview == 1 )) {
-#ifdef LINUX
+
+
+		if ( outputpreview ) {
+		  if ( useAlfred ) {
+#if defined(LINUX)
 			if (fork() == 0) execlp( "alfred", "alfred", alfredFileName, NULL);
-#endif
-#ifdef IRIX
+#elif defined(IRIX)
 			pcreatelp( "alfred", "alfred", alfredFileName, NULL); 
+#elif defined(_WIN32)
+            // TODO: this will freeze Maya until the preview is done - need to replace system() with CreateProcess()
+            // but this whole platform-dependant process launching should be encapsulated in a class first
+            MString cmd = MString("alfred ") + alfredFileName;
+            int res = system(cmd.asChar());
+            if (res == -1) {
+                MGlobal::displayError("error launching command: " + cmd);
+            }
+#else
+			error - unknown platform
 #endif
-		} else if ( outputpreview == 1 ) {	   
+		  } else {	   
 			// if we are previewing the scene spawn the preview
-#ifdef LINUX
+#if defined(LINUX)
 			if (vfork() == 0) execlp( m_renderCommand.asChar(), m_renderCommand.asChar(), liqglo_currentJob.ribFileName.asChar(), NULL);
-#endif
-#ifdef IRIX
+#elif defined(IRIX)
 			pcreatelp( m_renderCommand.asChar(), m_renderCommand.asChar(), liqglo_currentJob.ribFileName.asChar(), NULL);
+#elif defined(_WIN32)
+			// TODO: this will freeze Maya until the preview is done - need to replace system() with CreateProcess()
+            // but this whole platform-dependant process launching should be encapsulated in a class first
+            MString cmd = m_renderCommand + " " + liqglo_currentJob.ribFileName;
+            int res = system(cmd.asChar());
+            if (res == -1) {
+                MGlobal::displayError("error launching command: " + cmd);
+            }
+#else
+			error - unknown platform;
 #endif
+          }
 		}
 		
 		if ( debugMode ) { printf("-> setting frame to current frame.\n" ); }
