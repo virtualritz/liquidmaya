@@ -1,0 +1,68 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Colin Doncaster">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (Windows NT 5.0; U) [Netscape]">
+   <title>Liquid: Bug Report Outline</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<b><u><font size=+3>Liquid: Bug Report Outline</font></u></b>
+<p>&nbsp;&nbsp;&nbsp; This is a quick document to describe how liquid bugs
+( let's hope there isn't to many ), liquid core development suggestions
+( the way the output works, certain features ) and liquid UI/Design suggestions
+( interface, workflow ) are to be submitted.
+<p><b><font color="#666666"><font size=+1>Overview</font></font></b>
+<br>
+  &nbsp;&nbsp;&nbsp; Liquid is a toolset to be used with maya and rendermen to 
+  ease the pipeline between the two with various layers defining the tools.&nbsp; 
+  There is the core code - which is the actual exporter and "workhorse" of the 
+  tool, and there is the UI/Design code - dealing with the UI, interface and workflow.&nbsp; 
+  The goal of liquid was to seperate the two as much as posible leading to a level 
+  of customizability that allows the user to work in the most effecient manner.&nbsp; 
+  What liquid's UI/Design code trys to do is supply the tools needed to develop 
+  this workflow as well as give a base interface to develop on top of.&nbsp; With 
+  that said - during development there are aspects of the code that need defining 
+  by the users which is where reports come in.&nbsp; Reports are like templates 
+  that allow the author to manage these requests and make sure everything makes 
+  it into upcoming releases.&nbsp; The last form of a report is the Bug report 
+  - which deals with elements that cause Liquid to behave in an unexpected way. 
+<p><b><font color="#666666"><font size=+1>Core Development Suggestions</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; Liquid's internal core code is all written in C++
+and deals a lot with the actual rib structure output and core level output.&nbsp;
+What should be included with these suggestions are things like surface
+attribute elements, new geometry support etc.
+<p>&nbsp;&nbsp;&nbsp; These should be sent to the <a href="mailto:colin@nomadicmonkey.com">author</a>
+with the subject starting with "Liquid Core" and a detailed description
+of the feature.
+<p><b><font color="#666666"><font size=+1>Ui/Design Suggestions</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; Liquids UI/Workflow is defined mostly with a set
+of mel scripts.&nbsp; There is also a set of helper commands developed
+for querying renderman shader attributes and assigning them to objects.
+<p>&nbsp;&nbsp;&nbsp; There should be sent to the <a href="mailto:colin@nomadicmonkey.com">author</a> 
+  with the subject starting with "Liquid UI" and a detailed description of the 
+  feature. 
+<p><b><font color="#666666"><font size=+1>BUGS</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; Bugs are the developers thorn in the side.&nbsp;
+These should be logged in a very strict manner and the template should
+be followed.&nbsp; Please log all Liquid bugs by sending them to the author
+in this manner
+<p><u>Status:</u> status - this should be "Logged"
+<br><u>Priority:</u> priority level - how soon this needs to be fixed,
+please really consider this strongly, if it's something small that can
+easily be worked around make this low, if it's something that isn't affecting
+getting a shot done but you'd like it to be done asap then set it to medium
+and if it's something that really needs to get done and it's holding up
+all production make it high.
+<br><u>Bug:</u> a detailed description of the bug
+<br><u>Reported By:</u> your name and email address
+<br><u>Possibilities:</u> possible reasons why it may be happening
+<br><u>Reproducable:</u> Yes or No if it's reproducable
+<p> A bug is defined as a feature that is acting unexpectedly. <br>
+  &nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="Author" content="Colin Doncaster">
+   <title>Liquid: Feature List</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<b><u><font size=+3>Liquid: Feature List</font></u></b>
+<p><b><font color="#666666"><font size=+1>Geometry Output</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; -Nurbs Surfaces
+<br>&nbsp;&nbsp;&nbsp; -Nurbs Curves ( as RiCurve and RiNuCurve in RenderDotC
+)
+<br>&nbsp;&nbsp;&nbsp; -Polygonal Mesh
+<br>&nbsp;&nbsp;&nbsp; -Subdivision Surfaces ( still in development )
+<br>&nbsp;&nbsp;&nbsp; -Particles ( using RiPoints for point particles,
+RiCurves for lines and RiImplicit for blobbies )
+<br>&nbsp;&nbsp;&nbsp; -Full Trimmed Surfaces
+<p><b><font color="#666666"><font size=+1>Light Output</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; -All Maya lights supported
+<br>&nbsp;&nbsp;&nbsp; -If no shader is attached to the lights than default
+renderman shaders are used ( pointlight, spotlight, distantlight and ambientlight
+)
+<br>&nbsp;&nbsp;&nbsp; -Automatic shadow generation for spotlights, directional
+lights and point lights
+<br>&nbsp;&nbsp;&nbsp; -Shadow Camera controllers can be used to interactive
+place shadows
+<br>&nbsp;&nbsp;&nbsp; -Initial support for Area Lights.
+<p><b><font color="#666666"><font size=+1>Texture Output</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; -Full U/V Support for Nurbs Surfaces
+<br>&nbsp;&nbsp;&nbsp; -Full U/V Support for Nurbs Curves
+<br>&nbsp;&nbsp;&nbsp; -Full U/V Support for Polygonal Meshes
+<br>&nbsp;&nbsp;&nbsp; -Full U/V Support for Subdivision Surfaces
+<br>&nbsp;&nbsp;&nbsp; -Particles can have U/V set with Maya particle expressions
+<br>&nbsp;&nbsp;&nbsp; -Alternative output for Polygonal Meshes to support
+multiple U/V sets
+<br>&nbsp;&nbsp;&nbsp; -Normalized U/V output for Nurbs Surfaces
+<p><b><font color="#666666"><font size=+1>Custom Attributes</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; -Nurbs, Polygons, Subdivision Surfaces and Lights
+can all have custom attributes attached that get passed into renderman
+on the parameter list
+<br>&nbsp;&nbsp;&nbsp; -Support for Float, Float Array, String, Point,
+Point Array, Color, Color Array, Normal, Normal Array, Vector, Vector Array
+<p><b><font color="#666666"><font size=+1>Shader Interface</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; - Fluid, a full featured shader interface
+<br>&nbsp;&nbsp;&nbsp; - Tools include load, reload, remove, duplicate,
+edit parameters, assign, pick assigned objects, pick assigned shader and
+preview
+<br>&nbsp;&nbsp;&nbsp; - Support for Liquid Interface Files ( .lif ) to
+build custom dialogs for all shader types to include help, drop down menus
+and set default parameters
+<br>&nbsp;&nbsp;&nbsp; - Multiple selection, assigning and loading
+<br>&nbsp;&nbsp;&nbsp; - Modal interface
+<br>&nbsp;&nbsp;&nbsp; - Shader preview window with auto-update option
+when shader parameters change
+<p><b><font color="#666666"><font size=+1>Scripting, Expressions and Devkit</font></font></b>
+<br>&nbsp;&nbsp;&nbsp; - Fully integrated into Maya to use all of Maya's
+expression tools
+<br>&nbsp;&nbsp;&nbsp; - Long list of commands for easy mel scripting
+<br>&nbsp;&nbsp;&nbsp; - Command line version for distributed rib gen and
+unix scripted rib generation
+<br>&nbsp;&nbsp;&nbsp; - Support for procedural Rib Genetator plugins with
+full to the Maya scene and Renderman bindings in the Developers Kit
+<br>&nbsp;&nbsp;&nbsp; - Ships with Developers Kit.
+<br>&nbsp;
+</body>
+</html>
