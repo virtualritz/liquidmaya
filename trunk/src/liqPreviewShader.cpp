@@ -31,7 +31,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <iostream.h>
 #include <sys/types.h>
 // Renderman Headers
 extern "C" {
@@ -73,6 +72,7 @@ extern int debugMode;
 #include <liqMemory.h>
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
+#include <liqIOStream.h>
 
 
     // Set default values

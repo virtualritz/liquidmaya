@@ -36,7 +36,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <iostream.h>
 #include <sys/types.h>
 
 // Renderman Headers
@@ -77,6 +76,7 @@ extern "C" {
 
 #include <liqGetSloInfo.h>
 #include <liqMemory.h>
+#include <liqIOStream.h>
 
 extern int debugMode;
 // Entropy to PRman type conversion : numbering has a break between
