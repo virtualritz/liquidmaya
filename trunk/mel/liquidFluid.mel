@@ -499,7 +499,7 @@ global proc liquidFluid ()
       string $listPaneLayout = `paneLayout -configuration "vertical2"`;
         string $shaderBrowser = `liquidShaderBrowser`;
 
-        string $shaderExt = "*." + `getAttr liquidGlobals.compiledShaderExt`;
+        string $shaderExt = "*." + `getAttr liquidGlobals.shaderExt`;
         string $fileBrowser[] = `liquidFileBrowserIn $shaderExt "liquidFluidLoadCMD"`;
       setParent ..;
 

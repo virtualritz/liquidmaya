@@ -175,7 +175,6 @@ global proc liquidInitGlobalVals()
 
     ,"relativeFileNames", "bool", false
 
-    ,"compiledShaderExt", "string", "sd?"
     ,"expandAlfred", "bool", false
 
     ,"preWorld",  "string", ""
@@ -185,6 +184,8 @@ global proc liquidInitGlobalVals()
     ,"renderScriptFormat", "long", 2
     ,"renderScriptCommand", "string", "%LIQUIDHOME%/scripts/dojob.py"
 
+    ,"fluidShaderBrowserDefaultPath", "string", ""
+    
     ,"previewRenderer", "string", ""
     ,"previewSize", "long", 128
     ,"previewPrimitive", "long", 0
@@ -1269,7 +1270,7 @@ global proc liquidGlobalsForm() {
         setParent ..;
         frameLayout -bs "etchedIn" -l "Shader Browser" -cll true;
           columnLayout -adj true;
-            liquidShowStringGlobal "compiledShaderExt" "Shader Extension";
+	    liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path";
           setParent ..;
         setParent ..;
       setParent ..;

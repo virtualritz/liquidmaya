@@ -16,6 +16,9 @@ lib newversion clean debug release :
 		if( test -f "/etc/redhat-release" ); then \
 			whichflags=redhat62dbg; \
 			os=redhat; \
+		elif( test -f "/etc/slackware-version" ); then \
+			whichflags=slackware1dbg; \
+			os=slackware; \
 		elif( test -f "/etc/gentoo-release" ); then \
 			whichflags=gentoo14dbg; \
 			os=gentoo; \
