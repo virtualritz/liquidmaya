@@ -253,6 +253,7 @@ private :
     MStringArray m_DDimageType;
     MStringArray m_DDimageMode;
     MStringArray m_DDparamType;
+    MIntArray    m_DDenabled;
 
     liquidlong m_rFilter;
     float m_rFilterX, m_rFilterY;
