@@ -195,7 +195,7 @@ void liquidRibGenData::write()
 		if ( ( createRibGenFunc != NULL ) && ( destroyRibGenFunc != NULL ) ) {
 #endif
 			liquidRIBGen *ribGen = (*createRibGenFunc)();
-			int i = ribGen->_GenRIB( &ribStatus );
+			ribGen->_GenRIB( &ribStatus );
 			(*destroyRibGenFunc)( ribGen );
 		} else {
 			MString errorString = "Error reading RIBGenCreate or RIBGenDestroy in RibGen: ";
