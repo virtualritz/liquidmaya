@@ -70,7 +70,7 @@ extern "C" {
 #include <liquidRibLightData.h>
 #include <liquidRibLocatorData.h>
 #include <liquidRibMeshData.h>
-#include <liquidRibParticleData.h>
+#include <liqRibParticleData.h>
 #include <liquidRibNuCurveData.h>
 #include <liquidRibSubdivisionData.h>
 #include <liquidRibCoordData.h>
@@ -143,7 +143,7 @@ data( NULL )
 			    data = new liquidRibNuCurveData( obj );
 		    } else if ( obj.hasFn(MFn::kParticle) ) {
 			    type = MRT_Particles;
-			    data = new liquidRibParticleData( obj );
+			    data = new liqRibParticleData( obj );
 		    } else if ( obj.hasFn(MFn::kMesh) ) {
 			    /* we know we are dealing with a mesh here, now we check to see if it
 			    needs to be handled as a subdivision surface */
