@@ -84,7 +84,7 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
     normalParam( NULL ),
     polyuvParam( NULL ),
     totalNumOfVertices( 0 ),
-    interpBoundary(false)
+    interpBoundary( false )
 {
   if ( debugMode ) { printf("-> creating subdivision surface\n"); }
   MFnMesh     fnMesh( mesh );
@@ -122,8 +122,7 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
   // for each vertex in each face, if not, just grab one for each vertex, so the memory allocations will be different
   int numberOfUVs = 0;
   if ( facevaryingUVs ) {
-    for ( uint pOn = 0; pOn < npolys; pOn++ )
-    {
+    for ( uint pOn = 0; pOn < npolys; pOn++ ) {
       numberOfUVs += fnMesh.polygonVertexCount( pOn );
     }
   } else {
@@ -167,33 +166,35 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
       status = polyIt.getUVIndex( vertOn, tempUVindex, u, v );
       perPolyVertices.append( vertexIndex );
       if ( facevaryingUVs ) {
-        uvPointerPair.setTokenFloat( UVIndex * 2, u );
-        uvPointerPair.setTokenFloat( UVIndex * 2 +1, v );
+        uvPointerPair.setTokenFloat( UVIndex * 2 + 0, u );
+        uvPointerPair.setTokenFloat( UVIndex * 2 + 1, 1 - v );
         UVIndex++;
       } else {
-        uvPointerPair.setTokenFloat( vertexIndex * 2, u );
-        uvPointerPair.setTokenFloat( vertexIndex * 2 +1, v );
+        uvPointerPair.setTokenFloat( vertexIndex * 2 + 0, u );
+        uvPointerPair.setTokenFloat( vertexIndex * 2 + 1, 1 - v );
       }
     } while ( vertOn != 0 );
     ++index;
   }
 
-    verts = (RtInt*)lmalloc( sizeof( RtInt ) * perPolyVertices.length() );
-    perPolyVertices.get( (int*)verts );
+  verts = (RtInt*)lmalloc( sizeof( RtInt ) * perPolyVertices.length() );
+  perPolyVertices.get( (int*)verts );
 
-    // add all of our surface parameters to the vector container
-    tokenPointerArray.push_back( vertexPointerPair );
-    tokenPointerArray.push_back( uvPointerPair );
+  // add all of our surface parameters to the vector container
+  tokenPointerArray.push_back( vertexPointerPair );
+  tokenPointerArray.push_back( uvPointerPair );
 
-    addAdditionalSurfaceParameters( mesh );
+  addAdditionalSurfaceParameters( mesh );
 }
 
 liqRibSubdivisionData::~liqRibSubdivisionData()
 // Description: class destructor
 {
   if ( debugMode ) { printf("-> killing subdivision surface\n"); }
-  lfree( nverts ); nverts = NULL;
-  lfree( verts ); verts = NULL;
+  lfree( nverts );
+  lfree( verts );
+  nverts = NULL;
+  verts  = NULL;
 }
 
 void liqRibSubdivisionData::write()
@@ -213,7 +214,7 @@ void liqRibSubdivisionData::write()
   RtPointer *pointerArray = (RtPointer *) alloca( sizeof(RtPointer) * numTokens );
   assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
 
-  RtInt   ntags      = 0;
+  RtInt    ntags     = 0;
   RtToken *tags      = NULL;
   RtInt   *nargs     = NULL;
   RtInt   *intargs   = NULL;
@@ -224,7 +225,7 @@ void liqRibSubdivisionData::write()
     tags = (RtToken *) alloca( sizeof(RtToken));
     tags[0] = "interpolateboundary";
     tags[1] = NULL;
-    nargs = (RtInt *)   alloca( sizeof(RtInt) * 2);
+    nargs = (RtInt *)  alloca( sizeof(RtInt) * 2);
     nargs[0] = 0;
     nargs[1] = 0;
   }
