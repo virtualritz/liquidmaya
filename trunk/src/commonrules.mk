@@ -51,7 +51,8 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidRibGenData.$(OBJEXT) \
     	    	    liquidPreviewShader.$(OBJEXT) \
     	    	    liquidRibSubdivisionData.$(OBJEXT) \
-    	    	    liquidMemory.$(OBJEXT)
+    	    	    liquidMemory.$(OBJEXT) \
+    	    	    liquidProcessLauncher.$(OBJEXT)
 
 LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liqRibParticleData.$(OBJEXT) \
@@ -74,7 +75,8 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibGenData.$(OBJEXT) \
     	    	    $(VPATH)/liquidPreviewShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibSubdivisionData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidMemory.$(OBJEXT)
+    	    	    $(VPATH)/liquidMemory.$(OBJEXT) \
+    	    	    $(VPATH)/liquidProcessLauncher.$(OBJEXT)
 
 .SUFFIXES: .cpp .$(OBJEXT) .$(PLUGSUF) .c
 

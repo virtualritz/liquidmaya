@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 libsloargs.lib librib.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
+# ADD LINK32 libsloargs.lib librib.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib shell32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "liquid - Win32 PRMan 10 Debug"
@@ -82,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libsloargs.lib librib.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Debug/liquid.mll" /pdbtype:sept /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
+# ADD LINK32 libsloargs.lib librib.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib shell32.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Debug/liquid.mll" /pdbtype:sept /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
 
 !ELSEIF  "$(CFG)" == "liquid - Win32 PRMan 11 Release"
 
@@ -110,7 +110,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 libsloargs.lib librib.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 libsloargs.lib librib.lib libtarget.lib libzip.lib libprmutil.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
+# ADD LINK32 libprmutil.lib libsloargs.lib librib.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib shell32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "liquid - Win32 PRMan 11 Debug"
@@ -138,7 +138,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 libsloargs.lib librib.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Debug/liquid.mll" /pdbtype:sept /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
-# ADD LINK32 libsloargs.lib librib.lib libtarget.lib libzip.lib libprmutil.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Debug/liquid.mll" /pdbtype:sept /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
+# ADD LINK32 libprmutil.lib libsloargs.lib librib.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib shell32.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Debug/liquid.mll" /pdbtype:sept /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
 
 !ENDIF 
 
@@ -190,6 +190,10 @@ SOURCE=.\liquidPlug.cpp
 # Begin Source File
 
 SOURCE=.\liquidPreviewShader.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liquidProcessLauncher.cpp
 # End Source File
 # Begin Source File
 
@@ -286,6 +290,10 @@ SOURCE=..\include\liquidMemory.h
 # Begin Source File
 
 SOURCE=..\include\liquidPreviewShader.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liquidProcessLauncher.h
 # End Source File
 # Begin Source File
 
