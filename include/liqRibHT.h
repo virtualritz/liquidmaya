@@ -37,6 +37,11 @@
 */
 
 #include <liqRibNode.h>
+
+#ifdef OSX
+	#include <Maya/flib.h>
+#endif
+
 #include <map>
 
 typedef std::multimap<ulong, liqRibNode*> RNMAP;
