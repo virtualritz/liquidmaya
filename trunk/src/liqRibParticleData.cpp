@@ -72,6 +72,7 @@ extern "C" {
 #include <maya/MFloatArray.h>
 #include <maya/MIntArray.h>
 #include <maya/MPointArray.h>
+#include <maya/MQuaternion.h>
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
@@ -85,6 +86,7 @@ extern RtFloat liqglo_sampleTimes[5];
 extern liquidlong liqglo_motionSamples;
 extern bool liqglo_doDef;
 extern bool liqglo_doMotion;
+extern structJob liqglo_currentJob;
 
 // these classes are needed to produce a list of particles sorted by their
 // ids.
@@ -675,8 +677,191 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
     }
     break;
 
+    case MPTSprites: {
+        liqTokenPointer Pparameter;
+        liqTokenPointer spriteNumParameter;
+        liqTokenPointer spriteTwistParameter;
+        liqTokenPointer spriteScaleXParameter;
+        liqTokenPointer spriteScaleYParameter;
+        
+        Pparameter.set( "P", rPoint, false, true, false, m_numValidParticles );
+        Pparameter.setDetailType( rVertex );
+        
+        spriteNumParameter.set("spriteNum", rFloat, false, true, false, m_numValidParticles);
+        spriteNumParameter.setDetailType( rUniform );
+
+        spriteTwistParameter.set("spriteTwist", rFloat, false, true, false, m_numValidParticles);
+        spriteTwistParameter.setDetailType( rUniform );
+
+        spriteScaleXParameter.set("spriteScaleX", rFloat, false, true, false, m_numValidParticles);
+        spriteScaleXParameter.setDetailType( rUniform );
+
+        spriteScaleYParameter.set("spriteScaleY", rFloat, false, true, false, m_numValidParticles);
+        spriteScaleYParameter.setDetailType( rUniform );
+
+        bool haveSpriteNums = false;
+        bool haveSpriteNumsArray = false;
+        MObject            spriteNumObject;
+        MFnDoubleArrayData spriteNumArray;
+        float              spriteNum;
+        MPlug              spriteNumPlug = fnNode.findPlug( "spriteNumPP", &status );
+        if ( status == MS::kSuccess )
+        {
+            haveSpriteNumsArray = true;
+            spriteNumPlug.getValue( spriteNumObject );
+            spriteNumArray.setObject( spriteNumObject );
+        }
+        else
+        {
+            spriteNumPlug = fnNode.findPlug( "spriteNum", &status );
+            if ( status == MS::kSuccess )
+            {
+                haveSpriteNums = true;
+                spriteNumPlug.getValue( spriteNum );
+            }
+        }
+        
+        bool haveSpriteTwist = false;
+        bool haveSpriteTwistArray = false;
+        MObject            spriteTwistObject;
+        MFnDoubleArrayData spriteTwistArray;
+        float              spriteTwist;
+        MPlug              spriteTwistPlug = fnNode.findPlug( "spriteTwistPP", &status );
+        if ( status == MS::kSuccess )
+        {
+            haveSpriteTwistArray = true;
+            spriteTwistPlug.getValue( spriteTwistObject );
+            spriteTwistArray.setObject( spriteTwistObject );
+        }
+        else
+        {
+            spriteTwistPlug = fnNode.findPlug( "spriteTwist", &status );
+            if ( status == MS::kSuccess )
+            {
+                haveSpriteTwist = true;
+                spriteTwistPlug.getValue( spriteTwist );
+            }
+        }
+
+        bool haveSpriteScaleX = false;
+        bool haveSpriteScaleXArray = false;
+        MObject            spriteScaleXObject;
+        MFnDoubleArrayData spriteScaleXArray;
+        float              spriteScaleX;
+        MPlug              spriteScaleXPlug = fnNode.findPlug( "spriteScaleXPP", &status );
+        if ( status == MS::kSuccess )
+        {
+            haveSpriteScaleXArray = true;
+            spriteScaleXPlug.getValue( spriteScaleXObject );
+            spriteScaleXArray.setObject( spriteScaleXObject );
+        }
+        else
+        {
+            spriteScaleXPlug = fnNode.findPlug( "spriteScaleX", &status );
+            if ( status == MS::kSuccess )
+            {
+                haveSpriteScaleX = true;
+                spriteScaleXPlug.getValue( spriteScaleX );
+            }
+        }
+
+        bool haveSpriteScaleY = false;
+        bool haveSpriteScaleYArray = false;
+        MObject            spriteScaleYObject;
+        MFnDoubleArrayData spriteScaleYArray;
+        float              spriteScaleY;
+        MPlug              spriteScaleYPlug = fnNode.findPlug( "spriteScaleYPP", &status );
+        if ( status == MS::kSuccess )
+        {
+
+            haveSpriteScaleYArray = true;
+            spriteScaleYPlug.getValue( spriteScaleYObject );
+            spriteScaleYArray.setObject( spriteScaleYObject );
+        }
+        else
+        {
+            spriteScaleYPlug = fnNode.findPlug( "spriteScaleY", &status );
+            if ( status == MS::kSuccess )
+            {
+                haveSpriteScaleY = true;
+                spriteScaleYPlug.getValue( spriteScaleY );
+            }
+        }
+
+        
+        for ( unsigned part_num = 0;
+              part_num < m_numValidParticles;
+              part_num++ ) 
+        {
+            
+            Pparameter.setTokenFloat( part_num,
+                                      posArray[m_validParticles[part_num]].x,
+                                      posArray[m_validParticles[part_num]].y,
+                                      posArray[m_validParticles[part_num]].z );
+            if(haveSpriteNumsArray)
+            {
+                spriteNumParameter.setTokenFloat(part_num,
+                                                 spriteNumArray[m_validParticles[part_num]]);
+            }
+            else if(haveSpriteNums)
+            {
+                spriteNumParameter.setTokenFloat(part_num, spriteNum);
+            }
+
+            if(haveSpriteTwistArray)
+            {
+                spriteTwistParameter.setTokenFloat(part_num,
+                                                   spriteTwistArray[m_validParticles[part_num]]);
+            }
+            else if(haveSpriteTwist)
+            {
+                spriteTwistParameter.setTokenFloat(part_num, spriteTwist);
+            }
+
+            if (haveSpriteScaleXArray)
+            {
+                spriteScaleXParameter.setTokenFloat(part_num,
+                                                    spriteScaleXArray[m_validParticles[part_num]]);
+            }
+            else if (haveSpriteScaleX)
+            {
+                spriteScaleXParameter.setTokenFloat(part_num, spriteScaleX);
+            }
+
+            if (haveSpriteScaleYArray)
+            {
+                spriteScaleYParameter.setTokenFloat(part_num,
+                                                    spriteScaleYArray[m_validParticles[part_num]]);
+            }
+            else if (haveSpriteScaleY)
+            {
+                spriteScaleYParameter.setTokenFloat(part_num, spriteScaleY);
+            }
+        }
+
+     
+        tokenPointerArray.push_back( Pparameter );
+        if(haveSpriteNumsArray || haveSpriteNums)
+        {
+            tokenPointerArray.push_back( spriteNumParameter );
+        }
+        if(haveSpriteTwistArray || haveSpriteTwist)
+        {
+            tokenPointerArray.push_back( spriteTwistParameter );
+        }
+        if(haveSpriteScaleXArray || haveSpriteScaleX)
+        {
+            tokenPointerArray.push_back( spriteScaleXParameter );
+        }
+        if(haveSpriteScaleYArray || haveSpriteScaleY)
+        {
+            tokenPointerArray.push_back( spriteScaleYParameter );
+        }
+     
+    }
+    break;
+
     case MPTNumeric:
-    case MPTSprites:
     case MPTCloudy:
     case MPTTube:
         // do nothing. These are not supported
@@ -877,7 +1062,116 @@ void liqRibParticleData::write()
     }
     break;
 
-    case MPTSprites:
+    case MPTSprites: {
+        int posAttr=-1,
+            numAttr=-1,
+            twistAttr=-1,
+            scaleXAttr=-1,
+            scaleYAttr=-1,
+            colAttr=-1,
+            opacAttr=-1;
+
+        assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
+
+        for ( int i = 0; i < tokenPointerArray.size(); i++ )
+        {
+            if ( strcmp(tokenArray[i], "P") == 0 )
+            {
+                posAttr = i;
+            }
+            else if ( strcmp(tokenArray[i], "spriteNum") == 0 )
+            {
+                numAttr = i;
+            }
+            else if ( strcmp(tokenArray[i], "spriteTwist") == 0 )
+            {
+                twistAttr = i;
+            }
+            else if ( strcmp(tokenArray[i], "spriteScaleX") == 0 )
+            {
+                scaleXAttr = i;
+            }
+            else if ( strcmp(tokenArray[i], "spriteScaleY") == 0 )
+            {
+                scaleYAttr = i;
+            }
+            else if ( strcmp(tokenArray[i], "Cs") == 0 )
+            {
+                colAttr = i;
+            }
+            else if ( strcmp(tokenArray[i], "Os") == 0 )
+            {
+                opacAttr = i;
+            }
+        }
+
+        MVector camUp( 0, 1, 0 );
+        MVector camRight( 1, 0, 0 );
+        MVector camEye( 0, 0, 1 );
+
+        camUp    *= liqglo_currentJob.camera[0].mat.inverse();
+        camRight *= liqglo_currentJob.camera[0].mat.inverse();
+        camEye   *= liqglo_currentJob.camera[0].mat.inverse();
+
+        for (int i = 0; i < m_numValidParticles; i++)
+        {
+            MVector up    = camUp;
+            MVector right = camRight;
+
+            float spriteRadiusX = 0.5;
+            float spriteRadiusY = 0.5;
+                
+            if ( colAttr != -1 )
+            {
+                RiColor( &((RtFloat*)pointerArray[colAttr])[i*3] );
+            }
+            if ( opacAttr != -1 )
+            {
+                RiOpacity( &((RtFloat*)pointerArray[opacAttr])[i*3] );
+            }
+            if ( twistAttr != -1 )
+            {
+                float twist = -((RtFloat*)pointerArray[twistAttr])[i] * M_PI/180;
+                MQuaternion twistQ( twist, camEye );
+                right = camRight.rotateBy( twistQ );
+                up    = camUp.rotateBy( twistQ );
+            }
+            if ( scaleXAttr != -1 )
+            {
+                spriteRadiusX *= ((RtFloat*)pointerArray[scaleXAttr])[i];
+            }
+            if ( scaleYAttr != -1 )
+            {
+                spriteRadiusY *= ((RtFloat*)pointerArray[scaleYAttr])[i];
+            }
+            if ( posAttr != -1 )
+            {
+                float *P = &((RtFloat*)pointerArray[posAttr])[i*3];
+                float spriteNum = numAttr == -1 ? 0 : ((RtFloat*)pointerArray[numAttr])[i];
+
+                float x0 = P[0] - spriteRadiusX * right[0] + spriteRadiusY * up[0];
+                float y0 = P[1] - spriteRadiusX * right[1] + spriteRadiusY * up[1];
+                float z0 = P[2] - spriteRadiusX * right[2] + spriteRadiusY * up[2];
+                float x1 = P[0] + spriteRadiusX * right[0] + spriteRadiusY * up[0];
+                float y1 = P[1] + spriteRadiusX * right[1] + spriteRadiusY * up[1];
+                float z1 = P[2] + spriteRadiusX * right[2] + spriteRadiusY * up[2];
+                float x2 = P[0] - spriteRadiusX * right[0] - spriteRadiusY * up[0];
+                float y2 = P[1] - spriteRadiusX * right[1] - spriteRadiusY * up[1];
+                float z2 = P[2] - spriteRadiusX * right[2] - spriteRadiusY * up[2];
+                float x3 = P[0] + spriteRadiusX * right[0] - spriteRadiusY * up[0];
+                float y3 = P[1] + spriteRadiusX * right[1] - spriteRadiusY * up[1];
+                float z3 = P[2] + spriteRadiusX * right[2] - spriteRadiusY * up[2];
+
+                float patch[12] = { x0, y0, z0,
+                                    x1, y1, z1,
+                                    x2, y2, z2,
+                                    x3, y3, z3 };
+                RiPatch( "bilinear", "P", &patch, "float spriteNum", &spriteNum, RI_NULL );
+            }
+        }
+    }
+    break;
+
     case MPTNumeric:
     case MPTCloudy:
     case MPTTube:
