@@ -31,7 +31,7 @@ lib newversion clean debug release :
 	    EXTRAFLAGS="-g -DDEBUG -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\""; \
 	    MAYA_LOCATION=$${MAYA_LOCATION:=/usr/aw/maya} ;\
 	    if( test -d $${MAYA_LOCATION}); then\
-	    	( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="debug" $${make:=make} -f Makefile.$${os} $@ ); \
+	    	( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${MAYA_LOCATION} MAYA_VERSION="debug" $${make:=make} -f Makefile.$${os} $@ ); \
 	    else \
 		echo $${MAYA_LOCATION} " do not seem to exists. Please set MAYA_LOCATION to a correct value."; exit 1; \
 	    fi; \
@@ -39,14 +39,14 @@ lib newversion clean debug release :
 	    EXTRAFLAGS="-O -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\""; \
 	    MAYA_LOCATION=$${MAYA_LOCATION:=/usr/aw/maya} ;\
 	    if( test -d $${MAYA_LOCATION}); then\
-	    	( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="release" $${make:=make} -f Makefile.$${os} $@ ); \
+	    	( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${MAYA_LOCATION} MAYA_VERSION="release" $${make:=make} -f Makefile.$${os} $@ ); \
 	    else \
 		echo $${MAYA_LOCATION} " do not seem to exists. Please set MAYA_LOCATION to a correct value."; exit 1; \
 	    fi; \
 	else \
 	    AW_LOCATION=$${AW_LOCATION:=/usr/aw} ;\
 	    EXTRAFLAGS="-O -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\""; \
-	    ( echo Got for newversion $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="debug" $${make:=make} -f Makefile.$${os} $@ ); \
+	    ( echo Got for newversion $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${MAYA_LOCATION} MAYA_VERSION="debug" $${make:=make} -f Makefile.$${os} $@ ); \
 	    if( test -d $${AW_LOCATION}); then\
 		for vers in $${AW_LOCATION}/maya*.*;\
 			do ( echo Got $${whichflags} $${vers:=none} $${vers#$${AW_LOCATION}/}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${vers:=none} MAYA_VERSION=$${vers#$${AW_LOCATION}/} $${make:=make} -f Makefile.$${os} $@ );\
