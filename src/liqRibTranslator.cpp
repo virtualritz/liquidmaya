@@ -43,7 +43,13 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
+
+#ifdef OSX
+	#include <stdlib.h>
+#else
+	#include <malloc.h>
+#endif
+
 #include <sys/types.h>
 #ifndef _WIN32
 #include <sys/time.h>
