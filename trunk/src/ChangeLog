@@ -51,7 +51,8 @@ Release 1.5.3 ------------------------------------------------------------------
 	Renamed liquidPreviewShader to liqPreviewShader.
 	Output error messages to stderr in liqShader.
 	Shader previewing handled in the same way for all renderers.
-
+    	Added liquidParseSlShader.mel
+	Added lib/shaders/empty.sl
 
 TODO :
 	--- Compilation ok with PRman
