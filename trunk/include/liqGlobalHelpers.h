@@ -45,6 +45,14 @@
 #include <liqShader.h>
 
 
+#ifndef _WIN32
+#  include <libgen.h> // for basename()
+#  define LIQ_GET_SHADER_FILE_NAME(a, b, c) if( b ) a = basename( const_cast<char *>(c.file.c_str())); else a = const_cast<char *>(c.file.c_str());
+#else
+#  define LIQ_GET_SHADER_FILE_NAME(a, b, c) a = const_cast<char *>(c.file.c_str());
+#endif
+
+
 MStringArray FindAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
 bool isObjectTwoSided( const MDagPath & path );
 bool isObjectVisible( const MDagPath & path );

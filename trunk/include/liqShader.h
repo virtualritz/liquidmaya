@@ -39,15 +39,6 @@
 #include <vector>
 
 
-#ifndef _WIN32
-#include <libgen.h>
-#define LIQ_GET_SHADER_FILE_NAME(a, b, c) if( b ) a = basename( const_cast<char *>(c.file.c_str())); else a = const_cast<char *>(c.file.c_str());
-#else
-#define LIQ_GET_SHADER_FILE_NAME(a, b, c) a = const_cast<char *>(c.file.c_str());
-#endif
-
-
-
 class liqShader 
 {
 public :
@@ -71,4 +62,6 @@ public :
     bool hasErrors;
     SHADER_TYPE shader_type;
 };
+
+
 #endif // liqShader_H_
