@@ -40,27 +40,27 @@
 
 class liqRibSubdivisionData : public liqRibData {
 public: // Methods
-    
-            liqRibSubdivisionData( MObject mesh );
-    virtual ~liqRibSubdivisionData();
-        
-    virtual void       write();
-	virtual bool       compare( const liqRibData & other ) const;
-	virtual ObjectType type() const;
+  liqRibSubdivisionData( MObject mesh );
+  virtual ~liqRibSubdivisionData();
+
+  virtual void       write();
+  virtual bool       compare( const liqRibData & other ) const;
+  virtual ObjectType type() const;
     
 private: // Data
-	RtInt     npolys;
-	RtInt   * nverts;
-	RtInt   * verts;
-	const RtFloat * vertexParam;
-	const RtFloat * normalParam;
-	const RtFloat * polyuvParam;
-    
+  RtInt     npolys;
+  RtInt   * nverts;
+  RtInt   * verts;
+  const RtFloat * vertexParam;
+  const RtFloat * normalParam;
+  const RtFloat * polyuvParam;
+
   unsigned  totalNumOfVertices;
-	unsigned  textureindex;
-	MString name;
-	RtMatrix	  transformationMatrix;
-	float			areaIntensity;
+  unsigned  textureindex;
+  MString   name;
+  RtMatrix  transformationMatrix;
+  
+  bool interpBoundary;
 };
 
 #endif
