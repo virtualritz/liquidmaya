@@ -1,3 +1,13 @@
+2004-07-10 geohar
+  - Added Pixie support
+	* Added Sdr Parse mel for Pixie's sdr compiled format
+	* Added preview support for Pixie
+	* Added support for pixie's shader teller
+  - Added OSX support
+	* Guarding Malloc.h includes for OSX and using stdlib.h instead
+	* Adding OSX process launcher
+	* Adding OSX helpers
+
 Release 1.5.6 ------------------------------------------------------------------
 2004-04-07 pieke
   - Added deepshadow support based on Pixar's RenderMan spec
