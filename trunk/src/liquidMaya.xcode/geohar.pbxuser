@@ -39,9 +39,9 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					368,
+					383,
 					20,
-					69,
+					72,
 					43,
 					43,
 					20,
@@ -56,17 +56,42 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
+			PBXConfiguration.PBXFileTableDataSource3.XCSCMDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					20,
+					344,
+					20,
+					57,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_SCM_ColumnID,
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
 			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
 				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					238,
-					55,
+					327,
+					62,
 					20,
-					55,
+					62,
 					43,
 					43,
+					20,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXFileDataSource_FiletypeID,
@@ -76,9 +101,10 @@
 					PBXFileDataSource_ObjectSize_ColumnID,
 					PBXFileDataSource_Errors_ColumnID,
 					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 111160828;
+			PBXPerProjectTemplateStateSaveDate = 125440137;
 			PBXPrepackagedSmartGroups_v2 = (
 				{
 					PBXTransientLocationAtTop = bottom;
@@ -241,6 +267,17 @@
 						recursive = 1;
 						regex = "?*\\.[mcMC]";
 						root = "<PROJECT>";
+					};
+				},
+				{
+					PBXTransientLocationAtTop = bottom;
+					clz = XDDesignSmartGroup;
+					description = "Displays Xdesign models";
+					globalID = 2E4A936305E6979E00701470;
+					name = Design;
+					preferences = {
+						image = Design;
+						isLeaf = 0;
 					};
 				},
 			);
@@ -497,36 +534,31 @@
 				PBXModuleWindowStatusBarHidden = YES;
 				RubberWindowFrame = "267 484 745 464 0 0 1280 1002 ";
 			};
-			PBXWorkspaceStateSaveDate = 111160828;
-		};
-		perUserProjectItems = {
-			1FC7AA6806A02D4600954BD2 = 1FC7AA6806A02D4600954BD2;
-			1FC7AA9406A02E0300954BD2 = 1FC7AA9406A02E0300954BD2;
-			1FC7AA9806A02E0500954BD2 = 1FC7AA9806A02E0500954BD2;
-			1FC7AAA006A02E2A00954BD2 = 1FC7AAA006A02E2A00954BD2;
-			1FC7AAA206A02E2C00954BD2 = 1FC7AAA206A02E2C00954BD2;
-			1FC7AAA306A02E2C00954BD2 = 1FC7AAA306A02E2C00954BD2;
-			1FC7AAA406A02E2C00954BD2 = 1FC7AAA406A02E2C00954BD2;
-			1FC7AAAA06A02ED600954BD2 = 1FC7AAAA06A02ED600954BD2;
+			PBXWorkspaceStateSaveDate = 125440137;
 		};
 		sourceControlManager = 1FC7A9DA06A0014A00954BD2;
 		userBuildSettings = {
 		};
 	};
+	1FADF82607721BF5007DC910 = {
+		activeExec = 0;
+	};
 	1FC7A9DA06A0014A00954BD2 = {
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 1;
 		isa = PBXSourceControlManager;
 		scmConfiguration = {
 		};
-		scmType = scm.cvs;
+		scmType = scm.subversion;
 	};
 	1FC7A9DB06A0014A00954BD2 = {
 		indexTemplatePath = "";
 		isa = PBXCodeSenseManager;
 		usesDefaults = 1;
 		wantsCodeCompletion = 1;
-		wantsCodeCompletionAutoPopup = 1;
 		wantsCodeCompletionAutoSuggestions = 0;
 		wantsCodeCompletionCaseSensitivity = 1;
+		wantsCodeCompletionListAlways = 1;
 		wantsCodeCompletionOnlyMatchingItems = 1;
 		wantsCodeCompletionParametersIncluded = 1;
 		wantsCodeCompletionPlaceholdersInserted = 1;
@@ -564,6 +596,14 @@
 			sepNavWindowFrame = "{{130, 334}, {750, 558}}";
 		};
 	};
+	1FC7A9F406A0016A00954BD2 = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {758, 20047}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 19619}, {711, 428}}";
+			sepNavWindowFrame = "{{15, 439}, {750, 558}}";
+		};
+	};
 	1FC7A9F706A0016A00954BD2 = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1724, 54417}}";
@@ -582,111 +622,5 @@
 	};
 	1FC7AA2306A00A5C00954BD2 = {
 		activeExec = 0;
-	};
-	1FC7AA6806A02D4600954BD2 = {
-		fRef = 1FC7A9EC06A0016A00954BD2;
-		isa = PBXTextBookmark;
-		name = "ulong liqRibHT::hash(const char *str)\n";
-		rLen = 38;
-		rLoc = 2336;
-		rType = 0;
-		vrLen = 239;
-		vrLoc = 2240;
-	};
-	1FC7AA9406A02E0300954BD2 = {
-		fRef = 1FC7AA9B06A02E0A00954BD2;
-		isa = PBXTextBookmark;
-		name = "(null): 42";
-		rLen = 0;
-		rLoc = 1199;
-		rType = 0;
-		vrLen = 707;
-		vrLoc = 629;
-	};
-	1FC7AA9806A02E0500954BD2 = {
-		fRef = 1FC7A9EC06A0016A00954BD2;
-		isa = PBXTextBookmark;
-		name = "\tnode->set( path, sample, objType );\n";
-		rLen = 37;
-		rLoc = 4656;
-		rType = 0;
-		vrLen = 932;
-		vrLoc = 4278;
-	};
-	1FC7AA9B06A02E0A00954BD2 = {
-		isa = PBXFileReference;
-		name = liqRibHT.h;
-		path = /Users/geohar/Development/CVS_Sandbox/liquidmaya/include/liqRibHT.h;
-		refType = 0;
-		sourceTree = "<absolute>";
-	};
-	1FC7AAA006A02E2A00954BD2 = {
-		fRef = 1FC7AAA906A02E3600954BD2;
-		isa = PBXTextBookmark;
-		name = "(null): 42";
-		rLen = 0;
-		rLoc = 1210;
-		rType = 0;
-		vrLen = 740;
-		vrLoc = 871;
-	};
-	1FC7AAA206A02E2C00954BD2 = {
-		fRef = 1FC7A9EC06A0016A00954BD2;
-		isa = PBXTextBookmark;
-		name = "    ulong hc = hash( name );\n";
-		rLen = 29;
-		rLoc = 5134;
-		rType = 0;
-		vrLen = 932;
-		vrLoc = 4278;
-	};
-	1FC7AAA306A02E2C00954BD2 = {
-		fRef = 1FC7AAA706A02E3600954BD2;
-		isa = PBXTextBookmark;
-		rLen = 1;
-		rLoc = 29;
-		rType = 1;
-	};
-	1FC7AAA406A02E2C00954BD2 = {
-		fRef = 1FC7A9EC06A0016A00954BD2;
-		isa = PBXTextBookmark;
-		name = "    ulong hc = hash( name );\n";
-		rLen = 29;
-		rLoc = 5134;
-		rType = 0;
-		vrLen = 932;
-		vrLoc = 4278;
-	};
-	1FC7AAA706A02E3600954BD2 = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = liqRibHT.h;
-		path = /Users/geohar/Development/CVS_Sandbox/liquidmaya/src/../include/liqRibHT.h;
-		refType = 0;
-		sourceTree = "<absolute>";
-	};
-	1FC7AAA906A02E3600954BD2 = {
-		isa = PBXFileReference;
-		name = liqRibHT.h;
-		path = /Users/geohar/Development/CVS_Sandbox/liquidmaya/include/liqRibHT.h;
-		refType = 0;
-		sourceTree = "<absolute>";
-	};
-	1FC7AAAA06A02ED600954BD2 = {
-		fRef = 1FC7AAAB06A02ED600954BD2;
-		isa = PBXTextBookmark;
-		name = "(null): 43";
-		rLen = 0;
-		rLoc = 1228;
-		rType = 0;
-		vrLen = 750;
-		vrLoc = 495;
-	};
-	1FC7AAAB06A02ED600954BD2 = {
-		isa = PBXFileReference;
-		name = liqRibHT.h;
-		path = /Users/geohar/Development/CVS_Sandbox/liquidmaya/include/liqRibHT.h;
-		refType = 0;
-		sourceTree = "<absolute>";
 	};
 }
