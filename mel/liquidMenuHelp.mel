@@ -84,4 +84,4 @@ global proc liquidMenuHelp()
     showHelp -absolute $helpUrl;
 }
 
-print "Initialized Liquid Help Interface...\n";
+//print "Initialized Liquid Help Interface...\n";

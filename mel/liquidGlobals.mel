@@ -1323,7 +1323,7 @@ global proc liquidGlobalsWindow()
   }
   if ( !`window -exists liquidGlobalsWindow` ) {
     liquidAddGlobals;
-    window -mb true -title "liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
+    window -mb true -title "Liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
     menu -label "Presets" -p liquidGlobalsWindow liquidGlobalsPresetMenu;
       menuItem -label "Save..." -c liquidSavePreset -p liquidGlobalsPresetMenu liquidGlobalsPresetMenuSave;
       menuItem -divider true;
@@ -1334,5 +1334,5 @@ global proc liquidGlobalsWindow()
   showWindow liquidGlobalsWindow;
 }
 
-print "Initialized Liquid Globals Interface...\n";
+//print "Initialized Liquid Globals Interface...\n";
 
