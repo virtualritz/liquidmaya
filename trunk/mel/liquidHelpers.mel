@@ -44,7 +44,7 @@ global proc liquidDebugPrint(string $debugMsg)
 
 global proc liquidViewLastRib()
 {
-  if (( !`attributeExists lastRibFile liquidGlobals` ) || (`getAttr liquidGlobals.lastRibFile` == "" )) {
+  if ((!objExists("liquidGlobals") || !`attributeExists lastRibFile liquidGlobals` ) || (`getAttr liquidGlobals.lastRibFile` == "" )) {
     warning("liquidGlobals.lastRibFile is not set - no RIB has been generated during this session");
     return;
   }
@@ -66,7 +66,7 @@ global proc liquidViewLastRib()
 
 global proc liquidViewLastRenderScript()
 {
-  if (( !`attributeExists lastRenderScript liquidGlobals` ) || (`getAttr liquidGlobals.lastRenderScript` == "" )) {
+  if ((!objExists("liquidGlobals") || !`attributeExists lastRenderScript liquidGlobals` ) || (`getAttr liquidGlobals.lastRenderScript` == "" )) {
     warning("liquidGlobals.lastRenderScript is not set - no render script has been generated during this session");
     return;
   }
