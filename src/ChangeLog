@@ -54,6 +54,10 @@ Release 1.5.3 ------------------------------------------------------------------
     	Added liquidParseSlShader.mel
 	Added lib/shaders/empty.sl
 
+2003-2-26 chapman
+	Added syntax() for liquid command, so 'help liquid' reports usage in mel
+	Added liquidWriteArchive command for more flexible (including hierarchical) rib archive exporting
+
 2003-2-28
 	- Added a new subsystem to handle differing renderer capabilities and
 	requirements at rib-gen time.
