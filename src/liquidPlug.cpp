@@ -79,7 +79,7 @@ extern "C" {
 #include <liquidGetSloInfo.h>
 #include <liquidGetAttr.h>
 #include <liquidAttachPrefAttribute.h>
-#include <liquidPreviewShader.h>
+#include <liqPreviewShader.h>
 #include <liquidMemory.h>
 
 extern  bool	liquidBin;
@@ -104,30 +104,30 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     MGlobal::displayInfo("\nLiquid by Colin Doncaster\n");
 
     status = plugin.registerCommand("liquid", liquidRibTranslator::creator );
-    LIQCHECKSTATUS( status, "Can't register liquid translator plugin" );
+    LIQCHECKSTATUS( status, "Can't register liquid translator command" );
 
     // register the liquidAttachPrefAttribute command
     status = plugin.registerCommand( "liquidAttachPrefAttribute", liquidAttachPrefAttribute::creator );
-    LIQCHECKSTATUS( status, "Can't register liquidAttachPrefAttribute plugin" );
+    LIQCHECKSTATUS( status, "Can't register liquidAttachPrefAttribute command" );
 
     // register the liquidAttachPrefAttribute command
-    status = plugin.registerCommand( "liquidPreviewShader", liquidPreviewShader::creator );
-    LIQCHECKSTATUS( status, "Can't register liquidPreviewShader plugin" );
+    status = plugin.registerCommand( "liquidPreviewShader", liqPreviewShader::creator );
+    LIQCHECKSTATUS( status, "Can't register liqPreviewShader command" );
 
     // register the liquidGetSloInfo command
     status = plugin.registerCommand( "liquidGetSloInfo", liquidGetSloInfo::creator );
-    LIQCHECKSTATUS( status, "Can't register liquidGetSloInfo plugin" );
+    LIQCHECKSTATUS( status, "Can't register liquidGetSloInfo command" );
 
     // register the liquidGetAttr command
     status = plugin.registerCommand( "liquidGetAttr", liquidGetAttr::creator );
-    LIQCHECKSTATUS( status, "Can't register liquidGetAttr plugin" );
+    LIQCHECKSTATUS( status, "Can't register liquidGetAttr command" );
 
     // setup all of the base liquid interface
     command = "source liquidStartup.mel";
     status = MGlobal::executeCommand(command);
 
     status = plugin.registerUI("liquidStartup", "liquidShutdown");
-    LIQCHECKSTATUS( status, "Can't register liquidStartup and  liquidShutdown plugin" );
+    LIQCHECKSTATUS( status, "Can't register liquidStartup and liquidShutdown interface scripts" );
     return MS::kSuccess;
 }
 
@@ -143,21 +143,22 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
     MFnPlugin plugin(obj);
 
     status = plugin.deregisterCommand("liquid");
-    LIQCHECKSTATUS( status, "Can't deregister liquid plugin" );
+    LIQCHECKSTATUS( status, "Can't deregister liquid command" );
 
     status = plugin.deregisterCommand("liquidAttachPrefAttribute");
-    LIQCHECKSTATUS( status, "Can't deregister liquidAttachPrefAttribute plugin" );
+    LIQCHECKSTATUS( status, "Can't deregister liquidAttachPrefAttribute command" );
 
     status = plugin.deregisterCommand("liquidPreviewShader");
-    LIQCHECKSTATUS( status, "Can't deregister liquidPreviewShader plugin" );
+    LIQCHECKSTATUS( status, "Can't deregister liquidPreviewShader command" );
 
     status = plugin.deregisterCommand("liquidGetSloInfo");
-    LIQCHECKSTATUS( status, "Can't deregister liquidGetSloInfo plugin" );
+    LIQCHECKSTATUS( status, "Can't deregister liquidGetSloInfo command" );
 
     status = plugin.deregisterCommand("liquidGetAttr");
-    LIQCHECKSTATUS( status, "Can't deregister liquidGetAttr plugin" );
+    LIQCHECKSTATUS( status, "Can't deregister liquidGetAttr command" );
     // remove the UI
     MGlobal::displayInfo("\n--* Liquid *--\n");
     MGlobal::displayInfo("\nUninitialized...\n");
     return MS::kSuccess;
 }
+
