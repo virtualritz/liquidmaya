@@ -504,7 +504,8 @@ liquidRibTranslator::~liquidRibTranslator()
 	if ( debugMode ) { printf("-> dumping unfreed memory.\n" ); }
 	if ( debugMode ) ldumpUnfreed();
 }   
-#ifdef ENTROPY
+
+#if defined ENTROPY || PRMAN
 void liquidRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
 #else
 void liquidRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )

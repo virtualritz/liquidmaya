@@ -165,8 +165,14 @@ void liquidRibGenData::write()
 		ribStatus.motionSamples = 1;
 	}		
 	ribStatus.shutterAngle = liqglo_shutterTime;
-    	// Hmmmmmm what is it ?
-	ribStatus.RiConnection = RiDetach();
+    
+	/*
+	* rib stream connection call from the Affine toolkit.
+	* until an equivilent is found in prman leave commented out. 
+	* dan-b 7/2/03
+	*/
+	//ribStatus.RiConnection = RiDetach();
+	
 	typedef liquidRIBGen *(*createRibGen)();
 	typedef void (*destroyRibGen)( liquidRIBGen * );
 	
@@ -210,8 +216,14 @@ void liquidRibGenData::write()
 		errorString += ribStatus.objectName;
 		liquidInfo( errorString );
 	}
-    	// Hmmmmm what is it ?
-	RiFreeConnection( ( char * )ribStatus.RiConnection );
+
+	/*
+	* rib stream connection call from the Affine toolkit.
+	* until an equivilent is found in prman leave commented out. 
+	* dan-b 7/2/03
+	*/
+	// RiFreeConnection( ( char * )ribStatus.RiConnection );
+	
 #else
     liquidInfo( "Sorry : Can't handle Rib Gen ...\n" );
 #endif
