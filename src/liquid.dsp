@@ -169,7 +169,7 @@ SOURCE=.\liquidRibObj.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibParticleData.cpp
+SOURCE=.\liqRibParticleData.cpp
 # End Source File
 # Begin Source File
 
@@ -273,7 +273,7 @@ SOURCE=..\include\liquidRibObj.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibParticleData.h
+SOURCE=..\include\liqRibParticleData.h
 # End Source File
 # Begin Source File
 
