@@ -82,6 +82,10 @@ private: // Data
 
     unsigned	m_numParticles;
     unsigned	m_numValidParticles;
+
+    // Support for multi-point and multi-streak.
+    //
+    short     m_multiCount;
 };
 
 #endif
