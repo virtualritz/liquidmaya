@@ -31,8 +31,6 @@
 */
 
 // Standard Headers
-#include <iostream.h>
-#include <fstream.h>
 #include <math.h>
 #include <assert.h>
 #include <time.h>
@@ -73,11 +71,12 @@ extern "C" {
 #include <liqRibTranslator.h>
 #include <liqGlobalHelpers.h>
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
 static const char * LIQUIDVERSION = 
 #include "liquid.version"
 ;
+#define DEFINED_LIQUIDVERSION
 #endif
 
 
@@ -152,7 +151,7 @@ int main(int argc, char **argv)
   // and all the rest in the middle we gather to pass straight
   // through to the liquid Maya command
   fileName = argv[argc-1];
-  for( i=1; i<(argc-1); ++i ) {
+  for( i=1; i<(unsigned int)(argc-1); ++i ) {
     MString newArg = argv[i];
     myArgs.addArg( newArg );
   }
