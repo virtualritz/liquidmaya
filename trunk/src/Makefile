@@ -49,7 +49,7 @@ newversion clean debug release :
 	    EXTRAFLAGS="-O -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\""; \
 	    if( test -d $${AW_LOCATION}); then\
 		for vers in $${AW_LOCATION}/maya*.*;\
-			do ( echo Got $${whichflags} $${vers:=none}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${vers:=none} MAYA_VERSION=`echo $${vers:$${#AW_LOCATION}+1} | sed -e 'y/./_/'` $${make:=make} -f Makefile.$${os} $@ );\
+			do ( echo Got $${whichflags} $${vers:=none} $${vers#$${AW_LOCATION}/}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${vers:=none} MAYA_VERSION=$${vers#$${AW_LOCATION}/} $${make:=make} -f Makefile.$${os} $@ );\
 		done; \
 	    else \
 		echo $${AW_LOCATION} " do not seem to exists. Please set AW_LOCATION to a correct value."; exit 1; \
