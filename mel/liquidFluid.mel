@@ -401,7 +401,7 @@ global proc liquidFluid ()
 		
 			string $listPaneLayout = `paneLayout -configuration "vertical2"`;
 				string $shaderBrowser = `liquidShaderBrowser`;
-				string $fileBrowser[] = `liquidFileBrowserIn "*.sle" "liquidFluidLoadCMD"`;
+				string $fileBrowser[] = `liquidFileBrowserIn "*.sl?" "liquidFluidLoadCMD"`;
 			setParent ..;
 			
 		// this let's you add the ability of turning the fluis buttons off and just using the popup menus
