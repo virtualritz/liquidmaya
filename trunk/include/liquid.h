@@ -48,17 +48,24 @@
 ////////////////////////
 // Macros and Defines //
 ////////////////////////
-// Error macro: if not successful, print error message and return
-// the MStatus instance containing the error code.
-// Assumes that "stat" contains the error value
-#define PERRORfail(stat,msg) \
+#ifndef debugMode
+extern int debugMode;
+#endif
+
+#ifndef LIQDEBUGPRINTF
+#define LIQDEBUGPRINTF(msg) if( debugMode ) printf((msg));
+#endif
+
+#ifndef LIQCHECKSTATUS
+#define LIQCHECKSTATUS(stat,msg) \
 	if (!(stat)) { \
 	stat.perror((msg)); \
 	return (stat); \
 	}
+#endif
 
 // Set up a textcoord type for poly uv export routine
-typedef RtFloat textcoords[2];
+//typedef RtFloat textcoords[2];
 // this has to be added to make up for differences between linux and irix maya
 
 /* between Maya 3.0 /4.0/Linux/Other Platforms some functions changed their input type from long to int so 
@@ -72,6 +79,7 @@ typedef int liquidlong;
 typedef long liquidlong;
 #endif
 #endif
+
 // Equivalence test for floats.  Equality tests are dangerous for floating      
 // point values 
 //
@@ -86,7 +94,7 @@ inline bool equiv( float val1, float val2 )
 //
 #define USE_TIMESLIDER   1
 #ifndef  MM_TO_INCH
-# define MM_TO_INCH                     0.03937
+#define MM_TO_INCH                     0.03937
 #endif 
 
 // Hacked Licensing Information
@@ -99,81 +107,63 @@ inline bool equiv( float val1, float val2 )
 #define expyear 102 // 2002 - 1900 = 102
 #define expday 30
 
-static const uint MR_SURFPARAMSIZE = 1024;
 
 ///////////
 // Enums //
 ///////////
 enum ObjectType {
-    MRT_Unknown	     = 0, 
-		MRT_Nurbs	     = 1, 
-		MRT_NuCurve      = 5,
-		MRT_Mesh	     = 2, 
-		MRT_Light	     = 3,
-		MRT_Particles    = 6,
-		MRT_Locator	     = 7,
-		MRT_RibGen			 = 8,
-		MRT_Shader			 = 9,
-		MRT_Coord			= 10,
-		MRT_Subdivision	    = 11,
-		MRT_Weirdo	     = 4
+    MRT_Unknown     	= 0, 
+    MRT_Nurbs	    	= 1, 
+    MRT_NuCurve     	= 5,
+    MRT_Mesh	    	= 2, 
+    MRT_Light	    	= 3,
+    MRT_Particles   	= 6,
+    MRT_Locator     	= 7,
+    MRT_RibGen	    	= 8,
+    MRT_Shader	    	= 9,
+    MRT_Coord	    	= 10,
+    MRT_Subdivision 	= 11,
+    MRT_Weirdo	    	= 4
 };
 
 enum LightType {
-    MRLT_Unknown		= 0, 
-		MRLT_Ambient		= 1, 
-		MRLT_Distant		= 2, 
-		MRLT_Point			= 3, 
-		MRLT_Spot				= 4, 
-		MRLT_Rman				= 5, 
-		MRLT_Area				= 6 
+    MRLT_Unknown    	= 0, 
+    MRLT_Ambient    	= 1, 
+    MRLT_Distant    	= 2, 
+    MRLT_Point	    	= 3, 
+    MRLT_Spot	    	= 4, 
+    MRLT_Rman	    	= 5, 
+    MRLT_Area	    	= 6 
 };
 
 enum AnimType {
-    MRX_Const		 = 0, 
-		MRX_Animated	 = 1, 
-		MRX_Incompatible     = 2
+    MRX_Const	    	= 0, 
+    MRX_Animated    	= 1, 
+    MRX_Incompatible	= 2
 };
 
 enum RendererType {
-	PRMan		= 0,
-		BMRT		= 1,
-		RDC 		= 2
+    PRMan   	= 0,
+    BMRT    	= 1,
+    RDC     	= 2
 };
 
 enum PointLightDirection {
-	pPX			= 0,
-		pPY			= 1,
-		pPZ			= 2,
-		pNX			= 3,
-		pNY			= 4,
-		pNZ			= 5
+    pPX     = 0,
+    pPY     = 1,
+    pPZ     = 2,
+    pNX     = 3,
+    pNY     = 4,
+    pNZ     = 5
 };
 
-enum ParameterType {
-	rFloat		= 0,
-		rPoint		= 1,
-		rVector		= 2,
-		rNormal		= 3,
-		rColor		= 4,
-		rString		= 5,
-		rHpoint		= 6
-};
-
-enum DetailType {
-	rUniform	= 0,
-		rVarying	= 1,
-		rVertex		= 2,
-		rConstant	= 3,
-		rFaceVarying = 4
-};
 
 enum PixelFilerType {
-	fBoxFilter				= 0,
-		fTriangleFilter		= 1,
-		fCatmullRomFilter	= 2,
-		fGaussianFilter		= 3,
-		fSincFilter				= 4
+    fBoxFilter	    	= 0,
+    fTriangleFilter 	= 1,
+    fCatmullRomFilter	= 2,
+    fGaussianFilter 	= 3,
+    fSincFilter     	= 4
 };
 
 struct structCamera {
@@ -182,7 +172,7 @@ struct structCamera {
     double	hFOV;
     int		isOrtho;
     double	orthoWidth;
-	double 	orthoHeight;
+    double 	orthoHeight;
     MString	name;
     bool	motionBlur;
     double	shutter;
@@ -192,8 +182,8 @@ struct structCamera {
 };
 
 struct structJob {
-    int			width, height;
-    float		aspectRatio;
+    int     	    width, height;
+    float   	    aspectRatio;
     MString		name;
     MString		imageMode;
     MString		format;
@@ -201,58 +191,18 @@ struct structJob {
     MString		ribFileName;
     MString		imageName;
     bool		isShadow;
-	bool    isMinMaxShadow;
+    bool    	    	isMinMaxShadow;
     bool		hasShadowCam;
-	bool		isShadowPass;
-	bool		isPoint;
-	PointLightDirection pointDir;
+    bool		isShadowPass;
+    bool		isPoint;
+    PointLightDirection pointDir;
     structCamera	camera[5];
     MDagPath		path;
-	MDagPath		shadowCamPath;
-	MString			jobOptions;
-	bool				gotJobOptions;
+    MDagPath		shadowCamPath;
+    MString 	    	jobOptions;
+    bool    	    	gotJobOptions;
 };
 
-// token/pointer pairs structure
 
-class rTokenPointer
-{
-public:
-	rTokenPointer() {
-		tokenFloats = NULL;
-		tokenString = NULL;
-		isArray = false;
-		isUArray = false;
-		isNurbs = false;
-		isString = false;
-		isFull = false;
-	};
-	RtFloat *   tokenFloats;
-	char * 		tokenString;
-	ParameterType pType;
-	DetailType dType;
-	char tokenName[256];
-	int	 arraySize;
-	int  uArraySize;
-	bool isArray;
-	bool isUArray;
-	bool isNurbs;
-	bool isString;
-	bool isFull;
-};
-
-struct shaderStruct {
-	int numTPV;
-	rTokenPointer	tokenPointerArray[MR_SURFPARAMSIZE];
-	std::string name;
-	std::string file;
-	RtColor rmColor;
-	RtColor rmOpacity;
-	bool hasShadingRate;
-	RtFloat shadingRate;
-	bool hasDisplacementBound;
-	RtFloat displacementBound;
-	bool hasErrors;
-};
 
 #endif

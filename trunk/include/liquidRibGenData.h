@@ -38,19 +38,19 @@
 
 class liquidRIBStatus;
 
-class RibGenData : public RibData {
+class liquidRibGenData : public liquidRibData {
 public: // Methods
     
-          RibGenData( MObject obj, MDagPath path );
-  virtual ~RibGenData();
+          liquidRibGenData( MObject obj, MDagPath path );
+    virtual ~liquidRibGenData();
         
-  virtual void       write();
-	virtual bool       compare( const RibData & other ) const;
-	virtual ObjectType type() const;
+    virtual void       write();
+    virtual bool       compare( const liquidRibData & other ) const;
+    virtual ObjectType type() const;
     
 private: // Data
-	MString					ribGenSoName;
-	liquidRIBStatus	ribStatus;
+    MString 	    ribGenSoName;
+    liquidRIBStatus	ribStatus;
 };
 
 #endif

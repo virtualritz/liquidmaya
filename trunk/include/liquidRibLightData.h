@@ -35,18 +35,18 @@
 
 #include <liquidRibData.h>
 
-class RibLightData : public RibData {
+class liquidRibLightData : public liquidRibData {
 public: // Methods
     
-            RibLightData( const MDagPath & light );
-    virtual ~RibLightData();
+            liquidRibLightData( const MDagPath & light );
+    virtual ~liquidRibLightData();
         
     virtual void       write();
-	virtual bool       compare( const RibData & other ) const;
-	virtual ObjectType type() const;
+    virtual bool       compare( const liquidRibData & other ) const;
+    virtual ObjectType type() const;
     
-    RtLightHandle      lightHandle() const;
-    bool	  rmanLight;
+    RtLightHandle   lightHandle() const;
+    bool    	    rmanLight;
     char	  *assignedRManShader; 
     
 private: // Data
@@ -56,13 +56,13 @@ private: // Data
     RtPoint       from, to;
     RtMatrix	  transformationMatrix;
     
-    RtLightHandle handle;
-		bool 				usingShadow;
-		bool				raytraced;
-		bool				excludeFromRib;
-		MString			userShadowName;
-		MString			name;
-		MString 		shadowName;
+    RtLightHandle   handle;
+    bool    	    usingShadow;
+    bool    	    raytraced;
+    bool    	    excludeFromRib;
+    MString 	    userShadowName;
+    MString 	    name;
+    MString 	    shadowName;
 };
 
 #endif

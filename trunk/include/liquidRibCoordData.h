@@ -35,19 +35,19 @@
 
 #include <liquidRibData.h>
 
-class RibCoordData : public RibData {
+class liquidRibCoordData : public liquidRibData {
 public: // Methods
     
-            RibCoordData( MObject locator );
-    virtual ~RibCoordData();
+            liquidRibCoordData( MObject locator );
+    virtual ~liquidRibCoordData();
         
     virtual void       write();
-	virtual bool       compare( const RibData & other ) const;
-	virtual ObjectType type() const;
+    virtual bool       compare( const liquidRibData & other ) const;
+    virtual ObjectType type() const;
     
 private: // Data
 
-	MString name;
+    MString name;
 };
 
 #endif

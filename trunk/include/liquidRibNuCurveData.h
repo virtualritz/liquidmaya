@@ -35,26 +35,26 @@
 
 #include <liquidRibData.h>
 
-class RibNuCurveData : public RibData {
+class liquidRibNuCurveData : public liquidRibData {
 public: // Methods
     
-            RibNuCurveData( MObject curve );
-    virtual ~RibNuCurveData();
+            liquidRibNuCurveData( MObject curve );
+    virtual ~liquidRibNuCurveData();
         
     virtual void       write();
-	virtual bool       compare( const RibData & other ) const;
-	virtual ObjectType type() const;
+    virtual bool       compare( const liquidRibData & other ) const;
+    virtual ObjectType type() const;
     
 private: // Data
         
     RtInt   * nverts;
-	RtInt	  ncurves;
-	RtInt   * order;
+    RtInt   ncurves;
+    RtInt   * order;
     RtFloat * knot;
     RtFloat * min;
-	RtFloat * max;
+    RtFloat * max;
     RtFloat * CVs;
-	RtFloat * NuCurveWidth;
+    RtFloat * NuCurveWidth;
     
 };
 

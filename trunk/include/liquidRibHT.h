@@ -36,24 +36,23 @@
 #include <liquidRibNode.h>
 #include <map>
 
-typedef std::multimap<ulong, RibNode*> RNMAP;
-//typedef std::map<ulong, RibNode*> RNMAP;
+typedef std::multimap<ulong, liquidRibNode*> RNMAP;
+//typedef std::map<ulong, liquidRibNode*> RNMAP;
 
-class RibHT {
+class liquidRibHT {
     
 public:
-	RibHT();
-	~RibHT();
+	liquidRibHT();
+	~liquidRibHT();
 			   
-	int		    insert( MDagPath &, double, int, ObjectType objType );
+	int 	    insert( MDagPath &, double, int, ObjectType objType );
 	/*RibNode*	    find( const MObject &, ObjectType objType );*/
-	RibNode*		find( MString nodeName, MDagPath  path, ObjectType objType );
+	liquidRibNode*    find( MString nodeName, MDagPath  path, ObjectType objType );
 	
 private:
-	RNMAP				RibNodeMap;
-	ulong		    hash(const char *);
-	
-	friend class RibTranslator;
+	RNMAP	RibNodeMap;
+	ulong	hash(const char *);
+	friend class liquidRibTranslator;
 };
 
 static const uint MR_HASHSIZE = 65536;

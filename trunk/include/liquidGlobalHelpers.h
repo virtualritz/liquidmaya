@@ -40,7 +40,8 @@
 #include <maya/MObject.h>
 
 #include <liquid.h>
-
+#include <liqTokenPointer.h>
+#include <liqShader.h>
 /* The maya object that represents the liquid render globals */
 
 MStringArray FindAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
@@ -52,8 +53,8 @@ bool isObjectCastsShadows( const MDagPath & path );
 bool isObjectMotionBlur( const MDagPath & path );
 bool areObjectAndParentsVisible( const MDagPath & path );
 bool areObjectAndParentsTemplated( const MDagPath & path );
-void assignTokenArrays( unsigned numTokens, rTokenPointer tokenPointerArray[], RtToken tokens[], RtPointer pointers[] );
-void assignTokenArraysV( std::vector<rTokenPointer> *tokenPointerArray, RtToken tokens[], RtPointer pointers[] );
+void assignTokenArrays( unsigned numTokens, liqTokenPointer tokenPointerArray[], RtToken tokens[], RtPointer pointers[] );
+void assignTokenArraysV( std::vector<liqTokenPointer> *tokenPointerArray, RtToken tokens[], RtPointer pointers[] );
 MObject findFacetShader( MObject mesh, int polygonIndex );
 bool fileExists( MString & filename );
 MString parseString( MString & inputString ); 
@@ -61,6 +62,5 @@ MString liquidTransGetSceneName();
 MString liquidTransGetFullSceneName();
 void liquidInfo( MString info );
 void liquidGetGlobal( MString globalName, double &value, MStatus &returnStatus );
-shaderStruct liquidGetShader( MObject shaderNode );
 liquidlong liquidHash(const char *str);
 #endif

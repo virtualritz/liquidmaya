@@ -35,30 +35,29 @@
 
 #include <liquidRibData.h>
 
-class RibMeshData : public RibData {
+class liquidRibMeshData : public liquidRibData {
 public: // Methods
     
-            RibMeshData( MObject mesh );
-    virtual ~RibMeshData();
+            liquidRibMeshData( MObject mesh );
+    virtual ~liquidRibMeshData();
         
     virtual void       write();
-	virtual bool       compare( const RibData & other ) const;
-	virtual ObjectType type() const;
+    virtual bool       compare( const liquidRibData & other ) const;
+    virtual ObjectType type() const;
     
 private: // Data
 	RtInt     npolys;
 	RtInt   * nverts;
 	RtInt   * verts;
-	RtFloat * vertexParam;
-	RtFloat * normalParam;
-	RtFloat * polyuvParam;
+	const RtFloat * vertexParam;
+	const RtFloat * normalParam;
     
-  unsigned  totalNumOfVertices;
-	unsigned  textureindex;
-	bool			areaLight;
-	MString name;
-	RtMatrix	  transformationMatrix;
-	float			areaIntensity;
+    unsigned  totalNumOfVertices;
+    unsigned  textureindex;
+    bool    	areaLight;
+    MString 	name;
+    RtMatrix	transformationMatrix;
+    float   	areaIntensity;
 };
 
 #endif

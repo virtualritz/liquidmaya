@@ -35,15 +35,15 @@
 
 #include <liquidRibData.h>
 
-class RibLocatorData : public RibData {
+class liquidRibLocatorData : public liquidRibData {
 public: // Methods
     
-            RibLocatorData( MObject locator );
-    virtual ~RibLocatorData();
+            liquidRibLocatorData( MObject locator );
+    virtual ~liquidRibLocatorData();
         
     virtual void       write();
-	virtual bool       compare( const RibData & other ) const;
-	virtual ObjectType type() const;
+    virtual bool       compare( const liquidRibData & other ) const;
+    virtual ObjectType type() const;
     
 private: // Data
 };

@@ -40,63 +40,63 @@
 #include <maya/MDagPath.h>
 #include <maya/MObjectArray.h>
 
-class RibNode {   
+class liquidRibNode {   
 public:
-	RibNode( RibNode * instanceOfNode = NULL );
-	~RibNode();
+    liquidRibNode( liquidRibNode * instanceOfNode = NULL );
+    ~liquidRibNode();
 			
-	void 		    set( MDagPath &, int, ObjectType objType );
+    void set( MDagPath &, int, ObjectType objType );
 			   
-	RibNode *	    next;
-	MString				name;
+    liquidRibNode *	    next;
+    MString name;
 	
     AnimType        matXForm;
-	AnimType        bodyXForm;
+    AnimType        bodyXForm;
 	
-	RibObj *	    object(int);
-	RibObj *	    no;
+    liquidRibObj *	    object(int);
+    liquidRibObj *	    no;
     
     MDagPath &      path();
      
-	MColor		color;
-	bool			matteMode;
-	bool			doubleSided;
-	MString			shaderName;
-	MString			dispName;
-	MString			volumeName;
-	MFnDependencyNode assignedShadingGroup;
-	MFnDependencyNode	assignedShader;
-	MFnDependencyNode	assignedDisp;
-	MFnDependencyNode	assignedVolume;
-	MObject			findShadingGroup( const MDagPath& path );
-	MObject 		findShader( MObject& group );
-	MObject 		findDisp( MObject& group );
-	MObject			findVolume( MObject& group );
-	void			getIgnoredLights( MObject& group, MObjectArray& lights );
-	void			getIgnoredLights( MObjectArray& lights );
-	bool			getColor( MObject& shader, MColor& color );
-	bool			getMatteMode( MObject& shader );
-	bool			hasRibGen();
-	void			doRibGen();
-	MString		ribBoxString;
-	bool			isRibBox;
-	MString		archiveString;
-	bool  		isArchive;
-  MString		delayedArchiveString;
-	bool  		isDelayedArchive;
-	RtBound 	bound;
-	bool			doDef;		/* Used for per-object deformation blur */
-	bool			doMotion;	/* Used for per-object transformation blur */
-	float			nodeShadingRate;
-	bool			nodeShadingRateSet;
+    MColor		color;
+    bool    	    	matteMode;
+    bool    	    	doubleSided;
+    MString 	    	shaderName;
+    MString 	    	dispName;
+    MString 	    	volumeName;
+    MFnDependencyNode 	assignedShadingGroup;
+    MFnDependencyNode	assignedShader;
+    MFnDependencyNode	assignedDisp;
+    MFnDependencyNode	assignedVolume;
+    MObject 	    	findShadingGroup( const MDagPath& path );
+    MObject 		findShader( MObject& group );
+    MObject 		findDisp( MObject& group );
+    MObject 	    	findVolume( MObject& group );
+    void    	    	getIgnoredLights( MObject& group, MObjectArray& lights );
+    void    	    	getIgnoredLights( MObjectArray& lights );
+    bool    	    	getColor( MObject& shader, MColor& color );
+    bool    	    	getMatteMode( MObject& shader );
+    bool    	    	hasRibGen();
+    void    	    	doRibGen();
+    MString 	    	ribBoxString;
+    bool    	    	isRibBox;
+    MString		archiveString;
+    bool  		isArchive;
+    MString		delayedArchiveString;
+    bool  		isDelayedArchive;
+    RtBound 	    	bound;
+    bool    	    	doDef;		/* Used for per-object deformation blur */
+    bool    	    	doMotion;	/* Used for per-object transformation blur */
+    float   	    	nodeShadingRate;
+    bool    	    	nodeShadingRateSet;
 		   
 private:
         
-    MDagPath        DagPath;
-    RibObj *	   objects[5];
-    RibNode *      instance;
-		MString				ribGenName;
-		bool					hasRibGenAttr;
+    MDagPath	    DagPath;
+    liquidRibObj *  objects[5];
+    liquidRibNode * instance;
+    MString 	    ribGenName;
+    bool    	    hasRibGenAttr;
 };
 
 #endif

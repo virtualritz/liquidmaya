@@ -24,7 +24,9 @@
 ** RenderMan (R) is a registered trademark of Pixar
 */
 
-#define _DEBUGMEMORYSYSTEM
+#ifdef DEBUG
+//#define _DEBUGMEMORYSYSTEM
+#endif
 
 #ifndef liquidMemory_H
 #define liquidMemory_H
