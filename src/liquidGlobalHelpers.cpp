@@ -375,9 +375,16 @@ MObject findFacetShader( MObject mesh, int polygonIndex ){
 }
 
 /* Check to see if a file exists - seems to work correctly for both platforms */
-bool fileExists( MString & filename ) {
+bool fileExists(const MString & filename) {
     struct stat sbuf;
-    int result = stat(filename.asChar(), &sbuf);
+		int result = stat(filename.asChar(), &sbuf);
+#ifdef _WIN32
+		// under Win32, stat fails if path is a directory name ending in a slash
+		// so we check for DIR/. which works - go figure
+		if (result && (filename.rindex('/') == filename.length()-1)) {
+			result = stat((filename + ".").asChar(), &sbuf);
+		}
+#endif
     return (result == 0);
 }
 
