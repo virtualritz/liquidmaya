@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+**
 */
 
 /* ______________________________________________________________________
@@ -129,7 +130,7 @@ MString liquidGetSloInfo::getArgDetailStr( int num )
 	return MString( shaderDetailStr[ ( int )argDetail[ num ] ] ); 
 }
 
-MString liquidGetSloInfo::getArgStringDefault( int num, int entry ) 
+MString liquidGetSloInfo::getArgStringDefault( int num, int /*entry*/ ) 
 {
 	return MString( ( char * )argDefault[ num ] ); 
 }
