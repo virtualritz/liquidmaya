@@ -77,6 +77,11 @@ extern "C" {
 #include <liquidRibNode.h>
 #include <liquidMemory.h>
 
+#ifdef _WIN32
+#undef min
+#undef max
+#endif
+
 extern int debugMode;
 
 extern MStringArray liqglo_preReadArchive;
