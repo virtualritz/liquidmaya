@@ -53,6 +53,7 @@ public:
     char **lightSources;
     
     MMatrix matrix( int instance ) const;
+    void    setMatrix( int instance, MMatrix matrix );
     
     void ref();
     void unref();

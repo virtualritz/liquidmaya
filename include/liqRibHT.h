@@ -53,7 +53,11 @@ public:
 	liqRibHT();
 	~liqRibHT();
 			   
-	int 	    insert( MDagPath &, double, int, ObjectType objType );
+    int            insert( MDagPath &, double, int,
+                           ObjectType objType,
+                           MMatrix *matrix = NULL,
+                           const MString instanceStr = "",
+                           int particleId = -1 );
 	/*RibNode*	    find( const MObject &, ObjectType objType );*/
 	liqRibNode*    find( MString nodeName, MDagPath  path, ObjectType objType );
 	
