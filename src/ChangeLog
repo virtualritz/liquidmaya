@@ -7,6 +7,7 @@
 	* Guarding Malloc.h includes for OSX and using stdlib.h instead
 	* Adding OSX process launcher
 	* Adding OSX helpers
+	* Added OSX Xcode project, note that some of the paths will need altering for your machine.  In particular, the file sdr.cpp should be removed unless building for pixie (in which case you'll need to locate the file).  Also, you may need to add libraries to the link list for other renderers....
 
 Release 1.5.6 ------------------------------------------------------------------
 2004-04-07 pieke
