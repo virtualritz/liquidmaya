@@ -41,7 +41,11 @@
 #include <math.h>
 #include <string>
 
-#include <malloc.h>
+#ifdef OSX
+	#include <stdlib.h>
+#else
+	#include <malloc.h>
+#endif
 
 #include <liqMemory.h>
 
