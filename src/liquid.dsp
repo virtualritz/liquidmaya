@@ -153,7 +153,51 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\liqAqsisRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqAttachPrefAttribute.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqDelightRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqEntropyRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqGetAttr.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqGetSloInfo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqGlobalHelpers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqPreviewShader.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqPrmanRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqProcessLauncher.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\liqRibParticleData.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqRibSurfaceData.cpp
 # End Source File
 # Begin Source File
 
@@ -165,35 +209,11 @@ SOURCE=.\liqTokenPointer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidAttachPrefAttribute.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqGetAttr.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liquidGetSloInfo.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqGlobalHelpers.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\liquidMemory.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\liquidPlug.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqPreviewShader.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liquidProcessLauncher.cpp
 # End Source File
 # Begin Source File
 
@@ -241,16 +261,36 @@ SOURCE=.\liquidRibSubdivisionData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibSurfaceData.cpp
+SOURCE=.\liquidRibTranslator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibTranslator.cpp
+SOURCE=.\liqWriteArchive.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\include\liqGetAttr.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liqGetSloInfo.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liqGlobalHelpers.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liqPreviewShader.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liqProcessLauncher.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\include\liqRibParticleData.h
@@ -273,27 +313,7 @@ SOURCE=..\include\liquidAttachPrefAttribute.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liqGetAttr.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liquidGetSloInfo.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liqGlobalHelpers.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\include\liquidMemory.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liqPreviewShader.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liquidProcessLauncher.h
 # End Source File
 # Begin Source File
 
