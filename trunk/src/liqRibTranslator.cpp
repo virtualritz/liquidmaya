@@ -432,6 +432,9 @@ liqRibTranslator::liqRibTranslator()
   m_cropX1 = m_cropY1 = 0.0;
   m_cropX2 = m_cropY2 = 1.0;
   liqglo_isShadowPass = false;
+  
+  m_preWorldRIB.clear();
+  m_postWorldRIB.clear();
 }   
 
 liqRibTranslator::~liqRibTranslator()
@@ -1340,6 +1343,26 @@ void liqRibTranslator::liquidReadGlobals()
 		gStatus.clear();
 		if ( varVal != "" ) {
 			outFormat = parseString( varVal );
+		}
+	}
+  
+	{ 
+		MString varVal;
+		gPlug = rGlobalNode.findPlug( "preWorld", &gStatus ); 
+		if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+		gStatus.clear();
+		if ( varVal != "" ) {
+			m_preWorldRIB = parseString( varVal );
+		}
+	}
+  
+	{ 
+		MString varVal;
+		gPlug = rGlobalNode.findPlug( "postWorld", &gStatus ); 
+		if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+		gStatus.clear();
+		if ( varVal != "" ) {
+			m_postWorldRIB = parseString( varVal );
 		}
 	}
 }
@@ -3212,13 +3235,13 @@ MStatus liqRibTranslator::frameEpilogue( long )
 //  	Write out the frame epilogue.
 //  
 {
-    if (ribStatus == kRibFrame) {
-		ribStatus = kRibBegin;
-        if ( !m_exportReadArchive ) {
-			RiFrameEnd();
-		}
+  if (ribStatus == kRibFrame) {
+    ribStatus = kRibBegin;
+    if ( !m_exportReadArchive ) {
+      RiFrameEnd();
     }
-    return (ribStatus == kRibBegin ? MS::kSuccess : MS::kFailure);
+  }
+  return (ribStatus == kRibBegin ? MS::kSuccess : MS::kFailure);
 }
 
 MStatus liqRibTranslator::frameBody()
@@ -3227,42 +3250,58 @@ MStatus liqRibTranslator::frameBody()
 //  	Write out the body of the frame.  This includes a dump of the DAG
 //  
 {
-    MStatus returnStatus = MS::kSuccess;
-	MStatus status;
-	attributeDepth = 0;
+  MStatus returnStatus = MS::kSuccess;
+  MStatus status;
+  attributeDepth = 0;
+
+  RNMAP::iterator rniter;
+
+  /* if this is a readArchive that we are exporting than ingore this header information */
+  if ( !m_exportReadArchive ) {
     
-	RNMAP::iterator rniter;
-	
-	/* if this is a readArchive that we are exporting than ingore this header information */
-	if ( !m_exportReadArchive ) {
-		RiWorldBegin();
-		RiTransformBegin();
-		RiCoordinateSystem( "worldspace" );
-		RiTransformEnd();
-		
-		if ( !liqglo_currentJob.isShadow && !m_ignoreLights ) {
-			
-			int nbLight = 0;
-			
-			for ( rniter = htable->RibNodeMap.begin(); rniter != htable->RibNodeMap.end(); rniter++ ) {
-			    LIQ_CHECK_CANCEL_REQUEST;
-				liqRibNode *	rn = (*rniter).second;
-				if (rn->object(0)->ignore || rn->object(0)->type != MRT_Light) continue;
-				rn->object(0)->writeObject();
-				rn->object(0)->written = 1;
-				nbLight++;
-			}
-			
-		}
-	}
-	
-    if ( m_ignoreSurfaces ) {
-        RiSurface( "matte", RI_NULL );
+    // put in pre-worldbegin statements
+    if (m_preWorldRIB != "") {
+      RiArchiveRecord(RI_COMMENT,  " Pre-WorldBegin RIB from liquid globals");
+      RiArchiveRecord(RI_VERBATIM, (char*) m_preWorldRIB.asChar());
+      RiArchiveRecord(RI_VERBATIM, "\n");
     }
+  
+    RiWorldBegin();
     
-    MMatrix matrix;
-    MDagPath path;
-    MFnDagNode dagFn;
+    // put in post-worldbegin statements
+    if (m_postWorldRIB != "") {
+      RiArchiveRecord(RI_COMMENT,  " Post-WorldBegin RIB from liquid globals");
+      RiArchiveRecord(RI_VERBATIM, (char*) m_postWorldRIB.asChar());
+      RiArchiveRecord(RI_VERBATIM, "\n");
+    }
+
+    RiTransformBegin();
+    RiCoordinateSystem( "worldspace" );
+    RiTransformEnd();
+
+    if ( !liqglo_currentJob.isShadow && !m_ignoreLights ) {
+
+      int nbLight = 0;
+
+      for ( rniter = htable->RibNodeMap.begin(); rniter != htable->RibNodeMap.end(); rniter++ ) {
+        LIQ_CHECK_CANCEL_REQUEST;
+        liqRibNode *	rn = (*rniter).second;
+        if (rn->object(0)->ignore || rn->object(0)->type != MRT_Light) continue;
+        rn->object(0)->writeObject();
+        rn->object(0)->written = 1;
+        nbLight++;
+      }
+
+    }
+  }
+
+  if ( m_ignoreSurfaces ) {
+    RiSurface( "matte", RI_NULL );
+  }
+
+  MMatrix matrix;
+  MDagPath path;
+  MFnDagNode dagFn;
 	
 	
 	for ( rniter = htable->RibNodeMap.begin(); rniter != htable->RibNodeMap.end(); rniter++ ) {
