@@ -171,7 +171,6 @@ extern "C" {
 #include <liquidRibSurfaceData.h>
 #include <liquidRibNuCurveData.h>
 #include <liquidRibMeshData.h>
-#include <liquidRibParticleData.h>
 #include <liquidRibLocatorData.h>
 #include <liquidRibLightData.h>
 #include <liquidRibCoordData.h>
