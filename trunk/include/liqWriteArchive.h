@@ -40,26 +40,27 @@
 
 class liqWriteArchive : public MPxCommand {
 public:
-	liqWriteArchive() : indentLevel(0) {}
-	virtual ~liqWriteArchive() {}
+  liqWriteArchive() : indentLevel(0) {}
+  virtual ~liqWriteArchive() {}
 
-	static void* creator();
-	static MSyntax syntax();
+  static void* creator();
+  static MSyntax syntax();
 
-	MStatus doIt(const MArgList& args);
-	MStatus redoIt();
-
-private:
-	void outputIndentation();
-	void outputObjectName(const MDagPath &objDagPath);
-	void writeObjectToRib(const MDagPath &objDagPath, bool writeTransform);
+  MStatus doIt(const MArgList& args);
+  MStatus redoIt();
 
 private:
-	unsigned int indentLevel;
-	MStringArray objectNames;
-	MString outputFilename;
-	bool outputRootTransform;
-	bool outputChildTransforms;
+  void outputIndentation();
+  void outputObjectName(const MDagPath &objDagPath);
+  void writeObjectToRib(const MDagPath &objDagPath, bool writeTransform);
+
+private:
+  unsigned int indentLevel;
+  MStringArray objectNames;
+  MString outputFilename;
+  bool outputRootTransform;
+  bool outputChildTransforms;
+  bool debug;
 };
 
 
