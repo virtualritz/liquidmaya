@@ -381,7 +381,7 @@ void liqTokenPointer::setTokenName( const char * name )
 char * liqTokenPointer::getTokenName( void )
 {
   // Hmmmm should we handle token without name ?
-  return m_detailedTokenName;
+  return m_tokenName;
 }
 
 char * liqTokenPointer::getDetailedTokenName( void )
