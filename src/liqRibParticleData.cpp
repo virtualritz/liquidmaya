@@ -605,7 +605,11 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
                                 true,
                                 false,
                                 m_numValidParticles*m_multiCount );
-            widthParameter.setDetailType( rVertex );
+            
+	    // Since we're specifying the width at both ends of the streak, we must
+	    // use "varying" instead of "vertex" to describe streak particle width.
+	    //
+	    widthParameter.setDetailType( rVarying );
 
             for ( unsigned part_num = 0;
                   part_num < m_numValidParticles*m_multiCount;
