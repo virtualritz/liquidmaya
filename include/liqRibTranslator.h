@@ -218,23 +218,26 @@ private :
     liquidlong			m_RadMinPatchSamples;
     /* BMRT PARAMS: END */
 
-    MString		m_alfredTags;
-    MString		m_alfredServices;
+    MString  m_alfredTags;
+    MString  m_alfredServices;
 
-    MString		m_defGenKey;
-    MString		m_defGenService;
+    MString  m_defGenKey;
+    MString  m_defGenService;
 
-    MString		m_preFrameMel;
-    MString		m_postFrameMel;
+    MString  m_preFrameMel;
+    MString  m_postFrameMel;
 
-    MString		m_renderCommand;
-    MString		m_ribgenCommand;
-    MString		m_preCommand;
-    MString		m_postJobCommand;
-    MString   	    	m_preFrameCommand;
-    MString		m_postFrameCommand;
-    MString		m_shaderPath;
-    MString   	    	m_userAlfredFileName;
+    MString  m_renderCommand;
+    MString  m_ribgenCommand;
+    MString  m_preCommand;
+    MString  m_postJobCommand;
+    MString  m_preFrameCommand;
+    MString  m_postFrameCommand;
+    MString  m_shaderPath;
+    MString  m_userAlfredFileName;
+    
+    MString  m_preWorldRIB;
+    MString  m_postWorldRIB;
 
     /* Display Driver Variables */
     typedef struct structDDParam {
@@ -246,7 +249,7 @@ private :
 
     std::vector<structDDParam> m_DDParams;	
 
-    liquidlong		m_numDisplayDrivers;
+    liquidlong   m_numDisplayDrivers;
     MStringArray m_DDimageType;
     MStringArray m_DDimageMode;
     MStringArray m_DDparamType;

@@ -139,6 +139,8 @@ global string $liquidGlobalsVals[] = {
 	,"shortShaderNames", "bool", "false"
 	,"expandAlfred", "bool", "false"
 	,"previewer", "string", ""
+	,"preWorld",  "string", ""
+	,"postWorld", "string", ""
 };
 
 // WETA SPECIFIC: Start 
@@ -677,6 +679,11 @@ setParent liquidGlobalsWindow;
 					liquidShowBoolGlobal "cleanRib" "Clean Rib";
 					liquidShowBoolGlobal "cleanTex" "Clean Textures";
 					liquidShowBoolGlobal "cleanShad" "Clean Shadows (SHD/LTA)";
+					setParent ..; setParent ..;
+					frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-WorldBegin RIB Statements-" -cll false;
+					columnLayout -adj true;
+					liquidShowStringGlobal "preWorld"  "Before WorldBegin";
+					liquidShowStringGlobal "postWorld" "After WorldBegin";
 					setParent ..; setParent ..;
 					frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-Shader preview-" -cll false;
 					columnLayout -adj true;
