@@ -54,6 +54,13 @@ Release 1.5.3 ------------------------------------------------------------------
     	Added liquidParseSlShader.mel
 	Added lib/shaders/empty.sl
 
+2003-2-28
+	- Added a new subsystem to handle differing renderer capabilities and
+	requirements at rib-gen time.
+	- synchronized the Pref attribute generating code with the RibSurface
+	and RibMesh output code.
+	- renamed a couple of classes using the new liq prefix
+
 TODO :
 	--- Compilation ok with PRman
 	--- Compilation ok with Air
