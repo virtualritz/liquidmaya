@@ -87,7 +87,7 @@ extern "C" {
 
 extern bool liquidBin;
 
-#define LIQVENDOR "Colin Doncaster and friends"
+#define LIQVENDOR "http://liquidmaya.sourceforge.net/"
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
@@ -109,7 +109,8 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   
   MFnPlugin plugin( obj, LIQVENDOR, LIQUIDVERSION, "Any");
 
-  MGlobal::displayInfo("\nInitializing Liquid. Initial code by Colin Doncaster\n");
+  MGlobal::displayInfo(MString("Initializing Liquid v") + LIQUIDVERSION);
+  MGlobal::displayInfo("Initial Liquid code by Colin Doncaster");
 
   status = plugin.registerCommand("liquid", liqRibTranslator::creator, liqRibTranslator::syntax );
   LIQCHECKSTATUS( status, "Can't register liquid translator command" );
@@ -167,7 +168,5 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
   status = plugin.deregisterCommand("liquidWriteArchive");
   LIQCHECKSTATUS( status, "Can't deregister liquidWriteArchive command" );
 
-  MGlobal::displayInfo("\nLiquid Uninitialized...\n");
-  
   return MS::kSuccess;
 }
