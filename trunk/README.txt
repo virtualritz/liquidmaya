@@ -1,16 +1,36 @@
-README.txt
 
 Liquid Rendering Toolkit
+
 
 Note from the original developer, Colin Doncaster.
 --------------------------------------------------
 
-	Liquid has been in development for over three and a half years now, starting off as a small tool that was used at my own company in Toronto and then evolving into a production tool able to handle large complex scenes.  I've had a lot of input from people on how it should and shouldn't work, what needs to get added and where the bugs were.  Over the first year I made a decision that I was going to develop Liquid as a production tool that was meant to be used by Technical Directors to get their job done, not a rendering interface for visually building shaders.  
-	Because the Renderman interface has been pushed by Pixar as a standard their are various different renderers out there that support it, with slightly different options and attributes and quiet different compiled shader formats.  Because of this it tends to get quiet ugly, you'll understand once you start to take a look at the liquidGetSloInfo source.  Add to the confusion different platforms, different means of compiling Maya plugins on those platforms and other inconsistencies you'll understand why I've just provided somewhat generic makefiles.
-	Some people who have know me and the amount of time I've spent with the source think I am crazy for giving it away.  Maybe I am.  Over the last while I've been wrestling with idea of marketing the plug-in, the source, or coming up with an closed development group for it.  All were interesting ideas but I really wanted people to use it, after all there really is only two or three companies using it.  More importantly what I would like to see is people actually contributing back changes, bug fixes and additions they make.  Lastly, I want to make it accessible - for all the studios that want to start using higher end software but don't want to pay the extreme costs for it ( MTOR is more expensive than Maya these days! ).  
+Liquid has been in development for over three and a half years now, starting off as a small tool that
+was used at my own company in Toronto and then evolving into a production tool able to handle large 
+complex scenes.  I've had a lot of input from people on how it should and shouldn't work, what needs
+to get added and where the bugs were.  Over the first year I made a decision that I was going to develop
+Liquid as a production tool that was meant to be used by Technical Directors to get their job done, not 
+a rendering interface for visually building shaders.
+  
+Because the Renderman interface has been pushed by Pixar as a standard their are various different 
+renderers out there that support it, with slightly different options and attributes and quiet different
+compiled shader formats.  Because of this it tends to get quiet ugly, you'll understand once you start 
+to take a look at the liquidGetSloInfo source.  Add to the confusion different platforms, different 
+means of compiling Maya plugins on those platforms and other inconsistencies you'll understand why I've
+just provided somewhat generic makefiles.
+
+Some people who have know me and the amount of time I've spent with the source think I am crazy for 
+giving it away.  Maybe I am.  Over the last while I've been wrestling with idea of marketing the 
+plug-in, the source, or coming up with an closed development group for it.  All were interesting ideas
+but I really wanted people to use it, after all there really is only two or three companies using it.  
+More importantly what I would like to see is people actually contributing back changes, bug fixes and 
+additions they make.  Lastly, I want to make it accessible - for all the studios that want to start 
+using higher end software but don't want to pay the extreme costs for it (MTOR is more expensive 
+than Maya these days!).  
 	
-	Thanks - Colin Doncaster
-	colin@nomadicmonkey.com
+Thanks - Colin Doncaster
+colin@nomadicmonkey.com
+
 
 Compiling For Linux
 -------------------
@@ -27,6 +47,7 @@ To compile :
     make release to get a version of Liquid compiled with release flags ( use MAYA_LOCATION )
     make newversion to get a set of version of Liquid compiled agaisnt different version of maya installed ( use AW_LOCATION )
 
+
 Compiling For Windows
 ---------------------
 
@@ -34,14 +55,16 @@ In the src directory you will find a Microsoft Visual C++ project for compiling 
 setup to compile against the PRMan libraries, but targets will be added for other renderers.
 To compile:
   - Ensure your MAYA_LOCATION and RMANTREE environment variables are set correctly (e.g. c:\aw\maya4.5 and c:\program files\pixar\prman-10)
-  - Build either the 'Release' or 'Debug' targets from within MSVC++
+  - Build either the 'Release' or 'Debug' targets from within MSVC++ matching the renderer you are using
   - the plugin will be compiled to <LIQUID>/bin/win32/Release or <LIQUID>/bin/win32/Debug
+
 
 Thanks
 ------
-( in no particular order )
+(in no particular order)
 
-	Liz Vezina, My Folks, Kris Howald, Berj Bannayan, Jeff Hameluck, Dan Lemmon, Ken McGaugh, Mark Tait, James Cunningham, Wayne Stables, Guy Williams, Joe Letteri, John Shiels, Daniel Kramer, Jamie McCarter, Julian Mann, Cory Bedwell, Seth Lippman, Matt Hightower, Randy Goux, Greg Butler, Markus Manninen, Larry Gritz, Shai Hinitz and anyone else I forgot.  
+Liz Vezina, My Folks, Kris Howald, Berj Bannayan, Jeff Hameluck, Dan Lemmon, Ken McGaugh, Mark Tait, James Cunningham, Wayne Stables, Guy Williams, Joe Letteri, John Shiels, Daniel Kramer, Jamie McCarter, Julian Mann, Cory Bedwell, Seth Lippman, Matt Hightower, Randy Goux, Greg Butler, Markus Manninen, Larry Gritz, Shai Hinitz and anyone else I forgot.  
+
 
 License
 ----------
