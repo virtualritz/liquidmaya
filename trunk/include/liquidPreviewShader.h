@@ -45,7 +45,7 @@ public:
 			    
 	MStatus	    doIt(const MArgList& args );
 private:
-	void							resetIt();
+	void	resetIt();
 };
 
 #endif
