@@ -37,8 +37,6 @@
 
 
 // Standard Headers
-#include <iostream.h>
-#include <fstream.h>
 #include <math.h>
 #include <assert.h>
 #include <time.h>
@@ -99,11 +97,12 @@ extern "C" {
 #include <alloca.h>
 #endif
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
-static const char * LIQUIDVERSION =
+static const char * LIQUIDVERSION = 
 #include "liquid.version"
 ;
+#define DEFINED_LIQUIDVERSION
 #endif
 
 #ifdef _WIN32
@@ -1404,7 +1403,7 @@ void liqRibTranslator::liquidReadGlobals()
   }
     
   gPlug = rGlobalNode.findPlug( "renderScriptFormat", &gStatus );
-  if ( gStatus == MS::kSuccess ) gPlug.getValue( (liquidlong)m_renderScriptFormat );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( (liquidlong&)m_renderScriptFormat );
   gStatus.clear();
     
   gPlug = rGlobalNode.findPlug( "renderScriptCommand", &gStatus );
@@ -2059,7 +2058,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
         }
         if ( cleanRenderScript ) {
           std::stringstream ss;
-          ss << RM_CMD << " " << renderScriptName;
+          ss << RM_CMD << " " << renderScriptName.asChar();
           jobScript.cleanupCommands.push_back(liqRenderScript::Cmd(ss.str(), remoteRender));
         }
         if ( m_postJobCommand != MString("") ) {

@@ -33,8 +33,6 @@
 */
 
 // Standard Headers
-#include <iostream.h>
-#include <fstream.h>
 #include <math.h>
 #include <assert.h>
 #include <time.h>
@@ -89,11 +87,12 @@ extern bool liquidBin;
 
 #define LIQVENDOR "Colin_Doncaster_and_friends"
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
 static const char * LIQUIDVERSION = 
 #include "liquid.version"
 ;
+#define DEFINED_LIQUIDVERSION
 #endif
 
 
