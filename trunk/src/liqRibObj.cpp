@@ -88,9 +88,9 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 //      Create a RIB representation of the given node in the DAG as a ribgen!
 //
 : instanceMatrices( NULL ),
-objectHandle( NULL ),
-referenceCount( 0 ),
-data( NULL )   
+  objectHandle( NULL ),
+  referenceCount( 0 ),
+  data( NULL )   
 {
     if ( debugMode ) { printf("-> creating dag node handle rep\n"); }
     MObject obj = path.node();
@@ -108,76 +108,76 @@ data( NULL )
     unsigned last = instanceArray.length();
     instanceMatrices = new MMatrix[last];
     for ( unsigned i = 0; i < last; i++ ) {
-        instanceMatrices[i] = instanceArray[i].inclusiveMatrix();
+      instanceMatrices[i] = instanceArray[i].inclusiveMatrix();
     }
-	
+
     if ( debugMode ) { printf("-> checking handles display status\n"); }
-	
+
     ignore = !areObjectAndParentsVisible( path );
     if ( !ignore ) {
-	    ignore = !areObjectAndParentsTemplated( path );
+      ignore = !areObjectAndParentsTemplated( path );
     }
     if ( !ignore ) {
-	    ignore = !isObjectPrimaryVisible( path );
+      ignore = !isObjectPrimaryVisible( path );
     }
     ignoreShadow = !isObjectCastsShadows( path );
     if ( !ignoreShadow ) {
-	    ignoreShadow = !areObjectAndParentsVisible( path );
+      ignoreShadow = !areObjectAndParentsVisible( path );
     }
     if ( !ignoreShadow ) {
-	    ignoreShadow = !areObjectAndParentsTemplated( path );
-    }	
-	
+      ignoreShadow = !areObjectAndParentsTemplated( path );
+    }
+
     // don't bother storing it if it's not going to be visible!
     if ( debugMode ) { printf("-> about to create rep\n"); }
 
     if ( !ignore || !ignoreShadow ) {  
-	    if ( objType == MRT_RibGen ) {
-		    type = MRT_RibGen;
-		    data = new liqRibGenData( obj, path );
-	    } else {
-		    // Store the geometry/light/shader data for this object in RIB format
-		    if ( obj.hasFn(MFn::kNurbsSurface) ) {
-			    type = MRT_Nurbs;
-			    data = new liqRibSurfaceData( obj );
-		    } else if ( obj.hasFn(MFn::kNurbsCurve) ) {
-			    type = MRT_NuCurve;
-			    data = new liqRibNuCurveData( obj );
-		    } else if ( obj.hasFn(MFn::kParticle) ) {
-			    type = MRT_Particles;
-			    data = new liqRibParticleData( obj );
-		    } else if ( obj.hasFn(MFn::kMesh) ) {
-			    /* we know we are dealing with a mesh here, now we check to see if it
-			    needs to be handled as a subdivision surface */
-			    MStatus subDAttrStatus;
-			    bool usingSubD = false;
-			    MPlug subDivPlug = nodeFn.findPlug( "subDMesh", &subDAttrStatus );
-			    if ( subDAttrStatus == MS::kSuccess ) {
-				    subDivPlug.getValue( usingSubD );
-			    }
-			    if ( usingSubD ) {
-				    /* we've got a subdivision surface */
-				    type = MRT_Subdivision;
-				    data = new liqRibSubdivisionData( obj );
-				    type = data->type();
-			    } else {
-				    /* it's a regular mesh */
-				    type = MRT_Mesh;
-				    data = new liqRibMeshData( obj );
-				    type = data->type();
-			    }
-		    } else if ( obj.hasFn(MFn::kLight)) {
-			    type = MRT_Light;
-			    data = new liqRibLightData( path );
-		    } else if ( obj.hasFn(MFn::kPlace3dTexture)) {
-			    type = MRT_Coord;
-			    data = new liqRibCoordData( obj );
-		    } else if ( obj.hasFn(MFn::kLocator) ) {
-			    type = MRT_Locator;
-			    data = new liqRibLocatorData( obj );
-		    }
-	    }
-	    data->objDagPath = path;
+      if ( objType == MRT_RibGen ) {
+        type = MRT_RibGen;
+        data = new liqRibGenData( obj, path );
+      } else {
+        // Store the geometry/light/shader data for this object in RIB format
+        if ( obj.hasFn(MFn::kNurbsSurface) ) {
+          type = MRT_Nurbs;
+          data = new liqRibSurfaceData( obj );
+        } else if ( obj.hasFn(MFn::kNurbsCurve) ) {
+          type = MRT_NuCurve;
+          data = new liqRibNuCurveData( obj );
+        } else if ( obj.hasFn(MFn::kParticle) ) {
+          type = MRT_Particles;
+          data = new liqRibParticleData( obj );
+        } else if ( obj.hasFn(MFn::kMesh) ) {
+          // we know we are dealing with a mesh here, now we check to see if it
+          // needs to be handled as a subdivision surface
+          MStatus subDAttrStatus;
+          bool usingSubD = false;
+          MPlug subDivPlug = nodeFn.findPlug( "subDMesh", &subDAttrStatus );
+          if ( subDAttrStatus == MS::kSuccess ) {
+            subDivPlug.getValue( usingSubD );
+          }
+          if ( usingSubD ) {
+            // we've got a subdivision surface
+            type = MRT_Subdivision;
+            data = new liqRibSubdivisionData( obj );
+            type = data->type();
+          } else {
+            // it's a regular mesh
+            type = MRT_Mesh;
+            data = new liqRibMeshData( obj );
+            type = data->type();
+          }
+        } else if ( obj.hasFn(MFn::kLight)) {
+          type = MRT_Light;
+          data = new liqRibLightData( path );
+        } else if ( obj.hasFn(MFn::kPlace3dTexture)) {
+          type = MRT_Coord;
+          data = new liqRibCoordData( obj );
+        } else if ( obj.hasFn(MFn::kLocator) ) {
+          type = MRT_Locator;
+          data = new liqRibLocatorData( obj );
+        }
+      }
+      data->objDagPath = path;
     }
     if ( debugMode ) { printf("-> done creating rep\n"); }
 }
@@ -204,6 +204,7 @@ inline RtObjectHandle liqRibObj::handle() const
 {
     return objectHandle;
 }
+
 inline void liqRibObj::setHandle( RtObjectHandle handle )
 //
 //  Description: 
@@ -212,21 +213,23 @@ inline void liqRibObj::setHandle( RtObjectHandle handle )
 {
     objectHandle = handle;
 }
+
 RtLightHandle liqRibObj::lightHandle() const
 //
 //  Description: 
 //      return the RenderMan handle handle for this light
 //  
 {
-	if ( debugMode ) { printf("-> creating light node handle rep\n"); }
-    //assert( type == MRT_Light );
-    RtLightHandle lHandle = NULL;
-    if ( type == MRT_Light ) {
-        liqRibLightData * light = (liqRibLightData*)data;
-        lHandle = light->lightHandle();
-    }
-    return lHandle;
+  if ( debugMode ) { printf("-> creating light node handle rep\n"); }
+  //assert( type == MRT_Light );
+  RtLightHandle lHandle = NULL;
+  if ( type == MRT_Light ) {
+    liqRibLightData * light = (liqRibLightData*)data;
+    lHandle = light->lightHandle();
+  }
+  return lHandle;
 }
+
 AnimType liqRibObj::compareMatrix(const liqRibObj *o, int instance )
 // 
 //  Description:
@@ -235,9 +238,10 @@ AnimType liqRibObj::compareMatrix(const liqRibObj *o, int instance )
 //      if motion blurring should be done.
 //
 {
-	if ( debugMode ) { printf("-> comparing rib node handle rep matrix\n"); }
-    return (matrix( instance ) == o->matrix( instance ) ? MRX_Const : MRX_Animated);
+  if ( debugMode ) { printf("-> comparing rib node handle rep matrix\n"); }
+  return (matrix( instance ) == o->matrix( instance ) ? MRX_Const : MRX_Animated);
 }
+
 AnimType liqRibObj::compareBody(const liqRibObj *o)
 // 
 //  Description:
@@ -245,16 +249,16 @@ AnimType liqRibObj::compareBody(const liqRibObj *o)
 //      determine if motion blurring should be done 
 //
 {
-	if ( debugMode ) { printf("-> comparing rib node handle body\n"); }
-    AnimType cmp = MRX_Const;
-    if (data == NULL || o->data == NULL) {
-        cmp = MRX_Const;
-    } else {
-        if ( !data->compare( *(o->data) ) ) {
-            cmp = MRX_Animated;
-        }
+  if ( debugMode ) { printf("-> comparing rib node handle body\n"); }
+  AnimType cmp = MRX_Const;
+  if (data == NULL || o->data == NULL) {
+    cmp = MRX_Const;
+  } else {
+    if ( !data->compare( *(o->data) ) ) {
+      cmp = MRX_Animated;
     }
-    return cmp;
+  }
+  return cmp;
 }
 
 void liqRibObj::writeObject()
@@ -263,20 +267,20 @@ void liqRibObj::writeObject()
 //      write the object directly.  We do not get a RIB handle in this case
 //
 {
-    if ( debugMode ) { printf("-> writing rib node handle rep\n"); }
-    if ( NULL != data ) {
-        if ( MRT_Light == type ) {
-    	    data->write();
-        } else {
-    	    if ( type == MRT_Nurbs ) {
-    	    	liqRibSurfaceData * surfData = (liqRibSurfaceData*)data;
-    	    	if ( surfData->hasTrimCurves() ) {
-    	    	    surfData->writeTrimCurves();
-    	    	}
-            }
-    	    data->write();
+  if ( debugMode ) { printf("-> writing rib node handle rep\n"); }
+  if ( NULL != data ) {
+    if ( MRT_Light == type ) {
+      data->write();
+    } else {
+      if ( type == MRT_Nurbs ) {
+        liqRibSurfaceData * surfData = (liqRibSurfaceData*)data;
+        if ( surfData->hasTrimCurves() ) {
+          surfData->writeTrimCurves();
         }
+      }
+      data->write();
     }
+  }
 }
 
 MMatrix liqRibObj::matrix( int instance ) const
@@ -285,9 +289,8 @@ MMatrix liqRibObj::matrix( int instance ) const
 //      return the inclusive matrix for the given instance
 //
 {
-	assert(instance>=0);
-    
-    return instanceMatrices[instance];
+  assert(instance>=0);
+  return instanceMatrices[instance];
 }
 
 void liqRibObj::ref()
@@ -296,11 +299,11 @@ void liqRibObj::ref()
 //      bump reference count up by one
 //
 {
-	if ( debugMode ) { 
-		//printf("-> referencing ribobj: %s\n", data->objDagPath.fullPathName().asChar() ); 
-		printf("-> number of ribobj references prior: %d\n", referenceCount ); 
-	}
-	referenceCount++; 
+  if ( debugMode ) { 
+    //printf("-> referencing ribobj: %s\n", data->objDagPath.fullPathName().asChar() ); 
+    printf("-> number of ribobj references prior: %d\n", referenceCount ); 
+  }
+  referenceCount++; 
 }
 
 void liqRibObj::unref()
@@ -309,15 +312,15 @@ void liqRibObj::unref()
 //      bump reference count down by one and delete if necessary
 //
 {
-	if ( debugMode ) { 
-		printf("-> unreferencing ribobj.\n" ); 
-		printf("-> number of ribobj references prior: %d\n", referenceCount ); 
-	}
-	assert( referenceCount >= 0 );
-    
-	referenceCount--;
-	if ( referenceCount <= 0 ) {
-		if ( debugMode ) { printf( "-> deleting this ribobj.\n" ); }
-		delete this;   
-	}
+  if ( debugMode ) { 
+    printf("-> unreferencing ribobj.\n" ); 
+    printf("-> number of ribobj references prior: %d\n", referenceCount ); 
+  }
+  assert( referenceCount >= 0 );
+
+  referenceCount--;
+  if ( referenceCount <= 0 ) {
+    if ( debugMode ) { printf( "-> deleting this ribobj.\n" ); }
+    delete this;   
+  }
 }

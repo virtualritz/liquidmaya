@@ -188,11 +188,8 @@ static const char * LIQUIDVERSION =
 #include <liqRibGenData.h>
 #include <liqMemory.h>
 #include <liqProcessLauncher.h>
-#include <liqEntropyRenderer.h>
-#include <liqPrmanRenderer.h>
-#include <liqAqsisRenderer.h>
-#include <liqDelightRenderer.h>
 #include <liqGlobalHelpers.h>
+#include <liqRenderer.h>
 
 typedef int RtError;
 
@@ -241,20 +238,16 @@ MStringArray liqglo_preRibBox;
 MStringArray liqglo_preReadArchiveShadow;
 MStringArray liqglo_preRibBoxShadow;
 
-// our global renderer object
-liqRenderer *liqglo_renderer = NULL;
 
 #if 0
-
-
 #ifdef _WIN32
 // Hmmmmmmmm what's this ?
 int RiNColorSamples;
 #endif
-
 // these are little storage variables to keep track of the current graphics state and will eventually be wrapped in
 // a specific class
 #endif
+
 
 void liqRibTranslator::freeShaders( void ) 
 {
@@ -529,8 +522,6 @@ liqRibTranslator::~liqRibTranslator()
 //#endif
 //	if ( debugMode ) { printf("-> dumping unfreed memory.\n" ); }
 //	if ( debugMode ) ldumpUnfreed();
-
-    delete liqglo_renderer;
 }   
 
 #if defined ENTROPY || PRMAN
@@ -1499,193 +1490,173 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 //  Description:
 //      This method actually does the renderman output
 {
-    // first thing we should do is setup our renderer
-    
-    // TODO: got to make this much better in the future -- get the renderer
-    // and version from the globals UI
-#ifdef ENTROPY
-    liqglo_renderer = new liqEntropyRenderer("3.1");
-#endif
+  MStatus status;
+  MString lastRibName;
 
-#ifdef PRMAN
-    liqglo_renderer = new liqPrmanRenderer("3.9");
-#endif
+  status = liquidDoArgs( args );
+  if (!status) {
+    return MS::kFailure;	
+  }
 
-#ifdef AQSIS
-    liqglo_renderer = new liqAqsisRenderer("0.7.4");
-#endif
+  if ( !liquidBin ) liquidInfo("Creating Rib <Press ESC To Cancel> ...");
 
-#ifdef DELIGHT
-    liqglo_renderer = new liqDelightRenderer("1.0.0");
-#endif
+  // Remember the frame the scene was at so we can restore it later.
+  MTime currentFrame = MAnimControl::currentTime();
 
-    MStatus status;
-    MString lastRibName;
+  // append the progress flag for alfred feedback
+  if ( useAlfred ) {
+    if ( ( m_renderCommand == MString( "render" ) ) || ( m_renderCommand == MString( "prman" ) ) ) {
+      m_renderCommand = m_renderCommand + " -Progress";
+    }
+  }
 
-	status = liquidDoArgs( args );
-	if (!status) {
-		return MS::kFailure;	
-	}
-
-	if ( !liquidBin ) liquidInfo("Creating Rib <Press ESC To Cancel> ...");
-
-	// Remember the frame the scene was at so we can restore it later.
-	MTime currentFrame = MAnimControl::currentTime();
-
-	// append the progress flag for alfred feedback
-	if ( useAlfred ) {
-		if ( ( m_renderCommand == MString( "render" ) ) || ( m_renderCommand == MString( "prman" ) ) ) {
-			m_renderCommand = m_renderCommand + " -Progress";
-		}
-	}
-
-	// check to see if the output camera, if specified, is available
-	if ( liquidBin && ( renderCamera == "" ) ) {
-		printf( "No Render Camera Specified" );
-		return MS::kFailure;
-	}
+  // check to see if the output camera, if specified, is available
+  if ( liquidBin && ( renderCamera == "" ) ) {
+    printf( "No Render Camera Specified" );
+    return MS::kFailure;
+  }
     if ( renderCamera != "" ) {
-		MStatus selectionStatus;
-		MSelectionList camList;
-		selectionStatus = camList.add( renderCamera );
-		if ( selectionStatus != MS::kSuccess ) {
-			MGlobal::displayError( "Invalid Render Camera" );
-			return MS::kFailure;
-		}
-	}
+    MStatus selectionStatus;
+    MSelectionList camList;
+    selectionStatus = camList.add( renderCamera );
+    if ( selectionStatus != MS::kSuccess ) {
+      MGlobal::displayError( "Invalid Render Camera" );
+      return MS::kFailure;
+    }
+  }
 
-	// if directories were set in the globals then set the global variables
-	if ( m_ribDirG.length() > 0 ) liqglo_ribDir = m_ribDirG;
-	if ( m_texDirG.length() > 0 ) liqglo_texDir = m_texDirG;
-	if ( m_pixDirG.length() > 0 ) m_pixDir = m_pixDirG;
-	if ( m_tmpDirG.length() > 0 ) m_tmpDir = m_tmpDirG;
+  // if directories were set in the globals then set the global variables
+  if ( m_ribDirG.length() > 0 ) liqglo_ribDir = m_ribDirG;
+  if ( m_texDirG.length() > 0 ) liqglo_texDir = m_texDirG;
+  if ( m_pixDirG.length() > 0 ) m_pixDir = m_pixDirG;
+  if ( m_tmpDirG.length() > 0 ) m_tmpDir = m_tmpDirG;
 
-	// make sure the directories end with a slash
-	LIQ_ADD_SLASH_IF_NEEDED( liqglo_ribDir );
-	LIQ_ADD_SLASH_IF_NEEDED( liqglo_texDir );
-	LIQ_ADD_SLASH_IF_NEEDED( m_pixDir );
-	LIQ_ADD_SLASH_IF_NEEDED( m_tmpDir );
+  // make sure the directories end with a slash
+  LIQ_ADD_SLASH_IF_NEEDED( liqglo_ribDir );
+  LIQ_ADD_SLASH_IF_NEEDED( liqglo_texDir );
+  LIQ_ADD_SLASH_IF_NEEDED( m_pixDir );
+  LIQ_ADD_SLASH_IF_NEEDED( m_tmpDir );
 
-	// setup the error handler
-	if ( m_errorMode ) RiErrorHandler( liqRibTranslatorErrorHandler );
+  // setup the error handler
+  if ( m_errorMode ) RiErrorHandler( liqRibTranslatorErrorHandler );
 
-	// Setup helper variables for alfred
-	MString alfredCleanUpCommand;
-	if ( remoteRender ) {
-		alfredCleanUpCommand = MString( "RemoteCmd" );
-	} else {
-		alfredCleanUpCommand = MString( "Cmd" );
-	}
+  // Setup helper variables for alfred
+  MString alfredCleanUpCommand;
+  if ( remoteRender ) {
+    alfredCleanUpCommand = MString( "RemoteCmd" );
+  } else {
+    alfredCleanUpCommand = MString( "Cmd" );
+  }
 
-	MString alfredRemoteTagsAndServices;
-	if ( remoteRender || useNetRman ) {
-		alfredRemoteTagsAndServices = MString( "-service { " );
-		alfredRemoteTagsAndServices += m_alfredServices.asChar();
-		alfredRemoteTagsAndServices += MString( " } -tags { " );
-		alfredRemoteTagsAndServices += m_alfredTags.asChar();
-		alfredRemoteTagsAndServices += MString( " } " );
-	}
+  MString alfredRemoteTagsAndServices;
+  if ( remoteRender || useNetRman ) {
+    alfredRemoteTagsAndServices = MString( "-service { " );
+    alfredRemoteTagsAndServices += m_alfredServices.asChar();
+    alfredRemoteTagsAndServices += MString( " } -tags { " );
+    alfredRemoteTagsAndServices += m_alfredTags.asChar();
+    alfredRemoteTagsAndServices += MString( " } " );
+  }
 
-	/*  A seperate one for cleanup as it doens't need a tag! */
-	MString alfredCleanupRemoteTagsAndServices;
-	if ( remoteRender || useNetRman ) {
-		alfredCleanupRemoteTagsAndServices = MString( "-service { " );
-		alfredCleanupRemoteTagsAndServices += m_alfredServices.asChar();
-		alfredCleanupRemoteTagsAndServices += MString( " } " );
-	}
+  /*  A seperate one for cleanup as it doens't need a tag! */
+  MString alfredCleanupRemoteTagsAndServices;
+  if ( remoteRender || useNetRman ) {
+    alfredCleanupRemoteTagsAndServices = MString( "-service { " );
+    alfredCleanupRemoteTagsAndServices += m_alfredServices.asChar();
+    alfredCleanupRemoteTagsAndServices += MString( " } " );
+  }
 
-	// exception handling block, this tracks liquid for any possible errors and tries to catch them
-	// to avoid crashing
-	try {
-		m_escHandler.beginComputation();
+  // exception handling block, this tracks liquid for any possible errors and tries to catch them
+  // to avoid crashing
+  try {
+    m_escHandler.beginComputation();
 
-		// check to see if all the directories we are working with actually exist.
-		verifyOutputDirectories();
+    // check to see if all the directories we are working with actually exist.
+    verifyOutputDirectories();
 
-		if ( ( m_preFrameMel  != "" ) && !fileExists( m_preFrameMel  ) ) {
-			cout << "Liquid -> Cannot find pre frame mel script! Assuming local.\n" << flush;
-		}
-		if ( ( m_postFrameMel != "" ) && !fileExists( m_postFrameMel ) ) {
-			cout << "Liquid -> Cannot find post frame mel script! Assuming local.\n" << flush;
-		}
+    if ( ( m_preFrameMel  != "" ) && !fileExists( m_preFrameMel  ) ) {
+      cout << "Liquid -> Cannot find pre frame mel script! Assuming local.\n" << flush;
+    }
+    if ( ( m_postFrameMel != "" ) && !fileExists( m_postFrameMel ) ) {
+      cout << "Liquid -> Cannot find post frame mel script! Assuming local.\n" << flush;
+    }
 
-		//BMRT didn't support deformation blur at the time of this writing
-		if (m_renderer == BMRT) {
-			liqglo_doDef = false;
-		}
+    //BMRT didn't support deformation blur at the time of this writing
+    if (m_renderer == BMRT) {
+      liqglo_doDef = false;
+    }
 
-		char *alfredFileName;
-		ofstream alfFile;
+    char *alfredFileName;
+    ofstream alfFile;
 #ifndef _WIN32
-		struct timeval t_time;
-		struct timezone t_zone;
-		size_t tempSize = 0;
+    struct timeval t_time;
+    struct timezone t_zone;
+    size_t tempSize = 0;
 
-		char currentHostName[1024];
-		gethostname( currentHostName, tempSize );
-		liquidlong hashVal = liquidHash( currentHostName );
+    char currentHostName[1024];
+    gethostname( currentHostName, tempSize );
+    liquidlong hashVal = liquidHash( currentHostName );
 #endif
-		// build alfred file name
-		MString tempAlfname = m_tmpDir;
-		if ( m_userAlfredFileName != MString( "" ) ){
-			tempAlfname += m_userAlfredFileName;
-		} else {
-			tempAlfname += liqglo_sceneName;
+    // build alfred file name
+    MString tempAlfname = m_tmpDir;
+    if ( m_userAlfredFileName != MString( "" ) ){
+      tempAlfname += m_userAlfredFileName;
+    } else {
+      tempAlfname += liqglo_sceneName;
 #ifndef _WIN32
-			gettimeofday( &t_time, &t_zone );
-			srandom( t_time.tv_usec + hashVal );
-			short alfRand = random();
-			tempAlfname += alfRand;
+      gettimeofday( &t_time, &t_zone );
+      srandom( t_time.tv_usec + hashVal );
+      short alfRand = random();
+      tempAlfname += alfRand;
 #endif
-		}
-		tempAlfname += ".alf";
+    }
+    tempAlfname += ".alf";
 
-		alfredFileName = (char *)alloca( sizeof( char ) * tempAlfname.length() +1);
-		strcpy( alfredFileName , tempAlfname.asChar() );
+    alfredFileName = (char *)alloca( sizeof( char ) * tempAlfname.length() +1);
+    strcpy( alfredFileName , tempAlfname.asChar() );
 
-		// build deferred temp maya file name
-		MString tempDefname = m_tmpDir;
-		tempDefname += liqglo_sceneName;
+    // build deferred temp maya file name
+    MString tempDefname = m_tmpDir;
+    tempDefname += liqglo_sceneName;
 #ifndef _WIN32
-		gettimeofday( &t_time, &t_zone );
-		srandom( t_time.tv_usec + hashVal );
-		short defRand = random();
-		tempDefname += defRand;
+    gettimeofday( &t_time, &t_zone );
+    srandom( t_time.tv_usec + hashVal );
+    short defRand = random();
+    tempDefname += defRand;
 #endif
 
-		MString currentFileType = MFileIO::fileType();
-		if ( MString( "mayaAscii" ) == currentFileType ) tempDefname += ".ma";
-		if ( MString( "mayaBinary" ) == currentFileType ) tempDefname += ".mb";
-		if ( m_deferredGen ) {
-			MFileIO::exportAll( tempDefname, currentFileType.asChar() );
-		}
+    MString currentFileType = MFileIO::fileType();
+    if ( MString( "mayaAscii" ) == currentFileType ) tempDefname += ".ma";
+    if ( MString( "mayaBinary" ) == currentFileType ) tempDefname += ".mb";
+    if ( m_deferredGen ) {
+      MFileIO::exportAll( tempDefname, currentFileType.asChar() );
+    }
 
-		if ( !m_deferredGen && m_justRib ) useAlfred = false;
+    if ( !m_deferredGen && m_justRib ) useAlfred = false;
 
-		if ( useAlfred ) {
-			alfFile.open( alfredFileName );
+    if ( useAlfred ) {
+      alfFile.open( alfredFileName );
 
-			//write the little header information alfred needs
-			alfFile << "##AlfredToDo 3.0" << "\n";
+      //write the little header information alfred needs
+      alfFile << "##AlfredToDo 3.0" << "\n";
 
-			//write the main job info
-			if ( alfredJobName == "" ) { alfredJobName = liqglo_sceneName; }
-			alfFile << "Job -title {" << alfredJobName.asChar() 
-				<< "(liquid job)} -comment {#Created By Liquid " << LIQUIDVERSION << "} "
-				<< "-service " << "{}" << " "
-				<< "-tags " << "{}" << " ";
-			if ( useNetRman ) {
-				alfFile << "-atleast " << m_minCPU << " " << "-atmost " << m_maxCPU << " ";
-			} else {
-				alfFile << "-atleast " << "1" << " "
-					<< "-atmost " << "1" << " ";
-			}
-			alfFile << "-init " << "{" << " "
-				<< "\n";
+      //write the main job info
+      if ( alfredJobName == "" ) { alfredJobName = liqglo_sceneName; }
+      alfFile << "Job -title {" << alfredJobName.asChar() 
+        << "(liquid job)} -comment {#Created By Liquid " << LIQUIDVERSION << "} "
+        << "-service " << "{}" << " "
+        << "-tags " << "{}" << " ";
+      if ( useNetRman ) {
+        alfFile << "-atleast " << m_minCPU << " " << "-atmost " << m_maxCPU << " ";
+      } else {
+        alfFile << "-atleast " << "1" << " "
+          << "-atmost " << "1" << " ";
+      }
+      alfFile << "-init " << "{" << " "
+        << "\n";
 
-			alfFile << "} -subtasks {" << "\n";
-			alfFile << flush;
-		}
+      alfFile << "} -subtasks {" << "\n";
+      alfFile << flush;
+    }
 
 		// start looping through the frames
 		int currentBlock = 0;
@@ -2635,61 +2606,59 @@ MStatus liqRibTranslator::ribPrologue()
 //      Write the prologue for the RIB file
 //
 {
-	if ( !m_exportReadArchive ) {
-		if ( debugMode ) { printf("-> beginning to write prologue\n"); }
-		// set any rib options		
-		RiOption( "limits", "bucketsize", (RtPointer)&bucketSize, RI_NULL );
-		RiOption( "limits", "gridsize", (RtPointer)&gridSize, RI_NULL );
-		RiOption( "limits", "texturememory", (RtPointer)&textureMemory, RI_NULL );
-		if (liqglo_renderer->supports(liqRenderer::EYESPLITS)) {
-		    RiOption( "limits",
-			      "eyesplits",
-			      (RtPointer)&eyeSplits,
-			      RI_NULL );
-		}
+  if ( !m_exportReadArchive ) {
+    if ( debugMode ) { printf("-> beginning to write prologue\n"); }
+    // set any rib options		
+    RiOption( "limits", "bucketsize", (RtPointer)&bucketSize, RI_NULL );
+    RiOption( "limits", "gridsize", (RtPointer)&gridSize, RI_NULL );
+    RiOption( "limits", "texturememory", (RtPointer)&textureMemory, RI_NULL );
+    if (liquidRenderer().supports(liqRenderer::EYESPLITS)) {
+      RiOption( "limits", "eyesplits", (RtPointer)&eyeSplits, RI_NULL );
+    }
 
-		RiArchiveRecord( RI_COMMENT, "Shader Path\nOption \"searchpath\" \"shader\" [\"%s\"]\n", m_shaderPath.asChar() );
+    RiArchiveRecord( RI_COMMENT, "Shader Path\nOption \"searchpath\" \"shader\" [\"%s\"]\n", m_shaderPath.asChar() );
 
-		/* BMRT OPTIONS: BEGIN */
-		if ( liqglo_useBMRT ) {
-			RiOption( "radiosity", "integer steps", (RtPointer)&m_RadSteps, RI_NULL );
-			RiOption( "radiosity", "integer minpatchsamples", (RtPointer)&m_RadMinPatchSamples, RI_NULL );
-			if ( m_BMRTusePrmanSpec ) {
-				RtInt prmanSpec = 1;
-				RiOption( "render", "integer prmanspecular", &prmanSpec, RI_NULL );
-			}
-			if ( m_BMRTusePrmanDisp ) {
-				RtInt prmanDisp = 1;
-				RiOption( "render", "integer useprmandspy", &prmanDisp, RI_NULL );
-			}
-		}
-		/* BMRT OPTIONS: END */
+    // BMRT OPTIONS: BEGIN
+    if ( liqglo_useBMRT ) {
+      RiOption( "radiosity", "integer steps", (RtPointer)&m_RadSteps, RI_NULL );
+      RiOption( "radiosity", "integer minpatchsamples", (RtPointer)&m_RadMinPatchSamples, RI_NULL );
+      if ( m_BMRTusePrmanSpec ) {
+        RtInt prmanSpec = 1;
+        RiOption( "render", "integer prmanspecular", &prmanSpec, RI_NULL );
+      }
+      if ( m_BMRTusePrmanDisp ) {
+        RtInt prmanDisp = 1;
+        RiOption( "render", "integer useprmandspy", &prmanDisp, RI_NULL );
+      }
+    }
+    // BMRT OPTIONS: END
 
 
-		RiOrientation( RI_RH );       // Right-hand coordinates
-		if ( liqglo_currentJob.isShadow ) {
-			RiPixelSamples( 1, 1 );
-			RiShadingRate( 1 );
-		} else {
-			RiPixelSamples( pixelSamples, pixelSamples );
-			RiShadingRate( shadingRate );
-			if ( m_rFilterX > 1 || m_rFilterY > 1 ) {
-				if ( m_rFilter == fBoxFilter ) {
-					RiPixelFilter( RiBoxFilter, m_rFilterX, m_rFilterY );
-				} else if ( m_rFilter == fTriangleFilter ) {
-					RiPixelFilter( RiTriangleFilter, m_rFilterX, m_rFilterY );
-				} else if ( m_rFilter == fCatmullRomFilter ) {
-					RiPixelFilter( RiCatmullRomFilter, m_rFilterX, m_rFilterY );
-				} else if ( m_rFilter == fGaussianFilter ) {
-					RiPixelFilter( RiGaussianFilter, m_rFilterX, m_rFilterY );
-				} else if ( m_rFilter == fSincFilter ) {
-					RiPixelFilter( RiSincFilter, m_rFilterX, m_rFilterY );
-				}
-			}
-		}
-	}
-    ribStatus = kRibBegin;
-    return MS::kSuccess;
+    RiOrientation( RI_RH ); // Right-hand coordinates
+    if ( liqglo_currentJob.isShadow ) {
+      RiPixelSamples( 1, 1 );
+      RiShadingRate( 1 );
+    } else {
+      RiPixelSamples( pixelSamples, pixelSamples );
+      RiShadingRate( shadingRate );
+      if ( m_rFilterX > 1 || m_rFilterY > 1 ) {
+        if ( m_rFilter == fBoxFilter ) {
+          RiPixelFilter( RiBoxFilter, m_rFilterX, m_rFilterY );
+        } else if ( m_rFilter == fTriangleFilter ) {
+          RiPixelFilter( RiTriangleFilter, m_rFilterX, m_rFilterY );
+        } else if ( m_rFilter == fCatmullRomFilter ) {
+          RiPixelFilter( RiCatmullRomFilter, m_rFilterX, m_rFilterY );
+        } else if ( m_rFilter == fGaussianFilter ) {
+          RiPixelFilter( RiGaussianFilter, m_rFilterX, m_rFilterY );
+        } else if ( m_rFilter == fSincFilter ) {
+          RiPixelFilter( RiSincFilter, m_rFilterX, m_rFilterY );
+        }
+      }
+    }
+    
+  }
+  ribStatus = kRibBegin;
+  return MS::kSuccess;
 }
 
 MStatus liqRibTranslator::ribEpilogue()
