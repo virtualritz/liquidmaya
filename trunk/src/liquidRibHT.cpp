@@ -124,7 +124,7 @@ ulong liquidRibHT::hash(const char *str)
 	return (ulong)hc;
 }
 
-int liquidRibHT::insert( MDagPath &path, double lframe, int sample, ObjectType objType )
+int liquidRibHT::insert( MDagPath &path, double /*lframe*/, int sample, ObjectType objType )
 //  Description:
 //      insert a new node into the hash table.
 {
@@ -198,7 +198,8 @@ int liquidRibHT::insert( MDagPath &path, double lframe, int sample, ObjectType o
 	return 0;
 }
 
-liquidRibNode* liquidRibHT::find( MString nodeName, MDagPath path, ObjectType objType = MRT_Unknown )
+liquidRibNode* liquidRibHT::find( MString nodeName, MDagPath path, ObjectType
+	/*objType = MRT_Unknown*/ )
 //  Description: find the hash table entry for the given object
 {
     if ( debugMode ) { printf("-> finding node in hash table using object, %s\n", nodeName.asChar()); }
