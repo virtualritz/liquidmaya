@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 #ifndef liquidGlobalHelpers_H
@@ -56,7 +57,7 @@ bool areObjectAndParentsTemplated( const MDagPath & path );
 void assignTokenArrays( unsigned numTokens, liqTokenPointer tokenPointerArray[], RtToken tokens[], RtPointer pointers[] );
 void assignTokenArraysV( std::vector<liqTokenPointer> *tokenPointerArray, RtToken tokens[], RtPointer pointers[] );
 MObject findFacetShader( MObject mesh, int polygonIndex );
-bool fileExists( MString & filename );
+bool fileExists(const MString & filename );
 MString parseString( MString & inputString ); 
 MString liquidTransGetSceneName();
 MString liquidTransGetFullSceneName();
