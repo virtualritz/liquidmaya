@@ -53,6 +53,11 @@ extern "C" {
 #ifdef AQSIS
 #include <slx.h>
 #endif
+// Pixie Headers
+#ifdef PIXIE
+#include <sdr.h>
+#endif
+
 #ifdef _WIN32
 #include <process.h>
 #include <malloc.h>
@@ -79,24 +84,28 @@ extern int debugMode;
 int SLEtoSLOMAP[21] = { 0, 3, 2, 1, 11, 12, 13, 4, 5, 7, 6, 8, 10, 0, 0, 0, 5, 7, 6, 8, 10 };
 // Aqsis to PRman type conversion : looks the same
 int SLXtoSLOMAP[14] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-const char* shaderTypeStr[14] = {  "unknown", 
-                                   "point",
-                                   "color",
-                                   "float",
-                                   "string",
-                                   "surface",
-                                   "light",
-                                   "displacement",
-                                   "volume",
-                                   "transformation",
-                                   "imager",
-                                   "vector",
-                                   "normal",
-                                   "matrix" };
+// Pixie to PRman type conversion
+int SDRtoSLOMAP[7] = { 3, 11, 12, 1, 2, 13, 4 };
+int SDRTypetoSLOTypeMAP[5] = { 5, 7, 8, 6, 10 };
 
-const char* shaderDetailStr[3] = {   "unknown",
-                                     "varying",
-                                     "uniform" };
+const char* shaderTypeStr[14] = { 	"unknown", 	//0
+				    "point",					//1
+				    "color",					//2
+				    "float",					//3
+				    "string",					//4
+				    "surface",					//5
+				    "light",					//6
+				    "displacement",				//7
+				    "volume",					//8
+				    "transformation",			//9
+				    "imager",					//10
+				    "vector",					//11
+				    "normal",					//12
+				    "matrix" };					//13
+
+const char* shaderDetailStr[3] = {  	"unknown",
+    	    	    	    	    	    "varying",
+    	    	    	    	    	    "uniform" };
 
 void* liqGetSloInfo::creator()
 //
@@ -466,8 +475,104 @@ int liqGetSloInfo::setShader( MString shaderName )
                 SLX_EndShader();
                 rstatus = 1;
             }
-#endif // AQSIS
-    return rstatus;
+#elif defined(PIXIE)
+            if( shaderExtension == MString( "sdr" ) )
+            {
+                MString sdrShaderName = shaderFileName.substring(shaderFileName.rindex('/')+1,shaderFileName.length());
+                MString sdrPath = shaderFileName.substring(0,shaderFileName.rindex('/')-1);
+                
+                if( !sdrPath.length() ) sdrPath = "%";
+                
+                if(TSdrShader *shader = sdrGet(sdrShaderName.asChar(),sdrPath.asChar())){
+                    shaderName = shader->name;
+                    shaderType = (SHADER_TYPE) SDRTypetoSLOTypeMAP[shader->type];
+                    
+                    numParam = 0;
+                    TSdrParameter *curParam = shader->parameters;
+                    while(curParam){
+                          argName.push_back( curParam->name );
+                          argType.push_back( (SHADER_TYPE) SDRtoSLOMAP[curParam->type] );
+                          argArraySize.push_back( (curParam->numItems > 1) ? curParam->numItems : 0 );
+                          
+                          if( curParam->container == CONTAINER_VARYING )
+                             argDetail.push_back( SHADER_DETAIL_VARYING );
+                          else
+                             argDetail.push_back( SHADER_DETAIL_UNIFORM );
+                          
+                          switch( curParam->type ){
+                          case TYPE_FLOAT:
+                          {
+                              float *floats = ( float *)lmalloc( sizeof( float ) * 1 );
+                              floats[0] = curParam->defaultValue.scalar;
+                              argDefault.push_back( ( void * )floats );
+                          }
+                          break;
+                          case TYPE_VECTOR:
+                          case TYPE_NORMAL:
+                          case TYPE_POINT:
+                          case TYPE_COLOR:
+                          {
+                              if(curParam->defaultValue.vector){
+                                  float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
+                                  floats[0] = curParam->defaultValue.vector[0];
+                                  floats[1] = curParam->defaultValue.vector[1];
+                                  floats[2] = curParam->defaultValue.vector[2];
+                                  argDefault.push_back( ( void * )floats );
+                              }else{
+                                  float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
+                                  floats[0] = floats[1] = floats[2] = 0;
+                                  argDefault.push_back( ( void * )floats );
+                              }
+                              break;
+                          }
+                          case TYPE_MATRIX:
+                              printf("\"%s\" [%f %f %f %f\n",
+                                  curParam->space,
+                                  (double) (curParam->defaultValue.matrix[0]),
+                                  (double) (curParam->defaultValue.matrix[1]),
+                                  (double) (curParam->defaultValue.matrix[2]),
+                                  (double) (curParam->defaultValue.matrix[3]));
+                              printf("\t\t\t%f %f %f %f\n",
+                                  (double) (curParam->defaultValue.matrix[4]),
+                                  (double) (curParam->defaultValue.matrix[5]),
+                                  (double) (curParam->defaultValue.matrix[6]),
+                                  (double) (curParam->defaultValue.matrix[7]));
+                              printf("\t\t\t%f %f %f %f\n",
+                                  (double) (curParam->defaultValue.matrix[8]),
+                                  (double) (curParam->defaultValue.matrix[9]),
+                                  (double) (curParam->defaultValue.matrix[10]),
+                                  (double) (curParam->defaultValue.matrix[11]));
+                              printf("\t\t\t%f %f %f %f]\n",
+                                  (double) (curParam->defaultValue.matrix[12]),
+                                  (double) (curParam->defaultValue.matrix[13]),
+                                  (double) (curParam->defaultValue.matrix[14]),
+                                  (double) (curParam->defaultValue.matrix[15]));
+                          break;
+                          case TYPE_STRING:
+                          {
+                              char *strings = ( char * )lmalloc( sizeof( char ) * strlen( curParam->defaultValue.string ) );
+                              strcpy( strings, curParam->defaultValue.string );
+                              argDefault.push_back( ( void * )strings );
+                              break;
+                          }
+                          default:
+                              argDefault.push_back( NULL );
+                              break;
+                      }
+                      numParam++;
+                      curParam = curParam->next;
+                  }
+                  sdrDelete(shader);
+                  rstatus = 1;
+              }
+              else{
+                  printf( "Error finding shader %s \n",shaderFileName.asChar() ); 
+                  resetIt();
+                  return 0;
+              }
+          }
+#endif  // PIXIE
+      return rstatus;
 }
 
 void liqGetSloInfo::resetIt()
