@@ -1539,7 +1539,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     if ( !liquidBin ) liquidInfo("Creating Rib <Press ESC To Cancel> ...");
 
     // Remember the frame the scene was at so we can restore it later.
-    MTime currentFrame = MAnimControl::currentTime();
+    MTime originalTime = MAnimControl::currentTime();
 
     // Set the frames-per-second global (we'll need this for
     // streak particles)
@@ -2093,9 +2093,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             }
         }
 
-        //if ( debugMode ) { printf("-> setting frame to current frame.\n" ); }
-        // Return to the frame we were at before we ran the animation
-        // MGlobal::viewFrame (currentFrame);
+        // return to the frame we were at before we ran the animation
+        if ( debugMode ) { printf("-> setting frame to current frame.\n" ); }
+        MGlobal::viewFrame (originalTime);
 
         return (ribStatus == kRibOK ? MS::kSuccess : MS::kFailure);
 
