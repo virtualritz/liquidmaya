@@ -31,6 +31,7 @@ LIQUIDBINLIBS    =  $(LIQRMANLIBS) $(MAYALIBS) \
 	  -lm
 
 LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
+    	    	    liqRibParticleData.$(OBJEXT) \
     	    	    liqTokenPointer.$(OBJEXT) \
     	    	    liquidRibObj.$(OBJEXT) \
     	    	    liquidRibNode.$(OBJEXT) \
@@ -38,7 +39,6 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidGlobalHelpers.$(OBJEXT) \
     	    	    liquidRibSurfaceData.$(OBJEXT) \
     	    	    liquidRibNuCurveData.$(OBJEXT) \
-    	    	    liquidRibParticleData.$(OBJEXT) \
     	    	    liquidRibMeshData.$(OBJEXT) \
     	    	    liquidRibLocatorData.$(OBJEXT) \
     	    	    liquidRibCoordData.$(OBJEXT) \
@@ -54,6 +54,7 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidMemory.$(OBJEXT)
 
 LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
+    	    	    $(VPATH)/liqRibParticleData.$(OBJEXT) \
     	    	    $(VPATH)/liqTokenPointer.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibObj.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibNode.$(OBJEXT) \
@@ -61,7 +62,6 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidGlobalHelpers.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibSurfaceData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibNuCurveData.$(OBJEXT) \
-    	    	    $(VPATH)/liquidRibParticleData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibMeshData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibLocatorData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibCoordData.$(OBJEXT) \
