@@ -80,10 +80,10 @@ extern int debugMode;
   }
 #endif
 
-
-// Set up a textcoord type for poly uv export routine
-//typedef RtFloat textcoords[2];
-// this has to be added to make up for differences between linux and irix maya
+#define LIQ_CANCEL_FEEDBACK_MESSAGE MString( "Liquid -> RIB Generation Cancelled!\n" )
+#define LIQ_CHECK_CANCEL_REQUEST    if ( m_escHandler.isInterruptRequested() ) throw( LIQ_CANCEL_FEEDBACK_MESSAGE )
+#define LIQ_ADD_SLASH_IF_NEEDED(a) if ( a.asChar()[a.length() - 1] != '/' ) a += "/"
+#define LIQ_ANIM_EXT MString( ".%0*d");
 
 /* between Maya 3.0 /4.0/Linux/Other Platforms some functions changed their input type from long to int so
 a stand-in type called liquidlong was created to get around the problem */
