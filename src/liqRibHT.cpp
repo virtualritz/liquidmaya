@@ -77,22 +77,19 @@ extern "C" {
 
 extern int debugMode;
 
-
+/**
+ * Class constructor.
+ */
 liqRibHT::liqRibHT()
-//
-//  Description:
-//      Class constructor.
-//
 {
   LIQDEBUGPRINTF( "-> creating hash table\n" );
   RibNodeMap.clear();
 }
 
+/**
+ * Class destructor.
+ */
 liqRibHT::~liqRibHT()
-//
-//  Description:
-//      Class destructor.
-//
 {
   LIQDEBUGPRINTF( "-> killing hash table\n" );
   RNMAP::iterator iter;
@@ -108,11 +105,10 @@ liqRibHT::~liqRibHT()
   }
 }
 
+/**
+ * Hash function for strings.
+ */
 ulong liqRibHT::hash(const char *str)
-//
-//  Description:
-//      hash function for strings
-//
 {
   LIQDEBUGPRINTF( "-> hashing\n" );
   ulong hc = 0;
@@ -126,13 +122,14 @@ ulong liqRibHT::hash(const char *str)
   return (ulong)hc;
 }
 
+/**
+ * Insert a new node into the hash table.
+ */
 int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
                       ObjectType objType,
                       MMatrix *matrix,
                       const MString instanceStr,
                       int particleId )
-//  Description:
-//      insert a new node into the hash table.
 {
   LIQDEBUGPRINTF( "-> inserting node into hash table\n" );
   MFnDagNode  fnDagNode( path );
@@ -240,9 +237,11 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   return 0;
 }
 
+/**
+ * Find the hash table entry for the given object.
+ */
 liqRibNode* liqRibHT::find( MString nodeName, MDagPath path, ObjectType
                             /*objType = MRT_Unknown*/ )
-//  Description: find the hash table entry for the given object
 {
   LIQDEBUGPRINTF( "-> finding node in hash table using object, %s\n", nodeName.asChar() );
   liqRibNode * result = NULL;

@@ -32,7 +32,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-bool liqProcessLauncher::execute(const MString &command, const MString &arguments, const MString &path, const bool wait )
+bool liqProcessLauncher::execute( const MString &command, const MString &arguments, const MString &path, const bool wait )
 {
   chdir( path.asChar() );
   MString cmd = command + " " + arguments + ( wait ? "" : "&" );

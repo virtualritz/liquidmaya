@@ -1,4 +1,4 @@
-class liqGLobals {
+class liqGlobals {
   public:
     struct {
       bool showProgress;

@@ -26,11 +26,7 @@
 ** RenderMan (R) is a registered trademark of Pixar
 */
 
-/* ______________________________________________________________________
-**
-** Liquid Rib Translator Source
-** ______________________________________________________________________
-*/
+ 
 // Error macro: if not successful, print error message and return
 // the MStatus instance containing the error code.
 // Assumes that "stat" contains the error value
@@ -223,9 +219,10 @@ void liqRibTranslator::freeShaders( void )
 // Hmmmmm should change magic to Liquid
 MString liqRibTranslator::magic("##Liquid");
 
+/**
+ * Creates a new instance of the translator.
+ */
 void *liqRibTranslator::creator()
-//  Description:
-//      Create a new instance of the translator
 {
   return new liqRibTranslator();
 }
@@ -404,9 +401,10 @@ void liqRibTranslator::printProgress( int stat, long first, long last, long wher
   }
 }
 
+/**
+ * Checks to see if the liquidGlobals are available.
+ */
 bool liqRibTranslator::liquidInitGlobals()
-// Description:
-// checks to see if the liquidGlobals are available
 {
   MStatus status;
   MSelectionList rGlobalList;
@@ -425,30 +423,24 @@ bool liqRibTranslator::liquidInitGlobals()
   return false;
 }
 
+/**
+ * Class constructor.
+ */
 liqRibTranslator::liqRibTranslator()
 {
-
-
   m_systemTempDirectory = getenv("TMP");
-
   if( m_systemTempDirectory.length() == 0 ) {
-
     m_systemTempDirectory = getenv("TEMP");
-
     if( m_systemTempDirectory.length() == 0 ) {
-
       m_systemTempDirectory = getenv( "TEMPDIR");
       if( m_systemTempDirectory.length() == 0 ) {
-
 #ifndef _WIN32
         m_systemTempDirectory = "/tmp";
 #else          
         m_systemTempDirectory = "%SystemRoot%/Temp";
 #endif
       }
-
     }
-
   }
   
   m_rFilterX = 1;
@@ -625,9 +617,11 @@ liqRibTranslator::liqRibTranslator()
   }
 }
 
+
+/**
+ * Class destructor
+ */
 liqRibTranslator::~liqRibTranslator()
-//  Description:
-//      Class destructor
 {
 // this is crashing under Win32
 //#ifdef _WIN32
@@ -637,13 +631,15 @@ liqRibTranslator::~liqRibTranslator()
   if ( debugMode ) ldumpUnfreed();
 }
 
+/**
+ * Error handling function.
+ * This gets called when the RIB library detects an error.
+ */
 #if defined DELIGHT || ENTROPY || PIXIE || PRMAN
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
 #else
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
 #endif
-//  Description:
-//  Error handling function.  This gets called when the RIB library detects an error.
 {
   printf( "The renderman library is reporting and error! Code: %d  Severity: %d", code, severity );
   MString error( message );
@@ -714,10 +710,11 @@ MSyntax liqRibTranslator::syntax()
   return syntax;
 }
 
+/** 
+ * Read the values from the command line and set the internal values.
+ */
 MStatus liqRibTranslator::liquidDoArgs( MArgList args )
 {
-// Description:
-// Read the values from the command line and set the internal values
 
   MStatus status;
   MString argValue;
@@ -1025,10 +1022,11 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
   return MS::kSuccess;
 }
 
+/**
+ * Read the values from the render globals and set internal values.
+ */
 void liqRibTranslator::liquidReadGlobals()
 {
-// Description:
-//  Read the values from the render globals and set internal values
   MStatus gStatus;
   MPlug gPlug;
   MFnDependencyNode rGlobalNode( rGlobalObj );
@@ -1819,9 +1817,10 @@ MString liqRibTranslator::generateTempMayaSceneName() const
   return tempDefname;
 }
 
+/**
+ * This method actually does the renderman output.
+ */
 MStatus liqRibTranslator::doIt( const MArgList& args )
-//  Description:
-//      This method actually does the renderman output
 {
   MStatus status;
   MString lastRibName;
@@ -1904,7 +1903,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     alfredRemoteTagsAndServices += MString( " } " );
   }
 
-  /* A seperate one for cleanup as it doens't need a tag! */
+  // A seperate one for cleanup as it doens't need a tag!
   MString alfredCleanupRemoteTagsAndServices;
   if ( remoteRender || useNetRman ) {
     alfredCleanupRemoteTagsAndServices  = MString( "-service { " );
@@ -2116,7 +2115,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
           LIQDEBUGPRINTF( "-> setting RiOptions\n" );
 
-          // Rib client file creation options MUST be done before RiBegin
+          // Rib client file creation options MUST be set before RiBegin
 #if defined PRMAN || DELIGHT
           LIQDEBUGPRINTF( "-> setting binary option\n" );
           if ( liqglo_doBinary )
@@ -2652,14 +2651,13 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   }
 }
 
+/**
+ * Calculate the port field of view for the camera.
+ */
 void liqRibTranslator::portFieldOfView( int port_width, int port_height,
                                         double& horizontal,
                                         double& vertical,
                                         MFnCamera& fnCamera )
-  //
-  //  Description:
-  //      Calculate the port field of view for the camera
-  //
 {
   double left, right, bottom, top;
   double aspect = (double) port_width / port_height;
@@ -2670,16 +2668,15 @@ void liqRibTranslator::portFieldOfView( int port_width, int port_height,
   vertical = atan( ( ( top - bottom ) * 0.5 ) / neardb ) * 2.0;
 }
 
+/**
+ * Calculate the viewing frustrum for the camera.
+ */
 void liqRibTranslator::computeViewingFrustum ( double     window_aspect,
                                                double&    left,
                                                double&    right,
                                                double&    bottom,
                                                double&    top,
                                                MFnCamera& cam )
-  //
-  //  Description:
-  //      Calculate the viewing frustrum for the camera
-  //
 {
   double film_aspect   = cam.aspectRatio();
   double aperture_x    = cam.horizontalFilmAperture();
@@ -2736,13 +2733,12 @@ void liqRibTranslator::computeViewingFrustum ( double     window_aspect,
   top    = focal_to_near * ( .5 * aperture_y * scale_y + offset_y + translate_y );
 }
 
+/**
+ * Get information about the given camera.
+ */
 void liqRibTranslator::getCameraInfo( MFnCamera& cam )
-//
-//  Description:
-//      Get information about the given camera
-//
 {
-  // Resoultion can change if camera film-gate clips image
+  // Resolution can change if camera film-gate clips image
   // so we must keep camera width/height separate from render
   // globals width/height.
   //
@@ -2848,11 +2844,10 @@ void liqRibTranslator::getCameraInfo( MFnCamera& cam )
   }
 }
 
+/**
+ * Set up data for the current job.
+ */
 MStatus liqRibTranslator::buildJobs()
-//
-//  Description:
-//      Write the prologue for the RIB file
-//
 {
   LIQDEBUGPRINTF( "-> beginning to build job list\n" );
   MStatus returnStatus = MS::kSuccess;
@@ -3004,7 +2999,7 @@ MStatus liqRibTranslator::buildJobs()
 
           if ( computeShadow ) jobList.push_back( thisJob );
 
-          /* We have to handle point lights differently as they need 6 shadow maps! */
+          // We have to handle point lights differently as they need 6 shadow maps!
         } else if ( lightPath.hasFn(MFn::kPointLight) ) {
           for ( int dirOn = 0; dirOn < 6; dirOn++ ) {
             thisJob.hasShadowCam = false;
@@ -3239,11 +3234,11 @@ MStatus liqRibTranslator::buildJobs()
   return MS::kSuccess;
 }
 
+/**
+ * Write the prologue for the RIB file.
+ * This includes all RI options but not the camera transformation.
+ */
 MStatus liqRibTranslator::ribPrologue()
-//
-//  Description:
-//      Write the prologue for the RIB file
-//
 {
   if ( !m_exportReadArchive ) {
     LIQDEBUGPRINTF( "-> beginning to write prologue\n" );
@@ -3263,14 +3258,12 @@ MStatus liqRibTranslator::ribPrologue()
     RiOption( "searchpath", "texture", &list, RI_NULL );
 
     
-
     MString archivePath = liqglo_archivePath + ":" + liquidSanitizePath( liqglo_ribDir );
 
     list = const_cast< char* > ( archivePath.asChar() );
 
     RiOption( "searchpath", "archive", &list, RI_NULL );
 
-    
 
     list = const_cast< char* > ( liqglo_proceduralPath.asChar() );
     RiOption( "searchpath", "shader", &list, RI_NULL );
@@ -3353,22 +3346,19 @@ MStatus liqRibTranslator::ribPrologue()
   return MS::kSuccess;
 }
 
+/**
+ * Write the epilogue for the RIB file.
+ */
 MStatus liqRibTranslator::ribEpilogue()
-//
-//  Description:
-//      Write the epilogue for the RIB file
-//
 {
   if (ribStatus == kRibBegin) ribStatus = kRibOK;
   return (ribStatus == kRibOK ? MS::kSuccess : MS::kFailure);
 }
 
+/**
+ * Scan the DAG at the given frame number and record information about the scene for writing.
+ */
 MStatus liqRibTranslator::scanScene(float lframe, int sample )
-//
-//  Description:
-//      Scan the DAG at the given frame number and record information
-//      about the scene for writing
-//
 {
   MTime   mt((double)lframe, MTime::uiUnit());
   if ( MGlobal::viewFrame(mt) == MS::kSuccess) {
@@ -3377,7 +3367,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 
     MStatus returnStatus;
 
-    /* Scan the scene for place3DTextures - for coordinate systems */
+    // Scan the scene for place3DTextures -- for coordinate systems
     {
       MItDag dagLightIterator( MItDag::kDepthFirst, MFn::kPlace3dTexture, &returnStatus);
 
@@ -3405,7 +3395,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
       }
     }
 
-    /* Scan the scene for lights */
+    // Scan the scene for lights
     {
       MItDag dagLightIterator( MItDag::kDepthFirst, MFn::kLight, &returnStatus);
 
@@ -3451,8 +3441,8 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
         MStatus plugStatus;
         MPlug ribGenPlug = dagNode.findPlug( "liquidRibGen", &plugStatus );
         if ( plugStatus == MS::kSuccess ) {
-          /* check the node to make sure it's not using the old ribGen assignment method, this is for backwards
-             compatibility.  If it's a kTypedAttribute that it's more than likely going to be a string! */
+          // check the node to make sure it's not using the old ribGen assignment method, this is for backwards
+          // compatibility.  If it's a kTypedAttribute that it's more than likely going to be a string!
           if ( ribGenPlug.attribute().apiType() == MFn::kTypedAttribute ) {
             MString ribGenNode;
             ribGenPlug.getValue( ribGenNode );
@@ -3811,13 +3801,12 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
   return MS::kFailure;
 }
 
+/**
+ * This method takes care of the blocking together of objects and their children in the DAG. 
+ * This method compares two DAG paths and figures out how many attribute levels to push and/or pop.
+ * The intention seems clear but this method is not currently used -- anyone cares to comment? --Moritz.
+ */
 void liqRibTranslator::doAttributeBlocking( const MDagPath & newPath, const MDagPath & previousPath )
-//
-//  Description:
-//      This method takes care of the blocking together of objects and
-//      their children in the DAG.  This method compares two DAG paths and
-//      figures out how many attribute levels to push and/or pop
-//
 {
   int newDepth = newPath.length();
   int prevDepth = 0;
@@ -3888,11 +3877,12 @@ void liqRibTranslator::doAttributeBlocking( const MDagPath & newPath, const MDag
   }
 }
 
+/**
+ * Write out the frame prologue.
+ * This includes all pass-dependant options like shading interpolation, hider,
+ * display driver and the camera transformation.
+ */
 MStatus liqRibTranslator::framePrologue(long lframe)
-//
-//  Description:
-//   Write out the frame prologue.
-//
 {
   LIQDEBUGPRINTF( "-> Beginning Frame Prologue\n" );
   ribStatus = kRibFrame;
@@ -3922,13 +3912,11 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     {
       RtInt zero = 0;
       RiHider( "hidden", "jitter", &zero, RI_NULL );
-      // RiArchiveRecord(RI_VERBATIM, "Hider \"hidden\" \"jitter\" [0]\n" );
     }
 
     if ( liqglo_currentJob.isMidPointShadow && !liqglo_currentJob.deepShadows ) {
       RtString midPoint = "midpoint";
       RiHider( "hidden", "depthfilter", &midPoint, RI_NULL );
-      //RiArchiveRecord(RI_VERBATIM, "Hider \"hidden\" \"depthfilter\" [\"midpoint\"]\n" );
     }
 
     LIQDEBUGPRINTF( "-> Setting Display Options\n" );
@@ -4015,14 +4003,11 @@ MStatus liqRibTranslator::framePrologue(long lframe)
         for ( int p = 0; p < m_DDParams[k].num; p++ ) {
           parameterString += "\""; parameterString += m_DDParams[k].names[p].asChar(); parameterString += "\" ";
           if ( m_DDParams[k].type[p] == 1 ) {
-            RiDeclare( (RtToken)m_DDParams[k].names[p].asChar(), "string" );
-            parameterString += " [\""; parameterString += m_DDParams[k].data[p].asChar(); parameterString += "\"] ";
+            //RiDeclare( (RtToken)m_DDParams[k].names[p].asChar(), "string" );
+            parameterString += " [ string \""; parameterString += m_DDParams[k].data[p].asChar(); parameterString += "\"] ";
           } else if ( m_DDParams[k].type[p] == 2 ) {
-
-            /* BUGFIX: Monday 6th August fixed bug where a float display driver parameter wasn't declared */
-
-            RiDeclare( (RtToken)m_DDParams[k].names[p].asChar(), "float" );
-            parameterString += " ["; parameterString += m_DDParams[k].data[p].asChar(); parameterString += "] ";
+            //RiDeclare( (RtToken)m_DDParams[k].names[p].asChar(), "float" );
+            parameterString += " [ float "; parameterString += m_DDParams[k].data[p].asChar(); parameterString += "] ";
           }
         }
         // setup the output name
@@ -4091,7 +4076,6 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       RiDepthOfField( liqglo_currentJob.camera[0].fStop, liqglo_currentJob.camera[0].focalLength, liqglo_currentJob.camera[0].focalDistance );
     }
     // Set up for camera motion blur
-    //
     /* doCameraMotion = liqglo_currentJob.camera[0].motionBlur && liqglo_doMotion; */
     if ( liqglo_doMotion || liqglo_doDef ) {
       switch( shutterConfig ) {
@@ -4162,11 +4146,11 @@ MStatus liqRibTranslator::framePrologue(long lframe)
   return MS::kSuccess;
 }
 
+/**
+ * Write out the frame epilogue.
+ * This basically calls RiFrameEnd().
+ */
 MStatus liqRibTranslator::frameEpilogue( long )
-//
-//  Description:
-//   Write out the frame epilogue.
-//
 {
   if (ribStatus == kRibFrame) {
     ribStatus = kRibBegin;
@@ -4177,11 +4161,11 @@ MStatus liqRibTranslator::frameEpilogue( long )
   return (ribStatus == kRibBegin ? MS::kSuccess : MS::kFailure);
 }
 
+/**
+ * Write out the body of the frame.
+ * This is a dump of the DAG to RIB with flattened transforms (MtoR-style).
+ */
 MStatus liqRibTranslator::objectBlock()
-//
-//  Description:
-//   Write out the body of the frame.  This includes a dump of the DAG
-//
 {
   MStatus returnStatus = MS::kSuccess;
   MStatus status;
@@ -4268,8 +4252,6 @@ MStatus liqRibTranslator::objectBlock()
       }
     }
 
-    // If there is matrix motion blur, open a new motion block, the 5th element in the object will always
-    // be there if matrix blur will occur!
     if ( liqglo_doMotion && ribNode->motion.transformationBlur && ( ribNode->object( 1 ) != NULL ) && ( ribNode->object(0)->type != MRT_Locator ) &&
          ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
     {
@@ -4305,7 +4287,7 @@ MStatus liqRibTranslator::objectBlock()
     bool hasVolumeShader = false;
 
     MPlug rmanShaderPlug;
-    /* Check for surface shader */
+    // Check for surface shader
     status.clear();
     rmanShaderPlug = fnDagNode.findPlug( MString( "liquidSurfaceShaderNode" ), &status );
     if ( ( status != MS::kSuccess ) || ( !rmanShaderPlug.isConnected() ) ) { status.clear(); rmanShaderPlug = ribNode->assignedShadingGroup.findPlug( MString( "liquidSurfaceShaderNode" ), &status ); }
@@ -4320,7 +4302,7 @@ MStatus liqRibTranslator::objectBlock()
         hasSurfaceShader = true;
       }
     }
-    /* Check for displacement shader */
+    // Check for displacement shader
     status.clear();
     rmanShaderPlug = fnDagNode.findPlug( MString( "liquidDispShaderNode" ), &status );
     if ( ( status != MS::kSuccess ) || ( !rmanShaderPlug.isConnected() ) ) { status.clear(); rmanShaderPlug = ribNode->assignedShadingGroup.findPlug( MString( "liquidDispShaderNode" ), &status ); }
@@ -4335,7 +4317,7 @@ MStatus liqRibTranslator::objectBlock()
         hasDisplacementShader = true;
       }
     }
-    /* Check for volume shader */
+    // Check for volume shader
     status.clear();
     rmanShaderPlug = fnDagNode.findPlug( MString( "liquidVolumeShaderNode" ), &status );
     if ( ( status != MS::kSuccess ) || ( !rmanShaderPlug.isConnected() ) ) { status.clear(); rmanShaderPlug = ribNode->assignedShadingGroup.findPlug( MString( "liquidVolumeShaderNode" ), &status ); }
@@ -4538,7 +4520,7 @@ MStatus liqRibTranslator::objectBlock()
         RiColor( currentShader.rmColor );
         RiOpacity( currentShader.rmOpacity );
 
-        /*
+        /* Moritz: this should be obsolete when new per-node attributes are woven in
         if ( ribNode->nodeShadingRateSet && ( ribNode->nodeShadingRate != currentNodeShadingRate ) ) {
           RiShadingRate ( ribNode->nodeShadingRate );
           currentNodeShadingRate = ribNode->nodeShadingRate;
@@ -4590,7 +4572,7 @@ MStatus liqRibTranslator::objectBlock()
 
         assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
 
-        /*
+        /*  Moritz: this should be obsolete when new per-node attributes are woven in (bad duplicated code from above anyway)
         if ( ribNode->nodeShadingRateSet && ( ribNode->nodeShadingRate != currentNodeShadingRate ) ) {
           RiShadingRate ( ribNode->nodeShadingRate );
           currentNodeShadingRate = ribNode->nodeShadingRate;
@@ -4619,8 +4601,6 @@ MStatus liqRibTranslator::objectBlock()
       RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
     }
 
-    // If there is deformation motion blur, open a new motion block, the 5th element in the object will always
-    // be there if deformation blur will occur!
     if (liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
         && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
       // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
@@ -4647,22 +4627,21 @@ MStatus liqRibTranslator::objectBlock()
     attributeDepth--;
   }
 
-  /* Handles by worldEpilogue
-  if ( !m_exportReadArchive ) {
-    RiWorldEnd();
-  }*/
-
   return returnStatus;
 }
 
-
+/**
+ * Write the world prologue.
+ * This includes the pre- and post-world begin RIB boxes and the definition of
+ * any default coordinate systems.
+ */
 MStatus liqRibTranslator::worldPrologue()
 {
   MStatus returnStatus = MS::kSuccess;
 
   LIQDEBUGPRINTF( "-> Writing world prologue.\n" );
 
-  /* if this is a readArchive that we are exporting then ingore this header information */
+  // if this is a readArchive that we are exporting then ingore this header information
   if ( !m_exportReadArchive ) {
 
     // put in pre-worldbegin statements
@@ -4689,14 +4668,17 @@ MStatus liqRibTranslator::worldPrologue()
   return returnStatus;
 }
 
-
+/**
+ * Write the world prologue.
+ * This basically calls RiWorldEnd().
+ */
 MStatus liqRibTranslator::worldEpilogue()
 {
   MStatus returnStatus = MS::kSuccess;
 
   LIQDEBUGPRINTF( "-> Writing world epilogue.\n" );
 
-  /* if this is a readArchive that we are exporting there's no world block */
+  // If this is a readArchive that we are exporting there's no world block
   if ( !m_exportReadArchive ) {
     RiWorldEnd();
   }
@@ -4704,7 +4686,11 @@ MStatus liqRibTranslator::worldEpilogue()
   return returnStatus;
 }
 
-
+/**
+ * Write all coordinate systems.
+ * This writes all user-defined coordinate systems as well as those required
+ * for environment/reflection map lookup and texture projection.
+ */
 MStatus liqRibTranslator::coordSysBlock()
 {
   MStatus returnStatus = MS::kSuccess;
@@ -4745,14 +4731,18 @@ MStatus liqRibTranslator::coordSysBlock()
   return returnStatus;
 }
 
-
+/**
+ * Write all lights.
+ * This writes all lightsoure shaders with their attributes and switches them
+ * on afterwards.
+ */
 MStatus liqRibTranslator::lightBlock()
 {
   MStatus returnStatus = MS::kSuccess;
 
   LIQDEBUGPRINTF( "-> Writing lights.\n" );
 
-  /* if this is a readArchive that we are exporting then ingore this header information */
+  // If this is a readArchive that we are exporting then ingore this header information
   if ( !m_exportReadArchive ) {
     RNMAP::iterator rniter;
 
@@ -4769,6 +4759,7 @@ MStatus liqRibTranslator::lightBlock()
       // new added attribute support
       RiAttributeBegin();
 
+      // All this stuff below should be handled by a new attribute class
       RtString name = const_cast< char* >( ribNode->name.asChar() );
       RiAttribute( "identifier", "name", &name, RI_NULL );
 
@@ -4802,7 +4793,7 @@ MStatus liqRibTranslator::lightBlock()
 
       // The next line pops the light...
       RiAttributeEnd();
-      // ...so we have to switch it on agaian
+      // ...so we have to switch it on again explicitly
       RiIlluminate( ribNode->object(0)->lightHandle(), 1 );
 
       nbLight++;
@@ -4811,7 +4802,3 @@ MStatus liqRibTranslator::lightBlock()
 
   return returnStatus;
 }
-
-
-
-
