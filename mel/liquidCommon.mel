@@ -35,7 +35,7 @@ global string $defTextViewerName = "notepad.exe";
 global proc string liquidGetUserHomeDir() {
 	string $homeVarName = ( `about -os` == "nt" )? "USERPROFILE" : "HOME" ;
 	string $homeGetEnv =  `getenv $homeVarName`;
-	string $homeDirectory = $homeGetEnv + "/liquid";
+	string $homeDirectory = $homeGetEnv + "/.liquid";
 	string $liquidDirectory = $homeDirectory;
 	return $liquidDirectory;
 }
