@@ -294,7 +294,7 @@ global proc liquidLoadGlobals( string $name ) {
 		}
 		fclose $fileId;
 	} else {
-		print "liquidGlobals file not found!\n";
+		print("liquidGlobals file '" + $globalName + "' not found!\n");
 	}
 }
 
