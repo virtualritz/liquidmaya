@@ -1,21 +1,21 @@
 //
 //
-// The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-// "License"); you may not use this file except in compliance with the License. You may 
-// obtain a copy of the License at http://www.mozilla.org/MPL/ 
-// 
-// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-// WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-// language governing rights and limitations under the License. 
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+// "License"); you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at http://www.mozilla.org/MPL/
 //
-// The Original Code is the Liquid Rendering Toolkit. 
-// 
-// The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-// Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-// 
-// Contributor(s): Berj Bannayan. 
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+// language governing rights and limitations under the License.
 //
-// 
+// The Original Code is the Liquid Rendering Toolkit.
+//
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+//
+// Contributor(s): Berj Bannayan.
+//
+//
 // The RenderMan (R) Interface Procedures and Protocol are:
 // Copyright 1988, 1989, Pixar
 // All Rights Reserved
@@ -32,7 +32,7 @@
 //  Input Arguments:
 //
 //  Returns:
-//	
+//
 
 // source all of the needed mel files
 source liquidGlobals.mel;
@@ -47,15 +47,16 @@ source liquidReadArchive.mel;
 source liquidDelayedReadArchive.mel;
 source liquidFileBrowser.mel;
 source liquidSubD.mel;
+source liquidRenderCurve.mel;
 
 // create the liquid menu interface
 global proc liquidCreateMenus()
 {
     global string $gMainWindow;
-    
+
     // keep it nice and clean
     if ( `menu -exists liquidMainWindowMenu` ) deleteUI liquidMainWindowMenu;
-    
+
     if ( $gMainWindow != "" )
     {
 	setParent $gMainWindow;
@@ -93,6 +94,9 @@ global proc liquidCreateMenus()
 				menuItem -d true;
 				menuItem -label "Make Subdivision Surface" -command liquidMakeSubD -ann "Make Selected Mesh A Subdivision Surface";
 				menuItem -label "Remove Subdivision Surface" -command liquidUnMakeSubD -ann "Remove Subdivision Surface From Selected Meshes";
+				menuItem -d true;
+				menuItem -label "Make RenderCurve" -command liquidMakeRenderCurve -ann "Make Selected Nurbs Curves renderable";
+				menuItem -label "Remove RenderCurve" -command liquidUnMakeRenderCurve -ann "Remove rendering from Selected Nurbs Curves";
 				menuItem -d true;
 				menuItem -label "Add Transformation Blur Attribute" -command liquidMakeTBlur -ann "Attach a custom transformation blur attribute to the selected node";
 				menuItem -label "Remove Transformation Blur Attribute" -command liquidUnMakeTBlur -ann "Remove a custom transformation blur attribute to the selected node";
@@ -145,7 +149,7 @@ global proc liquidPreviewSelected()
     liquid -GL -s 1 -sr 3 -sel;
 }
 
-global proc string liquidGetSceneName() 
+global proc string liquidGetSceneName()
 {
     string $fullName = `file -q -a`;
     string $choppedName[];
@@ -166,7 +170,7 @@ global proc liquidMakeDBlur() {
 	string $current;
 	for ( $current in $selected ) {
 		if ( !`attributeQuery -node $current -ex "deformationBlur"`) {
-			addAttr -ln deformationBlur -at bool $current;	
+			addAttr -ln deformationBlur -at bool $current;
 		}
 		if ( `attributeQuery -node $current -ex "deformationBlur"`) {
 			setAttr ( $current + ".deformationBlur" ) true;
@@ -179,7 +183,7 @@ global proc liquidUnMakeDBlur() {
 	string $current;
 	for ( $current in $selected ) {
 		if ( `attributeQuery -node $current -ex "deformationBlur"`) {
-			deleteAttr ( $current + ".deformationBlur" );	
+			deleteAttr ( $current + ".deformationBlur" );
 		}
 	}
 }
@@ -189,7 +193,7 @@ global proc liquidMakeTBlur() {
 	string $current;
 	for ( $current in $selected ) {
 		if ( !`attributeQuery -node $current -ex "transformationBlur"`) {
-			addAttr -ln transformationBlur -at bool $current;	
+			addAttr -ln transformationBlur -at bool $current;
 		}
 		if ( `attributeQuery -node $current -ex "transformationBlur"`) {
 			setAttr ( $current + ".transformationBlur" ) true;
@@ -202,7 +206,7 @@ global proc liquidUnMakeTBlur() {
 	string $current;
 	for ( $current in $selected ) {
 		if ( `attributeQuery -node $current -ex "transformationBlur"`) {
-			deleteAttr ( $current + ".transformationBlur" );	
+			deleteAttr ( $current + ".transformationBlur" );
 		}
 	}
 }
@@ -212,7 +216,7 @@ global proc liquidAddZThres() {
 	string $current;
 	for ( $current in $selected ) {
 		if ( !`attributeQuery -node $current -ex "ribOptions"`) {
-			addAttr -ln ribOptions -dt "string" $current;	
+			addAttr -ln ribOptions -dt "string" $current;
 		}
 		if ( `attributeQuery -node $current -ex "ribOptions"`) {
 			setAttr ( $current + ".ribOptions" ) -type "string" "Option \"limits\" \"zthreshold\" [ 1.0 1.0 1.0 ]";
@@ -225,7 +229,7 @@ global proc liquidRemoveZThres() {
 	string $current;
 	for ( $current in $selected ) {
 		if ( `attributeQuery -node $current -ex "ribOptions"`) {
-			deleteAttr ( $current + ".ribOptions" );	
+			deleteAttr ( $current + ".ribOptions" );
 		}
 	}
 }
