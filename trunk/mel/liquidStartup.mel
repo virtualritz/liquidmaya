@@ -35,6 +35,8 @@ global proc liquidLoadScripts()
   eval( "source \"" + $liquidHome + "/mel/liquidAttributes.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/liquidSubdivInspector.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/liquidConvertMtor.mel\"" );
+  eval( "source \"" + $liquidHome + "/mel/liquidShutdown.mel\"" );
+  // eval( "source \"" + $liquidHome + "/mel/liquidSLManager.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/AEliquidFGGIOverrideFlags.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/AEliquidSubdivisionSurfaceShape.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/AEliquidNurbsCurveShape.mel\"" );
