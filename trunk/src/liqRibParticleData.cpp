@@ -1188,7 +1188,7 @@ void liqRibParticleData::write()
     for ( int i = 0; i < tokenPointerArray.size(); i++ )
     {
 		  char *tokenName = tokenPointerArray[i].getTokenName();
-      if ( strcmp( tokenName, "vertex point P") == 0 )
+      if ( strcmp( tokenName, "P") == 0 )
       {
         posAttr = i;
       }
