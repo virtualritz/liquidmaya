@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -74,7 +76,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibNode.h>
+#include <liqRibNode.h>
 #include <liqMemory.h>
 
 #ifdef _WIN32
@@ -89,7 +91,7 @@ extern MStringArray liqglo_preRibBox;
 extern MStringArray liqglo_preReadArchiveShadow;
 extern MStringArray liqglo_preRibBoxShadow;
 
-liquidRibNode::liquidRibNode( liquidRibNode * instanceOfNode )
+liqRibNode::liqRibNode( liqRibNode * instanceOfNode )
 // 
 //  Description:
 //      construct a new hash table entry
@@ -116,7 +118,7 @@ instance( instanceOfNode )
 	nodeShadingRate = 0.0;
 }
 
-liquidRibNode::~liquidRibNode()
+liqRibNode::~liqRibNode()
 // 
 //  Description:
 //      class destructor
@@ -142,7 +144,7 @@ liquidRibNode::~liquidRibNode()
     if ( debugMode ) { printf("-> finished killing rib node.\n" ); }
 }	
 
-liquidRibObj * liquidRibNode::object(int interval)
+liqRibObj * liqRibNode::object(int interval)
 // 
 //  Description:
 //      get the object (surface, mesh, light, etc) refered to by this node
@@ -151,7 +153,7 @@ liquidRibObj * liquidRibNode::object(int interval)
     return objects[interval];
 }
 
-void liquidRibNode::set( MDagPath &path, int sample, ObjectType objType )
+void liqRibNode::set( MDagPath &path, int sample, ObjectType objType )
 // 
 //  Description:
 //      set this node with the given path.  If this node already refers to
@@ -274,7 +276,7 @@ void liquidRibNode::set( MDagPath &path, int sample, ObjectType objType )
 	if ( debugMode ) { printf("-> creating rib object for given path\n"); }
 	
 	MObject obj = path.node();
-	no = new liquidRibObj( path, objType );
+	no = new liqRibObj( path, objType );
 	if ( debugMode ) { printf("-> creating rib object for reference\n"); }
 	no->ref();
 	
@@ -300,7 +302,7 @@ void liquidRibNode::set( MDagPath &path, int sample, ObjectType objType )
 	if ( debugMode ) { printf("-> done creating rib object for given path\n"); }
 }
 
-MDagPath & liquidRibNode::path()
+MDagPath & liqRibNode::path()
 //
 //  Description:
 //      Return the path in the DAG to the instance that this node represents
@@ -309,7 +311,7 @@ MDagPath & liquidRibNode::path()
 	return DagPath;   
 }
 
-MObject liquidRibNode::findShadingGroup( const MDagPath& path )
+MObject liqRibNode::findShadingGroup( const MDagPath& path )
 //
 //  Description:
 //      Find the shading group assigned to the given object
@@ -340,7 +342,7 @@ MObject liquidRibNode::findShadingGroup( const MDagPath& path )
 	return MObject::kNullObj;
 }
 
-MObject liquidRibNode::findShader( MObject& group )
+MObject liqRibNode::findShader( MObject& group )
 //
 //  Description:
 //      Find the shading node for the given shading group
@@ -365,7 +367,7 @@ MObject liquidRibNode::findShader( MObject& group )
 	return MObject::kNullObj;
 }
 
-MObject liquidRibNode::findDisp( MObject& group )
+MObject liqRibNode::findDisp( MObject& group )
 //
 //  Description:
 //      Find the shading node for the given shading group
@@ -390,7 +392,7 @@ MObject liquidRibNode::findDisp( MObject& group )
 	return MObject::kNullObj;
 }
 
-MObject liquidRibNode::findVolume( MObject& group )
+MObject liqRibNode::findVolume( MObject& group )
 //
 //  Description:
 //      Find the shading node for the given shading group
@@ -415,7 +417,7 @@ MObject liquidRibNode::findVolume( MObject& group )
 	return MObject::kNullObj;
 }
 
-void liquidRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
+void liqRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
 //
 //  Description:
 //      Get the list of all ignored lights for the given shading group
@@ -450,7 +452,7 @@ void liquidRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLight
 	}			
 }
 
-void liquidRibNode::getIgnoredLights( MObjectArray& ignoredLights )
+void liqRibNode::getIgnoredLights( MObjectArray& ignoredLights )
 //
 //  Description:
 //      Get the list of all ignored lights for the given for *this* node
@@ -506,7 +508,7 @@ void liquidRibNode::getIgnoredLights( MObjectArray& ignoredLights )
 }
 
 
-bool liquidRibNode::getColor( MObject& shader, MColor& color )
+bool liqRibNode::getColor( MObject& shader, MColor& color )
 //
 //  Description:
 //      Get the color of the given shading node.
@@ -546,7 +548,7 @@ bool liquidRibNode::getColor( MObject& shader, MColor& color )
 	return true;
 }	
 
-bool liquidRibNode::getMatteMode( MObject& shader )
+bool liqRibNode::getMatteMode( MObject& shader )
 //
 //  Description:
 //      check to see if we should make this a matte object.

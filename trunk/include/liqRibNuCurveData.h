@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -25,8 +27,8 @@
 
 */
 
-#ifndef liquidRibNuCurveData_H
-#define liquidRibNuCurveData_H
+#ifndef liqRibNuCurveData_H
+#define liqRibNuCurveData_H
 
 /* ______________________________________________________________________
 ** 
@@ -35,11 +37,11 @@
 */
 
 
-class liquidRibNuCurveData : public liqRibData {
+class liqRibNuCurveData : public liqRibData {
 public: // Methods
     
-            liquidRibNuCurveData( MObject curve );
-    virtual ~liquidRibNuCurveData();
+            liqRibNuCurveData( MObject curve );
+    virtual ~liqRibNuCurveData();
         
     virtual void       write();
     virtual bool       compare( const liqRibData & other ) const;

@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -68,12 +70,12 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibSubdivisionData.h>
+#include <liqRibSubdivisionData.h>
 #include <liqMemory.h>
 
 extern int debugMode;
 
-liquidRibSubdivisionData::liquidRibSubdivisionData( MObject mesh )
+liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
 /*  Description: create a RIB compatible subdivision surface representation using a Maya polygon mesh */
 :   npolys( 0 ),
 nverts( NULL ),
@@ -182,7 +184,7 @@ totalNumOfVertices( 0 )
     addAdditionalSurfaceParameters( mesh );
 }
 
-liquidRibSubdivisionData::~liquidRibSubdivisionData()
+liqRibSubdivisionData::~liqRibSubdivisionData()
 /* Description: class destructor */
 {
     if ( debugMode ) { printf("-> killing subdivision surface\n"); }
@@ -190,7 +192,7 @@ liquidRibSubdivisionData::~liquidRibSubdivisionData()
     lfree( verts ); verts = NULL;
 }
 
-void liquidRibSubdivisionData::write()
+void liqRibSubdivisionData::write()
 /* Description: Write the RIB for this mesh */
 {
     if ( debugMode ) { printf("-> writing subdivision surface\n"); }
@@ -215,12 +217,12 @@ void liquidRibSubdivisionData::write()
     RiSubdivisionMeshV( "catmull-clark", npolys, nverts, verts, 0, tags, nargs, intargs, floatargs, numTokens, tokenArray, pointerArray ); 
 }
 
-bool liquidRibSubdivisionData::compare( const liqRibData & otherObj ) const
+bool liqRibSubdivisionData::compare( const liqRibData & otherObj ) const
 /* Description: Compare this mesh to the other for the purpose of determining if its animated */
 {
     if ( debugMode ) { printf("-> comparing mesh\n"); }
     if ( otherObj.type() != MRT_Subdivision ) return false;
-    const liquidRibSubdivisionData & other = (liquidRibSubdivisionData&)otherObj;
+    const liqRibSubdivisionData & other = (liqRibSubdivisionData&)otherObj;
     
     if ( npolys != other.npolys ) return false;
     
@@ -252,7 +254,7 @@ bool liquidRibSubdivisionData::compare( const liqRibData & otherObj ) const
     return true;
 }
 
-ObjectType liquidRibSubdivisionData::type() const
+ObjectType liqRibSubdivisionData::type() const
 /* Description: return the geometry type */
 {
 	if ( debugMode ) { printf("-> returning subdivision surface type\n"); }

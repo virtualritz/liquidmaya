@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -22,10 +24,11 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+**
 */
 
-#ifndef _H_liquidRIBStatus
-#define _H_liquidRIBStatus
+#ifndef _H_liqRibStatus
+#define _H_liqRibStatus
 /* ______________________________________________________________________
 ** 
 ** Liquid RIBStatus Header File
@@ -36,7 +39,7 @@
 #include <maya/MDagPath.h>
 #include <zlib.h>
 
-class liquidRIBStatus {
+class liqRibStatus {
 public:
 				typedef enum
 		{
@@ -70,8 +73,8 @@ public:
 		long	motionSamples;
 		void * RiConnection;
 		
-		liquidRIBStatus() {};
-		virtual     	  ~liquidRIBStatus() {};
+		liqRibStatus() {};
+		virtual     	  ~liqRibStatus() {};
 		
 		//virtual void      ReportError( RenderingError e, const char *fmt, ... ) = 0;
 };

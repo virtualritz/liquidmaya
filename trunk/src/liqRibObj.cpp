@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -66,22 +68,21 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibObj.h>
+#include <liqRibObj.h>
 #include <liqRibSurfaceData.h>
-#include <liquidRibLightData.h>
-#include <liquidRibLocatorData.h>
-#include <liquidRibMeshData.h>
+#include <liqRibLightData.h>
+#include <liqRibLocatorData.h>
+#include <liqRibMeshData.h>
 #include <liqRibParticleData.h>
-#include <liquidRibNuCurveData.h>
-#include <liquidRibSubdivisionData.h>
+#include <liqRibNuCurveData.h>
+#include <liqRibSubdivisionData.h>
 #include <liqRibCoordData.h>
-#include <liquidRIBStatus.h>
 #include <liqRibGenData.h>
 #include <liqMemory.h>
 
 extern int debugMode;
 
-liquidRibObj::liquidRibObj( const MDagPath &path, ObjectType objType )
+liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 //
 //  Description:
 //      Create a RIB representation of the given node in the DAG as a ribgen!
@@ -141,7 +142,7 @@ data( NULL )
 			    data = new liqRibSurfaceData( obj );
 		    } else if ( obj.hasFn(MFn::kNurbsCurve) ) {
 			    type = MRT_NuCurve;
-			    data = new liquidRibNuCurveData( obj );
+			    data = new liqRibNuCurveData( obj );
 		    } else if ( obj.hasFn(MFn::kParticle) ) {
 			    type = MRT_Particles;
 			    data = new liqRibParticleData( obj );
@@ -157,23 +158,23 @@ data( NULL )
 			    if ( usingSubD ) {
 				    /* we've got a subdivision surface */
 				    type = MRT_Subdivision;
-				    data = new liquidRibSubdivisionData( obj );
+				    data = new liqRibSubdivisionData( obj );
 				    type = data->type();
 			    } else {
 				    /* it's a regular mesh */
 				    type = MRT_Mesh;
-				    data = new liquidRibMeshData( obj );
+				    data = new liqRibMeshData( obj );
 				    type = data->type();
 			    }
 		    } else if ( obj.hasFn(MFn::kLight)) {
 			    type = MRT_Light;
-			    data = new liquidRibLightData( path );
+			    data = new liqRibLightData( path );
 		    } else if ( obj.hasFn(MFn::kPlace3dTexture)) {
 			    type = MRT_Coord;
 			    data = new liqRibCoordData( obj );
 		    } else if ( obj.hasFn(MFn::kLocator) ) {
 			    type = MRT_Locator;
-			    data = new liquidRibLocatorData( obj );
+			    data = new liqRibLocatorData( obj );
 		    }
 	    }
 	    data->objDagPath = path;
@@ -181,7 +182,7 @@ data( NULL )
     if ( debugMode ) { printf("-> done creating rep\n"); }
 }
 
-liquidRibObj::~liquidRibObj()
+liqRibObj::~liqRibObj()
 //
 //  Description: 
 //      Class destructor
@@ -194,7 +195,7 @@ liquidRibObj::~liquidRibObj()
 	if ( debugMode ) { printf("-> finished killing ribobj\n"); }
 }
 
-inline RtObjectHandle liquidRibObj::handle() const
+inline RtObjectHandle liqRibObj::handle() const
 //
 //  Description: 
 //      return the RenderMan instance handle.  This is used to refer to 
@@ -203,7 +204,7 @@ inline RtObjectHandle liquidRibObj::handle() const
 {
     return objectHandle;
 }
-inline void liquidRibObj::setHandle( RtObjectHandle handle )
+inline void liqRibObj::setHandle( RtObjectHandle handle )
 //
 //  Description: 
 //      set the RenderMan instance handle 
@@ -211,7 +212,7 @@ inline void liquidRibObj::setHandle( RtObjectHandle handle )
 {
     objectHandle = handle;
 }
-RtLightHandle liquidRibObj::lightHandle() const
+RtLightHandle liqRibObj::lightHandle() const
 //
 //  Description: 
 //      return the RenderMan handle handle for this light
@@ -221,12 +222,12 @@ RtLightHandle liquidRibObj::lightHandle() const
     //assert( type == MRT_Light );
     RtLightHandle lHandle = NULL;
     if ( type == MRT_Light ) {
-        liquidRibLightData * light = (liquidRibLightData*)data;
+        liqRibLightData * light = (liqRibLightData*)data;
         lHandle = light->lightHandle();
     }
     return lHandle;
 }
-AnimType liquidRibObj::compareMatrix(const liquidRibObj *o, int instance )
+AnimType liqRibObj::compareMatrix(const liqRibObj *o, int instance )
 // 
 //  Description:
 //      compare the two object's world transform matrices.  This method also
@@ -237,7 +238,7 @@ AnimType liquidRibObj::compareMatrix(const liquidRibObj *o, int instance )
 	if ( debugMode ) { printf("-> comparing rib node handle rep matrix\n"); }
     return (matrix( instance ) == o->matrix( instance ) ? MRX_Const : MRX_Animated);
 }
-AnimType liquidRibObj::compareBody(const liquidRibObj *o)
+AnimType liqRibObj::compareBody(const liqRibObj *o)
 // 
 //  Description:
 //      compare the two object's geometry.  This comparision is used to
@@ -256,7 +257,7 @@ AnimType liquidRibObj::compareBody(const liquidRibObj *o)
     return cmp;
 }
 
-void liquidRibObj::writeObject()
+void liqRibObj::writeObject()
 // 
 //  Description:
 //      write the object directly.  We do not get a RIB handle in this case
@@ -278,7 +279,7 @@ void liquidRibObj::writeObject()
     }
 }
 
-MMatrix liquidRibObj::matrix( int instance ) const
+MMatrix liqRibObj::matrix( int instance ) const
 // 
 //  Description:
 //      return the inclusive matrix for the given instance
@@ -289,7 +290,7 @@ MMatrix liquidRibObj::matrix( int instance ) const
     return instanceMatrices[instance];
 }
 
-void liquidRibObj::ref()
+void liqRibObj::ref()
 // 
 //  Description:
 //      bump reference count up by one
@@ -302,7 +303,7 @@ void liquidRibObj::ref()
 	referenceCount++; 
 }
 
-void liquidRibObj::unref()
+void liqRibObj::unref()
 // 
 //  Description:
 //      bump reference count down by one and delete if necessary

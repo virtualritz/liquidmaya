@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -65,12 +67,12 @@ extern "C" {
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibData.h>
-#include <liquidRibNuCurveData.h>
+#include <liqRibNuCurveData.h>
 #include <liqMemory.h>
 
 extern int debugMode;
 
-liquidRibNuCurveData::liquidRibNuCurveData( MObject curve )
+liqRibNuCurveData::liqRibNuCurveData( MObject curve )
 //
 //  Description:
 //      create a RIB compatible representation of a Maya nurbs surface
@@ -158,7 +160,7 @@ liquidRibNuCurveData::liquidRibNuCurveData( MObject curve )
 	addAdditionalSurfaceParameters( curve );
 }
 
-liquidRibNuCurveData::~liquidRibNuCurveData()
+liqRibNuCurveData::~liqRibNuCurveData()
 //  Description:
 //      class destructor
 {
@@ -175,7 +177,7 @@ liquidRibNuCurveData::~liquidRibNuCurveData()
 	if ( max != NULL ) { lfree( max ); max = NULL; }
 }
 
-void liquidRibNuCurveData::write()
+void liqRibNuCurveData::write()
 //
 //  Description:
 //      Write the RIB for this surface
@@ -191,7 +193,7 @@ void liquidRibNuCurveData::write()
 	RiCurvesV( "cubic", ncurves, nverts, "nonperiodic", numTokens, tokenArray, pointerArray );
 }
 
-bool liquidRibNuCurveData::compare( const liqRibData & otherObj ) const
+bool liqRibNuCurveData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this curve to the other for the purpose of determining
@@ -200,7 +202,7 @@ bool liquidRibNuCurveData::compare( const liqRibData & otherObj ) const
 {	
 	if ( debugMode ) { printf("-> comparing nurbs curve\n"); }
     if ( otherObj.type() != MRT_NuCurve ) return false;
-    const liquidRibNuCurveData & other = (liquidRibNuCurveData&)otherObj;
+    const liqRibNuCurveData & other = (liqRibNuCurveData&)otherObj;
     
     if ( ( nverts[0] != other.nverts[0] ) ||
 		( order != other.order ) ||
@@ -228,7 +230,7 @@ bool liquidRibNuCurveData::compare( const liqRibData & otherObj ) const
     return true;
 }
 
-ObjectType liquidRibNuCurveData::type() const
+ObjectType liqRibNuCurveData::type() const
 //
 //  Description:
 //      return the geometry type
