@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -72,7 +72,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "PRMAN" /YX /FD /GZ /c
+# ADD CPP /nologo /MT /W3 /Gm /GR /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "PRMAN" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -99,7 +99,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -128,7 +128,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "PRMAN" /YX /FD /GZ /c
-# ADD CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "PRMAN" /YX /FD /GZ /c
+# ADD CPP /nologo /MT /W3 /Gm /GR /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "PRMAN" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -181,6 +181,14 @@ SOURCE=.\liqGlobalHelpers.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\liqMemory.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqPixieRenderer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\liqPreviewShader.cpp
 # End Source File
 # Begin Source File
@@ -193,27 +201,7 @@ SOURCE=.\liqProcessLauncher.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liqRibParticleData.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqRibSurfaceData.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqShader.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqTokenPointer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqMemory.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liquidPlug.cpp
+SOURCE=.\liqRenderer.cpp
 # End Source File
 # Begin Source File
 
@@ -257,11 +245,31 @@ SOURCE=.\liqRibObj.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\liqRibParticleData.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\liqRibSubdivisionData.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\liqRibSurfaceData.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\liqRibTranslator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqShader.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqTokenPointer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liquidPlug.cpp
 # End Source File
 # Begin Source File
 
@@ -285,35 +293,15 @@ SOURCE=..\include\liqGlobalHelpers.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\liqMemory.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\liqPreviewShader.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\include\liqProcessLauncher.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liqRibParticleData.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liqShader.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liqTokenPointer.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liquid.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liquidAttachPrefAttribute.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liqMemory.h
 # End Source File
 # Begin Source File
 
@@ -325,19 +313,11 @@ SOURCE=..\include\liqRibData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRIBGen.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\include\liqRibGenData.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\include\liqRibHT.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\liquidRibItHT.h
 # End Source File
 # Begin Source File
 
@@ -365,7 +345,7 @@ SOURCE=..\include\liqRibObj.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRIBStatus.h
+SOURCE=..\include\liqRibParticleData.h
 # End Source File
 # Begin Source File
 
@@ -373,11 +353,39 @@ SOURCE=..\include\liqRibSubdivisionData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibSurfaceData.h
+SOURCE=..\include\liqRibTranslator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liqRibTranslator.h
+SOURCE=..\include\liqShader.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liqTokenPointer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liquid.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liquidAttachPrefAttribute.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liquidRIBGen.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liquidRibItHT.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liquidRIBStatus.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\liquidRibSurfaceData.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
