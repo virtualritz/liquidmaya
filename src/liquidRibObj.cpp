@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+**
 */
 
 /* ______________________________________________________________________
@@ -66,7 +67,7 @@ extern "C" {
 #include <liquid.h>
 #include <liquidGlobalHelpers.h>
 #include <liquidRibObj.h>
-#include <liquidRibSurfaceData.h>
+#include <liqRibSurfaceData.h>
 #include <liquidRibLightData.h>
 #include <liquidRibLocatorData.h>
 #include <liquidRibMeshData.h>
@@ -137,7 +138,7 @@ data( NULL )
 		    // Store the geometry/light/shader data for this object in RIB format
 		    if ( obj.hasFn(MFn::kNurbsSurface) ) {
 			    type = MRT_Nurbs;
-			    data = new liquidRibSurfaceData( obj );
+			    data = new liqRibSurfaceData( obj );
 		    } else if ( obj.hasFn(MFn::kNurbsCurve) ) {
 			    type = MRT_NuCurve;
 			    data = new liquidRibNuCurveData( obj );
@@ -267,7 +268,7 @@ void liquidRibObj::writeObject()
     	    data->write();
         } else {
     	    if ( type == MRT_Nurbs ) {
-    	    	liquidRibSurfaceData * surfData = (liquidRibSurfaceData*)data;
+    	    	liqRibSurfaceData * surfData = (liqRibSurfaceData*)data;
     	    	if ( surfData->hasTrimCurves() ) {
     	    	    surfData->writeTrimCurves();
     	    	}
