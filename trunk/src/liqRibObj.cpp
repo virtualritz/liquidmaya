@@ -310,6 +310,13 @@ MMatrix liqRibObj::matrix( int instance ) const
   return instanceMatrices[instance];
 }
 
+void liqRibObj::setMatrix( int instance, MMatrix matrix )
+{
+  assert(instance>=0);
+  instanceMatrices[instance] = matrix;
+}
+
+
 void liqRibObj::ref()
 // 
 //  Description:

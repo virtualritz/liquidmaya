@@ -73,6 +73,9 @@ extern "C" {
 #include <maya/MFnDagNode.h>
 #include <maya/MBoundingBox.h>
 #include <maya/MFnAttribute.h>
+#include <maya/MFnParticleSystem.h>
+#include <maya/MVectorArray.h>
+#include <maya/MFnDoubleArrayData.h>
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
@@ -91,31 +94,34 @@ extern MStringArray liqglo_preRibBox;
 extern MStringArray liqglo_preReadArchiveShadow;
 extern MStringArray liqglo_preRibBoxShadow;
 
-liqRibNode::liqRibNode( liqRibNode * instanceOfNode )
+liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
+                        const MString instanceOfNodeStr )
 // 
 //  Description:
 //      construct a new hash table entry
 //
-:   next( NULL ),
-matXForm( MRX_Const ),
-bodyXForm( MRX_Const ),
-instance( instanceOfNode )
+  :   next( NULL ),
+      matXForm( MRX_Const ),
+      bodyXForm( MRX_Const ),
+      instance( instanceOfNode ),
+      instanceStr( instanceOfNodeStr ),
+      overrideColour( false )
 {
-	if ( debugMode ) { printf("-> creating rib node\n"); }
-	objects[0] = NULL;
-	objects[1] = NULL;
-	objects[2] = NULL;
-	objects[3] = NULL;
-	objects[4] = NULL;
-	name.clear();
-	isRibBox = false;
-	isArchive = false;
-	isDelayedArchive = false;
-	matteMode = false;
-	doDef = true;
-	doMotion = true;
-	nodeShadingRateSet = false;
-	nodeShadingRate = 0.0;
+  if ( debugMode ) { printf("-> creating rib node\n"); }
+  objects[0] = NULL;
+  objects[1] = NULL;
+  objects[2] = NULL;
+  objects[3] = NULL;
+  objects[4] = NULL;
+  name.clear();
+  isRibBox = false;
+  isArchive = false;
+  isDelayedArchive = false;
+  matteMode = false;
+  doDef = true;
+  doMotion = true;
+  nodeShadingRateSet = false;
+  nodeShadingRate = 0.0;
 }
 
 liqRibNode::~liqRibNode()
@@ -124,25 +130,25 @@ liqRibNode::~liqRibNode()
 //      class destructor
 //
 {
-    if ( debugMode ) { printf("-> killing rib node %s\n", name.asChar() ); }
-    if ( debugMode ) { printf("-> killing first ref\n" ); }
-    if (objects[0] != NULL) { objects[0]->unref(); objects[0] = NULL; }
-    if ( debugMode ) { printf("-> killing second ref\n" ); }
-    if (objects[1] != NULL) { objects[1]->unref(); objects[1] = NULL; }
-    if ( debugMode ) { printf("-> killing third ref\n" ); }
-    if (objects[2] != NULL) { objects[2]->unref(); objects[2] = NULL; }
-    if ( debugMode ) { printf("-> killing fourth ref\n" ); }
-    if (objects[3] != NULL) { objects[3]->unref(); objects[3] = NULL; }
-    if ( debugMode ) { printf("-> killing fifth ref\n" ); }
-    if (objects[4] != NULL) { objects[4]->unref(); objects[4] = NULL; }
-    if ( debugMode ) { printf("-> killing no obj\n" ); }
-    no = NULL;
-    name.clear();
-    ribBoxString.clear();
-    archiveString.clear();
-    delayedArchiveString.clear();
-    if ( debugMode ) { printf("-> finished killing rib node.\n" ); }
-}	
+  if ( debugMode ) { printf("-> killing rib node %s\n", name.asChar() ); }
+  if ( debugMode ) { printf("-> killing first ref\n" ); }
+  if (objects[0] != NULL) { objects[0]->unref(); objects[0] = NULL; }
+  if ( debugMode ) { printf("-> killing second ref\n" ); }
+  if (objects[1] != NULL) { objects[1]->unref(); objects[1] = NULL; }
+  if ( debugMode ) { printf("-> killing third ref\n" ); }
+  if (objects[2] != NULL) { objects[2]->unref(); objects[2] = NULL; }
+  if ( debugMode ) { printf("-> killing fourth ref\n" ); }
+  if (objects[3] != NULL) { objects[3]->unref(); objects[3] = NULL; }
+  if ( debugMode ) { printf("-> killing fifth ref\n" ); }
+  if (objects[4] != NULL) { objects[4]->unref(); objects[4] = NULL; }
+  if ( debugMode ) { printf("-> killing no obj\n" ); }
+  no = NULL;
+  name.clear();
+  ribBoxString.clear();
+  archiveString.clear();
+  delayedArchiveString.clear();
+  if ( debugMode ) { printf("-> finished killing rib node.\n" ); }
+}    
 
 liqRibObj * liqRibNode::object(int interval)
 // 
@@ -150,10 +156,10 @@ liqRibObj * liqRibNode::object(int interval)
 //      get the object (surface, mesh, light, etc) refered to by this node
 //
 {
-    return objects[interval];
+  return objects[interval];
 }
 
-void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType )
+void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int particleId )
 // 
 //  Description:
 //      set this node with the given path.  If this node already refers to
@@ -161,145 +167,268 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType )
 //      at the next frame.
 //
 {
-	if ( debugMode ) { printf("-> setting rib node\n"); }
-	DagPath = path;
+  if ( debugMode ) { printf("-> setting rib node\n"); }
+  DagPath = path;
 #if 0
-	int instanceNum = path.instanceNumber();
-#endif	
-	isRibBox = false;
-	isArchive = false;
-	isDelayedArchive = false;
-	MStatus status;
-	MFnDagNode fnNode( path );
-	MPlug nPlug;
-	status.clear();
-	nPlug = fnNode.findPlug( MString( "transformationBlur" ), &status );
-	if ( status == MS::kSuccess ) {
-		nPlug.getValue( doMotion );
-	}
-	status.clear();
-	nPlug = fnNode.findPlug( MString( "deformationBlur" ), &status );
-	if ( status == MS::kSuccess ) {
-		nPlug.getValue( doDef );
-	}
-	status.clear();
-	nPlug = fnNode.findPlug( MString( "shadingRate" ), &status );
-	if ( status == MS::kSuccess ) {
-		nodeShadingRateSet = true;
-		nPlug.getValue( nodeShadingRate );
-	}
-	status.clear();
-	nPlug = fnNode.findPlug( MString( "ribBox" ), &status );
-	if ( status == MS::kSuccess ) {
-		MString ribBoxValue;
-		nPlug.getValue( ribBoxValue );
-		if ( ribBoxValue.substring(0,2) == "*H*" ) {
-			MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
-			liqglo_preRibBox.append( parseString( parseThis ) );
-		} else if ( ribBoxValue.substring(0,3) == "*SH*" ) {
-			MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
-			liqglo_preRibBoxShadow.append( parseString( parseThis ) );
-		} else { 
-			ribBoxString = parseString( ribBoxValue );
-			isRibBox = true;
-		}
-	}
-	status.clear();
-	nPlug = fnNode.findPlug( MString( "ribArchive" ), &status );
-	if ( status == MS::kSuccess ) {
-		MString archiveValue;
-		nPlug.getValue( archiveValue );
-		if ( archiveValue.substring(0,2) == "*H*" ) {
-			MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
-			liqglo_preReadArchive.append( parseString( parseThis ) );
-		} else if ( archiveValue.substring(0,3) == "*SH*" ) {
-			MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
-			liqglo_preReadArchiveShadow.append( parseString( parseThis ) );
-		} else {			
-			archiveString = parseString( archiveValue );
-			isArchive = true;
-		}
-	}
-	status.clear();
-	nPlug = fnNode.findPlug( MString( "ribDelayedArchive" ), &status );
-	if ( status == MS::kSuccess ) {
-		MString delayedArchiveValue;
-		nPlug.getValue( delayedArchiveValue );
-		delayedArchiveString = parseString( delayedArchiveValue );
-		isDelayedArchive = true;
+  int instanceNum = path.instanceNumber();
+#endif    
+  isRibBox = false;
+  isArchive = false;
+  isDelayedArchive = false;
+  MStatus status;
+  MFnDagNode fnNode( path );
+  MPlug nPlug;
+  status.clear();
+  nPlug = fnNode.findPlug( MString( "transformationBlur" ), &status );
+  if ( status == MS::kSuccess ) {
+    nPlug.getValue( doMotion );
+  }
+  status.clear();
+  nPlug = fnNode.findPlug( MString( "deformationBlur" ), &status );
+  if ( status == MS::kSuccess ) {
+    nPlug.getValue( doDef );
+  }
+  status.clear();
+  nPlug = fnNode.findPlug( MString( "shadingRate" ), &status );
+  if ( status == MS::kSuccess ) {
+    nodeShadingRateSet = true;
+    nPlug.getValue( nodeShadingRate );
+  }
+  status.clear();
+  nPlug = fnNode.findPlug( MString( "ribBox" ), &status );
+  if ( status == MS::kSuccess ) {
+    MString ribBoxValue;
+    nPlug.getValue( ribBoxValue );
+    if ( ribBoxValue.substring(0,2) == "*H*" ) {
+      MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
+      liqglo_preRibBox.append( parseString( parseThis ) );
+    } else if ( ribBoxValue.substring(0,3) == "*SH*" ) {
+      MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
+      liqglo_preRibBoxShadow.append( parseString( parseThis ) );
+    } else { 
+      ribBoxString = parseString( ribBoxValue );
+      isRibBox = true;
+    }
+  }
+  status.clear();
+  nPlug = fnNode.findPlug( MString( "ribArchive" ), &status );
+  if ( status == MS::kSuccess ) {
+    MString archiveValue;
+    nPlug.getValue( archiveValue );
+    if ( archiveValue.substring(0,2) == "*H*" ) {
+      MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
+      liqglo_preReadArchive.append( parseString( parseThis ) );
+    } else if ( archiveValue.substring(0,3) == "*SH*" ) {
+      MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
+      liqglo_preReadArchiveShadow.append( parseString( parseThis ) );
+    } else {            
+      archiveString = parseString( archiveValue );
+      isArchive = true;
+    }
+  }
+  status.clear();
+  nPlug = fnNode.findPlug( MString( "ribDelayedArchive" ), &status );
+  if ( status == MS::kSuccess ) {
+    MString delayedArchiveValue;
+    nPlug.getValue( delayedArchiveValue );
+    delayedArchiveString = parseString( delayedArchiveValue );
+    isDelayedArchive = true;
 
-		MStatus Dstatus;
-		MPlug delayedPlug = fnNode.findPlug( MString( "ribDelayedArchiveBBox" ), &Dstatus );
-		if ( ( Dstatus == MS::kSuccess ) && ( delayedPlug.isConnected() ) ) {
-			MPlugArray delayedNodeArray;
-			delayedPlug.connectedTo( delayedNodeArray, true, true );
-			MObject delayedNodeObj;
-			delayedNodeObj = delayedNodeArray[0].node();
-			MFnDagNode delayedfnNode( delayedNodeObj );
+    MStatus Dstatus;
+    MPlug delayedPlug = fnNode.findPlug( MString( "ribDelayedArchiveBBox" ), &Dstatus );
+    if ( ( Dstatus == MS::kSuccess ) && ( delayedPlug.isConnected() ) ) {
+      MPlugArray delayedNodeArray;
+      delayedPlug.connectedTo( delayedNodeArray, true, true );
+      MObject delayedNodeObj;
+      delayedNodeObj = delayedNodeArray[0].node();
+      MFnDagNode delayedfnNode( delayedNodeObj );
 
-			MBoundingBox bounding = delayedfnNode.boundingBox();
-			MPoint bMin = bounding.min();
-			MPoint bMax = bounding.max();
-			bound[0] = bMin.x;
-			bound[1] = bMin.y;
-			bound[2] = bMin.z;
-			bound[3] = bMax.x;
-			bound[4] = bMax.y;
-			bound[5] = bMax.z;
-		}
-	}
-	
-	// Get the object's color
-	//	  
-	if ( objType != MRT_Shader ) {
-		MObject shadingGroup = findShadingGroup( path );
-		if ( shadingGroup != MObject::kNullObj ) {
-			assignedShadingGroup.setObject( shadingGroup );
-			MObject surfaceShader = findShader( shadingGroup );
-			assignedShader.setObject( surfaceShader );
-			assignedDisp.setObject( findDisp( shadingGroup ) ); 
-			assignedVolume.setObject( findVolume( shadingGroup ) ); 
-			if ( ( surfaceShader == MObject::kNullObj ) || !getColor( surfaceShader, color ) ) {
-				// This is how we specify that the color was not found.
-				//
-				color.r = -1.0;
-			}
-			matteMode = getMatteMode( surfaceShader );
-		} else {
-			color.r = -1.0;
-		}
-		doubleSided = isObjectTwoSided( path );
-	}
-	
-	// Create a new RIB object for the given path
-	//
-	if ( debugMode ) { printf("-> creating rib object for given path\n"); }
-	
-	MObject obj = path.node();
-	no = new liqRibObj( path, objType );
-	if ( debugMode ) { printf("-> creating rib object for reference\n"); }
-	no->ref();
-	
-	
-	if ( debugMode ) { printf("-> getting objects name\n"); }
-	name = path.fullPathName();
-	
-	if (name == "") {
-		if ( debugMode ) { printf("-> name unknown - searching for name\n"); }
-		MDagPath		parentPath = path;
-		parentPath.pop();
-		MStatus     returnStatus;
-		
-		name = parentPath.fullPathName(&returnStatus);
-		if ( debugMode ) { printf("-> found name\n"); }
-	}
-	if ( objType == MRT_RibGen ) name += "RIBGEN";
-	
-	if ( debugMode ) { printf("-> inserting object into ribnode's obj sample table\n"); }
-	if (objects[sample] == NULL) {
-		objects[sample] = no;
-	}
-	if ( debugMode ) { printf("-> done creating rib object for given path\n"); }
+      MBoundingBox bounding = delayedfnNode.boundingBox();
+      MPoint bMin = bounding.min();
+      MPoint bMax = bounding.max();
+      bound[0] = bMin.x;
+      bound[1] = bMin.y;
+      bound[2] = bMin.z;
+      bound[3] = bMax.x;
+      bound[4] = bMax.y;
+      bound[5] = bMax.z;
+    }
+  }
+    
+  // Get the object's color
+  //      
+  if ( objType != MRT_Shader ) {
+    MObject shadingGroup = findShadingGroup( path );
+    if ( shadingGroup != MObject::kNullObj ) {
+      assignedShadingGroup.setObject( shadingGroup );
+      MObject surfaceShader = findShader( shadingGroup );
+      assignedShader.setObject( surfaceShader );
+      assignedDisp.setObject( findDisp( shadingGroup ) ); 
+      assignedVolume.setObject( findVolume( shadingGroup ) ); 
+      if ( ( surfaceShader == MObject::kNullObj ) || !getColor( surfaceShader, color ) ) {
+        // This is how we specify that the color was not found.
+        //
+        color.r = -1.0;
+      }
+      matteMode = getMatteMode( surfaceShader );
+    } else {
+      color.r = -1.0;
+    }
+    doubleSided = isObjectTwoSided( path );
+  }
+    
+  // Check to see if the object should have its colour overridden
+  // (if possible).
+  //
+  nPlug = fnNode.findPlug( MString( "useParticleColourWhenInstanced" ), &status );
+  if ( status == MS::kSuccess )
+  {
+    bool override;
+    nPlug.getValue( override );
+    if ( override && particleId != -1 )
+    {
+      // Traverse upwards, looking for some connection between this
+      // geometry hierarchy and a particle instancer node.
+      //
+      MFnDagNode dagNode( path.node() );
+      bool foundInstancerNode = false;
+      while (1)
+      {
+        // The instancer is always connected to the "matrix" attribute.
+        //
+        MPlug matrixPlug = dagNode.findPlug( MString( "matrix" ), &status );
+        if ( status != MS::kSuccess )
+        {
+          break;
+        }
+                
+        // If the matrix plug is connected, iterate over the connections
+        // to see if one of them is an instancer.
+        //
+        if ( matrixPlug.isConnected() )
+        {
+          MPlugArray connections;
+          matrixPlug.connectedTo( connections, false, true );
+          for ( int i = 0; i < connections.length(); i++ )
+          {
+            MObject obj = connections[i].node();
+            if ( obj.hasFn( MFn::kInstancer ) )
+            {
+              dagNode.setObject( obj );
+              foundInstancerNode = true;
+              break;
+            }
+                        
+          }
+        }
+                
+        // If we've found an instancer or we're at the top of the
+        // hierarchy, break.
+        //
+        if ( foundInstancerNode || dagNode.parentCount() == 0 )
+        {
+          break;
+        }
+        dagNode.setObject( dagNode.parent( 0 ) );
+      }
+            
+      // If we've got an instancer, find the associated particle system.
+      //
+      if ( foundInstancerNode )
+      {
+        // Find out what particles we're replacing.
+        //
+        MPlug inputPointsPlug = dagNode.findPlug( "inputPoints", &status );
+        if ( status == MS::kSuccess )
+        {
+          // Find the array of connected plugs.
+          //
+          MPlugArray sourcePlugArray;
+          inputPointsPlug.connectedTo( sourcePlugArray, true, false, &status );
+                    
+          // There SHOULD always be a connected plug,
+          // but this is a safety check.
+          //
+          if ( sourcePlugArray.length() > 0 )
+          {
+            MObject sourceObject = sourcePlugArray[0].node();
+                        
+            // Another sanity check: make sure the source is
+            // actually a particle system.
+            //
+            if ( sourceObject.hasFn( MFn::kParticle ) )
+            {
+              MFnParticleSystem particles( sourceObject );
+                            
+              // Proceed with colour overrides if the rgbPP exists.
+              //
+              if ( particles.hasRgb() )
+              {
+                MVectorArray rgbPP;
+                particles.rgb( rgbPP );
+                                
+                                // Find the ID's
+                                //
+                MPlug idPlug = particles.findPlug( "id", &status );
+                if ( status == MS::kSuccess )
+                {
+                  MObject idObject;
+                  idPlug.getValue( idObject );
+                  MFnDoubleArrayData idArray( idObject, &status );
+                                    
+                  // Look for an id that matches.
+                  //
+                  for ( int i = 0; i < idArray.length(); i++ )
+                  {
+                    // If a match is found, grab the colour.
+                    //
+                    if ( static_cast<int>(idArray[i]) == particleId )
+                    {
+                      color.r = rgbPP[i].x;
+                      color.g = rgbPP[i].y;
+                      color.b = rgbPP[i].z;
+                      overrideColour = true;
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+        
+  // Create a new RIB object for the given path
+  //
+  if ( debugMode ) { printf("-> creating rib object for given path\n"); }
+    
+  MObject obj = path.node();
+  no = new liqRibObj( path, objType );
+  if ( debugMode ) { printf("-> creating rib object for reference\n"); }
+  no->ref();
+    
+    
+  if ( debugMode ) { printf("-> getting objects name\n"); }
+  name = path.fullPathName();
+    
+  if (name == "") {
+    if ( debugMode ) { printf("-> name unknown - searching for name\n"); }
+    MDagPath        parentPath = path;
+    parentPath.pop();
+    MStatus     returnStatus;
+        
+    name = parentPath.fullPathName(&returnStatus);
+    if ( debugMode ) { printf("-> found name\n"); }
+  }
+  if ( objType == MRT_RibGen ) name += "RIBGEN";
+    
+  if ( debugMode ) { printf("-> inserting object into ribnode's obj sample table\n"); }
+  if (objects[sample] == NULL) {
+    objects[sample] = no;
+  }
+  if ( debugMode ) { printf("-> done creating rib object for given path\n"); }
 }
 
 MDagPath & liqRibNode::path()
@@ -308,7 +437,7 @@ MDagPath & liqRibNode::path()
 //      Return the path in the DAG to the instance that this node represents
 //
 {
-	return DagPath;   
+  return DagPath;   
 }
 
 MObject liqRibNode::findShadingGroup( const MDagPath& path )
@@ -317,29 +446,29 @@ MObject liqRibNode::findShadingGroup( const MDagPath& path )
 //      Find the shading group assigned to the given object
 //
 {
-	if ( debugMode ) { printf("-> finding rib node shading group\n"); }
-	MSelectionList objects;
-	objects.add( path );
-	MObjectArray setArray;
+  if ( debugMode ) { printf("-> finding rib node shading group\n"); }
+  MSelectionList objects;
+  objects.add( path );
+  MObjectArray setArray;
     
-    // Get all of the sets that this object belongs to
-    //
-	MGlobal::getAssociatedSets( objects, setArray );
-	MObject mobj;	
-	
-    // Look for a set that is a "shading group"
-    //
-	for ( int i=0; i<setArray.length(); i++ ) 
-	{
-		mobj = setArray[i];
-		MFnSet fnSet( mobj ); 
-		MStatus stat;
-		if ( MFnSet::kRenderableOnly == fnSet.restriction(&stat) )
-		{
-			return mobj;		
-		}
-	}
-	return MObject::kNullObj;
+  // Get all of the sets that this object belongs to
+  //
+  MGlobal::getAssociatedSets( objects, setArray );
+  MObject mobj;    
+    
+  // Look for a set that is a "shading group"
+  //
+  for ( int i=0; i<setArray.length(); i++ ) 
+  {
+    mobj = setArray[i];
+    MFnSet fnSet( mobj ); 
+    MStatus stat;
+    if ( MFnSet::kRenderableOnly == fnSet.restriction(&stat) )
+    {
+      return mobj;        
+    }
+  }
+  return MObject::kNullObj;
 }
 
 MObject liqRibNode::findShader( MObject& group )
@@ -348,23 +477,23 @@ MObject liqRibNode::findShader( MObject& group )
 //      Find the shading node for the given shading group
 //
 {
-	if ( debugMode ) { printf("-> finding shader for rib node shading group\n"); }
-	MFnDependencyNode fnNode( group );
-	MPlug shaderPlug = fnNode.findPlug( "surfaceShader" );
-	
-	if ( !shaderPlug.isNull() ) {			
-		MPlugArray connectedPlugs;
-		bool asSrc = false;
-		bool asDst = true;
-		shaderPlug.connectedTo( connectedPlugs, asDst, asSrc );
-		if ( connectedPlugs.length() != 1 ) {
-			//cerr << "Error getting shader\n";
-		}
-		else 
-			return connectedPlugs[0].node();
-	}			
-	
-	return MObject::kNullObj;
+  if ( debugMode ) { printf("-> finding shader for rib node shading group\n"); }
+  MFnDependencyNode fnNode( group );
+  MPlug shaderPlug = fnNode.findPlug( "surfaceShader" );
+    
+  if ( !shaderPlug.isNull() ) {            
+    MPlugArray connectedPlugs;
+    bool asSrc = false;
+    bool asDst = true;
+    shaderPlug.connectedTo( connectedPlugs, asDst, asSrc );
+    if ( connectedPlugs.length() != 1 ) {
+      //cerr << "Error getting shader\n";
+    }
+    else 
+      return connectedPlugs[0].node();
+  }            
+    
+  return MObject::kNullObj;
 }
 
 MObject liqRibNode::findDisp( MObject& group )
@@ -373,23 +502,23 @@ MObject liqRibNode::findDisp( MObject& group )
 //      Find the shading node for the given shading group
 //
 {
-	if ( debugMode ) { printf("-> finding shader for rib node shading group\n"); }
-	MFnDependencyNode fnNode( group );
-	MPlug shaderPlug = fnNode.findPlug( "displacementShader" );
-	
-	if ( !shaderPlug.isNull() ) {			
-		MPlugArray connectedPlugs;
-		bool asSrc = false;
-		bool asDst = true;
-		shaderPlug.connectedTo( connectedPlugs, asDst, asSrc );
-		if ( connectedPlugs.length() != 1 ) {
-			//cerr << "Error getting shader\n";
-		}
-		else 
-			return connectedPlugs[0].node();
-	}			
-	
-	return MObject::kNullObj;
+  if ( debugMode ) { printf("-> finding shader for rib node shading group\n"); }
+  MFnDependencyNode fnNode( group );
+  MPlug shaderPlug = fnNode.findPlug( "displacementShader" );
+    
+  if ( !shaderPlug.isNull() ) {            
+    MPlugArray connectedPlugs;
+    bool asSrc = false;
+    bool asDst = true;
+    shaderPlug.connectedTo( connectedPlugs, asDst, asSrc );
+    if ( connectedPlugs.length() != 1 ) {
+      //cerr << "Error getting shader\n";
+    }
+    else 
+      return connectedPlugs[0].node();
+  }            
+    
+  return MObject::kNullObj;
 }
 
 MObject liqRibNode::findVolume( MObject& group )
@@ -398,23 +527,23 @@ MObject liqRibNode::findVolume( MObject& group )
 //      Find the shading node for the given shading group
 //
 {
-	if ( debugMode ) { printf("-> finding shader for rib node shading group\n"); }
-	MFnDependencyNode fnNode( group );
-	MPlug shaderPlug = fnNode.findPlug( "volumeShader" );
-	
-	if ( !shaderPlug.isNull() ) {			
-		MPlugArray connectedPlugs;
-		bool asSrc = false;
-		bool asDst = true;
-		shaderPlug.connectedTo( connectedPlugs, asDst, asSrc );
-		if ( connectedPlugs.length() != 1 ) {
-			//cerr << "Error getting shader\n";
-		}
-		else 
-			return connectedPlugs[0].node();
-	}			
-	
-	return MObject::kNullObj;
+  if ( debugMode ) { printf("-> finding shader for rib node shading group\n"); }
+  MFnDependencyNode fnNode( group );
+  MPlug shaderPlug = fnNode.findPlug( "volumeShader" );
+    
+  if ( !shaderPlug.isNull() ) {            
+    MPlugArray connectedPlugs;
+    bool asSrc = false;
+    bool asDst = true;
+    shaderPlug.connectedTo( connectedPlugs, asDst, asSrc );
+    if ( connectedPlugs.length() != 1 ) {
+      //cerr << "Error getting shader\n";
+    }
+    else 
+      return connectedPlugs[0].node();
+  }            
+    
+  return MObject::kNullObj;
 }
 
 void liqRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
@@ -423,33 +552,33 @@ void liqRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
 //      Get the list of all ignored lights for the given shading group
 //
 {
-	if ( debugMode ) { printf("-> getting ignored lights\n"); }
-	MFnDependencyNode fnNode( group );
-	MPlug ilPlug = fnNode.findPlug( "ignoredLights" );
-	
-	if ( !ilPlug.isNull() ) {
-		MPlugArray connectedPlugs;
-		bool asSrc = false;
-		bool asDst = true;
-		
-		// The ignoredLights attribute is an array so this should
-		// never happen
-		//
-		if ( !ilPlug.isArray() )
-			return;
-		
-		for ( unsigned i=0; i<ilPlug.numConnectedElements(); i++ )
-		{
-			MPlug elemPlug = ilPlug.elementByPhysicalIndex( i );
-			connectedPlugs.clear();
-			elemPlug.connectedTo( connectedPlugs, asDst, asSrc );
-			
-			// Since elemPlug is a destination there should
-			// only be 1 connection to it
-			//
-			ignoredLights.append( connectedPlugs[0].node() );
-		}
-	}			
+  if ( debugMode ) { printf("-> getting ignored lights\n"); }
+  MFnDependencyNode fnNode( group );
+  MPlug ilPlug = fnNode.findPlug( "ignoredLights" );
+    
+  if ( !ilPlug.isNull() ) {
+    MPlugArray connectedPlugs;
+    bool asSrc = false;
+    bool asDst = true;
+        
+    // The ignoredLights attribute is an array so this should
+    // never happen
+    //
+    if ( !ilPlug.isArray() )
+      return;
+        
+    for ( unsigned i=0; i<ilPlug.numConnectedElements(); i++ )
+    {
+      MPlug elemPlug = ilPlug.elementByPhysicalIndex( i );
+      connectedPlugs.clear();
+      elemPlug.connectedTo( connectedPlugs, asDst, asSrc );
+            
+      // Since elemPlug is a destination there should
+      // only be 1 connection to it
+      //
+      ignoredLights.append( connectedPlugs[0].node() );
+    }
+  }            
 }
 
 void liqRibNode::getIgnoredLights( MObjectArray& ignoredLights )
@@ -458,53 +587,53 @@ void liqRibNode::getIgnoredLights( MObjectArray& ignoredLights )
 //      Get the list of all ignored lights for the given for *this* node
 //
 {
-	MStatus status;
-	if ( debugMode ) { printf("-> getting ignored lights\n"); }
-	MFnDependencyNode fnNode( DagPath.node() );
-	MPlug msgPlug = fnNode.findPlug( "message", &status );
-	
-	if ( status != MS::kSuccess ) return;
+  MStatus status;
+  if ( debugMode ) { printf("-> getting ignored lights\n"); }
+  MFnDependencyNode fnNode( DagPath.node() );
+  MPlug msgPlug = fnNode.findPlug( "message", &status );
+    
+  if ( status != MS::kSuccess ) return;
 
-	MPlugArray llPlugs;
-	msgPlug.connectedTo(llPlugs, true, true);
+  MPlugArray llPlugs;
+  msgPlug.connectedTo(llPlugs, true, true);
 
-	for ( unsigned i=0; i<llPlugs.length(); i++ )
-	{
-		MPlug llPlug = llPlugs[i];
-		MObject llPlugAttr = llPlug.attribute();
-		MFnAttribute llPlugAttrFn(llPlugAttr);
+  for ( unsigned i=0; i<llPlugs.length(); i++ )
+  {
+    MPlug llPlug = llPlugs[i];
+    MObject llPlugAttr = llPlug.attribute();
+    MFnAttribute llPlugAttrFn(llPlugAttr);
 
-		if (llPlugAttrFn.name() == MString( "objectIgnored" ))
-		{
-			MPlug llParentPlug = llPlug.parent(&status);
-			int numChildren  = llParentPlug.numChildren();
+    if (llPlugAttrFn.name() == MString( "objectIgnored" ))
+    {
+      MPlug llParentPlug = llPlug.parent(&status);
+      int numChildren  = llParentPlug.numChildren();
 
-			for (int k=0; k<numChildren; k++)
-			{
-				MPlug   childPlug  = llParentPlug.child(k);
-				MObject llChildAttr = childPlug.attribute();
-				MFnAttribute llChildAttrFn(llChildAttr);
+      for (int k=0; k<numChildren; k++)
+      {
+        MPlug   childPlug  = llParentPlug.child(k);
+        MObject llChildAttr = childPlug.attribute();
+        MFnAttribute llChildAttrFn(llChildAttr);
 
-				if (llChildAttrFn.name() == MString( "lightIgnored" ))
-				{
-					MPlugArray connectedPlugs;
-					childPlug.connectedTo(connectedPlugs,true,true);
-					if ( connectedPlugs[0].node().hasFn( MFn::kSet ) ) {
-						MStatus setStatus;
-						MFnDependencyNode listSetNode( connectedPlugs[0].node() );
-						MPlug setPlug = fnNode.findPlug( "dagSetMembers", &setStatus );
-						if ( setStatus == MS::kSuccess ) {
-							MPlugArray setConnectedPlugs;
-							setPlug.connectedTo(setConnectedPlugs,true,true);
-							ignoredLights.append( setConnectedPlugs[0].node() );
-						}
-					} else { 
-						ignoredLights.append( connectedPlugs[0].node() );
-					}
-				}
-			}
-		}
-	}	
+        if (llChildAttrFn.name() == MString( "lightIgnored" ))
+        {
+          MPlugArray connectedPlugs;
+          childPlug.connectedTo(connectedPlugs,true,true);
+          if ( connectedPlugs[0].node().hasFn( MFn::kSet ) ) {
+            MStatus setStatus;
+            MFnDependencyNode listSetNode( connectedPlugs[0].node() );
+            MPlug setPlug = fnNode.findPlug( "dagSetMembers", &setStatus );
+            if ( setStatus == MS::kSuccess ) {
+              MPlugArray setConnectedPlugs;
+              setPlug.connectedTo(setConnectedPlugs,true,true);
+              ignoredLights.append( setConnectedPlugs[0].node() );
+            }
+          } else { 
+            ignoredLights.append( connectedPlugs[0].node() );
+          }
+        }
+      }
+    }
+  }    
 }
 
 
@@ -514,39 +643,39 @@ bool liqRibNode::getColor( MObject& shader, MColor& color )
 //      Get the color of the given shading node.
 //
 {
-	if ( debugMode ) { printf("-> getting a shader color\n"); }
-	switch ( shader.apiType() )
-	{ 
-	case MFn::kLambert :
-		{			
-			MFnLambertShader fnShader( shader );
-			color = fnShader.color();
-			break;
-		}
-	case MFn::kBlinn :
-		{
-			MFnBlinnShader fnShader( shader );
-			color = fnShader.color();
-			break;
-		}
-	case MFn::kPhong :
-		{
-			MFnPhongShader fnShader( shader );
-			color = fnShader.color();
-			break;	
-		}
-	default:
-		{
-			MFnDependencyNode fnNode( shader );
-			MPlug colorPlug = fnNode.findPlug( "outColor" );
-			colorPlug[0].getValue( color.r );
-			colorPlug[1].getValue( color.g );
-			colorPlug[2].getValue( color.b );
-			return false;			 	
-		}
-	}
-	return true;
-}	
+  if ( debugMode ) { printf("-> getting a shader color\n"); }
+  switch ( shader.apiType() )
+  { 
+  case MFn::kLambert :
+  {            
+    MFnLambertShader fnShader( shader );
+    color = fnShader.color();
+    break;
+  }
+  case MFn::kBlinn :
+  {
+    MFnBlinnShader fnShader( shader );
+    color = fnShader.color();
+    break;
+  }
+  case MFn::kPhong :
+  {
+    MFnPhongShader fnShader( shader );
+    color = fnShader.color();
+    break;    
+  }
+  default:
+  {
+    MFnDependencyNode fnNode( shader );
+    MPlug colorPlug = fnNode.findPlug( "outColor" );
+    colorPlug[0].getValue( color.r );
+    colorPlug[1].getValue( color.g );
+    colorPlug[2].getValue( color.b );
+    return false;                 
+  }
+  }
+  return true;
+}    
 
 bool liqRibNode::getMatteMode( MObject& shader )
 //
@@ -554,21 +683,32 @@ bool liqRibNode::getMatteMode( MObject& shader )
 //      check to see if we should make this a matte object.
 //
 {
-	MObject matteModeObj;
-	short matteModeInt;
-	MStatus myStatus;
-	if ( debugMode ) { printf("-> getting matte mode\n"); }
-	if ( !shader.isNull() ) {
-		MFnDependencyNode fnNode( shader );
-		MPlug mattePlug = fnNode.findPlug( "matteOpacityMode", &myStatus );
-		if ( myStatus == MS::kSuccess ) {
-			mattePlug.getValue( matteModeInt );
-			if ( debugMode ) { printf( "-> matte mode: %d \n", matteModeInt ); }
-			if ( matteModeInt == 0 ) {
-				return true;
-			}
-		}
-	}
-	return false;
+  MObject matteModeObj;
+  short matteModeInt;
+  MStatus myStatus;
+  if ( debugMode ) { printf("-> getting matte mode\n"); }
+  if ( !shader.isNull() ) {
+    MFnDependencyNode fnNode( shader );
+    MPlug mattePlug = fnNode.findPlug( "matteOpacityMode", &myStatus );
+    if ( myStatus == MS::kSuccess ) {
+      mattePlug.getValue( matteModeInt );
+      if ( debugMode ) { printf( "-> matte mode: %d \n", matteModeInt ); }
+      if ( matteModeInt == 0 ) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
+bool liqRibNode::hasNObjects( int n )
+{
+  for ( int i = 0; i < n; i++ )
+  {
+    if ( objects[i] == NULL )
+    {
+      return false;
+    }
+  }
+  return true;
+}

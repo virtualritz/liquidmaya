@@ -122,6 +122,7 @@ static const char * LIQUIDVERSION =
 #include <maya/MItSelectionList.h>
 #include <maya/MFileIO.h>
 #include <maya/MSyntax.h>
+#include <maya/MItInstancer.h>
 
 // Liquid headers
 #include <liquid.h>
@@ -2941,6 +2942,30 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
           }
         }
       }
+
+      // Now deal with all the particle-instanced objects (where a
+      // particle is replaced by an object or group of objects).
+      //
+      MItInstancer instancerIter;
+      while( ! instancerIter.isDone() )
+      {
+        MDagPath path = instancerIter.path();
+        MString instanceStr = (MString)"|INSTANCE_" +
+          instancerIter.instancerId() + (MString)"_" +
+          instancerIter.particleId() + (MString)"_" +
+          instancerIter.pathId();
+
+        MMatrix instanceMatrix = instancerIter.matrix();
+            
+        if ( ( sample > 0 ) && isObjectMotionBlur( path )){
+          htable->insert( path, lframe, sample, MRT_Unknown,
+                          &instanceMatrix, instanceStr, instancerIter.particleId() );
+        } else {
+          htable->insert( path, lframe, 0, MRT_Unknown,
+                          &instanceMatrix, instanceStr, instancerIter.particleId() );
+        }
+        instancerIter.next();
+      }
     } else {
       //find out the current selection for possible selected object output
       MSelectionList currentSelection;
@@ -2997,8 +3022,31 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
           }
         }
       }
-    }
 
+      // Now deal with all the particle-instanced objects (where a
+      // particle is replaced by an object or group of objects).
+      //
+      MItInstancer instancerIter;
+      while( ! instancerIter.isDone() )
+      {
+        MDagPath path = instancerIter.path();
+        MString instanceStr = (MString)"|INSTANCE_" +
+          instancerIter.instancerId() + (MString)"_" +
+          instancerIter.particleId() + (MString)"_" +
+          instancerIter.pathId();
+
+        MMatrix instanceMatrix = instancerIter.matrix();
+            
+        if ( ( sample > 0 ) && isObjectMotionBlur( path )){
+          htable->insert( path, lframe, sample, MRT_Unknown,
+                          &instanceMatrix, instanceStr, instancerIter.particleId() );
+        } else {
+          htable->insert( path, lframe, 0, MRT_Unknown,
+                          &instanceMatrix, instanceStr, instancerIter.particleId() );
+        }
+        instancerIter.next();
+      }
+    }
 
     std::vector<structJob>::iterator iter = jobList.begin();
     while ( iter != jobList.end() ) {

@@ -45,61 +45,71 @@
 
 class liqRibNode {   
 public:
-    liqRibNode( liqRibNode * instanceOfNode = NULL );
+    liqRibNode( liqRibNode * instanceOfNode = NULL,
+                const MString instanceOfNodeStr = "" );
     ~liqRibNode();
-			
-    void set( const MDagPath &, int, ObjectType objType );
-			   
-    liqRibNode *	    next;
-    MString name;
-	
-    AnimType        matXForm;
-    AnimType        bodyXForm;
-	
-    liqRibObj *	    object(int);
-    liqRibObj *	    no;
+      
+    void set( const MDagPath &, int, ObjectType objType, int particleId = -1 );
+         
+    liqRibNode *       next;
+    MString            name;
+  
+    AnimType           matXForm;
+    AnimType           bodyXForm;
+  
+    liqRibObj *        object(int);
+    liqRibObj *        no;
     
-    MDagPath &      path();
+    MDagPath &         path();
      
-    MColor		color;
-    bool    	    	matteMode;
-    bool    	    	doubleSided;
-    MString 	    	shaderName;
-    MString 	    	dispName;
-    MString 	    	volumeName;
-    MFnDependencyNode 	assignedShadingGroup;
-    MFnDependencyNode	assignedShader;
-    MFnDependencyNode	assignedDisp;
-    MFnDependencyNode	assignedVolume;
-    MObject 	    	findShadingGroup( const MDagPath& path );
-    MObject 		findShader( MObject& group );
-    MObject 		findDisp( MObject& group );
-    MObject 	    	findVolume( MObject& group );
-    void    	    	getIgnoredLights( MObject& group, MObjectArray& lights );
-    void    	    	getIgnoredLights( MObjectArray& lights );
-    bool    	    	getColor( MObject& shader, MColor& color );
-    bool    	    	getMatteMode( MObject& shader );
-    bool    	    	hasRibGen();
-    void    	    	doRibGen();
-    MString 	    	ribBoxString;
-    bool    	    	isRibBox;
-    MString		archiveString;
-    bool  		isArchive;
-    MString		delayedArchiveString;
-    bool  		isDelayedArchive;
-    RtBound 	    	bound;
-    bool    	    	doDef;		/* Used for per-object deformation blur */
-    bool    	    	doMotion;	/* Used for per-object transformation blur */
-    float   	    	nodeShadingRate;
-    bool    	    	nodeShadingRateSet;
-		   
+    MColor             color;
+    bool               matteMode;
+    bool               doubleSided;
+    MString            shaderName;
+    MString            dispName;
+    MString            volumeName;
+    MFnDependencyNode  assignedShadingGroup;
+    MFnDependencyNode  assignedShader;
+    MFnDependencyNode  assignedDisp;
+    MFnDependencyNode  assignedVolume;
+
+    MObject  findShadingGroup( const MDagPath& path );
+    MObject  findShader( MObject& group );
+    MObject  findDisp( MObject& group );
+    MObject  findVolume( MObject& group );
+    void     getIgnoredLights( MObject& group, MObjectArray& lights );
+    void     getIgnoredLights( MObjectArray& lights );
+    bool     getColor( MObject& shader, MColor& color );
+    bool     getMatteMode( MObject& shader );
+    bool     hasRibGen();
+    void     doRibGen();
+    MString  ribBoxString;
+    bool     isRibBox;
+    MString  archiveString;
+    bool     isArchive;
+    MString  delayedArchiveString;
+    bool     isDelayedArchive;
+    RtBound  bound;
+    bool     doDef;    /* Used for per-object deformation blur */
+    bool     doMotion;  /* Used for per-object transformation blur */
+    float    nodeShadingRate;
+    bool     nodeShadingRateSet;
+    bool     belongsToCsgOperation;
+    bool     isPhantomObject;
+
+    MString  getInstanceStr() { return instanceStr; };
+    bool     hasNObjects(int n);
+    bool     colourOverridden() { return overrideColour; };
+       
 private:
         
-    MDagPath	    DagPath;
-    liqRibObj *  objects[5];
-    liqRibNode * instance;
-    MString 	    ribGenName;
-    bool    	    hasRibGenAttr;
+    MDagPath    DagPath;
+    liqRibObj  *objects[5];
+    liqRibNode *instance;
+    MString     instanceStr;
+    MString     ribGenName;
+    bool        hasRibGenAttr;
+    bool        overrideColour;
 };
 
 #endif

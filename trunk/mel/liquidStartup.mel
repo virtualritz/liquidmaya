@@ -135,6 +135,8 @@ global proc liquidCreateMenus()
         menuItem -label "Remove Deformation Blur Attribute" -command liquidUnMakeDBlur -ann "Remove a custom deformation blur attribute to the selected node";
         menuItem -label "Add ZThreshold" -command liquidAddZThres -ann "Add a ZThreshold control to selected lights.";
         menuItem -label "Remove ZThreshold" -command liquidRemoveZThres -ann "Remove a ZThreshold control from selected lights.";
+                menuItem -label "Add inherit per-particle colour" -ann "Add inherit per-particle colour" -command liquidAddUsePPrgb;
+                menuItem -label "Remove inherit per-particle colour" -ann "Remove inherit per-particle colour" -command liquidRemoveUsePPrgb;
       setParent -menu ..;
       menuItem -label "Clear Liquid" -ann "Clean Up Liquid Nodes In Scene" -command liquidCleanup;
       menuItem -label "Help" -ann "HTML Help" -command "liquidMenuHelp";
@@ -264,4 +266,29 @@ global proc liquidRemoveZThres() {
       deleteAttr ( $current + ".ribOptions" );
     }
   }
+}
+
+global proc liquidAddUsePPrgb()
+{
+    string $selected[] = `ls -dag -sl -s`;
+    string $current;
+    for ( $current in $selected ) {
+        if ( !`attributeQuery -node $current -ex "useParticleColourWhenInstanced"`) {
+            addAttr -ln useParticleColourWhenInstanced -at bool $current;    
+        }
+        if ( `attributeQuery -node $current -ex "useParticleColourWhenInstanced"`) {
+            setAttr ( $current + ".useParticleColourWhenInstanced" ) true;
+        }
+    }
+}
+
+global proc liquidRemoveUsePPrgb()
+{
+    string $selected[] = `ls -dag -sl -s`;
+    string $current;
+    for ( $current in $selected ) {
+        if ( `attributeQuery -node $current -ex "useParticleColourWhenInstanced"`) {
+            deleteAttr ( $current + ".useParticleColourWhenInstanced" );    
+        }
+    }
 }
