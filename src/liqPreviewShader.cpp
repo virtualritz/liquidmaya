@@ -77,38 +77,37 @@ extern int debugMode;
 #include <liqIOStream.h>
 
 
-    // Set default values
+  // Set default values
 #if defined(PRMAN)
-    const char * liqPreviewShader::m_default_previewer = "prman";
+  const char * liqPreviewShader::m_default_previewer = "prman";
 #elif defined(AQSIS)
-    const char * liqPreviewShader::m_default_previewer = "aqsis";
+  const char * liqPreviewShader::m_default_previewer = "aqsis";
 #elif defined(ENTROPY)
-    const char * liqPreviewShader::m_default_previewer = "entropy";
+  const char * liqPreviewShader::m_default_previewer = "entropy";
 #elif defined(PIXIE)
-    const char * liqPreviewShader::m_default_previewer = "rndr";
+  const char * liqPreviewShader::m_default_previewer = "rndr";
 #elif defined(DELIGHT)
-    const char * liqPreviewShader::m_default_previewer = "renderdl";
+  const char * liqPreviewShader::m_default_previewer = "renderdl";
 #else
-    // Force error at compile time
-      error - unknown renderer
+  // Force error at compile time
+  error - unknown renderer
 #endif
 
 
-
+/**
+ *  Creates a new instance of the comman plug-in.
+ *
+ */
 void* liqPreviewShader::creator()
-//
-//  Description:
-//      Create a new instance of the translator
-//
 {
     return new liqPreviewShader();
 }
 
+/**
+ *  Class destructor.
+ *
+ */
 liqPreviewShader::~liqPreviewShader()
-//
-//  Description:
-//      Class destructor
-//
 {
 }
 
@@ -234,7 +233,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
       preview.usePipe = true;
     } else if ( ( arg == "-nbp" ) || ( arg == "-noBackPlane" ) ) {
       preview.backPlane = false;
-  }
+    }
   }
   // Check values
   if( shaderNodeName == "" )
@@ -252,19 +251,19 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.renderCommand = renderCommand.asChar();
   preview.displayDriver = displayDriver.asChar();
   preview.displayName = displayName.asChar();
-
+  
   char *tempString = getenv( "LIQUIDHOME" );
   MString tempBackPlaneShader( tempString );
-  free( tempString );
 
   if( tempBackPlaneShader == "" )
-  tempBackPlaneShader = "null";
+    tempBackPlaneShader = "null";
   else
     tempBackPlaneShader += "/shaders/liquidchecker";
 
   tempBackPlaneShader = liquidSanitizePath( tempBackPlaneShader );
 
   preview.backPlaneShader = tempBackPlaneShader.asChar();
+
 
 #ifndef _WIN32 // Pipes don't work right under bloody Windoze
   if( preview.usePipe ) {
@@ -282,7 +281,9 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
     LIQDEBUGPRINTF( "-> End of thread preview.\n" );
   } else {
 #endif
-    // Bad, better use global from liqRibTranslator
+
+#ifdef _WIN32
+    // Bad, better use global from liqRibTranslator	  
     tempString = getenv("TEMP");
     if( !tempString ) {
       tempString = getenv("TMP");
@@ -291,21 +292,21 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
         return MS::kFailure;
       }
     }
-
+    
     MString tempRibName( tempString );
-    free( tempString );
+    LIQ_ADD_SLASH_IF_NEEDED( tempRibName );
+#else
+    MString tempRibName;
+#endif
     char name[L_tmpnam];
     tmpnam( name );
-    tempRibName += "/" + MString( name ) + ".liqTmp.rib";
+    tempRibName += MString( name ) + ".liqTmp.rib";
 
-    //tempString = (char *)malloc( sizeof( char ) * 256 );
-    //strcpy( tempString, tempRibName.asChar() );
     liquidOutputPreviewShader( tempRibName.asChar(), &preview );
 #ifdef _WIN32
     _spawnlp( _P_DETACH, preview.renderCommand, preview.renderCommand, tempRibName.asChar(), NULL );
 #else
     system( ( MString( preview.renderCommand ) + " " +  tempRibName + "&" ).asChar() );
-    //free( tempString );
   }
 #endif
   return MS::kSuccess;
@@ -313,9 +314,12 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   return MS::kFailure;
 #endif
 };
-// Output preview RIB into fileName for a shader
-// if fileName is RI_NULL : output to stdout
-// return 1 on success
+
+/** 
+ * Writes preview RIB into fileName for a shader
+ * If fileName is RI_NULL : output to stdout
+ * returns 1 on success
+ */
 int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *options )
 {
   MStatus status;

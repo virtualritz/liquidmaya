@@ -125,13 +125,6 @@ extern "C" {
 #include <liqRenderer.h>
 
 
-#define LIQ_CANCEL_FEEDBACK_MESSAGE MString( "Liquid -> RIB Generation Cancelled!\n" )
-#define LIQ_CHECK_CANCEL_REQUEST    if ( m_escHandler.isInterruptRequested() ) throw( LIQ_CANCEL_FEEDBACK_MESSAGE )
-#define LIQ_ADD_SLASH_IF_NEEDED(a) if ( a.asChar()[a.length() - 1] != '/' ) a += "/"
-#define LIQ_ANIM_EXT MString( ".%0*d");
-
-
-
 typedef int RtError;
 
 // this get's set if we are running the commandline version of liquid
@@ -755,8 +748,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
 
   // check to see if the correct project directory was found
   if ( !fileExists( liqglo_projectDir ) )
-
-    liqglo_projectDir = m_systemTempDirectory;
+    liqglo_projectDir = m_systemTempDirectory;  
   LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
   if ( !fileExists( liqglo_projectDir ) ) {
     MGlobal::displayWarning ( "Liquid -> Cannot find Project Directory, " + liqglo_projectDir + ", defaulting to system temp directory!\n" );
