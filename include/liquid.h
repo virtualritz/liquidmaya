@@ -157,7 +157,8 @@ enum PixelFilerType {
   fGaussianFilter       = 3,
   fSincFilter           = 4,
   fBlackmanHarrisFilter = 5,
-  fMitchellFilter       = 6
+  fMitchellFilter       = 6,
+  fSepCatmullRomFilter  = 7
 };
 
 struct structCamera {
