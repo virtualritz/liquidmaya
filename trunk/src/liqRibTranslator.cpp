@@ -1658,7 +1658,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 						}
 						int lastGenFrame = ( liqglo_lframe + ( m_deferredBlockSize - 1 ) );
 						if ( lastGenFrame > frameLast ) lastGenFrame = frameLast;
-						alfFile << " -progress -noDef -nop -noalfred -od " << liqglo_projectDir.asChar() << " -ribName " << liqglo_sceneName.asChar() << " -mf " << tempDefname.asChar() << " -n " << liqglo_lframe << " " << lastGenFrame << " " << frameBy << " } ";
+						alfFile << " -progress -noDef -nop -noalfred -projectDir " << liqglo_projectDir.asChar() << " -ribName " << liqglo_sceneName.asChar() << " -mf " << tempDefname.asChar() << " -n " << liqglo_lframe << " " << lastGenFrame << " " << frameBy << " } ";
 						if ( m_alfredExpand ) {
 							alfFile	<< "-expand 1 ";
 						}
