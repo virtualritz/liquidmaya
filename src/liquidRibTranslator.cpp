@@ -1903,8 +1903,8 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 				if ( debugMode ) { printf("-> finished writing out shadow information to alfred file.\n" ); }
 
 				if ( debugMode ) { printf("-> initiating hero pass information.\n" ); }
-				structJob *frameJob;
-				structJob *shadowPassJob;
+				structJob *frameJob = NULL;
+				structJob *shadowPassJob = NULL;
 				if ( debugMode ) { printf("-> setting hero pass.\n" ); }
 				if ( m_outputHeroPass && !m_outputShadowPass ) {
 					frameJob = &jobList[ jobList.size() - 1 ];
