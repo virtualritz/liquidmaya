@@ -154,7 +154,39 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\liqAqsisRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqDelightRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqEntropyRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqGetSloInfo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqGlobalHelpers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqPrmanRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqProcessLauncher.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\liqRibParticleData.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\liqRibSurfaceData.cpp
 # End Source File
 # Begin Source File
 
@@ -170,19 +202,7 @@ SOURCE=.\liquidBin.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidGetSloInfo.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liqGlobalHelpers.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\liquidMemory.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liquidProcessLauncher.cpp
 # End Source File
 # Begin Source File
 
@@ -227,10 +247,6 @@ SOURCE=.\liquidRibObj.cpp
 # Begin Source File
 
 SOURCE=.\liquidRibSubdivisionData.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\liquidRibSurfaceData.cpp
 # End Source File
 # Begin Source File
 

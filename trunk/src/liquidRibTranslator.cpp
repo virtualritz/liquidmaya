@@ -194,7 +194,7 @@ static const char * LIQUIDVERSION =
 #include <liquidRIBGen.h>
 #include <liquidRibGenData.h>
 #include <liquidMemory.h>
-#include <liquidProcessLauncher.h>
+#include <liqProcessLauncher.h>
 #include <liqEntropyRenderer.h>
 #include <liqPrmanRenderer.h>
 #include <liqAqsisRenderer.h>
@@ -2075,9 +2075,9 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 
 		if ( outputpreview ) {
 			if ( useAlfred ) {
-				LiquidProcessLauncher::execute( "alfred", alfredFileName );
+				liqProcessLauncher::execute( "alfred", alfredFileName );
 			} else {
-				LiquidProcessLauncher::execute( m_renderCommand, liqglo_currentJob.ribFileName );
+				liqProcessLauncher::execute( m_renderCommand, liqglo_currentJob.ribFileName );
 			}
 		}
 

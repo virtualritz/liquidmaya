@@ -84,6 +84,13 @@ extern "C" {
 #include <liquidMemory.h>
 #include <liqGlobalHelpers.h>
 
+#ifdef _WIN32
+// unix build gets this from the Makefile
+static const char * LIQUIDVERSION = 
+#include "liquid.version"
+;
+#endif
+
 extern  bool	liquidBin;
 
 static const char* usage = 
