@@ -69,7 +69,16 @@ global proc liquidChangeTextAttr ( string $selectedObj, string $argName, string 
 
 global proc liquidChangeTextFileAttr ( string $selectedObj, string $argName, string $fieldName )
 {
-  string $fieldValue = `fileDialog -dm "*.tex;*.tif;*.dsts"`;
+  string $pathSpecs="";
+  string $MapDir = `getAttr liquidGlobals.textureDirectory`;
+  if( $MapDir != "" ) {
+    if ( `filetest -d $MapDir` ) {
+      if ( `match "[^\/]$" $MapDir` != "" ) $MapDir += "/";
+      $pathSpecs = $MapDir;
+    }
+  }
+  $pathSpecs += "*.tex;*.tif;*.dsts";
+  string $fieldValue = `fileDialog -dm $pathSpecs`;
   if ( $fieldValue != "" ) {
     // fix bloody Windows backslashes
     if (`about -win`) {

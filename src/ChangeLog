@@ -1,5 +1,11 @@
 Release 1.6.7 ------------------------------------------------------------------
 
+2005-02-08 mauritio
+    - Fixed bug in liqRibNode that led to early exiting of the attribute scanning loop (and thus no attributes ever ending up in the RIB)
+    - Removed compiledShaderExt/shaderExt redundancy from Globals -- Fluid now always uses the shaderExt set in the Globals' Renderer tab
+    - Merged usability enhancements contributed by Alexandre Paes to liquidGlobals, liquidFileBrowser and liquidParamaDialogWindow 
+    - Added Slackware Makeopts and modified Makefile from Alexandre Paes
+
 2005-02-04 mauritio
     - Fixed orientation in liqPreviewShader (normals pointed inwards)
     
