@@ -30,6 +30,16 @@
 ** ______________________________________________________________________
 */
 
+
+#ifndef _WIN32
+// Dynamic Object Headers
+#include <dlfcn.h>
+#endif
+
+#ifdef _WIN32
+#pragma warning(disable:4786)
+#endif
+
 // Standard Headers
 #include <math.h>
 #include <assert.h>
@@ -37,11 +47,6 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <vector>
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
 
 // Renderman Headers
 extern "C" {
