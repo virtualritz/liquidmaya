@@ -15,7 +15,17 @@ Note from the original developer, Colin Doncaster.
 Compiling
 ---------
 
-	Because of all the various setups and possible configurations I've left generic makefiles in place, you will probably have to spend some time adjusting these.  I'd like to find someone who is good at setting up  a correct build process to help our with proper config and make files for the project.  Also - because of legal reasons I wasn't able to provide the rib output library I generally use to compile with - most will work though.  There are two functions that will have to be commented out, RiDetach and RiAttach.  They are specifically for passing the rib handle back and forth between Liquid and any plug-ins that might be used.  I believe the Pixar library has a similar mechanism these days.  Along with the rib libraries you will also need the sloargs and sleargs libraries from PRMan and Entropy, right now a lot of that code is embedded in the Liquid plug-in, I think it would be much more elegant to have and external program that you run on the shader to build the interface for Liquid ( similar to Houdini's RManDS tool ).
+    	Liquid has been succesfully compiled against Aqsis, Entropy and PRman libraries on linux.
+	To compile : 
+	    - Go in a shell into the src directory. 
+	    - Set the below environment variables as desired.
+		LIQRMAN : which library to compile against. Can be aqsis ( default if not set ), entropy or prman.
+		MAYA_LOCATION : specify where is the main directory of maya ( /usr/aw/maya if not set )
+		AW_LOCATION : specify where various versions of maya are installed ( /usr/aw if not set )
+	    - Type :
+		make debug to get a version of Liquid compiled with debugging flags ( use MAYA_LOCATION )
+		make release to get a version of Liquid compiled with release flags ( use MAYA_LOCATION )
+		make newversion to get a set of version of Liquid compiled agaisnt different version of maya installed ( use AW_LOCATION )
 
 Thanks
 ------
