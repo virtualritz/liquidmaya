@@ -151,11 +151,13 @@ enum PointLightDirection {
 
 
 enum PixelFilerType {
-  fBoxFilter        = 0,
-  fTriangleFilter   = 1,
-  fCatmullRomFilter = 2,
-  fGaussianFilter   = 3,
-  fSincFilter       = 4
+  fBoxFilter            = 0,
+  fTriangleFilter       = 1,
+  fCatmullRomFilter     = 2,
+  fGaussianFilter       = 3,
+  fSincFilter           = 4,
+  fBlackmanHarrisFilter = 5,
+  fMitchellFilter       = 6
 };
 
 struct structCamera {
