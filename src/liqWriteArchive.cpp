@@ -147,19 +147,8 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
   if (objDagPath.node().hasFn(MFn::kShape)) {
     // we're looking at a shape node, so write out the geometry to the RIB
     outputObjectName(objDagPath);
-    if (objDagPath.hasFn(MFn::kMesh)) {
-      if (debug) { cout << "liquidWriteArchive: writing mesh shape: " << objDagPath.fullPathName() << endl; }
-      liqRibObj ribObj(objDagPath, MRT_Mesh);
-      ribObj.writeObject();
-      if (debug) { cout << "liquidWriteArchive: finished writing mesh shape" << endl; }
-    } else if (objDagPath.hasFn(MFn::kNurbsSurface)) {
-      if (debug) { cout << "liquidWriteArchive: writing nurbs shape: " << objDagPath.fullPathName() << endl; }
-      liqRibObj ribObj(objDagPath, MRT_Nurbs);
-      ribObj.writeObject();
-      if (debug) { cout << "liquidWriteArchive: finished writing nurbs shape" << endl; }
-    } else {
-      MGlobal::displayWarning("skipping unknown geometry type '" + MString(objDagPath.node().apiTypeStr()) + "'in liquidWriteArchive");
-    }
+    liqRibObj ribObj(objDagPath, MRT_Unknown);
+    ribObj.writeObject();
   } else {
     // we're looking at a transform node
     bool wroteTransform = false;
