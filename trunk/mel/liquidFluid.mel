@@ -378,7 +378,7 @@ global proc liquidFluid ()
 	if ( `window -exists liquidFluidWindow` ) deleteUI liquidFluidWindow;
 	if ( !`window -exists liquidFluidWindow` ) {
 		
-		window -w 800 -title "Fluid" liquidFluidWindow;
+		window -widthHeight 800 270 -title "Fluid" liquidFluidWindow;
 		
 		formLayout -nd 10 liquidFluidForm;
 		

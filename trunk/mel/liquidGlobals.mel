@@ -720,7 +720,7 @@ global proc liquidGlobalsWindow()
 	}
 	if ( !`window -exists liquidGlobalsWindow` ) {
 	liquidAddGlobals;
-	window -retain -mb true -title "liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
+	window -widthHeight 410 552 -retain -mb true -title "liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
 	menu -label "Presets" -p liquidGlobalsWindow liquidGlobalsPresetMenu;
 		menuItem -label "Save" -c liquidSavePreset -p liquidGlobalsPresetMenu liquidGlobalsPresetMenuSave;
 		menuItem -divider true;
