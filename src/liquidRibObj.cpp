@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 #include <iostream.h>
 
@@ -47,7 +46,6 @@
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-#include <slo.h>
 }
 
 #ifdef _WIN32
@@ -82,17 +80,16 @@ extern "C" {
 
 extern int debugMode;
 
-RibObj::RibObj( const MDagPath &path, ObjectType objType )
+liquidRibObj::liquidRibObj( const MDagPath &path, ObjectType objType )
 //
 //  Description:
 //      Create a RIB representation of the given node in the DAG as a ribgen!
 //
-: referenceCount( 0 ),
-instanceMatrices( NULL ),
+: instanceMatrices( NULL ),
 objectHandle( NULL ),
+referenceCount( 0 ),
 data( NULL )   
 {
-	MStatus status;
     if ( debugMode ) { printf("-> creating dag node handle rep\n"); }
     MObject obj = path.node();
     
@@ -114,76 +111,76 @@ data( NULL )
 	
     if ( debugMode ) { printf("-> checking handles display status\n"); }
 	
-	ignore = !areObjectAndParentsVisible( path );
-	if ( !ignore ) {
-		ignore = !areObjectAndParentsTemplated( path );
-	}
-	if ( !ignore ) {
-		ignore = !isObjectPrimaryVisible( path );
-	}
-	ignoreShadow = !isObjectCastsShadows( path );
-	if ( !ignoreShadow ) {
-		ignoreShadow = !areObjectAndParentsVisible( path );
-	}
-	if ( !ignoreShadow ) {
-		ignoreShadow = !areObjectAndParentsTemplated( path );
-	}	
+    ignore = !areObjectAndParentsVisible( path );
+    if ( !ignore ) {
+	    ignore = !areObjectAndParentsTemplated( path );
+    }
+    if ( !ignore ) {
+	    ignore = !isObjectPrimaryVisible( path );
+    }
+    ignoreShadow = !isObjectCastsShadows( path );
+    if ( !ignoreShadow ) {
+	    ignoreShadow = !areObjectAndParentsVisible( path );
+    }
+    if ( !ignoreShadow ) {
+	    ignoreShadow = !areObjectAndParentsTemplated( path );
+    }	
 	
-	// don't bother storing it if it's not going to be visible!
-	if ( debugMode ) { printf("-> about to create rep\n"); }
-	
-	if ( !ignore || !ignoreShadow ) {  
-		if ( objType == MRT_RibGen ) {
-			type = MRT_RibGen;
-			data = new RibGenData( obj, path );
-		} else {
-			// Store the geometry/light/shader data for this object in RIB format
-			if ( obj.hasFn(MFn::kNurbsSurface) ) {
-				type = MRT_Nurbs;
-				data = new RibSurfaceData( obj );
-			} else if ( obj.hasFn(MFn::kNurbsCurve) ) {
-				type = MRT_NuCurve;
-				data = new RibNuCurveData( obj );
-			} else if ( obj.hasFn(MFn::kParticle) ) {
-				type = MRT_Particles;
-				data = new RibParticleData( obj );
-			} else if ( obj.hasFn(MFn::kMesh) ) {
-				/* we know we are dealing with a mesh here, now we check to see if it
-				needs to be handled as a subdivision surface */
-				MStatus subDAttrStatus;
-				bool usingSubD = false;
-				MPlug subDivPlug = nodeFn.findPlug( "subDMesh", &subDAttrStatus );
-				if ( subDAttrStatus == MS::kSuccess ) {
-					subDivPlug.getValue( usingSubD );
-				}
-				if ( usingSubD ) {
-					/* we've got a subdivision surface */
-					type = MRT_Subdivision;
-					data = new RibSubdivisionData( obj );
-					type = data->type();
-				} else {
-					/* it's a regular mesh */
-					type = MRT_Mesh;
-					data = new RibMeshData( obj );
-					type = data->type();
-				}
-			} else if ( obj.hasFn(MFn::kLight)) {
-				type = MRT_Light;
-				data = new RibLightData( path );
-			} else if ( obj.hasFn(MFn::kPlace3dTexture)) {
-				type = MRT_Coord;
-				data = new RibCoordData( obj );
-			} else if ( obj.hasFn(MFn::kLocator) ) {
-				type = MRT_Locator;
-				data = new RibLocatorData( obj );
-			}
-		}
-		data->objDagPath = path;
-	}
-	if ( debugMode ) { printf("-> done creating rep\n"); }
+    // don't bother storing it if it's not going to be visible!
+    if ( debugMode ) { printf("-> about to create rep\n"); }
+
+    if ( !ignore || !ignoreShadow ) {  
+	    if ( objType == MRT_RibGen ) {
+		    type = MRT_RibGen;
+		    data = new liquidRibGenData( obj, path );
+	    } else {
+		    // Store the geometry/light/shader data for this object in RIB format
+		    if ( obj.hasFn(MFn::kNurbsSurface) ) {
+			    type = MRT_Nurbs;
+			    data = new liquidRibSurfaceData( obj );
+		    } else if ( obj.hasFn(MFn::kNurbsCurve) ) {
+			    type = MRT_NuCurve;
+			    data = new liquidRibNuCurveData( obj );
+		    } else if ( obj.hasFn(MFn::kParticle) ) {
+			    type = MRT_Particles;
+			    data = new liquidRibParticleData( obj );
+		    } else if ( obj.hasFn(MFn::kMesh) ) {
+			    /* we know we are dealing with a mesh here, now we check to see if it
+			    needs to be handled as a subdivision surface */
+			    MStatus subDAttrStatus;
+			    bool usingSubD = false;
+			    MPlug subDivPlug = nodeFn.findPlug( "subDMesh", &subDAttrStatus );
+			    if ( subDAttrStatus == MS::kSuccess ) {
+				    subDivPlug.getValue( usingSubD );
+			    }
+			    if ( usingSubD ) {
+				    /* we've got a subdivision surface */
+				    type = MRT_Subdivision;
+				    data = new liquidRibSubdivisionData( obj );
+				    type = data->type();
+			    } else {
+				    /* it's a regular mesh */
+				    type = MRT_Mesh;
+				    data = new liquidRibMeshData( obj );
+				    type = data->type();
+			    }
+		    } else if ( obj.hasFn(MFn::kLight)) {
+			    type = MRT_Light;
+			    data = new liquidRibLightData( path );
+		    } else if ( obj.hasFn(MFn::kPlace3dTexture)) {
+			    type = MRT_Coord;
+			    data = new liquidRibCoordData( obj );
+		    } else if ( obj.hasFn(MFn::kLocator) ) {
+			    type = MRT_Locator;
+			    data = new liquidRibLocatorData( obj );
+		    }
+	    }
+	    data->objDagPath = path;
+    }
+    if ( debugMode ) { printf("-> done creating rep\n"); }
 }
 
-RibObj::~RibObj()
+liquidRibObj::~liquidRibObj()
 //
 //  Description: 
 //      Class destructor
@@ -196,7 +193,7 @@ RibObj::~RibObj()
 	if ( debugMode ) { printf("-> finished killing ribobj\n"); }
 }
 
-inline RtObjectHandle RibObj::handle() const
+inline RtObjectHandle liquidRibObj::handle() const
 //
 //  Description: 
 //      return the RenderMan instance handle.  This is used to refer to 
@@ -205,7 +202,7 @@ inline RtObjectHandle RibObj::handle() const
 {
     return objectHandle;
 }
-inline void RibObj::setHandle( RtObjectHandle handle )
+inline void liquidRibObj::setHandle( RtObjectHandle handle )
 //
 //  Description: 
 //      set the RenderMan instance handle 
@@ -213,7 +210,7 @@ inline void RibObj::setHandle( RtObjectHandle handle )
 {
     objectHandle = handle;
 }
-RtLightHandle RibObj::lightHandle() const
+RtLightHandle liquidRibObj::lightHandle() const
 //
 //  Description: 
 //      return the RenderMan handle handle for this light
@@ -223,12 +220,12 @@ RtLightHandle RibObj::lightHandle() const
     //assert( type == MRT_Light );
     RtLightHandle lHandle = NULL;
     if ( type == MRT_Light ) {
-        RibLightData * light = (RibLightData*)data;
+        liquidRibLightData * light = (liquidRibLightData*)data;
         lHandle = light->lightHandle();
     }
     return lHandle;
 }
-AnimType RibObj::compareMatrix(const RibObj *o, int instance )
+AnimType liquidRibObj::compareMatrix(const liquidRibObj *o, int instance )
 // 
 //  Description:
 //      compare the two object's world transform matrices.  This method also
@@ -237,10 +234,9 @@ AnimType RibObj::compareMatrix(const RibObj *o, int instance )
 //
 {
 	if ( debugMode ) { printf("-> comparing rib node handle rep matrix\n"); }
-    return (matrix( instance ) == o->matrix( instance ) ? 
-MRX_Const : MRX_Animated);
+    return (matrix( instance ) == o->matrix( instance ) ? MRX_Const : MRX_Animated);
 }
-AnimType RibObj::compareBody(const RibObj *o)
+AnimType liquidRibObj::compareBody(const liquidRibObj *o)
 // 
 //  Description:
 //      compare the two object's geometry.  This comparision is used to
@@ -259,29 +255,29 @@ AnimType RibObj::compareBody(const RibObj *o)
     return cmp;
 }
 
-void RibObj::writeObject()
+void liquidRibObj::writeObject()
 // 
 //  Description:
 //      write the object directly.  We do not get a RIB handle in this case
 //
 {
-	if ( debugMode ) { printf("-> writing rib node handle rep\n"); }
+    if ( debugMode ) { printf("-> writing rib node handle rep\n"); }
     if ( NULL != data ) {
         if ( MRT_Light == type ) {
-			data->write();
+    	    data->write();
         } else {
-			if ( type == MRT_Nurbs ) {
-				RibSurfaceData * surfData = (RibSurfaceData*)data;
-				if ( surfData->hasTrimCurves() ) {
-					surfData->writeTrimCurves();
-				}
+    	    if ( type == MRT_Nurbs ) {
+    	    	liquidRibSurfaceData * surfData = (liquidRibSurfaceData*)data;
+    	    	if ( surfData->hasTrimCurves() ) {
+    	    	    surfData->writeTrimCurves();
+    	    	}
             }
-			data->write();
+    	    data->write();
         }
     }
 }
 
-MMatrix RibObj::matrix( int instance ) const
+MMatrix liquidRibObj::matrix( int instance ) const
 // 
 //  Description:
 //      return the inclusive matrix for the given instance
@@ -292,7 +288,7 @@ MMatrix RibObj::matrix( int instance ) const
     return instanceMatrices[instance];
 }
 
-void RibObj::ref()
+void liquidRibObj::ref()
 // 
 //  Description:
 //      bump reference count up by one
@@ -305,7 +301,7 @@ void RibObj::ref()
 	referenceCount++; 
 }
 
-void RibObj::unref()
+void liquidRibObj::unref()
 // 
 //  Description:
 //      bump reference count down by one and delete if necessary

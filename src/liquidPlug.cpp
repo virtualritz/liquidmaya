@@ -37,7 +37,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -47,22 +46,17 @@
 
 // Renderman Headers
 extern "C" {
-	#include <ri.h>
-	#include <slo.h>
+#include <ri.h>
 }
 
-// STL headers
-#include <list>
-#include <vector>
-#include <string>
 
 #ifdef _WIN32
-	#include <process.h>
-	#include <malloc.h>
+#include <process.h>
+#include <malloc.h>
 #else
-	#include <unistd.h>
-	#include <stdlib.h>
-	#include <alloca.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <alloca.h>
 #endif
 
 // Maya's Headers
@@ -77,11 +71,8 @@ extern "C" {
 #include <liquidAttachPrefAttribute.h>
 #include <liquidPreviewShader.h>
 #include <liquidMemory.h>
-
-	bool			isRegistered;
-	extern	float liquidVersion;
-	extern  bool	liquidBin;
-
+extern  bool	liquidBin;
+#define LIQVENDOR "Colin_Doncaster_and_friends"
 ////////////////////// EXPORTS /////////////////////////////////////////////////////////
 MStatus initializePlugin(MObject obj)
 //
@@ -89,9 +80,9 @@ MStatus initializePlugin(MObject obj)
 //      Register the command when the plug-in is loaded
 //
 {
-		liquidBin = false;
+    liquidBin = false;
 		
-    MFnPlugin plugin( obj, VENDOR, "1.2", "Any");
+    MFnPlugin plugin( obj, LIQVENDOR, LIQUIDVERSION, "Any");
 
     MStatus status;
     MString command;
@@ -101,79 +92,32 @@ MStatus initializePlugin(MObject obj)
     printf("\nLiquid by Colin Doncaster\n");
 #else
     MGlobal::displayInfo("\nLiquid by Colin Doncaster\n");
-		MString expireString( "Expires on ");
-		expireString += expday;
-		expireString += "/";
-		expireString += expmonth;
-		expireString += "/";
-		expireString += expyear;
-		expireString += "\n";
-    MGlobal::displayInfo( expireString );
 #endif
+    status = plugin.registerCommand("liquid", liquidRibTranslator::creator );
+    LIQCHECKSTATUS( status, "Can't register liquid translator plugin" );
 
-	printf("Expires on %d/%d/%d \n", expday, expmonth, expyear + 1900 );
-	// make sure the beta version expires, this will be the license handling routines also!
-	time_t ltime;
-	struct tm *today;
-	time( &ltime );
-	today = localtime( &ltime );
-	//int wyear, wmonth, wday;
-	isRegistered = true;
-	if ( today->tm_year > expyear ) {
-		printf("Liquid Expired! contact buzz1@paradise.net.nz or canuck@wetafx.co.nz! ");
-		isRegistered = false;
-	}
-	if ( today->tm_mon > (expmonth - 1) && today->tm_year == expyear ) {
-		printf("Liquid Expired! contact buzz1@paradise.net.nz or canuck@wetafx.co.nz! ");
-		isRegistered = false;
-	}
-	if ( today->tm_mday > expday && today->tm_mon == (expmonth - 1) && today->tm_year == expyear ) {
-		printf("Liquid Expired! contact buzz1@paradise.net.nz or canuck@wetafx.co.nz! ");
-		isRegistered = false;
-	}
+    // register the liquidAttachPrefAttribute command
+    status = plugin.registerCommand( "liquidAttachPrefAttribute", liquidAttachPrefAttribute::creator );
+    LIQCHECKSTATUS( status, "Can't register liquidAttachPrefAttribute plugin" );
 
-	isRegistered = true;
-	
-	if (isRegistered) {
-		// register the liquid command
-		status = plugin.registerCommand("liquid", RibTranslator::creator );
-		if (!status) {
-			return MS::kFailure;
-	    }
-	} else {
-		printf("%s \n", NOLICMSG);
-		printf("You may proceed to set up a render - but won't be able to output it. \n");
-	}
+    // register the liquidAttachPrefAttribute command
+    status = plugin.registerCommand( "liquidPreviewShader", liquidPreviewShader::creator );
+    LIQCHECKSTATUS( status, "Can't register liquidPreviewShader plugin" );
 
-	// register the liquidAttachPrefAttribute command
-	status = plugin.registerCommand( "liquidAttachPrefAttribute", liquidAttachPrefAttribute::creator );
-	if ( !status )
-        	return MS::kFailure;
+    // register the liquidGetSloInfo command
+    status = plugin.registerCommand( "liquidGetSloInfo", liquidGetSloInfo::creator );
+    LIQCHECKSTATUS( status, "Can't register liquidGetSloInfo plugin" );
 
-	// register the liquidAttachPrefAttribute command
-	status = plugin.registerCommand( "liquidPreviewShader", liquidPreviewShader::creator );
-	if ( !status )
-        	return MS::kFailure;
+    // register the liquidGetAttr command
+    status = plugin.registerCommand( "liquidGetAttr", liquidGetAttr::creator );
+    LIQCHECKSTATUS( status, "Can't register liquidGetAttr plugin" );
 
-	// register the liquidGetSloInfo command
-	status = plugin.registerCommand( "liquidGetSloInfo", liquidGetSloInfo::creator );
-	if ( !status )
-		return MS::kFailure;
-	
-	// register the liquidGetAttr command
-	status = plugin.registerCommand( "liquidGetAttr", liquidGetAttr::creator );
-	if ( !status )
-		return MS::kFailure;
-	
-	// setup all of the base liquid interface
-	command = "source liquidStartup.mel";
-	status = MGlobal::executeCommand(command);
+    // setup all of the base liquid interface
+    command = "source liquidStartup.mel";
+    status = MGlobal::executeCommand(command);
 
-	status = plugin.registerUI("liquidStartup", "liquidShutdown");
-	
-	if (!status) {
-		return MS::kFailure;
-    }
+    status = plugin.registerUI("liquidStartup", "liquidShutdown");
+    LIQCHECKSTATUS( status, "Can't register liquidStartup and  liquidShutdown plugin" );
     return MS::kSuccess;
 }
 
@@ -183,54 +127,27 @@ MStatus uninitializePlugin(MObject obj)
 //      Deregister the command when the plug-in is deloaded
 //
 {
-	MString UserClassify;
-	MString command;
-	MStatus status;
-	MFnPlugin plugin(obj);
-	
-	//deregister liquid command
-	if (isRegistered != false) {
-		status = plugin.deregisterCommand("liquid");
-		if (!status) {
-			return MS::kFailure;
-	    }
-	}
+    MString UserClassify;
+    MString command;
+    MStatus status;
+    MFnPlugin plugin(obj);
 
-	//deregister liquidAttachPrefAttribute command
-        if (isRegistered != false) {
-                status = plugin.deregisterCommand("liquidAttachPrefAttribute");
-                if (!status) {
-                        return MS::kFailure;
-            }
-        }
+    status = plugin.deregisterCommand("liquid");
+    LIQCHECKSTATUS( status, "Can't deregister liquid plugin" );
 
-					//deregister liquidAttachPrefAttribute command
-        if (isRegistered != false) {
-                status = plugin.deregisterCommand("liquidPreviewShader");
-                if (!status) {
-                        return MS::kFailure;
-            }
-        }
+    status = plugin.deregisterCommand("liquidAttachPrefAttribute");
+    LIQCHECKSTATUS( status, "Can't deregister liquidAttachPrefAttribute plugin" );
 
+    status = plugin.deregisterCommand("liquidPreviewShader");
+    LIQCHECKSTATUS( status, "Can't deregister liquidPreviewShader plugin" );
 
-	//deregister liquidGetSloInfo command
-	if (isRegistered != false) {
-		status = plugin.deregisterCommand("liquidGetSloInfo");
-		if (!status) {
-			return MS::kFailure;
-	    }
-	}
+    status = plugin.deregisterCommand("liquidGetSloInfo");
+    LIQCHECKSTATUS( status, "Can't deregister liquidGetSloInfo plugin" );
 
-	//deregister liquidGetAttr command
-	if (isRegistered != false) {
-		status = plugin.deregisterCommand("liquidGetAttr");
-		if (!status) {
-			return MS::kFailure;
-	    }
-	}
-	
-	// remove the UI
-	MGlobal::displayInfo("\n--* Liquid *--\n");
-	MGlobal::displayInfo("\nUninitialized...\n");
-	return MS::kSuccess;
+    status = plugin.deregisterCommand("liquidGetAttr");
+    LIQCHECKSTATUS( status, "Can't deregister liquidGetAttr plugin" );
+    // remove the UI
+    MGlobal::displayInfo("\n--* Liquid *--\n");
+    MGlobal::displayInfo("\nUninitialized...\n");
+    return MS::kSuccess;
 }

@@ -35,7 +35,6 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
-#include <malloc.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -48,6 +47,7 @@ extern "C" {
 #include <malloc.h>
 #else
 #include <alloca.h>
+#include <stdlib.h>
 #endif
 
 #include <vector>
@@ -71,16 +71,16 @@ extern "C" {
 #include <liquidMemory.h>
 #include <liquidGetSloInfo.h>
 
-extern long			lframe;
-extern bool     expandShaderArrays;
 extern int debugMode;
 extern bool liquidBin;
-extern MString sceneName;
-extern MString ribDir;
-extern MString projectDir;
-extern MStringArray DDimageName;
 
-extern std::vector<shaderStruct> shaders;
+
+extern long 	liqglo_lframe;
+extern MString liqglo_sceneName;
+extern MString liqglo_ribDir;
+extern MString liqglo_projectDir;
+extern MStringArray liqglo_DDimageName;
+
 
 void liquidInfo( MString info )
 //
@@ -321,175 +321,41 @@ bool areObjectAndParentsTemplated( const MDagPath & path )
 }
 
 /* Build the correct token/array pairs from the scene data to correctly pass to Renderman. */
-void assignTokenArrays( unsigned numTokens, rTokenPointer tokenPointerArray[], RtToken tokens[], RtPointer pointers[] )
+void assignTokenArrays( unsigned int numTokens, liqTokenPointer tokenPointerArray[],  RtToken tokens[], RtPointer pointers[] )
 {
-	unsigned i;
-	char	    detailType[20];
-	char	    paramType[100];
-	char	    declare[120];
-	
-	for ( i = 0; i < numTokens; i++ ) 
+    unsigned i;
+    char declare[256];
+    for ( i = 0; i < numTokens; i++ ) 
+    {
+	tokens[i] = tokenPointerArray[i].getTokenName();
+	pointers[i] = tokenPointerArray[i].getRtPointer();
+	if( ! tokenPointerArray[i].isBasicST() )
 	{
-		switch ( tokenPointerArray[i].dType ) {
-		case rVertex: { 
-			sprintf( detailType,  "vertex" ); 
-			break; }
-		case rVarying: {
-			sprintf( detailType, "varying" );
-			break; }
-		case rUniform: {
-			sprintf( detailType, "uniform" );			
-			break; }
-		case rConstant: {
-			sprintf( detailType, "constant" );			
-			break; }
-		case rFaceVarying: {
-			sprintf( detailType, "facevarying" );			
-			break; }
-		}
-		tokens[i] = tokenPointerArray[i].tokenName;
-		switch ( tokenPointerArray[i].pType ) {
-		case rString: {
-			sprintf( paramType, "string");
-			pointers[i] = RtPointer(&( tokenPointerArray[i].tokenString ));
-			break;
-					  }
-		case rFloat: {
-			if ( tokenPointerArray[i].isUArray ) {
-				sprintf( paramType, "float[%d]", tokenPointerArray[i].uArraySize );
-			} else {
-				sprintf( paramType, "float" );
-			}
-			pointers[i] = RtPointer( tokenPointerArray[i].tokenFloats );
-			break;
-					 }
-		case rPoint: {
-			if ( tokenPointerArray[i].isNurbs )
-			{
-				if ( tokenPointerArray[i].isArray )
-				{
-					sprintf( paramType, "hpoint");
-				} else {
-					sprintf( paramType, "point");
-				}
-			} else {
-				sprintf( paramType, "point");
-			}
-			pointers[i] = RtPointer(tokenPointerArray[i].tokenFloats);
-			break;
-					 }
-		case rVector: {
-			sprintf( paramType, "vector");
-			pointers[i] = RtPointer(tokenPointerArray[i].tokenFloats);
-			break;
-					  }
-		case rNormal: {
-			sprintf( paramType, "normal");
-			pointers[i] = RtPointer(tokenPointerArray[i].tokenFloats);
-			break;
-					  }
-		case rColor: {
-			sprintf( paramType, "color");
-			pointers[i] = RtPointer(tokenPointerArray[i].tokenFloats);
-			break;
-					 }
-		}
-		sprintf( declare, "%s %s", detailType, paramType );
-		std::string tokenName = tokenPointerArray[i].tokenName;
-		if ( ( tokenName != "st" ) ) {
-			RiDeclare( tokens[i], declare ); 
-		} else if ( ( tokenName == "st" ) && ( tokenPointerArray[i].dType == rFaceVarying ) ) {
-			RiDeclare( tokens[i], declare ); 
-		} 
+	    tokenPointerArray[i].getRiDeclare( declare );
+	     RiDeclare( tokens[i], declare );
 	}
+    }
 }
 
 /* Build the correct token/array pairs from the scene data to correctly pass to Renderman. */
 /* this is another version that takes a std::vector as input instead of a static array */
-void assignTokenArraysV( std::vector<rTokenPointer> *tokenPointerArray, RtToken tokens[], RtPointer pointers[] )
+void assignTokenArraysV( std::vector<liqTokenPointer> *tokenPointerArray, RtToken tokens[], RtPointer pointers[] )
 {
-	unsigned i = 0;
-	char	    detailType[20];
-	char	    paramType[100];
-	char	    declare[120];
-	
-	std::vector<rTokenPointer>::iterator iter = tokenPointerArray->begin();
-	while ( iter != tokenPointerArray->end() )
+    unsigned i = 0;
+    char declare[256];
+    std::vector<liqTokenPointer>::iterator iter = tokenPointerArray->begin();
+    while ( iter != tokenPointerArray->end() )
+    {
+	tokens[i] = iter->getTokenName();
+	pointers[i] = iter->getRtPointer();
+	if( ! iter->isBasicST() )
 	{
-		switch ( iter->dType ) {
-		case rVertex: { 
-			sprintf( detailType,  "vertex" ); 
-			break; }
-		case rVarying: {
-			sprintf( detailType, "varying" );
-			break; }
-		case rUniform: {
-			sprintf( detailType, "uniform" );			
-			break; }
-		case rConstant: {
-			sprintf( detailType, "constant" );			
-			break; }
-		case rFaceVarying: {
-			sprintf( detailType, "facevarying" );			
-			break; }
-		}
-		tokens[i] = iter->tokenName;
-		switch ( iter->pType ) {
-		case rString: {
-			sprintf( paramType, "string");
-			pointers[i] = RtPointer(&( iter->tokenString ));
-			break;
-					  }
-		case rFloat: {
-			if ( iter->isUArray ) {
-				sprintf( paramType, "float[%d]", iter->uArraySize );
-			} else {
-				sprintf( paramType, "float" );
-			}
-			pointers[i] = RtPointer( iter->tokenFloats );
-			break;
-					 }
-		case rPoint: {
-			if ( iter->isNurbs )
-			{
-				if ( iter->isArray )
-				{
-					sprintf( paramType, "hpoint");
-				} else {
-					sprintf( paramType, "point");
-				}
-			} else {
-				sprintf( paramType, "point");
-			}
-			pointers[i] = RtPointer(iter->tokenFloats);
-			break;
-					 }
-		case rVector: {
-			sprintf( paramType, "vector");
-			pointers[i] = RtPointer(iter->tokenFloats);
-			break;
-					  }
-		case rNormal: {
-			sprintf( paramType, "normal");
-			pointers[i] = RtPointer(iter->tokenFloats);
-			break;
-					  }
-		case rColor: {
-			sprintf( paramType, "color");
-			pointers[i] = RtPointer(iter->tokenFloats);
-			break;
-					 }
-		}
-		sprintf( declare, "%s %s", detailType, paramType );
-		std::string tokenName = iter->tokenName;
-		if ( ( tokenName != "st" ) ) {
-			RiDeclare( tokens[i], declare ); 
-		} else if ( ( tokenName == "st" ) && ( iter->dType == rFaceVarying ) ) {
-			RiDeclare( tokens[i], declare ); 
-		} 
-		++iter;
-		i++;
+	    iter->getRiDeclare( declare );
+	     RiDeclare( tokens[i], declare );
 	}
+	++iter;
+	i++;
+    }
 }
 
 MObject findFacetShader( MObject mesh, int polygonIndex ){
@@ -533,23 +399,23 @@ MString parseString( MString & inputString )
 		} else if ( inToken ) {
 			tokenString += inputString.substring(i, i);
 			if ( tokenString == "F" ) {
-				constructedString += (int)lframe;
+				constructedString += (int)liqglo_lframe;
 				inToken = false;
 				tokenString.clear();
 			} else if ( tokenString == "SCN" ) {
-				constructedString += sceneName;
+				constructedString += liqglo_sceneName;
 				inToken = false;
 				tokenString.clear();
 			} else if ( tokenString == "IMG" ) {
-				constructedString += DDimageName[0];
+				constructedString += liqglo_DDimageName[0];
 				inToken = false;
 				tokenString.clear();
 			} else if ( tokenString == "PDIR" ) {
-				constructedString += projectDir;
+				constructedString += liqglo_projectDir;
 				inToken = false;
 				tokenString.clear();
 			} else if ( tokenString == "RDIR" ) {
-				constructedString += ribDir;
+				constructedString += liqglo_ribDir;
 				inToken = false;
 				tokenString.clear();
 			} else {
@@ -559,7 +425,7 @@ MString parseString( MString & inputString )
 				inToken = false;
 			}
 		} else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
-			constructedString += (int)lframe;
+			constructedString += (int)liqglo_lframe;
 		} else if ( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
 			int paddingSize = 0;
 			while ( inputString.substring(i, i) == "#" ) {
@@ -570,7 +436,7 @@ MString parseString( MString & inputString )
 			if ( paddingSize == 1 ) paddingSize = 4;
 			if ( paddingSize > 20 ) paddingSize = 20;
 			char paddedFrame[20];
-			sprintf( paddedFrame, "%0*d", paddingSize, lframe );
+			sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
 			constructedString += paddedFrame;
 		} else if ( inputString.substring(i, i) == "%" && inputString.substring(i - 1, i - 1) != "\\" ) {
 			MString envString;
@@ -593,16 +459,14 @@ MString parseString( MString & inputString )
 MString liquidTransGetSceneName() 
 {
     MString fullName;
-	MString fileName;
-	MGlobal::executeCommand( "file -q -a", fullName );
-	
-	// move backwards across the string until we hit a dirctory / and
-	// take the info from there on
-	char *myslash = "/";
-	char *mydot = ".";
-	int i = fullName.rindex( *myslash );
-	int j = fullName.rindex( *mydot );
-	fileName = fullName.substring( i + 1, j - 1 );
+    MString fileName;
+    MGlobal::executeCommand( "file -q -a", fullName );
+
+    // move backwards across the string until we hit a dirctory / and
+    // take the info from there on
+    int i = fullName.rindex( '/' );
+    int j = fullName.rindex( '.' );
+    fileName = fullName.substring( i + 1, j - 1 );
     return fileName;
 }
 
@@ -638,231 +502,4 @@ liquidlong liquidHash(const char *str)
     }
 	
     return (liquidlong)hc;
-}
-
-shaderStruct liquidGetShader( MObject shaderObj )
-{
-	MString rmShaderStr;
-	MStatus status;
-
-	MFnDependencyNode shaderNode( shaderObj );
-	MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
-	rmanShaderNamePlug.getValue( rmShaderStr );
-	char *assignedRManShader = (char *)alloca(rmShaderStr.length());
-	sprintf(assignedRManShader, rmShaderStr.asChar());
-				
-	if ( debugMode ) { printf("-> Using Renderman Shader %s. \n", assignedRManShader ) ;}
-				
-	int 			numArgs;
-	shaderStruct currentShader;
-	currentShader.numTPV = 0;
-	currentShader.hasShadingRate = false;
-	currentShader.hasDisplacementBound = false;
-	currentShader.hasErrors = false;
-				
-	bool usePre = false;
-	std::vector<shaderStruct>::iterator iter = shaders.begin();
-	while ( iter != shaders.end() ){
-		std::string shaderNodeName = shaderNode.name().asChar();
-		if ( iter->name == shaderNodeName ) {
-			currentShader = *iter;
-			usePre = true;
-		}
-		++iter;
-	}
-				
-	/* if this shader instant isn't currently used already then load it into the lookup */
-	if ( !usePre ) {
-		// set it as my slo lookup
-		currentShader.name = shaderNode.name().asChar();
-		currentShader.file = rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar();
-		
-		liquidGetSloInfo shaderInfo;
-		int success = shaderInfo.setShader( rmShaderStr );
-		if ( !success ) {
-			perror("Slo_SetShader");
-			printf("Error Using Shader %s!\n", shaderNode.name().asChar() );
-			currentShader.rmColor[0] = 1.0;
-			currentShader.rmColor[1] = 0.0;
-			currentShader.rmColor[2] = 0.0;
-			currentShader.name = "plastic";
-			currentShader.numTPV = 0;
-			currentShader.hasErrors = true;
-		} else { 
-		/* Used to handling shading rates set in the surface shader, 
-		this is a useful way for shader writers to ensure that their 
-		shaders are always rendered as they were designed.  This value
-		overrides the global shading rate but gets overridden with the 
-			node specific shading rate. */
-			
-			// Set RiColor and RiOpacity
-			MPlug colorPlug = shaderNode.findPlug( "color" );
-			
-			colorPlug.child(0).getValue( currentShader.rmColor[0] );
-			colorPlug.child(1).getValue( currentShader.rmColor[1] );
-			colorPlug.child(2).getValue( currentShader.rmColor[2] );
-			
-			MPlug opacityPlug = shaderNode.findPlug( "opacity" );
-			
-			double opacityVal;
-			opacityPlug.getValue( opacityVal );
-			currentShader.rmOpacity[0] = RtFloat( opacityVal );
-			currentShader.rmOpacity[1] = RtFloat( opacityVal );
-			currentShader.rmOpacity[2] = RtFloat( opacityVal );
-			
-			// find the parameter details and declare them in the rib stream
-			numArgs = shaderInfo.getNumParam();
-			int i;
-			for ( i = 0; i < numArgs; i++ )
-			{
-				SHADER_TYPE currentArgType = shaderInfo.getArgType( i );
-				SHADER_DETAIL currentArgDetail = shaderInfo.getArgDetail( i );
-				currentShader.tokenPointerArray[currentShader.numTPV].isNurbs = false;
-				if ( shaderInfo.getArgName( i ) == "liquidShadingRate" ) {
-					
-					/* BUGFIX: Monday 6th August - fixed shading rate bug where it only accepted the default value */
-					
-					MPlug floatPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-					if ( status == MS::kSuccess ) {
-						float floatPlugVal;
-						floatPlug.getValue( floatPlugVal );
-						currentShader.shadingRate = floatPlugVal;
-					} else {
-						currentShader.shadingRate = shaderInfo.getArgFloatDefault( i, 0 );
-					}
-					currentShader.hasShadingRate = true;
-					continue;
-				}
-				switch ( shaderInfo.getArgDetail(i) ) {
-				case SHADER_DETAIL_UNIFORM: {
-					currentShader.tokenPointerArray[currentShader.numTPV].dType = rUniform;
-					break;
-											}
-				case SHADER_DETAIL_VARYING: {
-					currentShader.tokenPointerArray[currentShader.numTPV].dType = rVarying;
-					break; 
-											}
-				}	     
-				switch ( shaderInfo.getArgType( i ) ) {
-				case SHADER_TYPE_STRING: {
-					MPlug stringPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-					if ( status == MS::kSuccess ) {
-						MString stringPlugVal;
-						stringPlug.getValue( stringPlugVal );
-						MString stringDefault = shaderInfo.getArgStringDefault( i, 0 );
-						if ( stringPlugVal != stringDefault ) {
-							sprintf( currentShader.tokenPointerArray[currentShader.numTPV].tokenName , shaderInfo.getArgName( i ).asChar() );
-							MString stringVal = parseString( stringPlugVal );
-							currentShader.tokenPointerArray[ currentShader.numTPV ].tokenString = ( char * )lmalloc( sizeof( char ) * stringVal.length() + 1 );
-							sprintf( currentShader.tokenPointerArray[ currentShader.numTPV ].tokenString, stringVal.asChar() );
-							currentShader.tokenPointerArray[ currentShader.numTPV ].pType = rString;
-							currentShader.tokenPointerArray[ currentShader.numTPV ].arraySize = 0;
-							currentShader.tokenPointerArray[ currentShader.numTPV ].isArray = false;
-							currentShader.tokenPointerArray[ currentShader.numTPV ].isUArray = false;
-							currentShader.numTPV++;
-						}
-					}
-					break; }
-				case SHADER_TYPE_SCALAR: {
-					MPlug floatPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-					if ( status == MS::kSuccess ) {
-						sprintf( currentShader.tokenPointerArray[currentShader.numTPV].tokenName , shaderInfo.getArgName( i ).asChar() );
-						currentShader.tokenPointerArray[currentShader.numTPV].pType = rFloat;
-						currentShader.tokenPointerArray[currentShader.numTPV].arraySize = shaderInfo.getArgArraySize( i );
-						if ( currentShader.tokenPointerArray[currentShader.numTPV].arraySize > 0 ) {
-							MObject plugObj;
-							floatPlug.getValue( plugObj );
-							MFnDoubleArrayData  fnDoubleArrayData( plugObj );
-							MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
-							currentShader.tokenPointerArray[currentShader.numTPV].isArray = false;
-							currentShader.tokenPointerArray[currentShader.numTPV].isUArray = true;
-							currentShader.tokenPointerArray[currentShader.numTPV].uArraySize = currentShader.tokenPointerArray[currentShader.numTPV].arraySize;
-							currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * currentShader.tokenPointerArray[currentShader.numTPV].arraySize );
-							doubleArrayData.get( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats );
-						} else {
-							currentShader.tokenPointerArray[currentShader.numTPV].isArray = false;
-							currentShader.tokenPointerArray[currentShader.numTPV].isUArray = false;
-							float floatPlugVal;
-							floatPlug.getValue( floatPlugVal );
-							currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) );
-							currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[0] = floatPlugVal;
-						}
-						currentShader.numTPV++;
-					}
-					break; }
-				case SHADER_TYPE_COLOR: {
-					MPlug triplePlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-					currentShader.tokenPointerArray[currentShader.numTPV].isArray = false;
-					currentShader.tokenPointerArray[currentShader.numTPV].isUArray = false;
-					if ( status == MS::kSuccess ) {
-						sprintf( currentShader.tokenPointerArray[currentShader.numTPV].tokenName , shaderInfo.getArgName( i ).asChar() );
-						currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 3);
-						triplePlug.child(0).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[0] );
-						triplePlug.child(1).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[1] );
-						triplePlug.child(2).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[2] );
-						currentShader.tokenPointerArray[currentShader.numTPV].pType = rColor;
-						currentShader.tokenPointerArray[currentShader.numTPV].arraySize = 0;
-						currentShader.numTPV++;
-					}
-					break; }
-				case SHADER_TYPE_POINT: {
-					MPlug triplePlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-					currentShader.tokenPointerArray[currentShader.numTPV].isArray = false;
-					currentShader.tokenPointerArray[currentShader.numTPV].isUArray = false;
-					if ( status == MS::kSuccess ) { 
-						sprintf( currentShader.tokenPointerArray[currentShader.numTPV].tokenName , shaderInfo.getArgName( i ).asChar() );
-						currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 3);
-						triplePlug.child(0).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[0] );
-						triplePlug.child(1).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[1] );
-						triplePlug.child(2).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[2] );
-						currentShader.tokenPointerArray[currentShader.numTPV].pType = rPoint;
-						currentShader.tokenPointerArray[currentShader.numTPV].arraySize = 0;
-						currentShader.numTPV++;
-					}
-					break; }
-				case SHADER_TYPE_VECTOR: {
-					currentShader.tokenPointerArray[currentShader.numTPV].isArray = false;
-					currentShader.tokenPointerArray[currentShader.numTPV].isUArray = false;
-					MPlug triplePlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-					if ( status == MS::kSuccess ) {
-						sprintf( currentShader.tokenPointerArray[currentShader.numTPV].tokenName , shaderInfo.getArgName( i ).asChar() );
-						currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 3);
-						triplePlug.child(0).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[0] );
-						triplePlug.child(1).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[1] );
-						triplePlug.child(2).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[2] );
-						currentShader.tokenPointerArray[currentShader.numTPV].pType = rVector;
-						currentShader.tokenPointerArray[currentShader.numTPV].arraySize = 0;
-						currentShader.numTPV++;
-					}
-					break; }
-				case SHADER_TYPE_NORMAL: {
-					currentShader.tokenPointerArray[currentShader.numTPV].isArray = false;
-					currentShader.tokenPointerArray[currentShader.numTPV].isUArray = false;
-					MPlug triplePlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-					if ( status == MS::kSuccess ) {
-						sprintf( currentShader.tokenPointerArray[currentShader.numTPV].tokenName , shaderInfo.getArgName( i ).asChar() );
-						currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 3);
-						triplePlug.child(0).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[0] );
-						triplePlug.child(1).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[1] );
-						triplePlug.child(2).getValue( currentShader.tokenPointerArray[currentShader.numTPV].tokenFloats[2] );
-						currentShader.tokenPointerArray[currentShader.numTPV].pType = rNormal;
-						currentShader.tokenPointerArray[currentShader.numTPV].arraySize = 0;
-						currentShader.numTPV++;
-					}
-					break; }
-				case SHADER_TYPE_MATRIX: {
-					currentShader.tokenPointerArray[currentShader.numTPV].isArray = false;
-					currentShader.tokenPointerArray[currentShader.numTPV].isUArray = false;
-					printf( "WHAT IS THE MATRIX!\n" );
-					break; }
-				default:
-					printf("Unknown\n");
-					break;
-					}
-			}
-			shaders.push_back( currentShader );
-		}
-		shaderInfo.resetIt();
-	}
-	return currentShader;
 }

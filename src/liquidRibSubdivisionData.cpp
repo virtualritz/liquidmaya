@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -46,7 +45,6 @@
 /* Renderman Headers */
 extern "C" {
 #include <ri.h>
-#include <slo.h>
 }
 
 #ifdef _WIN32
@@ -75,7 +73,7 @@ extern "C" {
 
 extern int debugMode;
 
-RibSubdivisionData::RibSubdivisionData( MObject mesh )
+liquidRibSubdivisionData::liquidRibSubdivisionData( MObject mesh )
 /*  Description: create a RIB compatible subdivision surface representation using a Maya polygon mesh */
 :   npolys( 0 ),
 nverts( NULL ),
@@ -87,117 +85,104 @@ totalNumOfVertices( 0 )
 {
     if ( debugMode ) { printf("-> creating subdivision surface\n"); }
     MFnMesh     fnMesh( mesh );
+    name = fnMesh.name();
 	
-	name = fnMesh.name();
+    /* To handle the cases where there are multiple normals per vertices (hard-edges) we store a vertex for each normal. */
+    npolys = fnMesh.numPolygons();
+    nverts = (RtInt*)  lmalloc( sizeof( RtInt )   * npolys );
 	
-  /* To handle the cases where there are multiple normals per vertices (hard-edges) we store a vertex for each normal. */
-  npolys = fnMesh.numPolygons();
-	nverts = (RtInt*)  lmalloc( sizeof( RtInt )   * npolys );
+    MStatus status;
 	
-	MStatus status;
-	
-	bool facevaryingUVs;
-	facevaryingUVs = false;
-	MPlug facevaryingUVsPlug = fnMesh.findPlug( "facevaryingUVs", &status );
-	if ( status == MS::kSuccess ) {
-		facevaryingUVsPlug.getValue( facevaryingUVs );
-	}
-	
-	MFloatPointArray pos;
-	fnMesh.getPoints( pos );
-	totalNumOfVertices = pos.length();
+    bool facevaryingUVs;
+    facevaryingUVs = false;
+    MPlug facevaryingUVsPlug = fnMesh.findPlug( "facevaryingUVs", &status );
+    if ( status == MS::kSuccess ) {
+	    facevaryingUVsPlug.getValue( facevaryingUVs );
+    }
+
+    MFloatPointArray pos;
+    fnMesh.getPoints( pos );
+    totalNumOfVertices = pos.length();
 	
   /* Allocate memory for arrays */
   /* Vertices of the mesh or control cage */
-  vertexParam  = (RtFloat*)lmalloc( sizeof( RtFloat ) * totalNumOfVertices * 3 );
+    liqTokenPointer vertexPointerPair;
+    vertexPointerPair.set( "P", rPoint, false, true, false, totalNumOfVertices );
+    vertexParam = vertexPointerPair.getTokenFloatArray( );
+    vertexPointerPair.setDetailType( rVertex );
 	
-	/* If we are handling the facevarying type that are used by prman 10 and entropy 3.2 we have to grab
-	a uv for each vertex in each face, if not, just grab one for each vertex, so the memory allocations will be different */
-	int numberOfUVs = 0;
-	if ( facevaryingUVs ) {
-		for ( uint pOn = 0; pOn < npolys; pOn++ )
-		{
-			numberOfUVs += fnMesh.polygonVertexCount( pOn );
-		}
-	} else {
-		numberOfUVs = totalNumOfVertices;
+    /* If we are handling the facevarying type that are used by prman 10 and entropy 3.2 we have to grab
+    a uv for each vertex in each face, if not, just grab one for each vertex, so the memory allocations will be different */
+    int numberOfUVs = 0;
+    if ( facevaryingUVs ) {
+	for ( uint pOn = 0; pOn < npolys; pOn++ )
+	{
+	    numberOfUVs += fnMesh.polygonVertexCount( pOn );
 	}
-	polyuvParam  = (RtFloat*)lmalloc( sizeof( RtFloat ) * numberOfUVs * 2 );
-    
-	MIntArray perPolyVertices;
-	MPoint position;
-	unsigned count, index = 0;
-	
-	for ( int vOn = 0; vOn < totalNumOfVertices; vOn++ ) {
-		vertexParam[vOn * 3] = pos[ vOn ].x;
-		vertexParam[vOn * 3 + 1] = pos[ vOn ].y;
-		vertexParam[vOn * 3 + 2] = pos[ vOn ].z;
-	}
-	
-	unsigned UVIndex = 0;
-	for ( MItMeshPolygon polyIt( mesh ); !polyIt.isDone(); polyIt.next() ) {
-		if ( debugMode ) { printf("-> getting poly count\n"); }
-		count = polyIt.polygonVertexCount();
-		nverts[index] = count;
-		
-		if ( debugMode ) { printf("-> looping through verticies\n"); }
-		//for ( unsigned int vertOn = 0; vertOn < count; vertOn++ ) {
-		int vertOn = count;
-		do {
-			vertOn--;
-			unsigned vertexIndex = polyIt.vertexIndex( vertOn );
-			float u, v;
-			int tempUVindex;
-			status = polyIt.getUVIndex( vertOn, tempUVindex, u, v );
-			perPolyVertices.append( vertexIndex );
-			if ( facevaryingUVs ) {
-				polyuvParam[UVIndex * 2] = u;
-				polyuvParam[UVIndex * 2 + 1] = v;
-				UVIndex++;
-			} else {
-				polyuvParam[vertexIndex * 2] = u;
-				polyuvParam[vertexIndex * 2 + 1] = v;
-			}
-		} while ( vertOn != 0 );
-		++index;
-	}
-    
-	verts = (RtInt*)lmalloc( sizeof( RtInt ) * perPolyVertices.length() );
-	perPolyVertices.get( (int*)verts );
-	
-	/* add all of our surface parameters to the vector container */
-	
-	rTokenPointer tokenPointerPair;
+    } else {
+	numberOfUVs = totalNumOfVertices;
+    }
 
-	tokenPointerPair.pType = rPoint;
-	sprintf( tokenPointerPair.tokenName, "P" );
-	tokenPointerPair.arraySize = totalNumOfVertices;
-	tokenPointerPair.tokenFloats = vertexParam;
-	tokenPointerPair.isArray = true;
-	tokenPointerPair.isUArray = false;
-	tokenPointerPair.isNurbs = false;
-	tokenPointerPair.dType = rVertex;
-	tokenPointerArray.push_back( tokenPointerPair );
+    MIntArray perPolyVertices;
+    MPoint position;
+    unsigned count, index = 0;
 
-	tokenPointerPair.pType = rFloat;
-	sprintf( tokenPointerPair.tokenName, "st" );
-	tokenPointerPair.arraySize = 2 * numberOfUVs;
-	tokenPointerPair.tokenFloats = polyuvParam;
-	tokenPointerPair.isArray = true;
-	tokenPointerPair.isUArray = true;
-	tokenPointerPair.uArraySize = 2;
-	tokenPointerPair.isNurbs = false;
-	if ( facevaryingUVs ) {
-		tokenPointerPair.dType = rFaceVarying;
-	} else {
-		tokenPointerPair.dType = rVertex;
-	}
-	tokenPointerArray.push_back( tokenPointerPair );
-	
-	addAdditionalSurfaceParameters( mesh );
+    for ( int vOn = 0; vOn < totalNumOfVertices; vOn++ ) {
+    	vertexPointerPair.setTokenFloat( vOn, pos[ vOn ].x, pos[ vOn ].y, pos[ vOn ].z );
+    }
+
+    liqTokenPointer uvPointerPair;
+    // Hmmmmmm shall use isUArray inside set method to compute size * 2
+    uvPointerPair.set( "st", rFloat, false, true, true, 2 * numberOfUVs );
+    polyuvParam = uvPointerPair.getTokenFloatArray();
+    if ( facevaryingUVs ) {
+	    uvPointerPair.setDetailType( rFaceVarying );
+    } else {
+	    uvPointerPair.setDetailType( rVertex );
+    }
+    // Hmmmmmmmm got to check that
+     //tokenPointerPair.uArraySize = 2;
+
+    unsigned int UVIndex = 0;
+    for ( MItMeshPolygon polyIt( mesh ); !polyIt.isDone(); polyIt.next() ) {
+	    if ( debugMode ) { printf("-> getting poly count\n"); }
+	    count = polyIt.polygonVertexCount();
+	    nverts[index] = count;
+
+	    if ( debugMode ) { printf("-> looping through verticies\n"); }
+	    //for ( unsigned int vertOn = 0; vertOn < count; vertOn++ ) {
+	    int vertOn = count;
+	    do {
+		    vertOn--;
+		    unsigned vertexIndex = polyIt.vertexIndex( vertOn );
+		    float u, v;
+		    int tempUVindex;
+		    status = polyIt.getUVIndex( vertOn, tempUVindex, u, v );
+		    perPolyVertices.append( vertexIndex );
+		    if ( facevaryingUVs ) {
+		    	    uvPointerPair.setTokenFloat( UVIndex * 2, u );
+		    	    uvPointerPair.setTokenFloat( UVIndex * 2 +1, v );
+			    UVIndex++;
+		    } else {
+		    	    uvPointerPair.setTokenFloat( vertexIndex * 2, u );
+		    	    uvPointerPair.setTokenFloat( vertexIndex * 2 +1, v );
+		    }
+	    } while ( vertOn != 0 );
+	    ++index;
+    }
+
+    verts = (RtInt*)lmalloc( sizeof( RtInt ) * perPolyVertices.length() );
+    perPolyVertices.get( (int*)verts );
+
+    /* add all of our surface parameters to the vector container */
+
+    tokenPointerArray.push_back( vertexPointerPair );
+    tokenPointerArray.push_back( uvPointerPair );
+
+    addAdditionalSurfaceParameters( mesh );
 }
 
-RibSubdivisionData::~RibSubdivisionData()
+liquidRibSubdivisionData::~liquidRibSubdivisionData()
 /* Description: class destructor */
 {
     if ( debugMode ) { printf("-> killing subdivision surface\n"); }
@@ -205,37 +190,37 @@ RibSubdivisionData::~RibSubdivisionData()
     lfree( verts ); verts = NULL;
 }
 
-void RibSubdivisionData::write()
+void liquidRibSubdivisionData::write()
 /* Description: Write the RIB for this mesh */
 {
-	if ( debugMode ) { printf("-> writing subdivision surface\n"); }
-	
-	// Each loop has one polygon, so we just want an array of 1's of
-	// the correct size
-	RtInt * nloops = (RtInt*)alloca( sizeof( RtInt ) * npolys );
-	for ( unsigned i = 0; i < npolys; ++i ) {
-		nloops[i] = 1;
-	}
-	
-	unsigned numTokens = tokenPointerArray.size();
-	RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * numTokens );
-	RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * numTokens );
-	
-	assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
-	
-	RtToken *tags = NULL;
-	RtInt *nargs = NULL;
-	RtInt *intargs = NULL;
-	RtFloat *floatargs = NULL;
-	RiSubdivisionMeshV( "catmull-clark", npolys, nverts, verts, 0, tags, nargs, intargs, floatargs, numTokens, tokenArray, pointerArray ); 
+    if ( debugMode ) { printf("-> writing subdivision surface\n"); }
+
+    // Each loop has one polygon, so we just want an array of 1's of
+    // the correct size
+    RtInt * nloops = (RtInt*)alloca( sizeof( RtInt ) * npolys );
+    for ( unsigned i = 0; i < npolys; ++i ) {
+	    nloops[i] = 1;
+    }
+
+    unsigned numTokens = tokenPointerArray.size();
+    RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * numTokens );
+    RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * numTokens );
+
+    assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
+
+    RtToken *tags = NULL;
+    RtInt *nargs = NULL;
+    RtInt *intargs = NULL;
+    RtFloat *floatargs = NULL;
+    RiSubdivisionMeshV( "catmull-clark", npolys, nverts, verts, 0, tags, nargs, intargs, floatargs, numTokens, tokenArray, pointerArray ); 
 }
 
-bool RibSubdivisionData::compare( const RibData & otherObj ) const
+bool liquidRibSubdivisionData::compare( const liquidRibData & otherObj ) const
 /* Description: Compare this mesh to the other for the purpose of determining if its animated */
 {
-	if ( debugMode ) { printf("-> comparing mesh\n"); }
+    if ( debugMode ) { printf("-> comparing mesh\n"); }
     if ( otherObj.type() != MRT_Subdivision ) return false;
-    const RibSubdivisionData & other = (RibSubdivisionData&)otherObj;
+    const liquidRibSubdivisionData & other = (liquidRibSubdivisionData&)otherObj;
     
     if ( npolys != other.npolys ) return false;
     
@@ -251,15 +236,15 @@ bool RibSubdivisionData::compare( const RibData & otherObj ) const
     }
     
     for ( i = 0; i < totalNumOfVertices; ++i ) {
-		unsigned a = i * 3;
-		unsigned b = a + 1;
-		unsigned c = a + 2;
+	unsigned a = i * 3;
+	unsigned b = a + 1;
+	unsigned c = a + 2;
         if ( !equiv( vertexParam[a], other.vertexParam[a] ) ||
-			!equiv( vertexParam[b], other.vertexParam[b] ) ||
-			!equiv( vertexParam[c], other.vertexParam[c] ) ||
-			!equiv( normalParam[a], other.normalParam[a] ) ||
-			!equiv( normalParam[b], other.normalParam[b] ) ||
-			!equiv( normalParam[c], other.normalParam[c] ) )
+		    !equiv( vertexParam[b], other.vertexParam[b] ) ||
+		    !equiv( vertexParam[c], other.vertexParam[c] ) ||
+		    !equiv( normalParam[a], other.normalParam[a] ) ||
+		    !equiv( normalParam[b], other.normalParam[b] ) ||
+		    !equiv( normalParam[c], other.normalParam[c] ) )
 		{
             return false;
         }
@@ -267,7 +252,7 @@ bool RibSubdivisionData::compare( const RibData & otherObj ) const
     return true;
 }
 
-ObjectType RibSubdivisionData::type() const
+ObjectType liquidRibSubdivisionData::type() const
 /* Description: return the geometry type */
 {
 	if ( debugMode ) { printf("-> returning subdivision surface type\n"); }

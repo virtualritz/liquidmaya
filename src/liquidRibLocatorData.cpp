@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -45,17 +44,16 @@
 
 // Renderman Headers
 extern "C" {
-	#include <ri.h>
-	#include <slo.h>
+#include <ri.h>
 }
 
 #ifdef _WIN32
-	#include <process.h>
-	#include <malloc.h>
+#include <process.h>
+#include <malloc.h>
 #else
-	#include <unistd.h>
-	#include <stdlib.h>
-	#include <alloca.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <alloca.h>
 #endif
 
 // Maya's Headers
@@ -73,7 +71,7 @@ extern "C" {
 
 extern int debugMode;
 
-RibLocatorData::RibLocatorData( MObject locator )
+liquidRibLocatorData::liquidRibLocatorData( MObject locator )
 //
 //  Description:
 //      create a RIB compatible representation of a Maya polygon mesh
@@ -83,7 +81,7 @@ RibLocatorData::RibLocatorData( MObject locator )
 	if ( debugMode ) { printf("-> creating locator\n"); }
 }
 
-RibLocatorData::~RibLocatorData()
+liquidRibLocatorData::~liquidRibLocatorData()
 //
 //  Description:
 //      class destructor
@@ -92,7 +90,7 @@ RibLocatorData::~RibLocatorData()
 	if ( debugMode ) { printf("-> killing locator\n"); }
 }
 
-void RibLocatorData::write()
+void liquidRibLocatorData::write()
 //
 //  Description:
 //      Write the RIB for this mesh
@@ -101,7 +99,7 @@ void RibLocatorData::write()
 	if ( debugMode ) { printf("-> writing locator"); }
 }
 
-bool RibLocatorData::compare( const RibData & otherObj ) const
+bool liquidRibLocatorData::compare( const liquidRibData & otherObj ) const
 //
 //  Description:
 //      Compare this mesh to the other for the purpose of determining
@@ -113,7 +111,7 @@ bool RibLocatorData::compare( const RibData & otherObj ) const
     return true;
 }
 
-ObjectType RibLocatorData::type() const
+ObjectType liquidRibLocatorData::type() const
 //
 //  Description:
 //      return the geometry type

@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -46,7 +45,6 @@
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-#include <slo.h>
 }
 
 #ifdef _WIN32
@@ -88,11 +86,12 @@ extern "C" {
 
 extern int debugMode;
 
-RibData::~RibData() 
+liquidRibData::~liquidRibData() 
 {
-	// clean up and additional data
-	if ( debugMode ) { printf("-> freeing addition ribdata.\n" ); }
-	int k = 0;
+    // clean up and additional data
+    LIQDEBUGPRINTF("-> freeing addition ribdata.\n" );
+    // Class destructor should be called
+#if 0	
 	std::vector<rTokenPointer>::iterator iter = tokenPointerArray.begin();
 	while ( iter != tokenPointerArray.end() )
 	{
@@ -107,291 +106,198 @@ RibData::~RibData()
 		}
 		++iter;
 	}
-	tokenPointerArray.clear();
-	if ( debugMode ) { printf("-> finished freeing addition ribdata.\n" ); }
+#endif
+    tokenPointerArray.clear();
+    LIQDEBUGPRINTF("-> finished freeing addition ribdata.\n" );
 }
 
-void RibData::addAdditionalSurfaceParameters( MObject node )
+void liquidRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringArray & strArray, ParameterType pType )
+{
+    int i;
+    MStatus status;
+    if ( strArray.length() > 0 ) {
+	for ( i = 0; i < strArray.length(); i++ ) {
+	    liqTokenPointer tokenPointerPair;
+	    MString cutString = strArray[i].substring(5, strArray[i].length());
+	    MPlug vPlug = nodeFn.findPlug( strArray[i] );
+	    MObject plugObj;
+	    status = vPlug.getValue( plugObj );
+	    if ( plugObj.apiType() == MFn::kVectorArrayData ) 
+	    {
+		MFnVectorArrayData  fnVectorArrayData( plugObj );
+		MVectorArray vectorArrayData = fnVectorArrayData.array( &status );
+		tokenPointerPair.set( 	cutString.asChar(), 
+		    	    	    	pType, 
+					( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+					true,
+					false,
+					vectorArrayData.length() );
+		for ( int kk = 0; kk < vectorArrayData.length(); kk++ )
+		{
+    	    	    tokenPointerPair.setTokenFloat( kk, vectorArrayData[kk].x, vectorArrayData[kk].y, vectorArrayData[kk].z );
+		}
+		tokenPointerPair.setDetailType( rVertex );
+		tokenPointerArray.push_back( tokenPointerPair );
+	    } else {
+    	    	// Hmmmm float ? double ?
+		float x, y, z;
+		tokenPointerPair.set( 	cutString.asChar(), 
+		    	    	    	pType, 
+					( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+					false,
+					false,
+					0 );
+		vPlug.child(0).getValue( x );
+		vPlug.child(1).getValue( y );
+		vPlug.child(2).getValue( z );
+		tokenPointerPair.setTokenFloat( 0, x, y, z );
+		tokenPointerPair.setDetailType( rConstant );
+		tokenPointerArray.push_back( tokenPointerPair );
+	    }
+	}
+    }
+}
+
+void liquidRibData::addAdditionalSurfaceParameters( MObject node )
 {
 	
-	if ( debugMode ) { printf("-> scanning for additional rman surface attributes \n"); }
-	
-	MStatus status = MS::kSuccess;
-	unsigned i;
+    LIQDEBUGPRINTF("-> scanning for additional rman surface attributes \n");
+    MStatus status = MS::kSuccess;
+    unsigned i;
 
-	/* work out how many elements there would be in a facevarying array if a mesh or subD*/
-	unsigned faceVaryingCount = 0;
-	if ( ( type() == MRT_Mesh ) || ( type() == MRT_Subdivision ) ) {
-		MFnMesh fnMesh( node );
-		for ( uint pOn = 0; pOn < fnMesh.numPolygons(); pOn++ )
-		{
-			faceVaryingCount += fnMesh.polygonVertexCount( pOn );
-		}
+    /* work out how many elements there would be in a facevarying array if a mesh or subD*/
+    unsigned faceVaryingCount = 0;
+    if ( ( type() == MRT_Mesh ) || ( type() == MRT_Subdivision ) ) {
+    	MFnMesh fnMesh( node );
+	for ( uint pOn = 0; pOn < fnMesh.numPolygons(); pOn++ )
+	{
+    	    faceVaryingCount += fnMesh.polygonVertexCount( pOn );
 	}
+    }
 	
-	// find how many additional
-	MFnDependencyNode nodeFn( node );
+    // find how many additional
+    MFnDependencyNode nodeFn( node );
 	
-	// find the attributes
-	MStringArray floatAttributesFound = FindAttributesByPrefix( "rmanF", nodeFn );
-	MStringArray pointAttributesFound = FindAttributesByPrefix( "rmanP", nodeFn );
-	MStringArray vectorAttributesFound = FindAttributesByPrefix( "rmanV", nodeFn );
-	MStringArray normalAttributesFound = FindAttributesByPrefix( "rmanN", nodeFn );
-	MStringArray colorAttributesFound = FindAttributesByPrefix( "rmanC", nodeFn );
-	MStringArray stringAttributesFound = FindAttributesByPrefix( "rmanS", nodeFn );
+    // find the attributes
+    MStringArray floatAttributesFound = FindAttributesByPrefix( "rmanF", nodeFn );
+    MStringArray pointAttributesFound = FindAttributesByPrefix( "rmanP", nodeFn );
+    MStringArray vectorAttributesFound = FindAttributesByPrefix( "rmanV", nodeFn );
+    MStringArray normalAttributesFound = FindAttributesByPrefix( "rmanN", nodeFn );
+    MStringArray colorAttributesFound = FindAttributesByPrefix( "rmanC", nodeFn );
+    MStringArray stringAttributesFound = FindAttributesByPrefix( "rmanS", nodeFn );
 
-	if ( floatAttributesFound.length() > 0 ) {
-		for ( i = 0; i < floatAttributesFound.length(); i++ ) {
-			rTokenPointer tokenPointerPair;
-			MString cutString = floatAttributesFound[i].substring(5, floatAttributesFound[i].length());
-			sprintf( tokenPointerPair.tokenName, cutString.asChar() ) ;
-			MPlug fPlug = nodeFn.findPlug( floatAttributesFound[i] );
-			MObject plugObj;
-			status = fPlug.getValue( plugObj );
-			tokenPointerPair.pType = rFloat;
-			if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
-				tokenPointerPair.isNurbs = true;
-			} else {
-				tokenPointerPair.isNurbs = false;
-			}
-			if ( plugObj.apiType() == MFn::kDoubleArrayData ) 
-			{
-				MFnDoubleArrayData  fnDoubleArrayData( plugObj );
-				MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
-				tokenPointerPair.arraySize = doubleArrayData.length();
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * ( tokenPointerPair.arraySize ) );
-				doubleArrayData.get( tokenPointerPair.tokenFloats );
-				tokenPointerPair.isArray = true;
-				tokenPointerPair.isUArray = false;
-				if ( ( type() == MRT_NuCurve ) && ( cutString == MString( "width" ) ) ) {
-					tokenPointerPair.dType = rVarying;
-				} else if ( ( ( type() == MRT_Mesh ) || ( type() == MRT_Subdivision ) ) && ( doubleArrayData.length() == faceVaryingCount ) ) {
-					tokenPointerPair.dType = rFaceVarying;
-				} else {
-					tokenPointerPair.dType = rVertex;
-				}
-				tokenPointerArray.push_back( tokenPointerPair );
-			} else {
-				float floatValue;
-				tokenPointerPair.arraySize = 0;
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 1 );
-				fPlug.getValue( floatValue );
-				tokenPointerPair.tokenFloats[0]  = floatValue ;
-				tokenPointerPair.isArray = false;
-				tokenPointerPair.isUArray = false;
-				tokenPointerPair.dType = rConstant;
-				tokenPointerArray.push_back( tokenPointerPair );
-			}
+    if ( floatAttributesFound.length() > 0 ) {
+	for ( i = 0; i < floatAttributesFound.length(); i++ ) {
+	    liqTokenPointer tokenPointerPair;
+	    MString cutString = floatAttributesFound[i].substring(5, floatAttributesFound[i].length());
+	    MPlug fPlug = nodeFn.findPlug( floatAttributesFound[i] );
+	    MObject plugObj;
+	    status = fPlug.getValue( plugObj );
+	    if ( plugObj.apiType() == MFn::kDoubleArrayData ) 
+	    {
+		MFnDoubleArrayData  fnDoubleArrayData( plugObj );
+		MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
+		tokenPointerPair.set( 	cutString.asChar(), 
+		    	    	    	rFloat, 
+					( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+					true,
+					false,
+					doubleArrayData.length() );
+		for( unsigned int kk = 0; kk < doubleArrayData.length(); kk++ ) {
+		    tokenPointerPair.setTokenFloat( kk, doubleArrayData[kk] );
 		}
-	}
-	if ( pointAttributesFound.length() > 0 ) {
-		for ( i = 0; i < pointAttributesFound.length(); i++ ) {
-			rTokenPointer tokenPointerPair;
-			MString cutString = pointAttributesFound[i].substring(5, pointAttributesFound[i].length());
-			sprintf( tokenPointerPair.tokenName, cutString.asChar() ) ;
-			MPlug pPlug = nodeFn.findPlug( pointAttributesFound[i] );
-			MObject plugObj;
-			status = pPlug.getValue( plugObj );
-			tokenPointerPair.pType = rPoint;
-			if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
-				tokenPointerPair.isNurbs = true;
-			} else {
-				tokenPointerPair.isNurbs = false;
-			}
-			tokenPointerPair.isUArray = false;
-			if ( plugObj.apiType() == MFn::kPointArrayData ) 
-			{
-				MFnPointArrayData  fnPointArrayData( plugObj );
-				MPointArray pointArrayData = fnPointArrayData.array( &status );
-				tokenPointerPair.arraySize = pointArrayData.length();
-				if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
-					tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * ( tokenPointerPair.arraySize * 4 ) );
-					for ( int kk = 0; kk < pointArrayData.length(); kk++ )
-					{
-						tokenPointerPair.tokenFloats[kk * 4] = pointArrayData[kk].x; 
-						tokenPointerPair.tokenFloats[kk * 4 + 1] = pointArrayData[kk].y; 
-						tokenPointerPair.tokenFloats[kk * 4 + 2] = pointArrayData[kk].z; 
-						tokenPointerPair.tokenFloats[kk * 4 + 3] = pointArrayData[kk].w; 
-					}
-				} else {
-					tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * ( tokenPointerPair.arraySize * 3 ) );
-					for ( int kk = 0; kk < pointArrayData.length(); kk++ )
-					{
-						tokenPointerPair.tokenFloats[kk * 3] = pointArrayData[kk].x; 
-						tokenPointerPair.tokenFloats[kk * 3 + 1] = pointArrayData[kk].y; 
-						tokenPointerPair.tokenFloats[kk * 3 + 2] = pointArrayData[kk].z; 
-					}
-				}	
-				tokenPointerPair.isArray = true;
-				tokenPointerPair.dType = rVertex;
-				tokenPointerArray.push_back( tokenPointerPair );
-			} else {
-				tokenPointerPair.arraySize = 0;
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 3 );
-				pPlug.child(0).getValue( tokenPointerPair.tokenFloats[0] );
-				pPlug.child(1).getValue( tokenPointerPair.tokenFloats[1] );
-				pPlug.child(2).getValue( tokenPointerPair.tokenFloats[2] );
-				tokenPointerPair.isArray = false;
-				tokenPointerPair.dType = rConstant;
-				tokenPointerArray.push_back( tokenPointerPair );
-			}
+		if ( ( type() == MRT_NuCurve ) && ( cutString == MString( "width" ) ) ) {
+			tokenPointerPair.setDetailType( rVarying);
+		} else if ( ( ( type() == MRT_Mesh ) || ( type() == MRT_Subdivision ) ) && ( doubleArrayData.length() == faceVaryingCount ) ) {
+			tokenPointerPair.setDetailType( rFaceVarying);
+		} else {
+			tokenPointerPair.setDetailType( rVertex );
 		}
+	    } else {
+		float floatValue;
+		tokenPointerPair.set( 	cutString.asChar(), 
+		    	    	    	rFloat, 
+					( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+					false,
+					false,
+					0 );
+		fPlug.getValue( floatValue );
+		tokenPointerPair.setTokenFloat( 0, floatValue );
+		tokenPointerPair.setDetailType( rConstant );
+	    }
+	    tokenPointerArray.push_back( tokenPointerPair );
 	}
-	if ( vectorAttributesFound.length() > 0 ) {
-		for ( i = 0; i < vectorAttributesFound.length(); i++ ) {
-			rTokenPointer tokenPointerPair;
-			MString cutString = vectorAttributesFound[i].substring(5, vectorAttributesFound[i].length());
-			sprintf( tokenPointerPair.tokenName, cutString.asChar() ) ;
-			MPlug vPlug = nodeFn.findPlug( vectorAttributesFound[i] );
-			MObject plugObj;
-			status = vPlug.getValue( plugObj );
-			tokenPointerPair.pType = rVector;
-			if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
-				tokenPointerPair.isNurbs = true;
-			} else {
-				tokenPointerPair.isNurbs = false;
-			}
-			tokenPointerPair.isUArray = false;
-			if ( plugObj.apiType() == MFn::kVectorArrayData ) 
-			{
-				MFnVectorArrayData  fnVectorArrayData( plugObj );
-				MVectorArray vectorArrayData = fnVectorArrayData.array( &status );
-				tokenPointerPair.arraySize = vectorArrayData.length();
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * ( tokenPointerPair.arraySize * 3 ) );
-				for ( int kk = 0; kk < vectorArrayData.length(); kk++ )
-				{
-					tokenPointerPair.tokenFloats[kk * 3] = vectorArrayData[kk].x; 
-					tokenPointerPair.tokenFloats[kk * 3 + 1] = vectorArrayData[kk].y; 
-					tokenPointerPair.tokenFloats[kk * 3 + 2] = vectorArrayData[kk].z; 
-				}
-				tokenPointerPair.isArray = true;
-				tokenPointerPair.dType = rVertex;
-				tokenPointerArray.push_back( tokenPointerPair );
-			} else {
-				tokenPointerPair.arraySize = 0;
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 3 );
-				vPlug.child(0).getValue( tokenPointerPair.tokenFloats[0] );
-				vPlug.child(1).getValue( tokenPointerPair.tokenFloats[1] );
-				vPlug.child(2).getValue( tokenPointerPair.tokenFloats[2] );
-				tokenPointerPair.isArray = false;
-				tokenPointerPair.dType = rConstant;
-				tokenPointerArray.push_back( tokenPointerPair );
-			}
-		}
+    }
+    if ( pointAttributesFound.length() > 0 ) {
+	for ( i = 0; i < pointAttributesFound.length(); i++ ) {
+	    liqTokenPointer tokenPointerPair;
+	    MString cutString = pointAttributesFound[i].substring(5, pointAttributesFound[i].length());
+	    MPlug pPlug = nodeFn.findPlug( pointAttributesFound[i] );
+	    MObject plugObj;
+	    status = pPlug.getValue( plugObj );
+	    if ( plugObj.apiType() == MFn::kPointArrayData ) 
+	    {
+		MFnPointArrayData  fnPointArrayData( plugObj );
+		MPointArray pointArrayData = fnPointArrayData.array( &status );
+		tokenPointerPair.set( 	cutString.asChar(), 
+		    	    	    	rPoint, 
+					( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+					true,
+					false,
+					pointArrayData.length() );
+		if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
+		    for ( int kk = 0; kk < pointArrayData.length(); kk++ )
+		    {
+    	    	    	tokenPointerPair.setTokenFloat( kk, pointArrayData[kk].x, pointArrayData[kk].y, pointArrayData[kk].z, pointArrayData[kk].w );
+		    }
+		} else {
+		    for ( int kk = 0; kk < pointArrayData.length(); kk++ )
+		    {
+    	    	    	tokenPointerPair.setTokenFloat( kk, pointArrayData[kk].x, pointArrayData[kk].y, pointArrayData[kk].z );
+		    }
+		}	
+		tokenPointerPair.setDetailType( rVertex );
+	    } else {
+		// Hmmmm float ? double ?
+		float x, y, z;
+		tokenPointerPair.set( 	cutString.asChar(), 
+		    	    	    	rPoint, 
+					( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+					false,
+					false,
+					0 );
+		// Hmmm should check as for arrays if we are in nurbs mode : 4 values
+		pPlug.child(0).getValue( x );
+		pPlug.child(1).getValue( y );
+		pPlug.child(2).getValue( z );
+    	    	tokenPointerPair.setTokenFloat( 0, x, y, z );
+		tokenPointerPair.setDetailType( rConstant );
+	    }
+	    tokenPointerArray.push_back( tokenPointerPair );
 	}
-	if ( normalAttributesFound.length() > 0 ) {
-		for ( i = 0; i < normalAttributesFound.length(); i++ ) {
-			rTokenPointer tokenPointerPair;
-			MString cutString = normalAttributesFound[i].substring(5, normalAttributesFound[i].length());
-			sprintf( tokenPointerPair.tokenName, cutString.asChar() ) ;
-			MPlug nPlug = nodeFn.findPlug( normalAttributesFound[i] );
-			MObject plugObj;
-			status = nPlug.getValue( plugObj );
-			tokenPointerPair.pType = rNormal;
-			if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
-				tokenPointerPair.isNurbs = true;
-			} else {
-				tokenPointerPair.isNurbs = false;
-			}
-			if ( plugObj.apiType() == MFn::kVectorArrayData ) 
-			{
-				MFnVectorArrayData  fnVectorArrayData( plugObj );
-				MVectorArray vectorArrayData = fnVectorArrayData.array( &status );
-				tokenPointerPair.arraySize = vectorArrayData.length();
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * ( tokenPointerPair.arraySize * 3 ) );
-				for ( int kk = 0; kk < vectorArrayData.length(); kk++ )
-				{
-					tokenPointerPair.tokenFloats[kk * 3] = vectorArrayData[kk].x; 
-					tokenPointerPair.tokenFloats[kk * 3 + 1] = vectorArrayData[kk].y; 
-					tokenPointerPair.tokenFloats[kk * 3 + 2] = vectorArrayData[kk].z; 
-				}
-				tokenPointerPair.isArray = true;
-				tokenPointerPair.isUArray = false;
-				tokenPointerPair.dType = rVertex;
-				tokenPointerArray.push_back( tokenPointerPair );
-			} else {
-				tokenPointerPair.arraySize = 0;
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 3 );
-				nPlug.child(0).getValue( tokenPointerPair.tokenFloats[0] );
-				nPlug.child(1).getValue( tokenPointerPair.tokenFloats[1] );
-				nPlug.child(2).getValue( tokenPointerPair.tokenFloats[2] );
-				tokenPointerPair.isArray = false;
-				tokenPointerPair.isUArray = false;
-				tokenPointerPair.dType = rConstant;
-				tokenPointerArray.push_back( tokenPointerPair );
-			}
-		}
-	}
-	if ( colorAttributesFound.length() > 0 ) {
-		for ( i = 0; i < colorAttributesFound.length(); i++ ) {
-			rTokenPointer tokenPointerPair;
-			MString cutString = colorAttributesFound[i].substring(5, colorAttributesFound[i].length());
-			sprintf( tokenPointerPair.tokenName, cutString.asChar() ) ;
-			MPlug cPlug = nodeFn.findPlug( colorAttributesFound[i] );
-			MObject plugObj;
-			status = cPlug.getValue( plugObj );
-			tokenPointerPair.pType = rColor;
-			if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
-				tokenPointerPair.isNurbs = true;
-			} else {
-				tokenPointerPair.isNurbs = false;
-			}
-			tokenPointerPair.isUArray = false;
-			if ( plugObj.apiType() == MFn::kVectorArrayData ) 
-			{
-				MFnVectorArrayData  fnVectorArrayData( plugObj );
-				MVectorArray vectorArrayData = fnVectorArrayData.array( &status );
-				tokenPointerPair.arraySize = vectorArrayData.length();
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * ( tokenPointerPair.arraySize * 3 ) );
-				for ( int kk = 0; kk < vectorArrayData.length(); kk++ )
-				{
-					tokenPointerPair.tokenFloats[kk * 3] = vectorArrayData[kk].x; 
-					tokenPointerPair.tokenFloats[kk * 3 + 1] = vectorArrayData[kk].y; 
-					tokenPointerPair.tokenFloats[kk * 3 + 2] = vectorArrayData[kk].z; 
-				}
-				tokenPointerPair.isArray = true;
-				tokenPointerPair.dType = rVertex;
-				tokenPointerArray.push_back( tokenPointerPair );
-			} else {
-				tokenPointerPair.arraySize = 0;
-				tokenPointerPair.tokenFloats = (RtFloat *)lmalloc( sizeof(RtFloat) * 3 );
-				cPlug.child(0).getValue( tokenPointerPair.tokenFloats[0] );
-				cPlug.child(1).getValue( tokenPointerPair.tokenFloats[1] );
-				cPlug.child(2).getValue( tokenPointerPair.tokenFloats[2] );
-				tokenPointerPair.isArray = false;
-				tokenPointerPair.dType = rConstant;
-				tokenPointerArray.push_back( tokenPointerPair );
-			}
-		}
-	}
+    }
+    parseVectorAttributes( nodeFn, vectorAttributesFound, rVector );
+    parseVectorAttributes( nodeFn, normalAttributesFound, rNormal );
+    parseVectorAttributes( nodeFn, colorAttributesFound, rColor );
 	
-	if ( stringAttributesFound.length() > 0 ) {
-		for ( i = 0; i < stringAttributesFound.length(); i++ ) {
-			rTokenPointer tokenPointerPair;
-			MString cutString = stringAttributesFound[i].substring(5, stringAttributesFound[i].length());
-			sprintf( tokenPointerPair.tokenName, cutString.asChar() ) ;
-			MPlug sPlug = nodeFn.findPlug( stringAttributesFound[i] );
-			MObject plugObj;
-			status = sPlug.getValue( plugObj );
-			tokenPointerPair.pType = rString;
-			if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
-				tokenPointerPair.isNurbs = true;
-			} else {
-				tokenPointerPair.isNurbs = false;
-			}
-			tokenPointerPair.arraySize = 0;
-			MString stringVal;
-			sPlug.getValue( stringVal );
-			if ( stringVal.length() != 0 ) {
-				tokenPointerPair.tokenString = (char *)lmalloc( sizeof( char ) * stringVal.length() );
-				sprintf( tokenPointerPair.tokenString, stringVal.asChar() );
-			} else {
-				tokenPointerPair.tokenString = "";
-			}
-			tokenPointerPair.isArray = false;
-			tokenPointerPair.isUArray = false;
-			tokenPointerPair.dType = rConstant;
-			tokenPointerArray.push_back( tokenPointerPair );
-		}
+    if ( stringAttributesFound.length() > 0 ) {
+	for ( i = 0; i < stringAttributesFound.length(); i++ ) {
+	    liqTokenPointer tokenPointerPair;
+	    MString cutString = stringAttributesFound[i].substring(5, stringAttributesFound[i].length());
+	    MPlug sPlug = nodeFn.findPlug( stringAttributesFound[i] );
+	    MObject plugObj;
+	    status = sPlug.getValue( plugObj );
+	    tokenPointerPair.set(   cutString.asChar(), 
+		    	    	    rString, 
+				    ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+				    false,
+				    false,
+				    0 );
+	    MString stringVal;
+	    sPlug.getValue( stringVal );
+	    tokenPointerPair.setTokenString( stringVal.asChar(), stringVal.length() );
+    	    tokenPointerPair.setDetailType( rConstant );
+	    tokenPointerArray.push_back( tokenPointerPair );
 	}
+    }
 }

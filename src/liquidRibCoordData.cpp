@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -45,17 +44,16 @@
 
 // Renderman Headers
 extern "C" {
-	#include <ri.h>
-	#include <slo.h>
+#include <ri.h>
 }
 
 #ifdef _WIN32
-	#include <process.h>
-	#include <malloc.h>
+#include <process.h>
+#include <malloc.h>
 #else
-	#include <unistd.h>
-	#include <stdlib.h>
-	#include <alloca.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <alloca.h>
 #endif
 
 // Maya's Headers
@@ -73,7 +71,7 @@ extern "C" {
 
 extern int debugMode;
 
-RibCoordData::RibCoordData( MObject coord )
+liquidRibCoordData::liquidRibCoordData( MObject coord )
 //
 //  Description:
 //      create a RIB compatible representation of a Maya polygon mesh
@@ -85,7 +83,7 @@ RibCoordData::RibCoordData( MObject coord )
 	this->name = fnNode.name();
 }
 
-RibCoordData::~RibCoordData()
+liquidRibCoordData::~liquidRibCoordData()
 //
 //  Description:
 //      class destructor
@@ -94,7 +92,7 @@ RibCoordData::~RibCoordData()
 	if ( debugMode ) { printf("-> killing coord\n"); }
 }
 
-void RibCoordData::write()
+void liquidRibCoordData::write()
 //
 //  Description:
 //      Write the RIB for this mesh
@@ -102,13 +100,13 @@ void RibCoordData::write()
 {
 	if ( debugMode ) { printf("-> writing coord"); }
 	char *coordName;
-	coordName = (char *)lmalloc( name.length() );
-	sprintf(coordName, name.asChar());
+	coordName = (char *)lmalloc( name.length()  +1);
+	strcpy(coordName, name.asChar());
 	RiCoordinateSystem( coordName );
 	lfree( coordName );
 }
 
-bool RibCoordData::compare( const RibData & otherObj ) const
+bool liquidRibCoordData::compare( const liquidRibData & otherObj ) const
 //
 //  Description:
 //      Compare this mesh to the other for the purpose of determining
@@ -120,7 +118,7 @@ bool RibCoordData::compare( const RibData & otherObj ) const
     return true;
 }
 
-ObjectType RibCoordData::type() const
+ObjectType liquidRibCoordData::type() const
 //
 //  Description:
 //      return the geometry type

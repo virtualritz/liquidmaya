@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 #include <vector>
 
@@ -46,17 +45,16 @@
 
 // Renderman Headers
 extern "C" {
-	#include <ri.h>
-	#include <slo.h>
+#include <ri.h>
 }
 
 #ifdef _WIN32
-	#include <process.h>
-	#include <malloc.h>
+#include <process.h>
+#include <malloc.h>
 #else
-	#include <unistd.h>
-	#include <stdlib.h>
-	#include <alloca.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <alloca.h>
 #endif
 
 // Maya's Headers
@@ -72,7 +70,7 @@ extern "C" {
 
 extern int debugMode;
 
-RibHT::RibHT()
+liquidRibHT::liquidRibHT()
 //
 //  Description:
 //      Class constructor.
@@ -82,7 +80,7 @@ RibHT::RibHT()
 		RibNodeMap.clear();
 }
 
-RibHT::~RibHT()
+liquidRibHT::~liquidRibHT()
 //
 //  Description:
 //      Class destructor.
@@ -92,7 +90,7 @@ RibHT::~RibHT()
 		RNMAP::iterator iter;
 		for ( iter = RibNodeMap.begin(); iter != RibNodeMap.end(); iter++ )
 		{
-			RibNode * node;
+			liquidRibNode * node;
 			node = (*iter).second;
 			delete node;
 		}
@@ -102,7 +100,7 @@ RibHT::~RibHT()
 		}
 }
 
-ulong RibHT::hash(const char *str)
+ulong liquidRibHT::hash(const char *str)
 //
 //  Description:
 //      hash function for strings
@@ -120,7 +118,7 @@ ulong RibHT::hash(const char *str)
     return (ulong)hc;
 }
 
-int RibHT::insert( MDagPath &path, double lframe, int sample, ObjectType objType )
+int liquidRibHT::insert( MDagPath &path, double lframe, int sample, ObjectType objType )
 //  Description:
 //      insert a new node into the hash table.
 {
@@ -136,16 +134,16 @@ int RibHT::insert( MDagPath &path, double lframe, int sample, ObjectType objType
     ulong	    hc = hash( name );
 		if ( debugMode ) { printf("-> hashed node name: %s size: %d \n", name, hc ); }
 		
-		RibNode * node;
+		liquidRibNode * node;
 		/*node = find( path.node(), objType );*/
 		node = find( nodeName, path, objType );
-    RibNode *	 newNode = NULL;
-    RibNode *    instance = NULL;
+    liquidRibNode *	 newNode = NULL;
+    liquidRibNode *    instance = NULL;
 
 		// If "node" is non-null then there's already a hash table entry at
     // this point
     //
-    RibNode * tail = NULL;
+    liquidRibNode * tail = NULL;
     if ( NULL != node ) {
 	    while(node) {
   	    tail = node;
@@ -161,14 +159,14 @@ int RibHT::insert( MDagPath &path, double lframe, int sample, ObjectType objType
       if ( ( NULL == node ) && ( NULL != instance ) ) {
 				// We have not found a node with a matching path, but we have found
         // one with a matching object, so we need to insert a new instance
-	      newNode = new RibNode( instance );
+	      newNode = new liquidRibNode( instance );
       }
     }
     if ( NULL == newNode ) {
 			// We have to make a new node
 			//
 			if (node == NULL) {
-	    	node = new RibNode();
+	    	node = new liquidRibNode();
         if ( NULL != tail ) {
         	assert( NULL == tail->next );
         	tail->next = node;
@@ -197,14 +195,14 @@ int RibHT::insert( MDagPath &path, double lframe, int sample, ObjectType objType
     if ( debugMode ) { printf("-> finished inserting node into hash table\n"); }
 }
 
-RibNode* RibHT::find( MString nodeName, MDagPath path, ObjectType objType = MRT_Unknown )
+liquidRibNode* liquidRibHT::find( MString nodeName, MDagPath path, ObjectType objType = MRT_Unknown )
 
 //  Description:
 //      find the hash table entry for the given object
 
 {
     if ( debugMode ) { printf("-> finding node in hash table using object, %s\n", nodeName.asChar()); }
-    RibNode * result = NULL;
+    liquidRibNode * result = NULL;
 		
     const char * name = nodeName.asChar();
     

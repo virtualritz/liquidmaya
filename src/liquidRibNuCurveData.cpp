@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -46,7 +45,6 @@
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-#include <slo.h>
 }
 
 #ifdef _WIN32
@@ -71,12 +69,12 @@ extern "C" {
 
 extern int debugMode;
 
-RibNuCurveData::RibNuCurveData( MObject curve )
+liquidRibNuCurveData::liquidRibNuCurveData( MObject curve )
 //
 //  Description:
 //      create a RIB compatible representation of a Maya nurbs surface
 //
-:   knot( NULL ), CVs( NULL ), nverts( NULL ), order( NULL )
+:   nverts( NULL ), order( NULL ), knot( NULL ), CVs( NULL )
 
 {
 	if ( debugMode ) { printf("-> creating nurbs curve\n"); }
@@ -139,10 +137,10 @@ RibNuCurveData::RibNuCurveData( MObject curve )
 	RtFloat* cvPtr = CVs;
 	while(!cvs.isDone()) {
 		MPoint pt = cvs.position(MSpace::kObject);
-		*cvPtr++ = (RtFloat)pt.x;
-		*cvPtr++ = (RtFloat)pt.y;
-		*cvPtr++ = (RtFloat)pt.z;
-		*cvPtr++ = (RtFloat)pt.w;
+		*cvPtr = (RtFloat)pt.x; cvPtr++;
+		*cvPtr = (RtFloat)pt.y; cvPtr++;
+		*cvPtr = (RtFloat)pt.z; cvPtr++;
+		*cvPtr = (RtFloat)pt.w; cvPtr++;
 		cvs.next();
 	}
 	// Setup curve width info
@@ -150,21 +148,16 @@ RibNuCurveData::RibNuCurveData( MObject curve )
 		NuCurveWidth[k] = 0.5;
 	}
 
-	rTokenPointer tokenPointerPair;
-	tokenPointerPair.pType = rPoint;
-	sprintf( tokenPointerPair.tokenName, "Pw" );
-	tokenPointerPair.arraySize = nverts[0] * 4;
-	tokenPointerPair.tokenFloats = CVs;
-	tokenPointerPair.isArray = true;
-	tokenPointerPair.isUArray = false;
-	tokenPointerPair.isNurbs = true;
-	tokenPointerPair.dType = rVertex;
+	liqTokenPointer tokenPointerPair;
+	tokenPointerPair.set( "Pw", rPoint, true, true, false, nverts[0] );
+	tokenPointerPair.setDetailType( rVertex );
+	tokenPointerPair.setTokenFloats( CVs );
 	tokenPointerArray.push_back( tokenPointerPair );
 	
 	addAdditionalSurfaceParameters( curve );
 }
 
-RibNuCurveData::~RibNuCurveData()
+liquidRibNuCurveData::~liquidRibNuCurveData()
 //  Description:
 //      class destructor
 {
@@ -172,7 +165,8 @@ RibNuCurveData::~RibNuCurveData()
 	if ( debugMode ) { printf("-> killing nurbs curve\n"); }
 	if ( knot != NULL ) { lfree( knot ); knot = NULL; }
 	// this is freed with the ribdata destructor
-	//if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
+	// this is not true anymore
+	if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
 	if ( NuCurveWidth != NULL ) { lfree( NuCurveWidth ); NuCurveWidth = NULL; }
 	if ( nverts != NULL ) { lfree( nverts ); nverts = NULL; }
 	if ( order != NULL ) { lfree( order ); order = NULL; }
@@ -180,7 +174,7 @@ RibNuCurveData::~RibNuCurveData()
 	if ( max != NULL ) { lfree( max ); max = NULL; }
 }
 
-void RibNuCurveData::write()
+void liquidRibNuCurveData::write()
 //
 //  Description:
 //      Write the RIB for this surface
@@ -196,7 +190,7 @@ void RibNuCurveData::write()
 	RiCurvesV( "cubic", ncurves, nverts, "nonperiodic", numTokens, tokenArray, pointerArray );
 }
 
-bool RibNuCurveData::compare( const RibData & otherObj ) const
+bool liquidRibNuCurveData::compare( const liquidRibData & otherObj ) const
 //
 //  Description:
 //      Compare this curve to the other for the purpose of determining
@@ -205,7 +199,7 @@ bool RibNuCurveData::compare( const RibData & otherObj ) const
 {	
 	if ( debugMode ) { printf("-> comparing nurbs curve\n"); }
     if ( otherObj.type() != MRT_NuCurve ) return false;
-    const RibNuCurveData & other = (RibNuCurveData&)otherObj;
+    const liquidRibNuCurveData & other = (liquidRibNuCurveData&)otherObj;
     
     if ( ( nverts[0] != other.nverts[0] ) ||
 		( order != other.order ) ||
@@ -233,7 +227,7 @@ bool RibNuCurveData::compare( const RibData & otherObj ) const
     return true;
 }
 
-ObjectType RibNuCurveData::type() const
+ObjectType liquidRibNuCurveData::type() const
 //
 //  Description:
 //      return the geometry type
