@@ -1,7 +1,8 @@
 1005-02-12 geohar
 	- Changed liquidPlug to source liquidStartup.mel from LIQUIDHOME if it exists
 	- Updated OSX build to include 3Delight + some tidying
-
+	- liquidStartup.mel now sources liquidShutdown.mel
+	
 Release 1.6.7 ------------------------------------------------------------------
 
 2005-02-11 mauritio
