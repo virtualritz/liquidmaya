@@ -46,7 +46,7 @@ global proc liquidViewLastRib()
   if ( `file -q -exists $ribFileName` ) {
     print("Viewing RIB file: " + $ribFileName + "\n");
     if (`about -win`) {
-      system ( "notepad " + $ribFileName + " &");
+      system ( "start notepad " + $ribFileName);
     } else if(`about -mac`) {
       system ( "open " + $ribFileName + " & ");
     } else {
@@ -68,7 +68,7 @@ global proc liquidViewLastRenderScript()
   if ( `file -q -exists $renderScriptName` ) {
     print("Viewing render script: " + $renderScriptName + "\n");
     if (`about -win`) {
-      system ( "notepad " + $renderScriptName + " &");
+      system ( "start notepad " + $renderScriptName);
     } else if(`about -mac`) {
       system ( "open " + $renderScriptName + " & ");
     } else {
