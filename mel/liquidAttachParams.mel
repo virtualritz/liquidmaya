@@ -252,15 +252,24 @@ global proc liquidAttachParams ( string $currentNodeName )
             setAttr ( $currentNodeName + ".opacity" ) -type float3 $tmpVal $tmpVal $tmpVal;
           }
         }
-        
-        float $defaultValA = $argDefault[0];
-        float $defaultValB = $argDefault[1];
-        float $defaultValC = $argDefault[2];
-        addAttr -longName $argName -at double3 $currentNodeName;
-        addAttr -longName ( $argName + "a" ) -at double -parent $argName $currentNodeName;
-        addAttr -longName ( $argName + "b" ) -at double -parent $argName $currentNodeName;
-        addAttr -longName ( $argName + "c" ) -at double -parent $argName $currentNodeName;
-        setAttr ( $currentNodeName + "." + $argName ) -type double3 $defaultValA $defaultValB $defaultValC;
+
+		float $defaultValA = $argDefault[0];
+		float $defaultValB = $argDefault[1];
+		float $defaultValC = $argDefault[2];
+		if( $argType == "color"){
+			addAttr -longName $argName -at float3 -usedAsColor $currentNodeName;
+			addAttr -longName ( $argName + "a" ) -at "float" -parent $argName $currentNodeName;
+			addAttr -longName ( $argName + "b" ) -at "float" -parent $argName $currentNodeName;
+			addAttr -longName ( $argName + "c" ) -at "float" -parent $argName $currentNodeName;
+			setAttr ( $currentNodeName + "." + $argName ) -type double3 $defaultValA $defaultValB $defaultValC;
+		}
+		else{
+			addAttr -longName $argName -at double3 $currentNodeName;
+			addAttr -longName ( $argName + "a" ) -at double -parent $argName $currentNodeName;
+			addAttr -longName ( $argName + "b" ) -at double -parent $argName $currentNodeName;
+			addAttr -longName ( $argName + "c" ) -at double -parent $argName $currentNodeName;
+			setAttr ( $currentNodeName + "." + $argName ) -type double3 $defaultValA $defaultValB $defaultValC;
+		}
       }
     }
   }
