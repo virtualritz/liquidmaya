@@ -166,6 +166,15 @@ global proc liquidAttachParams ( string $currentNodeName )
     if (!`attributeQuery -n $currentNodeName -ex ( "shadowCamera" ) `) {
       addAttr -longName "shadowCamera" -dt "string" $currentNodeName;
     }
+    if (!`attributeQuery -n $currentNodeName -ex ( "deepShadows" ) `) {
+      addAttr -longName "deepShadows" -at bool $currentNodeName;
+	}
+    if (!`attributeQuery -n $currentNodeName -ex ( "pixelSamples" ) `) {
+      addAttr -longName "pixelSamples" -at byte -minValue 1 -maxValue 16 -defaultValue 1 $currentNodeName;
+	}
+    if (!`attributeQuery -n $currentNodeName -ex ( "volumeInterpretation" ) `) {
+      addAttr -longName "volumeInterpretation" -at byte -minValue 1 -maxValue 2 -defaultValue 1 $currentNodeName;
+    }
   }
 
   if ( $nodeType == "Disp" || $nodeType == "Surface" ) {

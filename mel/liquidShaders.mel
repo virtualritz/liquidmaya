@@ -16,7 +16,12 @@
 // Contributor(s): Berj Bannayan. 
 //
 // 
-// The RenderMan (R) Interface Procedures and Protocol are:// Copyright 1988, 1989, Pixar// All Rights Reserved////// RenderMan (R) is a registered trademark of Pixar
+// The RenderMan (R) Interface Procedures and Protocol are:
+// Copyright 1988, 1989, Pixar
+// All Rights Reserved
+//
+//
+// RenderMan (R) is a registered trademark of Pixar
 //
 //  Creation Date:  June 20, 2000
 //
@@ -78,7 +83,7 @@ global proc string liquidNewShaderNode( string $filename )
   // this next test has to be performed incase path names have dots in them, like prman3.9 etc.
   for ($i = 1; $i < ( size($subShaderName) - 1 ); $i++)
   {
-        $longName = ( $longName + "." + $subShaderName[$i] );
+    $longName = ( $longName + "." + $subShaderName[$i] );
   }
   tokenize $longName "/" $subShaderName;  
   $shortName = $subShaderName[( size($subShaderName) - 1)];
@@ -194,6 +199,18 @@ global proc string liquidDuplicateShaderNode( string $nodename )
     if (`attributeQuery -n $currentNodeName -ex ( "shadowCamera" ) `) {
       string $shadowCamValue = `getAttr ( $nodename + ".shadowCamera" )`;
       setAttr ( $currentNodeName + ".shadowCamera" ) -type "string" $shadowCamValue;
+    }
+    if (`attributeQuery -n $currentNodeName -ex ( "deepShadows" ) `) {
+      int $deepShadowsValue = `getAttr ( $nodename + ".deepShadows" )`;
+      setAttr ( $currentNodeName + ".deepShadows" ) $deepShadowsValue;
+    }
+    if (`attributeQuery -n $currentNodeName -ex ( "pixelSamples" ) `) {
+      int $pixelSamplesValue = `getAttr ( $nodename + ".pixelSamples" )`;
+      setAttr ( $currentNodeName + ".pixelSamples" ) $pixelSamplesValue;
+    }
+    if (`attributeQuery -n $currentNodeName -ex ( "volumeInterpretation" ) `) {
+      int $volumeInterpretation = `getAttr ( $nodename + ".volumeInterpretation" )`;
+      setAttr ( $currentNodeName + ".volumeInterpretation" ) $volumeInterpretation;
     }
   }
 

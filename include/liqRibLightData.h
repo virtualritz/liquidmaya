@@ -62,6 +62,7 @@ private:
 
     RtLightHandle handle;
     bool          usingShadow;
+    bool          deepShadows;
     bool          raytraced;
     bool          excludeFromRib;
     MString       userShadowName;

@@ -1,4 +1,12 @@
 Release 1.5.6 ------------------------------------------------------------------
+2004-04-07 pieke
+  - Added deepshadow support based on Pixar's RenderMan spec
+    - Nodes for light shaders now have the following new attributes:
+      * deepShadows (on/off)
+      * pixelSamples (deep shadows can be supersampled - useful for motion)
+      * volumeInterpretation (discrete vs continuous)
+    - If using deep shadows, the shadow RIBs will contain RI motion blocks
+
 2004-04-06 chapman
   - added support for XML format render scripts
   - tidied up render-script code considerably (attribute and command line changes below)

@@ -191,6 +191,8 @@ struct structJob {
   bool     isMidPointShadow;
   bool     hasShadowCam;
   bool     isShadowPass;
+  int      shadowPixelSamples;
+  int      shadowVolumeInterpretation;
   bool     isPoint;
   PointLightDirection pointDir;
   structCamera camera[5];
@@ -198,6 +200,7 @@ struct structJob {
   MDagPath shadowCamPath;
   MString  jobOptions;
   bool     gotJobOptions;
+  bool     deepShadows;
 };
 
 

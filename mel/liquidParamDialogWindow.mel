@@ -16,7 +16,12 @@
 // Contributor(s): Berj Bannayan. 
 //
 // 
-// The RenderMan (R) Interface Procedures and Protocol are: // Copyright 1988, 1989, Pixar // All Rights Reserved////// RenderMan (R) is a registered trademark of Pixar
+// The RenderMan (R) Interface Procedures and Protocol are:
+// Copyright 1988, 1989, Pixar
+// All Rights Reserved
+//
+//
+// RenderMan (R) is a registered trademark of Pixar
 //
 //  Creation Date:    May 11, 2000
 //
@@ -26,6 +31,27 @@
 //  Description:
 //  creates a pretty window for editing the rman shader parameters 	
 //
+
+global proc liquidChangeRadioButtonAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  int $value = `radioButtonGrp -q -sl $fieldName`;
+  setAttr ( $selectedObj + "." + $argName ) $value;
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidChangeIntAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  int $value = `intFieldGrp -q -v1 $fieldName`;
+  setAttr ( $selectedObj + "." + $argName ) $value;
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidChangeCheckBoxAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  int $value = `checkBoxGrp -q -v1 $fieldName`;
+  setAttr ( $selectedObj + "." + $argName ) $value;
+  liquidParamAU $selectedObj;
+}
 
 global proc liquidChangeColAttr ( string $selectedObj, string $argName, string $fieldName )
 {
@@ -293,12 +319,12 @@ global proc int liquidHandleLIF( int $argNum, string $shaderName, string $select
         float $minValue = $range[0];
         float $maxValue = $range[1];
         attrFieldSliderGrp -adj 3 -label $name -cc ( "liquidParamAU " + $selectedObj) 
-            -ann $description
-            -minValue $minValue -maxValue $maxValue
-            -sliderMinValue $minValue -sliderMaxValue $maxValue
-            -fieldMinValue $minValue -fieldMaxValue $maxValue
-            -at ( $selectedObj + "." + $argName )
-            ( $argName + $selectedObj + "WindowParam" );
+          -ann $description
+          -minValue $minValue -maxValue $maxValue
+          -sliderMinValue $minValue -sliderMaxValue $maxValue
+          -fieldMinValue $minValue -fieldMaxValue $maxValue
+          -at ( $selectedObj + "." + $argName )
+          ( $argName + $selectedObj + "WindowParam" );
       } else if ( $type == "selector" ) {
         rowLayout -numberOfColumns 2 -adjustableColumn 2;
         text -align "right" -label $name; 
@@ -329,12 +355,12 @@ global proc int liquidHandleLIF( int $argNum, string $shaderName, string $select
         setParent ..;
       } else {
         attrFieldSliderGrp -adj 3 -label $name -cc ( "liquidParamAU " + $selectedObj) 
-            -ann $description
-            -minValue -10.0 -maxValue 10.0
-            -sliderMinValue 0.0 -sliderMaxValue 2.0
-            -fieldMinValue -10000000.0 -fieldMaxValue 10000000.0
-            -at ( $selectedObj + "." + $argName )
-            ( $argName + $selectedObj + "WindowParam" );
+          -ann $description
+          -minValue -10.0 -maxValue 10.0
+          -sliderMinValue 0.0 -sliderMaxValue 2.0
+          -fieldMinValue -10000000.0 -fieldMaxValue 10000000.0
+          -at ( $selectedObj + "." + $argName )
+          ( $argName + $selectedObj + "WindowParam" );
       }
     }
     if ( $argType == "string" && `attributeQuery -node $selectedObj -ex $argName` ) {
@@ -359,6 +385,17 @@ global proc int liquidHandleLIF( int $argNum, string $shaderName, string $select
   return $returnValue;
 }
 
+global proc deepShadowsOnOffCB ( string $selectedObj,
+                                 string $dsCtrl,
+                                 string $viCtrl,
+                                 string $psCtrl )
+{
+  int $onOff = `checkBoxGrp -q -v1 $dsCtrl`;
+  radioButtonGrp -e -enable $onOff $viCtrl;
+  intFieldGrp -e -enable $onOff $psCtrl;
+  liquidChangeCheckBoxAttr $selectedObj deepShadows $dsCtrl;
+}
+
 global proc liquidParamDialogWindow ( string $selectedObj, string $nodeType ) 
 {
   int $i;
@@ -376,118 +413,159 @@ global proc liquidParamDialogWindow ( string $selectedObj, string $nodeType )
       -widthHeight 500 300
       -iconName $shortShaderName 
       ( "ParamWindow" + $shortShaderName + $selectedObj );
-      string $buttonCmd = "liquid -p";
-      formLayout -numberOfDivisions 5 ( "paramForm" + $shortShaderName + $selectedObj );
-      scrollLayout -cr true ( "paramScroll" + $shortShaderName + $selectedObj ); 
-        columnLayout -adjustableColumn true;
-        if ( $nodeType == "Surface" ) {
-          text -label "Warning: Color and Opacity set Cs and";
-          text -label "Os - these may not be what you want!";
-          string $myCommand = ( "liquidChangeColAttr " + $selectedObj + " color color" + $selectedObj + "WindowParam" ) ;
-          float $cV[] = `getAttr ( $selectedObj + ".color" )`;
-          colorSliderGrp -adj 3 -label "Color" -rgbValue $cV[0] $cV[1] $cV[2] -cc $myCommand ( "color" + $selectedObj + "WindowParam" ) ;
-          attrFieldSliderGrp -adj 3 -label "Opacity" 
-            -cc ( "liquidParamAU " + $selectedObj)
-            -minValue -1000.0 -maxValue 1000.0
-            -sliderMinValue 0.0 -sliderMaxValue 1.0
-            -fieldMinValue -1000.0 -fieldMaxValue 1000.0
-            -at ( $selectedObj + ".opacity" )
-            ( "opacity" + $selectedObj + "WindowParam" );
+    string $buttonCmd = "liquid -p";
+    formLayout -numberOfDivisions 5 ( "paramForm" + $shortShaderName + $selectedObj );
+    scrollLayout -cr true ( "paramScroll" + $shortShaderName + $selectedObj ); 
+    columnLayout -adjustableColumn true;
+    if ( $nodeType == "Surface" ) {
+      text -label "Warning: Color and Opacity set Cs and";
+      text -label "Os - these may not be what you want!";
+      string $myCommand = ( "liquidChangeColAttr " + $selectedObj + " color color" + $selectedObj + "WindowParam" ) ;
+      float $cV[] = `getAttr ( $selectedObj + ".color" )`;
+      colorSliderGrp -adj 3 -label "Color" -rgbValue $cV[0] $cV[1] $cV[2] -cc $myCommand ( "color" + $selectedObj + "WindowParam" ) ;
+      attrFieldSliderGrp -adj 3 -label "Opacity" 
+        -cc ( "liquidParamAU " + $selectedObj)
+        -minValue -1000.0 -maxValue 1000.0
+        -sliderMinValue 0.0 -sliderMaxValue 1.0
+        -fieldMinValue -1000.0 -fieldMaxValue 1000.0
+        -at ( $selectedObj + ".opacity" )
+        ( "opacity" + $selectedObj + "WindowParam" );
+    }
+    if ( $nodeType == "Light" ) {
+      string $currentValue;
+      string $myCommand;
+      int $currentIntValue;
+
+      string $dsCtrl = ( "deepShadows" + $selectedObj + "WindowParam" );
+      string $viCtrl = ( "volumeInterpretation" + $selectedObj + "WindowParam" );
+      string $psCtrl = ( "pixelSamples" + $selectedObj + "WindowParam" );
+
+      $currentIntValue = `getAttr ( $selectedObj + ".deepShadows" )`;
+      $myCommand = ( "liquidChangeCheckBoxAttr " + $selectedObj + " deepShadows " + $dsCtrl) ;
+      checkBoxGrp -label "Deep shadows"
+        -v1 $currentIntValue
+        -l1 "use"
+        -changeCommand $myCommand
+        $dsCtrl;
+
+      $currentIntValue = `getAttr ( $selectedObj + ".volumeInterpretation" )`;
+      $myCommand = ( "liquidChangeRadioButtonAttr " + $selectedObj + " volumeInterpretation " + $viCtrl) ;
+      radioButtonGrp -numberOfRadioButtons 2
+        -label "Volume interpretation"
+        -labelArray2 "discrete" "continuous"
+        -sl $currentIntValue
+        -enable `checkBoxGrp -q -v1 $dsCtrl`
+        -changeCommand $myCommand
+        $viCtrl;
+
+      $currentIntValue = `getAttr ( $selectedObj + ".pixelSamples" )`;
+      $myCommand = ( "liquidChangeIntAttr " + $selectedObj + " pixelSamples " + $psCtrl) ;
+      intFieldGrp -label "Pixel samples"
+        -v1 $currentIntValue
+        -changeCommand $myCommand
+        -enable `checkBoxGrp -q -v1 $dsCtrl`
+        $psCtrl;
+
+      string $dsCC = "deepShadowsOnOffCB " + $selectedObj +
+        " " + $dsCtrl + " " + $viCtrl + " " + $psCtrl;
+      checkBoxGrp -e -cc $dsCC $dsCtrl;
+
+      $currentValue = `getAttr ( $selectedObj + ".shadowCamera" )`;
+      $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + "shadowCamera" + " " + "shadowCamera" + $selectedObj + "WindowParam" ) ;
+      textFieldGrp -adj 2
+        -label "Shadow camera" 
+        -text  $currentValue  
+        -changeCommand $myCommand
+        ( "shadowCamera" + $selectedObj + "WindowParam" );
+      popupMenu -button 3 cameraListMenu;
+      string $cameraList[] = `ls -cameras`;
+      string $camera;
+      for ( $camera in $cameraList ) {
+        menuItem -l $camera -c ( "textFieldGrp -e -tx " + $camera + " shadowCamera" + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + "shadowCamera" + " " + "shadowCamera" + $selectedObj + "WindowParam" )
+          ( $camera + $selectedObj +"Selection" );
+      }
+      setParent -menu ..;
+    }
+    if ( $nodeType == "Disp" || $nodeType == "Surface" ) {
+      if ( `attributeQuery -node $selectedObj -ex "displacementBound"` ) {
+        attrFieldSliderGrp -adj 3 -label "Displacement Bound" -cc ( "liquidParamAU " + $selectedObj) 
+          -minValue -1000.0 -maxValue 1000.0
+          -sliderMinValue 0.0 -sliderMaxValue 5.0
+          -fieldMinValue -1000.0 -fieldMaxValue 1000.0
+          -at ( $selectedObj + ".displacementBound" )
+          ( "displacementBound" + $selectedObj + "WindowParam" );
+      }
+    }
+
+    separator;
+
+    for ( $i = 0; $i < $numShaderArgs; $i++ ) {
+      if ( liquidHandleLIF( $i, $longShaderName, $selectedObj ) ) continue;
+      string $argName = `liquidGetSloInfo -argName $i $longShaderName`; 
+      string $argType = `liquidGetSloInfo -argType $i $longShaderName`;
+      int $argArrayLen = `liquidGetSloInfo -argArraySize $i $longShaderName`;
+      if ( $argType == "float" && `attributeQuery -node $selectedObj -ex $argName` ) {
+        if ( $argArrayLen > 0 ) {
+          string $myCommand = ( "liquidChangeTextDoubleAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" ) ;
+          textFieldGrp -label $argName -adj 2 -cc $myCommand ( $argName + $selectedObj + "WindowParam" );
+          liquidAssignTextDoubleAttr $selectedObj $argName ( $argName + $selectedObj + "WindowParam" ) ;
+        } else {
+          attrFieldSliderGrp -adj 3 -label $argName -cc ( "liquidParamAU " + $selectedObj) 
+            -minValue -10.0 -maxValue 10.0
+            -sliderMinValue 0.0 -sliderMaxValue 2.0
+            -fieldMinValue -10000000.0 -fieldMaxValue 10000000.0
+            -at ( $selectedObj + "." + $argName )
+            ( $argName + $selectedObj + "WindowParam" );
         }
+      }
+      if ( $argType == "string" && `attributeQuery -node $selectedObj -ex $argName` ) {
+        string $currentValue = `getAttr ( $selectedObj + "." + $argName )`;
+        string $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" ) ;
+        textFieldGrp -label $argName -adj 2 -text  $currentValue -cc $myCommand ( $argName + $selectedObj + "WindowParam" );
         if ( $nodeType == "Light" ) {
-          string $currentValue = `getAttr ( $selectedObj + ".shadowCamera" )`;
-          string $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + "shadowCamera" + " " + "shadowCamera" + $selectedObj + "WindowParam" ) ;
-          textFieldGrp -adj 2
-            -label "shadowCamera" 
-            -text  $currentValue  
-            -changeCommand $myCommand
-            ( "shadowCamera" + $selectedObj + "WindowParam" );
-          popupMenu -button 3 cameraListMenu;
-          string $cameraList[] = `ls -cameras`;
-          string $camera;
-          for ( $camera in $cameraList ) {
-            menuItem -l $camera -c ( "textFieldGrp -e -tx " + $camera + " shadowCamera" + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + "shadowCamera" + " " + "shadowCamera" + $selectedObj + "WindowParam" )
-                      ( $camera + $selectedObj +"Selection" );
-          }
+          popupMenu -button 3 ( "shadowListMenu"+$selectedObj+$argName );
+          menuItem -l "autoShadow" -c ( "textFieldGrp -e -tx autoShadow " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
+          menuItem -l "autoShadowPX" -c ( "textFieldGrp -e -tx autoShadowPX " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
+          menuItem -l "autoShadowPY" -c ( "textFieldGrp -e -tx autoShadowPY " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
+          menuItem -l "autoShadowPZ" -c ( "textFieldGrp -e -tx autoShadowPZ " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
+          menuItem -l "autoShadowNX" -c ( "textFieldGrp -e -tx autoShadowNX " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
+          menuItem -l "autoShadowNY" -c ( "textFieldGrp -e -tx autoShadowNY " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
+          menuItem -l "autoShadowNZ" -c ( "textFieldGrp -e -tx autoShadowNZ " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
           setParent -menu ..;
         }
-        if ( $nodeType == "Disp" || $nodeType == "Surface" ) {
-          if ( `attributeQuery -node $selectedObj -ex "displacementBound"` ) {
-          attrFieldSliderGrp -adj 3 -label "Displacement Bound" -cc ( "liquidParamAU " + $selectedObj) 
-            -minValue -1000.0 -maxValue 1000.0
-            -sliderMinValue 0.0 -sliderMaxValue 5.0
-            -fieldMinValue -1000.0 -fieldMaxValue 1000.0
-            -at ( $selectedObj + ".displacementBound" )
-            ( "displacementBound" + $selectedObj + "WindowParam" );
-          }
+      }
+      if ( $argType == "color" && `attributeQuery -node $selectedObj -ex $argName` ) {
+        string $myCommand = ( "liquidChangeColAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" ) ;
+        float $cV[] = `getAttr ( $selectedObj + "." + $argName )`;
+        colorSliderGrp -adj 3 -label $argName -rgbValue $cV[0] $cV[1] $cV[2] -cc $myCommand ( $argName + $selectedObj + "WindowParam" ) ;
+      }
+      if ( $argType == "point" || $argType == "vector" || $argType == "normal" ) {
+        if ( `attributeQuery -node $selectedObj -ex $argName` ) {
+          attrFieldGrp -precision 3 -label $argName -cc ( "liquidParamAU " + $selectedObj) -attribute ( $selectedObj + "." + $argName );
         }
-        for ( $i = 0; $i < $numShaderArgs; $i++ ) {
-          if ( liquidHandleLIF( $i, $longShaderName, $selectedObj ) ) continue;
-          string $argName = `liquidGetSloInfo -argName $i $longShaderName`; 
-          string $argType = `liquidGetSloInfo -argType $i $longShaderName`;
-          int $argArrayLen = `liquidGetSloInfo -argArraySize $i $longShaderName`;
-          if ( $argType == "float" && `attributeQuery -node $selectedObj -ex $argName` ) {
-            if ( $argArrayLen > 0 ) {
-              string $myCommand = ( "liquidChangeTextDoubleAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" ) ;
-              textFieldGrp -label $argName -adj 2 -cc $myCommand ( $argName + $selectedObj + "WindowParam" );
-              liquidAssignTextDoubleAttr $selectedObj $argName ( $argName + $selectedObj + "WindowParam" ) ;
-            } else {
-              attrFieldSliderGrp -adj 3 -label $argName -cc ( "liquidParamAU " + $selectedObj) 
-                -minValue -10.0 -maxValue 10.0
-                -sliderMinValue 0.0 -sliderMaxValue 2.0
-                -fieldMinValue -10000000.0 -fieldMaxValue 10000000.0
-                -at ( $selectedObj + "." + $argName )
-                ( $argName + $selectedObj + "WindowParam" );
-            }
-          }
-          if ( $argType == "string" && `attributeQuery -node $selectedObj -ex $argName` ) {
-            string $currentValue = `getAttr ( $selectedObj + "." + $argName )`;
-            string $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" ) ;
-            textFieldGrp -label $argName -adj 2 -text  $currentValue -cc $myCommand ( $argName + $selectedObj + "WindowParam" );
-            if ( $nodeType == "Light" ) {
-              popupMenu -button 3 ( "shadowListMenu"+$selectedObj+$argName );
-              menuItem -l "autoShadow" -c ( "textFieldGrp -e -tx autoShadow " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
-              menuItem -l "autoShadowPX" -c ( "textFieldGrp -e -tx autoShadowPX " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
-              menuItem -l "autoShadowPY" -c ( "textFieldGrp -e -tx autoShadowPY " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
-              menuItem -l "autoShadowPZ" -c ( "textFieldGrp -e -tx autoShadowPZ " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
-              menuItem -l "autoShadowNX" -c ( "textFieldGrp -e -tx autoShadowNX " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
-              menuItem -l "autoShadowNY" -c ( "textFieldGrp -e -tx autoShadowNY " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
-              menuItem -l "autoShadowNZ" -c ( "textFieldGrp -e -tx autoShadowNZ " + $argName + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" );
-              setParent -menu ..;
-            }
-          }
-          if ( $argType == "color" && `attributeQuery -node $selectedObj -ex $argName` ) {
-            string $myCommand = ( "liquidChangeColAttr " + $selectedObj + " " + $argName + " " + $argName + $selectedObj + "WindowParam" ) ;
-            float $cV[] = `getAttr ( $selectedObj + "." + $argName )`;
-            colorSliderGrp -adj 3 -label $argName -rgbValue $cV[0] $cV[1] $cV[2] -cc $myCommand ( $argName + $selectedObj + "WindowParam" ) ;
-          }
-          if ( $argType == "point" || $argType == "vector" || $argType == "normal" ) {
-            if ( `attributeQuery -node $selectedObj -ex $argName` ) {
-              attrFieldGrp -label $argName -cc ( "liquidParamAU " + $selectedObj) -attribute ( $selectedObj + "." + $argName );
-            }
-          }
-        }
-        setParent ( "paramForm" + $shortShaderName + $selectedObj );
-        button -label "Preview Shader" -w 110 -h 22 -command ( "liquidFluidPreviewShader " + $selectedObj ) ( "previewButton" + $shortShaderName + $selectedObj );
-        string $auCheck = `checkBox -label "Auto-Update" ( "auButton" + $selectedObj )`;
-        button -label "Close" -command ( "deleteUI ParamWindow" + $shortShaderName + $selectedObj ) ( "paramButton" + $shortShaderName + $selectedObj ); 
-        formLayout -edit 
-                -attachForm ( "previewButton" + $shortShaderName + $selectedObj ) "top" 0
-                -attachForm ( "previewButton" + $shortShaderName + $selectedObj ) "left" 0
-
-                -attachForm $auCheck "top" 0
-                -attachControl $auCheck "left" 0 ( "previewButton" + $shortShaderName + $selectedObj )
-
-                -attachForm ( "paramButton" + $shortShaderName + $selectedObj ) "bottom" 0
-                -attachForm ( "paramButton" + $shortShaderName + $selectedObj ) "left" 0
-                -attachForm ( "paramButton" + $shortShaderName + $selectedObj ) "right" 0
-
-                -attachControl ( "paramScroll" + $shortShaderName + $selectedObj ) "top" 0 ( "previewButton" + $shortShaderName + $selectedObj )
-                -attachForm ( "paramScroll" + $shortShaderName + $selectedObj ) "left" 0
-                -attachForm ( "paramScroll" + $shortShaderName + $selectedObj ) "right" 0
-                -attachControl ( "paramScroll" + $shortShaderName + $selectedObj ) "bottom" 0 ( "paramButton" + $shortShaderName + $selectedObj )
-                ( "paramForm" + $shortShaderName + $selectedObj );
-
-        showWindow ( "ParamWindow" + $shortShaderName + $selectedObj );
+      }
     }
+    setParent ( "paramForm" + $shortShaderName + $selectedObj );
+    button -label "Preview Shader" -w 110 -h 22 -command ( "liquidFluidPreviewShader " + $selectedObj ) ( "previewButton" + $shortShaderName + $selectedObj );
+    string $auCheck = `checkBox -label "Auto-Update" ( "auButton" + $selectedObj )`;
+    button -label "Close" -command ( "deleteUI ParamWindow" + $shortShaderName + $selectedObj ) ( "paramButton" + $shortShaderName + $selectedObj ); 
+    formLayout -edit 
+      -attachForm ( "previewButton" + $shortShaderName + $selectedObj ) "top" 0
+      -attachForm ( "previewButton" + $shortShaderName + $selectedObj ) "left" 0
+
+      -attachForm $auCheck "top" 0
+      -attachControl $auCheck "left" 0 ( "previewButton" + $shortShaderName + $selectedObj )
+
+      -attachForm ( "paramButton" + $shortShaderName + $selectedObj ) "bottom" 0
+      -attachForm ( "paramButton" + $shortShaderName + $selectedObj ) "left" 0
+      -attachForm ( "paramButton" + $shortShaderName + $selectedObj ) "right" 0
+
+      -attachControl ( "paramScroll" + $shortShaderName + $selectedObj ) "top" 0 ( "previewButton" + $shortShaderName + $selectedObj )
+      -attachForm ( "paramScroll" + $shortShaderName + $selectedObj ) "left" 0
+      -attachForm ( "paramScroll" + $shortShaderName + $selectedObj ) "right" 0
+      -attachControl ( "paramScroll" + $shortShaderName + $selectedObj ) "bottom" 0 ( "paramButton" + $shortShaderName + $selectedObj )
+      ( "paramForm" + $shortShaderName + $selectedObj );
+
+    showWindow ( "ParamWindow" + $shortShaderName + $selectedObj );
+  }
 }
