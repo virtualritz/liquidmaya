@@ -100,11 +100,12 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 //
   : handle( NULL )
 {
-  usingShadow = false;
-  deepShadows = false;
-  rayTraced = false;
-  raySamples = 16;
-  excludeFromRib = false;
+  usingShadow     = false;
+  shadowType      = stStandart;
+  shadowHiderType = shMin;
+  rayTraced       = false;
+  raySamples      = 16;
+  excludeFromRib  = false;
   MStatus status;
   LIQDEBUGPRINTF( "-> creating light\n" );
   rmanLight = false;
@@ -125,7 +126,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
     userShadowNamePlug.getValue( varVal );
     userShadowName = parseString( varVal );
   }
-  
+
   // check to see if the light is using raytraced shadows
 #ifdef DELIGHT
   lightDepNode.findPlug( MString( "useRayTraceShadows" ) ).getValue( rayTraced );
@@ -135,7 +136,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
     lightDepNode.findPlug( MString( "shadowRays" ) ).getValue( raysamples );
     raySamples = raysamples;
   }
-#endif  
+#endif
 
   lightName = fnLight.name();
 
@@ -234,6 +235,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                 stringPlugVal = parseString( parsingString );
                 parsingString = stringPlugVal;
                 parsingString.toLowerCase();
+/*                
                 if ( parsingString.substring(0, 9) == "autoshadow" ) {
                   MString suffix = "";
                   if ( stringPlugVal.length() > 10 )
@@ -254,6 +256,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                     tokenPointerArray.push_back( tokenPointerPair );
                   }
                 } else {
+
                   // Hmmmmmmm looks like a potential bug here ...
 #if 0
                   if ( stringPlugVal != MString( "" ) ){
@@ -262,10 +265,11 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                     tokenPointerPair.tokenString = RI_NULL;
                   }
 #endif
-                  tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
-                  tokenPointerPair.setTokenString( stringPlugVal.asChar(), stringPlugVal.length() );
-                  tokenPointerArray.push_back( tokenPointerPair );
-                }
+                  */
+                  
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
+                tokenPointerPair.setTokenString( stringPlugVal.asChar(), stringPlugVal.length() );
+                tokenPointerArray.push_back( tokenPointerPair );
               }
             }
             break; }
@@ -374,7 +378,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   rmanLight = false;
 #endif
   addAdditionalSurfaceParameters( fnLight.object() );
-  
+
   MColor colorVal = fnLight.color();
   color[ 0 ]  = colorVal.r;
   color[ 1 ]  = colorVal.g;
@@ -549,10 +553,29 @@ void liqRibLightData::write()
           /*if (( shadowName == "" ) || ( shadowName.substring(0, 9) == "autoshadow" )) {
             shadowName = liqglo_texDir + autoShadowName();
           }*/
+          MString	px = liqglo_textureDir + autoShadowName( pPX );
+          MString	nx = liqglo_textureDir + autoShadowName( pNX );
+          MString	py = liqglo_textureDir + autoShadowName( pPY );
+          MString	ny = liqglo_textureDir + autoShadowName( pNY );
+          MString	pz = liqglo_textureDir + autoShadowName( pPZ );
+          MString	nz = liqglo_textureDir + autoShadowName( pNZ );
+          RtString sfpx = const_cast<char*>( px.asChar() );
+          RtString sfnx = const_cast<char*>( nx.asChar() );
+          RtString sfpy = const_cast<char*>( py.asChar() );
+          RtString sfny = const_cast<char*>( ny.asChar() );
+          RtString sfpz = const_cast<char*>( pz.asChar() );
+          RtString sfnz = const_cast<char*>( nz.asChar() );
+          
           handle = RiLightSource( "liquidpoint",
                                   "intensity",            &intensity,
                                   "lightcolor",           color,
                                   "float decay",          &decay,
+                                  "string shadownamepx",         &sfpx,
+                                  "shadownamenx",         &sfnx,
+                                  "shadownamepy",         &sfpy,
+                                  "shadownameny",         &sfny,
+                                  "shadownamepz",         &sfpz,
+                                  "shadownamenz",         &sfnz,
                                   "float shadowfiltersize", &shadowFilterSize,
                                   "float shadowbias",     &shadowBias,
                                   "float shadowsamples",  &shadowSamples,
@@ -665,15 +688,11 @@ RtLightHandle liqRibLightData::lightHandle() const
   return handle;
 }
 
+
+/*
 MString liqRibLightData::autoShadowName( MString suffix ) const
 {
   MString shadowName;
-  /* if ( ( liqglo_DDimageName[ 0 ] == "" ) ) {
-    shadowName += liqglo_sceneName;
-  } else {
-    int pointIndex = liqglo_DDimageName[ 0 ].index( '.' );
-    shadowName += liqglo_DDimageName[ 0 ].substring( 0, pointIndex - 1 ).asChar();
-  } */
   shadowName += liqglo_sceneName;
   shadowName += "_";
   shadowName += lightName;
@@ -697,4 +716,47 @@ MString liqRibLightData::autoShadowName( MString suffix ) const
   }
 
   return shadowName;
+}*/
+
+
+MString liqRibLightData::autoShadowName( int PointLightDir ) const
+{
+  MString shadowName;
+  if ( ( liqglo_DDimageName[0] == "" ) ) {
+    shadowName += liqglo_sceneName;
+  } else {
+    int pointIndex = liqglo_DDimageName[0].index( '.' );
+    shadowName += liqglo_DDimageName[0].substring(0, pointIndex-1).asChar();
+  }
+  shadowName += "_";
+  shadowName += lightName;
+  shadowName += ( shadowType == stDeep )? "DSH": "SHD";
+
+  if ( PointLightDir != -1 ) {
+    switch ( PointLightDir ) {
+      case pPX:
+        shadowName += "_PX";
+        break;
+      case pPY:
+        shadowName += "_PY";
+        break;
+      case pPZ:
+        shadowName += "_PZ";
+        break;
+      case pNX:
+        shadowName += "_NX";
+        break;
+      case pNY:
+        shadowName += "_NY";
+        break;
+      case pNZ:
+        shadowName += "_NZ";
+        break;
+    }
+  }
+  shadowName += ".";
+  shadowName += (int)liqglo_lframe;
+  shadowName += ".tex";
+  return shadowName;
 }
+

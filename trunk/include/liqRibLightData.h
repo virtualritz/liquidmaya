@@ -51,7 +51,7 @@ public:
   bool          rmanLight;
   MString       assignedRManShader;
 
-  MString       autoShadowName( MString suffix = "" ) const;
+  MString       autoShadowName( int PointLightDir = -1 ) const;
 
 private:
   LightType     lightType;
@@ -78,6 +78,9 @@ private:
   bool          excludeFromRib;
   MString       userShadowName;
   MString       lightName;
+
+  ShadowType       shadowType; 
+  ShadowHiderType  shadowHiderType;
 
   MString       shadowName;
   MString       shadowNamePx;

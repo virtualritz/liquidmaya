@@ -49,6 +49,30 @@ uniform string liqSelfSubset() {
   return subset;
 }
 
+// Returns the adjusted number of samples based on the global user settings
+uniform float liqGlobalRayTraceSamples( uniform float samples ) {
+  uniform float usersamples;
+
+  uniform float breadthscale;
+  if( option( "user:tracebreadthfactor", breadthscale ) == 1 ) {
+    usersamples = ceil( samples * breadthscale );
+  } else {
+    usersamples = samples;
+  }
+
+  uniform float depthscale;
+  if( ( option( "user:tracedepthfactor", depthscale ) == 1 ) && ( depthscale > 1 ) ) {
+    uniform float raydepth;
+    rayinfo( "depth", raydepth );
+    if( depth > 0 ) {
+      depthscaler = pow( factor, depth );
+      usersamples = ceil( factor * depthscale );
+    }
+  }
+  
+  return usersamples;
+}
+
 
 #define LIQ_BAKE_INIT                                                         \
   float _liqBakePass = liqGetPass() == "bake";                                \
@@ -58,19 +82,19 @@ uniform string liqSelfSubset() {
 
 #define LIQ_BAKE_OR_LOOKUP( bakename, s, t, func, dest ) {                    \
   if( _liqBakePass != 0 ) {                                                   \
-    dest = func( s,t );                                                       \
-    string bakefilename = concat( objname, ".", bakename, ".bake" );          \
-    bake( bakefilename, s, t, dest );                                         \
+  dest = func( s,t );                                                       \
+  string bakefilename = concat( objname, ".", bakename, ".bake" );          \
+  bake( bakefilename, s, t, dest );                                         \
   } else {                                                                    \
-    string filename = concat( objname, ".", bakename, ".tx" );                \
-    dest = texture( filename, s, t );                                         \
+  string filename = concat( objname, ".", bakename, ".tx" );                \
+  dest = texture( filename, s, t );                                         \
   }                                                                           \
 }
 
 
 #define LIQ_BAKE( bakename, s, t, dest ) {                                    \
   if( _liqBakePass != 0 ) {                                                   \
-    string bakefilename = concat( objname, ".", bakename, ".bake" );          \
-    bake( bakefilename, s, t, dest );                                         \
+  string bakefilename = concat( objname, ".", bakename, ".bake" );          \
+  bake( bakefilename, s, t, dest );                                         \
   }                                                                           \
 }

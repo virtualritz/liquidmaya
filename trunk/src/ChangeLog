@@ -1,5 +1,11 @@
 Release 1.6.7 ------------------------------------------------------------------
 
+2005-02-04 mauritio
+    - Fixed orientation in liqPreviewShader (normals pointed inwards)
+    
+2005-01-30 mauritio
+    - Merged cubic point light shadow map support from Yuri in liqRibLightData (compiles ok but yet to be tested)
+
 2005-01-20 geohar
     - Merge to SF repository
       * Fix LIQDEBUGPRINTF for OSX

@@ -168,20 +168,20 @@ enum PointLightDirection {
 };
 
 
-enum PixelFilerType {
-  fBoxFilter            = 0,
-  fTriangleFilter       = 1,
-  fCatmullRomFilter     = 2,
-  fGaussianFilter       = 3,
-  fSincFilter           = 4,
+enum PixelFilterType {
+  pfBoxFilter            = 0,
+  pfTriangleFilter       = 1,
+  pfCatmullRomFilter     = 2,
+  pfGaussianFilter       = 3,
+  pfSincFilter           = 4,
 
-  fBlackmanHarrisFilter = 5,
-  fMitchellFilter       = 6,
-  fSepCatmullRomFilter  = 7,
+  pfBlackmanHarrisFilter = 5,
+  pfMitchellFilter       = 6,
+  pfSepCatmullRomFilter  = 7,
 
-  fLanczosFilter        = 8,
-  fBesselFilter         = 9,
-  fDiskFilter           = 10
+  pfLanczosFilter        = 8,
+  pfBesselFilter         = 9,
+  pfDiskFilter           = 10
 };
 
 enum HiderType {
@@ -192,36 +192,36 @@ enum HiderType {
   htZbuffer  = 4
 };
 
-enum DepthShadowType {
-  dtStandart = 0,
-  dtMinMax   = 1,
-  dtDeep     = 2
+enum ShadowType {
+  stStandart = 0,
+  stMinMax   = 1,
+  stDeep     = 2
 };
 
 enum VolumeInterpretation {
-  viNone       = 0, // for nor prman renderers
+  viNone       = 0, // renderer doesn't support DSMs
   viDiscrete   = 1,
   viContinuous = 2
 };
 
-enum ShadowFilterType {
-  sfNone     = 0,
-  sfMin      = 1,
-  sfMax      = 2,
-  sfAverage  = 3,
-  sfMidPoint = 4
+enum ShadowHiderType {
+  shNone     = 0,
+  shMin      = 1,
+  shMax      = 2,
+  shAverage  = 3,
+  shMidPoint = 4
 };
 
 enum TransmissionType { // shadow cast attribute
-  trNone    = 0,  // not set
+  trNone        = 0,  // not set
   trTransparent = 1,
-  trOpaque  = 2,
-  trOs    = 3,
-  trShader  = 4
+  trOpaque      = 2,
+  trOs          = 3,
+  trShader      = 4
 };
 
 struct structCamera {
-  MMatrix mat;
+  MMatrix  mat;
   double  neardb;
   double  fardb;
   double  hFOV;
@@ -264,8 +264,8 @@ struct structJob {
   RenderPass  pass;
 
   // shadows specific job options
-  DepthShadowType       shadowType;
-  ShadowFilterType      shadowFilter;
+  ShadowType            shadowType;
+  ShadowHiderType       shadowHiderType;
   VolumeInterpretation  volume;
   MString               deepShadowOption; // deep shadows display driver option
 
