@@ -74,7 +74,7 @@ extern "C" {
 #include <maya/MPointArray.h>
 
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liquidRibData.h>
 #include <liqRibParticleData.h>
 #include <liquidMemory.h>

@@ -65,7 +65,7 @@ extern "C" {
 #include <maya/MPlug.h>
 
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liquidRibObj.h>
 #include <liqRibSurfaceData.h>
 #include <liquidRibLightData.h>

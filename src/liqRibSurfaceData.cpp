@@ -71,7 +71,7 @@ extern "C" {
 #include<maya/MIntArray.h>
 
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liqRibSurfaceData.h>
 #include <liquidMemory.h>
 #include <liqRenderer.h>

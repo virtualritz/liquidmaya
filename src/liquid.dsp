@@ -177,7 +177,7 @@ SOURCE=.\liquidGetSloInfo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidGlobalHelpers.cpp
+SOURCE=.\liqGlobalHelpers.cpp
 # End Source File
 # Begin Source File
 
@@ -281,7 +281,7 @@ SOURCE=..\include\liquidGetSloInfo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidGlobalHelpers.h
+SOURCE=..\include\liqGlobalHelpers.h
 # End Source File
 # Begin Source File
 

@@ -67,7 +67,7 @@ extern "C" {
 #include <maya/MFloatPointArray.h>
 
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liquidRibMeshData.h>
 #include <liquidMemory.h>
 

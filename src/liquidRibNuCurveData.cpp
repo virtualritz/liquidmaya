@@ -63,7 +63,7 @@ extern "C" {
 #include <maya/MFnNurbsCurve.h>
 
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liquidRibData.h>
 #include <liquidRibNuCurveData.h>
 #include <liquidMemory.h>

@@ -65,7 +65,7 @@ extern "C" {
 #include <maya/MStringArray.h>
 
 #include <liquid.h>
-#include <liquidGlobalHelpers.h>
+#include <liqGlobalHelpers.h>
 #include <liquidRibCoordData.h>
 #include <liquidMemory.h>
 
