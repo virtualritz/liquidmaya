@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D LIQUIDVERSION=\"1.5.2\" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -72,7 +72,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D LIQUIDVERSION=\"1.5.2\" /D "PRMAN" /YX /FD /GZ /c
+# ADD CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "PRMAN" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -98,8 +98,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "../bin/win32/Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D LIQUIDVERSION=\"1.5.2\" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D LIQUIDVERSION=\"1.5.2\" /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "PRMAN" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -127,8 +127,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "../bin/win32/Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D LIQUIDVERSION=\"1.5.2\" /D "PRMAN" /YX /FD /GZ /c
-# ADD CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D LIQUIDVERSION=\"1.5.2\" /D "PRMAN" /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "PRMAN" /YX /FD /GZ /c
+# ADD CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I "$(MAYA_LOCATION)/include" /I "$(RMANTREE)/include" /I "../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "PRMAN" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
