@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -95,13 +97,14 @@ liquidRibGenData::liquidRibGenData( MObject obj, MDagPath path )
 	MFnDependencyNode fnNode( obj );
 	MPlug ribGenNodePlug = fnNode.findPlug( "liquidRibGen" );
 	MObject ribGenObj;
-	/* check the node to make sure it's not using the old ribGen assignment method, this is for backwards
-	compatibility.  If it's a kTypedAttribute that it's more than likely going to be a string! */
+	/* check the node to make sure it's not using the old ribGen
+	 * assignment method, this is for backwards compatibility.  If it's a
+	 * kTypedAttribute that it's more than likely going to be a string! */
 	if ( ribGenNodePlug.attribute().apiType() == MFn::kTypedAttribute ) {
 		MString ribGenNode;
 		ribGenNodePlug.getValue( ribGenNode );
 		MSelectionList ribGenList;
-		MStatus ribGenAddStatus = ribGenList.add( ribGenNode );
+		ribGenList.add( ribGenNode );
 		ribGenList.getDependNode( 0, ribGenObj );
 	} else {
 		if ( ribGenNodePlug.isConnected() ) {
