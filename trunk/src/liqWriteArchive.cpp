@@ -25,6 +25,7 @@
 
 #include <liquid.h>
 #include <liqWriteArchive.h>
+#include <liqRibNode.h>
 #include <liqRibObj.h>
 #include <liqGlobalHelpers.h>
 
@@ -149,11 +150,26 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
   }
 
   if (debug) { cout << "liquidWriteArchive: writing object: " << objDagPath.fullPathName() << endl; }
-  if (objDagPath.node().hasFn(MFn::kShape)) {
+  if (objDagPath.node().hasFn(MFn::kShape) || objDagPath.node().hasFn(MFn::kPlace3dTexture)) {
     // we're looking at a shape node, so write out the geometry to the RIB
     outputObjectName(objDagPath);
-    liqRibObj ribObj(objDagPath, MRT_Unknown);
-    ribObj.writeObject();
+    
+    liqRibNode ribNode;
+    ribNode.set(objDagPath, 0, MRT_Unknown);
+    
+    if ( ribNode.isRibBox ) {
+      RiArchiveRecord( RI_COMMENT, "Additional Rib:\n%s", ribNode.ribBoxString.asChar() );
+    }
+    if ( ribNode.isArchive ) {
+      RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode.archiveString.asChar() );
+    }
+    if ( ribNode.isDelayedArchive ) {
+      RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.delayedArchiveString.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
+    }
+
+    if (!ribNode.object(0)->ignore) {
+      ribNode.object(0)->writeObject();
+    }
   } else {
     // we're looking at a transform node
     bool wroteTransform = false;
