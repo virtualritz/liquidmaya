@@ -37,6 +37,8 @@
 
 #include <ri.h>
 
+// RI_VERBATIM is in the current RenderMan spec but 
+// some RIB libraries don't know about it
 #ifndef RI_VERBATIM
   #define RI_VERBATIM "verbatim"
 #endif
@@ -54,8 +56,9 @@ MSyntax liqWriteArchive::syntax()
   syn.addArg(MSyntax::kString); // object name
   syn.addArg(MSyntax::kString); // RIB output filename
 
-  syn.addFlag("rt", "rootTransform",   MSyntax::kBoolean);
-  syn.addFlag("ct", "childTransforms", MSyntax::kBoolean);
+  syn.addFlag("rt", "rootTransform");
+  syn.addFlag("ct", "childTransforms");
+  syn.addFlag("d",  "debug");
 
   return syn;
 }
@@ -83,22 +86,22 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
   outputRootTransform = false;
   int flagIndex = args.flagIndex("rt", "rootTransform");
   if (flagIndex != MArgList::kInvalidArgIndex) {
-    outputRootTransform   = args.asBool(flagIndex + 1, &status);
-    if (!status) {
-    MGlobal::displayError("error parsing rootTransform flag's bool argument");
-    }
+    outputRootTransform = true;
   }
 
   outputChildTransforms = true;
   flagIndex = args.flagIndex("ct", "childTransforms");
   if (flagIndex != MArgList::kInvalidArgIndex) {
-    outputChildTransforms = args.asBool(flagIndex + 1, &status);
-    if (!status) {
-    MGlobal::displayError("error parsing childTransform flag's bool argument");
-    }
+    outputChildTransforms = true;
+  }
+  
+  debug = false;
+  flagIndex = args.flagIndex("d", "debug");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    debug = true;
   }
 
-	return redoIt();
+  return redoIt();
 }
 
 MStatus liqWriteArchive::redoIt()
@@ -140,22 +143,28 @@ MStatus liqWriteArchive::redoIt()
 
 void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTransform)
 {
+  if (debug) { cout << "liquidWriteArchive: writing object: " << objDagPath.fullPathName() << endl; }
   if (objDagPath.node().hasFn(MFn::kShape)) {
     // we're looking at a shape node, so write out the geometry to the RIB
     outputObjectName(objDagPath);
     if (objDagPath.hasFn(MFn::kMesh)) {
+      if (debug) { cout << "liquidWriteArchive: writing mesh shape: " << objDagPath.fullPathName() << endl; }
       liqRibObj ribObj(objDagPath, MRT_Mesh);
       ribObj.writeObject();
+      if (debug) { cout << "liquidWriteArchive: finished writing mesh shape" << endl; }
     } else if (objDagPath.hasFn(MFn::kNurbsSurface)) {
+      if (debug) { cout << "liquidWriteArchive: writing nurbs shape: " << objDagPath.fullPathName() << endl; }
       liqRibObj ribObj(objDagPath, MRT_Nurbs);
       ribObj.writeObject();
+      if (debug) { cout << "liquidWriteArchive: finished writing nurbs shape" << endl; }
     } else {
-      MGlobal::displayWarning("skipping unknown geometry type in liquidWriteArchive");
+      MGlobal::displayWarning("skipping unknown geometry type '" + MString(objDagPath.node().apiTypeStr()) + "'in liquidWriteArchive");
     }
   } else {
     // we're looking at a transform node
     bool wroteTransform = false;
     if (writeTransform && (objDagPath.apiType() == MFn::kTransform)) {
+      if (debug) { cout << "liquidWriteArchive: writing transform: " << objDagPath.fullPathName() << endl; }
       // push the transform onto the RIB stack
       outputObjectName(objDagPath);
       MFnDagNode mfnDag(objDagPath);
@@ -173,7 +182,9 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
     }
     // go through all the children of this node and deal with each of them
     int nChildren = objDagPath.childCount();
+    if (debug) { cout << "liquidWriteArchive: object " << objDagPath.fullPathName() << "has " << nChildren << " children" << endl; }
     for(int i=0; i<nChildren; ++i) {
+      if (debug) { cout << "liquidWriteArchive: writing child number " << i << endl; }
       MDagPath childDagNode;
       MStatus stat = MDagPath::getAPathTo(objDagPath.child(i), childDagNode);
       if (stat) {
@@ -188,6 +199,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
       RiAttributeEnd();
     }
   }
+  if (debug) { cout << "liquidWriteArchive: finished writing object: " << objDagPath.fullPathName() << endl; }
 }
 
 void liqWriteArchive::outputIndentation()
