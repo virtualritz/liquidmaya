@@ -43,11 +43,11 @@ extern bool liqglo_shortShaderNames;
 extern MStringArray liqglo_DDimageName;
 
 liqExpression::liqExpression( char * str, char *objName ) :
+  destExists( false ),
+  destIsNewer( false ),
   isValid( true ),
   type( exp_None ),
-  object_name(""),
-  destExists( false ),
-  destIsNewer( false )
+  object_name("")
 {
   if ( IS_EXPRESSION( str ) ) {
     MStatus	stat;
