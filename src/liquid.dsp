@@ -229,39 +229,39 @@ SOURCE=.\liqRibGenData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibHT.cpp
+SOURCE=.\liqRibHT.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibLightData.cpp
+SOURCE=.\liqRibLightData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibLocatorData.cpp
+SOURCE=.\liqRibLocatorData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibMeshData.cpp
+SOURCE=.\liqRibMeshData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibNode.cpp
+SOURCE=.\liqRibNode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibNuCurveData.cpp
+SOURCE=.\liqRibNuCurveData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibObj.cpp
+SOURCE=.\liqRibObj.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibSubdivisionData.cpp
+SOURCE=.\liqRibSubdivisionData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibTranslator.cpp
+SOURCE=.\liqRibTranslator.cpp
 # End Source File
 # Begin Source File
 
@@ -333,7 +333,7 @@ SOURCE=..\include\liqRibGenData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibHT.h
+SOURCE=..\include\liqRibHT.h
 # End Source File
 # Begin Source File
 
@@ -341,27 +341,27 @@ SOURCE=..\include\liquidRibItHT.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibLightData.h
+SOURCE=..\include\liqRibLightData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibLocatorData.h
+SOURCE=..\include\liqRibLocatorData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibMeshData.h
+SOURCE=..\include\liqRibMeshData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibNode.h
+SOURCE=..\include\liqRibNode.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibNuCurveData.h
+SOURCE=..\include\liqRibNuCurveData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibObj.h
+SOURCE=..\include\liqRibObj.h
 # End Source File
 # Begin Source File
 
@@ -369,7 +369,7 @@ SOURCE=..\include\liquidRIBStatus.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibSubdivisionData.h
+SOURCE=..\include\liqRibSubdivisionData.h
 # End Source File
 # Begin Source File
 
@@ -377,7 +377,7 @@ SOURCE=..\include\liquidRibSurfaceData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidRibTranslator.h
+SOURCE=..\include\liqRibTranslator.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

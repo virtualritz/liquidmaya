@@ -218,39 +218,39 @@ SOURCE=.\liqRibGenData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibHT.cpp
+SOURCE=.\liqRibHT.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibLightData.cpp
+SOURCE=.\liqRibLightData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibLocatorData.cpp
+SOURCE=.\liqRibLocatorData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibMeshData.cpp
+SOURCE=.\liqRibMeshData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibNode.cpp
+SOURCE=.\liqRibNode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibNuCurveData.cpp
+SOURCE=.\liqRibNuCurveData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibObj.cpp
+SOURCE=.\liqRibObj.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibSubdivisionData.cpp
+SOURCE=.\liqRibSubdivisionData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidRibTranslator.cpp
+SOURCE=.\liqRibTranslator.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
