@@ -126,7 +126,7 @@ global proc liq_sbd_insp_dispAttributes( string $shape ) {
     $ck = `getAttr $attr`;
     $onCommand = ( "setAttr " + $attr + " true; " );
     $offCommand = ( "setAttr " + $attr + " false; " );
-    checkBoxGrp -label "Interpolate Boundaries" -l1 "" -v1 $ck -on1 $onCommand -of1 $offCommand interp;
+    checkBoxGrp -label "Interpolate Boundary" -l1 "" -v1 $ck -on1 $onCommand -of1 $offCommand interp;
   }
   if ( `attributeQuery -node $shape -ex "liqSubdivUVInterpolation"`) {
     $attr = $shape + ".liqSubdivUVInterpolation";
