@@ -44,9 +44,10 @@ class liquidRibTranslator : public MPxCommand {
 public:
 	liquidRibTranslator();
 	~liquidRibTranslator();
-	static void *	    creator();
+	static void * creator();
+	static MSyntax syntax();
 
-	MStatus	    doIt(const MArgList& args );
+	MStatus doIt(const MArgList& args );
 
 private: // Methods
 
@@ -54,9 +55,10 @@ private: // Methods
 
     MStatus scanScene(float, int );
 
-    void	portFieldOfView( int width, int height, double& horizontal, double& vertical, MFnCamera& fnCamera );
-    void	computeViewingFrustum (	double window_aspect, double& left, double& right, double& bottom, double& top, MFnCamera& cam );
-    void	getCameraInfo( MFnCamera &cam );
+    void portFieldOfView( int width, int height, double& horizontal, double& vertical, MFnCamera& fnCamera );
+    void computeViewingFrustum (	double window_aspect, double& left, double& right, double& bottom, double& top, MFnCamera& cam );
+    void getCameraInfo( MFnCamera &cam );
+
     // rib output functions
     MStatus liquidDoArgs( MArgList args );
     bool liquidInitGlobals();
