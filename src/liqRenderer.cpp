@@ -22,49 +22,34 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
-**
 */
 
-#ifndef liqRibSurfaceData_H
-#define liqRibSurfaceData_H
 
-/* ______________________________________________________________________
-** 
-** Liquid Rib Surface Data Header File
-** ______________________________________________________________________
-*/
+#include <liqRenderer.h>
 
-#include <liqRibData.h>
+#include <liqEntropyRenderer.h>
+#include <liqPrmanRenderer.h>
+#include <liqAqsisRenderer.h>
+#include <liqDelightRenderer.h>
 
-class liqRibSurfaceData : public liqRibData {
-public: // Methods
 
-  liqRibSurfaceData( MObject surface );
-  virtual ~liqRibSurfaceData();
+const liqRenderer & liquidRenderer()
+{
+  // first thing we should do is setup our renderer
 
-  virtual void write();
-  virtual bool compare( const liqRibData & other ) const;
-  virtual ObjectType type() const;
-
-  bool hasTrimCurves() const;
-  void writeTrimCurves() const;
-    
-private: // Data
-  bool hasTrims;
-
-  RtInt    nu, nv;
-  RtInt    uorder, vorder;
-  RtFloat *uknot;
-  RtFloat *vknot;
-  RtFloat  umin, umax,
-           vmin, vmax;
-  RtFloat *CVs;
-
-  // Trim information
-
-  RtInt    nloops;
-  RtInt   *ncurves, *order, *n;
-  RtFloat *knot, *minKnot, *maxKnot, *u, *v, *w;
-};
-
+  // TODO: got to make this much better in the future -- get the renderer
+  // and version from the globals UI
+#if defined(ENTROPY)
+  static liqRenderer *renderer = new liqEntropyRenderer("3.1");
+#elif defined(PRMAN)
+  static liqRenderer *renderer = new liqPrmanRenderer("3.9");
+#elif defined(AQSIS)
+  static liqRenderer *renderer = new liqAqsisRenderer("0.7.4");
+#elif defined(DELIGHT)
+  static liqRenderer *renderer = new liqDelightRenderer("1.0.0");
+#else
+  ERROR: unknown renderer
 #endif
+
+  return *renderer;
+}

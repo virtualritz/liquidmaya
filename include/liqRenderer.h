@@ -31,41 +31,43 @@
 
 #include <maya/MString.h>
 
+
 class liqRenderer
 {
 public:
-    enum e_renderer { REN_PRMAN, REN_ENTROPY, REN_AQSIS, REN_DELIGHT };
-    enum e_capability { BLOBBIES,
-			POINTS,
-			EYESPLITS };
+  enum e_renderer   { REN_PRMAN, REN_ENTROPY, REN_AQSIS, REN_DELIGHT };
+  enum e_capability { BLOBBIES, POINTS, EYESPLITS };
 
-    enum e_requirement	{
-			SWAPPED_UVS,	// transpose u & v direction on NURBS
-			__PREF		// use __Pref instead of Pref
-			};
+  enum e_requirement	{
+    SWAPPED_UVS,  // transpose u & v direction on NURBS
+    __PREF        // use __Pref instead of Pref
+    };
 
-    liqRenderer(e_renderer renderer, MString version)
-	: m_renderer(renderer), m_version(version)
-    {
-	// nothing else needed
-    }
+  liqRenderer(e_renderer renderer, MString version)
+  : m_renderer(renderer), m_version(version)
+  {
+    // nothing else needed
+  }
 
-    virtual ~liqRenderer()
-    {
-	// nothing else needed
-    }
+  virtual ~liqRenderer()
+  {
+    // nothing else needed
+  }
 
-    e_renderer		getRenderer() const
-			{ return m_renderer; }
-    MString		getVersion() const
-			{ return m_version; }
+  e_renderer getRenderer() const { return m_renderer; }
+  MString    getVersion()  const { return m_version;  }
 
-    virtual bool	supports(e_capability capability) const = 0;
-    virtual bool	requires(e_requirement requirement) const = 0;
+  virtual bool supports(e_capability capability)   const = 0;
+  virtual bool requires(e_requirement requirement) const = 0;
 
 private:
-    e_renderer	m_renderer;
-    MString	m_version;
+  e_renderer m_renderer;
+  MString    m_version;
 };
+
+
+// Singleton copy of liqRenderer object
+const liqRenderer & liquidRenderer();
+
 
 #endif

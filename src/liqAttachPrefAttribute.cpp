@@ -73,7 +73,6 @@ extern "C" {
 #include <maya/MFnNurbsSurface.h>
 #include <maya/MPxCommand.h>
 
-
 #include <liqAttachPrefAttribute.h>
 #include <liqEntropyRenderer.h>
 #include <liqPrmanRenderer.h>
@@ -81,113 +80,87 @@ extern "C" {
 #include <liqDelightRenderer.h>
 #include <liqMemory.h>
 
+
 liqAttachPrefAttribute::~liqAttachPrefAttribute()
 {
-    // nothing else needed
+  // nothing else needed
 }
 
 void* liqAttachPrefAttribute::creator()
 {
-    return new liqAttachPrefAttribute;
+  return new liqAttachPrefAttribute;
 }
 
 MStatus	liqAttachPrefAttribute::doIt( const MArgList& args )
 {
-    // TODO: got to make this much better in the future -- get the renderer
-    // and version from the globals UI
-#ifdef ENTROPY
-    liqRenderer* liqglo_renderer = new liqEntropyRenderer("3.1");
-#endif
+  MFnTypedAttribute tAttr;
+  MStatus status;
+    
+  for ( unsigned int i = 0; i < args.length(); i++ ) {
+    MSelectionList		nodeList;
+    nodeList.add( args.asString( i, &status ) );
+    MObject depNodeObj;
+    nodeList.getDependNode(0, depNodeObj);
+    MFnDependencyNode depNode( depNodeObj );
+    MObject prefAttr;
 
-#ifdef PRMAN
-    liqRenderer* liqglo_renderer = new liqPrmanRenderer("3.9");
-#endif
-
-#ifdef AQSIS
-    liqRenderer* liqglo_renderer = new liqAqsisRenderer("0.7.4");
-#endif
-
-#ifdef DELIGHT
-    liqRenderer* liqglo_renderer = new liqDelightRenderer("1.0.0");
-#endif
-
-    MFnTypedAttribute	tAttr;
-    MStatus		status;
-    unsigned		i;
-		     
-    for ( i = 0; i < args.length(); i++ ) {
-	MSelectionList		nodeList;
-	nodeList.add( args.asString( i, &status ) );
-	MObject depNodeObj;
-	nodeList.getDependNode(0, depNodeObj);
-	MFnDependencyNode depNode( depNodeObj );
-	MObject prefAttr;
-	
-	if (liqglo_renderer->requires(liqRenderer::__PREF))
-	{
-	    prefAttr = tAttr.create( "rmanP__Pref",
-				     "rmanP__Pref",
-				     MFnData::kPointArray );
-	}
-	else
-	{
-	    prefAttr = tAttr.create( "rmanPPref",
-				     "rmanPPref",
-				     MFnData::kPointArray );
-	}
-
-	if ( depNodeObj.hasFn( MFn::kNurbsSurface )) {
-	    MFnNurbsSurface nodeFn( depNodeObj );
-
-	    MPointArray nodePArray;
-
-	    MItSurfaceCV cvs( depNodeObj, liqglo_renderer->requires(liqRenderer::SWAPPED_UVS) == false);
-
-	    while(!cvs.isDone()) {
-		while(!cvs.isRowDone()) {
-		    MPoint pt = cvs.position(MSpace::kObject);
-		    nodePArray.append(pt);
-		    cvs.next();
-		}
-		cvs.nextRow();
-	    }
-
-	    nodeFn.addAttribute( prefAttr );
-	    MFnPointArrayData pArrayData;
-	    
-	    MObject prefDefault = pArrayData.create( nodePArray );
-	    MPlug nodePlug( depNodeObj, prefAttr );
-	    nodePlug.setValue( prefDefault );
-
-	} else if ( depNodeObj.hasFn( MFn::kMesh ) ) {
-	    MFnMesh		nodeFn( depNodeObj );
-	    MPointArray		nodePArray;
-	    unsigned int	count;
-
-	    nodeFn.addAttribute( prefAttr );
-
-	    // TODO: do we need to account for the altMeshExport algo that's
-	    // used in liquidRibMeshData? 
-	    for ( MItMeshPolygon polyIt( depNodeObj ); !polyIt.isDone(); polyIt.next()){
-		count = polyIt.polygonVertexCount();
-		
-		do {
-		    count--;
-		    unsigned	normalIndex = polyIt.normalIndex( count );
-		    MPoint	nodePoint = polyIt.point( count );
-
-		    nodePArray.set( nodePoint, normalIndex );
-
-		} while (count != 0);
-	    }
-
-	    MFnPointArrayData pArrayData;
-	    MObject prefDefault = pArrayData.create( nodePArray );
-	    MPlug nodePlug( depNodeObj, prefAttr );
-	    nodePlug.setValue( prefDefault );
-	}
+    if (liquidRenderer().requires(liqRenderer::__PREF)) {
+      prefAttr = tAttr.create( "rmanP__Pref", "rmanP__Pref", MFnData::kPointArray );
+    } else {
+      prefAttr = tAttr.create( "rmanPPref", "rmanPPref", MFnData::kPointArray );
     }
 
-    delete liqglo_renderer;
-    return MS::kSuccess;
-};
+    if ( depNodeObj.hasFn( MFn::kNurbsSurface )) {
+      MFnNurbsSurface nodeFn( depNodeObj );
+
+      MPointArray nodePArray;
+
+      MItSurfaceCV cvs( depNodeObj, liquidRenderer().requires(liqRenderer::SWAPPED_UVS) == false);
+
+      while(!cvs.isDone()) {
+        while(!cvs.isRowDone()) {
+          MPoint pt = cvs.position(MSpace::kObject);
+          nodePArray.append(pt);
+          cvs.next();
+        }
+        cvs.nextRow();
+      }
+
+      nodeFn.addAttribute( prefAttr );
+      MFnPointArrayData pArrayData;
+
+      MObject prefDefault = pArrayData.create( nodePArray );
+      MPlug nodePlug( depNodeObj, prefAttr );
+      nodePlug.setValue( prefDefault );
+
+    } else if ( depNodeObj.hasFn( MFn::kMesh ) ) {
+      MFnMesh		nodeFn( depNodeObj );
+      MPointArray		nodePArray;
+      unsigned int	count;
+
+      nodeFn.addAttribute( prefAttr );
+
+      // TODO: do we need to account for the altMeshExport algo that's
+      // used in liquidRibMeshData? 
+      for ( MItMeshPolygon polyIt( depNodeObj ); !polyIt.isDone(); polyIt.next()) {
+        count = polyIt.polygonVertexCount();
+
+        do {
+          count--;
+          unsigned	normalIndex = polyIt.normalIndex( count );
+          MPoint	nodePoint = polyIt.point( count );
+
+          nodePArray.set( nodePoint, normalIndex );
+
+        } while (count != 0);
+      }
+
+      MFnPointArrayData pArrayData;
+      MObject prefDefault = pArrayData.create( nodePArray );
+      MPlug nodePlug( depNodeObj, prefAttr );
+      nodePlug.setValue( prefDefault );
+    }
+  }
+
+  return MS::kSuccess;
+}
