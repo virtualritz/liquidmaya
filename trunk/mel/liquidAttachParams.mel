@@ -179,11 +179,11 @@ global proc liquidAttachParams ( string $currentNodeName )
   int $numOfArgs = `liquidGetSloInfo -numParam $shaderFileName`;
   for ( $i = 0; $i < $numOfArgs ; $i++ )
   {
-    string $argName = `liquidGetSloInfo -argName $i $shaderFileName`;
-    string $argType = `liquidGetSloInfo -argType $i $shaderFileName`;
-    string $argDetail = `liquidGetSloInfo -argDetail $i $shaderFileName`;
-    string $argDefault[] = `liquidGetSloInfo -argDefault $i $shaderFileName`;
-    int    $argArrayLen = `liquidGetSloInfo -argArraySize $i $shaderFileName`;
+    string $argName      = `liquidGetSloInfo -argName      $i $shaderFileName`;
+    string $argType      = `liquidGetSloInfo -argType      $i $shaderFileName`;
+    string $argDetail    = `liquidGetSloInfo -argDetail    $i $shaderFileName`;
+    string $argDefault[] = `liquidGetSloInfo -argDefault   $i $shaderFileName`;
+    int    $argArrayLen  = `liquidGetSloInfo -argArraySize $i $shaderFileName`;
     if ( !`attributeQuery -n $currentNodeName -ex $argName` )
     {
       if ( $argType == "float" ) {
