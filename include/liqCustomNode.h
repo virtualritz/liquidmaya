@@ -47,7 +47,8 @@
 // then Liquid will take care of the rest. 
 //
 // You will also need to link your plugin with liquid.so when 
-// compiling or you will get missing symbols when loading into Maya.
+// compiling (the same binary you use for rendering) or you will get 
+// missing symbols when loading into Maya.
 
 class liqCustomNode {
 public:
