@@ -22,6 +22,7 @@
 //
 //
 // RenderMan (R) is a registered trademark of Pixar
+
 //
 //  Creation Date:  May 12, 2000
 //
@@ -37,9 +38,13 @@
 // create the liquid menu interface
 global proc liquidAddPrefAttribute () 
 {
+  // TODO: The eventual deletion should happen in liquidAttachPrefAttribute in
+  // the C++ plug-in, in not here!!!
+  liquidDeletePrefAttribute;
+  
   string $nodes[] = `ls -dag -sl -type nurbsSurface -type mesh`;
 	string $currentNode;
-	for ( $currentNode in $nodes ) {
+	for ( $currentNode in $nodes ) {    
 		liquidAttachPrefAttribute $currentNode;
 	}
 }
@@ -49,8 +54,8 @@ global proc liquidDeletePrefAttribute ()
   string $nodes[] = `ls -dag -sl -type nurbsSurface -type mesh`;
 	string $currentNode;
 	for ( $currentNode in $nodes ) {
-		if ( `attributeQuery -node $currentNode -ex "rmanP_Pref"` ) {
-			deleteAttr ( $currentNode + ".rmanP_Pref" );
+		if ( `attributeQuery -node $currentNode -ex "rmanP__Pref"` ) {
+			deleteAttr ( $currentNode + ".rmanP__Pref" );
 		}
 	}
 }

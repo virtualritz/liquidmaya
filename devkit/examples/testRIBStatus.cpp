@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 #include <stdio.h>
@@ -73,6 +74,7 @@ testRIBStatus::~testRIBStatus() {
 int testRIBStatus::GenRIB( liquidRIBStatus * ribStatus ) {
 	/* initialize the rib generator! */
 	initRibGen( ribStatus );
+
 	
 	MFnDagNode dagNode( ribStatus->dagPath );
 	RiArchiveRecord( RI_COMMENT, "Liquid Rib Generation Test!" );

@@ -1,34 +1,46 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liquid", "liquid.vcproj", "{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}"
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liquid", "liquid.vcproj", "{B63AB660-9675-4D08-96DF-21AD5F4A8545}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liquidbin", "liquidbin.vcproj", "{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liquidbin", "liquidbin.vcproj", "{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = PRMan 10 Debug
-		ConfigName.1 = PRMan 10 Release
-		ConfigName.2 = PRMan 11 Debug
-		ConfigName.3 = PRMan 11 Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
+		3Delight Debug = 3Delight Debug
+		3Delight Release = 3Delight Release
+		PRMan 10 Debug = PRMan 10 Debug
+		PRMan 10 Release = PRMan 10 Release
+		PRMan 11 Debug = PRMan 11 Debug
+		PRMan 11 Release = PRMan 11 Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}.PRMan 10 Debug.ActiveCfg = PRMan 11 Release|Win32
-		{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}.PRMan 10 Debug.Build.0 = PRMan 11 Release|Win32
-		{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}.PRMan 10 Release.ActiveCfg = PRMan 10 Release|Win32
-		{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}.PRMan 10 Release.Build.0 = PRMan 10 Release|Win32
-		{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}.PRMan 11 Debug.ActiveCfg = PRMan 11 Debug|Win32
-		{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}.PRMan 11 Debug.Build.0 = PRMan 11 Debug|Win32
-		{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}.PRMan 11 Release.ActiveCfg = PRMan 11 Release|Win32
-		{78C991F1-74FA-4C92-A7B1-D2B347F46ABE}.PRMan 11 Release.Build.0 = PRMan 11 Release|Win32
-		{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}.PRMan 10 Debug.ActiveCfg = PRMan 11 Release|Win32
-		{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}.PRMan 10 Debug.Build.0 = PRMan 11 Release|Win32
-		{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}.PRMan 10 Release.ActiveCfg = PRMan 10 Release|Win32
-		{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}.PRMan 10 Release.Build.0 = PRMan 10 Release|Win32
-		{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}.PRMan 11 Debug.ActiveCfg = PRMan 11 Debug|Win32
-		{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}.PRMan 11 Debug.Build.0 = PRMan 11 Debug|Win32
-		{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}.PRMan 11 Release.ActiveCfg = PRMan 11 Release|Win32
-		{BA2C2D4D-6E4F-4906-BDB2-AEDF097B352C}.PRMan 11 Release.Build.0 = PRMan 11 Release|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.3Delight Debug.ActiveCfg = 3Delight Debug|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.3Delight Debug.Build.0 = 3Delight Debug|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.3Delight Release.ActiveCfg = 3Delight Release|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.3Delight Release.Build.0 = 3Delight Release|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.PRMan 10 Debug.ActiveCfg = PRMan 10 Debug|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.PRMan 10 Debug.Build.0 = PRMan 10 Debug|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.PRMan 10 Release.ActiveCfg = PRMan 10 Release|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.PRMan 10 Release.Build.0 = PRMan 10 Release|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.PRMan 11 Debug.ActiveCfg = PRMan 11 Debug|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.PRMan 11 Debug.Build.0 = PRMan 11 Debug|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.PRMan 11 Release.ActiveCfg = PRMan 11 Release|Win32
+		{B63AB660-9675-4D08-96DF-21AD5F4A8545}.PRMan 11 Release.Build.0 = PRMan 11 Release|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.3Delight Debug.ActiveCfg = PRMan 11 Debug|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.3Delight Debug.Build.0 = PRMan 11 Debug|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.3Delight Release.ActiveCfg = 3Delight Release|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.3Delight Release.Build.0 = 3Delight Release|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.PRMan 10 Debug.ActiveCfg = PRMan 10 Debug|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.PRMan 10 Debug.Build.0 = PRMan 10 Debug|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.PRMan 10 Release.ActiveCfg = PRMan 10 Release|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.PRMan 10 Release.Build.0 = PRMan 10 Release|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.PRMan 11 Debug.ActiveCfg = PRMan 11 Debug|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.PRMan 11 Debug.Build.0 = PRMan 11 Debug|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.PRMan 11 Release.ActiveCfg = PRMan 11 Release|Win32
+		{A874D0EE-9D23-4D42-8CBE-F884A4B9DB0D}.PRMan 11 Release.Build.0 = PRMan 11 Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

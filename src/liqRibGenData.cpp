@@ -83,7 +83,7 @@ extern bool liqglo_doMotion;
 extern bool liqglo_doDef;
 extern bool liqglo_doCompression;
 extern bool liqglo_doBinary;
-extern RtFloat liqglo_sampleTimes[5];
+extern RtFloat liqglo_sampleTimes[LIQMAXMOTIONSAMPLES];
 extern liquidlong liqglo_motionSamples;
 extern float liqglo_shutterTime;
 
@@ -93,7 +93,7 @@ liqRibGenData::liqRibGenData( MObject obj, MDagPath path )
 //      create a RIB Gen
 //
 {
-    if ( debugMode ) { printf("-> creating ribgen\n"); }
+  LIQDEBUGPRINTF( "-> creating ribgen\n" );
 	MFnDependencyNode fnNode( obj );
 	MPlug ribGenNodePlug = fnNode.findPlug( "liquidRibGen" );
 	MObject ribGenObj;
@@ -129,14 +129,14 @@ liqRibGenData::~liqRibGenData()
 //      class destructor
 //
 {
-    if ( debugMode ) { printf("-> killing ribgen\n"); }
+    LIQDEBUGPRINTF( "-> killing ribgen\n" );
 		lfree( ribStatus.objectName ); 
 		ribStatus.objectName = NULL; 
 }
 
 void liqRibGenData::write()
 {
-	if ( debugMode ) { printf("-> writing ribgen\n"); }
+	LIQDEBUGPRINTF( "-> writing ribgen\n" );
 #ifdef PRMAN
 #ifndef _WIN32
 	void *handle;
@@ -239,7 +239,7 @@ bool liqRibGenData::compare( const liqRibData & otherObj ) const
 //      if its animated
 //
 {
-	if ( debugMode ) { printf("-> comparing RibGen\n"); }
+	LIQDEBUGPRINTF( "-> comparing RibGen\n" );
 	if ( otherObj.type() != MRT_RibGen ) return false;
 	return true;
 }
@@ -250,6 +250,6 @@ ObjectType liqRibGenData::type() const
 //      return the geometry type
 //
 {
-	if ( debugMode ) { printf("-> returning RibGen type\n"); }
+	LIQDEBUGPRINTF( "-> returning RibGen type\n" );
 	return MRT_RibGen;
 }

@@ -40,16 +40,20 @@ global proc liquidReAttachParams ( string $currentNodeName, string $oldShader )
   string $shaderFileName = `getAttr ( $currentNodeName + ".rmanShaderLong" )`;
 
   string $nodeType = `objectType $currentNodeName`;
-  if ( $oldShader == "surface" ) { 
+  if ( $oldShader == "surface" ) {     
     if (!`attributeQuery -n $currentNodeName -ex ( "color" ) `) {
-      addAttr -longName "color" -at double3 $currentNodeName;
-      addAttr -defaultValue 0.5 -longName "red" -at double -parent "color" $currentNodeName;
-      addAttr -defaultValue 0.5 -longName "green" -at double -parent "color" $currentNodeName;
-      addAttr -defaultValue 0.5 -longName "blue" -at double -parent "color" $currentNodeName;
-      setAttr ( $currentNodeName + ".color" ) -type double3 1.0 1.0 1.0 ;
+      addAttr -longName "color" -usedAsColor -at float3 $currentNodeName;
+      addAttr -defaultValue 0.5 -longName "red" -at "float" -parent "color" $currentNodeName;
+      addAttr -defaultValue 0.5 -longName "green" -at "float" -parent "color" $currentNodeName;
+      addAttr -defaultValue 0.5 -longName "blue" -at "float" -parent "color" $currentNodeName;   
+      setAttr ( $currentNodeName + ".color" ) -type float3 1.0 1.0 1.0;
     }
     if (!`attributeQuery -n $currentNodeName -ex ( "opacity" ) `) {
-      addAttr -longName "opacity" -at "float" -defaultValue 1.0 $currentNodeName;
+      addAttr -longName "opacity" -usedAsColor -at float3 $currentNodeName;
+      addAttr -defaultValue 1.0 -longName "redO" -at "float" -parent "opacity" $currentNodeName;
+      addAttr -defaultValue 1.0 -longName "greenO" -at "float" -parent "opacity" $currentNodeName;
+      addAttr -defaultValue 1.0 -longName "blueO" -at "float" -parent "opacity" $currentNodeName;
+      setAttr ( $currentNodeName + ".opacity" ) -type float3 1.0 1.0 1.0;
     }
   }
       
@@ -107,6 +111,22 @@ global proc liquidReAttachParams ( string $currentNodeName, string $oldShader )
         setAttr ( $currentNodeName + "." + $argName ) -type "string" $defaultVal;
       }
       if ( $argType == "color" || $argType == "point" || $argType == "vector" || $argType == "normal" ) {
+      
+        if( $argName == "opacity" ) {
+          string $tmpAttrName = $currentNodeName + ".opacity";
+          // Moritz: this is for compatibility with old scenes that
+          // use a single "float" type opacity.
+          if ( `getAttr -type $tmpAttrName` == "float" ) {
+            float $tmpVal = `getAttr $tmpAttrName`;
+            deleteAttr $tmpAttrName;
+            addAttr -longName "opacity" -usedAsColor -at float3 $currentNodeName;
+            addAttr -longName "redO" -at "float" -parent "opacity" $currentNodeName;
+            addAttr -longName "greenO" -at "float" -parent "opacity" $currentNodeName;
+            addAttr -longName "blueO" -at "float" -parent "opacity" $currentNodeName;
+            setAttr ( $currentNodeName + ".opacity" ) -type float3 $tmpVal $tmpVal $tmpVal;
+          }
+        }      
+      
         float $defaultValA = $argDefault[0];
         float $defaultValB = $argDefault[1];
         float $defaultValC = $argDefault[2];
@@ -116,11 +136,14 @@ global proc liquidReAttachParams ( string $currentNodeName, string $oldShader )
         addAttr -longName ( $argName + "c" ) -at double -parent $argName $currentNodeName;
         setAttr ( $currentNodeName + "." + $argName ) -type double3 $defaultValA $defaultValB $defaultValC;
       }
-    } else {
-      if ( $argType == "string" ) {
-        string $defaultVal = $argDefault[0];
-        setAttr ( $currentNodeName + "." + $argName ) -type "string" $defaultVal;
-      }
-    } 
+    }
+    // Moritz: why is this code here? It essentially flushes the value of string fields!!!
+    //else {
+      
+      //if ( $argType == "string" ) {
+      //  string $defaultVal = $argDefault[0];
+      //  setAttr ( $currentNodeName + "." + $argName ) -type "string" $defaultVal;
+      //}
+    //} 
   }
 }

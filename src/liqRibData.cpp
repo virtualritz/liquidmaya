@@ -97,7 +97,7 @@ liqRibData::~liqRibData()
 #if 0	
   std::vector<rTokenPointer>::iterator iter = tokenPointerArray.begin();
   while ( iter != tokenPointerArray.end() ) {
-    if ( debugMode ) { printf("-> freeing addition ribdata: %s\n", iter->tokenName ); }
+    LIQDEBUGPRINTF( "-> freeing addition ribdata: %s\n", iter->tokenName );
     if ( iter->tokenFloats != NULL ) {
       lfree( iter->tokenFloats );
       iter->tokenFloats = NULL;
@@ -181,12 +181,12 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
   MFnDependencyNode nodeFn( node );
 
   // find the attributes
-  MStringArray floatAttributesFound  = FindAttributesByPrefix( "rmanF", nodeFn );
-  MStringArray pointAttributesFound  = FindAttributesByPrefix( "rmanP", nodeFn );
-  MStringArray vectorAttributesFound = FindAttributesByPrefix( "rmanV", nodeFn );
-  MStringArray normalAttributesFound = FindAttributesByPrefix( "rmanN", nodeFn );
-  MStringArray colorAttributesFound  = FindAttributesByPrefix( "rmanC", nodeFn );
-  MStringArray stringAttributesFound = FindAttributesByPrefix( "rmanS", nodeFn );
+  MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
+  MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodeFn );
+  MStringArray vectorAttributesFound = findAttributesByPrefix( "rmanV", nodeFn );
+  MStringArray normalAttributesFound = findAttributesByPrefix( "rmanN", nodeFn );
+  MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodeFn );
+  MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );
 
   if ( floatAttributesFound.length() > 0 ) {
     for ( i = 0; i < floatAttributesFound.length(); i++ ) {

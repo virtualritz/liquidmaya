@@ -84,7 +84,7 @@ extern  bool liquidBin;
 
 static const char* usage = 
 "Usage: liquid [options] filename\n\
-Please see the Liquid documentation for command line options.\n\
+Please see the Liquid Wiki for command line options.\n\
 The options match the liquid MEL command parameters.\n";
 
 

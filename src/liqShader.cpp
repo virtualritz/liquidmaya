@@ -24,6 +24,8 @@
 ** RenderMan (R) is a registered trademark of Pixar
 */
 
+#include <liquid.h>
+
 #include <maya/MPlug.h>
 #include <maya/MDoubleArray.h>
 #include <maya/MFnDoubleArrayData.h>
@@ -78,7 +80,7 @@ liqShader::liqShader( MObject shaderObj )
   MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
   rmanShaderNamePlug.getValue( rmShaderStr );
 
-  if ( debugMode ) { printf("-> Using Renderman Shader %s. \n", rmShaderStr.asChar() ) ;}
+  LIQDEBUGPRINTF( "-> Using Renderman Shader %s. \n", rmShaderStr.asChar() );
 
   int numArgs;
   numTPV = 0;
@@ -118,11 +120,17 @@ liqShader::liqShader( MObject shaderObj )
 
     MPlug opacityPlug = shaderNode.findPlug( "opacity" );
 
-    double opacityVal;
-    opacityPlug.getValue( opacityVal );
-    rmOpacity[0] = RtFloat( opacityVal );
-    rmOpacity[1] = RtFloat( opacityVal );
-    rmOpacity[2] = RtFloat( opacityVal );
+    // Moritz: changed opacity from float to color in MEL
+    opacityPlug.child(0).getValue( rmOpacity[0] );
+    opacityPlug.child(1).getValue( rmOpacity[1] );
+    opacityPlug.child(2).getValue( rmOpacity[2] );
+
+    // Moritz: below code is obsolete as opacity is a color now
+    //double opacityVal;
+    //opacityPlug.getValue( opacityVal );
+    //rmOpacity[0] = RtFloat( opacityVal );
+    //rmOpacity[1] = RtFloat( opacityVal );
+    //rmOpacity[2] = RtFloat( opacityVal );
 
     // find the parameter details and declare them in the rib stream
     numArgs = shaderInfo.getNumParam();

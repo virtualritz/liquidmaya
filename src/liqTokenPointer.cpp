@@ -1,21 +1,21 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
-** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+** "License"); you may not use this file except in compliance with the License. You may
+** obtain a copy of the License at http://www.mozilla.org/MPL/
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+** WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+** language governing rights and limitations under the License.
 **
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
+** The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+** Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+**
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -43,17 +43,17 @@ extern "C" {
 extern int debugMode;
 
 
-
 const char * liqTokenPointer::StringDetailType[] = {
   "uniform",
   "varying",
   "vertex",
   "constant",
-  "facevarying"
+  "facevarying",
+  "facevertex"
 };
 
 
-liqTokenPointer::liqTokenPointer() 
+liqTokenPointer::liqTokenPointer()
 {
   m_pType        = rFloat;
   m_tokenName[0] = '\0';
@@ -71,7 +71,7 @@ liqTokenPointer::liqTokenPointer()
   m_stringSize   = 0;
 }
 
-liqTokenPointer::liqTokenPointer( const liqTokenPointer &src)
+liqTokenPointer::liqTokenPointer( const liqTokenPointer &src )
 {
   LIQDEBUGPRINTF("-> copy constructing additional ribdata: " );
   LIQDEBUGPRINTF(src.m_tokenName);
@@ -89,7 +89,15 @@ liqTokenPointer::liqTokenPointer( const liqTokenPointer &src)
   m_eltSize     = 0;
   m_tokenSize   = 0;
   m_stringSize  = 0;
-  set( src.m_tokenName, src.m_pType, src.m_isNurbs, src.m_isArray, src.m_isUArray, src.m_arraySize );
+
+  if( src.m_isUArray )
+    // Moritz: this is the baddy: src.m_arraySize wasn't divided by m_uArraySize!
+    //         m_uArraySize actually is only used in the set() method to calculate
+    //         m_arraySize and in getRiDeclare()
+    // Todo:   Find a less Italian (non-spaghetticode) solution to this.
+    set( src.m_tokenName, src.m_pType, src.m_isNurbs, src.m_arraySize / src.m_uArraySize, src.m_uArraySize );
+  else
+    set( src.m_tokenName, src.m_pType, src.m_isNurbs, src.m_arraySize );
   m_dType = src.m_dType;
   if( m_pType != rString ) {
     setTokenFloats( src.m_tokenFloats );
@@ -102,7 +110,7 @@ liqTokenPointer::liqTokenPointer( const liqTokenPointer &src)
   LIQDEBUGPRINTF("-> done copy constructing additional ribdata: " );
   LIQDEBUGPRINTF(src.m_tokenName);
   LIQDEBUGPRINTF("\n" );
-}    
+}
 
 liqTokenPointer & liqTokenPointer::operator=( const liqTokenPointer &src)
 {
@@ -111,7 +119,10 @@ liqTokenPointer & liqTokenPointer::operator=( const liqTokenPointer &src)
   LIQDEBUGPRINTF("\n" );
 
   reset();
-  set( src.m_tokenName, src.m_pType, src.m_isNurbs, src.m_isArray, src.m_isUArray, src.m_arraySize );
+  if( src.m_isUArray )
+    set( src.m_tokenName, src.m_pType, src.m_isNurbs, src.m_arraySize / src.m_uArraySize, src.m_uArraySize );
+  else
+    set( src.m_tokenName, src.m_pType, src.m_isNurbs, src.m_arraySize );
   m_dType = src.m_dType;
   if( m_pType != rString ) {
     setTokenFloats( src.m_tokenFloats );
@@ -127,9 +138,10 @@ liqTokenPointer & liqTokenPointer::operator=( const liqTokenPointer &src)
   return *this;
 }
 
-liqTokenPointer::~liqTokenPointer() 
+liqTokenPointer::~liqTokenPointer()
 {
   LIQDEBUGPRINTF("-> freeing additional ribdata: " );
+
   LIQDEBUGPRINTF(m_tokenName);
   LIQDEBUGPRINTF("\n" );
 
@@ -155,7 +167,22 @@ void liqTokenPointer::reset()
   m_tokenName[0] = '\0';
 }
 
+int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs )
+{
+  return set( name, ptype, asNurbs, 0, 0 );
+}
+
+int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, unsigned int arraySize )
+{
+  return set( name, ptype, asNurbs, arraySize, 0 );
+}
+
 int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, bool asArray, bool asUArray, unsigned int arraySize )
+{
+  return set( name, ptype, asNurbs, arraySize, asUArray ? 2 : 0 );
+}
+
+int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, unsigned int arraySize, unsigned int uArraySize )
 {
   setTokenName( name );
   m_pType = ptype;
@@ -167,12 +194,12 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
     m_tokenString = NULL;
     switch( m_pType )
     {
-    case rFloat : 
-      m_eltSize = 1; 
+    case rFloat :
+      m_eltSize = 1;
       break;
-    case rPoint : 
+    case rPoint :
       if( m_isNurbs ) {
-        m_eltSize = 4 ;
+        m_eltSize = 4;
       } else {
         m_eltSize = 3;
       }
@@ -180,7 +207,7 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
     case rColor :
     case rNormal :
     case rVector :
-      m_eltSize = 3; 
+      m_eltSize = 3;
       break;
     case rHpoint :
       m_eltSize = 0;
@@ -188,12 +215,19 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
     case rString : // Useless but prevent warning at compile time
       m_eltSize = 0;
       break;
+    case rMatrix:
+      m_eltSize = 16;
+      break;
     }
-    m_isArray = asArray;
-    m_isUArray = asUArray;
+    m_isArray = arraySize != 0;
     unsigned long neededSize;
-    if( m_isArray || m_isUArray ) {
+    if( m_isArray ) {
       m_arraySize = arraySize;
+      m_isUArray = uArraySize != 0;
+      if( m_isUArray ) {
+        m_uArraySize = uArraySize;
+        m_arraySize *= m_uArraySize;
+      }
       neededSize = m_arraySize * m_eltSize * sizeof( RtFloat);
     } else {
       m_arraySize = 0;
@@ -219,7 +253,7 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
       }
       m_tokenSize = neededSize;
     }
-    if( debugMode ) printf( "Needed %ld got %ld\n", neededSize, m_tokenSize );
+    LIQDEBUGPRINTF( "Needed %ld got %ld\n", neededSize, m_tokenSize );
   } else {
     // Space will be allocated when string will be set
     m_isArray     = false;  // Do not handle array of strings
@@ -232,7 +266,7 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
     m_tokenSize   = 0;
   }
   return 1;
-} 
+}
 
 int liqTokenPointer::adjustArraySize( unsigned int size )
 {
@@ -245,7 +279,7 @@ int liqTokenPointer::adjustArraySize( unsigned int size )
       // Hmmmmm should get a way to report error message to caller
       if( !tmp )
         return 0;
-      m_tokenFloats = tmp; 
+      m_tokenFloats = tmp;
       m_tokenSize = neededSize;
     }
     m_arraySize = size;
@@ -263,15 +297,31 @@ DetailType liqTokenPointer::getDetailType( void )
   return m_dType;
 }
 
+ParameterType liqTokenPointer::getParameterType( void )
+{
+  return m_pType;
+}
+
 void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat val )
 {
 #ifdef DEBUG
   unsigned int max = m_tokenSize / sizeof( RtFloat);
   if( i >= max ) {
-    cout << "Error : out of space for tokens max : " << max << " index " << i << endl;
+    LIQDEBUGPRINTF( "setTokeFloat out of bounds, max: %d, asked: %d\n", max, i );
   }
 #endif
   m_tokenFloats[i] = val;
+}
+
+void liqTokenPointer::setTokenFloat( unsigned int i, unsigned int uIndex, RtFloat val )
+{
+#ifdef DEBUG
+  unsigned int max = m_tokenSize / sizeof( RtFloat);
+  if( i * m_uArraySize + uIndex >= max ) {
+    LIQDEBUGPRINTF( "setTokeFloat out of bounds, max: %d, asked: %d\n", max, i * m_uArraySize + uIndex );
+  }
+#endif
+  setTokenFloat( i * m_uArraySize + uIndex, val );
 }
 
 void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFloat z )
@@ -304,13 +354,18 @@ void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFl
   m_tokenFloats[4 * i + 3] = w;
 }
 
+char * liqTokenPointer::getTokenString( void )
+{
+  return m_tokenString;
+}
+
 void liqTokenPointer::setTokenString( const char *str, unsigned int length )
 {
   if( m_tokenString ) lfree( m_tokenString );
   m_tokenString = NULL;
   m_stringSize  = 0;
-  
-  m_tokenString = ( char * ) lmalloc( ( length + 1 ) * sizeof( char ) ); // Need space for '\0' 
+
+  m_tokenString = ( char * ) lmalloc( ( length + 1 ) * sizeof( char ) ); // Need space for '\0'
   if( m_tokenString ) {
     strcpy( m_tokenString, str );
     m_stringSize = length + 1;
@@ -326,9 +381,17 @@ void liqTokenPointer::setTokenName( const char * name )
 char * liqTokenPointer::getTokenName( void )
 {
   // Hmmmm should we handle token without name ?
-  return m_tokenName;
+  return m_detailedTokenName;
 }
 
+char * liqTokenPointer::getDetailedTokenName( void )
+{
+  // Hmmmm should we handle token without name ?
+  getRiDeclare( m_detailedTokenName );
+  strcat( m_detailedTokenName, " " );
+  strcat( m_detailedTokenName, m_tokenName );
+  return m_detailedTokenName;
+}
 
 RtPointer liqTokenPointer::getRtPointer( void )
 {
@@ -345,6 +408,9 @@ void liqTokenPointer::getRiDeclare( char *declare  )
   case rString:
     sprintf( declare, "%s string", StringDetailType[m_dType]  );
     break;
+  case rMatrix:
+    sprintf( declare, "%s matrix", StringDetailType[m_dType]  );
+    break;  
   case rFloat:
     if( m_isUArray ) {
       sprintf( declare, "%s float[%d]", StringDetailType[m_dType], m_uArraySize );
@@ -380,7 +446,7 @@ void liqTokenPointer::getRiDeclare( char *declare  )
 bool liqTokenPointer::isBasicST( void )
 {
   // Not st or, if it is, face varying
-  if( m_tokenName[0] != 's' || m_tokenName[1] != 't' || m_tokenName[2] != '\0' || m_dType == rFaceVarying ) {
+  if( m_tokenName[0] != 's' || m_tokenName[1] != 't' || m_tokenName[2] != '\0' || m_dType == rFaceVarying || m_dType == rFaceVertex ) {
     return false;
   }
   return true;

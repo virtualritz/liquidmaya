@@ -120,8 +120,8 @@ global proc liquidFileBrowserDIRDCC( string $fileWidget, string $dirWidget, stri
 global proc liquidInitCFD()
 {
 	global string $liquidCFD;
-	string $homeDirectory = `getenv "HOME"`;
-	$liquidCFD = $homeDirectory;
+	string $homeDirectory = `getenv "LIQUIDHOME"`;
+	$liquidCFD = $homeDirectory + "/shaders";
 	string $getINI = `liquidINIGet liquid shader_dir`;
 	if ( $getINI != "" ) {
 		$liquidCFD = $getINI;

@@ -1,21 +1,21 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
-** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+** "License"); you may not use this file except in compliance with the License. You may
+** obtain a copy of the License at http://www.mozilla.org/MPL/
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+** WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+** language governing rights and limitations under the License.
 **
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
+** The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+** Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+**
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -28,7 +28,7 @@
 #define liquid_H
 
 /* ______________________________________________________________________
-** 
+**
 ** Liquid Header File
 ** ______________________________________________________________________
 */
@@ -60,8 +60,16 @@
 extern int debugMode;
 #endif
 
-#ifndef LIQDEBUGPRINTF
-#define LIQDEBUGPRINTF(msg) if( debugMode ) printf((msg));
+
+#if !defined(LINUX) && !defined(OSX)
+#  ifndef LIQDEBUGPRINTF
+#    define LIQDEBUGPRINTF(msg) if( debugMode ) printf((msg));
+#  endif
+#else
+// gcc compatible variable args macro version of LIQDEBUGPRINTF
+#  ifndef LIQDEBUGPRINTF
+#    define LIQDEBUGPRINTF(msg,...) if( debugMode ) printf((msg),## __VA_ARGS__);
+#  endif
 #endif
 
 #ifndef LIQCHECKSTATUS
@@ -71,6 +79,7 @@ extern int debugMode;
     return (stat); \
   }
 #endif
+
 
 // Set up a textcoord type for poly uv export routine
 //typedef RtFloat textcoords[2];
@@ -88,8 +97,8 @@ typedef long liquidlong;
 #endif
 #endif
 
-// Equivalence test for floats.  Equality tests are dangerous for floating      
-// point values 
+// Equivalence test for floats.  Equality tests are dangerous for floating
+// point values
 //
 
 #define FLOAT_EPSILON 0.0001
@@ -101,18 +110,19 @@ inline bool equiv( float val1, float val2 )
 // Specifies how the start/end frame is set
 //
 #define USE_TIMESLIDER 1
-#ifndef  MM_TO_INCH
-#define MM_TO_INCH 0.03937
-#endif 
+#ifndef MM_TO_INCH
+#  define MM_TO_INCH 0.03937
+#endif
 
+#define LIQMAXMOTIONSAMPLES 16
 
 ///////////
 // Enums //
 ///////////
 enum ObjectType {
-  MRT_Unknown         = 0, 
-  MRT_Nurbs           = 1, 
-  MRT_Mesh            = 2, 
+  MRT_Unknown         = 0,
+  MRT_Nurbs           = 1,
+  MRT_Mesh            = 2,
   MRT_Light           = 3,
   MRT_Weirdo          = 4,
   MRT_NuCurve         = 5,
@@ -127,18 +137,18 @@ enum ObjectType {
 };
 
 enum LightType {
-  MRLT_Unknown  = 0, 
-  MRLT_Ambient  = 1, 
-  MRLT_Distant  = 2, 
-  MRLT_Point	  = 3, 
-  MRLT_Spot	    = 4, 
-  MRLT_Rman	    = 5, 
-  MRLT_Area	    = 6 
+  MRLT_Unknown  = 0,
+  MRLT_Ambient  = 1,
+  MRLT_Distant  = 2,
+  MRLT_Point	= 3,
+  MRLT_Spot	    = 4,
+  MRLT_Rman	    = 5,
+  MRLT_Area	    = 6
 };
 
 enum AnimType {
-  MRX_Const         = 0, 
-  MRX_Animated      = 1, 
+  MRX_Const         = 0,
+  MRX_Animated      = 1,
   MRX_Incompatible  = 2
 };
 
@@ -164,9 +174,50 @@ enum PixelFilerType {
   fCatmullRomFilter     = 2,
   fGaussianFilter       = 3,
   fSincFilter           = 4,
+
   fBlackmanHarrisFilter = 5,
   fMitchellFilter       = 6,
-  fSepCatmullRomFilter  = 7
+  fSepCatmullRomFilter  = 7,
+
+  fLanczosFilter        = 8,
+  fBesselFilter         = 9,
+  fDiskFilter           = 10
+};
+
+enum HiderType {
+  htHidden   = 0,
+  htPhoton   = 1,
+  htRaytrace = 2,
+  htOpenGL   = 3,
+  htZbuffer  = 4
+};
+
+enum DepthShadowType {
+  dtStandart = 0,
+  dtMinMax   = 1,
+  dtDeep     = 2
+};
+
+enum VolumeInterpretation {
+  viNone       = 0, // for nor prman renderers
+  viDiscrete   = 1,
+  viContinuous = 2
+};
+
+enum ShadowFilterType {
+  sfNone     = 0,
+  sfMin      = 1,
+  sfMax      = 2,
+  sfAverage  = 3,
+  sfMidPoint = 4
+};
+
+enum TransmissionType { // shadow cast attribute
+  trNone    = 0,  // not set
+  trTransparent = 1,
+  trOpaque  = 2,
+  trOs    = 3,
+  trShader  = 4
 };
 
 struct structCamera {
@@ -185,6 +236,15 @@ struct structCamera {
   double  focalLength;
 };
 
+enum RenderPass {
+  rpHeroPass    = 0,
+  rpShadowPass  = 1, // specilal shadow pass for compositing purpose
+  rpShadowMap   = 2,
+  rpReflectMap  = 3,
+  rpEnvMap      = 4,
+  rpMakeTexture = 5
+};
+
 struct structJob {
   int      width, height;
   float    aspectRatio;
@@ -197,13 +257,25 @@ struct structJob {
   bool     isShadow;
   bool     isMinMaxShadow;
   bool     isMidPointShadow;
+
+  short   samples;
+  short   shadingRate;
+
+  RenderPass  pass;
+
+  // shadows specific job options
+  DepthShadowType       shadowType;
+  ShadowFilterType      shadowFilter;
+  VolumeInterpretation  volume;
+  MString               deepShadowOption; // deep shadows display driver option
+
   bool     hasShadowCam;
   bool     isShadowPass;
   int      shadowPixelSamples;
   int      shadowVolumeInterpretation;
   bool     isPoint;
   PointLightDirection pointDir;
-  structCamera camera[5];
+  structCamera camera[ LIQMAXMOTIONSAMPLES ];
   MDagPath path;
   MDagPath shadowCamPath;
   MString  jobOptions;
@@ -211,5 +283,12 @@ struct structJob {
   bool     deepShadows;
 };
 
+typedef enum {
+  TAG_CREASE,
+  TAG_HOLE,
+  TAG_CORNER,
+  TAG_BOUNDARY,
+  TAG_STITCH
+} SBD_EXTRA_TAG;
 
 #endif

@@ -38,7 +38,7 @@
 
 #include <ri.h>
 #include <liqRibStatus.h>
-#include "zlib.h"
+//#include "zlib.h"
 class liqRibGen;
 
 extern "C" liqRibGen    *RIBGenCreate();

@@ -1,21 +1,21 @@
 //
 //
-// The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-// "License"); you may not use this file except in compliance with the License. You may 
-// obtain a copy of the License at http://www.mozilla.org/MPL/ 
-// 
-// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-// WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-// language governing rights and limitations under the License. 
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+// "License"); you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at http://www.mozilla.org/MPL/
 //
-// The Original Code is the Liquid Rendering Toolkit. 
-// 
-// The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-// Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-// 
-// Contributor(s): Berj Bannayan. 
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+// language governing rights and limitations under the License.
 //
-// 
+// The Original Code is the Liquid Rendering Toolkit.
+//
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+//
+// Contributor(s): Berj Bannayan.
+//
+//
 // The RenderMan (R) Interface Procedures and Protocol are:
 // Copyright 1988, 1989, Pixar
 // All Rights Reserved
@@ -34,6 +34,13 @@
 //  Returns:
 //
 
+global proc liquidDebugPrint(string $debugMsg)
+{
+/*global int $g_ilrDebugEnabled;
+  if ($g_ilrDebugEnabled) */
+    print("// LIQUID DEBUG: " + $debugMsg + "\n");
+}
+
 
 global proc liquidViewLastRib()
 {
@@ -46,7 +53,7 @@ global proc liquidViewLastRib()
   if ( `file -q -exists $ribFileName` ) {
     print("Viewing RIB file: " + $ribFileName + "\n");
     if (`about -win`) {
-      system ( "start notepad " + $ribFileName);
+      system ( "start notepad " + $ribFileName );
     } else if(`about -mac`) {
       system ( "open " + $ribFileName + " & ");
     } else {
@@ -63,12 +70,12 @@ global proc liquidViewLastRenderScript()
     warning("liquidGlobals.lastRenderScript is not set - no render script has been generated during this session");
     return;
   }
-    
+
   string $renderScriptName = `getAttr liquidGlobals.lastRenderScript`;
   if ( `file -q -exists $renderScriptName` ) {
     print("Viewing render script: " + $renderScriptName + "\n");
     if (`about -win`) {
-      system ( "start notepad " + $renderScriptName);
+      system ( "start notepad " + $renderScriptName );
     } else if(`about -mac`) {
       system ( "open " + $renderScriptName + " & ");
     } else {
@@ -79,14 +86,14 @@ global proc liquidViewLastRenderScript()
   }
 }
 
-// This delete's any references to liquid in the scene. 
+// This delete's any references to liquid in the scene.
 global proc liquidCleanup()
 {
-  string $yesno = `confirmDialog -title "Confirm" 
-              -message ( "Are you sure you want to clear all references to liquid?" )
-              -button "Yes" -button "No" -defaultButton "Yes"
+  string $yesno = `confirmDialog -title "Confirm"
+              -message ( "Are you sure you want to remove all references\nto Liquid in this Maya scene?" )
+              -button "Yes" -button "No" -defaultButton "No"
               -cancelButton "No" -dismissString "No"`;
-              
+
   if ( $yesno == "Yes" ) {
     // delete the render globals
     if ( `objExists liquidGlobals` ) {
@@ -105,7 +112,7 @@ global proc liquidCleanup()
       delete $currentShader;
       string $nodeOn;
       for ( $nodeOn in $connections ) {
-        deleteAttr ( $nodeOn + ".liquid" + $type + "ShaderNode" ); 
+        deleteAttr ( $nodeOn + ".liquid" + $type + "ShaderNode" );
       }
     }
     // delete the shaders in the scene and all connections
@@ -123,7 +130,7 @@ global proc liquidCleanup()
         delete $currentShader;
         string $nodeOn;
         for ( $nodeOn in $connections ) {
-          deleteAttr ( $nodeOn + ".liquid" + $type + "ShaderNode" ); 
+          deleteAttr ( $nodeOn + ".liquid" + $type + "ShaderNode" );
         }
       }
     }
@@ -148,7 +155,7 @@ global proc string liquidINIGet(string $component, string $var )
         }
       }
       fclose $fileId;
-    } 
+    }
   }
   return $returnValue;
 }
@@ -157,3 +164,54 @@ global proc string liquidAddCoordSystem() {
   string $name = `shadingNode -asUtility place3dTexture`;
   return `rename $name "liquidCoordSys"`;
 }
+
+global proc liquidAddReflectionUI() {
+  liquidAddReflection();
+}
+
+global proc liquidAddReflection() {
+
+  string $plane = `plane -s 2 -r 0 0 0`;
+  string $shapes[] = `listRelatives -shapes $plane`;
+  string $name = $shapes[0];
+
+  // `attributeQuery -node $texNode -ex "liqReflectMapGen"`
+
+  addAttr -ln liqReflectionMapGen -at bool -dv true $name;
+  addAttr -ln liqReflectionSet -dt "string" $name;
+  addAttr -ln liqReflectionMapSize -at short -dv 512 $name;
+  addAttr -ln liqReflectionShadingRate -at short -dv 5 $name;
+  addAttr -ln liqReflectionEveryFrame -at bool -dv true $name;
+
+  rename $plane "liqReflectionMapGen";
+}
+
+global proc liquidAddEnvironmentUI() {
+  liquidAddEnvironment();
+}
+
+global proc liquidAddEnvironment() {
+  string $name = `shadingNode -asUtility place3dTexture`;
+  addAttr -ln liqEnvMapGen -at bool -dv true $name;
+  addAttr -ln liqEnvironmentSet -dt "string" $name;
+  addAttr -ln liqEnvironmentMapSize -at short -dv 512 $name;
+  addAttr -ln liqEnvironmentShadingRate -at short -dv 5 $name;
+  addAttr -ln liqReflectionEveryFrame -at bool -dv true $name;
+
+  rename $name "liqEnvironmentMapGen";
+}
+
+// Substitutes ALL occurences of a regular expression in source
+global proc string liquidSubstituteAll( string $pattern, string $source, string $replace )
+{
+  string $result, $oldResult;
+  $result = $source;
+  do {
+    $oldResult = $result;
+    $result = substitute( $pattern, $result, $replace );
+  } while( ! ( $oldResult == $result ) );
+
+  return $result;
+};
+
+

@@ -3,21 +3,21 @@
 ** The contents of this file are subject to the Mozilla Public License Version
 ** 1.1 (the "License"); you may not use this file except in compliance with
 ** the License. You may obtain a copy of the License at
-** http://www.mozilla.org/MPL/ 
-** 
+** http://www.mozilla.org/MPL/
+**
 ** Software distributed under the License is distributed on an "AS IS" basis,
 ** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
 ** for the specific language governing rights and limitations under the
-** License. 
+** License.
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
-** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** 
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -31,7 +31,7 @@
 #define liqRibNode_H
 
 /* ______________________________________________________________________
-** 
+**
 ** Liquid Rib Node Header File
 ** ______________________________________________________________________
 */
@@ -43,25 +43,28 @@
 #include <maya/MDagPath.h>
 #include <maya/MObjectArray.h>
 
-class liqRibNode {   
-public:
+//enum transmissions {TRANS, OPAQUE, OS, SHADER};
+
+class liqRibNode {
+  public:
+  
     liqRibNode( liqRibNode * instanceOfNode = NULL,
                 const MString instanceOfNodeStr = "" );
     ~liqRibNode();
-      
+
     void set( const MDagPath &, int, ObjectType objType, int particleId = -1 );
-         
+
     liqRibNode *       next;
     MString            name;
-  
+
     AnimType           matXForm;
     AnimType           bodyXForm;
-  
-    liqRibObj *        object(int);
+
+    liqRibObj *        object( unsigned );
     liqRibObj *        no;
-    
+
     MDagPath &         path();
-     
+
     MColor             color;
     bool               matteMode;
     bool               doubleSided;
@@ -92,24 +95,119 @@ public:
     RtBound  bound;
     bool     doDef;    /* Used for per-object deformation blur */
     bool     doMotion;  /* Used for per-object transformation blur */
-    float    nodeShadingRate;
-    bool     nodeShadingRateSet;
+
     bool     belongsToCsgOperation;
-    bool     isPhantomObject;
 
     MString  getInstanceStr() { return instanceStr; };
-    bool     hasNObjects(int n);
-    bool     colourOverridden() { return overrideColour; };
-       
+    bool     hasNObjects( unsigned n );
+    bool     colorOverridden() { return overrideColor; };
+
+    struct shading {
+      float    shadingRate;
+      bool     diceRasterOrient;
+      MColor    color;
+      MColor    opacity;
+      bool      matte;
+    } shading;
+
+    struct trace {
+      bool      sampleMotion;
+      bool      displacements;
+      float     bias;
+      int       maxDiffuseDepth;
+      int       maxSpecularDepth;
+    } trace;
+
+    struct visibility {
+      bool      camera;
+      bool      trace;
+      bool      photon;
+      enum {
+        TRANSMISSION_TRANSPARENT = 0,
+        TRANSMISSION_OPAQUE      = 1,
+        TRANSMISSION_OS          = 2,
+        TRANSMISSION_SHADER      = 3
+      } transmission;
+    } visibility;
+
+    struct irradiance {
+      float     shadingRate;
+      int       nSamples;
+      float     maxError;
+      MString   handle;
+      enum {
+        FILEMODE_NONE = 0,
+        FILEMODE_READ = 1,
+        FILEMODE_WRITE = 2,
+        FILEMODE_READ_WRITE = 3
+      } fileMode;
+    } irradiance;
+
+    struct photon {
+      MString   globalMap;
+      MString   causticMap;
+      enum {
+        SHADINGMODEL_MATTE = 0,
+        SHADINGMODEL_GLASS = 1,
+        SHADINGMODEL_WATER = 2,
+        SHADINGMODEL_CHROME = 3,
+        SHADINGMODEL_TRANSPARENT = 4
+      } shadingModel;
+      int estimator;
+    } photon;    
+    
+    struct motion {
+      bool    transformationBlur;
+      bool    deformationBlur;
+      int     samples;
+      float   factor;
+    } motion;
+
+    struct rib {
+      MString box;
+      MString generator;
+      MString readArchive;
+      MString delayedReadArchive;
+    } rib;
+    
+    struct grouping {
+      MString membership;
+    } grouping;
+
+    struct delight {
+      struct {
+        MString groupName;
+        MColor  scattering;
+        MColor  absorption;
+        float  refraction;
+        float  scale;
+        float  shadingRate;
+      } subSurface;
+    } delight;
+
+    struct subdivMesh {
+      bool  render;
+      bool  interpBounday;
+      bool  edgeCreasing;
+    } subdivMesh;
+
+    struct curve {
+      bool  render;
+      float constantwidth;
+    } curve;
+
+    bool    instanceInheritPPColor;
+    bool    invisible;
+
 private:
-        
+
     MDagPath    DagPath;
-    liqRibObj  *objects[5];
+    liqRibObj  *objects[LIQMAXMOTIONSAMPLES];
     liqRibNode *instance;
     MString     instanceStr;
     MString     ribGenName;
     bool        hasRibGenAttr;
-    bool        overrideColour;
+    bool        overrideColor;
 };
 
 #endif

@@ -35,6 +35,56 @@ global string $liquidFluidLastShaderDirectory = "";
 global string $liquidFluidShaderList[];
 global string $liquidShaderSpec = "*";
 
+
+global proc string[] liquidGetMultiListerSelection() {
+  string $targets[];
+
+  // Get the MultiLister panel.  There _should_ be only one
+  // of these.
+  string $scriptPanels[] = `getPanel -scriptType "multiListerPanel"`;
+  
+  // Just in case...  
+  if ( size( $scriptPanels ) > 1 )
+  {
+    warning ( "More than one active multiListerPanel!" );
+  }
+  
+  string $nameRoot = $scriptPanels[0];
+  
+  // Get the control for the panel.
+  // Append the Panel name to get the "topLayout"
+  string $control = `scriptedPanel -q -control $nameRoot`;
+  
+  // If no control is present, MultiLister is not open
+  if ( "" != $control )
+  {
+    string $topLayout = $control + "|" + $nameRoot;
+  
+    // And finally, the active MultiLister  
+    $theLister = `findActiveLister $topLayout $nameRoot`; 
+  
+    if ( `listerEditor -exists $theLister` )
+    {
+      // Code unabashedly copy and paste from 'buildMultiListerEditMenu.mel'
+      
+      int $inSelectMode = `listerEditor -q -inSelectMode $theLister`;
+  
+      if($inSelectMode == 0) 
+      {
+        // get highlight list
+        $targets = `listerEditor -q -highlight $theLister`;
+      }
+      else
+      {
+        $targets = `ls -sl`;      
+      }
+    }
+  }
+  
+  return $targets;
+}
+
+
 global proc liquidFluidUpdateList() 
 {
   global string $liquidShaderSpec;
@@ -128,7 +178,7 @@ global proc liquidFluidAssignCMD ()
         for ( $currentNode in $selectedNode ) {
           liquidAssignShaderNode $currentNode $currentSelected;
         }
-        $selectedNode = `getMultiListerSelection`;
+        $selectedNode = `liquidGetMultiListerSelection`;
         for ( $currentNode in $selectedNode ) {
           liquidAssignShaderNode $currentNode $currentSelected;
         }
@@ -152,7 +202,7 @@ global proc liquidFluidUnAssignCMD ()
   } else {
     string $selectedNode[] = `ls -dag -set -shapes -sl`;
     if ( size( $selectedNode ) == 0 ) {
-        $selectedNode = `getMultiListerSelection`;
+        $selectedNode = `liquidGetMultiListerSelection`;
     }
     string $type = `liquidGetShaderNodeType $selectedShader[0]`;
     string $currentNode;
@@ -306,17 +356,46 @@ global proc liquidFluidPreviewSelectedShader()
 
 global proc liquidFluidPreviewShader( string $shaderNode )
 {
-    if ( !`liquidGlobalsExists` ) {
-      liquidCreateGlobals;
-    }
-    string $args = ( "liquidPreviewShader -sphere -shader " + $shaderNode );
-    int $sshn = `getAttr liquidGlobals.shortShaderNames`;
+  if ( !`liquidGlobalsExists` ) {
+    liquidCreateGlobals;
+  }
+    
+  string $args = ( "liquidPreviewShader -shader " + $shaderNode );
+    
+  int $primitive = `getAttr liquidGlobals.previewPrimitive`;
+  if( $primitive == 1 ) {
+    $args += " -cube";
+  } else if( $primitive == 2 ) {
+    $args += " -cylinder";
+  } else if( $primitive == 3 ) {
+    $args += " -torus";
+  } else if( $primitive == 4 ) {
+    $args += " -plane";
+  } else if( $primitive == 5 ) {
+    $args += " -teapot";
+  }    
+ string $driver = `getAttr liquidGlobals.previewDisplayDriver`;
+  if( $driver != "" ) {
+    $args += " -dd " + $driver;	
+  }
+  int $type = `getAttr liquidGlobals.previewConnectionType`;
+  if( $type  == 1 ) {
+    $args += " -pipe";
+  }
+
+  int $size = `getAttr liquidGlobals.previewSize`; 
+
+  $args += " -ds " + $size;
+  int $sshn = `getAttr liquidGlobals.shortShaderNames`;
+  if( $sshn != 0 ) {
     $args = $args + ( " -sshn " + $sshn );
-    string $previewCommand = `getAttr liquidGlobals.previewer`;
-    if( $previewCommand != "" ) {
-      $args = $args + ( " -renderer " + $previewCommand );
-    }
-    eval( $args );
+  }
+  string $previewCommand = `getAttr liquidGlobals.previewRenderer`;
+  if( $previewCommand != "" ) {
+    $args = $args + ( " -renderer " + $previewCommand );
+  }
+  print $args;
+  eval( $args );
 }
 
 global proc liquidSelectNodeCMD() 
@@ -360,17 +439,28 @@ global proc string liquidShaderBrowser()
     setParent ..;
 
   string $shaderListPop = `popupMenu -p liquidFluidShaderList`;
-      menuItem -label "Reload" -command liquidFluidReloadCMD liquidFluidReloadButton;
-      menuItem -label "Duplicate" -command liquidFluidDuplicateCMD liquidFluidDuplicateButton;
-      menuItem -label "Remove" -command liquidFluidRemoveCMD liquidFluidRemoveButton;
-      menuItem -label "Remove Unused" -command liquidFluidRemoveUnusedCMD liquidFluidRemoveUnusedButton;
+
       menuItem -label "Assign" -command liquidFluidAssignCMD liquidFluidAssignButton;
       menuItem -label "Unassign" -command liquidFluidUnAssignCMD liquidFluidUnassignButton;
-      menuItem -label "Pick Objects" -command liquidFluidPickObjectsCMD liquidFluidPickButton;
-      menuItem -label "Pick Assigned" -command liquidFluidPickAssignedCMD liquidFluidPickAssignButton;
+
+	  menuItem -d true;
+	  menuItem -label "Pick Objects" -command liquidFluidPickObjectsCMD liquidFluidPickButton;
+      menuItem -label "Pick Shader" -command liquidFluidPickAssignedCMD liquidFluidPickAssignButton;
+
+	  menuItem -d true;
+      menuItem -label "Reload" -command liquidFluidReloadCMD liquidFluidReloadButton;
+	  menuItem -label "Duplicate" -command liquidFluidDuplicateCMD liquidFluidDuplicateButton;
+
+	  menuItem -d true;
+      menuItem -label "Remove" -command liquidFluidRemoveCMD liquidFluidRemoveButton;
+      menuItem -label "Remove Unused" -command liquidFluidRemoveUnusedCMD liquidFluidRemoveUnusedButton;
+      
+      menuItem -d true;      
       menuItem -label "Render" -command "liquid -GL" liquidFluidRender;
-      menuItem -label "Select Node" -command liquidSelectNodeCMD liquidFluidSelectNode;	
-      menuItem -label "Render Globals" -command liquidGlobalsWindow liquidFluidRendG;
+      menuItem -label "Select Shader Node" -command liquidSelectNodeCMD liquidFluidSelectNode;	
+
+	  menuItem -d true;
+      menuItem -label "Render Globals..." -command liquidGlobalsWindow liquidFluidRendG;
 
   formLayout -e
     -attachForm $listSpec "top" 0
@@ -408,24 +498,30 @@ global proc liquidFluid ()
 
       string $listPaneLayout = `paneLayout -configuration "vertical2"`;
         string $shaderBrowser = `liquidShaderBrowser`;
-        string $fileBrowser[] = `liquidFileBrowserIn "*.sl?" "liquidFluidLoadCMD"`;
+
+        string $shaderExt = "*." + `getAttr liquidGlobals.compiledShaderExt`;
+        string $fileBrowser[] = `liquidFileBrowserIn $shaderExt "liquidFluidLoadCMD"`;
       setParent ..;
 
-    // this let's you add the ability of turning the fluis buttons off and just using the popup menus
+    // this let's you add the ability of turning the fluid buttons off and just using the popup menus
     string $getINI = `liquidINIGet fluid buttons`;
     if ( $getINI == "true" ) {	
 
-      button -label "Load" -command ( "liquidFluidLoadCMD " + $fileBrowser[1] ) liquidFluidImportButton;
+
+      button -label "Assign" -command liquidFluidAssignCMD liquidFluidAssignButton;
+	  button -label "Pick Objects" -command liquidFluidPickObjectsCMD liquidFluidPickButton;
+      button -label "Pick Shader" -command liquidFluidPickAssignedCMD liquidFluidPickAssignButton;
+
+      button -label "Load..." -command ( "liquidFluidLoadCMD " + $fileBrowser[1] ) liquidFluidImportButton;
       button -label "Reload" -command liquidFluidReloadCMD liquidFluidReloadButton;
       button -label "Duplicate" -command liquidFluidDuplicateCMD liquidFluidDuplicateButton;
+
+	  button -label "Unassign" -command liquidFluidUnAssignCMD liquidFluidUnassignButton;
       button -label "Remove" -command liquidFluidRemoveCMD liquidFluidRemoveButton;
       button -label "Remove Unused" -command liquidFluidRemoveUnusedCMD liquidFluidRemoveUnusedButton;
-      button -label "Assign" -command liquidFluidAssignCMD liquidFluidAssignButton;
-      button -label "Unassign" -command liquidFluidUnAssignCMD liquidFluidUnassignButton;
-      button -label "Pick Objects" -command liquidFluidPickObjectsCMD liquidFluidPickButton;
-      button -label "Pick Assigned" -command liquidFluidPickAssignedCMD liquidFluidPickAssignButton;
+      
       button -label "Render" -command "liquid -GL" liquidFluidRender;
-      button -label "Select Node" -command liquidSelectNodeCMD liquidFluidSelectNode;
+      button -label "Select Shader Node" -command liquidSelectNodeCMD liquidFluidSelectNode;
 
       setParent ..;
 

@@ -38,9 +38,9 @@
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
-static const char * LIQUIDVERSION = 
-#include "liquid.version"
-;
+//static const char *LIQUIDVERSION = 
+//#include "liquid.version"
+//;
 #define DEFINED_LIQUIDVERSION
 #endif
 
@@ -143,7 +143,7 @@ public:
       
       // setup the correct indentation amount to prepend onto each line
       std::string indent;
-      for(unsigned int i=0; i<indentLevel; ++i) {
+      for(unsigned i=0; i<indentLevel; ++i) {
         indent += "  ";
       }
       
@@ -157,36 +157,36 @@ public:
       ss << indent << "Task -title {" << title << "}";
        
       if (!childJobs.empty()) { 
-        ss << " -subtasks {" << endl;
+        ss << " -subtasks {" << std::endl;
         for(std::vector<Job>::const_iterator child=childJobs.begin(); child!=childJobs.end(); ++child) {
-          ss << child->getALF(indentLevel+1) << endl;
+          ss << child->getALF(indentLevel+1) << std::endl;
         }
         ss << indent << "}";
       }
       
       if (!commands.empty()) {
-        ss << " -cmds {" << endl;
+        ss << " -cmds {" << std::endl;
         for(std::vector<Cmd>::const_iterator command=commands.begin(); command!=commands.end(); ++command) {
-          ss << indent << "  " << command->getALF() << endl;
+          ss << indent << "  " << command->getALF() << std::endl;
         }
         ss << indent << "}";
       }
       
       if (!cleanupCommands.empty()) {
-        ss << " -cleanup {" << endl;
+        ss << " -cleanup {" << std::endl;
         for(std::vector<Cmd>::const_iterator cleanup=cleanupCommands.begin(); cleanup!=cleanupCommands.end(); ++cleanup) {
-          ss << indent << "  " << cleanup->getALF() << endl;
+          ss << indent << "  " << cleanup->getALF() << std::endl;
         }
         ss << indent << "}";
       }
       
       if (chaserCommand != "") {
-        ss << " -chaser {" << endl;
-        ss << indent << "  " << chaserCommand << endl;
+        ss << " -chaser {" << std::endl;
+        ss << indent << "  " << chaserCommand << std::endl;
         ss << indent << "}";
       }
-
-	  return ss.str();
+      
+      return ss.str();
     }
     
     std::string getXML(unsigned int indentLevel=0) const
@@ -194,46 +194,46 @@ public:
       std::stringstream ss;
      
       std::string indent;
-      for(unsigned int i=0; i<indentLevel; ++i) {
+      for(unsigned i=0; i<indentLevel; ++i) {
         indent += "  ";
       }
        
       if (isInstance) {
-        ss << indent << "<instance>" << title << "</instance>" << endl;
+        ss << indent << "<instance>" << title << "</instance>" << std::endl;
         return ss.str();
       }
       
-      ss << indent << "<task>" << endl;
-      ss << indent << "<title>" << title << "</title>" << endl;
+      ss << indent << "<task>" << std::endl;
+      ss << indent << "<title>" << title << "</title>" << std::endl;
       if (!childJobs.empty()) {
-        ss << indent << "<subtasks>" << endl;
+        ss << indent << "<subtasks>" << std::endl;
         for(std::vector<Job>::const_iterator child=childJobs.begin(); child!=childJobs.end(); ++child) {
           ss << child->getXML(indentLevel+1);
         }
-        ss << indent << "</subtasks>" << endl;
+        ss << indent << "</subtasks>" << std::endl;
       }
             
       if (!commands.empty()) {
-        ss << indent << "<commands>" << endl;
+        ss << indent << "<commands>" << std::endl;
         for(std::vector<Cmd>::const_iterator command=commands.begin(); command!=commands.end(); ++command) {
-          ss << indent << "  " << command->getXML() << endl;
+          ss << indent << "  " << command->getXML() << std::endl;
         }
-        ss << indent << "</commands>" << endl;
+        ss << indent << "</commands>" << std::endl;
       }
             
       if (!cleanupCommands.empty()) {
-        ss << indent << "<cleanup>" << endl;
+        ss << indent << "<cleanup>" << std::endl;
         for(std::vector<Cmd>::const_iterator cleanup=cleanupCommands.begin(); cleanup!=cleanupCommands.end(); ++cleanup) {
-          ss << indent << "  " << cleanup->getXML() << endl;
+          ss << indent << "  " << cleanup->getXML() << std::endl;
         }
-        ss << indent << "</cleanup>" << endl;
+        ss << indent << "</cleanup>" << std::endl;
       }       
       
       if (chaserCommand != "") {
-        ss << indent << "<chaser>" << chaserCommand << "</chaser>" << endl;
+        ss << indent << "<chaser>" << chaserCommand << "</chaser>" << std::endl;
       }     
 
-      ss << indent << "</task>" << endl;
+      ss << indent << "</task>" << std::endl;
             
       return ss.str();
     }
@@ -299,7 +299,7 @@ public:
   {
     std::stringstream ss;
     
-    ss << "##AlfredToDo 3.0" << endl;
+    ss << "##AlfredToDo 3.0" << std::endl;
     ss << "Job -title {" << title << "(liquid job)}";
     ss << " -comment {#Created By Liquid " << LIQUIDVERSION << "}";
     ss << " -atleast " << minServers << " " << "-atmost " << maxServers;
@@ -307,20 +307,18 @@ public:
     if (!jobs.empty()) {
       ss << " -subtasks { ";
       for(std::map<int, Job>::const_iterator job=jobs.begin(); job!=jobs.end(); ++job) {
-        ss << endl << job->second.getALF(1);    
+        ss << std::endl << job->second.getALF(1);    
       }
-      ss << endl << "}";
+      ss << std::endl << "}";
     }
     
     if (!cleanupCommands.empty()) {
-      ss << " -cleanup { " << endl;
+      ss << " -cleanup { " << std::endl;
       for(std::vector<Cmd>::const_iterator cmd=cleanupCommands.begin(); cmd!=cleanupCommands.end(); ++cmd) {
-        ss << "  " << cmd->getALF() << endl;
+        ss << "  " << cmd->getALF() << std::endl;
       }
-      ss << "}";
+      ss << "}" << std::endl;
     }
-
-	ss << endl;
     
     return ss.str();
   }
@@ -329,29 +327,29 @@ public:
   {
     std::stringstream ss;
     
-    ss << "<?xml version=\"1.0\"?>" << endl;
-    ss << "<renderscript>" << endl;
-    ss << "  <title>" << title << "</title>" << endl;
-    ss << "  <minservers>" << minServers << "</minservers>" << endl;
-    ss << "  <maxservers>" << maxServers << "</maxservers>" << endl;
+    ss << "<?xml version=\"1.0\"?>" << std::endl;
+    ss << "<renderscript>" << std::endl;
+    ss << "  <title>" << title << "</title>" << std::endl;
+    ss << "  <minservers>" << minServers << "</minservers>" << std::endl;
+    ss << "  <maxservers>" << maxServers << "</maxservers>" << std::endl;
     
     if (!jobs.empty()) {
-      ss << "  <subtasks>" << endl;
+      ss << "  <subtasks>" << std::endl;
       for(std::map<int, Job>::const_iterator job=jobs.begin(); job!=jobs.end(); ++job) {
         ss << job->second.getXML(1);    
       }
-      ss << "  </subtasks>" << endl;
+      ss << "  </subtasks>" << std::endl;
     }
     
     if (!cleanupCommands.empty()) {
-      ss << "  <cleanup>" << endl;
+      ss << "  <cleanup>" << std::endl;
       for(std::vector<Cmd>::const_iterator cmd=cleanupCommands.begin(); cmd!=cleanupCommands.end(); ++cmd) {
-        ss << "    " << cmd->getXML() << endl;
+        ss << "    " << cmd->getXML() << std::endl;
       }
-      ss << "  </cleanup>" << endl;
+      ss << "  </cleanup>" << std::endl;
     }
     
-    ss << "</renderscript>" << endl;
+    ss << "</renderscript>" << std::endl;
     
     return ss.str();
   }
@@ -370,11 +368,13 @@ public:
   bool writeXML(const std::string &filename) const
   {
     std::ofstream outFile(filename.c_str());
+	LIQDEBUGPRINTF( "Writing XML Render Script to: %s!\n", filename.c_str() );	  
     if (!outFile) {
       return false;
     }
     outFile << getXML().c_str();
     outFile.close();
+	LIQDEBUGPRINTF( "Finished writing XML Render Script.\n" );
     return true;
   }
   

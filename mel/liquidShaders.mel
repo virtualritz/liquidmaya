@@ -187,11 +187,13 @@ global proc string liquidDuplicateShaderNode( string $nodename )
       float $redValue = `getAttr ( $nodename + ".red" )`;
       float $blueValue = `getAttr ( $nodename + ".blue" )`;
       float $greenValue = `getAttr ( $nodename + ".green" )`;
-      setAttr ( $currentNodeName + ".color" ) -type double3 $redValue $greenValue $blueValue;
+      setAttr ( $currentNodeName + ".color" ) -type float3 $redValue $greenValue $blueValue;
     }
     if (`attributeQuery -n $currentNodeName -ex ( "opacity" ) `) {
-      float $opacValue = `getAttr ( $nodename + ".opacity" )`;
-      setAttr ( $currentNodeName + ".opacity" ) $opacValue;
+      float $redValue = `getAttr ( $nodename + ".redO" )`;
+      float $blueValue = `getAttr ( $nodename + ".blueO" )`;
+      float $greenValue = `getAttr ( $nodename + ".greenO" )`;      
+      setAttr ( $currentNodeName + ".opacity" ) -type float3 $redValue $greenValue $blueValue;
     }
   }
 

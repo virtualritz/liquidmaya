@@ -27,32 +27,4 @@
 
 #include <liqRenderer.h>
 
-#include <liqEntropyRenderer.h>
-#include <liqPrmanRenderer.h>
-#include <liqAqsisRenderer.h>
-#include <liqDelightRenderer.h>
-#include <liqPixieRenderer.h>
-
-
-const liqRenderer & liquidRenderer()
-{
-  // first thing we should do is setup our renderer
-
-  // TODO: got to make this much better in the future -- get the renderer
-  // and version from the globals UI
-#if defined(ENTROPY)
-  static liqEntropyRenderer renderer("3.1");
-#elif defined(PRMAN)
-  static liqPrmanRenderer   renderer("3.9");
-#elif defined(AQSIS)
-  static liqAqsisRenderer   renderer("0.7.4");
-#elif defined(DELIGHT)
-  static liqDelightRenderer renderer("1.0.0");
-#elif defined(PIXIE)
-  static liqPixieRenderer   renderer("1.2.1");
-#else
-  ERROR: unknown renderer
-#endif
-
-  return renderer;
-}
+liqRenderer liquidRenderer;
