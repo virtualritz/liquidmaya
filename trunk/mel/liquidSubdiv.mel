@@ -22,6 +22,7 @@
 //
 //
 // RenderMan (R) is a registered trademark of Pixar
+
 //
 //  Creation Date:    January 18th, 2001
 //
@@ -30,32 +31,31 @@
 //
 
 global proc liquidMakeSubdivUI() {
-
   window -t "Liquid Subdivision Surfaces Attributes" -rtf true "liqSubdivWindow";
   columnLayout c1;
       frameLayout -labelVisible false -mw 20 -mh 10 f1;
         columnLayout parameters;
         int $ck = `optionVar -q liqSubdiv`;
-        checkBoxGrp -label "Subdivison Mesh" -l1 "" -v1 $ck render;            
+        checkBoxGrp -label "Subdivison Mesh" -l1 "" -v1 $ck liqSubdiv;            
+        
         $ck = `optionVar -q liqSubdivInterpolateBoundary`;
-        checkBoxGrp -label "Interpolate Boundary" -l1 "" -v1 $ck interp;
+        checkBoxGrp -label "Interpolate Boundary" -l1 "" -v1 $ck liqSubdivInterpolate;
 
-
-        // checkBox -label "UV Interpolation" -align "right" -value $ck fv;
         $ck = `optionVar -q liqSubdivUVInterpolation` + 1;
+
         string $liqUVinterpModes[];
+
         $liqUVinterpModes = {
           "True Facevarying",
           "PRMan Facevarying",
           "Facevertex"
         };
-        string $menu = `optionMenuGrp -label "UV Intepolation" -cal 1 "right"`;
+
+        string $menu = `optionMenuGrp -label "UV Intepolation" -cal 1 "right" liqSubdivUV`;
         int $i;
         for( $i = 0; $i < 3; ++$i ) {
-          menuItem -ob -data $i -label $liqUVinterpModes[ $i ];
+          menuItem -data $i -label $liqUVinterpModes[ $i ];
         }
-        //optionMenuGrp -sl $ck $menu;
-        // connectControl -index 2 $menu ( $attr );
         
         separator;
         rowColumnLayout -nc 2 -cw 1 200 -cw 2 200 buttons;
@@ -69,14 +69,16 @@ global proc liquidMakeSubdivUI() {
 
 global proc liquidMakeSubdivDoIt()
 {
-    int $r  = `checkBoxGrp -q -v "liqSubdivWindow|c1|f1|parameters|liqSubdiv"`;
+    int $r  = `checkBoxGrp -q -v1 "liqSubdivWindow|c1|f1|parameters|liqSubdiv"`;
     optionVar -iv "liqSubdiv" $r;
+
 
     $r = `checkBoxGrp -q -v1 "liqSubdivWindow|c1|f1|parameters|liqSubdivInterpolate"`;
     optionVar -iv "liqSubdivInterpolateBoundary" $r;
     
-    $r = `optionMenuGrp -q -v "liqSubdivWindow|c1|f1|parameters|liqSubdivUV"`;
-    optionVar -iv "liqSubdivUVInterpolation" $r;
+
+    $r = `optionMenuGrp -q -sl "liqSubdivWindow|c1|f1|parameters|liqSubdivUV"`;
+    optionVar -iv "liqSubdivUVInterpolation" ($r-1);
 
     deleteUI liqSubdivWindow;
     liquidMakeSubdiv();
@@ -94,14 +96,15 @@ global proc liquidMakeSubdiv() {
     if ( !`attributeQuery -node $current -ex "liqSubdiv"`) {
       addAttr -ln liqSubdiv -at bool $current;
     }
-    if ( `attributeQuery -node $current -ex ".liqSubdiv"`) {
+    if ( `attributeQuery -node $current -ex "liqSubdiv"`) {
       setAttr ( $current + ".liqSubdiv" ) $render;
     }
+	
     if ( `attributeQuery -node $current -ex "mtorSubdiv"` ) {
       setAttr ( $current + ".mtorSubdiv" ) true;
     }    
     if ( !`attributeQuery -node $current -ex "liqSubdivUVInterpolation"`) {
-      addAttr -ln liqSubdivUVInterpolation -at enum -enumName "True Facevarying=0:PRMan Facevarying:Facevertex=2" $current;
+      addAttr -ln liqSubdivUVInterpolation -at enum -enumName "True Facevarying=0:PRMan Facevarying=1:Facevertex=2" $current;
     }
     if ( `attributeQuery -node $current -ex "liqSubdivUVInterpolation"`) {
       setAttr ( $current + ".liqSubdivUVInterpolation" ) $fv;
