@@ -408,11 +408,11 @@ liqRibTranslator::liqRibTranslator()
     m_renderAllCurves = false;
     m_renderSelected = false;
     m_exportReadArchive = false;
-	useNetRman = false;
-	remoteRender = false;
+    useNetRman = false;
+    remoteRender = false;
     useAlfred = false;
     cleanRib = false;
-	cleanAlf = false;
+    cleanAlf = false;
     liqglo_doBinary = false;
     liqglo_doCompression = false;
     doDof = false;
@@ -558,20 +558,20 @@ MSyntax liqRibTranslator::syntax()
 	syntax.addFlag("mb",  "motionBlur");
 	syntax.addFlag("db",  "deformationBlur");
 	syntax.addFlag("d",   "debug");
-	syntax.addFlag("nrm", "netRman");
+	syntax.addFlag("net", "netRender");
 	syntax.addFlag("fsr", "fullShadowRib");
 	syntax.addFlag("rem", "remote");
 	syntax.addFlag("alf", "alfred");
 	syntax.addFlag("nal", "noAlfred");
 	syntax.addFlag("err", "errHandler");
-	syntax.addFlag("sdb", "shaderDB");
-	syntax.addFlag("n",   "animation", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+	syntax.addFlag("sdb", "shaderDebug");
+	syntax.addFlag("n",   "sequence", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
 	syntax.addFlag("m",   "mbSamples", MSyntax::kLong);
 	syntax.addFlag("dbs", "defBlock");
 	syntax.addFlag("cam", "camera",  MSyntax::kString);
 	syntax.addFlag("s",   "samples", MSyntax::kLong);
 	syntax.addFlag("rnm", "ribName", MSyntax::kString);
-	syntax.addFlag("od",  "projDir", MSyntax::kString);
+	syntax.addFlag("pd",  "projectDir", MSyntax::kString);
 	syntax.addFlag("prm", "preFrameMel",  MSyntax::kString);
 	syntax.addFlag("pom", "postFrameMel", MSyntax::kString);
 	syntax.addFlag("rid", "ribdir", MSyntax::kString);
@@ -587,7 +587,7 @@ MSyntax liqRibTranslator::syntax()
 	syntax.addFlag("blt", "blurTime",    MSyntax::kDouble);
 	syntax.addFlag("sr",  "shadingRate", MSyntax::kDouble);
 	syntax.addFlag("bs",  "bucketSize",  MSyntax::kLong, MSyntax::kLong);
-	syntax.addFlag("ps",  "pixelFilter", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+	syntax.addFlag("pf",  "pixelFilter", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
 	syntax.addFlag("gs",  "gridSize",  MSyntax::kLong);
 	syntax.addFlag("txm", "texmem",    MSyntax::kLong);
 	syntax.addFlag("es",  "eyeSplits", MSyntax::kLong);
@@ -602,306 +602,302 @@ MSyntax liqRibTranslator::syntax()
 
 MStatus liqRibTranslator::liquidDoArgs( MArgList args ) 
 {
-//	Description:
-//		Read the values from the command line and set the internal values
+// Description:
+// Read the values from the command line and set the internal values
 
-	int i;
-	MStatus status;
-	MString argValue;
+  MStatus status;
+  MString argValue;
 
-	if ( debugMode ) { printf("-> processing arguments\n"); }
+  if ( debugMode ) { printf("-> processing arguments\n"); }
 
-	// Parse the arguments and set the options.
-	if ( args.length() == 0 ) {
-		liquidInfo( "Doing nothing, no parameters given." );
-		return MS::kFailure;
-	}
+  // Parse the arguments and set the options.
+  if ( args.length() == 0 ) {
+    liquidInfo( "Doing nothing, no parameters given." );
+    return MS::kFailure;
+  }
 
-	// find the activeView for previews;
-	m_activeView = M3dView::active3dView();
-	width  = m_activeView.portWidth();
-	height = m_activeView.portHeight();
+  // find the activeView for previews;
+  m_activeView = M3dView::active3dView();
+  width        = m_activeView.portWidth();
+  height       = m_activeView.portHeight();
 
-	// get the current project directory
-	MString MELCommand = "workspace -q -rd";
-	MString MELReturn;
-	MGlobal::executeCommand( MELCommand, MELReturn );
-	liqglo_projectDir = MELReturn ;
+  // get the current project directory
+  MString MELCommand = "workspace -q -rd";
+  MString MELReturn;
+  MGlobal::executeCommand( MELCommand, MELReturn );
+  liqglo_projectDir = MELReturn ;
 
-	if ( debugMode ) { printf("-> using path: %s\n", liqglo_projectDir.asChar() ); }
+  if ( debugMode ) { printf("-> using path: %s\n", liqglo_projectDir.asChar() ); }
 
-	// get the current scene name
-	liqglo_sceneName = liquidTransGetSceneName();
+  // get the current scene name
+  liqglo_sceneName = liquidTransGetSceneName();
 
-	// setup default animation parameters
-	frameFirst = (int) MAnimControl::currentTime().as( MTime::uiUnit() );
-	frameLast  = (int) MAnimControl::currentTime().as( MTime::uiUnit() );
-	frameBy    = 1;
+  // setup default animation parameters
+  frameFirst = (int) MAnimControl::currentTime().as( MTime::uiUnit() );
+  frameLast  = (int) MAnimControl::currentTime().as( MTime::uiUnit() );
+  frameBy    = 1;
 
-	// check to see if the correct project directory was found
-	if ( !fileExists( liqglo_projectDir ) ) liqglo_projectDir = m_systemTempDirectory;
-	LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
-	if ( !fileExists( liqglo_projectDir ) ) {
-	    cout << "Liquid -> Cannot find /project dir, defaulting to system temp directory!\n" << flush;
-	    liqglo_projectDir = m_systemTempDirectory;
-	}
-	liqglo_ribDir = liqglo_projectDir + "rib/";
-	liqglo_texDir = liqglo_projectDir + "rmantex/";
-	m_pixDir = liqglo_projectDir + "rmanpix/";
-	m_tmpDir = liqglo_projectDir + "rmantmp/";
+  // check to see if the correct project directory was found
+  if ( !fileExists( liqglo_projectDir ) ) liqglo_projectDir = m_systemTempDirectory;
+  LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
+  if ( !fileExists( liqglo_projectDir ) ) {
+      cout << "Liquid -> Cannot find /project dir, defaulting to system temp directory!\n" << flush;
+      liqglo_projectDir = m_systemTempDirectory;
+  }
+  liqglo_ribDir = liqglo_projectDir + "rib/";
+  liqglo_texDir = liqglo_projectDir + "rmantex/";
+  m_pixDir      = liqglo_projectDir + "rmanpix/";
+  m_tmpDir      = liqglo_projectDir + "rmantmp/";
 
-	for ( i = 0; i < args.length(); i++ ) {
-		if ( MString( "-p" ) == args.asString( i, &status ) )  {
-			LIQCHECKSTATUS(status, "error in -p parameter");
-			outputpreview = 1;
-		} else if ( MString( "-nop" ) == args.asString( i, &status ) )  {
-			LIQCHECKSTATUS(status, "error in -p parameter");
-			outputpreview = 0;
-		} else if ( MString( "-GL" ) == args.asString( i, &status ) )  {
-			LIQCHECKSTATUS(status, "error in -GL parameter");
-			//load up all the render global parameters!
-			if ( liquidInitGlobals() ) liquidReadGlobals();
-		} else if ( MString( "-sel" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -sel parameter");
-			m_renderSelected = true;
-		} else if ( MString( "-ra" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -ra parameter");
-			m_exportReadArchive = true;
-		} else if ( MString( "-allCurves" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -allCurves parameter" );
-			m_renderAllCurves = true;
-		} else if ( MString( "-tiff" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -tiff parameter");
-			outFormat = "tiff";
-		} else if ( MString( "-dofOn" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -dofOn parameter");
-			doDof = true;
-		} else if ( MString( "-doBinary" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -doBinary parameter");
-			liqglo_doBinary = true;
-		} else if ( MString( "-shadows" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -doShadows parameter");
-			liqglo_doShadows = true;
-		} else if ( MString( "-noshadows" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -noshadows parameter");
-			liqglo_doShadows = false;
-		} else if ( MString( "-doCompression" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -doCompression parameter");
-			liqglo_doCompression = true;
-		} else if ( MString( "-cleanRib" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -cleanRib parameter");
-			cleanRib = true;
-		} else if ( MString( "-progress" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -progress parameter");
-			m_showProgress = true;
-		} else if ( MString( "-mb" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -mb parameter");
-			liqglo_doMotion = true;
-		} else if ( MString( "-db" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -db parameter");
-			liqglo_doDef = true;
-		} else if ( MString( "-d" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -d parameter");
-			debugMode = 1;
-		} else if ( MString( "-netRman" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -netRman parameter");
-			useNetRman = true;
-		} else if ( MString( "-fullShadowRib" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -fullShadowRib parameter");
-			fullShadowRib = true;
-		} else if ( MString( "-remote" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -remote parameter");
-			remoteRender = true;
-		} else if ( MString( "-alfred" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -alfred parameter");
-			useAlfred = true;
-		} else if ( MString( "-noalfred" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -noalfred parameter");
-			useAlfred = false;
-		} else if ( MString( "-err" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -err parameter");
-			m_errorMode = 1;
-		} else if ( MString( "-shaderDB" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -shaderDB parameter");
-			m_shaderDebug = true;
-		} else if ( MString( "-n" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -n parameter");   i++;
-			
-			argValue = args.asString( i, &status );
-			frameFirst = argValue.asInt();
-			
-			LIQCHECKSTATUS(status, "error in -n parameter");  i++;
-			argValue = args.asString( i, &status );
-			frameLast = argValue.asInt();
-			
-			LIQCHECKSTATUS(status, "error in -n parameter");  i++;
-			argValue = args.asString( i, &status );
-			frameBy = argValue.asInt();
-			
-			LIQCHECKSTATUS(status, "error in -n parameter");
-			m_animation = true;
-		} else if ( MString( "-m" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -m parameter");   i++;
-			argValue = args.asString( i, &status );
-			liqglo_motionSamples = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -m parameter");
-		} else if ( MString( "-defBlock" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -defBlock parameter");   i++;
-			argValue = args.asString( i, &status );
-			m_deferredBlockSize = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -defBlock parameter");
-		} else if ( MString( "-cam" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -cam parameter");   i++;
-			renderCamera = args.asString( i, &status );
-			LIQCHECKSTATUS(status, "error in -cam parameter");
-		} else if ( MString( "-s" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -s parameter");  i++;
-			argValue = args.asString( i, &status );
-			pixelSamples = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -s parameter");
-		} else if ( MString( "-ribName" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -ribName parameter");  i++;
-			liqglo_sceneName = args.asString( i, &status );
-			LIQCHECKSTATUS(status, "error in -ribName parameter");
-		} else if ( MString( "-od" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -od parameter");  i++;
-			MString parsingString = args.asString( i, &status );
-			liqglo_projectDir = parseString( parsingString );
-			LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
-			if ( !fileExists( liqglo_projectDir ) ) { 
-			    cout << "Liquid -> Cannot find /project dir, defaulting to system temp directory!\n" << flush;
-			    liqglo_projectDir = m_systemTempDirectory; 
-			}
-			liqglo_ribDir = liqglo_projectDir + "rib/";
-			liqglo_texDir = liqglo_projectDir + "rmantex/";
-			m_pixDir = liqglo_projectDir + "rmanpix/";
-			m_tmpDir = liqglo_projectDir + "rmantmp/";
-			LIQCHECKSTATUS(status, "error in -od parameter");
-		} else if ( MString( "-preFrameMel" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -preFrameMel parameter");  i++;
-			MString parsingString = args.asString( i, &status );
-			m_preFrameMel = parseString( parsingString );
-			LIQCHECKSTATUS(status, "error in -preFrameMel parameter");
-		} else if ( MString( "-postFrameMel" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -postFrameMel parameter");  i++;
-			MString parsingString = args.asString( i, &status );
-			m_postFrameMel = parseString( parsingString );
-			LIQCHECKSTATUS(status, "error in -postFrameMel parameter");
-		} else if ( MString( "-ribdir" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -ribDir parameter");  i++;
-			MString parsingString = args.asString( i, &status );
-			liqglo_ribDir = parseString( parsingString );
-			LIQCHECKSTATUS(status, "error in -ribDir parameter");
-		} else if ( MString( "-texdir" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -texDir parameter");  i++;
-			MString parsingString = args.asString( i, &status );
-			liqglo_texDir = parseString( parsingString );
-			LIQCHECKSTATUS(status, "error in -texDir parameter");
-		} else if ( MString( "-tmpdir" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -tmpDir parameter");  i++;
-			MString parsingString = args.asString( i, &status );
-			m_tmpDir = parseString( parsingString );
-			LIQCHECKSTATUS(status, "error in -tmpDir parameter");
-		} else if ( MString( "-picdir" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -picDir parameter");  i++;
-			MString parsingString = args.asString( i, &status );
-			m_pixDir = parseString( parsingString );
-			LIQCHECKSTATUS(status, "error in -picDir parameter");
-		} else if ( MString( "-preCommand" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -preCommand parameter");  i++;
-			m_preCommand = args.asString( i, &status );
-			LIQCHECKSTATUS(status, "error in -preCommand parameter");
-		} else if ( MString( "-postJobCommand" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -postJobCommand parameter");  i++;
-			MString varVal = args.asString( i, &status );
-			m_postJobCommand = parseString( varVal );
-			LIQCHECKSTATUS(status, "error in -postJobCommand parameter");
-		} else if ( MString( "-postFrameCommand" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -postFrameCommand parameter");  i++;
-			m_postFrameCommand = args.asString( i, &status );
-			LIQCHECKSTATUS(status, "error in -postFrameCommand parameter");
-		} else if ( MString( "-preFrameCommand" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -preFrameCommand parameter");  i++;
-			m_preFrameCommand = args.asString( i, &status );
-			LIQCHECKSTATUS(status, "error in -preFrameCommand parameter");
-		} else if ( MString( "-renderCommand" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -renderCommand parameter");  i++;
-			m_renderCommand = args.asString( i, &status );
-			LIQCHECKSTATUS(status, "error in -renderCommand parameter");
-		} else if ( MString( "-ribgenCommand" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -ribgenCommand parameter");  i++;
-			m_ribgenCommand = args.asString( i, &status );
-			LIQCHECKSTATUS(status, "error in -ribgenCommand parameter");
-		} else if ( MString( "-blurTime" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -blurTime parameter");  i++;
-			argValue = args.asString( i, &status );
-			m_blurTime = argValue.asDouble();
-			LIQCHECKSTATUS(status, "error in -blurTime parameter");
-		} else if ( MString( "-sr" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -sr parameter");  i++;
-			argValue = args.asString( i, &status );
-			shadingRate = argValue.asDouble();
-			LIQCHECKSTATUS(status, "error in -sr parameter");
-		} else if ( MString( "-bs" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -bs parameter");  i++;
-			argValue = args.asString( i, &status );
-			bucketSize[0] = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -bs parameter");  i++;
-			argValue = args.asString( i, &status );
-			bucketSize[1] = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -bs parameter");
-		} else if ( MString( "-ps" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -ps parameter");  i++;
-			argValue = args.asString( i, &status );
-			m_rFilter = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -ps parameter");  i++;
-			argValue = args.asString( i, &status );
-			m_rFilterX = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -ps parameter");  i++;
-			argValue = args.asString( i, &status );
-			m_rFilterY = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -ps parameter");
-		} else if ( MString( "-gs" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -gs parameter");  i++;
-			argValue = args.asString( i, &status );
-			gridSize = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -gs parameter");
-		} else if ( MString( "-texmem" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -texmem parameter");  i++;
-			argValue = args.asString( i, &status );
-			textureMemory = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -texmem parameter");
-		} else if ( MString( "-es" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -es parameter");  i++;
-			argValue = args.asString( i, &status );
-			eyeSplits = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -es parameter");
-		} else if ( MString( "-aspect" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -aspect parameter");  i++;
-			argValue = args.asString( i, &status );
-			aspectRatio = argValue.asDouble();
-			LIQCHECKSTATUS(status, "error in -aspect parameter");
-		} else if ( MString( "-x" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -x parameter");  i++;
-			argValue = args.asString( i, &status );
-			width = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -x parameter");
-		} else if ( MString( "-y" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -y parameter");  i++;
-			argValue = args.asString( i, &status );
-			height = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -y parameter");
-		} else if ( MString( "-noDef" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -noDef parameter");  
-			m_deferredGen = false;
-		} else if ( MString( "-pad" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -pad parameter");  i++;
-			argValue = args.asString( i, &status );
-			m_outPadding = argValue.asInt();
-			LIQCHECKSTATUS(status, "error in -pad parameter");
-		} 
-	}
-	return MS::kSuccess;
+  for (unsigned int i = 0; i < args.length(); i++ ) {
+    MString arg = args.asString( i, &status );
+    if ((arg == "-p") || (arg == "-preview")) {
+      LIQCHECKSTATUS(status, "error in -preview parameter");
+      outputpreview = 1;
+    } else if ((arg == "-nop") || (arg == "-noPreview")) {
+      LIQCHECKSTATUS(status, "error in -noPreview parameter");
+      outputpreview = 0;
+    } else if ((arg == "-GL") || (arg == "-useGlobals")) {
+      LIQCHECKSTATUS(status, "error in -useGlobals parameter");
+      //load up all the render global parameters!
+      if ( liquidInitGlobals() ) liquidReadGlobals();
+    } else if ((arg == "-sel") || (arg == "-selected")) {
+      LIQCHECKSTATUS(status, "error in -selected parameter");
+      m_renderSelected = true;
+    } else if ((arg == "-ra") || (arg == "-readArchive")) {
+      LIQCHECKSTATUS(status, "error in -readArchive parameter");
+      m_exportReadArchive = true;
+    } else if ((arg == "-acv") || (arg == "-allCurves")) {
+      LIQCHECKSTATUS(status, "error in -allCurves parameter" );
+      m_renderAllCurves = true;
+    } else if ((arg == "-tif") || (arg == "-tiff")) {
+      LIQCHECKSTATUS(status, "error in -tiff parameter");
+      outFormat = "tiff";
+    } else if ((arg == "-dof") || (arg == "-dofOn")) {
+      LIQCHECKSTATUS(status, "error in -dofOn parameter");
+      doDof = true;
+    } else if ((arg == "-bin") || (arg == "-doBinary")) {
+      LIQCHECKSTATUS(status, "error in -doBinary parameter");
+      liqglo_doBinary = true;
+    } else if ((arg == "-sh") || (arg == "-shadows")) {
+      LIQCHECKSTATUS(status, "error in -shadows parameter");
+      liqglo_doShadows = true;
+    } else if ((arg == "-nsh") || (arg == "-noShadows")) {
+      LIQCHECKSTATUS(status, "error in -noShadows parameter");
+      liqglo_doShadows = false;
+    } else if ((arg == "-zip") || (arg == "-doCompression")) {
+      LIQCHECKSTATUS(status, "error in -doCompression parameter");
+      liqglo_doCompression = true;
+    } else if ((arg == "-cln") || (arg == "-cleanRib")) {
+      LIQCHECKSTATUS(status, "error in -cleanRib parameter");
+      cleanRib = true;
+    } else if ((arg == "-pro") || (arg == "-progress")) {
+      LIQCHECKSTATUS(status, "error in -progress parameter");
+      m_showProgress = true;
+    } else if ((arg == "-mb") || (arg == "-motionBlur")) {
+      LIQCHECKSTATUS(status, "error in -motionBlur parameter");
+      liqglo_doMotion = true;
+    } else if ((arg == "-db") || (arg == "-deformationBlur")) {
+      LIQCHECKSTATUS(status, "error in -deformationBlur parameter");
+      liqglo_doDef = true;
+    } else if ((arg == "-d") || (arg == "-debug")) {
+      LIQCHECKSTATUS(status, "error in -debug parameter");
+      debugMode = 1;
+    } else if ((arg == "-net") || (arg == "-netRender")) {
+      LIQCHECKSTATUS(status, "error in -netRender parameter");
+      useNetRman = true;
+    } else if ((arg == "-fsr") || (arg == "-fullShadowRib")) {
+      LIQCHECKSTATUS(status, "error in -fullShadowRib parameter");
+      fullShadowRib = true;
+    } else if ((arg == "-rem") || (arg == "-remote")) {
+      LIQCHECKSTATUS(status, "error in -remote parameter");
+      remoteRender = true;
+    } else if ((arg == "-alf") || (arg == "-alfred")) {
+      LIQCHECKSTATUS(status, "error in -alfred parameter");
+      useAlfred = true;
+    } else if ((arg == "-nal") || (arg == "-noAlfred")) {
+      LIQCHECKSTATUS(status, "error in -noAlfred parameter");
+      useAlfred = false;
+    } else if ((arg == "-err") || (arg == "-errHandler")) {
+      LIQCHECKSTATUS(status, "error in -errHandler parameter");
+      m_errorMode = 1;
+    } else if ((arg == "-sdb") || (arg == "-shaderDebug")) {
+      LIQCHECKSTATUS(status, "error in -shaderDebug parameter");
+      m_shaderDebug = true;
+    } else if ((arg == "-n") || (arg == "-sequence")) {
+      LIQCHECKSTATUS(status, "error in -sequence parameter");   i++;
+      argValue = args.asString( i, &status );
+      frameFirst = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -sequence parameter");  i++;
+      argValue = args.asString( i, &status );
+      frameLast = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -sequence parameter");  i++;
+      argValue = args.asString( i, &status );
+      frameBy = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -sequence parameter");
+      m_animation = true;
+    } else if ((arg == "-m") || (arg == "-mbSamples")) {
+      LIQCHECKSTATUS(status, "error in -mbSamples parameter");   i++;
+      argValue = args.asString( i, &status );
+      liqglo_motionSamples = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -mbSamples parameter");
+    } else if ((arg == "-dbs") || (arg == "-defBlock")) {
+      LIQCHECKSTATUS(status, "error in -defBlock parameter");   i++;
+      argValue = args.asString( i, &status );
+      m_deferredBlockSize = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -defBlock parameter");
+    } else if ((arg == "-cam") || (arg == "-camera")) {
+      LIQCHECKSTATUS(status, "error in -camera parameter");   i++;
+      renderCamera = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -camera parameter");
+    } else if ((arg == "-s") || (arg == "-samples")) {
+      LIQCHECKSTATUS(status, "error in -samples parameter");  i++;
+      argValue = args.asString( i, &status );
+      pixelSamples = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -samples parameter");
+    } else if ((arg == "-rnm") || (arg == "-ribName")) {
+      LIQCHECKSTATUS(status, "error in -ribName parameter");  i++;
+      liqglo_sceneName = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -ribName parameter");
+    } else if ((arg == "-pd") || (arg == "-projectDir")) {
+      LIQCHECKSTATUS(status, "error in -projectDir parameter");  i++;
+      MString parsingString = args.asString( i, &status );
+      liqglo_projectDir = parseString( parsingString );
+      LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
+      if ( !fileExists( liqglo_projectDir ) ) { 
+        cout << "Liquid -> Cannot find /project dir, defaulting to system temp directory!\n" << flush;
+        liqglo_projectDir = m_systemTempDirectory; 
+      }
+      liqglo_ribDir = liqglo_projectDir + "rib/";
+      liqglo_texDir = liqglo_projectDir + "rmantex/";
+      m_pixDir = liqglo_projectDir + "rmanpix/";
+      m_tmpDir = liqglo_projectDir + "rmantmp/";
+      LIQCHECKSTATUS(status, "error in -projectDir parameter");
+    } else if ((arg == "-prm") || (arg == "-preFrameMel")) {
+      LIQCHECKSTATUS(status, "error in -preFrameMel parameter");  i++;
+      MString parsingString = args.asString( i, &status );
+      m_preFrameMel = parseString( parsingString );
+      LIQCHECKSTATUS(status, "error in -preFrameMel parameter");
+    } else if ((arg == "-pom") || (arg == "-postFrameMel")) {
+      LIQCHECKSTATUS(status, "error in -postFrameMel parameter");  i++;
+      MString parsingString = args.asString( i, &status );
+      m_postFrameMel = parseString( parsingString );
+      LIQCHECKSTATUS(status, "error in -postFrameMel parameter");
+    } else if ((arg == "-rid") || (arg == "-ribdir")) {
+      LIQCHECKSTATUS(status, "error in -ribDir parameter");  i++;
+      MString parsingString = args.asString( i, &status );
+      liqglo_ribDir = parseString( parsingString );
+      LIQCHECKSTATUS(status, "error in -ribDir parameter");
+    } else if ((arg == "-txd") || (arg == "-texdir")) {
+      LIQCHECKSTATUS(status, "error in -texDir parameter");  i++;
+      MString parsingString = args.asString( i, &status );
+      liqglo_texDir = parseString( parsingString );
+      LIQCHECKSTATUS(status, "error in -texDir parameter");
+    } else if ((arg == "-tmd") || (arg == "-tmpdir")) {
+      LIQCHECKSTATUS(status, "error in -tmpDir parameter");  i++;
+      MString parsingString = args.asString( i, &status );
+      m_tmpDir = parseString( parsingString );
+      LIQCHECKSTATUS(status, "error in -tmpDir parameter");
+    } else if ((arg == "-pid") || (arg == "-picdir")) {
+      LIQCHECKSTATUS(status, "error in -picDir parameter");  i++;
+      MString parsingString = args.asString( i, &status );
+      m_pixDir = parseString( parsingString );
+      LIQCHECKSTATUS(status, "error in -picDir parameter");
+    } else if ((arg == "-pec") || (arg == "-preCommand")) {
+      LIQCHECKSTATUS(status, "error in -preCommand parameter");  i++;
+      m_preCommand = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -preCommand parameter");
+    } else if ((arg == "-poc") || (arg == "-postJobCommand")) {
+      LIQCHECKSTATUS(status, "error in -postJobCommand parameter");  i++;
+      MString varVal = args.asString( i, &status );
+      m_postJobCommand = parseString( varVal );
+      LIQCHECKSTATUS(status, "error in -postJobCommand parameter");
+    } else if ((arg == "-pof") || (arg == "-postFrameCommand")) {
+      LIQCHECKSTATUS(status, "error in -postFrameCommand parameter");  i++;
+      m_postFrameCommand = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -postFrameCommand parameter");
+    } else if ((arg == "-prf") || (arg == "-preFrameCommand")) {
+      LIQCHECKSTATUS(status, "error in -preFrameCommand parameter");  i++;
+      m_preFrameCommand = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -preFrameCommand parameter");
+    } else if ((arg == "-rec") || (arg == "-renderCommand")) {
+      LIQCHECKSTATUS(status, "error in -renderCommand parameter");  i++;
+      m_renderCommand = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -renderCommand parameter");
+    } else if ((arg == "-rgc") || (arg == "-ribgenCommand")) {
+      LIQCHECKSTATUS(status, "error in -ribgenCommand parameter");  i++;
+      m_ribgenCommand = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -ribgenCommand parameter");
+    } else if ((arg == "-blt") || (arg == "-blurTime")) {
+      LIQCHECKSTATUS(status, "error in -blurTime parameter");  i++;
+      argValue = args.asString( i, &status );
+      m_blurTime = argValue.asDouble();
+      LIQCHECKSTATUS(status, "error in -blurTime parameter");
+    } else if ((arg == "-sr") || (arg == "-shadingRate")) {
+      LIQCHECKSTATUS(status, "error in -shadingRate parameter");  i++;
+      argValue = args.asString( i, &status );
+      shadingRate = argValue.asDouble();
+      LIQCHECKSTATUS(status, "error in -shadingRate parameter");
+    } else if ((arg == "-bs") || (arg == "-bucketSize")) {
+      LIQCHECKSTATUS(status, "error in -bucketSize parameter");  i++;
+      argValue = args.asString( i, &status );
+      bucketSize[0] = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -bucketSize parameter");  i++;
+      argValue = args.asString( i, &status );
+      bucketSize[1] = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -bucketSize parameter");
+    } else if ((arg == "-pf") || (arg == "-pixelFilter")) {
+      LIQCHECKSTATUS(status, "error in -pixelFilter parameter");  i++;
+      argValue = args.asString( i, &status );
+      m_rFilter = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -pixelFilter parameter");  i++;
+      argValue = args.asString( i, &status );
+      m_rFilterX = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -pixelFilter parameter");  i++;
+      argValue = args.asString( i, &status );
+      m_rFilterY = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -pixelFilter parameter");
+    } else if ((arg == "-gs") || (arg == "-gridSize")) {
+      LIQCHECKSTATUS(status, "error in -gridSize parameter");  i++;
+      argValue = args.asString( i, &status );
+      gridSize = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -gridSize parameter");
+    } else if ((arg == "-txm") || (arg == "-texmem")) {
+      LIQCHECKSTATUS(status, "error in -texmem parameter");  i++;
+      argValue = args.asString( i, &status );
+      textureMemory = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -texmem parameter");
+    } else if ((arg == "-es") || (arg == "-eyeSplits")) {
+      LIQCHECKSTATUS(status, "error in -eyeSplits parameter");  i++;
+      argValue = args.asString( i, &status );
+      eyeSplits = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -eyeSplits parameter");
+    } else if ((arg == "-ar") || (arg == "-aspect")) {
+      LIQCHECKSTATUS(status, "error in -aspect parameter");  i++;
+      argValue = args.asString( i, &status );
+      aspectRatio = argValue.asDouble();
+      LIQCHECKSTATUS(status, "error in -aspect parameter");
+    } else if ((arg == "-x") || (arg == "-width")) {
+      LIQCHECKSTATUS(status, "error in -width parameter");  i++;
+      argValue = args.asString( i, &status );
+      width = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -width parameter");
+    } else if ((arg == "-y") || (arg == "-height")) {
+      LIQCHECKSTATUS(status, "error in -height parameter");  i++;
+      argValue = args.asString( i, &status );
+      height = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -height parameter");
+    } else if ((arg == "-ndf") || (arg == "-noDef")) {
+      LIQCHECKSTATUS(status, "error in -noDef parameter");  
+      m_deferredGen = false;
+    } else if ((arg == "-pad") || (arg == "-padding")) {
+      LIQCHECKSTATUS(status, "error in -padding parameter");  i++;
+      argValue = args.asString( i, &status );
+      m_outPadding = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -padding parameter");
+    } 
+  }
+  return MS::kSuccess;
 }
 
 void liqRibTranslator::liquidReadGlobals() 
@@ -1512,7 +1508,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
   // check to see if the output camera, if specified, is available
   if ( liquidBin && ( renderCamera == "" ) ) {
-    printf( "No Render Camera Specified" );
+    printf( "No Render Camera Specified\n" );
     return MS::kFailure;
   }
     if ( renderCamera != "" ) {
