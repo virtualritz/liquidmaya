@@ -56,7 +56,7 @@ extern "C" {
 #include <alloca.h>
 #endif
 
-#include <algo.h>
+#include <algorithm>
 
 // Maya's Headers
 #include <maya/MFnVectorArrayData.h>
