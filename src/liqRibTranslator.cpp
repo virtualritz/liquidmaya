@@ -2702,7 +2702,8 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 				if (	currentNode.hasFn(MFn::kNurbsSurface)
 					|| currentNode.hasFn(MFn::kMesh)
 					|| currentNode.hasFn(MFn::kParticle)
-					|| currentNode.hasFn(MFn::kLocator) ) {
+					|| currentNode.hasFn(MFn::kLocator) 
+					|| currentNode.hasFn( MFn::kSubdiv) ) {
 					if ( ( sample > 0 ) && isObjectMotionBlur( path )){
 						htable->insert(path, lframe, sample, MRT_Unknown );
 					} else {

@@ -56,6 +56,7 @@ LIQUIDMAINOBJS =  liqShader.$(OBJEXT) \
                   liqGetAttr.$(OBJEXT) \
                   liqRibGenData.$(OBJEXT) \
                   liqRibSubdivisionData.$(OBJEXT) \
+                  liqRibMayaSubdivisionData.$(OBJEXT) \
                   liqMemory.$(OBJEXT) \
                   liqProcessLauncher.$(OBJEXT) \
                   liqRenderer.$(OBJEXT)
@@ -86,6 +87,7 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
                     $(VPATH)/liqGetAttr.$(OBJEXT) \
                     $(VPATH)/liqRibGenData.$(OBJEXT) \
                     $(VPATH)/liqRibSubdivisionData.$(OBJEXT) \
+                    $(VPATH)/liqRibMayaSubdivisionData.$(OBJEXT) \
                     $(VPATH)/liqMemory.$(OBJEXT) \
                     $(VPATH)/liqProcessLauncher.$(OBJEXT) \
                     $(VPATH)/liqRenderer.$(OBJEXT)
