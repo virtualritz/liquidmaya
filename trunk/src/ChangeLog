@@ -34,6 +34,10 @@
     	Made shader preview work with entropy
 	Made Liquid work with aqsis
 
+2003-2-14 sdeverly
+	Output in ../liquid<LIQUIDVERSION>/bin/<OS NAME>/<MAYA VERSION>
+    	Added -renderer option to liquidPreviewShader command
+    	Added -sshn option to liquidPreviewShader command
 
 TODO :
 	--- Compilation ok with PRman

@@ -93,19 +93,20 @@ liquidPreviewShader::~liquidPreviewShader()
 
 typedef struct liqPreviewShoptions
 {
-    const char *shaderName;
+    const char *shaderNodeName;
     const char *displayDriver;
     const char *renderCommand;
+    bool shortShaderName;
 } liqPreviewShoptions; 
 
-int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, const char *ddName );
+int liquidOutpuPreviewShader( const char *fileName, liqPreviewShoptions *options );
 
 #ifndef _WIN32
 void liquidNewPreview( liqPreviewShoptions *options )
 {
     int val = 0;
     int ret;
-    if( !options->shaderName || !options->displayDriver || !options->renderCommand )
+    if( !options->shaderNodeName || !options->displayDriver || !options->renderCommand )
     {
     	cerr << "Invalid options for shader preview" << endl;
     	pthread_exit( ( void * )&val);
@@ -121,26 +122,35 @@ void liquidNewPreview( liqPreviewShoptions *options )
     	perror( str );
     	pthread_exit( ( void * )&val);
     }
-    int fd = fileno(fp); 
-    int oldOut = dup(1);    // Dup stdout file descriptor to restore it after render
-    // Redirect stdout to pipe
-    // Warning : messages should be sent to sdterr until stdout is restored
-    ret = dup2( fd, 1 );
-    if( ret < 0 )
+    val = fork();
+    if( val == -1 ) // Parent with error
     {
-    	perror( "Pipe redirect failed " );
+    	perror( "Fork for rib output" );
     	pthread_exit( ( void * )&val);
-   }
-   // And output RIB stdout
-    cout << "# Outputing " << options->shaderName << endl;
-    liquidOutpuPreviewShader( "/dev/stdout", options->shaderName, options->displayDriver );
-    fputc( EOF, fp );	// Make sure renderer got an end of file
+    }
+    else if( val == 0 ) // Child
+    {
+	int fd = fileno(fp); 
+	// Redirect stdout to pipe
+	// Warning : messages should be sent to sdterr until stdout is restored
+	ret = dup2( fd, 1 );
+	if( ret < 0 )
+	{
+    	    perror( "Pipe redirect failed " );
+    	    pthread_exit( ( void * )&val);
+       }
+       // And output RIB stdout
+	cout << "# Outputing " << options->shaderNodeName << endl;
+	liquidOutpuPreviewShader( NULL, options );
+	_exit(0);
+    }
+    cerr << "Waiting for process" << val << " to finish " << endl;
+    ret = waitpid( val, NULL, 0 );
     cerr << "Waiting for " << options->renderCommand << " to finish" << endl;
     pclose( fp );   	// Wait until render finish
-    // Restore stdout
-    ret = dup2( oldOut, 1 );
-    LIQDEBUGPRINTF("-> Creating thread preview.\n" );
     val = 1;	// Set a "all is ok" returned value
+    //cout << "Stdout is still open" << endl;
+    LIQDEBUGPRINTF("-> Thread preview is done.\n" );
     pthread_exit( ( void * )&val);
 }
 #endif // ifndef _WIN32
@@ -150,9 +160,25 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
 #if defined( PRMAN ) || defined( ENTROPY ) || defined( AQSIS )
     MStatus status;
     int i;
-    MString	shaderName;
+    liqPreviewShoptions preview;
+    preview.shortShaderName = false;
+    // Set default values
+#ifdef PRMAN
+#ifdef _WIN32
+    // Hmmmmmmm really two different commands ?
+    MString renderCmd( "prman" );
+#else
+    MString renderCmd( "render" );
+#endif
+#else
+#ifdef AQSIS
+    MString renderCmd( "aqsis" );
+#else // ENTROPY
+    MString renderCmd( "entropy" );
+#endif // AQSIS
+#endif // PRMAN
     bool useIt = true;
-
+    MString shaderNodeName;
     for ( i = 0; i < args.length(); i++ ) {
       if ( MString( "-sphere" ) == args.asString( i, &status ) )  {
 	    } else if ( MString( "-box" ) == args.asString( i, &status ) )  {
@@ -161,9 +187,29 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
 		    useIt = false;
 	    } else if ( MString( "-shader" ) == args.asString( i, &status ) )  {
 		    i++;
-		    shaderName = args.asString( i, &status );
+		    shaderNodeName = args.asString( i, &status );
+	    } else if ( MString( "-renderer" ) == args.asString( i, &status ) )  {
+		    i++;
+		    renderCmd = args.asString( i, &status ).asChar();
+	    } else if ( MString( "-sshn" ) == args.asString( i, &status ) )  {
+		    preview.shortShaderName = true;
 	    }
     }
+    // Check values
+    if( shaderNodeName == "" )
+    {
+    	cerr << "Need a shader name for previews" << endl;
+    	return MS::kFailure; 
+    }
+    if( renderCmd == "" )
+    {
+    	cerr << "Need a render commnand for previews" << endl;
+    	return MS::kFailure; 
+    }
+    preview.shaderNodeName = shaderNodeName.asChar();
+    preview.renderCommand = renderCmd.asChar();
+    preview.displayDriver = NULL;
+    
 #ifdef _WIN32
     char *systemTempDirectory;
     systemTempDirectory = getenv("TEMP");
@@ -172,19 +218,15 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
     free( systemTempDirectory );
     systemTempDirectory = (char *)malloc( sizeof( char ) * 256 );
     strcpy( systemTempDirectory, tempRibName.asChar() );
-    liquidOutpuPreviewShader( systemTempDirectory, shaderName.asChar(), useIt ? "it" : "framebuffer" );
-    // Hmmmmmmm should do something here for entropy and Aqsis
-    _spawnlp(_P_DETACH, "prman", "prman", tempRibName.asChar(), NULL);
+    preview.displayDriver = "framebuffer";
+    liquidOutpuPreviewShader( systemTempDirectory, &preview.shaderNodeName );
+    _spawnlp(_P_DETACH, preview.renderCommand, preview.renderCommand, tempRibName.asChar(), NULL);
     free( systemTempDirectory );
 #else
-    liqPreviewShoptions preview;
-    preview.shaderName = shaderName.asChar();
 #if defined(PRMAN) || defined(AQSIS )
 #ifdef AQSIS
-    preview.renderCommand = "aqsis";
     preview.displayDriver = "framebuffer";
 #else	// PRMAN
-    preview.renderCommand = "render";
     preview.displayDriver = useIt ? "it" : "framebuffer";
 #endif
     FILE *fp = popen(preview.renderCommand, "w");
@@ -198,11 +240,10 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
 #else
     RiOption("rib", "pipe", (RtPointer)&fd, RI_NULL);
 #endif
-    liquidOutpuPreviewShader( RI_NULL, preview.shaderName, preview.displayDriver );
+    liquidOutpuPreviewShader( RI_NULL, &preview );
     pclose( fp );
 #else // PRMAN || AQSIS
 #ifdef ENTROPY
-    preview.renderCommand = "entropy";
     preview.displayDriver = useIt ? "iv" : "framebuffer";
 #endif
     LIQDEBUGPRINTF("-> Creating thread preview.\n" );
@@ -227,7 +268,7 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
 // Output preview RIB into fileName for a shader
 // if fileName is RI_NULL : output to stdout
 // return 1 on success
-int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, const char *ddName )
+int liquidOutpuPreviewShader( const char *fileName, liqPreviewShoptions * options )
 {
     MStatus status;
     if( fileName )
@@ -236,7 +277,7 @@ int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, cons
     	RiBegin( NULL );
     RiFrameBegin( 1 );
     RiFormat( 100, 100, 1 );
-    RiDisplay( "liquidpreview", const_cast<char *>( ddName), "rgba", RI_NULL );
+    RiDisplay( "liquidpreview", const_cast<char *>( options->displayDriver), "rgba", RI_NULL );
     RtFloat fov = 38;
     RiProjection( "perspective", "fov", &fov, RI_NULL );
     RiWorldBegin();
@@ -254,11 +295,12 @@ int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, cons
     RiAttributeBegin();
     MSelectionList shaderNameList;
     MObject	shaderObj;
-    shaderNameList.add( shaderName );
+    shaderNameList.add( options->shaderNodeName );
     shaderNameList.getDependNode( 0, shaderObj );
     if( shaderObj == MObject::kNullObj )
     {
-    	cerr << "Can't find node for " << shaderName << endl;
+    	cerr << "Can't find node for " << options->shaderNodeName << endl;
+	RiEnd();
     	return 0;
     }
     MFnDependencyNode assignedShader( shaderObj );
@@ -275,13 +317,15 @@ int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, cons
     if ( displacementBounds > 0.0 ) {
     	RiAttribute( "bound", "displacement", &displacementBounds, RI_NULL );
     }
+    char *shaderFileName;
+    LIQ_GET_SHADER_FILE_NAME(shaderFileName, options->shortShaderName, currentShader );
 	
     if ( currentShader.shader_type == SHADER_TYPE_SURFACE ) {
     	RiColor( currentShader.rmColor );
   	RiOpacity( currentShader.rmOpacity );
-    	RiSurfaceV ( const_cast<char *>( currentShader.file.c_str() ), currentShader.numTPV, tokenArray, pointerArray );
+    	RiSurfaceV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
     } else if ( currentShader.shader_type == SHADER_TYPE_DISPLACEMENT ) {
-    	RiDisplacementV ( const_cast<char *>( currentShader.file.c_str() ), currentShader.numTPV, tokenArray, pointerArray );
+    	RiDisplacementV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
     }
 
     RiSphere( 0.5, 0.0, 0.5, 360.0, RI_NULL );
@@ -290,6 +334,10 @@ int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, cons
     RiWorldEnd();
     RiFrameEnd();
     RiEnd();
+    fflush( NULL );
+    debugMode = 1;
+    LIQDEBUGPRINTF("# Rib output done.\n" );
+    debugMode = 0;
     return 1;
 }
 
