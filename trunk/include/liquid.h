@@ -102,95 +102,96 @@ inline bool equiv( float val1, float val2 )
 // Enums //
 ///////////
 enum ObjectType {
-    MRT_Unknown     	= 0, 
-    MRT_Nurbs	    	= 1, 
-    MRT_NuCurve     	= 5,
-    MRT_Mesh	    	= 2, 
-    MRT_Light	    	= 3,
-    MRT_Particles   	= 6,
-    MRT_Locator     	= 7,
-    MRT_RibGen	    	= 8,
-    MRT_Shader	    	= 9,
-    MRT_Coord	    	= 10,
-    MRT_Subdivision 	= 11,
-    MRT_Weirdo	    	= 4
+  MRT_Unknown     	= 0, 
+  MRT_Nurbs	    	= 1, 
+  MRT_NuCurve     	= 5,
+  MRT_Mesh	    	= 2, 
+  MRT_Light	    	= 3,
+  MRT_Particles   	= 6,
+  MRT_Locator     	= 7,
+  MRT_RibGen	    	= 8,
+  MRT_Shader	    	= 9,
+  MRT_Coord	    	= 10,
+  MRT_Subdivision 	= 11,
+  MRT_Weirdo	    	= 4
 };
 
 enum LightType {
-    MRLT_Unknown    	= 0, 
-    MRLT_Ambient    	= 1, 
-    MRLT_Distant    	= 2, 
-    MRLT_Point	    	= 3, 
-    MRLT_Spot	    	= 4, 
-    MRLT_Rman	    	= 5, 
-    MRLT_Area	    	= 6 
+  MRLT_Unknown    	= 0, 
+  MRLT_Ambient    	= 1, 
+  MRLT_Distant    	= 2, 
+  MRLT_Point	    	= 3, 
+  MRLT_Spot	    	= 4, 
+  MRLT_Rman	    	= 5, 
+  MRLT_Area	    	= 6 
 };
 
 enum AnimType {
-    MRX_Const	    	= 0, 
-    MRX_Animated    	= 1, 
-    MRX_Incompatible	= 2
+  MRX_Const	    	= 0, 
+  MRX_Animated    	= 1, 
+  MRX_Incompatible	= 2
 };
 
 enum RendererType {
-    PRMan   	= 0,
-    BMRT    	= 1,
-    RDC     	= 2
+  PRMan   	= 0,
+  BMRT    	= 1,
+  RDC     	= 2
 };
 
 enum PointLightDirection {
-    pPX     = 0,
-    pPY     = 1,
-    pPZ     = 2,
-    pNX     = 3,
-    pNY     = 4,
-    pNZ     = 5
+  pPX     = 0,
+  pPY     = 1,
+  pPZ     = 2,
+  pNX     = 3,
+  pNY     = 4,
+  pNZ     = 5
 };
 
 
 enum PixelFilerType {
-    fBoxFilter	    	= 0,
-    fTriangleFilter 	= 1,
-    fCatmullRomFilter	= 2,
-    fGaussianFilter 	= 3,
-    fSincFilter     	= 4
+  fBoxFilter	    	= 0,
+  fTriangleFilter 	= 1,
+  fCatmullRomFilter	= 2,
+  fGaussianFilter 	= 3,
+  fSincFilter     	= 4
 };
 
 struct structCamera {
-    MMatrix	mat;
-    double	neardb, fardb;
-    double	hFOV;
-    int		isOrtho;
-    double	orthoWidth;
-    double 	orthoHeight;
-    MString	name;
-    bool	motionBlur;
-    double	shutter;
-    double	fStop;
-    double	focalDistance;
-    double	focalLength;
+  MMatrix	mat;
+  double	neardb, fardb;
+  double	hFOV;
+  int		isOrtho;
+  double	orthoWidth;
+  double 	orthoHeight;
+  MString	name;
+  bool	motionBlur;
+  double	shutter;
+  double	fStop;
+  double	focalDistance;
+  double	focalLength;
 };
 
 struct structJob {
-    int     	    width, height;
-    float   	    aspectRatio;
-    MString		name;
-    MString		imageMode;
-    MString		format;
-    MString		renderName;
-    MString		ribFileName;
-    MString		imageName;
-    bool		isShadow;
-    bool    	    	isMinMaxShadow;
-    bool		hasShadowCam;
-    bool		isShadowPass;
-    bool		isPoint;
-    PointLightDirection pointDir;
-    structCamera	camera[5];
-    MDagPath		path;
-    MDagPath		shadowCamPath;
-    MString 	    	jobOptions;
-    bool    	    	gotJobOptions;
+  int      width, height;
+  float    aspectRatio;
+  MString  name;
+  MString  imageMode;
+  MString  format;
+  MString  renderName;
+  MString  ribFileName;
+  MString  imageName;
+  bool     isShadow;
+  bool     isMinMaxShadow;
+  bool     isMidPointShadow;
+  bool     hasShadowCam;
+  bool     isShadowPass;
+  bool     isPoint;
+  PointLightDirection pointDir;
+  structCamera camera[5];
+  MDagPath path;
+  MDagPath shadowCamPath;
+  MString  jobOptions;
+  bool     gotJobOptions;
 };
 
 

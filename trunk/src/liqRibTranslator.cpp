@@ -2365,14 +2365,22 @@ MStatus liqRibTranslator::buildJobs()
 					thisJob.isPoint = false;
 					thisJob.isShadowPass = false;
 					
-					/* now we check to see if the minmax option is used */
+					// check to see if the minmax shadow option is used
 					thisJob.isMinMaxShadow = false;
 					status.clear();
 					MPlug liquidMinMaxShadow = fnLightNode.findPlug( "liquidMinMaxShadow", &status );
 					if ( status == MS::kSuccess ) {
 						liquidMinMaxShadow.getValue( thisJob.isMinMaxShadow );
 					}
-					
+
+          // check to see if the midpoint shadow option is used
+          thisJob.isMidPointShadow = false;
+          status.clear();
+          MPlug liquidMidPointShadow = fnLightNode.findPlug( "useMidDistDmap", &status );
+          if ( status == MS::kSuccess ) {
+            liquidMidPointShadow.getValue( thisJob.isMidPointShadow );
+          }
+          
 					bool computeShadow = true;
 					if ( m_lazyCompute ) {
 						MString baseFileName;
@@ -3139,29 +3147,34 @@ MStatus liqRibTranslator::framePrologue(long lframe)
 //  	Write out the frame prologue.
 //  
 {
-	if ( debugMode ) printf( "-> Beginning Frame Prologue\n" );
+  if ( debugMode ) printf( "-> Beginning Frame Prologue\n" );
     ribStatus = kRibFrame;
-	
-	if ( !m_exportReadArchive ) {
-		
-		RiFrameBegin( lframe );
-		
-		if ( !liqglo_currentJob.isShadow ) {
-			// Smooth Shading
-			RiShadingInterpolation( "smooth" );
-			// Quantization
-			if ( quantValue != 0 ) {
-				int whiteValue = (int) pow( 2.0, quantValue ) - 1;
-				RiQuantize( RI_RGBA, whiteValue, 0, whiteValue, 0.5 );
-			} else {
-				RiQuantize( RI_RGBA, 0, 0, 0, 0 );
-			}				
-			if ( m_rgain != 1.0 || m_rgamma != 1.0 ) {
-				RiExposure( m_rgain, m_rgamma );
-			}
-		}
-		
-		if ( debugMode ) printf( "-> Setting Display Options\n" );
+
+  if ( !m_exportReadArchive ) {
+
+    RiFrameBegin( lframe );
+
+    if ( !liqglo_currentJob.isShadow ) {
+      // Smooth Shading
+      RiShadingInterpolation( "smooth" );
+      // Quantization
+      if ( quantValue != 0 ) {
+        int whiteValue = (int) pow( 2.0, quantValue ) - 1;
+        RiQuantize( RI_RGBA, whiteValue, 0, whiteValue, 0.5 );
+      } else {
+        RiQuantize( RI_RGBA, 0, 0, 0, 0 );
+      }				
+      if ( m_rgain != 1.0 || m_rgamma != 1.0 ) {
+        RiExposure( m_rgain, m_rgamma );
+      }
+    }
+
+    if ( liqglo_currentJob.isMidPointShadow ) {
+      RtString midPoint = "midpoint";
+      RiHider("hidden", "depthfilter", &midPoint, RI_NULL );
+    }
+    
+    if ( debugMode ) printf( "-> Setting Display Options\n" );
 		
 		if ( liqglo_currentJob.isShadow ) {
 			if ( !liqglo_currentJob.isMinMaxShadow ) {
