@@ -41,10 +41,14 @@
 #include <math.h>
 #include <string>
 
+#if defined(_WIN32) && !defined(M_PI)
+#  define M_PI 3.1415926535897932384626433832795
+#endif
+
 #ifdef OSX
-	#include <stdlib.h>
+#  include <stdlib.h>
 #else
-	#include <malloc.h>
+#  include <malloc.h>
 #endif
 
 #include <liqMemory.h>

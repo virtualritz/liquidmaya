@@ -34,12 +34,14 @@
 #include <string>
 #include <vector>
 
-#if defined(_WIN32) && !defined(LIQUIDVERSION_DEF)
-#define LIQUIDVERSION_DEF
+#include <liqIOStream.h>
+
+#if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
-static const char * LIQUIDVERSION =
+static const char * LIQUIDVERSION = 
 #include "liquid.version"
 ;
+#define DEFINED_LIQUIDVERSION
 #endif
 
 
@@ -141,7 +143,7 @@ public:
       
       // setup the correct indentation amount to prepend onto each line
       std::string indent;
-      for(int i=0; i<indentLevel; ++i) {
+      for(unsigned int i=0; i<indentLevel; ++i) {
         indent += "  ";
       }
       
@@ -192,7 +194,7 @@ public:
       std::stringstream ss;
      
       std::string indent;
-      for(int i=0; i<indentLevel; ++i) {
+      for(unsigned int i=0; i<indentLevel; ++i) {
         indent += "  ";
       }
        
