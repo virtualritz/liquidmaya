@@ -1,0 +1,20 @@
+SHELL			= sh
+PLUGSUF			= .mll
+BINSUF			= .exe
+OBJSUF			= .obj
+LIBSUF			= .lib
+CPP				= cl
+LINK			= link
+LD				= $(MAYA_LOCATION)/bin/mayald
+LOCFLAGS		= -nologo -O2 -EHsc -MT -YXstdafx.h -FD -GR -D_BOOL -D_WIN32 -DWIN32 -D_USRDLL -DLIQUID_EXPORTS -Dulong="unsigned long" -Duint="unsigned int"
+WARNFLAGS		= -W1
+VBIN			= win32
+AR				= ar cqs
+LINKEROPTS		= -INCREMENTAL:NO -NOLOGO -NODEFAULTLIB:libircmt$(LIBEXT) -PDB:liquid.pdb -MACHINE:I386
+LIBPATHFLAG		= -LIBPATH:
+LIBFLAG			=
+SHAREDFLAG		= -DLL
+OUTFLAG			= -Fo
+EXTRALIBS		= $(LIBFLAG)shell32$(LIBSUF) $(LIBFLAG)Foundation$(LIBSUF)
+
+include commonrules.windows.mk

@@ -1,0 +1,14 @@
+SHELL 	    	= sh
+PLUGSUF     	= so
+OBJEXT			= o
+CPP				= g++
+LD				= $(MAYA_LOCATION)/bin/mayald
+LOCFLAGS    	= -ffast-math -mpentiumpro -D_BOOL -DLINUX
+#LOCFLAGS		= -ffast-math -x c++ -MD -march=pentiumpro -LANG:std -DUNIX -D_LINUX -DLINUX -D_BOOL -D_ISOC9X_SOURCE -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -fexceptions -fno-gnu-keywords -fno-dollars-in-identifiers
+#C++FLAGS		= -g -x c++ -MD -pipe -march=pentiumpro -LANG:std -DUNIX -D_LINUX -DLINUX -D_BOOL -D_ISOC9X_SOURCE -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -fexceptions -fno-gnu-keywords -fno-dollars-in-identifiers -fno-handle-signatures -Wall -W -Wno-comment -Wtraditional -Wundef -Wpointer-arith -Wcast-qual -Wwrite-strings -Winline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses
+WARNFLAGS   	= -Wall -W -Wno-comment -Wtraditional -Wundef -Wpointer-arith -Wcast-qual -Wwrite-strings -Winline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses
+NO_TRANS_LINK	= 
+VBIN			= suse
+EXTRA_LIBS		= $(MAYA_LOCATION)/lib/libstdc++-libc6.2-2.so.3
+AR				= ar cqs
+include commonrules.mk
