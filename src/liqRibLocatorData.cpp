@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -66,12 +68,12 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibLocatorData.h>
+#include <liqRibLocatorData.h>
 #include <liqMemory.h>
 
 extern int debugMode;
 
-liquidRibLocatorData::liquidRibLocatorData( MObject locator )
+liqRibLocatorData::liqRibLocatorData( MObject locator )
 //
 //  Description:
 //      create a RIB compatible representation of a Maya polygon mesh
@@ -81,7 +83,7 @@ liquidRibLocatorData::liquidRibLocatorData( MObject locator )
 	if ( debugMode ) { printf("-> creating locator\n"); }
 }
 
-liquidRibLocatorData::~liquidRibLocatorData()
+liqRibLocatorData::~liqRibLocatorData()
 //
 //  Description:
 //      class destructor
@@ -90,7 +92,7 @@ liquidRibLocatorData::~liquidRibLocatorData()
 	if ( debugMode ) { printf("-> killing locator\n"); }
 }
 
-void liquidRibLocatorData::write()
+void liqRibLocatorData::write()
 //
 //  Description:
 //      Write the RIB for this mesh
@@ -99,7 +101,7 @@ void liquidRibLocatorData::write()
 	if ( debugMode ) { printf("-> writing locator"); }
 }
 
-bool liquidRibLocatorData::compare( const liqRibData & otherObj ) const
+bool liqRibLocatorData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Compare this mesh to the other for the purpose of determining
@@ -111,7 +113,7 @@ bool liquidRibLocatorData::compare( const liqRibData & otherObj ) const
     return true;
 }
 
-ObjectType liquidRibLocatorData::type() const
+ObjectType liqRibLocatorData::type() const
 //
 //  Description:
 //      return the geometry type

@@ -178,20 +178,13 @@ static const char * LIQUIDVERSION =
 #include <maya/MSyntax.h>
 
 #include <liquid.h>
-#include <liquidRibObj.h>
-#include <liquidRibNode.h>
+#include <liqRibNode.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibData.h>
-#include <liquidRibNuCurveData.h>
-#include <liquidRibMeshData.h>
-#include <liquidRibLocatorData.h>
-#include <liquidRibLightData.h>
 #include <liqRibCoordData.h>
-#include <liquidRibHT.h>
-#include <liquidRibTranslator.h>
+#include <liqRibHT.h>
+#include <liqRibTranslator.h>
 #include <liqGetSloInfo.h>
-#include <liquidRIBStatus.h>
-#include <liquidRIBGen.h>
 #include <liqRibGenData.h>
 #include <liqMemory.h>
 #include <liqProcessLauncher.h>
@@ -212,7 +205,7 @@ int debugMode;
 #define LIQ_ANIM_EXT MString( ".%0*d");
 
 #ifndef _WIN32
-const char *liquidRibTranslator::m_default_tmp_dir = "/tmp";
+const char *liqRibTranslator::m_default_tmp_dir = "/tmp";
 #endif
 
 // Kept global for liquidRigGenData and liquidRibParticleData
@@ -241,7 +234,7 @@ MStringArray 	    	liqglo_DDimageName;
 MString			liqglo_ribDir;
 MString			liqglo_projectDir;
 
-// Kept global for liquidRibNode.cpp
+// Kept global for liqRibNode.cpp
 MStringArray liqglo_preReadArchive;
 MStringArray liqglo_preRibBox;
 MStringArray liqglo_preReadArchiveShadow;
@@ -262,7 +255,7 @@ int RiNColorSamples;
 // a specific class
 #endif
 
-void liquidRibTranslator::freeShaders( void ) 
+void liqRibTranslator::freeShaders( void ) 
 {
     if ( debugMode ) { printf( "-> freeing shader data.\n" ); }
     std::vector<liqShader>::iterator iter = m_shaders.begin();
@@ -279,19 +272,19 @@ void liquidRibTranslator::freeShaders( void )
     if ( debugMode ) { printf("-> finished freeing shader data.\n" ); }
 }
 // Hmmmmm should change magic to Liquid
-MString liquidRibTranslator::magic("##RenderMan");
+MString liqRibTranslator::magic("##RenderMan");
 
-void *liquidRibTranslator::creator()
+void *liqRibTranslator::creator()
 //
 //  Description:
 //      Create a new instance of the translator
 //
 {
-    return new liquidRibTranslator();
+    return new liqRibTranslator();
 }
 
 
-liqShader & liquidRibTranslator::liqGetShader( MObject shaderObj )
+liqShader & liqRibTranslator::liqGetShader( MObject shaderObj )
 {
     MString rmShaderStr;
 
@@ -315,7 +308,7 @@ liqShader & liquidRibTranslator::liqGetShader( MObject shaderObj )
     return m_shaders.back();
 }
 
-MStatus liquidRibTranslator::liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType )
+MStatus liqRibTranslator::liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType )
 {
     MStatus status = MS::kSuccess;
     MPlug triplePlug = shaderNode.findPlug( argName, &status );
@@ -334,7 +327,7 @@ MStatus liquidRibTranslator::liqShaderParseVectorAttr ( liqShader & currentShade
 
 
 
-void liquidRibTranslator::printProgress( int stat, long first, long last, long where )
+void liqRibTranslator::printProgress( int stat, long first, long last, long where )
 // Description:
 // Member function for printing the progress to the 
 // Maya Console or stdout.  If alfred is being used 
@@ -357,7 +350,7 @@ void liquidRibTranslator::printProgress( int stat, long first, long last, long w
 	}
 }					
 
-bool liquidRibTranslator::liquidInitGlobals()
+bool liqRibTranslator::liquidInitGlobals()
 // Description:
 // checks to see if the liquidGlobals are available
 {
@@ -378,7 +371,7 @@ bool liquidRibTranslator::liquidInitGlobals()
 	return false;
 }
 
-liquidRibTranslator::liquidRibTranslator()
+liqRibTranslator::liqRibTranslator()
 //
 //  Description:
 //      Class constructor
@@ -525,7 +518,7 @@ liquidRibTranslator::liquidRibTranslator()
     liqglo_isShadowPass = false;
 }   
 
-liquidRibTranslator::~liquidRibTranslator()
+liqRibTranslator::~liqRibTranslator()
 //  Description:
 //      Class destructor
 {
@@ -540,9 +533,9 @@ liquidRibTranslator::~liquidRibTranslator()
 }   
 
 #if defined ENTROPY || PRMAN
-void liquidRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
+void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
 #else
-void liquidRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
+void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
 #endif
 //  Description:
 //  Error handling function.  This gets called when the RIB library detects an error.  
@@ -552,7 +545,7 @@ void liquidRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * m
     throw error;
 }
 
-MSyntax liquidRibTranslator::syntax()
+MSyntax liqRibTranslator::syntax()
 {
 	MSyntax syntax;
 
@@ -615,7 +608,7 @@ MSyntax liquidRibTranslator::syntax()
 	return syntax;
 }
 
-MStatus liquidRibTranslator::liquidDoArgs( MArgList args ) 
+MStatus liqRibTranslator::liquidDoArgs( MArgList args ) 
 {
 //	Description:
 //		Read the values from the command line and set the internal values
@@ -919,7 +912,7 @@ MStatus liquidRibTranslator::liquidDoArgs( MArgList args )
 	return MS::kSuccess;
 }
 
-void liquidRibTranslator::liquidReadGlobals() 
+void liqRibTranslator::liquidReadGlobals() 
 {
 //	Description:
 //		Read the values from the render globals and set internal values
@@ -1436,7 +1429,7 @@ void liquidRibTranslator::liquidReadGlobals()
 	}
 }
 
-bool liquidRibTranslator::verifyOutputDirectories()
+bool liqRibTranslator::verifyOutputDirectories()
 {
 #ifdef _WIN32
 	int dirMode = 0; // dummy arg
@@ -1501,7 +1494,7 @@ bool liquidRibTranslator::verifyOutputDirectories()
 	return problem;
 }
 
-MStatus liquidRibTranslator::doIt( const MArgList& args )
+MStatus liqRibTranslator::doIt( const MArgList& args )
 //  Description:
 //      This method actually does the renderman output
 {
@@ -1573,7 +1566,7 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 	LIQ_ADD_SLASH_IF_NEEDED( m_tmpDir );
 
 	// setup the error handler
-	if ( m_errorMode ) RiErrorHandler( liquidRibTranslatorErrorHandler );
+	if ( m_errorMode ) RiErrorHandler( liqRibTranslatorErrorHandler );
 
 	// Setup helper variables for alfred
 	MString alfredCleanUpCommand;
@@ -1775,7 +1768,7 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 
 			if ( !m_deferredGen ) {
 
-				htable = new liquidRibHT();
+				htable = new liqRibHT();
 
 				float sampleinc = ( liqglo_shutterTime * m_blurTime ) / ( liqglo_motionSamples - 1 );
 				for ( int msampleOn = 0; msampleOn < liqglo_motionSamples; msampleOn++ ) {
@@ -2108,7 +2101,7 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 	}
 }
 
-void liquidRibTranslator::portFieldOfView( int port_width, int port_height,
+void liqRibTranslator::portFieldOfView( int port_width, int port_height,
 									double& horizontal,
 									double& vertical,
 									MFnCamera& fnCamera )
@@ -2126,7 +2119,7 @@ void liquidRibTranslator::portFieldOfView( int port_width, int port_height,
     vertical = atan(((top - bottom) * 0.5) / neardb) * 2.0;
 }
 
-void liquidRibTranslator::computeViewingFrustum ( double     window_aspect,
+void liqRibTranslator::computeViewingFrustum ( double     window_aspect,
 										   double&    left,
 										   double&    right,
 										   double&    bottom,
@@ -2203,7 +2196,7 @@ void liquidRibTranslator::computeViewingFrustum ( double     window_aspect,
     top    = focal_to_near * ( .5*aperture_y*scale_y+offset_y+translate_y);
 }
 
-void liquidRibTranslator::getCameraInfo( MFnCamera& cam )
+void liqRibTranslator::getCameraInfo( MFnCamera& cam )
 //
 //  Description:
 //      Get information about the given camera
@@ -2316,7 +2309,7 @@ void liquidRibTranslator::getCameraInfo( MFnCamera& cam )
 	}
 }
 
-MStatus liquidRibTranslator::buildJobs()
+MStatus liqRibTranslator::buildJobs()
 //
 //  Description:
 //      Write the prologue for the RIB file
@@ -2628,7 +2621,7 @@ MStatus liquidRibTranslator::buildJobs()
 	return MS::kSuccess;
 }
 
-MStatus liquidRibTranslator::ribPrologue()
+MStatus liqRibTranslator::ribPrologue()
 //
 //  Description:
 //      Write the prologue for the RIB file
@@ -2691,7 +2684,7 @@ MStatus liquidRibTranslator::ribPrologue()
     return MS::kSuccess;
 }
 
-MStatus liquidRibTranslator::ribEpilogue()
+MStatus liqRibTranslator::ribEpilogue()
 //
 //  Description:
 //      Write the epilogue for the RIB file
@@ -2701,7 +2694,7 @@ MStatus liquidRibTranslator::ribEpilogue()
     return (ribStatus == kRibOK ? MS::kSuccess : MS::kFailure);
 }
 
-MStatus liquidRibTranslator::scanScene(float lframe, int sample )
+MStatus liqRibTranslator::scanScene(float lframe, int sample )
 //
 //  Description:
 //      Scan the DAG at the given frame number and record information
@@ -3072,7 +3065,7 @@ MStatus liquidRibTranslator::scanScene(float lframe, int sample )
   return MS::kFailure;
 }
 
-void liquidRibTranslator::doAttributeBlocking( const MDagPath & newPath, const MDagPath & previousPath )
+void liqRibTranslator::doAttributeBlocking( const MDagPath & newPath, const MDagPath & previousPath )
 // 
 //  Description:
 //      This method takes care of the blocking together of objects and
@@ -3140,7 +3133,7 @@ void liquidRibTranslator::doAttributeBlocking( const MDagPath & newPath, const M
     }
 }        
 
-MStatus liquidRibTranslator::framePrologue(long lframe)
+MStatus liqRibTranslator::framePrologue(long lframe)
 //  
 //  Description:
 //  	Write out the frame prologue.
@@ -3306,7 +3299,7 @@ MStatus liquidRibTranslator::framePrologue(long lframe)
     return MS::kSuccess;
 }
 
-MStatus liquidRibTranslator::frameEpilogue( long )
+MStatus liqRibTranslator::frameEpilogue( long )
 //  
 //  Description:
 //  	Write out the frame epilogue.
@@ -3321,7 +3314,7 @@ MStatus liquidRibTranslator::frameEpilogue( long )
     return (ribStatus == kRibBegin ? MS::kSuccess : MS::kFailure);
 }
 
-MStatus liquidRibTranslator::frameBody()
+MStatus liqRibTranslator::frameBody()
 //  
 //  Description:
 //  	Write out the body of the frame.  This includes a dump of the DAG
@@ -3346,7 +3339,7 @@ MStatus liquidRibTranslator::frameBody()
 			
 			for ( rniter = htable->RibNodeMap.begin(); rniter != htable->RibNodeMap.end(); rniter++ ) {
 			    LIQ_CHECK_CANCEL_REQUEST;
-				liquidRibNode *	rn = (*rniter).second;
+				liqRibNode *	rn = (*rniter).second;
 				if (rn->object(0)->ignore || rn->object(0)->type != MRT_Light) continue;
 				rn->object(0)->writeObject();
 				rn->object(0)->written = 1;
@@ -3368,7 +3361,7 @@ MStatus liquidRibTranslator::frameBody()
 	for ( rniter = htable->RibNodeMap.begin(); rniter != htable->RibNodeMap.end(); rniter++ ) {
 	    LIQ_CHECK_CANCEL_REQUEST;
 		
-		liquidRibNode * ribNode = (*rniter).second;
+		liqRibNode * ribNode = (*rniter).second;
 		path = ribNode->path();
 		
 		if ( ( NULL == ribNode ) || ( ribNode->object(0)->type == MRT_Light ) ) continue;
@@ -3414,7 +3407,7 @@ MStatus liquidRibTranslator::frameBody()
 				//RibNode * ln = htable->find( light, MRT_Light );	
 				MDagPath nodeDagPath;
 				lightFnDag.getPath( nodeDagPath );
-				liquidRibNode * ln = htable->find( lightFnDag.fullPathName(), nodeDagPath, MRT_Light );						
+				liqRibNode * ln = htable->find( lightFnDag.fullPathName(), nodeDagPath, MRT_Light );						
 				if ( NULL != ln ) {
 					RiIlluminate( ln->object(0)->lightHandle(), RI_FALSE );
 				}

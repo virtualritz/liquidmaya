@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
-** "License"); you may not use this file except in compliance with the License. You may
-** obtain a copy of the License at http://www.mozilla.org/MPL/
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/
 **
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific
-** language governing rights and limitations under the License.
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License.
 **
 ** The Original Code is the Liquid Rendering Toolkit.
 **
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
 ** Contributor(s): Berj Bannayan.
 **
@@ -69,14 +71,14 @@ extern "C" {
 #include <maya/MObjectArray.h>
 
 #include <liquid.h>
-#include <liquidRibNode.h>
-#include <liquidRibHT.h>
+#include <liqRibNode.h>
+#include <liqRibHT.h>
 #include <liqMemory.h>
 
 extern int debugMode;
 
 
-liquidRibHT::liquidRibHT()
+liqRibHT::liqRibHT()
 //
 //  Description:
 //      Class constructor.
@@ -86,7 +88,7 @@ liquidRibHT::liquidRibHT()
 	RibNodeMap.clear();
 }
 
-liquidRibHT::~liquidRibHT()
+liqRibHT::~liqRibHT()
 //
 //  Description:
 //      Class destructor.
@@ -96,7 +98,7 @@ liquidRibHT::~liquidRibHT()
 		RNMAP::iterator iter;
 		for ( iter = RibNodeMap.begin(); iter != RibNodeMap.end(); iter++ )
 		{
-			liquidRibNode * node;
+			liqRibNode * node;
 			node = (*iter).second;
 			delete node;
 		}
@@ -106,7 +108,7 @@ liquidRibHT::~liquidRibHT()
 		}
 }
 
-ulong liquidRibHT::hash(const char *str)
+ulong liqRibHT::hash(const char *str)
 //
 //  Description:
 //      hash function for strings
@@ -124,7 +126,7 @@ ulong liquidRibHT::hash(const char *str)
 	return (ulong)hc;
 }
 
-int liquidRibHT::insert( MDagPath &path, double /*lframe*/, int sample, ObjectType objType )
+int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample, ObjectType objType )
 //  Description:
 //      insert a new node into the hash table.
 {
@@ -140,16 +142,16 @@ int liquidRibHT::insert( MDagPath &path, double /*lframe*/, int sample, ObjectTy
     ulong hc = hash( name );
 	if ( debugMode ) { printf("-> hashed node name: %s size: %ld \n", name, hc ); }
 
-	liquidRibNode * node;
+	liqRibNode * node;
 	/*node = find( path.node(), objType );*/
 	node = find( nodeName, path, objType );
-	liquidRibNode *	 newNode = NULL;
-	liquidRibNode *    instance = NULL;
+	liqRibNode *	 newNode = NULL;
+	liqRibNode *    instance = NULL;
 
 	// If "node" is non-null then there's already a hash table entry at
 	// this point
 	//
-	liquidRibNode * tail = NULL;
+	liqRibNode * tail = NULL;
 	if ( NULL != node ) {
 		while(node) {
 			tail = node;
@@ -164,13 +166,13 @@ int liquidRibHT::insert( MDagPath &path, double /*lframe*/, int sample, ObjectTy
 		if ( ( NULL == node ) && ( NULL != instance ) ) {
 			// We have not found a node with a matching path, but we have found
 			// one with a matching object, so we need to insert a new instance
-			newNode = new liquidRibNode( instance );
+			newNode = new liqRibNode( instance );
 		}
 	}
 	if ( NULL == newNode ) {
 		// We have to make a new node
 		if (node == NULL) {
-			node = new liquidRibNode();
+			node = new liqRibNode();
 			if ( NULL != tail ) {
 				assert( NULL == tail->next );
 				tail->next = node;
@@ -198,12 +200,12 @@ int liquidRibHT::insert( MDagPath &path, double /*lframe*/, int sample, ObjectTy
 	return 0;
 }
 
-liquidRibNode* liquidRibHT::find( MString nodeName, MDagPath path, ObjectType
+liqRibNode* liqRibHT::find( MString nodeName, MDagPath path, ObjectType
 	/*objType = MRT_Unknown*/ )
 //  Description: find the hash table entry for the given object
 {
     if ( debugMode ) { printf("-> finding node in hash table using object, %s\n", nodeName.asChar()); }
-    liquidRibNode * result = NULL;
+    liqRibNode * result = NULL;
 
     const char * name = nodeName.asChar();
 

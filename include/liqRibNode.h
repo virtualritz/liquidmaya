@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -25,8 +27,8 @@
 
 */
 
-#ifndef liquidRibNode_H
-#define liquidRibNode_H
+#ifndef liqRibNode_H
+#define liqRibNode_H
 
 /* ______________________________________________________________________
 ** 
@@ -35,27 +37,27 @@
 */
 
 #include <liqRibData.h>
-#include <liquidRibObj.h>
+#include <liqRibObj.h>
 #include <maya/MColor.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MDagPath.h>
 #include <maya/MObjectArray.h>
 
-class liquidRibNode {   
+class liqRibNode {   
 public:
-    liquidRibNode( liquidRibNode * instanceOfNode = NULL );
-    ~liquidRibNode();
+    liqRibNode( liqRibNode * instanceOfNode = NULL );
+    ~liqRibNode();
 			
     void set( MDagPath &, int, ObjectType objType );
 			   
-    liquidRibNode *	    next;
+    liqRibNode *	    next;
     MString name;
 	
     AnimType        matXForm;
     AnimType        bodyXForm;
 	
-    liquidRibObj *	    object(int);
-    liquidRibObj *	    no;
+    liqRibObj *	    object(int);
+    liqRibObj *	    no;
     
     MDagPath &      path();
      
@@ -94,8 +96,8 @@ public:
 private:
         
     MDagPath	    DagPath;
-    liquidRibObj *  objects[5];
-    liquidRibNode * instance;
+    liqRibObj *  objects[5];
+    liqRibNode * instance;
     MString 	    ribGenName;
     bool    	    hasRibGenAttr;
 };

@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -75,7 +77,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidRibLightData.h>
+#include <liqRibLightData.h>
 #include <liqMemory.h>
 #include <liqGetSloInfo.h>
 
@@ -91,7 +93,7 @@ extern bool liqglo_doShadows;
 extern bool liqglo_shortShaderNames;
 extern MStringArray liqglo_DDimageName;
 
-liquidRibLightData::liquidRibLightData( const MDagPath & light )
+liqRibLightData::liqRibLightData( const MDagPath & light )
 //
 //  Description:
 //      create a RIB compatible representation of a Maya light
@@ -407,7 +409,7 @@ liquidRibLightData::liquidRibLightData( const MDagPath & light )
     } 
 }
 
-liquidRibLightData::~liquidRibLightData() 
+liqRibLightData::~liqRibLightData() 
 {
 	if ( debugMode ) { printf("-> killing light data.\n" ); }
 	shadowName.clear();
@@ -415,7 +417,7 @@ liquidRibLightData::~liquidRibLightData()
 	if ( debugMode ) { printf("-> finished killing light data.\n" ); }
 }
 
-void liquidRibLightData::write()
+void liqRibLightData::write()
 //
 //  Description:
 //      Write the RIB for this light
@@ -499,7 +501,7 @@ void liquidRibLightData::write()
 	}
 }
 
-bool liquidRibLightData::compare( const liqRibData & otherObj ) const
+bool liqRibLightData::compare( const liqRibData & otherObj ) const
 //
 //  Description:
 //      Light comparisons are not supported in this version.
@@ -508,7 +510,7 @@ bool liquidRibLightData::compare( const liqRibData & otherObj ) const
 	if ( debugMode ) { printf("-> comparing light\n"); }
 	return true;  
 }
-ObjectType liquidRibLightData::type() const
+ObjectType liqRibLightData::type() const
 //
 //  Description:
 //      return the object type
@@ -517,7 +519,7 @@ ObjectType liquidRibLightData::type() const
 	if ( debugMode ) { printf("-> returning light type\n"); }
 	return MRT_Light;
 }
-RtLightHandle liquidRibLightData::lightHandle() const
+RtLightHandle liqRibLightData::lightHandle() const
 {
 	return handle;   
 }
