@@ -40,35 +40,35 @@
 class liqRibLightData : public liqRibData {
 public:
     
-    liqRibLightData( const MDagPath & light );
-    virtual ~liqRibLightData();
+  liqRibLightData( const MDagPath & light );
+  virtual ~liqRibLightData();
 
-    virtual void       write();
-    virtual bool       compare( const liqRibData & other ) const;
-    virtual ObjectType type() const;
+  virtual void       write();
+  virtual bool       compare( const liqRibData & other ) const;
+  virtual ObjectType type() const;
 
-    RtLightHandle lightHandle() const;
-    bool          rmanLight;
-    MString       assignedRManShader;
+  RtLightHandle lightHandle() const;
+  bool          rmanLight;
+  MString       assignedRManShader;
     
-    MString       autoShadowName() const;
+  MString       autoShadowName( MString suffix = "" ) const;
     
 private:
-    LightType     lightType;
-    RtFloat       color[3];
-    RtFloat       intensity, coneAngle, penumbraAngle, dropOff;
-    RtPoint       from, to;
-    RtMatrix      transformationMatrix;
+  LightType     lightType;
+  RtFloat       color[3];
+  RtFloat       intensity, coneAngle, penumbraAngle, dropOff;
+  RtPoint       from, to;
+  RtMatrix      transformationMatrix;
 
-    RtLightHandle handle;
-    bool          usingShadow;
-    bool          deepShadows;
-    bool          raytraced;
-    bool          excludeFromRib;
-    MString       userShadowName;
-    MString       lightName;      
+  RtLightHandle handle;
+  bool          usingShadow;
+  bool          deepShadows;
+  bool          raytraced;
+  bool          excludeFromRib;
+  MString       userShadowName;
+  MString       lightName;      
     
-    MString       shadowName;
+  MString       shadowName;
 };
 
 
