@@ -1,17 +1,19 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** The contents of this file are subject to the Mozilla Public License Version
+** 1.1 (the "License"); you may not use this file except in compliance with
+** the License. You may obtain a copy of the License at
+** http://www.mozilla.org/MPL/ 
 ** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** Software distributed under the License is distributed on an "AS IS" basis,
+** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+** for the specific language governing rights and limitations under the
+** License. 
 **
 ** The Original Code is the Liquid Rendering Toolkit. 
 ** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 ** 
 ** Contributor(s): Berj Bannayan. 
 **
@@ -78,7 +80,7 @@ extern "C" {
 #include <liquidRibTranslator.h>
 #include <liquidGetSloInfo.h>
 #include <liquidGetAttr.h>
-#include <liquidAttachPrefAttribute.h>
+#include <liqAttachPrefAttribute.h>
 #include <liquidMemory.h>
 #include <liqPreviewShader.h>
 #include <liqWriteArchive.h>
@@ -116,7 +118,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     LIQCHECKSTATUS( status, "Can't register liquid translator command" );
 
     // register the liquidAttachPrefAttribute command
-    status = plugin.registerCommand( "liquidAttachPrefAttribute", liquidAttachPrefAttribute::creator );
+    status = plugin.registerCommand( "liquidAttachPrefAttribute", liqAttachPrefAttribute::creator );
     LIQCHECKSTATUS( status, "Can't register liquidAttachPrefAttribute command" );
 
     // register the liquidAttachPrefAttribute command
@@ -131,9 +133,9 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     status = plugin.registerCommand( "liquidGetAttr", liquidGetAttr::creator );
     LIQCHECKSTATUS( status, "Can't register liquidGetAttr command" );
 
-	// register the liquidWriteArchive command
-	status = plugin.registerCommand( "liquidWriteArchive", liqWriteArchive::creator, liqWriteArchive::syntax );
-	LIQCHECKSTATUS( status, "Can't register liquidWriteArchive command" );
+    // register the liquidWriteArchive command
+    status = plugin.registerCommand( "liquidWriteArchive", liqWriteArchive::creator, liqWriteArchive::syntax );
+    LIQCHECKSTATUS( status, "Can't register liquidWriteArchive command" );
 
     // setup all of the base liquid interface
     command = "source liquidStartup.mel";
