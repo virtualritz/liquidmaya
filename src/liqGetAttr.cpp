@@ -63,19 +63,19 @@ extern "C" {
 #include <maya/MString.h>
 #include <maya/MSelectionList.h>
 
-#include <liquidGetAttr.h>
+#include <liqGetAttr.h>
 #include <liquidMemory.h>
 
-void* liquidGetAttr::creator()
+void* liqGetAttr::creator()
 //
 //  Description:
 //      Create a new instance of the translator
 //
 {
-    return new liquidGetAttr();
+    return new liqGetAttr();
 }
 
-liquidGetAttr::~liquidGetAttr()
+liqGetAttr::~liqGetAttr()
 //
 //  Description:
 //      Class destructor
@@ -83,7 +83,7 @@ liquidGetAttr::~liquidGetAttr()
 {
 } 
 
-MStatus	liquidGetAttr::doIt( const MArgList& args )
+MStatus	liqGetAttr::doIt( const MArgList& args )
 {
 	
 	MStatus					status;

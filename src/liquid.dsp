@@ -169,7 +169,7 @@ SOURCE=.\liquidAttachPrefAttribute.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidGetAttr.cpp
+SOURCE=.\liqGetAttr.cpp
 # End Source File
 # Begin Source File
 
@@ -273,7 +273,7 @@ SOURCE=..\include\liquidAttachPrefAttribute.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidGetAttr.h
+SOURCE=..\include\liqGetAttr.h
 # End Source File
 # Begin Source File
 

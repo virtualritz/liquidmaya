@@ -79,7 +79,7 @@ extern "C" {
 #include <liquid.h>
 #include <liquidRibTranslator.h>
 #include <liquidGetSloInfo.h>
-#include <liquidGetAttr.h>
+#include <liqGetAttr.h>
 #include <liqPreviewShader.h>
 #include <liquidMemory.h>
 #include <liquidGlobalHelpers.h>
