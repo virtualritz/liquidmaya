@@ -89,13 +89,13 @@ void liquidInfo( MString info )
 // maya console or the shell for user feedback	
 //
 {
-	if ( !liquidBin ) {
-		MString infoOutput( "Liquid: " );
-		infoOutput += info;
-		MGlobal::displayInfo( infoOutput );
-	} else {
-		std::cout << "Liquid: " << info.asChar() << "\n" << std::flush;
-	}
+    if ( !liquidBin ) {
+	MString infoOutput( "Liquid: " );
+	infoOutput += info;
+	MGlobal::displayInfo( infoOutput );
+    } else {
+	std::cout << "Liquid: " << info.asChar() << "\n" << std::flush;
+    }
 }
 
 MStringArray FindAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn )
@@ -123,7 +123,7 @@ bool isObjectTwoSided( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-	MStatus status;
+    MStatus status;
     MFnDagNode fnDN( path );
     MPlug dPlug = fnDN.findPlug( "doubleSided", &status );
     bool doubleSided = true;
@@ -189,16 +189,16 @@ bool isObjectPrimaryVisible( const MDagPath & path )
 	status.clear();
     MPlug vPlug = fnDN.findPlug( MString( "primaryVisibility" ), &status );
     bool primaryVisibility = true;
+    if ( status == MS::kSuccess ) {
+	vPlug.getValue( primaryVisibility );
+    }
+    if ( primaryVisibility && isOver ) {
+	status.clear();
+	MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
 	if ( status == MS::kSuccess ) {
-		vPlug.getValue( primaryVisibility );
+	    oPlug.getValue( primaryVisibility );
 	}
-	if ( primaryVisibility && isOver ) {
-		status.clear();
-		MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
-		if ( status == MS::kSuccess ) {
-			oPlug.getValue( primaryVisibility );
-		}
-	}
+    }
     return  primaryVisibility;
 }
 
@@ -208,13 +208,13 @@ bool isObjectTemplated( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-	MStatus status;
+    MStatus status;
     MFnDagNode fnDN( path );
     MPlug vPlug = fnDN.findPlug( "template", &status );
     bool templated = false;
-	if ( status == MS::kSuccess ) {
-		vPlug.getValue( templated );
-	}
+    if ( status == MS::kSuccess ) {
+	vPlug.getValue( templated );
+    }
     status.clear();
     return  templated;
 }
@@ -225,29 +225,29 @@ bool isObjectCastsShadows( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-	MStatus status;
+    MStatus status;
     MFnDagNode fnDN( path );
     // Check the visibility attribute of the node
     //
     MPlug vPlug = fnDN.findPlug( MString( "castsShadows" ), &status );
     bool castsShadows = true;
+    if ( status == MS::kSuccess ) {
+	vPlug.getValue( castsShadows );
+    }
+    status.clear();
+    MPlug oPlug = fnDN.findPlug( MString( "overrideEnabled" ), &status );
+    bool isOver = false;
+    if ( status == MS::kSuccess ) {
+	oPlug.getValue( isOver );
+    }
+    status.clear();
+    if ( castsShadows && isOver ) {
+	MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
 	if ( status == MS::kSuccess ) {
-		vPlug.getValue( castsShadows );
+	    oPlug.getValue( castsShadows );
 	}
-	status.clear();
-	MPlug oPlug = fnDN.findPlug( MString( "overrideEnabled" ), &status );
-	bool isOver = false;
-	if ( status == MS::kSuccess ) {
-		oPlug.getValue( isOver );
-	}
-	status.clear();
-	if ( castsShadows && isOver ) {
-		MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
-		if ( status == MS::kSuccess ) {
-			oPlug.getValue( castsShadows );
-		}
-	}
-	status.clear();
+    }
+    status.clear();
     
     return  castsShadows;
 }
@@ -258,16 +258,16 @@ bool isObjectMotionBlur( const MDagPath & path )
 //      Check if the given object is visible
 //  
 {
-	MStatus status;
+    MStatus status;
     MFnDagNode fnDN( path );
     // Check the visibility attribute of the node
     //
     MPlug vPlug = fnDN.findPlug( "motionBlur", &status );
     bool motionBlur = false;
-	if ( status == MS::kSuccess ) {
-		vPlug.getValue( motionBlur );
-	}
-	status.clear();
+    if ( status == MS::kSuccess ) {
+	vPlug.getValue( motionBlur );
+    }
+    status.clear();
     
     return  motionBlur;
 }
@@ -287,7 +287,8 @@ bool areObjectAndParentsVisible( const MDagPath & path )
     if ( debugMode ) { printf("-> stepping through search path\n"); }
 	bool searching = true;
     while ( searching ) {
-		if ( debugMode ) { printf("-> checking visibility\n"); }
+	if ( debugMode ) { printf("-> checking visibility\n"); }
+
         if ( !isObjectVisible( searchPath )  ){
             result = false;
             searching = false;
@@ -310,12 +311,12 @@ bool areObjectAndParentsTemplated( const MDagPath & path )
     MDagPath searchPath( path );
     
     while ( true ) {
-        if ( isObjectTemplated( searchPath )  ){
-            result = false;
-            break;
-        }
-        if ( searchPath.length() == 1 ) break;
-        searchPath.pop();
+	if ( isObjectTemplated( searchPath )  ){
+	    result = false;
+	    break;
+	}
+	if ( searchPath.length() == 1 ) break;
+	searchPath.pop();
     }
     return result;
 }
@@ -337,8 +338,9 @@ void assignTokenArrays( unsigned int numTokens, liqTokenPointer tokenPointerArra
     }
 }
 
-/* Build the correct token/array pairs from the scene data to correctly pass to Renderman. */
-/* this is another version that takes a std::vector as input instead of a static array */
+/* Build the correct token/array pairs from the scene data to correctly pass
+ * to Renderman.  this is another version that takes a std::vector as input
+ * instead of a static array */
 void assignTokenArraysV( std::vector<liqTokenPointer> *tokenPointerArray, RtToken tokens[], RtPointer pointers[] )
 {
     unsigned i = 0;
@@ -359,26 +361,26 @@ void assignTokenArraysV( std::vector<liqTokenPointer> *tokenPointerArray, RtToke
 }
 
 MObject findFacetShader( MObject mesh, int polygonIndex ){
-	MFnMesh     fnMesh( mesh );
-	MObjectArray shaders;
-	MIntArray indices;
-	MDagPath path;
-	
-	if (!fnMesh.getConnectedShaders( 0, shaders, indices ))
-		std::cerr << "ERROR: MFnMesh::getConnectedShaders\n" << std::flush;
+    MFnMesh     fnMesh( mesh );
+    MObjectArray shaders;
+    MIntArray indices;
+    MDagPath path;
     
-	MObject shaderNode = shaders[ indices[ polygonIndex ] ];
-	
-	return shaderNode;    
+    if (!fnMesh.getConnectedShaders( 0, shaders, indices ))
+	std::cerr << "ERROR: MFnMesh::getConnectedShaders\n" << std::flush;
+
+    MObject shaderNode = shaders[ indices[ polygonIndex ] ];
+    
+    return shaderNode;    
 }
 
 /* Check to see if a file exists - seems to work correctly for both platforms */
 bool fileExists( MString & filename ) {
     struct stat sbuf;
 #ifdef _WIN32
-	bool exists = !( 1 + (stat(filename.asChar(), &sbuf)));
+    bool exists = !( 1 + (stat(filename.asChar(), &sbuf)));
 #else
-	bool exists = !(stat(filename.asChar(), &sbuf));
+    bool exists = !(stat(filename.asChar(), &sbuf));
 #endif
     return exists;
 }
@@ -387,73 +389,88 @@ bool fileExists( MString & filename ) {
 // characters with specific variables
 MString parseString( MString & inputString )
 {
-	MString constructedString;
-	MString tokenString;
-	bool inToken = false;
-	int sLength = inputString.length();
-	int i;
-	for ( i = 0; i < sLength; i++ ) {
-		if ( inputString.substring(i, i) == "$" ) {
-			tokenString.clear();
-			inToken = true;
-		} else if ( inToken ) {
-			tokenString += inputString.substring(i, i);
-			if ( tokenString == "F" ) {
-				constructedString += (int)liqglo_lframe;
-				inToken = false;
-				tokenString.clear();
-			} else if ( tokenString == "SCN" ) {
-				constructedString += liqglo_sceneName;
-				inToken = false;
-				tokenString.clear();
-			} else if ( tokenString == "IMG" ) {
-				constructedString += liqglo_DDimageName[0];
-				inToken = false;
-				tokenString.clear();
-			} else if ( tokenString == "PDIR" ) {
-				constructedString += liqglo_projectDir;
-				inToken = false;
-				tokenString.clear();
-			} else if ( tokenString == "RDIR" ) {
-				constructedString += liqglo_ribDir;
-				inToken = false;
-				tokenString.clear();
-			} else {
-				constructedString += "$";
-				constructedString += tokenString; 
-				tokenString.clear();
-				inToken = false;
-			}
-		} else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
-			constructedString += (int)liqglo_lframe;
-		} else if ( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
-			int paddingSize = 0;
-			while ( inputString.substring(i, i) == "#" ) {
-				paddingSize++;
-				i++;
-			}
-			i--;
-			if ( paddingSize == 1 ) paddingSize = 4;
-			if ( paddingSize > 20 ) paddingSize = 20;
-			char paddedFrame[20];
-			sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
-			constructedString += paddedFrame;
-		} else if ( inputString.substring(i, i) == "%" && inputString.substring(i - 1, i - 1) != "\\" ) {
-			MString envString;
-			char *envVal = NULL;
-			i++;
-			while ( inputString.substring(i, i) != "%" ) {
-				envString += inputString.substring(i, i);
-				i++;
-			}
-			envVal = getenv( envString.asChar() );
-			constructedString += envVal;
-		} else if ( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
-		} else {
-			constructedString += inputString.substring(i, i);
+    MString constructedString;
+    MString tokenString;
+    bool inToken = false;
+    int sLength = inputString.length();
+    int i;
+
+    for ( i = 0; i < sLength; i++ ) {
+	if ( inputString.substring(i, i) == "$" ) {
+	    tokenString.clear();
+	    inToken = true;
+	} else if ( inToken ) {
+	    tokenString += inputString.substring(i, i);
+	    if ( tokenString == "F" ) {
+		constructedString += (int)liqglo_lframe;
+		inToken = false;
+		tokenString.clear();
+	    } else if ( tokenString == "SCN" ) {
+		constructedString += liqglo_sceneName;
+		inToken = false;
+		tokenString.clear();
+	    } else if ( tokenString == "IMG" ) {
+		constructedString += liqglo_DDimageName[0];
+		inToken = false;
+		tokenString.clear();
+	    } else if ( tokenString == "PDIR" ) {
+		constructedString += liqglo_projectDir;
+		inToken = false;
+		tokenString.clear();
+	    } else if ( tokenString == "RDIR" ) {
+		constructedString += liqglo_ribDir;
+		inToken = false;
+		tokenString.clear();
+	    } else {
+		constructedString += "$";
+		constructedString += tokenString; 
+		tokenString.clear();
+		inToken = false;
+	    }
+	} else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
+	    constructedString += (int)liqglo_lframe;
+	} else if ( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
+	    int paddingSize = 0;
+	    while ( inputString.substring(i, i) == "#" ) {
+		paddingSize++;
+		i++;
+	    }
+	    i--;
+	    if ( paddingSize == 1 ) paddingSize = 4;
+	    if ( paddingSize > 20 ) paddingSize = 20;
+	    char paddedFrame[20];
+	    sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
+	    constructedString += paddedFrame;
+	} else if ( inputString.substring(i, i) == "%" && inputString.substring(i - 1, i - 1) != "\\" ) {
+	    MString	envString;
+	    char*	envVal = NULL;
+
+	    i++;
+
+	    // loop through the string looking for the closing %
+	    if (i < sLength)
+	    {
+		while (   i < sLength
+		       && inputString.substring(i, i) != "%" ) {
+		    envString += inputString.substring(i, i);
+		    i++;
 		}
+
+		envVal = getenv( envString.asChar() );
+		
+		if (envVal != NULL)
+		    constructedString += envVal;
+		// else environment variable doesn't exist.. do nothing
+	    }
+	    // else early exit: % was the last character in the string.. do nothing
+	    
+	} else if ( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
+	    // do nothing
+	} else {
+	    constructedString += inputString.substring(i, i);
 	}
-	return constructedString;
+    }
+    return constructedString;
 }
 
 MString liquidTransGetSceneName() 
@@ -472,18 +489,18 @@ MString liquidTransGetSceneName()
 
 MString liquidTransGetFullSceneName() 
 {
-	MString fileName;
-	MGlobal::executeCommand( "file -q -sn", fileName );
-	
+    MString fileName;
+    MGlobal::executeCommand( "file -q -sn", fileName );
+
     return fileName;
 }
 
 MString liquidResolveWinPaths( MString inPath ) 
 {
-	MString newName;
-	for ( unsigned int i = 0; i < inPath.length(); i++ ) {
-	}
-	return newName;
+    MString newName;
+    for ( unsigned int i = 0; i < inPath.length(); i++ ) {
+    }
+    return newName;
 }
 
 liquidlong liquidHash(const char *str)
@@ -496,9 +513,9 @@ liquidlong liquidHash(const char *str)
     liquidlong hc = 0;
     
     while(*str) {
-			//hc = hc * 13 + *str * 27;   // old hash function
-			hc = hc + *str;   // change this to a better hash func
-			str++;
+	//hc = hc * 13 + *str * 27;   // old hash function
+	hc = hc + *str;   // change this to a better hash func
+	str++;
     }
 	
     return (liquidlong)hc;
