@@ -6,8 +6,6 @@
 	objectVersion = 39;
 	objects = {
 		014CEA460018CE2711CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUGGING_SYMBOLS = YES;
@@ -22,8 +20,6 @@
 			name = Development;
 		};
 		014CEA470018CE2711CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -82,6 +78,7 @@
 			projectDirPath = "";
 			targets = (
 				1FC7AA2306A00A5C00954BD2,
+				1FADF82607721BF5007DC910,
 			);
 		};
 		08FB7794FE84155DC02AAC07 = {
@@ -98,6 +95,8 @@
 		};
 		08FB7795FE84155DC02AAC07 = {
 			children = (
+				1FADF85907724B94007DC910,
+				1FADF85807724B8A007DC910,
 				1FC7A9DC06A0016A00954BD2,
 				1FC7A9DD06A0016A00954BD2,
 				1FC7A9DE06A0016A00954BD2,
@@ -130,7 +129,7 @@
 				1FC7A9F906A0016A00954BD2,
 				1FC7A9FA06A0016A00954BD2,
 				1FC7A9FB06A0016A00954BD2,
-				1FC7AA4D06A021C000954BD2,
+				1FF48EC5077A116B006AE147,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -150,6 +149,7 @@
 		1AB674ADFE9D54B511CA2CBB = {
 			children = (
 				1FC7AA2406A00A5C00954BD2,
+				1FADF84C07721BF5007DC910,
 			);
 			isa = PBXGroup;
 			name = Products;
@@ -166,6 +166,408 @@
 //1F2
 //1F3
 //1F4
+		1FADF82007721B95007DC910 = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libri.a;
+			path = /Applications/Graphics/Pixie/lib/libri.a;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FADF82107721B95007DC910 = {
+			fileRef = 1FADF82007721B95007DC910;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF82607721BF5007DC910 = {
+			buildPhases = (
+				1FADF82707721BF5007DC910,
+				1FADF82807721BF5007DC910,
+				1FADF84907721BF5007DC910,
+				1FADF84B07721BF5007DC910,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = /Applications/Alias/maya6.0/devkit/include/maya/OpenMayaMac.h;
+				GCC_PREPROCESSOR_DEFINITIONS = "OSX MAC_PLUGIN OSMac_ _BOOL OSMac_MachO_ AQSIS LIQUIDVERSION='\"1.62\"'";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "../include/ $(MAYA_LOCATION)/devkit/include /Applications/Graphics/MacAqsis.0.9.1/include/aqsis/";
+				INSTALL_PATH = "../liquid$(LIQUID_VERSION)/bin/OSX/";
+				LIBRARY_SEARCH_PATHS = "/Applications/Graphics/MacAqsis.0.9.1/lib \"$(MAYA_LOCATION)/MacOS\" \"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib\" \"$(SYSTEM_APPS_DIR)/Graphics/MacAqsis.0.9.1/lib\"";
+				LIBRARY_STYLE = DYNAMIC;
+				MAYA_LOCATION = /Applications/Alias/maya6.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-framework Carbon -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMaya -lAnimSlice -lDeformSlice -lDynSlice -lKinSlice -lModelSlice -lNurbsSlice -lPolySlice -lProjectSlice -lImage  -lShared  -lTranslators -lDataModel -lRenderModel -lNurbsEngine -lDependEngine -lCommandEngine -lFoundation -dylib_file @executable_path/libBase.dylib:\"$(MAYA_LOCATION)/MacOS/libBase.dylib\" -dylib_file @executable_path/libFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libFoundation.dylib\" -dylib_file @executable_path/libSubdivEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivEngine.dylib\" -dylib_file @executable_path/libGeometryEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libGeometryEngine.dylib\" -dylib_file @executable_path/libAG.dylib:\"$(MAYA_LOCATION)/MacOS/libAG.dylib\" -dylib_file @executable_path/libExplorerSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libExplorerSlice.dylib\" -dylib_file @executable_path/libShared.dylib:\"$(MAYA_LOCATION)/MacOS/libShared.dylib\" -dylib_file @executable_path/libNurbsEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsEngine.dylib\" -dylib_file @executable_path/libSubdiv.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdiv.dylib\" -dylib_file @executable_path/libDataModel.dylib:\"$(MAYA_LOCATION)/MacOS/libDataModel.dylib\" -dylib_file @executable_path/libNurbs.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbs.dylib\" -dylib_file @executable_path/libExtensionLayer.dylib:\"$(MAYA_LOCATION)/MacOS/libExtensionLayer.dylib\" -dylib_file @executable_path/libPolyEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libPolyEngine.dylib\" -dylib_file @executable_path/libCommandEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libCommandEngine.dylib\" -dylib_file @executable_path/libDependEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libDependEngine.dylib\" -dylib_file @executable_path/libPoly.dylib:\"$(MAYA_LOCATION)/MacOS/libPoly.dylib\" -dylib_file @executable_path/libSubdivGeom.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivGeom.dylib\" -dylib_file @executable_path/libModelSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelSlice.dylib\" -dylib_file @executable_path/libRenderModel.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderModel.dylib\" -dylib_file @executable_path/lib3dGraphics.dylib:\"$(MAYA_LOCATION)/MacOS/lib3dGraphics.dylib\" -dylib_file @executable_path/libImage.dylib:\"$(MAYA_LOCATION)/MacOS/libImage.dylib\" -dylib_file @executable_path/libAnimEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimEngine.dylib\" -dylib_file @executable_path/libHWRender.dylib:\"$(MAYA_LOCATION)/MacOS/libHWRender.dylib\" -dylib_file @executable_path/libHWFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libHWFoundation.dylib\" -dylib_file @executable_path/libHWGL.dylib:\"$(MAYA_LOCATION)/MacOS/libHWGL.dylib\" -dylib_file @executable_path/libNurbsSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsSlice.dylib\" -dylib_file @executable_path/libDependCommand.dylib:\"$(MAYA_LOCATION)/MacOS/libDependCommand.dylib\" -dylib_file @executable_path/libPolySlice.dylib:\"$(MAYA_LOCATION)/MacOS/libPolySlice.dylib\" -dylib_file @executable_path/libKinSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libKinSlice.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\" -dylib_file @executable_path/libDeformSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDeformSlice.dylib\" -dylib_file @executable_path/libAnimSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimSlice.dylib\" -dylib_file @executable_path/libManips.dylib:\"$(MAYA_LOCATION)/MacOS/libManips.dylib\" -dylib_file @executable_path/libModelUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelUISlice.dylib\" -dylib_file @executable_path/libSharedUI.dylib:\"$(MAYA_LOCATION)/MacOS/libSharedUI.dylib\" -dylib_file @executable_path/libImageUI.dylib:\"$(MAYA_LOCATION)/MacOS/libImageUI.dylib\" -dylib_file @executable_path/libRenderSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderSlice.dylib\" -dylib_file @executable_path/libPopLib.dylib:\"$(MAYA_LOCATION)/MacOS/libPopLib.dylib\" -dylib_file @executable_path/libIMF.dylib:\"$(MAYA_LOCATION)/MacOS/libIMF.dylib\" -dylib_file @executable_path/libDynUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynUISlice.dylib\" -dylib_file @executable_path/libOpenMaya.dylib:\"$(MAYA_LOCATION)/MacOS/libOpenMaya.dylib\" -dylib_file @executable_path/libxpcom.dylib:\"$(MAYA_LOCATION)/MacOS/libxpcom.dylib\" -dylib_file @executable_path/libnspr4.dylib:\"$(MAYA_LOCATION)/MacOS/libnspr4.dylib\" -dylib_file @executable_path/libplc4.dylib:\"$(MAYA_LOCATION)/MacOS/libplc4.dylib\" -dylib_file @executable_path/libplds4.dylib:\"$(MAYA_LOCATION)/MacOS/libplds4.dylib\" -dylib_file @executable_path/libAnimUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimUISlice.dylib\" -dylib_file @executable_path/libDevices.dylib:\"$(MAYA_LOCATION)/MacOS/libDevices.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\"";
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PRODUCT_NAME = liquid_aqsis.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = "liquid-aqsis";
+			productName = liquid;
+			productReference = 1FADF84C07721BF5007DC910;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		1FADF82707721BF5007DC910 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FADF82807721BF5007DC910 = {
+			buildActionMask = 2147483647;
+			files = (
+				1FADF82907721BF5007DC910,
+				1FADF82A07721BF5007DC910,
+				1FADF82B07721BF5007DC910,
+				1FADF82C07721BF5007DC910,
+				1FADF82D07721BF5007DC910,
+				1FADF82E07721BF5007DC910,
+				1FADF82F07721BF5007DC910,
+				1FADF83007721BF5007DC910,
+				1FADF83107721BF5007DC910,
+				1FADF83207721BF5007DC910,
+				1FADF83307721BF5007DC910,
+				1FADF83407721BF5007DC910,
+				1FADF83507721BF5007DC910,
+				1FADF83607721BF5007DC910,
+				1FADF83707721BF5007DC910,
+				1FADF83807721BF5007DC910,
+				1FADF83907721BF5007DC910,
+				1FADF83A07721BF5007DC910,
+				1FADF83B07721BF5007DC910,
+				1FADF83C07721BF5007DC910,
+				1FADF83D07721BF5007DC910,
+				1FADF83E07721BF5007DC910,
+				1FADF83F07721BF5007DC910,
+				1FADF84007721BF5007DC910,
+				1FADF84107721BF5007DC910,
+				1FADF84207721BF5007DC910,
+				1FADF84307721BF5007DC910,
+				1FADF84407721BF5007DC910,
+				1FADF84507721BF5007DC910,
+				1FADF84607721BF5007DC910,
+				1FADF84707721BF5007DC910,
+				1FADF84807721BF5007DC910,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FADF82907721BF5007DC910 = {
+			fileRef = 1FC7A9DC06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF82A07721BF5007DC910 = {
+			fileRef = 1FC7A9DD06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF82B07721BF5007DC910 = {
+			fileRef = 1FC7A9DE06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF82C07721BF5007DC910 = {
+			fileRef = 1FC7A9DF06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF82D07721BF5007DC910 = {
+			fileRef = 1FC7A9E006A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF82E07721BF5007DC910 = {
+			fileRef = 1FC7A9E106A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF82F07721BF5007DC910 = {
+			fileRef = 1FC7A9E306A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83007721BF5007DC910 = {
+			fileRef = 1FC7A9E406A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83107721BF5007DC910 = {
+			fileRef = 1FC7A9E506A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83207721BF5007DC910 = {
+			fileRef = 1FC7A9E606A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83307721BF5007DC910 = {
+			fileRef = 1FC7A9E206A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83407721BF5007DC910 = {
+			fileRef = 1FC7A9E706A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83507721BF5007DC910 = {
+			fileRef = 1FC7A9E806A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83607721BF5007DC910 = {
+			fileRef = 1FC7A9E906A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83707721BF5007DC910 = {
+			fileRef = 1FC7A9EA06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83807721BF5007DC910 = {
+			fileRef = 1FC7A9EB06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83907721BF5007DC910 = {
+			fileRef = 1FC7A9EC06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83A07721BF5007DC910 = {
+			fileRef = 1FC7A9ED06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83B07721BF5007DC910 = {
+			fileRef = 1FC7A9EE06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83C07721BF5007DC910 = {
+			fileRef = 1FC7A9EF06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83D07721BF5007DC910 = {
+			fileRef = 1FC7A9F006A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83E07721BF5007DC910 = {
+			fileRef = 1FC7A9F106A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF83F07721BF5007DC910 = {
+			fileRef = 1FC7A9F206A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84007721BF5007DC910 = {
+			fileRef = 1FC7A9F306A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84107721BF5007DC910 = {
+			fileRef = 1FC7A9F406A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84207721BF5007DC910 = {
+			fileRef = 1FC7A9F506A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84307721BF5007DC910 = {
+			fileRef = 1FC7A9F606A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84407721BF5007DC910 = {
+			fileRef = 1FC7A9F706A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84507721BF5007DC910 = {
+			fileRef = 1FC7A9F806A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84607721BF5007DC910 = {
+			fileRef = 1FC7A9F906A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84707721BF5007DC910 = {
+			fileRef = 1FC7A9FA06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84807721BF5007DC910 = {
+			fileRef = 1FC7A9FB06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF84907721BF5007DC910 = {
+			buildActionMask = 2147483647;
+			files = (
+				1FADF85307722221007DC910,
+				1FADF85507724773007DC910,
+				1FADF85707724B45007DC910,
+				1FADF85B07724BC9007DC910,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FADF84B07721BF5007DC910 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"",
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+				liquid.lib,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../liquid1.6/bin/OSX/\ncp build/liquid.lib.dylib ../liquid1.6/bin/OSX/liquid.lib";
+		};
+		1FADF84C07721BF5007DC910 = {
+			explicitFileType = "compiled.mach-o.dylib";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = liquid_aqsis.lib.dylib;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1FADF85207722221007DC910 = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = libslxargs.dylib;
+			path = /Applications/Graphics/MacAqsis.0.9.1/lib/libslxargs.0.dylib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FADF85307722221007DC910 = {
+			fileRef = 1FADF85207722221007DC910;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF85407724773007DC910 = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = libri2rib.dylib;
+			path = /Applications/Graphics/MacAqsis.0.9.1/lib/libri2rib.0.dylib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FADF85507724773007DC910 = {
+			fileRef = 1FADF85407724773007DC910;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF85607724B45007DC910 = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = libshadervm.dylib;
+			path = /Applications/Graphics/MacAqsis.0.9.1/lib/libshadervm.0.dylib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FADF85707724B45007DC910 = {
+			fileRef = 1FADF85607724B45007DC910;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FADF85807724B8A007DC910 = {
+			children = (
+				1FADF82007721B95007DC910,
+			);
+			isa = PBXGroup;
+			name = Pixie;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1FADF85907724B94007DC910 = {
+			children = (
+				1FADF85207722221007DC910,
+				1FADF85607724B45007DC910,
+				1FADF85407724773007DC910,
+				1FADF85A07724BC9007DC910,
+			);
+			isa = PBXGroup;
+			name = Aqsis;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1FADF85A07724BC9007DC910 = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = libaqsistypes.dylib;
+			path = /Applications/Graphics/MacAqsis.0.9.1/lib/libaqsistypes.dylib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FADF85B07724BC9007DC910 = {
+			fileRef = 1FADF85A07724BC9007DC910;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		1FC7A9DC06A0016A00954BD2 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -464,7 +866,7 @@
 				1FC7AA4306A00B0600954BD2,
 				1FC7AA4406A00B0600954BD2,
 				1FC7AA4506A00B0700954BD2,
-				1FC7AA4E06A021C000954BD2,
+				1FF48EC6077A116B006AE147,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -472,6 +874,7 @@
 		1FC7AA2206A00A5C00954BD2 = {
 			buildActionMask = 2147483647;
 			files = (
+				1FADF82107721B95007DC910,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,12 +898,11 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "../include/ $(MAYA_LOCATION)/devkit/include $(PIXIEHOME)/include /Users/geohar/Desktop/pixie/Pixie.1.3.14/src/";
 				INSTALL_PATH = "../liquid$(LIQUID_VERSION)/bin/OSX/";
-				LIBRARY_SEARCH_PATHS = "$(PIXIEHOME)/lib $(MAYA_LOCATION)/MacOS";
+				LIBRARY_SEARCH_PATHS = "\"$(PIXIEHOME)/lib\" \"$(MAYA_LOCATION)/MacOS\" \"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib\"";
 				LIBRARY_STYLE = DYNAMIC;
 				MAYA_LOCATION = /Applications/Alias/maya6.0/Maya.app/Contents/;
-				OPTIMIZATION_CFLAGS = "";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-framework Carbon -lri -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMaya -lAnimSlice -lDeformSlice -lDynSlice -lKinSlice -lModelSlice -lNurbsSlice -lPolySlice -lProjectSlice -lImage  -lShared  -lTranslators -lDataModel -lRenderModel -lNurbsEngine -lDependEngine -lCommandEngine -lFoundation -dylib_file @executable_path/libBase.dylib:\"$(MAYA_LOCATION)/MacOS/libBase.dylib\" -dylib_file @executable_path/libFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libFoundation.dylib\" -dylib_file @executable_path/libSubdivEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivEngine.dylib\" -dylib_file @executable_path/libGeometryEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libGeometryEngine.dylib\" -dylib_file @executable_path/libAG.dylib:\"$(MAYA_LOCATION)/MacOS/libAG.dylib\" -dylib_file @executable_path/libExplorerSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libExplorerSlice.dylib\" -dylib_file @executable_path/libShared.dylib:\"$(MAYA_LOCATION)/MacOS/libShared.dylib\" -dylib_file @executable_path/libNurbsEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsEngine.dylib\" -dylib_file @executable_path/libSubdiv.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdiv.dylib\" -dylib_file @executable_path/libDataModel.dylib:\"$(MAYA_LOCATION)/MacOS/libDataModel.dylib\" -dylib_file @executable_path/libNurbs.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbs.dylib\" -dylib_file @executable_path/libExtensionLayer.dylib:\"$(MAYA_LOCATION)/MacOS/libExtensionLayer.dylib\" -dylib_file @executable_path/libPolyEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libPolyEngine.dylib\" -dylib_file @executable_path/libCommandEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libCommandEngine.dylib\" -dylib_file @executable_path/libDependEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libDependEngine.dylib\" -dylib_file @executable_path/libPoly.dylib:\"$(MAYA_LOCATION)/MacOS/libPoly.dylib\" -dylib_file @executable_path/libSubdivGeom.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivGeom.dylib\" -dylib_file @executable_path/libModelSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelSlice.dylib\" -dylib_file @executable_path/libRenderModel.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderModel.dylib\" -dylib_file @executable_path/lib3dGraphics.dylib:\"$(MAYA_LOCATION)/MacOS/lib3dGraphics.dylib\" -dylib_file @executable_path/libImage.dylib:\"$(MAYA_LOCATION)/MacOS/libImage.dylib\" -dylib_file @executable_path/libAnimEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimEngine.dylib\" -dylib_file @executable_path/libHWRender.dylib:\"$(MAYA_LOCATION)/MacOS/libHWRender.dylib\" -dylib_file @executable_path/libHWFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libHWFoundation.dylib\" -dylib_file @executable_path/libHWGL.dylib:\"$(MAYA_LOCATION)/MacOS/libHWGL.dylib\" -dylib_file @executable_path/libNurbsSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsSlice.dylib\" -dylib_file @executable_path/libDependCommand.dylib:\"$(MAYA_LOCATION)/MacOS/libDependCommand.dylib\" -dylib_file @executable_path/libPolySlice.dylib:\"$(MAYA_LOCATION)/MacOS/libPolySlice.dylib\" -dylib_file @executable_path/libKinSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libKinSlice.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\" -dylib_file @executable_path/libDeformSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDeformSlice.dylib\" -dylib_file @executable_path/libAnimSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimSlice.dylib\" -dylib_file @executable_path/libManips.dylib:\"$(MAYA_LOCATION)/MacOS/libManips.dylib\" -dylib_file @executable_path/libModelUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelUISlice.dylib\" -dylib_file @executable_path/libSharedUI.dylib:\"$(MAYA_LOCATION)/MacOS/libSharedUI.dylib\" -dylib_file @executable_path/libImageUI.dylib:\"$(MAYA_LOCATION)/MacOS/libImageUI.dylib\" -dylib_file @executable_path/libRenderSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderSlice.dylib\" -dylib_file @executable_path/libPopLib.dylib:\"$(MAYA_LOCATION)/MacOS/libPopLib.dylib\" -dylib_file @executable_path/libIMF.dylib:\"$(MAYA_LOCATION)/MacOS/libIMF.dylib\" -dylib_file @executable_path/libDynUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynUISlice.dylib\" -dylib_file @executable_path/libOpenMaya.dylib:\"$(MAYA_LOCATION)/MacOS/libOpenMaya.dylib\" -dylib_file @executable_path/libxpcom.dylib:\"$(MAYA_LOCATION)/MacOS/libxpcom.dylib\" -dylib_file @executable_path/libnspr4.dylib:\"$(MAYA_LOCATION)/MacOS/libnspr4.dylib\" -dylib_file @executable_path/libplc4.dylib:\"$(MAYA_LOCATION)/MacOS/libplc4.dylib\" -dylib_file @executable_path/libplds4.dylib:\"$(MAYA_LOCATION)/MacOS/libplds4.dylib\" -dylib_file @executable_path/libAnimUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimUISlice.dylib\" -dylib_file @executable_path/libDevices.dylib:\"$(MAYA_LOCATION)/MacOS/libDevices.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\"";
+				OTHER_LDFLAGS = "-framework Carbon -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lAnimSlice -lDeformSlice -lDynSlice -lKinSlice -lModelSlice -lNurbsSlice -lPolySlice -lProjectSlice -lImage  -lShared  -lTranslators -lDataModel -lRenderModel -lNurbsEngine -lDependEngine -lCommandEngine -lFoundation -dylib_file @executable_path/libBase.dylib:\"$(MAYA_LOCATION)/MacOS/libBase.dylib\" -dylib_file @executable_path/libFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libFoundation.dylib\" -dylib_file @executable_path/libSubdivEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivEngine.dylib\" -dylib_file @executable_path/libGeometryEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libGeometryEngine.dylib\" -dylib_file @executable_path/libAG.dylib:\"$(MAYA_LOCATION)/MacOS/libAG.dylib\" -dylib_file @executable_path/libExplorerSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libExplorerSlice.dylib\" -dylib_file @executable_path/libShared.dylib:\"$(MAYA_LOCATION)/MacOS/libShared.dylib\" -dylib_file @executable_path/libNurbsEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsEngine.dylib\" -dylib_file @executable_path/libSubdiv.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdiv.dylib\" -dylib_file @executable_path/libDataModel.dylib:\"$(MAYA_LOCATION)/MacOS/libDataModel.dylib\" -dylib_file @executable_path/libNurbs.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbs.dylib\" -dylib_file @executable_path/libExtensionLayer.dylib:\"$(MAYA_LOCATION)/MacOS/libExtensionLayer.dylib\" -dylib_file @executable_path/libPolyEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libPolyEngine.dylib\" -dylib_file @executable_path/libCommandEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libCommandEngine.dylib\" -dylib_file @executable_path/libDependEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libDependEngine.dylib\" -dylib_file @executable_path/libPoly.dylib:\"$(MAYA_LOCATION)/MacOS/libPoly.dylib\" -dylib_file @executable_path/libSubdivGeom.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivGeom.dylib\" -dylib_file @executable_path/libModelSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelSlice.dylib\" -dylib_file @executable_path/libRenderModel.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderModel.dylib\" -dylib_file @executable_path/lib3dGraphics.dylib:\"$(MAYA_LOCATION)/MacOS/lib3dGraphics.dylib\" -dylib_file @executable_path/libImage.dylib:\"$(MAYA_LOCATION)/MacOS/libImage.dylib\" -dylib_file @executable_path/libAnimEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimEngine.dylib\" -dylib_file @executable_path/libHWRender.dylib:\"$(MAYA_LOCATION)/MacOS/libHWRender.dylib\" -dylib_file @executable_path/libHWFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libHWFoundation.dylib\" -dylib_file @executable_path/libHWGL.dylib:\"$(MAYA_LOCATION)/MacOS/libHWGL.dylib\" -dylib_file @executable_path/libNurbsSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsSlice.dylib\" -dylib_file @executable_path/libDependCommand.dylib:\"$(MAYA_LOCATION)/MacOS/libDependCommand.dylib\" -dylib_file @executable_path/libPolySlice.dylib:\"$(MAYA_LOCATION)/MacOS/libPolySlice.dylib\" -dylib_file @executable_path/libKinSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libKinSlice.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\" -dylib_file @executable_path/libDeformSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDeformSlice.dylib\" -dylib_file @executable_path/libAnimSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimSlice.dylib\" -dylib_file @executable_path/libManips.dylib:\"$(MAYA_LOCATION)/MacOS/libManips.dylib\" -dylib_file @executable_path/libModelUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelUISlice.dylib\" -dylib_file @executable_path/libSharedUI.dylib:\"$(MAYA_LOCATION)/MacOS/libSharedUI.dylib\" -dylib_file @executable_path/libImageUI.dylib:\"$(MAYA_LOCATION)/MacOS/libImageUI.dylib\" -dylib_file @executable_path/libRenderSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderSlice.dylib\" -dylib_file @executable_path/libPopLib.dylib:\"$(MAYA_LOCATION)/MacOS/libPopLib.dylib\" -dylib_file @executable_path/libIMF.dylib:\"$(MAYA_LOCATION)/MacOS/libIMF.dylib\" -dylib_file @executable_path/libDynUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynUISlice.dylib\" -dylib_file @executable_path/libOpenMaya.dylib:\"$(MAYA_LOCATION)/MacOS/libOpenMaya.dylib\" -dylib_file @executable_path/libxpcom.dylib:\"$(MAYA_LOCATION)/MacOS/libxpcom.dylib\" -dylib_file @executable_path/libnspr4.dylib:\"$(MAYA_LOCATION)/MacOS/libnspr4.dylib\" -dylib_file @executable_path/libplc4.dylib:\"$(MAYA_LOCATION)/MacOS/libplc4.dylib\" -dylib_file @executable_path/libplds4.dylib:\"$(MAYA_LOCATION)/MacOS/libplds4.dylib\" -dylib_file @executable_path/libAnimUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimUISlice.dylib\" -dylib_file @executable_path/libDevices.dylib:\"$(MAYA_LOCATION)/MacOS/libDevices.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\" -dylib_file @executable_path/libOpenMayaFX.dylib:\"$(MAYA_LOCATION)/MacOS/libOpenMayaFX.dylib\"";
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
 				PRODUCT_NAME = liquid.lib;
@@ -716,21 +1118,6 @@
 			settings = {
 			};
 		};
-		1FC7AA4D06A021C000954BD2 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = sdr.cpp;
-			path = ../../../../Desktop/pixie/Pixie.1.3.14/src/sdr/sdr.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		1FC7AA4E06A021C000954BD2 = {
-			fileRef = 1FC7AA4D06A021C000954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		1FC7AA6206A02AFF00954BD2 = {
 			buildActionMask = 2147483647;
 			files = (
@@ -745,6 +1132,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "mkdir -p ../liquid1.6/bin/OSX/\ncp build/liquid.lib.dylib ../liquid1.6/bin/OSX/liquid.lib";
+		};
+		1FF48EC5077A116B006AE147 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = sdr.cpp;
+			path = /Users/geohar/Desktop/pixie/Pixie.1.3.25/src/sdr/sdr.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FF48EC6077A116B006AE147 = {
+			fileRef = 1FF48EC5077A116B006AE147;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 //1F0
 //1F1
