@@ -3286,10 +3286,17 @@ MStatus liqRibTranslator::framePrologue(long lframe)
             }
         }
 
-        if ( liqglo_currentJob.isMidPointShadow ) {
+        if ( liqglo_currentJob.isShadow &&
+             ( !liqglo_currentJob.deepShadows ||
+                liqglo_currentJob.shadowPixelSamples == 1 ) )
+        {
             RtInt zero = 0;
+            RiHider("hidden", "jitter", &zero, RI_NULL );
+        }
+
+        if ( liqglo_currentJob.isMidPointShadow ) {
             RtString midPoint = "midpoint";
-            RiHider("hidden", "jitter", &zero, "depthfilter", &midPoint, RI_NULL );
+            RiHider("hidden", "depthfilter", &midPoint, RI_NULL );
         }
 
         if ( debugMode ) printf( "-> Setting Display Options\n" );
