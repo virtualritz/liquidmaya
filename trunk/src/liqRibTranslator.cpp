@@ -1996,7 +1996,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
 		if ( debugMode ) { printf("-> setting frame to current frame.\n" ); }
 		// Return to the frame we were at before we ran the animation
-		MGlobal::viewFrame (currentFrame);
+		//MGlobal::viewFrame (currentFrame);
 
 		return (ribStatus == kRibOK ? MS::kSuccess : MS::kFailure);
 
@@ -2313,6 +2313,10 @@ MStatus liqRibTranslator::buildJobs()
 						baseFileName += thisJob.name;
 						baseFileName += "SHD";
 						
+						// TODO - this little block of code below (up to sprintf) is almost identical
+						// in a few places just within this file. should be rationalised into a
+						// 'name generator' type of function            
+						
 						MString outFileFmtString;
 						outFileFmtString = liqglo_texDir;
 						outFileFmtString += baseFileName;
@@ -2368,7 +2372,9 @@ MStatus liqRibTranslator::buildJobs()
 									if ( dirOn == pNX ) { baseFileName += "_NX"; thisJob.pointDir = pNX; } else
 										if ( dirOn == pNY ) { baseFileName += "_NY"; thisJob.pointDir = pNY; } else
 											if ( dirOn == pNZ ) { baseFileName += "_NZ"; thisJob.pointDir = pNZ; } 
-											
+											// TODO - this little block of code below (up to sprintf) is almost identical
+											// in a few places just within this file. should be rationalised into a
+											// 'name generator' type of function              
 											MString outFileFmtString;
 											outFileFmtString = liqglo_texDir;
 											outFileFmtString += baseFileName;
@@ -2465,6 +2471,10 @@ MStatus liqRibTranslator::buildJobs()
 		fileNameFmtString += baseFileName;
 		fileNameFmtString += LIQ_ANIM_EXT;
 		fileNameFmtString += extension;
+		
+		// TODO - this little block of code below (up to sprintf) is almost identical
+		// in a few places just within this file. should be rationalised into a
+		// 'name generator' type of function            
 		
 		size_t fileNameLength = fileNameFmtString.length() + 8;		 
 		fileNameLength += 10; // Enough to hold the digits for 1 billion frames
@@ -2590,20 +2600,31 @@ MStatus liqRibTranslator::ribPrologue()
       RiPixelSamples( pixelSamples, pixelSamples );
       RiShadingRate( shadingRate );
       if ( m_rFilterX > 1 || m_rFilterY > 1 ) {
-        if ( m_rFilter == fBoxFilter ) {
+        switch (m_rFilter) {
+        case fBoxFilter:
           RiPixelFilter( RiBoxFilter, m_rFilterX, m_rFilterY );
-        } else if ( m_rFilter == fTriangleFilter ) {
+          break;
+        case fTriangleFilter:
           RiPixelFilter( RiTriangleFilter, m_rFilterX, m_rFilterY );
-        } else if ( m_rFilter == fCatmullRomFilter ) {
+          break;
+        case fCatmullRomFilter:
           RiPixelFilter( RiCatmullRomFilter, m_rFilterX, m_rFilterY );
-        } else if ( m_rFilter == fGaussianFilter ) {
+          break;
+        case fGaussianFilter:
           RiPixelFilter( RiGaussianFilter, m_rFilterX, m_rFilterY );
-        } else if ( m_rFilter == fSincFilter ) {
+          break;
+        case fSincFilter:
           RiPixelFilter( RiSincFilter, m_rFilterX, m_rFilterY );
+          break;
+        case fBlackmanHarrisFilter:
+          RiPixelFilter( RiBlackmanHarrisFilter, m_rFilterX, m_rFilterY );
+          break;
+        case fMitchellFilter:
+          RiPixelFilter( RiMitchellFilter, m_rFilterX, m_rFilterY );
+          break;
         }
       }
     }
-    
   }
   ribStatus = kRibBegin;
   return MS::kSuccess;
@@ -2844,14 +2865,15 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 				double scale[] = { 1, 1, -1 };
 				//xform.addScale( scale, MSpace::kTransform );
 				xform.setScale( scale, MSpace::kTransform );
+				        
 				iter->camera[sample].mat = xform.asMatrixInverse();
 				
 				if ( fnCamera.isClippingPlanes() ) {
 					iter->camera[sample].neardb    = fnCamera.nearClippingPlane();
 					iter->camera[sample].fardb	   = fnCamera.farClippingPlane();
 				} else {
-					iter->camera[sample].neardb    = 0.001;
-					iter->camera[sample].fardb	   = 10000.0;
+					iter->camera[sample].neardb    = 0.001;    // TODO: these values are duplicated elsewhere in this file
+					iter->camera[sample].fardb	   = 250000.0; // TODO: these values are duplicated elsewhere in this file
 				}
 				iter->camera[sample].isOrtho = fnCamera.isOrtho();
 				
@@ -2893,7 +2915,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 					iter->imageMode = "z";
 					iter->format = "zfile";
 				}
-			} else {
+			} else { // doing shadow render
 				MDagPath path;
 				MFnLight   fnLight( iter->path );
 				status.clear();
@@ -2914,6 +2936,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 					MTransformationMatrix xform( path.inclusiveMatrix() );
 					double scale[] = { 1, 1, -1 };
 					xform.setScale( scale, MSpace::kTransform );
+          
 					iter->camera[sample].mat = xform.asMatrixInverse();
 					iter->camera[sample].neardb    = fnCamera.nearClippingPlane();
 					iter->camera[sample].fardb	   = fnCamera.farClippingPlane();
@@ -2925,6 +2948,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 					MTransformationMatrix xform( path.inclusiveMatrix() );
 					double scale[] = { 1, 1, -1 };
 					xform.setScale( scale, MSpace::kTransform );
+          
 					if ( iter->isPoint ) {
 						double ninty = M_PI/2;
 						if ( iter->pointDir == pPX ) { double rotation[] = { 0, -ninty, 0 }; xform.setRotation( rotation, MTransformationMatrix::kXYZ ); }
@@ -2935,8 +2959,8 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 						if ( iter->pointDir == pNZ ) { double rotation[] = { 0, M_PI, 0 }; xform.setRotation( rotation, MTransformationMatrix::kXYZ ); }
 					} 
 					iter->camera[sample].mat = xform.asMatrixInverse();
-					iter->camera[sample].neardb    = 0.00015;
-					iter->camera[sample].fardb	   = 10000.0;
+					iter->camera[sample].neardb    = 0.001;    // TODO: these values are duplicated elsewhere in this file
+					iter->camera[sample].fardb	   = 250000.0; // TODO: these values are duplicated elsewhere in this file
 					if ( fnLight.dagPath().hasFn( MFn::kDirectionalLight ) ) {
 						iter->camera[sample].isOrtho = true;
 						fnLight.findPlug( "dmapWidthFocus" ).getValue( iter->camera[sample].orthoWidth );
@@ -3112,13 +3136,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
 				MString imageName;
 				MString formatType;
 				MString imageMode;
-				if ( k > 0 ) imageName = "+"; 
-				imageName += m_pixDir;
-				if ( liqglo_DDimageName[k] == "" ) {
-					imageName = liqglo_currentJob.imageName;
-				} else { 
-					imageName += parseString( liqglo_DDimageName[k] );
-				}
+				// handle the output type, declaring new types in RIB as necessary
 				if ( m_DDimageType[k] == "" ) {
 					formatType = liqglo_currentJob.format;
 				} else { 
@@ -3147,6 +3165,40 @@ MStatus liqRibTranslator::framePrologue(long lframe)
 						parameterString += " ["; parameterString += m_DDParams[k].data[p].asChar(); parameterString += "] ";
 					}
 				}
+				// setup the output name
+				imageName = m_pixDir;
+				if ( liqglo_DDimageName[k] == "" ) {
+					if ( k == 0 ) {
+						imageName = liqglo_currentJob.imageName;
+					} else {
+						imageName = liqglo_sceneName + "_" + imageMode;
+						// TODO - this little block of code below (up to sprintf) is almost identical
+						// in a few places just within this file. should be rationalised into a
+						// 'name generator' type of function            
+						MString outFileFmtString;
+						outFileFmtString = m_pixDir;
+						outFileFmtString += imageName;
+						size_t outNameLength = outFileFmtString.length();
+						if (m_animation || m_useFrameExt) {
+							outFileFmtString += LIQ_ANIM_EXT;
+							outNameLength += m_outPadding + 1;
+						}
+						outFileFmtString += ".";
+						outFileFmtString += outExt;
+						outNameLength = outFileFmtString.length();
+						// Hmmmmmm protect from buffer overflow ...
+						outNameLength = outNameLength + 8; // Space for the null character
+						char *outName = (char *)alloca(outNameLength);
+						sprintf(outName, outFileFmtString.asChar(), 1, liqglo_lframe);
+            imageName = outName;
+					}
+				} else { 
+					imageName += parseString( liqglo_DDimageName[k] );
+				}
+				if ( k > 0 ) {
+					imageName = "+" + imageName;
+				}
+				// output the display call
 				RiArchiveRecord( RI_COMMENT, "Display Driver %d: \nDisplay \"%s\" \"%s\" \"%s\" %s", k, imageName.asChar(), formatType.asChar(), imageMode.asChar(), parameterString.asChar() );
 				k++; 
 			}
