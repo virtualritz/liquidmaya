@@ -37,6 +37,10 @@
 #include <maya/MFnDagNode.h>
 #include <maya/MArgParser.h>
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include <ri.h>
 
 // RI_VERBATIM is in the current RenderMan spec but
@@ -149,7 +153,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
     return;
   }
 
-  if (debug) { cout << "liquidWriteArchive: writing object: " << objDagPath.fullPathName() << endl; }
+  if (debug) { cout << "liquidWriteArchive: writing object: " << objDagPath.fullPathName().asChar() << endl; }
   if (objDagPath.node().hasFn(MFn::kShape) || objDagPath.node().hasFn(MFn::kPlace3dTexture)) {
     // we're looking at a shape node, so write out the geometry to the RIB
     outputObjectName(objDagPath);
@@ -179,7 +183,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
     // we're looking at a transform node
     bool wroteTransform = false;
     if (writeTransform && (objDagPath.apiType() == MFn::kTransform)) {
-      if (debug) { cout << "liquidWriteArchive: writing transform: " << objDagPath.fullPathName() << endl; }
+      if (debug) { cout << "liquidWriteArchive: writing transform: " << objDagPath.fullPathName().asChar() << endl; }
       // push the transform onto the RIB stack
       outputObjectName(objDagPath);
       MFnDagNode mfnDag(objDagPath);
@@ -197,7 +201,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
     }
     // go through all the children of this node and deal with each of them
     int nChildren = objDagPath.childCount();
-    if (debug) { cout << "liquidWriteArchive: object " << objDagPath.fullPathName() << "has " << nChildren << " children" << endl; }
+    if (debug) { cout << "liquidWriteArchive: object " << objDagPath.fullPathName().asChar() << "has " << nChildren << " children" << endl; }
     for(int i=0; i<nChildren; ++i) {
       if (debug) { cout << "liquidWriteArchive: writing child number " << i << endl; }
       MDagPath childDagNode;
@@ -214,7 +218,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
       RiAttributeEnd();
     }
   }
-  if (debug) { cout << "liquidWriteArchive: finished writing object: " << objDagPath.fullPathName() << endl; }
+  if (debug) { cout << "liquidWriteArchive: finished writing object: " << objDagPath.fullPathName().asChar() << endl; }
 }
 
 void liqWriteArchive::outputIndentation()
