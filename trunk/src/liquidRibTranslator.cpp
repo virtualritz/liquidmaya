@@ -193,7 +193,7 @@ static const char * LIQUIDVERSION =
 #include <liquidRIBStatus.h>
 #include <liquidRIBGen.h>
 #include <liquidRibGenData.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 #include <liqProcessLauncher.h>
 #include <liqEntropyRenderer.h>
 #include <liqPrmanRenderer.h>

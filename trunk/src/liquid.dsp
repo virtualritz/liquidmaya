@@ -209,7 +209,7 @@ SOURCE=.\liqTokenPointer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\liquidMemory.cpp
+SOURCE=.\liqMemory.cpp
 # End Source File
 # Begin Source File
 
@@ -313,7 +313,7 @@ SOURCE=..\include\liquidAttachPrefAttribute.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\liquidMemory.h
+SOURCE=..\include\liqMemory.h
 # End Source File
 # Begin Source File
 

@@ -82,7 +82,7 @@ extern "C" {
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liquidRibData.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 
 extern int debugMode;
 

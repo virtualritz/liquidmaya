@@ -64,7 +64,7 @@ extern "C" {
 #include <maya/MSelectionList.h>
 
 #include <liqGetAttr.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 
 void* liqGetAttr::creator()
 //

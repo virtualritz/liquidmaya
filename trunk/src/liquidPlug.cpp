@@ -81,7 +81,7 @@ extern "C" {
 #include <liqGetSloInfo.h>
 #include <liqGetAttr.h>
 #include <liqAttachPrefAttribute.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 #include <liqPreviewShader.h>
 #include <liqWriteArchive.h>
 

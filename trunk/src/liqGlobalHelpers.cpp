@@ -68,7 +68,7 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liquidMemory.h>
+#include <liqMemory.h>
 #include <liqGetSloInfo.h>
 
 extern int debugMode;
