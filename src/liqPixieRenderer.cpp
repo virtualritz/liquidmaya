@@ -27,43 +27,46 @@
 bool
 liqPixieRenderer::supports(e_capability capability) const
 {
-    bool supported = false;
+  bool supported = false;
 
-    switch(capability)
-    {
-	case BLOBBIES:
-	    supported = true;
-	    break;
+  switch(capability)
+  {
+  case BLOBBIES:
+    supported = true;
+    break;
 
-	case POINTS:
-	    supported = true;
-	    break;
+  case POINTS:
+    supported = true;
+    break;
 
-	case EYESPLITS:
-	    supported = true;
-	    break;
+  case EYESPLITS:
+    supported = true;
+    break;
 
-	// no default case. let the compiler catch it if we're missing
-	// something
-    }
+    // no default case. let the compiler catch it if we're missing
+    // something
+  }
 
-    return supported;
+  return supported;
 }
 
 bool
 liqPixieRenderer::requires(e_requirement requirement) const
 {
-    bool required = false;
+  bool required = false;
 
-    switch(requirement)
-    {
-	case SWAPPED_UVS:
-	    required = true;
-	    break;
-	
-	// no default case. let the compiler catch it if we're missing
-	// something
-    }
+  switch(requirement)
+  {
+  case SWAPPED_UVS:
+    required = true;
+    break;
+  case __PREF:
+    required = false;
+    break;
+  
+    // no default case. let the compiler catch it if we're missing
+    // something
+  }
 
-    return required;
+  return required;
 }
