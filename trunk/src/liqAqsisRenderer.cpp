@@ -62,7 +62,7 @@ liqAqsisRenderer::requires(e_requirement requirement) const
   switch(requirement)
   {
 	case SWAPPED_UVS:
-    required = false;
+    required = true;
     break;
   case __PREF:
     required = false;
