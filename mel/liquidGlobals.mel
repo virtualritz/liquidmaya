@@ -426,7 +426,7 @@ global proc liquidDrawDisplayDrivers()
       setParent ( "DD" + $i + "columnLayoutDD" );
       int $j;
       for ( $j = 1; $j <= $numDDParam; $j++ ) {
-        paneLayout -cn "vertical3" -st 1 ( "DD" + $i + "Paran" + $j + "paneLayoutDD" );
+        paneLayout -cn "vertical3" -height 24 -st 1 ( "DD" + $i + "Paran" + $j + "paneLayoutDD" );
         string $paramName = `getAttr ( "liquidGlobals.dd" + $i + "Param" + $j + "Name" )`;
         textField -ann "Parameter Name" -tx $paramName -cc ( "liquidGlobalsChangeDDParam " + $i + " " + $j + " 1" ) ( "dd" + $i + "Param" + $j + "NameField" );
         string $paramData = `getAttr ( "liquidGlobals.dd" + $i + "Param" + $j + "Data" )`;
@@ -443,15 +443,14 @@ global proc liquidDrawDisplayDrivers()
       }
     setParent liquidGlobalsDDSet;
   }
-}
-
-global proc liquidShowDisplayDrivers()
-{
-  gridLayout -numberOfColumns 2 -cellWidthHeight 60 30 ( "DDbuttonGridLayoutDD" );
-    button -command liquidGlobalsAddDD -label "Add" ( "DDaddButton" );
-    button -command liquidGlobalsDeleteDD -label "Remove" ( "DDremoveButton" );
-    setParent ..;
-  liquidDrawDisplayDrivers; 
+  setParent liquidGlobalsDDSet;
+  if (`gridLayout -q -exists DDbuttonGridLayoutDD`) {
+    deleteUI DDbuttonGridLayoutDD;
+  }
+  gridLayout -numberOfColumns 2 -cellWidthHeight 100 30 ( "DDbuttonGridLayoutDD" );
+    button -command liquidGlobalsAddDD -label "Add Display" ( "DDaddButton" );
+    button -command liquidGlobalsDeleteDD -label "Remove Display" ( "DDremoveButton" );
+  setParent ..;
 }
 
 global proc liquidGlobalsAddDD () 
@@ -603,8 +602,7 @@ global proc liquidGlobalsForm() {
         setParent ..;
       setParent ..;
       columnLayout -cal left -adj true liquidGlobalsDDSet;
-        // Build Display Driver List
-        liquidShowDisplayDrivers;
+        liquidDrawDisplayDrivers;
       setParent ..;
       columnLayout -cal left -adj true liquidGlobalsQualitySet;
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-Filtering-" -cll false;
