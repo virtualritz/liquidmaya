@@ -1,3 +1,5 @@
+Release 1.5.2 ----------------------------------------------------------------------
+
 2002-12-17  sdeverly
     * Added this file
     * Changed Liquid version to 1.5.1
@@ -37,7 +39,19 @@
 2003-2-14 sdeverly
 	Output in ../liquid<LIQUIDVERSION>/bin/<OS NAME>/<MAYA VERSION>
     	Added -renderer option to liquidPreviewShader command
-    	Added -sshn option to liquidPreviewShader command
+    	Added -sshn option to liquidPreviewShader command ( short shader name )
+
+2003-2-17 sdeverly
+    	Changed -D_IRIX to -DIRIX in Makefile.irix
+
+Release 1.5.3 ----------------------------------------------------------------------
+
+2003-2-24 sdeverly
+    	Added libliquid.a in build phase.
+	Renamed liquidPreviewShader to liqPreviewShader.
+	Output error messages to stderr in liqShader.
+	Shader previewing handled in the same way for all renderers.
+
 
 TODO :
 	--- Compilation ok with PRman

@@ -1,9 +1,9 @@
 SHELL = sh
-LIQUIDVERSION 	= "1.5.2"
+LIQUIDVERSION 	= "1.5.3"
 #------------------------------------------------------
 all : debug
 
-newversion clean debug release : 
+lib newversion clean debug release : 
 	@if( test `uname` = 'IRIX' || test `uname` = 'IRIX64'); then\
 	    whichflags=irix65dbg;\
 	    os=irix;\
@@ -45,8 +45,8 @@ newversion clean debug release :
 	    fi; \
 	else \
 	    AW_LOCATION=$${AW_LOCATION:=/usr/aw} ;\
-	    ( echo Got for newversion $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="debug" $${make:=make} -f Makefile.$${os} $@ ); \
 	    EXTRAFLAGS="-O -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\""; \
+	    ( echo Got for newversion $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="debug" $${make:=make} -f Makefile.$${os} $@ ); \
 	    if( test -d $${AW_LOCATION}); then\
 		for vers in $${AW_LOCATION}/maya*.*;\
 			do ( echo Got $${whichflags} $${vers:=none} $${vers#$${AW_LOCATION}/}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${vers:=none} MAYA_VERSION=$${vers#$${AW_LOCATION}/} $${make:=make} -f Makefile.$${os} $@ );\

@@ -29,6 +29,7 @@
 #include <liqShader.h>
 #include <liquidGlobalHelpers.h>
 
+
 extern int debugMode;
 
 liqShader::liqShader()
@@ -95,8 +96,7 @@ liqShader::liqShader( MObject shaderObj )
     liquidGetSloInfo shaderInfo;
     int success = shaderInfo.setShader( rmShaderStr );
     if ( !success ) {
-	perror("Slo_SetShader");
-	printf("Error Using Shader %s!\n", shaderNode.name().asChar() );
+	fprintf(stderr, "Error Using Shader %s!\n", shaderNode.name().asChar() );
 	rmColor[0] = 1.0;
 	rmColor[1] = 0.0;
 	rmColor[2] = 0.0;

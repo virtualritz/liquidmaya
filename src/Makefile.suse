@@ -10,5 +10,6 @@ LOCFLAGS    	= -ffast-math -mpentiumpro -D_BOOL -DLINUX
 WARNFLAGS   	= -Wall -W -Wno-comment -Wtraditional -Wundef -Wpointer-arith -Wcast-qual -Wwrite-strings -Winline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses
 NO_TRANS_LINK = 
 VBIN=suse
-EXTRA_LIBS =
+EXTRA_LIBS  = $(MAYA_LOCATION)/lib/libstdc++-libc6.2-2.so.3
+AR  	    = ar cqs
 include commonrules.mk

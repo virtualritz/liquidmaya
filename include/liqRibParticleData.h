@@ -33,7 +33,6 @@
 ** ______________________________________________________________________
 */
 
-#include <liquidRibData.h>
 
 class liqRibParticleData : public liquidRibData {
 public: // Methods
