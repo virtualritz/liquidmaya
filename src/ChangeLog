@@ -1,4 +1,8 @@
-1005-02-12 geohar
+2005-03-03 geohar
+	- 3Delight 4.0.1 as default 3Delight to build against
+	- Made Swap_UV match in mel and C++ code
+
+2005-02-12 geohar
 	- Changed liquidPlug to source liquidStartup.mel from LIQUIDHOME if it exists
 	- Updated OSX build to include 3Delight + some tidying
 	- liquidStartup.mel now sources liquidShutdown.mel
