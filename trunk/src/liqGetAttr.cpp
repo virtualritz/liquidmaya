@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <iostream.h>
 #include <sys/types.h>
 
 // Renderman Headers
