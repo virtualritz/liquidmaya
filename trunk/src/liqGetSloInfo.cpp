@@ -27,7 +27,7 @@
 
 /* ______________________________________________________________________
 ** 
-** Liquid Get .slo Info Source 
+** Liquid Get .slo Info Source
 ** ______________________________________________________________________
 */
 
@@ -171,7 +171,7 @@ int liqGetSloInfo::setShader( MString shaderName )
 				if ( arg->svd_valisvalid ) { 
 					switch ( arg->svd_type ) {
 					case SLO_TYPE_STRING: {
-						char *strings = ( char * )lmalloc( sizeof( char ) * sizeof( arg->svd_default.stringval ) + 1 );
+						char *strings = ( char * )lmalloc( sizeof( char ) * strlen( arg->svd_default.stringval ) + 1 );
 						strcpy( strings, arg->svd_default.stringval );
 						argDefault.push_back( ( void * )strings );
 						break;
@@ -268,7 +268,7 @@ int liqGetSloInfo::setShader( MString shaderName )
 				if ( arg->valisvalid() ) { 
 					switch ( arg->type ) {
 					case sleArgs::TYPE_STRING: {
-						char *strings = ( char *)lmalloc( sizeof( char) * (sizeof( arg->stringval(0))+1) );
+						char *strings = ( char *)lmalloc( sizeof( char) * (strlen( arg->stringval(0))+1) );
 						strcpy( strings, arg->stringval(0) );
 						argDefault.push_back( ( void * )strings );
 						break;
@@ -365,7 +365,7 @@ int liqGetSloInfo::setShader( MString shaderName )
 			    //if ( arg->svd_valisvalid ) { 
 		    switch ( arg->svd_type ) {
 		    case SLX_TYPE_STRING: {
-			char *strings = ( char * )lmalloc( sizeof( char ) * sizeof( *arg->svd_default.stringval ) );
+			char *strings = ( char * )lmalloc( sizeof( char ) * strlen( *arg->svd_default.stringval ) );
 			strcpy( strings, *arg->svd_default.stringval );
 			argDefault.push_back( ( void * )strings );
 			break;
