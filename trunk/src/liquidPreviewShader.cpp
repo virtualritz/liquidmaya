@@ -163,20 +163,16 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
     liqPreviewShoptions preview;
     preview.shortShaderName = false;
     // Set default values
-#ifdef PRMAN
-#ifdef _WIN32
-    // Hmmmmmmm really two different commands ?
-    MString renderCmd( "prman" );
-#else
-    MString renderCmd( "render" );
-#endif
-#else
-#ifdef AQSIS
-    MString renderCmd( "aqsis" );
-#else // ENTROPY
-    MString renderCmd( "entropy" );
-#endif // AQSIS
-#endif // PRMAN
+#   if defined(PRMAN)
+      MString renderCmd( "prman" );
+#   elif defined(AQSIS)
+      MString renderCmd( "aqsis" );
+#   elif defined(ENTROPY)
+      MString renderCmd( "entropy" );
+#   else
+      error - unknown renderer
+#   endif
+
     bool useIt = true;
     MString shaderNodeName;
     for ( i = 0; i < args.length(); i++ ) {
@@ -219,7 +215,7 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
     systemTempDirectory = (char *)malloc( sizeof( char ) * 256 );
     strcpy( systemTempDirectory, tempRibName.asChar() );
     preview.displayDriver = "framebuffer";
-    liquidOutpuPreviewShader( systemTempDirectory, &preview.shaderNodeName );
+    liquidOutpuPreviewShader( systemTempDirectory, &preview );
     _spawnlp(_P_DETACH, preview.renderCommand, preview.renderCommand, tempRibName.asChar(), NULL);
     free( systemTempDirectory );
 #else
