@@ -1,0 +1,68 @@
+/*
+**
+** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
+** "License"); you may not use this file except in compliance with the License. You may 
+** obtain a copy of the License at http://www.mozilla.org/MPL/ 
+** 
+** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
+** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
+** language governing rights and limitations under the License. 
+**
+** The Original Code is the Liquid Rendering Toolkit. 
+** 
+** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
+** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+** 
+** Contributor(s): Berj Bannayan. 
+**
+** 
+** The RenderMan (R) Interface Procedures and Protocol are:
+** Copyright 1988, 1989, Pixar
+** All Rights Reserved
+**
+**
+** RenderMan (R) is a registered trademark of Pixar
+*/
+
+#ifndef liquidRibLightData_H
+#define liquidRibLightData_H
+
+/* ______________________________________________________________________
+** 
+** Liquid Rib Light Data Header File
+** ______________________________________________________________________
+*/
+
+#include <liquidRibData.h>
+
+class RibLightData : public RibData {
+public: // Methods
+    
+            RibLightData( const MDagPath & light );
+    virtual ~RibLightData();
+        
+    virtual void       write();
+	virtual bool       compare( const RibData & other ) const;
+	virtual ObjectType type() const;
+    
+    RtLightHandle      lightHandle() const;
+    bool	  rmanLight;
+    char	  *assignedRManShader; 
+    
+private: // Data
+    LightType     lightType;
+    RtFloat       color[3];
+    RtFloat       intensity, coneAngle, penumbraAngle, dropOff;
+    RtPoint       from, to;
+    RtMatrix	  transformationMatrix;
+    
+    RtLightHandle handle;
+		bool 				usingShadow;
+		bool				raytraced;
+		bool				excludeFromRib;
+		MString			userShadowName;
+		MString			name;
+		MString 		shadowName;
+};
+
+#endif
