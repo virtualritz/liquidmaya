@@ -155,6 +155,7 @@ bool         liqglo_expandShaderArrays;
 bool         liqglo_useBMRT;
 bool         liqglo_shortShaderNames;       // true if we don't want to output path names with shaders
 MStringArray liqglo_DDimageName;
+double       liqglo_FPS;                    // Frame-rate (for particle streak length)
 
 // Kept global for liquidGlobalHelper
 MString      liqglo_ribDir;
@@ -360,6 +361,7 @@ liqRibTranslator::liqRibTranslator()
     riboutput = "liquid.rib";
     m_renderer = PRMan;
     liqglo_motionSamples = 2;
+    liqglo_FPS = 24.0;
     width = 360;
     height = 243;
     aspectRatio = 1.0;
@@ -1464,6 +1466,12 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
     // Remember the frame the scene was at so we can restore it later.
     MTime currentFrame = MAnimControl::currentTime();
+
+    // Set the frames-per-second global (we'll need this for
+    // streak particles)
+    //
+    MTime oneSecond( 1, MTime::kSeconds );
+    liqglo_FPS = oneSecond.as( MTime::uiUnit() );
 
     // append the progress flag for alfred feedback
     if ( useAlfred ) {
