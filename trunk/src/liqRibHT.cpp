@@ -84,7 +84,7 @@ liqRibHT::liqRibHT()
 //      Class constructor.
 //
 {
-  if ( debugMode ) { printf("-> creating hash table\n"); }
+  LIQDEBUGPRINTF( "-> creating hash table\n" );
   RibNodeMap.clear();
 }
 
@@ -94,7 +94,7 @@ liqRibHT::~liqRibHT()
 //      Class destructor.
 //
 {
-  if ( debugMode ) { printf("-> killing hash table\n"); }
+  LIQDEBUGPRINTF( "-> killing hash table\n" );
   RNMAP::iterator iter;
   for ( iter = RibNodeMap.begin(); iter != RibNodeMap.end(); iter++ )
   {
@@ -114,7 +114,7 @@ ulong liqRibHT::hash(const char *str)
 //      hash function for strings
 //
 {
-  if ( debugMode ) { printf("-> hashing\n"); }
+  LIQDEBUGPRINTF( "-> hashing\n" );
   ulong hc = 0;
 
   while(*str) {
@@ -134,7 +134,7 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
 //  Description:
 //      insert a new node into the hash table.
 {
-  if ( debugMode ) { printf("-> inserting node into hash table\n"); }
+  LIQDEBUGPRINTF( "-> inserting node into hash table\n" );
   MFnDagNode  fnDagNode( path );
   MStatus    returnStatus;
 
@@ -144,7 +144,9 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   const char * name = nodeName.asChar();
 
   ulong hc = hash( name );
-  if ( debugMode ) { printf("-> hashed node name: %s size: %ld \n", name, hc ); }
+  LIQDEBUGPRINTF( "-> hashed node name: " );
+  LIQDEBUGPRINTF( name );
+  LIQDEBUGPRINTF( " size: %ld\n", hc );
 
   liqRibNode * node;
   /*node = find( path.node(), objType );*/
@@ -231,10 +233,10 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   //
   if ( instanceStr != "" )
   {
-    node->doDef = false;
+    node->motion.deformationBlur = false;
   }
 
-  if ( debugMode ) { printf("-> finished inserting node into hash table\n"); }
+  LIQDEBUGPRINTF( "-> finished inserting node into hash table\n" );
   return 0;
 }
 
@@ -242,13 +244,13 @@ liqRibNode* liqRibHT::find( MString nodeName, MDagPath path, ObjectType
                             /*objType = MRT_Unknown*/ )
 //  Description: find the hash table entry for the given object
 {
-  if ( debugMode ) { printf("-> finding node in hash table using object, %s\n", nodeName.asChar()); }
+  LIQDEBUGPRINTF( "-> finding node in hash table using object, %s\n", nodeName.asChar() );
   liqRibNode * result = NULL;
 
   const char * name = nodeName.asChar();
 
   ulong hc = hash( name );
-  if ( debugMode ) { printf("-> Done\n" ); }
+  LIQDEBUGPRINTF( "-> Done\n"  );
 
   RNMAP::iterator iter = RibNodeMap.find( hc );
   while ( ( (*iter).first == hc ) && ( iter != RibNodeMap.end() ) ) {
@@ -260,6 +262,6 @@ liqRibNode* liqRibHT::find( MString nodeName, MDagPath path, ObjectType
     }
   }
 
-  if ( debugMode ) { printf("-> finished finding node in hash table using object\n"); }
+  LIQDEBUGPRINTF( "-> finished finding node in hash table using object\n" );
   return result;
 }

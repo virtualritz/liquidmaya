@@ -83,6 +83,7 @@
 		};
 		08FB7794FE84155DC02AAC07 = {
 			children = (
+				1FCCD02B079F209C0069EDB7,
 				08FB7795FE84155DC02AAC07,
 				C6859E8C029090F304C91782,
 				0249A662FF388D9811CA2CEA,
@@ -97,17 +98,13 @@
 			children = (
 				1FADF85907724B94007DC910,
 				1FADF85807724B8A007DC910,
-				1FC7A9DC06A0016A00954BD2,
 				1FC7A9DD06A0016A00954BD2,
-				1FC7A9DE06A0016A00954BD2,
-				1FC7A9DF06A0016A00954BD2,
+				1FD593F20794629900F9DE2C,
 				1FC7A9E006A0016A00954BD2,
 				1FC7A9E106A0016A00954BD2,
 				1FC7A9E206A0016A00954BD2,
 				1FC7A9E306A0016A00954BD2,
-				1FC7A9E406A0016A00954BD2,
 				1FC7A9E506A0016A00954BD2,
-				1FC7A9E606A0016A00954BD2,
 				1FC7A9E706A0016A00954BD2,
 				1FC7A9E806A0016A00954BD2,
 				1FC7A9E906A0016A00954BD2,
@@ -203,7 +200,7 @@
 				LIBRARY_STYLE = DYNAMIC;
 				MAYA_LOCATION = /Applications/Alias/maya6.0/Maya.app/Contents/;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-framework Carbon -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lAnimSlice -lDeformSlice -lDynSlice -lKinSlice -lModelSlice -lNurbsSlice -lPolySlice -lProjectSlice -lImage  -lShared  -lTranslators -lDataModel -lRenderModel -lNurbsEngine -lDependEngine -lCommandEngine -lFoundation -dylib_file @executable_path/libBase.dylib:\"$(MAYA_LOCATION)/MacOS/libBase.dylib\" -dylib_file @executable_path/libFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libFoundation.dylib\" -dylib_file @executable_path/libSubdivEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivEngine.dylib\" -dylib_file @executable_path/libGeometryEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libGeometryEngine.dylib\" -dylib_file @executable_path/libAG.dylib:\"$(MAYA_LOCATION)/MacOS/libAG.dylib\" -dylib_file @executable_path/libExplorerSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libExplorerSlice.dylib\" -dylib_file @executable_path/libShared.dylib:\"$(MAYA_LOCATION)/MacOS/libShared.dylib\" -dylib_file @executable_path/libNurbsEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsEngine.dylib\" -dylib_file @executable_path/libSubdiv.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdiv.dylib\" -dylib_file @executable_path/libDataModel.dylib:\"$(MAYA_LOCATION)/MacOS/libDataModel.dylib\" -dylib_file @executable_path/libNurbs.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbs.dylib\" -dylib_file @executable_path/libExtensionLayer.dylib:\"$(MAYA_LOCATION)/MacOS/libExtensionLayer.dylib\" -dylib_file @executable_path/libPolyEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libPolyEngine.dylib\" -dylib_file @executable_path/libCommandEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libCommandEngine.dylib\" -dylib_file @executable_path/libDependEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libDependEngine.dylib\" -dylib_file @executable_path/libPoly.dylib:\"$(MAYA_LOCATION)/MacOS/libPoly.dylib\" -dylib_file @executable_path/libSubdivGeom.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivGeom.dylib\" -dylib_file @executable_path/libModelSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelSlice.dylib\" -dylib_file @executable_path/libRenderModel.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderModel.dylib\" -dylib_file @executable_path/lib3dGraphics.dylib:\"$(MAYA_LOCATION)/MacOS/lib3dGraphics.dylib\" -dylib_file @executable_path/libImage.dylib:\"$(MAYA_LOCATION)/MacOS/libImage.dylib\" -dylib_file @executable_path/libAnimEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimEngine.dylib\" -dylib_file @executable_path/libHWRender.dylib:\"$(MAYA_LOCATION)/MacOS/libHWRender.dylib\" -dylib_file @executable_path/libHWFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libHWFoundation.dylib\" -dylib_file @executable_path/libHWGL.dylib:\"$(MAYA_LOCATION)/MacOS/libHWGL.dylib\" -dylib_file @executable_path/libNurbsSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsSlice.dylib\" -dylib_file @executable_path/libDependCommand.dylib:\"$(MAYA_LOCATION)/MacOS/libDependCommand.dylib\" -dylib_file @executable_path/libPolySlice.dylib:\"$(MAYA_LOCATION)/MacOS/libPolySlice.dylib\" -dylib_file @executable_path/libKinSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libKinSlice.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\" -dylib_file @executable_path/libDeformSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDeformSlice.dylib\" -dylib_file @executable_path/libAnimSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimSlice.dylib\" -dylib_file @executable_path/libManips.dylib:\"$(MAYA_LOCATION)/MacOS/libManips.dylib\" -dylib_file @executable_path/libModelUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelUISlice.dylib\" -dylib_file @executable_path/libSharedUI.dylib:\"$(MAYA_LOCATION)/MacOS/libSharedUI.dylib\" -dylib_file @executable_path/libImageUI.dylib:\"$(MAYA_LOCATION)/MacOS/libImageUI.dylib\" -dylib_file @executable_path/libRenderSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderSlice.dylib\" -dylib_file @executable_path/libPopLib.dylib:\"$(MAYA_LOCATION)/MacOS/libPopLib.dylib\" -dylib_file @executable_path/libIMF.dylib:\"$(MAYA_LOCATION)/MacOS/libIMF.dylib\" -dylib_file @executable_path/libDynUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynUISlice.dylib\" -dylib_file @executable_path/libOpenMaya.dylib:\"$(MAYA_LOCATION)/MacOS/libOpenMaya.dylib\" -dylib_file @executable_path/libxpcom.dylib:\"$(MAYA_LOCATION)/MacOS/libxpcom.dylib\" -dylib_file @executable_path/libnspr4.dylib:\"$(MAYA_LOCATION)/MacOS/libnspr4.dylib\" -dylib_file @executable_path/libplc4.dylib:\"$(MAYA_LOCATION)/MacOS/libplc4.dylib\" -dylib_file @executable_path/libplds4.dylib:\"$(MAYA_LOCATION)/MacOS/libplds4.dylib\" -dylib_file @executable_path/libAnimUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimUISlice.dylib\" -dylib_file @executable_path/libDevices.dylib:\"$(MAYA_LOCATION)/MacOS/libDevices.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\"";
+				OTHER_LDFLAGS = "-framework Carbon -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMaya -lAnimSlice -lDeformSlice -lDynSlice -lKinSlice -lModelSlice -lNurbsSlice -lPolySlice -lProjectSlice -lImage  -lShared  -lTranslators -lDataModel -lRenderModel -lNurbsEngine -lDependEngine -lCommandEngine -lFoundation -dylib_file @executable_path/libBase.dylib:\"$(MAYA_LOCATION)/MacOS/libBase.dylib\" -dylib_file @executable_path/libFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libFoundation.dylib\" -dylib_file @executable_path/libSubdivEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivEngine.dylib\" -dylib_file @executable_path/libGeometryEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libGeometryEngine.dylib\" -dylib_file @executable_path/libAG.dylib:\"$(MAYA_LOCATION)/MacOS/libAG.dylib\" -dylib_file @executable_path/libExplorerSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libExplorerSlice.dylib\" -dylib_file @executable_path/libShared.dylib:\"$(MAYA_LOCATION)/MacOS/libShared.dylib\" -dylib_file @executable_path/libNurbsEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsEngine.dylib\" -dylib_file @executable_path/libSubdiv.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdiv.dylib\" -dylib_file @executable_path/libDataModel.dylib:\"$(MAYA_LOCATION)/MacOS/libDataModel.dylib\" -dylib_file @executable_path/libNurbs.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbs.dylib\" -dylib_file @executable_path/libExtensionLayer.dylib:\"$(MAYA_LOCATION)/MacOS/libExtensionLayer.dylib\" -dylib_file @executable_path/libPolyEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libPolyEngine.dylib\" -dylib_file @executable_path/libCommandEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libCommandEngine.dylib\" -dylib_file @executable_path/libDependEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libDependEngine.dylib\" -dylib_file @executable_path/libPoly.dylib:\"$(MAYA_LOCATION)/MacOS/libPoly.dylib\" -dylib_file @executable_path/libSubdivGeom.dylib:\"$(MAYA_LOCATION)/MacOS/libSubdivGeom.dylib\" -dylib_file @executable_path/libModelSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelSlice.dylib\" -dylib_file @executable_path/libRenderModel.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderModel.dylib\" -dylib_file @executable_path/lib3dGraphics.dylib:\"$(MAYA_LOCATION)/MacOS/lib3dGraphics.dylib\" -dylib_file @executable_path/libImage.dylib:\"$(MAYA_LOCATION)/MacOS/libImage.dylib\" -dylib_file @executable_path/libAnimEngine.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimEngine.dylib\" -dylib_file @executable_path/libHWRender.dylib:\"$(MAYA_LOCATION)/MacOS/libHWRender.dylib\" -dylib_file @executable_path/libHWFoundation.dylib:\"$(MAYA_LOCATION)/MacOS/libHWFoundation.dylib\" -dylib_file @executable_path/libHWGL.dylib:\"$(MAYA_LOCATION)/MacOS/libHWGL.dylib\" -dylib_file @executable_path/libNurbsSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libNurbsSlice.dylib\" -dylib_file @executable_path/libDependCommand.dylib:\"$(MAYA_LOCATION)/MacOS/libDependCommand.dylib\" -dylib_file @executable_path/libPolySlice.dylib:\"$(MAYA_LOCATION)/MacOS/libPolySlice.dylib\" -dylib_file @executable_path/libKinSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libKinSlice.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\" -dylib_file @executable_path/libDeformSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDeformSlice.dylib\" -dylib_file @executable_path/libAnimSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimSlice.dylib\" -dylib_file @executable_path/libManips.dylib:\"$(MAYA_LOCATION)/MacOS/libManips.dylib\" -dylib_file @executable_path/libModelUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libModelUISlice.dylib\" -dylib_file @executable_path/libSharedUI.dylib:\"$(MAYA_LOCATION)/MacOS/libSharedUI.dylib\" -dylib_file @executable_path/libImageUI.dylib:\"$(MAYA_LOCATION)/MacOS/libImageUI.dylib\" -dylib_file @executable_path/libRenderSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libRenderSlice.dylib\" -dylib_file @executable_path/libPopLib.dylib:\"$(MAYA_LOCATION)/MacOS/libPopLib.dylib\" -dylib_file @executable_path/libIMF.dylib:\"$(MAYA_LOCATION)/MacOS/libIMF.dylib\" -dylib_file @executable_path/libDynUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynUISlice.dylib\" -dylib_file @executable_path/libOpenMaya.dylib:\"$(MAYA_LOCATION)/MacOS/libOpenMaya.dylib\" -dylib_file @executable_path/libxpcom.dylib:\"$(MAYA_LOCATION)/MacOS/libxpcom.dylib\" -dylib_file @executable_path/libnspr4.dylib:\"$(MAYA_LOCATION)/MacOS/libnspr4.dylib\" -dylib_file @executable_path/libplc4.dylib:\"$(MAYA_LOCATION)/MacOS/libplc4.dylib\" -dylib_file @executable_path/libplds4.dylib:\"$(MAYA_LOCATION)/MacOS/libplds4.dylib\" -dylib_file @executable_path/libAnimUISlice.dylib:\"$(MAYA_LOCATION)/MacOS/libAnimUISlice.dylib\" -dylib_file @executable_path/libDevices.dylib:\"$(MAYA_LOCATION)/MacOS/libDevices.dylib\" -dylib_file @executable_path/libDynSlice.dylib:\"$(MAYA_LOCATION)/MacOS/libDynSlice.dylib\"";
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
 				PRODUCT_NAME = liquid_aqsis.lib;
@@ -222,6 +219,42 @@
 		1FADF82707721BF5007DC910 = {
 			buildActionMask = 2147483647;
 			files = (
+				1FCCD074079F20B70069EDB7,
+				1FCCD075079F20B70069EDB7,
+				1FCCD076079F20B70069EDB7,
+				1FCCD077079F20B70069EDB7,
+				1FCCD078079F20B70069EDB7,
+				1FCCD079079F20B70069EDB7,
+				1FCCD07A079F20B70069EDB7,
+				1FCCD07B079F20B70069EDB7,
+				1FCCD07C079F20B70069EDB7,
+				1FCCD07D079F20B70069EDB7,
+				1FCCD07E079F20B70069EDB7,
+				1FCCD07F079F20B70069EDB7,
+				1FCCD080079F20B70069EDB7,
+				1FCCD081079F20B70069EDB7,
+				1FCCD082079F20B70069EDB7,
+				1FCCD083079F20B70069EDB7,
+				1FCCD084079F20B70069EDB7,
+				1FCCD085079F20B70069EDB7,
+				1FCCD086079F20B70069EDB7,
+				1FCCD087079F20B70069EDB7,
+				1FCCD088079F20B70069EDB7,
+				1FCCD089079F20B70069EDB7,
+				1FCCD08A079F20B70069EDB7,
+				1FCCD08B079F20B70069EDB7,
+				1FCCD08C079F20B70069EDB7,
+				1FCCD08D079F20B70069EDB7,
+				1FCCD08E079F20B70069EDB7,
+				1FCCD08F079F20B70069EDB7,
+				1FCCD090079F20B70069EDB7,
+				1FCCD091079F20B70069EDB7,
+				1FCCD092079F20B70069EDB7,
+				1FCCD093079F20B70069EDB7,
+				1FCCD094079F20B70069EDB7,
+				1FCCD095079F20B70069EDB7,
+				1FCCD096079F20B70069EDB7,
+				1FCCD097079F20B70069EDB7,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -229,16 +262,11 @@
 		1FADF82807721BF5007DC910 = {
 			buildActionMask = 2147483647;
 			files = (
-				1FADF82907721BF5007DC910,
 				1FADF82A07721BF5007DC910,
-				1FADF82B07721BF5007DC910,
-				1FADF82C07721BF5007DC910,
 				1FADF82D07721BF5007DC910,
 				1FADF82E07721BF5007DC910,
 				1FADF82F07721BF5007DC910,
-				1FADF83007721BF5007DC910,
 				1FADF83107721BF5007DC910,
-				1FADF83207721BF5007DC910,
 				1FADF83307721BF5007DC910,
 				1FADF83407721BF5007DC910,
 				1FADF83507721BF5007DC910,
@@ -261,30 +289,13 @@
 				1FADF84607721BF5007DC910,
 				1FADF84707721BF5007DC910,
 				1FADF84807721BF5007DC910,
+				1FD593F40794629900F9DE2C,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1FADF82907721BF5007DC910 = {
-			fileRef = 1FC7A9DC06A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		1FADF82A07721BF5007DC910 = {
 			fileRef = 1FC7A9DD06A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		1FADF82B07721BF5007DC910 = {
-			fileRef = 1FC7A9DE06A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		1FADF82C07721BF5007DC910 = {
-			fileRef = 1FC7A9DF06A0016A00954BD2;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -307,20 +318,8 @@
 			settings = {
 			};
 		};
-		1FADF83007721BF5007DC910 = {
-			fileRef = 1FC7A9E406A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		1FADF83107721BF5007DC910 = {
 			fileRef = 1FC7A9E506A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		1FADF83207721BF5007DC910 = {
-			fileRef = 1FC7A9E606A0016A00954BD2;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -570,265 +569,342 @@
 			settings = {
 			};
 		};
-		1FC7A9DC06A0016A00954BD2 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = liqAqsisRenderer.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		1FC7A9DD06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqAttachPrefAttribute.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
-		};
-		1FC7A9DE06A0016A00954BD2 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = liqDelightRenderer.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		1FC7A9DF06A0016A00954BD2 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = liqEntropyRenderer.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9E006A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqGetAttr.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9E106A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqGetSloInfo.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9E206A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqGlobalHelpers.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9E306A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqMemory.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
-		};
-		1FC7A9E406A0016A00954BD2 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = liqPixieRenderer.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9E506A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqPreviewShader.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
-		};
-		1FC7A9E606A0016A00954BD2 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = liqPrmanRenderer.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9E706A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqProcessLauncher.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9E806A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRenderer.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9E906A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibCoordData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9EA06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9EB06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibGenData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9EC06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibHT.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9ED06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibLightData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9EE06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibLocatorData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9EF06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibMayaSubdivisionData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F006A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibMeshData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F106A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibNode.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F206A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibNuCurveData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F306A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibObj.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F406A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibParticleData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F506A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibSubdivisionData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F606A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibSurfaceData.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F706A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqRibTranslator.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F806A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqShader.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9F906A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqTokenPointer.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9FA06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liquidPlug.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7A9FB06A0016A00954BD2 = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
 			path = liqWriteArchive.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+			tabWidth = 2;
 		};
 		1FC7AA2006A00A5C00954BD2 = {
 			buildActionMask = 2147483647;
 			files = (
+				1FCCD050079F20B70069EDB7,
+				1FCCD051079F20B70069EDB7,
+				1FCCD052079F20B70069EDB7,
+				1FCCD053079F20B70069EDB7,
+				1FCCD054079F20B70069EDB7,
+				1FCCD055079F20B70069EDB7,
+				1FCCD056079F20B70069EDB7,
+				1FCCD057079F20B70069EDB7,
+				1FCCD058079F20B70069EDB7,
+				1FCCD059079F20B70069EDB7,
+				1FCCD05A079F20B70069EDB7,
+				1FCCD05B079F20B70069EDB7,
+				1FCCD05C079F20B70069EDB7,
+				1FCCD05D079F20B70069EDB7,
+				1FCCD05E079F20B70069EDB7,
+				1FCCD05F079F20B70069EDB7,
+				1FCCD060079F20B70069EDB7,
+				1FCCD061079F20B70069EDB7,
+				1FCCD062079F20B70069EDB7,
+				1FCCD063079F20B70069EDB7,
+				1FCCD064079F20B70069EDB7,
+				1FCCD065079F20B70069EDB7,
+				1FCCD066079F20B70069EDB7,
+				1FCCD067079F20B70069EDB7,
+				1FCCD068079F20B70069EDB7,
+				1FCCD069079F20B70069EDB7,
+				1FCCD06A079F20B70069EDB7,
+				1FCCD06B079F20B70069EDB7,
+				1FCCD06C079F20B70069EDB7,
+				1FCCD06D079F20B70069EDB7,
+				1FCCD06E079F20B70069EDB7,
+				1FCCD06F079F20B70069EDB7,
+				1FCCD070079F20B70069EDB7,
+				1FCCD071079F20B70069EDB7,
+				1FCCD072079F20B70069EDB7,
+				1FCCD073079F20B70069EDB7,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -836,16 +912,11 @@
 		1FC7AA2106A00A5C00954BD2 = {
 			buildActionMask = 2147483647;
 			files = (
-				1FC7AA2606A00AF500954BD2,
 				1FC7AA2706A00AF600954BD2,
-				1FC7AA2806A00AF600954BD2,
-				1FC7AA2906A00AF700954BD2,
 				1FC7AA2A06A00AF700954BD2,
 				1FC7AA2B06A00AF700954BD2,
 				1FC7AA2C06A00AF800954BD2,
-				1FC7AA2D06A00AF800954BD2,
 				1FC7AA2E06A00AF900954BD2,
-				1FC7AA2F06A00AFA00954BD2,
 				1FC7AA3006A00AFB00954BD2,
 				1FC7AA3106A00AFC00954BD2,
 				1FC7AA3206A00AFC00954BD2,
@@ -869,6 +940,7 @@
 				1FC7AA4406A00B0600954BD2,
 				1FC7AA4506A00B0700954BD2,
 				1FF48EC6077A116B006AE147,
+				1FD593F30794629900F9DE2C,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -928,26 +1000,8 @@
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1FC7AA2606A00AF500954BD2 = {
-			fileRef = 1FC7A9DC06A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		1FC7AA2706A00AF600954BD2 = {
 			fileRef = 1FC7A9DD06A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		1FC7AA2806A00AF600954BD2 = {
-			fileRef = 1FC7A9DE06A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		1FC7AA2906A00AF700954BD2 = {
-			fileRef = 1FC7A9DF06A0016A00954BD2;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -970,20 +1024,8 @@
 			settings = {
 			};
 		};
-		1FC7AA2D06A00AF800954BD2 = {
-			fileRef = 1FC7A9E406A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		1FC7AA2E06A00AF900954BD2 = {
 			fileRef = 1FC7A9E506A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		1FC7AA2F06A00AFA00954BD2 = {
-			fileRef = 1FC7A9E606A0016A00954BD2;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1134,6 +1176,866 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "mkdir -p ../liquid1.6/bin/OSX/\ncp build/liquid.lib.dylib ../liquid1.6/bin/OSX/liquid.lib";
+		};
+		1FCCD02B079F209C0069EDB7 = {
+			children = (
+				1FCCD02C079F20B70069EDB7,
+				1FCCD02D079F20B70069EDB7,
+				1FCCD02E079F20B70069EDB7,
+				1FCCD02F079F20B70069EDB7,
+				1FCCD030079F20B70069EDB7,
+				1FCCD031079F20B70069EDB7,
+				1FCCD032079F20B70069EDB7,
+				1FCCD033079F20B70069EDB7,
+				1FCCD034079F20B70069EDB7,
+				1FCCD035079F20B70069EDB7,
+				1FCCD036079F20B70069EDB7,
+				1FCCD037079F20B70069EDB7,
+				1FCCD038079F20B70069EDB7,
+				1FCCD039079F20B70069EDB7,
+				1FCCD03A079F20B70069EDB7,
+				1FCCD03B079F20B70069EDB7,
+				1FCCD03C079F20B70069EDB7,
+				1FCCD03D079F20B70069EDB7,
+				1FCCD03E079F20B70069EDB7,
+				1FCCD03F079F20B70069EDB7,
+				1FCCD040079F20B70069EDB7,
+				1FCCD041079F20B70069EDB7,
+				1FCCD042079F20B70069EDB7,
+				1FCCD043079F20B70069EDB7,
+				1FCCD044079F20B70069EDB7,
+				1FCCD045079F20B70069EDB7,
+				1FCCD046079F20B70069EDB7,
+				1FCCD047079F20B70069EDB7,
+				1FCCD048079F20B70069EDB7,
+				1FCCD049079F20B70069EDB7,
+				1FCCD04A079F20B70069EDB7,
+				1FCCD04B079F20B70069EDB7,
+				1FCCD04C079F20B70069EDB7,
+				1FCCD04D079F20B70069EDB7,
+				1FCCD04E079F20B70069EDB7,
+				1FCCD04F079F20B70069EDB7,
+			);
+			isa = PBXGroup;
+			name = Headers;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1FCCD02C079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqAttachPrefAttribute.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqAttachPrefAttribute.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD02D079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqCustomNode.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqCustomNode.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD02E079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqExpression.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqExpression.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD02F079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqGetAttr.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqGetAttr.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD030079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqGetSloInfo.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqGetSloInfo.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD031079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqGlobalHelpers.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqGlobalHelpers.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD032079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqGlobals.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqGlobals.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD033079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqIOStream.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqIOStream.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD034079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqMemory.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqMemory.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD035079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqPreviewShader.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqPreviewShader.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD036079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqProcessLauncher.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqProcessLauncher.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD037079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRenderer.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRenderer.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD038079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRenderScript.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRenderScript.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD039079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibBakeSubdivisionData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibBakeSubdivisionData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD03A079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibCoordData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibCoordData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD03B079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibCustomNode.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibCustomNode.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD03C079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD03D079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibGen.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibGen.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD03E079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibGenData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibGenData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD03F079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibHT.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibHT.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD040079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibLightData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibLightData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD041079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibLocatorData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibLocatorData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD042079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibMayaSubdivisionData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibMayaSubdivisionData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD043079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibMeshData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibMeshData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD044079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibNode.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibNode.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD045079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibNuCurveData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibNuCurveData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD046079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibObj.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibObj.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD047079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibParticleData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibParticleData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD048079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibStatus.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibStatus.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD049079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibSubdivisionData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibSubdivisionData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD04A079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibSurfaceData.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibSurfaceData.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD04B079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqRibTranslator.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqRibTranslator.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD04C079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqShader.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqShader.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD04D079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqTokenPointer.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqTokenPointer.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD04E079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liquid.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liquid.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD04F079F20B70069EDB7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			lineEnding = 0;
+			name = liqWriteArchive.h;
+			path = /Users/geohar/Development/SVN_Sandbox/LiquidMaya/include/liqWriteArchive.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1FCCD050079F20B70069EDB7 = {
+			fileRef = 1FCCD02C079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD051079F20B70069EDB7 = {
+			fileRef = 1FCCD02D079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD052079F20B70069EDB7 = {
+			fileRef = 1FCCD02E079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD053079F20B70069EDB7 = {
+			fileRef = 1FCCD02F079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD054079F20B70069EDB7 = {
+			fileRef = 1FCCD030079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD055079F20B70069EDB7 = {
+			fileRef = 1FCCD031079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD056079F20B70069EDB7 = {
+			fileRef = 1FCCD032079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD057079F20B70069EDB7 = {
+			fileRef = 1FCCD033079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD058079F20B70069EDB7 = {
+			fileRef = 1FCCD034079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD059079F20B70069EDB7 = {
+			fileRef = 1FCCD035079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD05A079F20B70069EDB7 = {
+			fileRef = 1FCCD036079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD05B079F20B70069EDB7 = {
+			fileRef = 1FCCD037079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD05C079F20B70069EDB7 = {
+			fileRef = 1FCCD038079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD05D079F20B70069EDB7 = {
+			fileRef = 1FCCD039079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD05E079F20B70069EDB7 = {
+			fileRef = 1FCCD03A079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD05F079F20B70069EDB7 = {
+			fileRef = 1FCCD03B079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD060079F20B70069EDB7 = {
+			fileRef = 1FCCD03C079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD061079F20B70069EDB7 = {
+			fileRef = 1FCCD03D079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD062079F20B70069EDB7 = {
+			fileRef = 1FCCD03E079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD063079F20B70069EDB7 = {
+			fileRef = 1FCCD03F079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD064079F20B70069EDB7 = {
+			fileRef = 1FCCD040079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD065079F20B70069EDB7 = {
+			fileRef = 1FCCD041079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD066079F20B70069EDB7 = {
+			fileRef = 1FCCD042079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD067079F20B70069EDB7 = {
+			fileRef = 1FCCD043079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD068079F20B70069EDB7 = {
+			fileRef = 1FCCD044079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD069079F20B70069EDB7 = {
+			fileRef = 1FCCD045079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD06A079F20B70069EDB7 = {
+			fileRef = 1FCCD046079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD06B079F20B70069EDB7 = {
+			fileRef = 1FCCD047079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD06C079F20B70069EDB7 = {
+			fileRef = 1FCCD048079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD06D079F20B70069EDB7 = {
+			fileRef = 1FCCD049079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD06E079F20B70069EDB7 = {
+			fileRef = 1FCCD04A079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD06F079F20B70069EDB7 = {
+			fileRef = 1FCCD04B079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD070079F20B70069EDB7 = {
+			fileRef = 1FCCD04C079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD071079F20B70069EDB7 = {
+			fileRef = 1FCCD04D079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD072079F20B70069EDB7 = {
+			fileRef = 1FCCD04E079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD073079F20B70069EDB7 = {
+			fileRef = 1FCCD04F079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD074079F20B70069EDB7 = {
+			fileRef = 1FCCD02C079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD075079F20B70069EDB7 = {
+			fileRef = 1FCCD02D079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD076079F20B70069EDB7 = {
+			fileRef = 1FCCD02E079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD077079F20B70069EDB7 = {
+			fileRef = 1FCCD02F079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD078079F20B70069EDB7 = {
+			fileRef = 1FCCD030079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD079079F20B70069EDB7 = {
+			fileRef = 1FCCD031079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD07A079F20B70069EDB7 = {
+			fileRef = 1FCCD032079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD07B079F20B70069EDB7 = {
+			fileRef = 1FCCD033079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD07C079F20B70069EDB7 = {
+			fileRef = 1FCCD034079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD07D079F20B70069EDB7 = {
+			fileRef = 1FCCD035079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD07E079F20B70069EDB7 = {
+			fileRef = 1FCCD036079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD07F079F20B70069EDB7 = {
+			fileRef = 1FCCD037079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD080079F20B70069EDB7 = {
+			fileRef = 1FCCD038079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD081079F20B70069EDB7 = {
+			fileRef = 1FCCD039079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD082079F20B70069EDB7 = {
+			fileRef = 1FCCD03A079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD083079F20B70069EDB7 = {
+			fileRef = 1FCCD03B079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD084079F20B70069EDB7 = {
+			fileRef = 1FCCD03C079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD085079F20B70069EDB7 = {
+			fileRef = 1FCCD03D079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD086079F20B70069EDB7 = {
+			fileRef = 1FCCD03E079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD087079F20B70069EDB7 = {
+			fileRef = 1FCCD03F079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD088079F20B70069EDB7 = {
+			fileRef = 1FCCD040079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD089079F20B70069EDB7 = {
+			fileRef = 1FCCD041079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD08A079F20B70069EDB7 = {
+			fileRef = 1FCCD042079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD08B079F20B70069EDB7 = {
+			fileRef = 1FCCD043079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD08C079F20B70069EDB7 = {
+			fileRef = 1FCCD044079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD08D079F20B70069EDB7 = {
+			fileRef = 1FCCD045079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD08E079F20B70069EDB7 = {
+			fileRef = 1FCCD046079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD08F079F20B70069EDB7 = {
+			fileRef = 1FCCD047079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD090079F20B70069EDB7 = {
+			fileRef = 1FCCD048079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD091079F20B70069EDB7 = {
+			fileRef = 1FCCD049079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD092079F20B70069EDB7 = {
+			fileRef = 1FCCD04A079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD093079F20B70069EDB7 = {
+			fileRef = 1FCCD04B079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD094079F20B70069EDB7 = {
+			fileRef = 1FCCD04C079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD095079F20B70069EDB7 = {
+			fileRef = 1FCCD04D079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD096079F20B70069EDB7 = {
+			fileRef = 1FCCD04E079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FCCD097079F20B70069EDB7 = {
+			fileRef = 1FCCD04F079F20B70069EDB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FD593F20794629900F9DE2C = {
+			fileEncoding = 30;
+			indentWidth = 2;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			lineEnding = 0;
+			path = liqExpression.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+			tabWidth = 2;
+		};
+		1FD593F30794629900F9DE2C = {
+			fileRef = 1FD593F20794629900F9DE2C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1FD593F40794629900F9DE2C = {
+			fileRef = 1FD593F20794629900F9DE2C;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		1FDCD16C078A094000E62CC1 = {
 			isa = PBXFileReference;

@@ -1,5 +1,7 @@
 #ifndef _H_liquidRIBGen
+
 #define _H_liquidRIBGen
+
 /*
 **
 ** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
@@ -24,6 +26,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 /* ______________________________________________________________________
@@ -52,10 +55,10 @@ extern "C" RIPFormat RipFormat;
 typedef enum
 {
  	RIPCOMPRESSION_UNDEF,
-  RIPCOMPRESSION_NONE,
+    RIPCOMPRESSION_NONE,
 	RIPCOMPRESSION_GZIP
 } RIPCompression;
-				
+			
 extern "C" RIPCompression RipCompression;
 typedef int RtError;
 
@@ -72,7 +75,6 @@ void
 initRibGen( liquidRIBStatus * ribStatus )
 {
 	extern int RiNColorSamples;
-
 	if ( ribStatus->binary ) {
 		RipFormat = RIPFORMAT_BINARY;
 	}	else { 

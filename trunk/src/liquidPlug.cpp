@@ -33,6 +33,8 @@
 */
 
 // Standard Headers
+//#include <fstream.h>
+#include <liqIOStream.h>
 #include <math.h>
 #include <assert.h>
 #include <time.h>
@@ -85,7 +87,7 @@ extern "C" {
 
 extern bool liquidBin;
 
-#define LIQVENDOR "Colin_Doncaster_and_friends"
+#define LIQVENDOR "Colin Doncaster and friends"
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
@@ -104,6 +106,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   liquidBin = false;
 
   MStatus status;
+  
   MFnPlugin plugin( obj, LIQVENDOR, LIQUIDVERSION, "Any");
 
   MGlobal::displayInfo("\nInitializing Liquid. Initial code by Colin Doncaster\n");

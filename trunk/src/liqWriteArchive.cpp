@@ -37,9 +37,7 @@
 #include <maya/MFnDagNode.h>
 #include <maya/MArgParser.h>
 
-#include <iostream>
-using std::cout;
-using std::endl;
+#include <liqIOStream.h>
 
 #include <ri.h>
 
@@ -162,7 +160,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
     ribNode.set(objDagPath, 0, MRT_Unknown);
 
     if ( ribNode.isRibBox ) {
-      RiArchiveRecord( RI_COMMENT, "Additional Rib:\n%s", ribNode.ribBoxString.asChar() );
+      RiArchiveRecord( RI_COMMENT, "Additional RIB:\n%s", ribNode.ribBoxString.asChar() );
     }
     if ( ribNode.isArchive ) {
       RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode.archiveString.asChar() );
@@ -231,8 +229,8 @@ void liqWriteArchive::outputIndentation()
 void liqWriteArchive::outputObjectName(const MDagPath &objDagPath)
 {
   MString name = objDagPath.fullPathName();
-  const char *namePtr = name.asChar();
   RiArchiveRecord(RI_VERBATIM, "\n");
   outputIndentation();
-  RiAttribute("identifier", "name", &namePtr, RI_NULL);
+  RtString ribname = const_cast< char* >( name.asChar() );
+  RiAttribute( "identifier", "name", &ribname, RI_NULL );
 }

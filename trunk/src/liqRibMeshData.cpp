@@ -74,6 +74,7 @@ extern "C" {
 #include <liqMemory.h>
 
 extern int debugMode;
+extern bool liqglo_outputMeshUVs;
 
 liqRibMeshData::liqRibMeshData( MObject mesh )
 //
@@ -89,7 +90,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   normalParam( NULL )
 {
   areaLight = false;
-  if ( debugMode ) { printf("-> creating mesh\n"); }
+  LIQDEBUGPRINTF( "-> creating mesh\n" );
   MFnMesh fnMesh( mesh );
   objDagPath = fnMesh.dagPath();
 
@@ -139,28 +140,28 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   nverts = (RtInt*) lmalloc( sizeof( RtInt ) * numFaces );
   verts = (RtInt*) lmalloc( sizeof( RtInt ) * numFaceVertices );
 
-  pointsPointerPair.set( "P", rPoint, false, true, false, numPoints );
+  pointsPointerPair.set( "P", rPoint, false, numPoints );
   pointsPointerPair.setDetailType( rVertex );
 
   if ( numNormals == numPoints ) {
-    normalsPointerPair.set( "N", rNormal, false, true, false, numPoints );
+    normalsPointerPair.set( "N", rNormal, false, numPoints );
     normalsPointerPair.setDetailType( rVertex );
   } else {
-    normalsPointerPair.set( "N", rNormal, false, true, false, numFaceVertices );
-    normalsPointerPair .setDetailType( rFaceVarying );
+    normalsPointerPair.set( "N", rNormal, false, numFaceVertices );
+    normalsPointerPair.setDetailType( rFaceVarying );
   }
 
   if ( numSTs > 0 ) {
-    if ( numSTs == numPoints ) {
-      pVertexSTPointerPair = new liqTokenPointer;
-      pVertexSTPointerPair->set( "st", rFloat, false, true, true, 2 * numPoints );
-      pVertexSTPointerPair->setDetailType( rVertex );
-    } else {
+    pVertexSTPointerPair = new liqTokenPointer;
+    pVertexSTPointerPair->set( "st", rFloat, false, numFaceVertices, 2 );
+    pVertexSTPointerPair->setDetailType( rFaceVarying );
+	
+	if( liqglo_outputMeshUVs ) {
       pFaceVertexSPointer = new liqTokenPointer;
-      pFaceVertexSPointer->set( "s", rFloat, false, true, false, numFaceVertices );
+      pFaceVertexSPointer->set( "u", rFloat, false, true, false, numFaceVertices );
       pFaceVertexSPointer->setDetailType( rFaceVarying );
       pFaceVertexTPointer = new liqTokenPointer;
-      pFaceVertexTPointer->set( "t", rFloat, false, true, false, numFaceVertices );
+      pFaceVertexTPointer->set( "v", rFloat, false, true, false, numFaceVertices );
       pFaceVertexTPointer->setDetailType( rFaceVarying );
     }
   }
@@ -193,10 +194,10 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
       if( numSTs > 0 ) {
         fnMesh.getPolygonUV( face, count, S, T );
 
-        if( numSTs == numPoints ) {
-          pVertexSTPointerPair->setTokenFloat( vertex * 2 + 0, S );
-          pVertexSTPointerPair->setTokenFloat( vertex * 2 + 1, 1 - T );
-        } else {
+        pVertexSTPointerPair->setTokenFloat( faceVertex, 0, S );
+        pVertexSTPointerPair->setTokenFloat( faceVertex, 1, 1 - T );
+        
+		if( liqglo_outputMeshUVs ) {
           pFaceVertexSPointer->setTokenFloat( faceVertex, S );
           pFaceVertexTPointer->setTokenFloat( faceVertex, 1 - T );
         }
@@ -236,7 +237,7 @@ liqRibMeshData::~liqRibMeshData()
 //      class destructor
 //
 {
-  if ( debugMode ) { printf("-> killing mesh\n"); }
+  LIQDEBUGPRINTF( "-> killing mesh\n" );
   lfree( nverts ); nverts = NULL;
   lfree( verts );  verts = NULL;
 }
@@ -247,13 +248,13 @@ void liqRibMeshData::write()
 //      Write the RIB for this mesh
 //
 {
-  if ( debugMode ) { printf("-> writing mesh\n"); }
+  LIQDEBUGPRINTF( "-> writing mesh\n" );
   RtLightHandle handle = NULL;
   if ( areaLight ) {
-    if ( debugMode ) { printf("-> mesh is area light\n"); }
+    LIQDEBUGPRINTF( "-> mesh is area light\n" );
     //	RiAttributeBegin();
-    const char * namePtr = name.asChar();
-    RiAttribute( "identifier", "name", &namePtr, RI_NULL );
+    RtString ribname = const_cast< char* >( name.asChar() );
+    RiAttribute( "identifier", "name", &ribname, RI_NULL );
     RiTransform( transformationMatrix );
 
     handle = RiAreaLightSource( "arealight", "intensity", &areaIntensity, RI_NULL );
@@ -290,7 +291,7 @@ bool liqRibMeshData::compare( const liqRibData & otherObj ) const
   unsigned i;
   unsigned numFaceVertices = 0;
 
-  if ( debugMode ) { printf("-> comparing mesh\n"); }
+  LIQDEBUGPRINTF( "-> comparing mesh\n" );
   if ( otherObj.type() != MRT_Mesh ) return false;
   const liqRibMeshData& other = (liqRibMeshData&)otherObj;
 
@@ -340,7 +341,7 @@ ObjectType liqRibMeshData::type() const
 //      return the geometry type
 //
 {
-  if ( debugMode ) { printf("-> returning mesh type\n"); }
+  LIQDEBUGPRINTF( "-> returning mesh type\n" );
   if ( areaLight ) {
     return MRT_Light;
   } else {

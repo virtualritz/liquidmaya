@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 #ifndef liqPreviewShader_H
@@ -37,16 +38,26 @@
 #include <maya/MStringArray.h>
 #include <maya/MIntArray.h>
 
+enum PrimitiveType {
+  SPHERE       = 0,
+  CYLINDER     = 1,
+  TORUS        = 2,
+  CUBE         = 3,
+  PLANE        = 4,
+  TEAPOT       = 5,
+  DODECAHEDRON = 6
+};
+
 class liqPreviewShader : public MPxCommand {
 public:
-    liqPreviewShader() {};
-    virtual ~liqPreviewShader();
-    static void*    	creator();
+  liqPreviewShader() {};
+  virtual ~liqPreviewShader();
+  static void* creator();
 			    
-    MStatus 	    	    doIt(const MArgList& args );
+  MStatus doIt( const MArgList& args );
 private:
-    void	resetIt();
-    static const char * m_default_previewer;
+  void	resetIt();
+  static const char * m_default_previewer;
 };
 
 #endif

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="liquid"
 	SccProjectName=""
 	SccLocalPath="">
@@ -10,6 +10,73 @@
 			Name="Win32"/>
 	</Platforms>
 	<Configurations>
+		<Configuration
+			Name="3Delight Debug|Win32"
+			OutputDirectory=".\liquid___Win32_3Delight_Debug"
+			IntermediateDirectory=".\liquid___Win32_3Delight_Debug"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION)/include,$(DELIGHT)/include,../include"
+				PreprocessorDefinitions="NDEBUG;DELIGHT;_3DELIGHT;WIN32;_WINDOWS;_USRDLL;LIQUID_EXPORTS;_BOOL;ulong=&quot;unsigned long&quot;;uint=&quot;unsigned int&quot;"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="0"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\liquid___Win32_3Delight_Debug/liquid.pch"
+				AssemblerListingLocation=".\liquid___Win32_3Delight_Debug/"
+				ObjectFile=".\liquid___Win32_3Delight_Debug/"
+				ProgramDataBaseFileName=".\liquid___Win32_3Delight_Debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="3delight.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib ws2_32.lib netapi32.lib"
+				OutputFile="../bin/win32/Debug/liquid.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(DELIGHT)/lib"
+				IgnoreDefaultLibraryNames="libmmt.lib,libircmt.lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\liquid___Win32_3Delight_Debug/liquid.pdb"
+				ImportLibrary=".\liquid___Win32_3Delight_Debug/liquid.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\liquid___Win32_3Delight_Debug/liquid.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="2057"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 		<Configuration
 			Name="PRMan 11 Release|Win32"
 			OutputDirectory=".\../bin/win32/Release"
@@ -68,7 +135,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="PRMan 10 Debug|Win32"
@@ -129,7 +202,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="PRMan 11 Debug|Win32"
@@ -190,7 +269,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="PRMan 10 Release|Win32"
@@ -250,9 +335,83 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="3Delight Release|Win32"
+			OutputDirectory=".\liquid___Win32_3Delight_Release"
+			IntermediateDirectory=".\liquid___Win32_3Delight_Release"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION)/include,$(DELIGHT)/include,../include"
+				PreprocessorDefinitions="NDEBUG;DELIGHT;_3DELIGHT;WIN32;_WINDOWS;_USRDLL;LIQUID_EXPORTS;_BOOL;ulong=&quot;unsigned long&quot;;uint=&quot;unsigned int&quot;"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\liquid___Win32_3Delight_Release/liquid.pch"
+				AssemblerListingLocation=".\liquid___Win32_3Delight_Release/"
+				ObjectFile=".\liquid___Win32_3Delight_Release/"
+				ProgramDataBaseFileName=".\liquid___Win32_3Delight_Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="3delight.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib ws2_32.lib netapi32.lib"
+				OutputFile="../bin/win32/Release/liquid.mll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(DELIGHT)/lib"
+				IgnoreDefaultLibraryNames="libmmt.lib,libircmt.lib"
+				ProgramDatabaseFile=".\liquid___Win32_3Delight_Release/liquid.pdb"
+				ImportLibrary=".\liquid___Win32_3Delight_Release/liquid.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\liquid___Win32_3Delight_Release/liquid.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -348,13 +507,10 @@
 				RelativePath=".\liqTokenPointer.cpp">
 			</File>
 			<File
-				RelativePath=".\liqWriteArchive.cpp">
-			</File>
-			<File
-				RelativePath="liquidBin.cpp">
-			</File>
-			<File
 				RelativePath=".\liquidPlug.cpp">
+			</File>
+			<File
+				RelativePath=".\liqWriteArchive.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -403,10 +559,13 @@
 				RelativePath="..\include\liqProcessLauncher.h">
 			</File>
 			<File
+				RelativePath="..\include\liqRenderer.h">
+			</File>
+			<File
 				RelativePath="..\include\liqRenderScript.h">
 			</File>
 			<File
-				RelativePath="..\include\liqRenderer.h">
+				RelativePath="..\include\liqRibBakeSubdivisionData.h">
 			</File>
 			<File
 				RelativePath="..\include\liqRibCoordData.h">
@@ -469,9 +628,6 @@
 				RelativePath="..\include\liqTokenPointer.h">
 			</File>
 			<File
-				RelativePath="..\include\liqWriteArchive.h">
-			</File>
-			<File
 				RelativePath="..\include\liquid.h">
 			</File>
 			<File
@@ -481,13 +637,16 @@
 				RelativePath="..\include\liquidRIBGen.h">
 			</File>
 			<File
-				RelativePath="..\include\liquidRIBStatus.h">
-			</File>
-			<File
 				RelativePath="..\include\liquidRibItHT.h">
 			</File>
 			<File
+				RelativePath="..\include\liquidRIBStatus.h">
+			</File>
+			<File
 				RelativePath="..\include\liquidRibSurfaceData.h">
+			</File>
+			<File
+				RelativePath="..\include\liqWriteArchive.h">
 			</File>
 		</Filter>
 		<Filter
@@ -495,183 +654,63 @@
 			Filter="*.mel">
 			<File
 				RelativePath="..\mel\getMultiListerSelection.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidAttachParams.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidAttrWindow.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidConvMTOR.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidDelayedReadArchive.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidFileBrowser.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidFluid.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidGlobals.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidHelpers.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidMenuHelp.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidParamDialogWindow.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidPrefAttribute.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\mel\liquidReAttachParams.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidReadArchive.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\mel\liquidReAttachParams.mel">
 			</File>
 			<File
 				RelativePath="..\mel\liquidRibBox.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidRibGen.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidShaders.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidShutdown.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidStartup.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\mel\liquidSubD.mel">
-				<FileConfiguration
-					Name="PRMan 11 Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter

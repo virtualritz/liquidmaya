@@ -3,21 +3,21 @@
 ** The contents of this file are subject to the Mozilla Public License Version
 ** 1.1 (the "License"); you may not use this file except in compliance with
 ** the License. You may obtain a copy of the License at
-** http://www.mozilla.org/MPL/ 
-** 
+** http://www.mozilla.org/MPL/
+**
 ** Software distributed under the License is distributed on an "AS IS" basis,
 ** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
 ** for the specific language governing rights and limitations under the
-** License. 
+** License.
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
-** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** 
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are: Copyright 1988,
 ** 1989, Pixar All Rights Reserved
 **
@@ -27,8 +27,8 @@
 */
 
 /* ______________________________________________________________________
-** 
-** Liquid Attach __Pref Attribute Source 
+**
+** Liquid Attach __Pref Attribute Source
 ** ______________________________________________________________________
 */
 
@@ -74,11 +74,10 @@ extern "C" {
 #include <maya/MPxCommand.h>
 
 #include <liqAttachPrefAttribute.h>
-#include <liqEntropyRenderer.h>
-#include <liqPrmanRenderer.h>
-#include <liqAqsisRenderer.h>
-#include <liqDelightRenderer.h>
+#include <liqRenderer.h>
 #include <liqMemory.h>
+
+#include <maya/MGlobal.h>
 
 
 liqAttachPrefAttribute::~liqAttachPrefAttribute()
@@ -95,32 +94,32 @@ MStatus	liqAttachPrefAttribute::doIt( const MArgList& args )
 {
   MFnTypedAttribute tAttr;
   MStatus status;
-    
-  for ( unsigned int i = 0; i < args.length(); i++ ) {
+
+  for ( unsigned i = 0; i < args.length(); i++ ) {
     MSelectionList		nodeList;
     nodeList.add( args.asString( i, &status ) );
     MObject depNodeObj;
-    nodeList.getDependNode(0, depNodeObj);
+    nodeList.getDependNode( 0, depNodeObj );
     MFnDependencyNode depNode( depNodeObj );
     MObject prefAttr;
 
-    if (liquidRenderer().requires(liqRenderer::__PREF)) {
+    if ( liquidRenderer.requires__PREF ) {
       prefAttr = tAttr.create( "rmanP__Pref", "rmanP__Pref", MFnData::kPointArray );
     } else {
       prefAttr = tAttr.create( "rmanPPref", "rmanPPref", MFnData::kPointArray );
     }
 
-    if ( depNodeObj.hasFn( MFn::kNurbsSurface )) {
+    if ( depNodeObj.hasFn( MFn::kNurbsSurface ) ) {
       MFnNurbsSurface nodeFn( depNodeObj );
 
       MPointArray nodePArray;
 
-      MItSurfaceCV cvs( depNodeObj, liquidRenderer().requires(liqRenderer::SWAPPED_UVS) == false);
+      MItSurfaceCV cvs( depNodeObj, liquidRenderer.requires_SWAPPED_UVS == false );
 
-      while(!cvs.isDone()) {
-        while(!cvs.isRowDone()) {
-          MPoint pt = cvs.position(MSpace::kObject);
-          nodePArray.append(pt);
+      while( !cvs.isDone() ) {
+        while( !cvs.isRowDone() ) {
+          MPoint pt = cvs.position( MSpace::kObject );
+          nodePArray.append( pt );
           cvs.next();
         }
         cvs.nextRow();
@@ -134,25 +133,34 @@ MStatus	liqAttachPrefAttribute::doIt( const MArgList& args )
       nodePlug.setValue( prefDefault );
 
     } else if ( depNodeObj.hasFn( MFn::kMesh ) ) {
-      MFnMesh		nodeFn( depNodeObj );
-      MPointArray		nodePArray;
-      unsigned int	count;
+      MFnMesh nodeFn( depNodeObj );
+      // Moritz: modified this line to dim nodePArray -- otherwise
+      // nodePArray.set() in the wile loop below throws an exception
+      // which was why __Pref didn't work
+      MPointArray nodePArray( MFnMesh( depNodeObj ).numVertices() );
+      unsigned count;
 
       nodeFn.addAttribute( prefAttr );
 
       // TODO: do we need to account for the altMeshExport algo that's
-      // used in liquidRibMeshData? 
+      // used in liquidRibMeshData?
+      // Moritz: no, it's basically the same as the algo below
       for ( MItMeshPolygon polyIt( depNodeObj ); !polyIt.isDone(); polyIt.next()) {
         count = polyIt.polygonVertexCount();
 
-        do {
-          count--;
-          unsigned	normalIndex = polyIt.normalIndex( count );
-          MPoint	nodePoint = polyIt.point( count );
+        {
+            char pointstr[256];
+            sprintf( pointstr, "Points: %d" , count );
+            MGlobal::displayInfo( pointstr );
+        }
 
-          nodePArray.set( nodePoint, normalIndex );
-
-        } while (count != 0);
+        while ( count > 0 ) {
+          --count;
+          unsigned	vertexIndex = polyIt.vertexIndex( count );
+          MPoint nodePoint = polyIt.point( count );
+          // Moritz: this returns MS::kFailure but seems to work?!
+          nodePArray.set( nodePoint, vertexIndex );
+        }
       }
 
       MFnPointArrayData pArrayData;

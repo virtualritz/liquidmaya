@@ -35,8 +35,26 @@
 ** Liquid Rib Mesh Data Header File
 ** ______________________________________________________________________
 */
-
+#include <vector>
 #include <liqRibData.h>
+
+typedef struct tagPolyEdgeIndx {
+    RtInt	vtx0;
+    RtInt	vtx1;
+} PolyEdgeIndx;
+
+typedef RtInt PolyVertexIndx;
+typedef RtInt PolyFaceIndx;
+
+typedef struct tagSbdExtraTag {
+    RtInt	value;		// hardness for creases and corners
+    RtInt	length;		// number of elements
+    union tagExtraData {
+        PolyEdgeIndx	*edges;
+        PolyVertexIndx	*vertices;
+        PolyFaceIndx	*faces;
+    } ExtraData;
+} SbdExtraTag;
 
 class liqRibSubdivisionData : public liqRibData {
 public: // Methods
@@ -57,7 +75,15 @@ private: // Data
   MString   name;
   RtMatrix  transformationMatrix;
 
-  bool interpBoundary;
+  bool      interpolateBoundary;
+
+  std::vector <RtToken>	v_tags;
+  std::vector <RtInt>  v_nargs;
+  std::vector <RtInt>  v_intargs;
+  std::vector <RtFloat>	v_floatargs;
+
+  void checkExtraTags( MObject &mesh );
+  void addExtraTags( MObject &mesh, float extraTagValue, SBD_EXTRA_TAG extraTag );
 };
 
 #endif

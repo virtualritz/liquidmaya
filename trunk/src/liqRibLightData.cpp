@@ -3,21 +3,21 @@
 ** The contents of this file are subject to the Mozilla Public License Version
 ** 1.1 (the "License"); you may not use this file except in compliance with
 ** the License. You may obtain a copy of the License at
-** http://www.mozilla.org/MPL/ 
-** 
+** http://www.mozilla.org/MPL/
+**
 ** Software distributed under the License is distributed on an "AS IS" basis,
 ** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
 ** for the specific language governing rights and limitations under the
-** License. 
+** License.
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
-** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** 
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -27,8 +27,8 @@
 */
 
 /* ______________________________________________________________________
-** 
-** Liquid Rib Light Data Source 
+**
+** Liquid Rib Light Data Source
 ** ______________________________________________________________________
 */
 
@@ -85,9 +85,9 @@ extern int debugMode;
 
 extern long liqglo_lframe;
 extern MString liqglo_sceneName;
-extern MString liqglo_texDir;
+extern MString liqglo_textureDir;
 extern bool liqglo_isShadowPass;
-extern bool  liqglo_expandShaderArrays;
+extern bool liqglo_expandShaderArrays;
 extern bool liqglo_useBMRT;
 extern bool liqglo_doShadows;
 extern bool liqglo_shortShaderNames;
@@ -102,10 +102,11 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 {
   usingShadow = false;
   deepShadows = false;
-  raytraced = false;
+  rayTraced = false;
+  raySamples = 16;
   excludeFromRib = false;
   MStatus status;
-  if ( debugMode ) { printf("-> creating light\n"); }
+  LIQDEBUGPRINTF( "-> creating light\n" );
   rmanLight = false;
   MFnDependencyNode lightDepNode( light.node() );
   MFnDependencyNode lightMainDepNode( light.node() );
@@ -124,11 +125,17 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
     userShadowNamePlug.getValue( varVal );
     userShadowName = parseString( varVal );
   }
-
-
-
+  
   // check to see if the light is using raytraced shadows
-  lightDepNode.findPlug( MString( "useRayTraceShadows" ) ).getValue( raytraced );
+#ifdef DELIGHT
+  lightDepNode.findPlug( MString( "useRayTraceShadows" ) ).getValue( rayTraced );
+  if( rayTraced ) {
+    usingShadow = true;
+    int raysamples = 1;
+    lightDepNode.findPlug( MString( "shadowRays" ) ).getValue( raysamples );
+    raySamples = raysamples;
+  }
+#endif  
 
   lightName = fnLight.name();
 
@@ -148,7 +155,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       rmanShaderPlug.getValue( rmShaderStr );
       // Hmmmmmmm this length is simply equal to rmShaderStr.length() - 5 + 1, no ?
       assignedRManShader = rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar();
-      if ( debugMode ) { printf("-> Using Renderman Shader %s. \n", assignedRManShader.asChar() ) ;}
+      LIQDEBUGPRINTF( "-> Using Renderman Shader %s. \n", assignedRManShader.asChar() );
 
       MPlug deepShadowsPlug = lightDepNode.findPlug( "deepShadows", &status );
       if ( status == MS::kSuccess ) {
@@ -200,7 +207,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
           SHADER_TYPE currentArgType = shaderInfo.getArgType( i );
           SHADER_DETAIL currentArgDetail = shaderInfo.getArgDetail( i );
           switch (currentArgDetail) {
-          case SHADER_DETAIL_UNIFORM: 
+          case SHADER_DETAIL_UNIFORM:
           {
             tokenPointerPair.setDetailType( rUniform);
             break;
@@ -208,7 +215,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
           case SHADER_DETAIL_VARYING:
           {
             tokenPointerPair.setDetailType( rVarying );
-            break; 
+            break;
           }
           case SHADER_DETAIL_UNKNOWN:
           {
@@ -234,12 +241,11 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                     suffix = stringPlugVal.substring( 10, stringPlugVal.length() - 1 );
                   }
                   if ( liqglo_doShadows ) {
+                    shadowName = liqglo_textureDir;
                     if ( userShadowName == MString( "" ) )
-                    { 
-                      shadowName = liqglo_texDir;
+                    {
                       shadowName += autoShadowName( suffix );
                     } else {
-                      shadowName = liqglo_texDir;
                       shadowName += userShadowName;
                     }
                     usingShadow = true;
@@ -248,7 +254,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                     tokenPointerArray.push_back( tokenPointerPair );
                   }
                 } else {
-                  // Hmmmmmmm looks like a ptential bug here ...
+                  // Hmmmmmmm looks like a potential bug here ...
 #if 0
                   if ( stringPlugVal != MString( "" ) ){
                     tokenPointerPair.tokenString = (char *)lmalloc(stringPlugVal.length() + 10);
@@ -289,14 +295,14 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                   // Hmmmmmm really a uArray here ?
                   tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
                   for( int k = 0; k < arraySize; k++ )
-                    tokenPointerPair.setTokenFloat( k, doubleArrayData[k] ); 
+                    tokenPointerPair.setTokenFloat( k, doubleArrayData[k] );
                   tokenPointerArray.push_back( tokenPointerPair );
                 }
               } else {
                 float floatPlugVal;
                 floatPlug.getValue( floatPlugVal );
                 tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, false, 0 );
-                tokenPointerPair.setTokenFloat( 0, floatPlugVal ); 
+                tokenPointerPair.setTokenFloat( 0, floatPlugVal );
                 tokenPointerArray.push_back( tokenPointerPair );
               }
             }
@@ -309,7 +315,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
               triplePlug.child(1).getValue( y );
               triplePlug.child(2).getValue( z );
               tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rColor, false, false, false, 0 );
-              tokenPointerPair.setTokenFloat( 0, x, y, z ); 
+              tokenPointerPair.setTokenFloat( 0, x, y, z );
               tokenPointerArray.push_back( tokenPointerPair );
             }
             break; }
@@ -321,7 +327,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
               triplePlug.child(1).getValue( y );
               triplePlug.child(2).getValue( z );
               tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rPoint, false, false, false, 0 );
-              tokenPointerPair.setTokenFloat( 0, x, y, z ); 
+              tokenPointerPair.setTokenFloat( 0, x, y, z );
               tokenPointerArray.push_back( tokenPointerPair );
             }
             break; }
@@ -333,7 +339,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
               triplePlug.child(1).getValue( y );
               triplePlug.child(2).getValue( z );
               tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rVector, false, false, false, 0 );
-              tokenPointerPair.setTokenFloat( 0, x, y, z ); 
+              tokenPointerPair.setTokenFloat( 0, x, y, z );
               tokenPointerArray.push_back( tokenPointerPair );
             }
             break; }
@@ -345,22 +351,24 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
               triplePlug.child(1).getValue( y );
               triplePlug.child(2).getValue( z );
               tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rNormal, false, false, false, 0 );
-              tokenPointerPair.setTokenFloat( 0, x, y, z ); 
+              tokenPointerPair.setTokenFloat( 0, x, y, z );
               tokenPointerArray.push_back( tokenPointerPair );
             }
             break; }
           case SHADER_TYPE_MATRIX: {
-            printf( "WHAT IS THE MATRIX!\n" );
+            printf( "WHAT IS THE MATRIX?!\n" );
             break; }
           default:
-            printf("Unknown\n");
+            printf( "Unknown\n" );
             break; }
         }
       }
       shaderInfo.resetIt();
     }
   } else {
-    fnLight.findPlug( "useDepthMapShadows" ).getValue( usingShadow );
+    if( !rayTraced ) {
+      fnLight.findPlug( "useDepthMapShadows" ).getValue( usingShadow );
+    }
   }
 #else
   rmanLight = false;
@@ -368,9 +376,9 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   addAdditionalSurfaceParameters( fnLight.object() );
   
   MColor colorVal = fnLight.color();
-  color[0]  = colorVal.r;
-  color[1]  = colorVal.g;
-  color[2]  = colorVal.b;
+  color[ 0 ]  = colorVal.r;
+  color[ 1 ]  = colorVal.g;
+  color[ 2 ]  = colorVal.b;
 
   intensity = fnLight.intensity();
 
@@ -383,6 +391,13 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 
   MMatrix lightFix( rLightFix );
 
+  nonDiffuse     = fnLight.lightDiffuse() ? 0 : 1;
+  nonSpecular    = fnLight.lightSpecular() ? 0 : 1;
+  colorVal       = fnLight.shadowColor();
+  shadowColor[ 0 ]  = colorVal.r;
+  shadowColor[ 1 ]  = colorVal.g;
+  shadowColor[ 2 ]  = colorVal.b;
+
   MTransformationMatrix worldMatrix = light.inclusiveMatrix();
   //MMatrix worldMatrixM = worldMatrix.asMatrix();
   double scale[] = { 1.0, 1.0, -1.0 };
@@ -390,30 +405,81 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   //MMatrix worldMatrixM = lightFix * worldMatrix.asMatrix();
   MMatrix worldMatrixM = worldMatrix.asMatrix();
   worldMatrixM.get( transformationMatrix );
+
   if ( rmanLight ) {
     lightType  = MRLT_Rman;
-  } else 
-    if ( light.hasFn(MFn::kAmbientLight)) {
-      lightType = MRLT_Ambient;
-    } else if ( light.hasFn(MFn::kDirectionalLight)) {
-      lightType = MRLT_Distant;
-    } else if ( light.hasFn(MFn::kPointLight)) {
-      lightType = MRLT_Point;
-    } else if ( light.hasFn(MFn::kSpotLight)) {
+  } else {
+    if ( light.hasFn( MFn::kAmbientLight ) ) {
+      lightType      = MRLT_Ambient;
+
+    } else if ( light.hasFn( MFn::kDirectionalLight ) ) {
+      MFnNonExtendedLight fnDistantLight( light );
+      lightType      = MRLT_Distant;
+
+      if ( liqglo_doShadows && usingShadow && !rayTraced ) {
+        if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" )) {
+          shadowName       = liqglo_textureDir + autoShadowName();
+        }
+        shadowFilterSize = fnDistantLight.depthMapFilterSize( &status );
+        shadowBias       = fnDistantLight.depthMapBias( &status );
+        shadowSamples    = raySamples;
+      }
+
+    } else if ( light.hasFn( MFn::kPointLight ) ) {
+      MFnNonExtendedLight fnPointLight( light );
+      lightType      = MRLT_Point;
+      decay          = fnPointLight.decayRate();
+
+
+      if ( liqglo_doShadows && usingShadow ) {
+        shadowFilterSize = fnPointLight.depthMapFilterSize( &status );
+        shadowBias       = fnPointLight.depthMapBias( &status );
+        shadowSamples    = raySamples;
+      }
+
+    } else if ( light.hasFn( MFn::kSpotLight ) ) {
       MFnSpotLight fnSpotLight( light );
-      lightType     = MRLT_Spot;
-      coneAngle     = fnSpotLight.coneAngle() / 2.0;
-      penumbraAngle = fnSpotLight.penumbraAngle() / 2.0;
-      dropOff       = fnSpotLight.dropOff();
-    } 
+      lightType      = MRLT_Spot;
+      decay          = fnSpotLight.decayRate();
+      coneAngle      = fnSpotLight.coneAngle() / 2.0;
+      penumbraAngle  = fnSpotLight.penumbraAngle() / 2.0;
+      dropOff        = fnSpotLight.dropOff();
+      barnDoors      = fnSpotLight.barnDoors();
+      leftBarnDoor   = fnSpotLight.barnDoorAngle( MFnSpotLight::kLeft );
+      rightBarnDoor  = fnSpotLight.barnDoorAngle( MFnSpotLight::kRight );
+      topBarnDoor    = fnSpotLight.barnDoorAngle( MFnSpotLight::kTop );
+      bottomBarnDoor = fnSpotLight.barnDoorAngle( MFnSpotLight::kBottom );
+
+      if ( liqglo_doShadows && usingShadow && !rayTraced ) {
+        if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" ) ) {
+          shadowName       = liqglo_textureDir + autoShadowName();
+
+        }
+        shadowFilterSize = fnSpotLight.depthMapFilterSize( &status );
+        shadowBias       = fnSpotLight.depthMapBias( &status );
+        shadowSamples    = raySamples;
+      }
+    }
+  }
 }
 
-liqRibLightData::~liqRibLightData() 
+liqRibLightData::~liqRibLightData()
 {
-  if ( debugMode ) { printf("-> killing light data.\n" ); }
-  shadowName.clear();
+  LIQDEBUGPRINTF( "-> killing light data.\n" );
+
   assignedRManShader.clear();
-  if ( debugMode ) { printf("-> finished killing light data.\n" ); }
+  userShadowName.clear();
+  lightName.clear();
+
+  shadowName.clear();
+  shadowNamePx.clear();
+  shadowNameNx.clear();
+  shadowNamePy.clear();
+  shadowNameNy.clear();
+  shadowNamePz.clear();
+  shadowNameNz.clear();
+
+  LIQDEBUGPRINTF( "-> finished killing light data.\n" );
 }
 
 void liqRibLightData::write()
@@ -423,85 +489,128 @@ void liqRibLightData::write()
 //
 {
   if ( !excludeFromRib ) {
-    if ( debugMode ) { printf("-> writing light\n"); }
-    const char * namePtr = lightName.asChar();
-    RiAttribute( "identifier", "name", &namePtr, RI_NULL );
-    RiTransformBegin();
+    LIQDEBUGPRINTF( "-> writing light\n" );
+
     RiConcatTransform( transformationMatrix );
     if ( liqglo_isShadowPass ) {
       if ( usingShadow ) {
-        char *sName = ( char * )alloca( sizeof( char ) * shadowName.length() + 1);
-        strcpy( sName, shadowName.asChar() );
-        RiDeclare( "shadowname", "uniform string" );
+        RtString sName = const_cast< char* >( shadowName.asChar() );
         // Hmmmmm got to set a LIQUIDHOME env var and use it ...
-        // May be set relative name shadowPassLight and resolve path with Rib searchpath
-        handle = RiLightSource( "shadowPassLight", "shadowname", &sName, RI_NULL );
+        // May be set relative name shadowPassLight and resolve path with RIB searchpath
+        // Moritz: solved through default shader searchpath in liqRibTranslator
+        handle = RiLightSource( "liquidshadowpasslight", "string shadowname", &sName, RI_NULL );
       }
     } else {
 
-      // If we are using BMRT and the light is casting raytraced shadows then set the attribute
-      if ( liqglo_useBMRT && raytraced ) {
-        RtString param = "on"; 
-        RiAttribute( "light", "string shadows", &param, RI_NULL );
-      }  else if ( liqglo_useBMRT && !raytraced ) {
-        RtString param = "off"; 
-        RiAttribute( "light", "string shadows", &param, RI_NULL );
+#ifdef DELIGHT
+      // If the light is casting raytraced shadows then set the attribute
+      // and the samples for shadow oversampling
+      if ( rayTraced ) {
+        RtString param = "on";
+        RiAttribute( ( RtToken ) "light", ( RtToken ) "shadows", &param, "samples", &raySamples, RI_NULL );
       }
+#endif
 
       switch ( lightType ) {
       case MRLT_Ambient:
-        handle = RiLightSource( "ambientlight", 
+        handle = RiLightSource( "ambientlight",
                                 "intensity",  &intensity,
                                 "lightcolor", color,
                                 RI_NULL );
         break;
       case MRLT_Distant:
-        if (liqglo_doShadows && usingShadow) {
-          if (( shadowName == "" ) || ( shadowName.substring(0, 9) == "autoshadow" )) {
+        if ( liqglo_doShadows && usingShadow ) {
+          /*if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" )) {
             shadowName = liqglo_texDir + autoShadowName();
-          }
-          RtString shadowname = const_cast<char*>(shadowName.asChar());
-          RiDeclare( "shadowname", "uniform string" );
-          handle = RiLightSource( "shadowdistant", 
-                                  "intensity",  &intensity,
-                                  "lightcolor", color,
-                                  "shadowname", &shadowname,
+          }*/
+          RtString shadowname = const_cast< char* >( shadowName.asChar() );
+          handle = RiLightSource( "liquiddistant",
+                                  "intensity",            &intensity,
+                                  "lightcolor",           color,
+                                  "string shadowname",    &shadowname,
+                                  "float shadowfiltersize", &shadowFilterSize,
+                                  "float shadowbias",     &shadowBias,
+                                  "float shadowsamples",  &shadowSamples,
+                                  "color shadowcolor",    &shadowColor,
+                                  "float __nondiffuse",   &nonDiffuse,
+                                  "float __nonspecular",  &nonSpecular,
                                   RI_NULL );
         } else {
-          handle = RiLightSource( "distantlight", 
-                                  "intensity",  &intensity,
-                                  "lightcolor", color,
+          handle = RiLightSource( "liquiddistant",
+                                  "intensity",            &intensity,
+                                  "lightcolor",           color,
+                                  "float __nondiffuse",   &nonDiffuse,
+                                  "float __nonspecular",  &nonSpecular,
                                   RI_NULL );
         }
         break;
       case MRLT_Point:
-        handle = RiLightSource( "pointlight", 
-                                "intensity",  &intensity,
-                                "lightcolor", color,
-                                RI_NULL );
+        if ( liqglo_doShadows && usingShadow ) {
+          /*if (( shadowName == "" ) || ( shadowName.substring(0, 9) == "autoshadow" )) {
+            shadowName = liqglo_texDir + autoShadowName();
+          }*/
+          handle = RiLightSource( "liquidpoint",
+                                  "intensity",            &intensity,
+                                  "lightcolor",           color,
+                                  "float decay",          &decay,
+                                  "float shadowfiltersize", &shadowFilterSize,
+                                  "float shadowbias",     &shadowBias,
+                                  "float shadowsamples",  &shadowSamples,
+                                  "color shadowcolor",    &shadowColor,
+                                  "float __nondiffuse",   &nonDiffuse,
+                                  "float __nonspecular",  &nonSpecular,
+                                  RI_NULL );
+        } else {
+          handle = RiLightSource( "liquidpoint",
+                                  "intensity",            &intensity,
+                                  "lightcolor",           color,
+                                  "float decay",          &decay,
+                                  "float __nondiffuse",   &nonDiffuse,
+                                  "float __nonspecular",  &nonSpecular,
+                                  RI_NULL );
+        }
         break;
       case MRLT_Spot:
         if (liqglo_doShadows && usingShadow) {
-          if (( shadowName == "" ) || ( shadowName.substring(0, 9) == "autoshadow" )) {
+          /* if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" ) ) {
             shadowName = liqglo_texDir + autoShadowName();
-          }
-          RtString shadowname = const_cast<char*>(shadowName.asChar());
-          RiDeclare( "shadowname", "uniform string" );
-          handle = RiLightSource( "shadowspot", 
-                                  "intensity",        &intensity,
-                                  "lightcolor",       color,
-                                  "coneangle",        &coneAngle,
-                                  "conedeltaangle",   &penumbraAngle,
-                                  "beamdistribution", &dropOff,
-                                  "shadowname",       &shadowname,
+          } */
+          RtString shadowname = const_cast< char* >( shadowName.asChar() );
+          handle = RiLightSource( "liquidspot",
+                                  "intensity",            &intensity,
+                                  "lightcolor",           color,
+                                  "float coneangle",      &coneAngle,
+                                  "float penumbraangle",  &penumbraAngle,
+                                  "float dropoff",        &dropOff,
+                                  "float decay",          &decay,
+                                  "float barndoors",      &barnDoors,
+                                  "float leftbarndoor",   &leftBarnDoor,
+                                  "float rightbarndoor",  &rightBarnDoor,
+                                  "float topbarndoor",    &topBarnDoor,
+                                  "float bottombarndoor", &bottomBarnDoor,
+                                  "string shadowname",    &shadowname,
+                                  "float shadowfiltersize", &shadowFilterSize,
+                                  "float shadowbias",     &shadowBias,
+                                  "float shadowsamples",  &shadowSamples,
+                                  "color shadowcolor",    &shadowColor,
+                                  "float __nondiffuse",   &nonDiffuse,
+                                  "float __nonspecular",  &nonSpecular,
                                   RI_NULL );
-        } else {
-          handle = RiLightSource( "spotlight", 
-                                  "intensity",        &intensity,
-                                  "lightcolor",       color,
-                                  "coneangle",        &coneAngle,
-                                  "conedeltaangle",   &penumbraAngle,
-                                  "beamdistribution", &dropOff,
+          } else {
+          handle = RiLightSource( "liquidspot",
+                                  "intensity",            &intensity,
+                                  "lightcolor",           color,
+                                  "float coneangle",      &coneAngle,
+                                  "float penumbraangle",  &penumbraAngle,
+                                  "float dropoff",        &dropOff,
+                                  "float decay",          &decay,
+                                  "float barndoors",      &barnDoors,
+                                  "float leftbarndoor",   &leftBarnDoor,
+                                  "float rightbarndoor",  &rightBarnDoor,
+                                  "float topbarndoor",    &topBarnDoor,
+                                  "float bottombarndoor", &bottomBarnDoor,
+                                  "float __nondiffuse",   &nonDiffuse,
+                                  "float __nonspecular",  &nonSpecular,
                                   RI_NULL );
         }
         break;
@@ -510,11 +619,10 @@ void liqRibLightData::write()
         RtPointer *pointerArray = (RtPointer *) alloca( sizeof(RtPointer) * tokenPointerArray.size() );
         assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
 
-#ifndef _WIN32
         if ( liqglo_shortShaderNames ) {
           assignedRManShader = basename( const_cast<char*>(assignedRManShader.asChar()) );
         }
-#endif
+
         RtString shaderName = const_cast<char*>(assignedRManShader.asChar());
 
         handle = RiLightSourceV( shaderName, tokenPointerArray.size(), tokenArray, pointerArray );
@@ -530,7 +638,6 @@ void liqRibLightData::write()
       }
       }
     }
-    RiTransformEnd();
   }
 }
 
@@ -541,8 +648,8 @@ bool liqRibLightData::compare( const liqRibData & otherObj ) const
 //
 {
   otherObj.type(); // reference it to avoid unused param compiler warning
-  if ( debugMode ) { printf("-> comparing light\n"); }
-  return true;  
+  LIQDEBUGPRINTF( "-> comparing light\n" );
+  return true;
 }
 ObjectType liqRibLightData::type() const
 //
@@ -550,23 +657,24 @@ ObjectType liqRibLightData::type() const
 //      return the object type
 //
 {
-  if ( debugMode ) { printf("-> returning light type\n"); }
+  LIQDEBUGPRINTF( "-> returning light type\n" );
   return MRT_Light;
 }
 RtLightHandle liqRibLightData::lightHandle() const
 {
-  return handle;   
+  return handle;
 }
 
 MString liqRibLightData::autoShadowName( MString suffix ) const
 {
   MString shadowName;
-  if ( ( liqglo_DDimageName[0] == "" ) ) {
-    shadowName += liqglo_sceneName; 
+  /* if ( ( liqglo_DDimageName[ 0 ] == "" ) ) {
+    shadowName += liqglo_sceneName;
   } else {
-    int pointIndex = liqglo_DDimageName[0].index( '.' );
-    shadowName += liqglo_DDimageName[0].substring(0, pointIndex-1).asChar();
-  }
+    int pointIndex = liqglo_DDimageName[ 0 ].index( '.' );
+    shadowName += liqglo_DDimageName[ 0 ].substring( 0, pointIndex - 1 ).asChar();
+  } */
+  shadowName += liqglo_sceneName;
   shadowName += "_";
   shadowName += lightName;
   shadowName += "SHD";
@@ -575,7 +683,7 @@ MString liqRibLightData::autoShadowName( MString suffix ) const
     shadowName += ( "_" + suffix );
   }
   shadowName += ".";
-  shadowName += (int)liqglo_lframe;
+  shadowName += ( int )liqglo_lframe;
 
   // Deepshadows need ".shd", and regular need ".tex"
   //

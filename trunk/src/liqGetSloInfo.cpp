@@ -38,10 +38,10 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-// Renderman Headers
+// PRMan/3Delight Headers
 extern "C" {
 #include <ri.h>
-#ifdef PRMAN
+#if defined( PRMAN ) || defined( DELIGHT )
 #include <slo.h>
 #endif
 }
@@ -49,6 +49,7 @@ extern "C" {
 #ifdef ENTROPY
 #include <sleargs.h>
 #endif
+// Aqsis Headers
 #ifdef AQSIS
 #include <slx.h>
 #endif
@@ -56,7 +57,6 @@ extern "C" {
 #ifdef PIXIE
 #include <sdr.h>
 #endif
-
 #ifdef _WIN32
 #include <process.h>
 #include <malloc.h>
@@ -74,6 +74,7 @@ extern "C" {
 #include <maya/MArgList.h>
 #include <maya/MGlobal.h>
 
+#include <liquid.h>
 #include <liqGetSloInfo.h>
 #include <liqMemory.h>
 #include <liqIOStream.h>
@@ -88,24 +89,24 @@ int SLXtoSLOMAP[14] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
 int SDRtoSLOMAP[7] = { 3, 11, 12, 1, 2, 13, 4 };
 int SDRTypetoSLOTypeMAP[5] = { 5, 7, 8, 6, 10 };
 
-const char* shaderTypeStr[14] = { 	"unknown", 	//0
-				    "point",					//1
-				    "color",					//2
-				    "float",					//3
-				    "string",					//4
-				    "surface",					//5
-				    "light",					//6
-				    "displacement",				//7
-				    "volume",					//8
-				    "transformation",			//9
-				    "imager",					//10
-				    "vector",					//11
-				    "normal",					//12
-				    "matrix" };					//13
+const char* shaderTypeStr[14] = { "unknown",        //0
+                                  "point",          //1
+                                  "color",          //2
+                                  "float",          //3
+                                  "string",         //4
+                                  "surface",        //5
+                                  "light",          //6
+                                  "displacement",   //7
+                                  "volume",         //8
+                                  "transformation", //9
+                                  "imager",         //10
+                                  "vector",         //11
+                                  "normal",         //12
+                                  "matrix" };       //13
 
-const char* shaderDetailStr[3] = {  	"unknown",
-    	    	    	    	    	    "varying",
-    	    	    	    	    	    "uniform" };
+const char* shaderDetailStr[3] = {   "unknown",
+                                     "varying",
+                                     "uniform" };
 
 void* liqGetSloInfo::creator()
 //
@@ -158,7 +159,119 @@ int liqGetSloInfo::setShader( MString shaderName )
     MString shaderFileName = shaderName.substring( 0, shaderName.length() - 5 );
 #ifdef PRMAN
     if ( shaderExtension == MString( "slo" ) ) {
-        /* Pixar's Photorealistic Renderman Shader */
+      /* Pixar's Photorealistic Renderman Shader */
+      char *sloFileName = (char *)alloca(shaderFileName.length() + 1 );
+      strcpy(sloFileName, shaderFileName.asChar());
+      int err = Slo_SetShader( sloFileName );
+      if (err != 0) {
+        printf( "Error finding shader %s \n",shaderFileName.asChar() ); 
+        resetIt();
+        return 0;
+      } else {
+        shaderName = Slo_GetName();
+        shaderType = ( SHADER_TYPE )Slo_GetType();
+        numParam = Slo_GetNArgs();
+        int invalidVals = 0;
+        for ( unsigned k = 1; k <= numParam; k++ ) {
+          SLO_VISSYMDEF *arg;
+          arg = Slo_GetArgById( k );
+          if ( arg->svd_valisvalid ) { 
+            argName.push_back( arg->svd_name );
+            argType.push_back( ( SHADER_TYPE )arg->svd_type );
+            argArraySize.push_back( arg->svd_arraylen );
+            argDetail.push_back( ( SHADER_DETAIL )arg->svd_detail );
+            switch ( arg->svd_type ) {
+              case SLO_TYPE_STRING: {
+                char *strings = ( char * )lmalloc( sizeof( char ) * strlen( arg->svd_default.stringval ) + 1 );
+                strcpy( strings, arg->svd_default.stringval );
+                argDefault.push_back( ( void * )strings );
+                break;
+              }
+              case SLO_TYPE_SCALAR: {
+                if ( arg->svd_arraylen > 0 ) {
+                    SLO_VISSYMDEF *subarg;
+                    float *floats = ( float *)lmalloc( sizeof( float ) * arg->svd_arraylen );
+                    for (int kk = 0; kk < arg->svd_arraylen; kk ++ ) {
+                        subarg = Slo_GetArrayArgElement(arg, kk);
+                        floats[kk] = *subarg->svd_default.scalarval;
+                    }
+                    argDefault.push_back( ( void * )floats );
+                } else {
+                  float *floats = ( float *)lmalloc( sizeof( float ) * 1 );
+                  floats[0] = *arg->svd_default.scalarval;
+                  argDefault.push_back( ( void * )floats );
+                }
+                break;
+              }
+              case SLO_TYPE_COLOR:
+              case SLO_TYPE_POINT:
+              case SLO_TYPE_VECTOR:
+              case SLO_TYPE_NORMAL: {
+                float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
+                floats[0] = arg->svd_default.pointval->xval;
+                floats[1] = arg->svd_default.pointval->yval;
+                floats[2] = arg->svd_default.pointval->zval;
+                argDefault.push_back( ( void * )floats );
+                break;
+              }
+              case SLO_TYPE_MATRIX: {
+                printf("\"%s\" [%f %f %f %f\n",
+                        arg->svd_spacename,
+                        (double) (arg->svd_default.matrixval[0]),
+                        (double) (arg->svd_default.matrixval[1]),
+                        (double) (arg->svd_default.matrixval[2]),
+                        (double) (arg->svd_default.matrixval[3]));
+                printf("\t\t\t%f %f %f %f\n",
+                        (double) (arg->svd_default.matrixval[4]),
+                        (double) (arg->svd_default.matrixval[5]),
+                        (double) (arg->svd_default.matrixval[6]),
+                        (double) (arg->svd_default.matrixval[7]));
+                printf("\t\t\t%f %f %f %f\n",
+                        (double) (arg->svd_default.matrixval[8]),
+                        (double) (arg->svd_default.matrixval[9]),
+                        (double) (arg->svd_default.matrixval[10]),
+                        (double) (arg->svd_default.matrixval[11]));
+                printf("\t\t\t%f %f %f %f]\n",
+                        (double) (arg->svd_default.matrixval[12]),
+                        (double) (arg->svd_default.matrixval[13]),
+                        (double) (arg->svd_default.matrixval[14]),
+                        (double) (arg->svd_default.matrixval[15]));
+                break;
+              }
+              default: {
+                argDefault.push_back( NULL );
+                break;
+              }
+            }
+          }
+          else
+          {
+            // If we're here, it's because we couldn't get a default
+            // value for one of the SLO arguments.
+            //
+            // This can be due to things like:
+            //  surface mySurface (
+            //   color c1 = color ( 1, 0, 0 );
+            //   color c2 = c1 / 2;
+            //  )
+            //
+            invalidVals ++;
+          }
+        }
+      // Ignore arguments that we couldn't get default values for.
+      //
+      numParam -= invalidVals;
+    }
+    Slo_EndShader();
+    rstatus = 1;
+  }
+#if defined( ENTROPY ) || defined( AQSIS) // PRMAN + ENTROPY || AQSIS
+    else 
+#endif
+#endif // PRMAN
+#ifdef DELIGHT
+    if ( shaderExtension == MString( "sdl" ) ) {
+        /* 3Delight Shader */
         char *sloFileName = (char *)alloca(shaderFileName.length() + 1 );
         strcpy(sloFileName, shaderFileName.asChar());
         int err = Slo_SetShader( sloFileName );
@@ -167,107 +280,109 @@ int liqGetSloInfo::setShader( MString shaderName )
             resetIt();
             return 0;
         } else {
-            shaderName = Slo_GetName();
-            shaderType = ( SHADER_TYPE )Slo_GetType();
-            numParam = Slo_GetNArgs();
-            int invalidVals = 0;
-            for ( unsigned k = 1; k <= numParam; k++ ) {
-                SLO_VISSYMDEF *arg;
-                arg = Slo_GetArgById( k );
-                if ( arg->svd_valisvalid ) { 
-                    argName.push_back( arg->svd_name );
-                    argType.push_back( ( SHADER_TYPE )arg->svd_type );
-                    argArraySize.push_back( arg->svd_arraylen );
-                    argDetail.push_back( ( SHADER_DETAIL )arg->svd_detail );
-                    switch ( arg->svd_type ) {
-                    case SLO_TYPE_STRING: {
-                        char *strings = ( char * )lmalloc( sizeof( char ) * strlen( arg->svd_default.stringval ) + 1 );
-                        strcpy( strings, arg->svd_default.stringval );
-                        argDefault.push_back( ( void * )strings );
-                        break;
-                    }
-                    case SLO_TYPE_SCALAR: {
-                        if ( arg->svd_arraylen > 0 ) {
-                            SLO_VISSYMDEF *subarg;
-                            float *floats = ( float *)lmalloc( sizeof( float ) * arg->svd_arraylen );
-                            for (int kk = 0; kk < arg->svd_arraylen; kk ++ ) {
-                                subarg = Slo_GetArrayArgElement(arg, kk);
-                                floats[kk] = *subarg->svd_default.scalarval;
-                            }
-                            argDefault.push_back( ( void * )floats );
-                        } else {
-                            float *floats = ( float *)lmalloc( sizeof( float ) * 1 );
-                            floats[0] = *arg->svd_default.scalarval;
-                            argDefault.push_back( ( void * )floats );
-                        }
-                        break;
-                    }
-                    case SLO_TYPE_COLOR:
-                    case SLO_TYPE_POINT:
-                    case SLO_TYPE_VECTOR:
-                    case SLO_TYPE_NORMAL: {
-                        float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
-                        floats[0] = arg->svd_default.pointval->xval;
-                        floats[1] = arg->svd_default.pointval->yval;
-                        floats[2] = arg->svd_default.pointval->zval;
-                        argDefault.push_back( ( void * )floats );
-                        break;
-                    }
-                    case SLO_TYPE_MATRIX: {
-                        printf("\"%s\" [%f %f %f %f\n",
-                               arg->svd_spacename,
-                               (double) (arg->svd_default.matrixval[0]),
-                               (double) (arg->svd_default.matrixval[1]),
-                               (double) (arg->svd_default.matrixval[2]),
-                               (double) (arg->svd_default.matrixval[3]));
-                        printf("\t\t\t%f %f %f %f\n",
-                               (double) (arg->svd_default.matrixval[4]),
-                               (double) (arg->svd_default.matrixval[5]),
-                               (double) (arg->svd_default.matrixval[6]),
-                               (double) (arg->svd_default.matrixval[7]));
-                        printf("\t\t\t%f %f %f %f\n",
-                               (double) (arg->svd_default.matrixval[8]),
-                               (double) (arg->svd_default.matrixval[9]),
-                               (double) (arg->svd_default.matrixval[10]),
-                               (double) (arg->svd_default.matrixval[11]));
-                        printf("\t\t\t%f %f %f %f]\n",
-                               (double) (arg->svd_default.matrixval[12]),
-                               (double) (arg->svd_default.matrixval[13]),
-                               (double) (arg->svd_default.matrixval[14]),
-                               (double) (arg->svd_default.matrixval[15]));
-                        break;
-                    }
-                    default: {
-                        argDefault.push_back( NULL );
-                        break;
-                    }
-                    }
+          LIQDEBUGPRINTF( "-> Fluid: starting Delight shader parse\n" );
+
+          shaderName = Slo_GetName();
+          shaderType = ( SHADER_TYPE )Slo_GetType();
+
+          LIQDEBUGPRINTF( "-> Fluid: found shader of type \"%s\"\n", shaderTypeStr[ shaderType ] );
+
+          numParam = Slo_GetNArgs();
+          int invalidVals = 0;
+          for ( unsigned k = 1; k <= numParam; k++ ) {
+            SLO_VISSYMDEF *arg;
+            arg = Slo_GetArgById( k );
+            if ( arg->svd_valisvalid ) { 
+              argName.push_back( arg->svd_name );
+              argType.push_back( ( SHADER_TYPE )arg->svd_type );
+              argArraySize.push_back( arg->svd_arraylen );
+              argDetail.push_back( ( SHADER_DETAIL )arg->svd_detail );
+              switch ( arg->svd_type ) {
+                case SLO_TYPE_STRING: {
+                    char *strings = ( char * )lmalloc( sizeof( char ) * strlen( arg->svd_default.stringval ) + 1 );
+                    strcpy( strings, arg->svd_default.stringval );
+                    argDefault.push_back( ( void * )strings );
+                    break;
                 }
-                else
-                {
-                    // If we're here, it's because we couldn't get a default
-                    // value for one of the SLO arguments.
-                    //
-                    // This can be due to things like:
-                    //  surface mySurface (
-                    //   color c1 = color ( 1, 0, 0 );
-                    //   color c2 = c1 / 2;
-                    //  )
-                    //
-                    invalidVals ++;
+                case SLO_TYPE_SCALAR: {
+                  if ( arg->svd_arraylen > 0 ) {
+                    SLO_VISSYMDEF *subarg;
+                    float *floats = ( float *)lmalloc( sizeof( float ) * arg->svd_arraylen );
+                    for (int kk = 0; kk < arg->svd_arraylen; kk ++ ) {
+                      subarg = Slo_GetArrayArgElement(arg, kk);
+                      floats[kk] = *subarg->svd_default.scalarval;
+                    }
+                    argDefault.push_back( ( void * )floats );
+                  } else {
+                    float *floats = ( float *)lmalloc( sizeof( float ) * 1 );
+                    floats[0] = *arg->svd_default.scalarval;
+                    argDefault.push_back( ( void * )floats );
+                  }
+                  break;
                 }
+                case SLO_TYPE_COLOR:
+                case SLO_TYPE_POINT:
+                case SLO_TYPE_VECTOR:
+                case SLO_TYPE_NORMAL: {
+                  float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
+                  floats[0] = arg->svd_default.pointval->xval;
+                  floats[1] = arg->svd_default.pointval->yval;
+                  floats[2] = arg->svd_default.pointval->zval;
+                  argDefault.push_back( ( void * )floats );
+                  break;
+                }
+                case SLO_TYPE_MATRIX: {
+                  printf("\"%s\" [%f %f %f %f\n",
+                          arg->svd_spacename,
+                          (double) (arg->svd_default.matrixval[0]),
+                          (double) (arg->svd_default.matrixval[1]),
+                          (double) (arg->svd_default.matrixval[2]),
+                          (double) (arg->svd_default.matrixval[3]));
+                  printf("\t\t\t%f %f %f %f\n",
+                          (double) (arg->svd_default.matrixval[4]),
+                          (double) (arg->svd_default.matrixval[5]),
+                          (double) (arg->svd_default.matrixval[6]),
+                          (double) (arg->svd_default.matrixval[7]));
+                  printf("\t\t\t%f %f %f %f\n",
+                          (double) (arg->svd_default.matrixval[8]),
+                          (double) (arg->svd_default.matrixval[9]),
+                          (double) (arg->svd_default.matrixval[10]),
+                          (double) (arg->svd_default.matrixval[11]));
+                  printf("\t\t\t%f %f %f %f]\n",
+                          (double) (arg->svd_default.matrixval[12]),
+                          (double) (arg->svd_default.matrixval[13]),
+                          (double) (arg->svd_default.matrixval[14]),
+                          (double) (arg->svd_default.matrixval[15]));
+                  break;
+                }
+                default: {
+                  argDefault.push_back( NULL );
+                  break;
+                }
+              }
             }
-            // Ignore arguments that we couldn't get default values for.
-            //
-            numParam -= invalidVals;
+            else
+            {
+              // If we're here, it's because we couldn't get a default
+              // value for one of the SLO arguments.
+              //
+              // This can be due to things like:
+              //  surface mySurface (
+              //   color c1 = color ( 1, 0, 0 );
+              //   color c2 = c1 / 2;
+              //  )
+              //
+              invalidVals ++;
+            }
+          }
+          // Ignore arguments that we couldn't get default values for.
+          //
+          numParam -= invalidVals;
         }
-        Slo_EndShader();
-        rstatus = 1;
+      Slo_EndShader();
+      rstatus = 1;
     } 
-#if defined( ENTROPY ) || defined( AQSIS) // PRMAN + ENTROPY || AQSIS
-    else 
-#endif
-#endif // PRMAN
+#endif // DELIGHT
 #ifdef ENTROPY 
         if ( shaderExtension == MString( "sle" ) ) {
             /* Exluna's Entropy Shader */
@@ -442,26 +557,26 @@ int liqGetSloInfo::setShader( MString shaderName )
                         }
                         case SLX_TYPE_MATRIX: {
                             printf("\"%s\" [%f %f %f %f\n",   
-                                   arg->svd_spacename,   
-                                   (double) (arg->svd_default.matrixval->val[0][0]),   
-                                   (double) (arg->svd_default.matrixval->val[0][1]),   
-                                   (double) (arg->svd_default.matrixval->val[0][2]),   
-                                   (double) (arg->svd_default.matrixval->val[0][3]));   
-                            printf("\t\t\t%f %f %f %f\n",   
-                                   (double) (arg->svd_default.matrixval->val[1][0]),   
-                                   (double) (arg->svd_default.matrixval->val[1][1]),   
-                                   (double) (arg->svd_default.matrixval->val[1][2]),   
-                                   (double) (arg->svd_default.matrixval->val[1][3]));   
-                            printf("\t\t\t%f %f %f %f\n",   
-                                   (double) (arg->svd_default.matrixval->val[2][0]),   
-                                   (double) (arg->svd_default.matrixval->val[2][1]),   
-                                   (double) (arg->svd_default.matrixval->val[2][2]),   
-                                   (double) (arg->svd_default.matrixval->val[2][3]));   
-                            printf("\t\t\t%f %f %f %f]\n",   
-                                   (double) (arg->svd_default.matrixval->val[3][0]),   
-                                   (double) (arg->svd_default.matrixval->val[3][1]),   
-                                   (double) (arg->svd_default.matrixval->val[3][2]),   
-                                   (double) (arg->svd_default.matrixval->val[3][3]));   
+                                   arg->svd_spacename,
+                                   (double) (arg->svd_default.matrixval->val[0][0]),
+                                   (double) (arg->svd_default.matrixval->val[0][1]),
+                                   (double) (arg->svd_default.matrixval->val[0][2]),
+                                   (double) (arg->svd_default.matrixval->val[0][3]));
+                            printf("\t\t\t%f %f %f %f\n",
+                                   (double) (arg->svd_default.matrixval->val[1][0]),
+                                   (double) (arg->svd_default.matrixval->val[1][1]),
+                                   (double) (arg->svd_default.matrixval->val[1][2]),
+                                   (double) (arg->svd_default.matrixval->val[1][3]));
+                            printf("\t\t\t%f %f %f %f\n",
+                                   (double) (arg->svd_default.matrixval->val[2][0]),
+                                   (double) (arg->svd_default.matrixval->val[2][1]),
+                                   (double) (arg->svd_default.matrixval->val[2][2]),
+                                   (double) (arg->svd_default.matrixval->val[2][3]));
+                            printf("\t\t\t%f %f %f %f]\n",
+                                   (double) (arg->svd_default.matrixval->val[3][0]),
+                                   (double) (arg->svd_default.matrixval->val[3][1]),
+                                   (double) (arg->svd_default.matrixval->val[3][2]),
+                                   (double) (arg->svd_default.matrixval->val[3][3]));
                             break;   
                         }
                         default: {
@@ -474,7 +589,7 @@ int liqGetSloInfo::setShader( MString shaderName )
                 }
                 SLX_EndShader();
                 rstatus = 1;
-            }
+            } // AQSIS
 #elif defined(PIXIE)
             if( shaderExtension == MString( "sdr" ) )
             {
@@ -572,7 +687,7 @@ int liqGetSloInfo::setShader( MString shaderName )
               }
           }
 #endif  // PIXIE
-      return rstatus;
+    return rstatus;
 }
 
 void liqGetSloInfo::resetIt()

@@ -3,21 +3,21 @@
 ** The contents of this file are subject to the Mozilla Public License Version
 ** 1.1 (the "License"); you may not use this file except in compliance with
 ** the License. You may obtain a copy of the License at
-** http://www.mozilla.org/MPL/ 
-** 
+** http://www.mozilla.org/MPL/
+**
 ** Software distributed under the License is distributed on an "AS IS" basis,
 ** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
 ** for the specific language governing rights and limitations under the
-** License. 
+** License.
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
-** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** 
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are: Copyright 1988,
 ** 1989, Pixar All Rights Reserved
 **
@@ -27,8 +27,8 @@
 */
 
 /* ______________________________________________________________________
-** 
-** Liquid Rib Surface Data Source 
+**
+** Liquid Rib Surface Data Source
 ** ______________________________________________________________________
 */
 
@@ -97,11 +97,13 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
     w( NULL )
 
 {
-  if ( debugMode ) { 
-    printf("-> creating nurbs surface\n"); 
+  LIQDEBUGPRINTF( "-> creating nurbs surface\n" );
+  if ( debugMode ) {
     MFnDependencyNode myDep( surface );
     MString name = myDep.name();
-    printf("-> surface path %s \n", name.asChar() );
+    LIQDEBUGPRINTF( "-> surface path " );
+    LIQDEBUGPRINTF( name.asChar() );
+    LIQDEBUGPRINTF( "\n" );
   }
 
   // Hmmmmm Was global but never changed ...
@@ -115,47 +117,47 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
 
   MDoubleArray uKnots, vKnots;
 
-  if (liquidRenderer().requires(liqRenderer::SWAPPED_UVS))
+  if ( liquidRenderer.requires_SWAPPED_UVS )
   {
-      if ( debugMode ) { printf("-> swapping uvs\n"); }
+    LIQDEBUGPRINTF( "-> swapping uvs\n" );
 
-      uorder = nurbs.degreeV() + 1; // uv order is switched
-      vorder = nurbs.degreeU() + 1; // uv order is switched
-      nv = nurbs.numCVsInU();       // uv order is switched
-      nu = nurbs.numCVsInV();       // uv order is switched
+    uorder = nurbs.degreeV() + 1; // uv order is switched
+    vorder = nurbs.degreeU() + 1; // uv order is switched
+    nu = nurbs.numCVsInV();       // uv order is switched
+    nv = nurbs.numCVsInU();       // uv order is switched
 
-      // Read the knot information
+    // Read the knot information
 
-      nurbs.getKnotsInU(vKnots); // uv order is switched
-      nurbs.getKnotsInV(uKnots); // uv order is switched
+    nurbs.getKnotsInU( vKnots ); // uv order is switched
+    nurbs.getKnotsInV( uKnots ); // uv order is switched
 
-      double uMin_d, uMax_d, vMin_d, vMax_d;
-      nurbs.getKnotDomain(uMin_d, uMax_d, vMin_d, vMax_d);
-      umin = (RtFloat)vMin_d; // uv order is switched
-      umax = (RtFloat)vMax_d; // uv order is switched
-      vmin = (RtFloat)uMin_d; // uv order is switched
-      vmax = (RtFloat)uMax_d; // uv order is switched
+    double uMin_d, uMax_d, vMin_d, vMax_d;
+    nurbs.getKnotDomain(uMin_d, uMax_d, vMin_d, vMax_d);
+    umin = ( RtFloat )vMin_d; // uv order is switched
+    umax = ( RtFloat )vMax_d; // uv order is switched
+    vmin = ( RtFloat )uMin_d; // uv order is switched
+    vmax = ( RtFloat )uMax_d; // uv order is switched
   }
   else
   {
-      if ( debugMode ) { printf("-> not swapping uvs\n"); }
+    LIQDEBUGPRINTF( "-> not swapping uvs\n" );
 
-      uorder = nurbs.degreeU() + 1;
-      vorder = nurbs.degreeV() + 1;
-      nu = nurbs.numCVsInU();
-      nv = nurbs.numCVsInV();
+    uorder = nurbs.degreeU() + 1;
+    vorder = nurbs.degreeV() + 1;
+    nu = nurbs.numCVsInU();
+    nv = nurbs.numCVsInV();
 
-      // Read the knot information
+    // Read the knot information
 
-      nurbs.getKnotsInU(uKnots);
-      nurbs.getKnotsInV(vKnots);
+    nurbs.getKnotsInU( uKnots );
+    nurbs.getKnotsInV( vKnots );
 
-      double uMin_d, uMax_d, vMin_d, vMax_d;
-      nurbs.getKnotDomain(uMin_d, uMax_d, vMin_d, vMax_d);
-      umin = (RtFloat)uMin_d;
-      umax = (RtFloat)uMax_d;
-      vmin = (RtFloat)vMin_d;
-      vmax = (RtFloat)vMax_d;
+    double uMin_d, uMax_d, vMin_d, vMax_d;
+    nurbs.getKnotDomain( uMin_d, uMax_d, vMin_d, vMax_d );
+    umin = ( RtFloat )uMin_d;
+    umax = ( RtFloat )uMax_d;
+    vmin = ( RtFloat )vMin_d;
+    vmax = ( RtFloat )vMax_d;
   }
 
   float uKnotMult = 1;
@@ -164,64 +166,64 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
   // this was added to simulate MTOR's parameterization handling
   // it, by default, normalizes the U and V coordinates.
 
-  MPlug noNormalizeNurbsPlug = nurbs.findPlug( "noNormalizeNurbs", &status );  
+  MPlug noNormalizeNurbsPlug = nurbs.findPlug( "noNormalizeNurbs", &status );
 
   if ( normalizeNurbsUV && ( status != MS::kSuccess ) ) {
-      uKnotMult = 1 / ( umax - umin );
-      vKnotMult = 1 / ( vmax - vmin );
+    uKnotMult = 1 / ( umax - umin );
+    vKnotMult = 1 / ( vmax - vmin );
   }
 
   // Allocate CV and knot storage
-  CVs   = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( nu * nv * 4 ) );
-  uknot = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( uKnots.length() + 2 ) );
-  vknot = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( vKnots.length() + 2 ) );
+  CVs   = ( RtFloat* )lmalloc( sizeof( RtFloat ) * ( nu * nv * 4 ) );
+  uknot = ( RtFloat* )lmalloc( sizeof( RtFloat ) * ( uKnots.length() + 2 ) );
+  vknot = ( RtFloat* )lmalloc( sizeof( RtFloat ) * ( vKnots.length() + 2 ) );
 
   unsigned k;
   if ( normalizeNurbsUV && ( status != MS::kSuccess ) ) {
     for ( k = 0; k < uKnots.length(); k++ ) {
-      uknot[k+1] = ( (RtFloat)uKnots[k] - umin ) * uKnotMult;
+      uknot[ k + 1 ] = ( ( RtFloat )uKnots[ k ] - umin ) * uKnotMult;
     }
     umin = 0; umax = 1;
   } else {
     for ( k = 0; k < uKnots.length(); k++ ) {
-      uknot[k+1] = (RtFloat)uKnots[k];
+      uknot[ k + 1 ] = ( RtFloat )uKnots[ k ];
     }
   }
   // Maya doesn't store the first and last knots, so we double them up
   // manually
   //
-  uknot[0]   = uknot[1];
-  uknot[k+1] = uknot[k];
+  uknot[ 0 ]   = uknot[ 1 ];
+  uknot[ k+1 ] = uknot[ k ];
 
   if ( normalizeNurbsUV && ( status != MS::kSuccess ) ) {
     for ( k = 0; k < vKnots.length(); k++ ) {
-      vknot[k+1] = ( (RtFloat)vKnots[k] - vmin ) * vKnotMult; 
+      vknot[ k + 1 ] = ( ( RtFloat )vKnots[ k ] - vmin ) * vKnotMult;
     }
     vmin = 0; vmax = 1;
   } else {
     for ( k = 0; k < vKnots.length(); k++ ) {
-      vknot[k+1] = (RtFloat)vKnots[k]; 
+      vknot[ k + 1 ] = ( RtFloat )vKnots[ k ];
     }
   }
 
   // Maya doesn't store the first and last knots, so we double them up
   // manually
   //
-  vknot[0] = vknot[1];
-  vknot[k+1] = vknot[k];
+  vknot[ 0 ] = vknot[ 1 ];
+  vknot[ k + 1 ] = vknot[ k ];
 
   // Read CV information
   //
-  MItSurfaceCV cvs( surface, liquidRenderer().requires(liqRenderer::SWAPPED_UVS) == false );
+  MItSurfaceCV cvs( surface, liquidRenderer.requires_SWAPPED_UVS == false );
   RtFloat* cvPtr = CVs;
 
-  while(!cvs.isDone()) {
-    while(!cvs.isRowDone()) {
-      MPoint pt = cvs.position(MSpace::kObject);
-      *cvPtr = (RtFloat)pt.x; cvPtr++;
-      *cvPtr = (RtFloat)pt.y; cvPtr++;
-      *cvPtr = (RtFloat)pt.z; cvPtr++;
-      *cvPtr = (RtFloat)pt.w; cvPtr++;
+  while( !cvs.isDone() ) {
+    while( !cvs.isRowDone() ) {
+      MPoint pt = cvs.position( MSpace::kObject );
+      *cvPtr = ( RtFloat )pt.x; cvPtr++;
+      *cvPtr = ( RtFloat )pt.y; cvPtr++;
+      *cvPtr = ( RtFloat )pt.z; cvPtr++;
+      *cvPtr = ( RtFloat )pt.w; cvPtr++;
       cvs.next();
     }
     cvs.nextRow();
@@ -231,7 +233,7 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
   //
   if (nurbs.isTrimmedSurface()) {
     hasTrims = true;
-    if ( debugMode ) { printf("-> storing trim information\n"); }
+    LIQDEBUGPRINTF( "-> storing trim information\n" );
 
     unsigned numRegions, numBoundaries, numEdges, numCurves;
     unsigned r, b, e, c;
@@ -249,10 +251,10 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
     MFloatArray knotArray, minArray, maxArray;
     MPointArray cvArray;
 
-    // Get the number of trim curves in each loop and gather curve 
+    // Get the number of trim curves in each loop and gather curve
     // information
     //
-    for ( r = 0; r < nloops; r++ ) {
+    for ( r = 0; r < (unsigned) nloops; r++ ) {
       numBoundaries = nurbs.numBoundaries( r );
       for ( b = 0; b < numBoundaries; b++ ) {
         numCurves = 0;
@@ -277,7 +279,7 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
             MPoint pnt;
             unsigned last = curveFn.numCVs();
             for ( i = 0; i < last; ++i ) {
-              curveFn.getCV( i, pnt ); 
+              curveFn.getCV( i, pnt );
               cvArray.append( pnt );
             }
 
@@ -306,32 +308,32 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
 
     // Store the trim information in RIB format
     //
-    ncurves = (RtInt*)lmalloc( sizeof( RtInt ) * numCurvesPerLoop.length() );
+    ncurves = ( RtInt* )lmalloc( sizeof( RtInt ) * numCurvesPerLoop.length() );
     numCurvesPerLoop.get( (int*)ncurves );
 
-    order = (RtInt*)lmalloc( sizeof( RtInt ) * orderArray.length() );
-    orderArray.get( (int*)order );
+    order = ( RtInt* )lmalloc( sizeof( RtInt ) * orderArray.length() );
+    orderArray.get( ( int* )order );
 
-    n = (RtInt*)lmalloc( sizeof( RtInt ) * numCVsArray.length() );
-    numCVsArray.get( (int*)n );
+    n = ( RtInt* )lmalloc( sizeof( RtInt ) * numCVsArray.length() );
+    numCVsArray.get( ( int* )n );
 
-    knot = (RtFloat*)lmalloc( sizeof( RtFloat ) * knotArray.length() );
+    knot = ( RtFloat* )lmalloc( sizeof( RtFloat ) * knotArray.length() );
     knotArray.get( knot );
 
-    minKnot = (RtFloat*)lmalloc( sizeof( RtFloat ) * minArray.length() );
+    minKnot = ( RtFloat* )lmalloc( sizeof( RtFloat ) * minArray.length() );
     minArray.get( minKnot );
 
-    maxKnot = (RtFloat*)lmalloc( sizeof( RtFloat ) * maxArray.length() );
+    maxKnot = ( RtFloat* )lmalloc( sizeof( RtFloat ) * maxArray.length() );
     maxArray.get( maxKnot );
 
     unsigned last = cvArray.length();
-    u = (RtFloat*)lmalloc( sizeof( RtFloat ) * last );
-    v = (RtFloat*)lmalloc( sizeof( RtFloat ) * last );
-    w = (RtFloat*)lmalloc( sizeof( RtFloat ) * last );
+    u = ( RtFloat* )lmalloc( sizeof( RtFloat ) * last );
+    v = ( RtFloat* )lmalloc( sizeof( RtFloat ) * last );
+    w = ( RtFloat* )lmalloc( sizeof( RtFloat ) * last );
     for ( unsigned i = 0; i < last; ++i ) {
-      u[i] = (RtFloat)( cvArray[i].y * cvArray[i].w ); // u
-      v[i] = (RtFloat)( cvArray[i].x * cvArray[i].w ); // v
-      w[i] = (RtFloat) cvArray[i].w;                   // w
+      u[i] = ( RtFloat )( cvArray[ i ].y * cvArray[ i ].w ); // u
+      v[i] = ( RtFloat )( cvArray[ i ].x * cvArray[ i ].w ); // v
+      w[i] = ( RtFloat ) cvArray[ i ].w;                   // w
     }
 
     numCurvesPerLoop.clear();
@@ -346,7 +348,7 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
   // now place our tokens and parameters into our tokenlist
 
   liqTokenPointer tokenPointerPair;
-  tokenPointerPair.set( "Pw", rPoint, true, true, false , nu * nv );
+  tokenPointerPair.set( "Pw", rPoint, true, nu * nv );
   tokenPointerPair.setDetailType( rVertex );
   tokenPointerPair.setTokenFloats( CVs );
   tokenPointerArray.push_back( tokenPointerPair );
@@ -360,11 +362,11 @@ liqRibSurfaceData::~liqRibSurfaceData()
 //      class destructor
 {
   // free all arrays
-  if ( debugMode ) { printf("-> killing nurbs surface\n"); }
+  LIQDEBUGPRINTF( "-> killing nurbs surface\n" );
   if ( uknot != NULL ) { lfree( uknot ); uknot = NULL; }
   if ( vknot != NULL ) { lfree( vknot ); vknot = NULL; }
   // this is freed by the ribdata destructor
-  // this is not true anymore 
+  // this is not true anymore
   if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
   if ( ncurves != NULL ) { lfree( ncurves ); ncurves = NULL; }
   if ( order != NULL ) { lfree( order ); order = NULL; }
@@ -375,14 +377,14 @@ liqRibSurfaceData::~liqRibSurfaceData()
   if ( u != NULL ) { lfree( u ); u = NULL; }
   if ( v != NULL ) { lfree( v ); v = NULL; }
   if ( w != NULL ) { lfree( w ); w = NULL; }
-  if ( debugMode ) { printf("-> finished killing nurbs surface\n"); }
+  LIQDEBUGPRINTF( "-> finished killing nurbs surface\n" );
 }
 
 void liqRibSurfaceData::write()
 //  Description:
 //      Write the RIB for this surface
 {
-  if ( debugMode ) { printf("-> writing nurbs surface\n"); }
+  LIQDEBUGPRINTF( "-> writing nurbs surface\n" );
 
   if ( tokenPointerArray.size() > 0 ) {
     unsigned numTokens = tokenPointerArray.size();
@@ -405,10 +407,10 @@ void liqRibSurfaceData::write()
                 tokenArray,
                 pointerArray );
   } else {
-    if ( debugMode ) { printf("-> ignoring nurbs surface\n"); }
+    LIQDEBUGPRINTF( "-> ignoring nurbs surface\n" );
   }
 
-  if ( debugMode ) { printf("-> done writing nurbs surface\n"); }
+  LIQDEBUGPRINTF( "-> done writing nurbs surface\n" );
 }
 
 bool liqRibSurfaceData::compare( const liqRibData & otherObj ) const
@@ -418,7 +420,7 @@ bool liqRibSurfaceData::compare( const liqRibData & otherObj ) const
 //      if it is animated.
 //
 {
-  if ( debugMode ) { printf("-> comparing nurbs surface\n"); }
+  LIQDEBUGPRINTF( "-> comparing nurbs surface\n" );
   if ( otherObj.type() != MRT_Nurbs ) return false;
 
   const liqRibSurfaceData & other = (liqRibSurfaceData&)otherObj;
@@ -430,22 +432,22 @@ bool liqRibSurfaceData::compare( const liqRibData & otherObj ) const
        !equiv( umin, other.umin ) ||
        !equiv( umax, other.umax ) ||
        !equiv( vmin, other.vmin ) ||
-       !equiv( vmax, other.vmax ) ) 
+       !equiv( vmax, other.vmax ) )
   {
     return false;
   }
-    
+
   // Check Knots
   //
   unsigned i;
   unsigned last = nu + uorder;
   for ( i = 0; i < last; ++i ) {
-    if ( !equiv( uknot[i], other.uknot[i] ) )
+    if ( !equiv( uknot[ i ], other.uknot[ i ] ) )
       return false;
   }
   last = nv + vorder;
   for ( i = 0; i < last; ++i ) {
-    if ( !equiv( vknot[i], other.vknot[i] ) )
+    if ( !equiv( vknot[ i ], other.vknot[ i ] ) )
       return false;
   }
 
@@ -453,7 +455,7 @@ bool liqRibSurfaceData::compare( const liqRibData & otherObj ) const
   //
   last = nu * nv * 4;
   for ( i = 0; i < last; ++i ) {
-    if ( !equiv( CVs[i], other.CVs[i] ) )
+    if ( !equiv( CVs[ i ], other.CVs[ i ] ) )
       return false;
   }
 
@@ -467,19 +469,19 @@ ObjectType liqRibSurfaceData::type() const
 //      return the geometry type
 //
 {
-  if ( debugMode ) { printf("-> returning nurbs surface type\n"); }
+  LIQDEBUGPRINTF( "-> returning nurbs surface type\n" );
   return MRT_Nurbs;
 }
 
 bool liqRibSurfaceData::hasTrimCurves() const
 {
-  if ( debugMode ) { printf("-> checking for nurbs surface trims\n"); }
-  return hasTrims;   
+  LIQDEBUGPRINTF( "-> checking for nurbs surface trims\n" );
+  return hasTrims;
 }
 
 void liqRibSurfaceData::writeTrimCurves() const
 {
-  if ( debugMode ) { printf("-> writing nurbs surface trims\n"); }
+  LIQDEBUGPRINTF( "-> writing nurbs surface trims\n" );
   if ( hasTrims ) {
     RiTrimCurve( nloops,
                  ncurves,
@@ -488,7 +490,7 @@ void liqRibSurfaceData::writeTrimCurves() const
                  minKnot,
                  maxKnot,
                  n,
-                 u, 
+                 u,
                  v,
                  w );
   }

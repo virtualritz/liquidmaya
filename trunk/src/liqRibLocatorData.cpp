@@ -80,7 +80,7 @@ liqRibLocatorData::liqRibLocatorData( MObject /*locator*/ )
 //
 
 {
-  if ( debugMode ) { printf("-> creating locator\n"); }
+  LIQDEBUGPRINTF( "-> creating locator\n" );
 }
 
 liqRibLocatorData::~liqRibLocatorData()
@@ -89,7 +89,7 @@ liqRibLocatorData::~liqRibLocatorData()
 //      class destructor
 //
 {
-  if ( debugMode ) { printf("-> killing locator\n"); }
+  LIQDEBUGPRINTF( "-> killing locator\n" );
 }
 
 void liqRibLocatorData::write()
@@ -98,7 +98,7 @@ void liqRibLocatorData::write()
 //      Write the RIB for this mesh
 //
 {
-  if ( debugMode ) { printf("-> writing locator"); }
+  LIQDEBUGPRINTF( "-> writing locator" );
 }
 
 bool liqRibLocatorData::compare( const liqRibData & otherObj ) const
@@ -108,7 +108,7 @@ bool liqRibLocatorData::compare( const liqRibData & otherObj ) const
 //      if its animated
 //
 {
-  if ( debugMode ) { printf("-> comparing locator\n"); }
+  LIQDEBUGPRINTF( "-> comparing locator\n" );
   if ( otherObj.type() != MRT_Locator ) return false;
   return true;
 }
@@ -119,6 +119,6 @@ ObjectType liqRibLocatorData::type() const
 //      return the geometry type
 //
 {
-  if ( debugMode ) { printf("-> returning locator type\n"); }
+  LIQDEBUGPRINTF( "-> returning locator type\n" );
   return MRT_Locator;
 }

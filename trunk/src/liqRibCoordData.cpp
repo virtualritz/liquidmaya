@@ -78,7 +78,7 @@ liqRibCoordData::liqRibCoordData( MObject coord )
 //
 
 {
-	if ( debugMode ) { printf("-> creating coord\n"); }
+	LIQDEBUGPRINTF( "-> creating coord\n" );
 	MFnDependencyNode fnNode( coord );
 	this->name = fnNode.name();
 }
@@ -89,7 +89,7 @@ liqRibCoordData::~liqRibCoordData()
 //      class destructor
 //
 {
-	if ( debugMode ) { printf("-> killing coord\n"); }
+	LIQDEBUGPRINTF( "-> killing coord\n" );
 }
 
 void liqRibCoordData::write()
@@ -98,7 +98,7 @@ void liqRibCoordData::write()
 //      Write the RIB for this mesh
 //
 {
-	if ( debugMode ) { printf("-> writing coord"); }
+	LIQDEBUGPRINTF( "-> writing coord" );
 	char *coordName;
 	coordName = (char *)lmalloc( name.length()  +1);
 	strcpy(coordName, name.asChar());
@@ -113,7 +113,7 @@ bool liqRibCoordData::compare( const liqRibData & otherObj ) const
 //      if its animated
 //
 {
-	if ( debugMode ) { printf("-> comparing coord\n"); }
+	LIQDEBUGPRINTF( "-> comparing coord\n" );
 	if ( otherObj.type() != MRT_Coord ) return false;
     return true;
 }
@@ -124,6 +124,6 @@ ObjectType liqRibCoordData::type() const
 //      return the geometry type
 //
 {
-	if ( debugMode ) { printf("-> returning coord type\n"); }
+	LIQDEBUGPRINTF( "-> returning coord type\n" );
  	return MRT_Coord;
 }

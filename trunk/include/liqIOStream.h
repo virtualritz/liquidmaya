@@ -6,14 +6,16 @@
 // compilers, some of which try and help by auto-including or auto-namespacing,
 // and others do not
 
+#define MAYA_API_VERSION 600
+
 #if MAYA_API_VERSION < 500
-# include <iostream>
-  using std::cout;
-  using std::cerr;
-  using std::endl;
-  using std::flush;
+  #include <iostream>
+    using std::cout;
+    using std::cerr;
+    using std::endl;
+    using std::flush;
 #else
-# include <maya/MIOStream.h>
+  #include <maya/MIOStream.h>
 #endif
 
 

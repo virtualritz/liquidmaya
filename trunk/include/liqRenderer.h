@@ -19,7 +19,7 @@
 **
 **
 ** The RenderMan (R) Interface Procedures and Protocol are:
-** Copyright 1988, 1989, Pixar 
+** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
 **
 **
@@ -32,46 +32,72 @@
 #include <maya/MString.h>
 
 
-class liqRenderer
-{
+class liqRenderer {
+
 public:
-  enum e_renderer   { REN_PRMAN, 
-		      REN_ENTROPY, 
-		      REN_AQSIS,
-		      REN_DELIGHT, 
-		      REN_PIXIE };
+/*
+  enum e_renderer   { REN_PRMAN, REN_ENTROPY, REN_AQSIS, REN_DELIGHT };
   enum e_capability { BLOBBIES, POINTS, EYESPLITS };
 
   enum e_requirement	{
     SWAPPED_UVS,  // transpose u & v direction on NURBS
     __PREF        // use __Pref instead of Pref
     };
+*/
+  liqRenderer()
+  : renderName( "PRMan" ),
+#ifdef _WIN32
+    renderCommand( "prman" ),
+    renderPreview( "prman" ),
+#else
+    renderCommand( "render" ),
+    renderPreview( "render" ),
+#endif
+    renderCmdFlags( "" ),
 
-  liqRenderer(e_renderer renderer, MString version)
-  : m_renderer(renderer), m_version(version)
-  {
-    // nothing else needed
-  }
+
+    supports_BLOBBIES( true ),
+    supports_POINTS( true ),
+    supports_EYESPLITS( true ),
+    supports_RAYTRACE( true ),
+    supports_DOF( true ),
+
+    requires_SWAPPED_UVS( true ),
+    requires__PREF( true ),
+    requires_MAKESHADOW( false ),
+
+    dshDisplayName( "deepshad" ), // PRman default
+    dshImageMode( "deepopacity" )
+    {}
 
   virtual ~liqRenderer()
   {
     // nothing else needed
   }
 
-  e_renderer getRenderer() const { return m_renderer; }
-  MString    getVersion()  const { return m_version;  }
+  MString renderName;
+  MString renderCommand;
+  MString renderPreview;
+  MString renderCmdFlags;
 
-  virtual bool supports(e_capability capability)   const = 0;
-  virtual bool requires(e_requirement requirement) const = 0;
-
-private:
-  e_renderer m_renderer;
-  MString    m_version;
+  bool supports_BLOBBIES;
+  bool supports_POINTS;
+  bool supports_EYESPLITS;
+  bool supports_RAYTRACE;
+  bool supports_DOF;
+  // renderer requirement
+  bool requires_SWAPPED_UVS; // transpose u & v direction on NURBS
+  bool requires__PREF;      // use __Pref instead of Pref
+  bool requires_MAKESHADOW; // requires MakeShadow to convert zfile to shadow
+  // Deep Shadow Display
+  MString dshDisplayName;
+  MString dshImageMode;
 };
 
-
 // Singleton copy of liqRenderer object
-const liqRenderer & liquidRenderer();
+// const liqRenderer & liquidRenderer();
+
+extern liqRenderer liquidRenderer;
 
 
 #endif

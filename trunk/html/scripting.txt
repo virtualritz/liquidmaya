@@ -1,4 +1,3 @@
-
 	To load the shader into maya, you use 
 
 	liquidNewShaderNode( string $fileName ) -
@@ -17,3 +16,4 @@
 	now someShape will have the new shaders assigned.
 
 	C.
+

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="liquidbin"
 	SccProjectName=""
 	SccLocalPath="">
@@ -68,7 +68,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="PRMan 10 Release|Win32"
@@ -128,7 +134,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="PRMan 10 Debug|Win32"
@@ -189,7 +201,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="PRMan 11 Debug|Win32"
@@ -250,9 +268,76 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="3Delight Release|Win32"
+			OutputDirectory=".\liquidbin___Win32_3Delight_Release"
+			IntermediateDirectory=".\liquidbin___Win32_3Delight_Release"
+			ConfigurationType="1"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION)/include,$(DELIGHT)/include,../include"
+				PreprocessorDefinitions="NDEBUG;DELIGHT;_3DELIGHT;WIN32;_CONSOLE;_USRDLL;LIQUID_EXPORTS;_BOOL;ulong=&quot;unsigned long&quot;;uint=&quot;unsigned int&quot;"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\liquidbin___Win32_3Delight_Release/liquidbin.pch"
+				AssemblerListingLocation=".\liquidbin___Win32_3Delight_Release/"
+				ObjectFile=".\liquidbin___Win32_3Delight_Release/"
+				ProgramDataBaseFileName=".\liquidbin___Win32_3Delight_Release/"
+				WarningLevel="3"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="3delight.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib ws2_32.lib netapi32.lib"
+				OutputFile="../bin/win32/Release/liquid.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(DELIGHT)/lib"
+				ProgramDatabaseFile=".\liquidbin___Win32_3Delight_Release/liquidbin.pdb"
+				ImportLibrary=".\liquidbin___Win32_3Delight_Release/liquidbin.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				TypeLibraryName=".\liquidbin___Win32_3Delight_Release/liquidbin.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -301,6 +386,9 @@
 			</File>
 			<File
 				RelativePath=".\liqRibLocatorData.cpp">
+			</File>
+			<File
+				RelativePath="liqRibMayaSubdivisionData.cpp">
 			</File>
 			<File
 				RelativePath=".\liqRibMeshData.cpp">

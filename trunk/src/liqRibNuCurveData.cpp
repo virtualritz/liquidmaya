@@ -65,6 +65,7 @@ extern "C" {
 #include <maya/MFnNurbsCurve.h>
 #include <maya/MPlug.h>
 
+
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibData.h>
@@ -84,7 +85,7 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
     CVs( NULL ),
     NuCurveWidth( NULL )
 {
-	if ( debugMode ) { printf("-> creating nurbs curve\n"); }
+	LIQDEBUGPRINTF( "-> creating nurbs curve\n" );
 	MStatus status = MS::kSuccess;
 	MFnNurbsCurve nurbs( curve, &status );
 	assert(status==MS::kSuccess);
@@ -174,7 +175,7 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
 	liqTokenPointer* pConstWidthPointerPair = NULL;
 
 	// pointsPointerPair.set( "Pw", rPoint, true, true, false, nverts[0] );
-	pointsPointerPair.set( "P", rVector, true, true, false, nverts[0] );
+	pointsPointerPair.set( "P", rPoint, false, true, false, nverts[0] );
 	pointsPointerPair.setDetailType( rVertex );
 	pointsPointerPair.setTokenFloats( CVs );
 	tokenPointerArray.push_back( pointsPointerPair );
@@ -182,15 +183,24 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
 	// Constant width, MToor style - Paul
 	MPlug curveWidthPlug = nurbs.findPlug( "liquidCurveWidth", &status );
 
-	if ( status == MS::kSuccess ) {
+	if ( status == MS::kSuccess ) {	
 		float curveWidth;
 		curveWidthPlug.getValue( curveWidth );
 		pConstWidthPointerPair = new liqTokenPointer;
+#ifndef DELIGHT			
 		pConstWidthPointerPair->set( "constantwidth", rFloat, false, false, false, 0 );
 		pConstWidthPointerPair->setDetailType( rUniform );
 		pConstWidthPointerPair->setTokenFloat(0, curveWidth );
+#else // Arrgh! 3Delight wants "constatwidth" per curve segment	so we make it varying :(	
+		pConstWidthPointerPair->set( "constantwidth", rFloat, false, true, false, nverts[0] - 2 );
+		pConstWidthPointerPair->setDetailType( rVarying );
+		for( int i = 0; i < nverts[0] - 2; i++ ) {
+			pConstWidthPointerPair->setTokenFloat( i, curveWidth );
+		}		
+#endif		
 		tokenPointerArray.push_back( *pConstWidthPointerPair );
 		delete pConstWidthPointerPair;
+
 	}
 
 	addAdditionalSurfaceParameters( curve );
@@ -201,8 +211,9 @@ liqRibNuCurveData::~liqRibNuCurveData()
 //      class destructor
 {
 	// Free all arrays
-	if ( debugMode ) { printf("-> killing nurbs curve\n"); }
-	if ( knot != NULL ) { lfree( knot ); knot = NULL; }
+	LIQDEBUGPRINTF( "-> killing nurbs curve\n" );
+	// uncomment below if 'knot' is used again
+	// if ( knot != NULL ) { lfree( knot ); knot = NULL; }
 	// this is freed with the ribdata destructor
 	// this is not true anymore
 	if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
@@ -219,7 +230,7 @@ void liqRibNuCurveData::write()
 //      Write the RIB for this surface
 //
 {
-	if ( debugMode ) { printf("-> writing nurbs curve\n"); }
+	LIQDEBUGPRINTF( "-> writing nurbs curve\n" );
 
 	unsigned numTokens = tokenPointerArray.size();
 	RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * numTokens );
@@ -236,35 +247,35 @@ bool liqRibNuCurveData::compare( const liqRibData & otherObj ) const
 //      if it is animated.
 //
 {
-	if ( debugMode ) { printf("-> comparing nurbs curve\n"); }
-    if ( otherObj.type() != MRT_NuCurve ) return false;
-    const liqRibNuCurveData & other = (liqRibNuCurveData&)otherObj;
+  LIQDEBUGPRINTF( "-> comparing nurbs curve\n");
+  if ( otherObj.type() != MRT_NuCurve ) return false;
+  const liqRibNuCurveData & other = (liqRibNuCurveData&)otherObj;
 
-    if ( ( nverts[0] != other.nverts[0] ) ||
-		( order != other.order ) ||
-		!equiv( min[0], other.min[0] ) ||
-		!equiv( max[0], other.max[0] ))
-    {
-        return false;
-    }
+  if ( ( nverts[0] != other.nverts[0] ) ||
+       ( order != other.order ) ||
+		   !equiv( min[0], other.min[0] ) ||
+		   !equiv( max[0], other.max[0] ))
+  {
+    return false;
+  }
 
-    // Check Knots
-    //
-    unsigned i;
-    unsigned last = nverts[0] + order[0];
-    for ( i = 0; i < last; ++i ) {
-        if ( !equiv( knot[i], other.knot[i] ) ) return false;
-    }
+  // Check Knots
+  //
+  unsigned i;
+  unsigned last = nverts[0] + order[0];
+  for ( i = 0; i < last; ++i ) {
+    if ( !equiv( knot[i], other.knot[i] ) ) return false;
+  }
 
-    // Check CVs
-    //
-    //last = nverts[0] * 3;
-    last = nverts[0] * 3;
-    for ( i = 0; i < last; ++i ) {
-        if ( !equiv( CVs[i], other.CVs[i] ) ) return false;
-    }
+  // Check CVs
+  //
+  //last = nverts[0] * 3;
+  last = nverts[0] * 3;
+  for ( i = 0; i < last; ++i ) {
+      if ( !equiv( CVs[i], other.CVs[i] ) ) return false;
+  }
 
-    return true;
+  return true;
 }
 
 ObjectType liqRibNuCurveData::type() const
@@ -273,6 +284,6 @@ ObjectType liqRibNuCurveData::type() const
 //      return the geometry type
 //
 {
-	if ( debugMode ) { printf("-> returning nurbs curve type\n"); }
+  LIQDEBUGPRINTF( "-> returning nurbs curve type\n" );
 	return MRT_NuCurve;
 }

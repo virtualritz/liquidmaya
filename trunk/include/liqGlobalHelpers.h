@@ -32,9 +32,9 @@
 ** Liquid Liquid Global Helpers Header File
 ** ______________________________________________________________________
 */
+#include <liqIOStream.h>
 
 #include <string>
-#include <iostream>
 #include <vector>
 #include <maya/MString.h>
 #include <maya/MFnDependencyNode.h>
@@ -44,16 +44,22 @@
 #include <liqTokenPointer.h>
 #include <liqShader.h>
 
-
-#ifndef _WIN32
-#  include <libgen.h> // for basename()
-#  define LIQ_GET_SHADER_FILE_NAME(a, b, c) if( b ) a = basename( const_cast<char *>(c.file.c_str())); else a = const_cast<char *>(c.file.c_str());
+// Moritz: basename() is missing in Windoze, we define our own in liqGlobalHelpers.cpp
+#ifdef _WIN32
+char * basename( const char *filename );
 #else
-#  define LIQ_GET_SHADER_FILE_NAME(a, b, c) a = const_cast<char *>(c.file.c_str());
+#  include <libgen.h> // for basename()
 #endif
 
+#define LIQ_GET_SHADER_FILE_NAME(a, b, c) if( b ) a = basename( const_cast<char *>(c.file.c_str())); else a = const_cast<char *>(c.file.c_str());
 
-MStringArray FindAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
+// Moritz: this macro is needed to get absolute pathnames for
+// creating RIBs, archives and the renderscript in case the user
+// has choosen to have all paths relative
+#define LIQ_GET_ABS_REL_FILE_NAME(rel, name, dir) ((rel) ? ((dir) + (name)) : (name))
+
+
+MStringArray findAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
 bool isObjectTwoSided( const MDagPath & path );
 bool isObjectVisible( const MDagPath & path );
 bool isObjectPrimaryVisible( const MDagPath & path );
@@ -65,13 +71,17 @@ bool areObjectAndParentsTemplated( const MDagPath & path );
 void assignTokenArrays( unsigned numTokens, liqTokenPointer tokenPointerArray[], RtToken tokens[], RtPointer pointers[] );
 void assignTokenArraysV( std::vector<liqTokenPointer> *tokenPointerArray, RtToken tokens[], RtPointer pointers[] );
 MObject findFacetShader( MObject mesh, int polygonIndex );
-bool fileExists(const MString & filename );
-MString parseString( MString & inputString ); 
+bool fileExists( const MString & filename );
+bool fileIsNewer( const MString & file1, const MString & file2 );
+MString getFullPathFromRelative ( const MString & filename );
+MString getFileName( const MString & fullpath );
+MString parseString( const MString & inputString ); 
+MString parseCommandString( const MString & inputString );
 MString liquidTransGetSceneName();
 MString liquidTransGetFullSceneName();
 void liquidInfo( MString info );
 void liquidGetGlobal( MString globalName, double &value, MStatus &returnStatus );
-liquidlong liquidHash(const char *str);
-
+liquidlong liquidHash( const char *str );
+MString liquidSanitizePath( MString & inputString );
 
 #endif

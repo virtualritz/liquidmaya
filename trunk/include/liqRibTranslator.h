@@ -38,6 +38,8 @@
 #include <liqRibHT.h>
 #include <liqShader.h>
 #include <liqRenderScript.h>
+#include <liqRibLightData.h>
+#include <liqExpression.h>
 
 #include <maya/MPxCommand.h>
 #include <maya/MDagPathArray.h>
@@ -72,14 +74,18 @@ private: // Methods
   MStatus ribPrologue();
   MStatus ribEpilogue();
   MStatus framePrologue( long );
-  MStatus frameBody();
+  MStatus worldPrologue();
+  MStatus lightBlock();
+  MStatus coordSysBlock();
+  MStatus objectBlock();
+  MStatus worldEpilogue();
   MStatus frameEpilogue( long );
   void doAttributeBlocking( const MDagPath & newPath,  const MDagPath & previousPath );
   void printProgress ( int stat, long first, long last, long where );
 
   MString generateRenderScriptName()  const;
   MString generateTempMayaSceneName() const;
-  
+
 private: // Data
   enum MRibStatus {
     kRibOK,
@@ -91,18 +97,18 @@ private: // Data
   MRibStatus ribStatus;
 
   // Render Globals and RIB Export Options
-  std::vector<structJob> jobList;
-  std::vector<structJob> shadowList;
+  std::vector<structJob>  jobList;
+  std::vector<structJob>  shadowList;
+
+  std::vector<structJob>  refList;  // reflections list
+  std::vector<structJob>  envList;  // environments list
+  std::vector<structJob>  txtList;  // make textures list
 
   MDagPathArray shadowLightArray;
   MDagPath activeCamera;
 
-#ifndef _WIN32
-  const char *m_systemTempDirectory;
-  static const char *m_default_tmp_dir;
-#else
-  char *m_systemTempDirectory;
-#endif
+  const MString m_default_tmp_dir;
+  MString m_systemTempDirectory;
 
   liquidlong frameFirst;
   liquidlong frameLast;
@@ -119,14 +125,24 @@ private: // Data
   MString m_alfredServices;
   MString m_userRenderScriptFileName;
   MString m_renderScriptCommand;
-  enum RenderScriptFormat {NONE,ALFRED,XML} m_renderScriptFormat;
-  
+  enum renderScriptFormat {
+    NONE   = 0,
+    ALFRED = 1,
+    XML    = 2 }
+  m_renderScriptFormat;
+
   bool useNetRman;
   bool fullShadowRib;
   bool remoteRender;
-  bool cleanRib;	         // clean the rib files up
+  bool cleanRib;           // clean the rib files up
   bool doDof;              // do camera depth of field
   bool doCameraMotion;     // Motion blur for moving cameras
+  enum shutterConfig {
+    OPEN_ON_FRAME         = 0,
+    CENTER_ON_FRAME       = 1,
+    CENTER_BETWEEN_FRAMES = 2,
+    CLOSE_ON_NEXT_FRAME   = 3
+  } shutterConfig;
   bool cleanShadows;
   bool cleanTextures;
   bool doExtensionPadding;
@@ -143,7 +159,7 @@ private: // Data
   float aspectRatio;
   liquidlong quantValue;
   MString renderCamera;
-  MString baseShadowName;    
+  MString baseShadowName;
   bool createOutputDirectories;
 
   static MString magic;
@@ -169,7 +185,7 @@ private: // Data
 private :
   // which renderer are we using
   RendererType m_renderer;
-  
+
   // Old global values
   int m_errorMode;
   M3dView m_activeView;
@@ -198,6 +214,66 @@ private :
 
   // these are little storage variables to keep track of the current graphics state and will eventually be wrapped in
   // a specific class
+  struct {
+    struct {
+      bool showProgress;
+      bool outputDetailedComments;
+      bool shaderDebugging;
+    } feedback;
+
+    struct {
+      bool noShadowRibs;
+      bool fullShadowRibs;
+      bool lazyCompute;
+    } shadowMaps;
+
+    struct {
+      bool opacityThreshold;
+      bool outputAllShaders;
+    } depthShadows;
+
+    struct {
+      bool outputAllShaders;
+      bool outputLights;
+    } deepShadows;
+
+    struct {
+      bool readArchiveable;
+
+      struct {
+        bool allCurves;
+        bool meshUVs;
+      } output;
+
+      struct {
+        bool noSurfaces;
+        bool noLights;
+        bool noDisplacements;
+        bool noVolumes;
+        bool expandArrays;
+      } shaders;
+
+      struct {
+        bool projectRelative;
+        bool shaders;
+      } paths;
+
+      struct {
+        bool binary;
+        bool gZip;
+      } format;
+
+      struct {
+        MString preWorld;
+        MString postWorld;
+        MString preObject;
+      } box;
+
+    } rib;
+
+  } globals;
+
+
   bool m_showProgress;
   bool m_currentMatteMode;
   bool m_renderSelected;
@@ -208,23 +284,17 @@ private :
   bool m_ignoreDisplacements;
   bool m_ignoreVolumes;
   bool m_outputShadowPass;
-  bool m_outputHeroPass;	
+  bool m_outputHeroPass;
   bool m_deferredGen;
   bool m_lazyCompute;
   bool m_outputShadersInShadows;
+  bool m_outputShadersInDeepShadows;
+  bool m_outputLightsInDeepShadows;
   liquidlong m_deferredBlockSize;
   bool m_outputComments;
   bool m_shaderDebug;
 
   long m_currentLiquidJobNumber;
-
-  // BMRT PARAMS: BEGIN
-  bool m_BMRTusePrmanDisp;
-  bool m_BMRTusePrmanSpec;
-  liquidlong m_BMRTDStep;
-  liquidlong m_RadSteps;
-  liquidlong m_RadMinPatchSamples;
-  // BMRT PARAMS: END
 
   MString m_defGenKey;
   MString m_defGenService;
@@ -235,16 +305,18 @@ private :
   MString m_renderCommand;
   MString m_ribgenCommand;
   MString m_preCommand;
-  
+
   MString m_preJobCommand;
   MString m_postJobCommand;
   MString m_preFrameCommand;
   MString m_postFrameCommand;
-  
+
   MString m_shaderPath;
 
   MString m_preWorldRIB;
   MString m_postWorldRIB;
+
+  MString m_preGeomRIB;
 
   // Display Driver Variables
   typedef struct structDDParam {
@@ -254,7 +326,7 @@ private :
     MIntArray type;
   } structDDParam;
 
-  std::vector<structDDParam> m_DDParams;	
+  std::vector<structDDParam> m_DDParams;
 
   liquidlong   m_numDisplayDrivers;
   MStringArray m_DDimageType;
@@ -265,11 +337,15 @@ private :
   liquidlong m_rFilter;
   float m_rFilterX, m_rFilterY;
 
-  std::vector<liqShader> m_shaders;	
+  std::vector<liqShader> m_shaders;
 
   liqShader & liqGetShader( MObject shaderObj );
   MStatus liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType );
   void freeShaders( void );
+
+  void scanExpressions( liqShader & currentShader );
+  void liqRibTranslator::scanExpressions( liqRibLightData *light );
+  void processExpression( liqTokenPointer *token, liqRibLightData *light = NULL );
 };
 
 #endif

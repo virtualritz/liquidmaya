@@ -37,7 +37,7 @@
 
 #include <ri.h>
 #include <maya/MDagPath.h>
-#include <zlib.h>
+//#include <zlib.h>
 
 class liqRibStatus {
 public:

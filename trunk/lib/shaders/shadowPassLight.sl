@@ -22,6 +22,7 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
+
 */
 
 light
@@ -34,7 +35,8 @@ shadowPassLight(
 )
 {
     float  atten;
-		atten = 1.0;
+
+	atten = 1.0;
     illuminate( Ps ) {
 			if (shadowname != "") {
 				atten *= shadow(shadowname, Ps, "samples", samples,
@@ -43,3 +45,4 @@ shadowPassLight(
 			Cl = atten * shadowIntensity;
    	}
 }
+
