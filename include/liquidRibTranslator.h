@@ -1,21 +1,21 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
-** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+** "License"); you may not use this file except in compliance with the License. You may
+** obtain a copy of the License at http://www.mozilla.org/MPL/
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+** WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+** language governing rights and limitations under the License.
 **
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
+** The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+** Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+**
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -28,7 +28,7 @@
 #define liquidRibTranslator_H
 
 /* ______________________________________________________________________
-** 
+**
 ** Liquid Rib Translator Header File
 ** ______________________________________________________________________
 */
@@ -45,23 +45,24 @@ public:
 	liquidRibTranslator();
 	~liquidRibTranslator();
 	static void *	    creator();
-	
+
 	MStatus	    doIt(const MArgList& args );
-	
-private: // Methods  
-	
+
+private: // Methods
+
     MObject	rGlobalObj;
-	
+
     MStatus scanScene(float, int );
-	
-    void 	portFieldOfView( int width, int height, double& horizontal, double& vertical, MFnCamera& fnCamera );
+
+    void	portFieldOfView( int width, int height, double& horizontal, double& vertical, MFnCamera& fnCamera );
     void	computeViewingFrustum (	double window_aspect, double& left, double& right, double& bottom, double& top, MFnCamera& cam );
-    void	getCameraInfo( MFnCamera &cam );		
+    void	getCameraInfo( MFnCamera &cam );
     // rib output functions
     MStatus liquidDoArgs( MArgList args );
     bool liquidInitGlobals();
     void liquidReadGlobals();
-	
+    bool verifyOutputDirectories();
+
     MStatus		buildJobs();
     MStatus		ribPrologue();
     MStatus		ribEpilogue();
@@ -70,17 +71,17 @@ private: // Methods
     MStatus		frameEpilogue( long );
     void	    doAttributeBlocking( const MDagPath & newPath,  const MDagPath & previousPath );
     void	    printProgress ( int stat, long first, long last, long where );
-	
+
 private: // Data
     enum MRibStatus {
 	kRibOK,
-    	kRibBegin, 
-    	kRibFrame, 
-    	kRibWorld, 
+    	kRibBegin,
+    	kRibFrame,
+    	kRibWorld,
     	kRibError
     };
     MRibStatus ribStatus;
-	
+
     // Render Globals and RIB Export Options
     //
     std::vector<structJob>	jobList;
@@ -102,8 +103,8 @@ private: // Data
     bool		    useNetRman;
     bool    	    	    fullShadowRib;
     bool    	    	    remoteRender;
-    bool		    cleanRib;	      // clean the rib files up 
-    bool		    doDof;              // do camera depth of field 
+    bool		    cleanRib;	      // clean the rib files up
+    bool		    doDof;              // do camera depth of field
     bool		    doCameraMotion;     // Motion blur for moving cameras
     bool		    cleanShadows;
     bool		    cleanTextures;
