@@ -22,6 +22,7 @@ global proc liquidLoadScripts()
   eval( "source \"" + $liquidHome + "/mel/liquidIni.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/liquidHelpers.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/liquidFluid.mel\"" );
+  eval( "source \"" + $liquidHome + "/mel/liquidParamDialogWindow.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/liquidShaders.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/liquidRibGen.mel\"" );
   eval( "source \"" + $liquidHome + "/mel/liquidMenuHelp.mel\"" );
