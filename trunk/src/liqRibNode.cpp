@@ -144,7 +144,7 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
   motion.transformationBlur = true;;
   motion.deformationBlur = true;
   motion.samples = 2;
-  motion.factor = 1.0;
+  motion.factor = 2.0;
   
   invisible = false;
 }
@@ -270,7 +270,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqTraceBias" ), &status );
         if ( status == MS::kSuccess )
-          nPlug.getValue( trace.bias );	
+          nPlug.getValue( trace.bias );
       }
 
       if ( trace.maxDiffuseDepth == 1 ) {
@@ -377,6 +377,36 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( photon.estimator );
       }
 
+      // photon group ---------------------------------------------------------
+      
+      if ( motion.transformationBlur == true ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqTransformationBlur" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( motion.transformationBlur );
+      }
+      
+      if ( motion.deformationBlur == true ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqDeformationBlur" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( motion.deformationBlur );
+      }      
+    
+      if ( motion.samples == 2 ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqMotionSamples" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( motion.samples );
+      }
+      
+      if ( motion.factor == 2.0f ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqMotionFacto" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( motion.factor );
+      }  
+      
       /*MFnDependencyNode nodeFn( nodePeeker );
       MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
       MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodeFn );
@@ -412,16 +442,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
     grouping.membership = path.fullPathName( &status ) + grouping.membership;
   }
 
-  /*
-  nPlug = fnNode.findPlug( MString( "transformationBlur" ), &status );
-  if ( status == MS::kSuccess ) {
-    nPlug.getValue( doMotion );
-  }
-  status.clear();
-  nPlug = fnNode.findPlug( MString( "deformationBlur" ), &status );
-  if ( status == MS::kSuccess ) {
-    nPlug.getValue( doDef );
-  }*/
   status.clear();
   nPlug = fnNode.findPlug( MString( "ribBox" ), &status );
   if ( status == MS::kSuccess ) {
@@ -902,7 +922,7 @@ bool liqRibNode::getColor( MObject& shader, MColor& color )
 }
 
 /**
- * Check to see if we should make this a matte object.
+ * Check to see if this is a matte object.
  */
 bool liqRibNode::getMatteMode( MObject& shader )
 {
@@ -925,7 +945,7 @@ bool liqRibNode::getMatteMode( MObject& shader )
 }
 
 /**
- * Checks if this node actually points to any objects.
+ * Checks if this node has at least n objects.
  */
 bool liqRibNode::hasNObjects( unsigned n )
 {

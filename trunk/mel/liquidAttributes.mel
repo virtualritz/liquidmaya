@@ -461,7 +461,7 @@ global proc liquidCreateIrradianceSamplesAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqIrradianceNSamples"` ) {
-      addAttr -ln "liqIrradianceNSamples" -at byte  $currentNode;
+      addAttr -ln "liqIrradianceNSamples" -at short -dv 64 -min 1 -smx 256 $currentNode;
     }
   }
 }
@@ -473,7 +473,7 @@ global proc liquidCreateIrradianceMaxErrorAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqIrradianceMaxError"` ) {
-      addAttr -ln "liqIrradianceMaxError" -at "float" $currentNode;
+      addAttr -ln "liqIrradianceMaxError" -at "float" -dv 1 -min 0 -max 1 $currentNode;
     }
   }
 }
@@ -485,7 +485,7 @@ global proc liquidCreateTransformationBlurAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqTransformationBlur"` ) {
-      addAttr -ln "liqTransformationBlur" -at bool $currentNode;
+      addAttr -ln "liqTransformationBlur" -at bool -dv true $currentNode;
     }
   }
 }
@@ -497,7 +497,7 @@ global proc liquidCreateDeformationBlurAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqDeformationBlur"` ) {
-      addAttr -ln "liqDeformationBlur" -at bool $currentNode;
+      addAttr -ln "liqDeformationBlur" -at bool -dv true $currentNode;
     }
   }
 }
@@ -509,7 +509,7 @@ global proc liquidCreateMotionSamplesAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqMotionSamples"` ) {
-      addAttr -ln "liqMotionSamples" -at byte -dv 2 -min 2 -max 16 -smn 2 -smx 16 $currentNode;
+      addAttr -ln "liqMotionSamples" -at byte -dv 2 -min 2 -max 16 $currentNode;
     }
   }
 }
@@ -520,7 +520,7 @@ global proc liquidCreateMotionFactorAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqMotionFactor"` ) {
-      addAttr -ln "liqMotionFactor" -at "float" -dv 1 -min 0 $currentNode;
+      addAttr -ln "liqMotionFactor" -at "float" -dv 2 -min 0 -smx 16 $currentNode;
     }
   }
 }

@@ -120,11 +120,12 @@ global proc liquidInitGlobalVals()
     ,"pixelAspectRatio", "float", 1.0
     ,"imageDriver", "string", ""
 
+    ,"cameraBlur", "bool", false
     ,"transformationBlur", "bool", false
     ,"deformationBlur", "bool", false
     ,"shutterConfig", "long", 0
     ,"motionBlurSamples", "long", 2
-    ,"motionFactor", "float", 1.0
+    ,"motionFactor", "float", 2.0
     ,"depthOfField", "bool", false
 
     ,"pixelSamples", "long", 3
@@ -904,15 +905,16 @@ global proc liquidGlobalsForm() {
           setParent ..;
         setParent ..;
 
-        frameLayout -bs "etchedIn" -l "Options" -cll true;
+        frameLayout -bs "etchedIn" -l "Motion Blur & Depth of Field" -cll true;
           columnLayout -adj true;
             liquidShowBoolGlobal "transformationBlur" "Transformation Blur";
-            liquidShowBoolGlobal "deformationBlur"    "Deformation Blur";
-            liquidShowIntGlobalMenu "shutterConfig"   "Shutter Configuration" {"Open on Frame","Center on Frame","Center Between Frames","Close on Next Frame"};
+            liquidShowBoolGlobal "deformationBlur"    "Deformation Blur";            
             liquidShowIntGlobal  "motionBlurSamples"  "Motion Samples";
-            liquidShowIntGlobal  "motionFactor"       "Motion Factor";
-
+            liquidShowIntGlobal  "motionFactor"       "Motion Factor";            
             separator;
+            liquidShowBoolGlobal "cameraBlur"         "Camera Blur";
+            liquidShowIntGlobalMenu "shutterConfig"   "Shutter Configuration" {"Open on Frame","Center on Frame","Center Between Frames","Close on Next Frame"};
+            separator;            
             liquidShowBoolGlobal "depthOfField"       "Depth of Field";
           setParent ..;
         setParent ..;
