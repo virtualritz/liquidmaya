@@ -1482,10 +1482,10 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 								m_tmpDir = m_systemTempDirectory; 
 							}
 						}
-						if ( !fileExists( m_preFrameMel ) && ( m_preFrameMel != "" ) ) {
+						if ( ( m_preFrameMel  != "" ) && !fileExists( m_preFrameMel  ) ) {
 							cout << "Liquid -> Cannot find pre frame mel script! Assuming local.\n" << flush;
 						}
-						if ( !fileExists( m_postFrameMel ) && ( m_postFrameMel != "" ) ) { 
+						if ( ( m_postFrameMel != "" ) && !fileExists( m_postFrameMel ) ) { 
 							cout << "Liquid -> Cannot find post frame mel script! Assuming local.\n" << flush;
 						}
 						
