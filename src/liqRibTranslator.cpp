@@ -35,6 +35,7 @@
 // the MStatus instance containing the error code.
 // Assumes that "stat" contains the error value
 
+
 // Standard Headers
 #include <iostream.h>
 #include <fstream.h>
@@ -72,8 +73,8 @@
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-	/* Rib Stream Defines */
-	/* Commented out for Win32 as there is conflicts with Maya's drand on Win32 - go figure */
+  // Rib Stream Defines
+  // Commented out for Win32 as there is conflicts with Maya's drand on Win32 - go figure
 #ifndef _WIN32
 #if 0
 // Hmmmmmm do not compile
@@ -81,12 +82,6 @@ extern "C" {
 #endif
 #endif
 }
-
-// STL headers
-#include <list>
-#include <vector>
-#include <string>
-#include <map>
 
 #ifdef _WIN32
 #include <process.h>
@@ -105,132 +100,65 @@ static const char * LIQUIDVERSION =
 ;
 #endif
 
-// Maya's Headers
-#include <maya/MComputation.h>
-#include <maya/MFn.h>
-#include <maya/MFnDagNode.h>
+// Maya headers
 #include <maya/MItDag.h>
-#include <maya/MFnCamera.h>
-#include <maya/MFnNurbsCurve.h>
-#include <maya/MFnNurbsSurface.h>
 #include <maya/MFnTransform.h>
-#include <maya/MFnMesh.h>
-#include <maya/MDoubleArray.h>
-#include <maya/MFnDoubleArrayData.h>
-#include <maya/MFloatArray.h>
-#include <maya/MIntArray.h>
-#include <maya/MPointArray.h>
-#include <maya/MFloatVectorArray.h>
-#include <maya/MMatrix.h>
-#include <maya/MTransformationMatrix.h>
 #include <maya/MPlug.h>
-#include <maya/MPlugArray.h>
-#include <maya/MPoint.h>
-#include <maya/MFnPointArrayData.h>
-#include <maya/MString.h>
-#include <maya/MTime.h>
-#include <maya/MVector.h>
-#include <maya/MFloatVector.h>
-#include <maya/MArgList.h>
-#include <maya/MColor.h>
-#include <maya/MPxCommand.h>
-#include <maya/MPxNode.h>
 #include <maya/MGlobal.h>
-#include <maya/M3dView.h>
-#include <maya/MItSurfaceCV.h>
-#include <maya/MItMeshPolygon.h>
-#include <maya/MItMeshVertex.h>
-#include <maya/MDagPath.h>
-#include <maya/MDagPathArray.h>
 #include <maya/MSelectionList.h>
 #include <maya/MAnimControl.h>
-#include <maya/MItCurveCV.h>
 #include <maya/MFnLight.h>
-#include <maya/MFnNonAmbientLight.h>
-#include <maya/MFnNonExtendedLight.h>
-#include <maya/MFnAmbientLight.h>
-#include <maya/MFnDirectionalLight.h>
-#include <maya/MFnLightDataAttribute.h>
-#include <maya/MFnPointLight.h>
-#include <maya/MFnSpotLight.h>
-#include <maya/MFnSet.h>
-#include <maya/MFnLambertShader.h>
-#include <maya/MFnBlinnShader.h>
-#include <maya/MFnPhongShader.h>
-#include <maya/MCommandResult.h>
-#include <maya/MPxNode.h>
-#include <maya/MFnNumericAttribute.h>
-#include <maya/MFnTypedAttribute.h>
-#include <maya/MFnUnitAttribute.h>
-#include <maya/MFnEnumAttribute.h>
-#include <maya/MTypeId.h>
-#include <maya/MFn.h>
-#include <maya/MDataBlock.h>
-#include <maya/MDataHandle.h>
-#include <maya/MFnStringData.h>
-#include <maya/MFnVectorArrayData.h>
-#include <maya/MItDependencyGraph.h>
-#include <maya/MItDependencyNodes.h>
-#include <maya/MBoundingBox.h>
 #include <maya/MItSelectionList.h>
 #include <maya/MFileIO.h>
-#include <maya/MQuaternion.h>
 #include <maya/MSyntax.h>
 
+// Liquid headers
 #include <liquid.h>
-#include <liqRibNode.h>
-#include <liqGlobalHelpers.h>
-#include <liqRibData.h>
-#include <liqRibCoordData.h>
-#include <liqRibHT.h>
 #include <liqRibTranslator.h>
-#include <liqGetSloInfo.h>
-#include <liqRibGenData.h>
-#include <liqMemory.h>
-#include <liqProcessLauncher.h>
 #include <liqGlobalHelpers.h>
+#include <liqProcessLauncher.h>
 #include <liqRenderer.h>
 
-typedef int RtError;
-
-// this get's set if we are running the commandline version of liquid
-bool liquidBin;
-int debugMode;
 
 #define LIQ_CANCEL_FEEDBACK_MESSAGE MString( "Liquid -> RibGen Cancelled!\n" )
 #define LIQ_CHECK_CANCEL_REQUEST    if ( m_escHandler.isInterruptRequested() ) throw( LIQ_CANCEL_FEEDBACK_MESSAGE )
 #define LIQ_ADD_SLASH_IF_NEEDED(a) if ( a.asChar()[a.length() - 1] != '/' ) a += "/"
 #define LIQ_ANIM_EXT MString( ".%0*d");
 
+
 #ifndef _WIN32
 const char *liqRibTranslator::m_default_tmp_dir = "/tmp";
 #endif
 
+typedef int RtError;
+
+// this get's set if we are running the commandline version of liquid
+bool liquidBin;
+int  debugMode;
+
 // Kept global for liquidRigGenData and liquidRibParticleData
-FILE	    	*liqglo_ribFP;
-long	    liqglo_lframe;
-structJob   	liqglo_currentJob;
-bool		  liqglo_doMotion;           		// Motion blur for transformations
-bool		  liqglo_doDef;              		// Motion blur for deforming objects
-bool	    	liqglo_doCompression;	      	    	// output compressed ribs
-bool	    	liqglo_doBinary;	      	    	// output binary ribs
-RtFloat     	    liqglo_sampleTimes[5];  	    	    // current sample times
-liquidlong  	    liqglo_motionSamples;   	    	// used to assign more than two motion blur samples!
-float 		    liqglo_shutterTime;
-// Kept global for liquidRigLightData
-bool	    	    liqglo_doShadows;
-MString     	    	liqglo_sceneName;
-MString			liqglo_texDir;
-bool		    liqglo_isShadowPass;	// true if we are rendering a shadow pass
-bool	    	    liqglo_expandShaderArrays;
-bool	    	    liqglo_useBMRT;
-bool	    	    liqglo_shortShaderNames;		// true if we don't want to output path names with shaders
-MStringArray 	    	liqglo_DDimageName;
+FILE        *liqglo_ribFP;
+long         liqglo_lframe;
+structJob    liqglo_currentJob;
+bool         liqglo_doMotion;               // Motion blur for transformations
+bool         liqglo_doDef;                  // Motion blur for deforming objects
+bool         liqglo_doCompression;          // output compressed ribs
+bool         liqglo_doBinary;               // output binary ribs
+RtFloat      liqglo_sampleTimes[5];         // current sample times
+liquidlong   liqglo_motionSamples;          // used to assign more than two motion blur samples!
+float        liqglo_shutterTime;
+bool         liqglo_doShadows;              // Kept global for liquidRigLightData
+MString      liqglo_sceneName;
+MString      liqglo_texDir;
+bool         liqglo_isShadowPass;           // true if we are rendering a shadow pass
+bool         liqglo_expandShaderArrays;
+bool         liqglo_useBMRT;
+bool         liqglo_shortShaderNames;       // true if we don't want to output path names with shaders
+MStringArray liqglo_DDimageName;
 
 // Kept global for liquidGlobalHelper
-
-MString			liqglo_ribDir;
-MString			liqglo_projectDir;
+MString      liqglo_ribDir;
+MString      liqglo_projectDir;
 
 // Kept global for liqRibNode.cpp
 MStringArray liqglo_preReadArchive;
@@ -251,75 +179,69 @@ int RiNColorSamples;
 
 void liqRibTranslator::freeShaders( void ) 
 {
-    if ( debugMode ) { printf( "-> freeing shader data.\n" ); }
-    std::vector<liqShader>::iterator iter = m_shaders.begin();
-    while ( iter != m_shaders.end() )
-    {
-	int k = 0;
-	while ( k < iter->numTPV ) {
-	    iter->freeShader( );
-    	    k++;
-	}
-	++iter;
+  if ( debugMode ) { printf( "-> freeing shader data.\n" ); }
+  std::vector<liqShader>::iterator iter = m_shaders.begin();
+  while ( iter != m_shaders.end() ) {
+    int k = 0;
+    while ( k < iter->numTPV ) {
+      iter->freeShader( );
+      k++;
     }
-    m_shaders.clear();
-    if ( debugMode ) { printf("-> finished freeing shader data.\n" ); }
+    ++iter;
+  }
+  m_shaders.clear();
+  if ( debugMode ) { printf("-> finished freeing shader data.\n" ); }
 }
+
 // Hmmmmm should change magic to Liquid
 MString liqRibTranslator::magic("##RenderMan");
 
 void *liqRibTranslator::creator()
-//
 //  Description:
 //      Create a new instance of the translator
-//
 {
-    return new liqRibTranslator();
+  return new liqRibTranslator();
 }
-
 
 liqShader & liqRibTranslator::liqGetShader( MObject shaderObj )
 {
-    MString rmShaderStr;
+  MString rmShaderStr;
 
-    MFnDependencyNode shaderNode( shaderObj );
-    MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
-    rmanShaderNamePlug.getValue( rmShaderStr );
+  MFnDependencyNode shaderNode( shaderObj );
+  MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
+  rmanShaderNamePlug.getValue( rmShaderStr );
 
-    if ( debugMode ) { printf("-> Using Renderman Shader %s. \n", rmShaderStr.asChar() ) ;}
+  if ( debugMode ) { printf("-> Using Renderman Shader %s. \n", rmShaderStr.asChar() ) ;}
 
-    std::vector<liqShader>::iterator iter = m_shaders.begin();
-    while ( iter != m_shaders.end() ){
-	    std::string shaderNodeName = shaderNode.name().asChar();
-	    if ( iter->name == shaderNodeName ) {
-	    	// Already got it : nothing to do
-		    return *iter;
-	    }
-	    ++iter;
+  std::vector<liqShader>::iterator iter = m_shaders.begin();
+  while ( iter != m_shaders.end() ){
+    std::string shaderNodeName = shaderNode.name().asChar();
+    if ( iter->name == shaderNodeName ) {
+      // Already got it : nothing to do
+      return *iter;
     }
-    liqShader currentShader( shaderObj );
-    m_shaders.push_back( currentShader );
-    return m_shaders.back();
+    ++iter;
+  }
+  liqShader currentShader( shaderObj );
+  m_shaders.push_back( currentShader );
+  return m_shaders.back();
 }
 
 MStatus liqRibTranslator::liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType )
 {
-    MStatus status = MS::kSuccess;
-    MPlug triplePlug = shaderNode.findPlug( argName, &status );
-    if ( status == MS::kSuccess ) {
-    	float x, y, z;
-    	currentShader.tokenPointerArray[ currentShader.numTPV ].set( argName, pType, false, false, false, 0 );
-	triplePlug.child(0).getValue( x );
-	triplePlug.child(1).getValue( y );
-	triplePlug.child(2).getValue( z );
-	currentShader.tokenPointerArray[ currentShader.numTPV ].setTokenFloat( 0, x, y, z );
-	currentShader.numTPV++;
-    }
-    return status;
+  MStatus status = MS::kSuccess;
+  MPlug triplePlug = shaderNode.findPlug( argName, &status );
+  if ( status == MS::kSuccess ) {
+    float x, y, z;
+    currentShader.tokenPointerArray[ currentShader.numTPV ].set( argName, pType, false, false, false, 0 );
+    triplePlug.child(0).getValue( x );
+    triplePlug.child(1).getValue( y );
+    triplePlug.child(2).getValue( z );
+    currentShader.tokenPointerArray[ currentShader.numTPV ].setTokenFloat( 0, x, y, z );
+    currentShader.numTPV++;
+  }
+  return status;
 }
-
-
-
 
 void liqRibTranslator::printProgress( int stat, long first, long last, long where )
 // Description:
@@ -328,41 +250,41 @@ void liqRibTranslator::printProgress( int stat, long first, long last, long wher
 // it will print it in a format that causes the correct
 // formatting for the progress meters
 { 
-	float numFrames = ( last - first ) + 1;
-	float framesDone = where - first;
-	float statSize = ( ( 1 / (float)numFrames ) / 4 ) * (float)stat * 100.0;
-	float progressf = (( (float)framesDone / (float)numFrames ) * 100.0 ) + statSize;
-	int progress = ( int ) progressf;
-	
-	if ( !liquidBin ) {
-		MString progressOutput = "Progress: ";
-		progressOutput += (int)progress;
-		progressOutput += "%";
-		liquidInfo( progressOutput );
-	} else {
-		cout << "ALF_PROGRESS " << progress << "%\n" << flush;
-	}
-}					
+  float numFrames = ( last - first ) + 1;
+  float framesDone = where - first;
+  float statSize = ( ( 1 / (float)numFrames ) / 4 ) * (float)stat * 100.0;
+  float progressf = (( (float)framesDone / (float)numFrames ) * 100.0 ) + statSize;
+  int progress = ( int ) progressf;
+
+  if ( !liquidBin ) {
+    MString progressOutput = "Progress: ";
+    progressOutput += (int)progress;
+    progressOutput += "%";
+    liquidInfo( progressOutput );
+  } else {
+    cout << "ALF_PROGRESS " << progress << "%\n" << flush;
+  }
+}
 
 bool liqRibTranslator::liquidInitGlobals()
 // Description:
 // checks to see if the liquidGlobals are available
 {
-	MStatus status;
-	MSelectionList rGlobalList;
-	status = rGlobalList.add( "liquidGlobals" );
-	if ( rGlobalList.length() > 0 ) {
-		status.clear();
-		status = rGlobalList.getDependNode( 0, rGlobalObj );
-		if ( status == MS::kSuccess ) {
-			return true;
-		} else {
-			return false;
-		}
-	} else {
-		return false;
-	}
-	return false;
+  MStatus status;
+  MSelectionList rGlobalList;
+  status = rGlobalList.add( "liquidGlobals" );
+  if ( rGlobalList.length() > 0 ) {
+    status.clear();
+    status = rGlobalList.getDependNode( 0, rGlobalObj );
+    if ( status == MS::kSuccess ) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+  return false;
 }
 
 liqRibTranslator::liqRibTranslator()
@@ -372,144 +294,144 @@ liqRibTranslator::liqRibTranslator()
 //
 {
 #ifdef _WIN32
-	m_systemTempDirectory = getenv("TEMP");
+  m_systemTempDirectory = getenv("TEMP");
 #else
-	m_systemTempDirectory = getenv( "TEMPDIR");
-    	// Env var not found
-	if( !m_systemTempDirectory )
-	    m_systemTempDirectory = m_default_tmp_dir;
+  m_systemTempDirectory = getenv( "TEMPDIR");
+  // Env var not found
+  if( !m_systemTempDirectory ) {
+    m_systemTempDirectory = m_default_tmp_dir;
+  }
 #endif
-    m_rFilterX = 1;
-    m_rFilterY = 1;
-    m_rFilter = fBoxFilter;
+  m_rFilterX = 1;
+  m_rFilterY = 1;
+  m_rFilter = fBoxFilter;
 
+  // BMRT PARAMS: BEGIN
+  liqglo_useBMRT = false;
+  m_BMRTusePrmanDisp = true;
+  m_BMRTusePrmanSpec = false;
+  m_BMRTDStep = 0;
+  m_RadSteps = 0;
+  m_RadMinPatchSamples = 1;
+  // BMRT PARAMS: END
 
-    /* BMRT PARAMS: BEGIN */
-    liqglo_useBMRT = false;
-    m_BMRTusePrmanDisp = true;
-    m_BMRTusePrmanSpec = false;
-    m_BMRTDStep = 0;
-    m_RadSteps = 0;
-    m_RadMinPatchSamples = 1;
-    /* BMRT PARAMS: END */
-	
-    liqglo_shortShaderNames = false;
-    m_showProgress = false;
-    m_deferredBlockSize = 1;
-    m_deferredGen = false;
-    m_rgain = 1.0;
-    m_rgamma = 1.0;
-    m_outputHeroPass = true;
-    m_outputShadowPass = false;
-    m_ignoreLights = false;
-    m_ignoreSurfaces = false;
-    m_ignoreDisplacements = false;
-    m_ignoreVolumes = false;
-    m_renderAllCurves = false;
-    m_renderSelected = false;
-    m_exportReadArchive = false;
-    useNetRman = false;
-    remoteRender = false;
-    useAlfred = false;
-    cleanRib = false;
-    cleanAlf = false;
-    liqglo_doBinary = false;
-    liqglo_doCompression = false;
-    doDof = false;
-    outputpreview = 0;
-    liqglo_doMotion = false;		// matrix motion blocks
-    liqglo_doDef = false;			// geometry motion blocks
-    doCameraMotion = false;		// camera motion blocks
-    doExtensionPadding = 0; // pad the frame number in the rib file names
-    liqglo_doShadows = true;			// render shadows
-    m_justRib = false;
-    cleanShadows = 0;			// render shadows
-    cleanTextures = 0;			// render shadows
-    frameFirst = 1;			// range
-    frameLast = 1;
-    frameBy = 1;
-    pixelSamples = 1;
-    shadingRate = 1.0;
-    depth = 1;
-    outFormat = "it";
-    m_animation = false;
-    m_useFrameExt = true;		// Use frame extensions
-    outExt = "tif";
-    riboutput = "liquid.rib";
-    m_renderer = PRMan;
-    liqglo_motionSamples = 2;
-    width = 360;
-    height = 243;
-    aspectRatio = 1.0;
-    m_outPadding = 0;
-    ignoreFilmGate = true;
-    renderAllCameras = true;
-    m_lazyCompute = false;
-    m_outputShadersInShadows = false;
-    m_alfredExpand = false;
+  liqglo_shortShaderNames = false;
+  m_showProgress = false;
+  m_deferredBlockSize = 1;
+  m_deferredGen = false;
+  m_rgain = 1.0;
+  m_rgamma = 1.0;
+  m_outputHeroPass = true;
+  m_outputShadowPass = false;
+  m_ignoreLights = false;
+  m_ignoreSurfaces = false;
+  m_ignoreDisplacements = false;
+  m_ignoreVolumes = false;
+  m_renderAllCurves = false;
+  m_renderSelected = false;
+  m_exportReadArchive = false;
+  useNetRman = false;
+  remoteRender = false;
+  useAlfred = false;
+  cleanRib = false;
+  cleanAlf = false;
+  liqglo_doBinary = false;
+  liqglo_doCompression = false;
+  doDof = false;
+  outputpreview = 0;
+  liqglo_doMotion = false;		// matrix motion blocks
+  liqglo_doDef = false;			// geometry motion blocks
+  doCameraMotion = false;		// camera motion blocks
+  doExtensionPadding = 0; // pad the frame number in the rib file names
+  liqglo_doShadows = true;			// render shadows
+  m_justRib = false;
+  cleanShadows = 0;			// render shadows
+  cleanTextures = 0;			// render shadows
+  frameFirst = 1;			// range
+  frameLast = 1;
+  frameBy = 1;
+  pixelSamples = 1;
+  shadingRate = 1.0;
+  depth = 1;
+  outFormat = "it";
+  m_animation = false;
+  m_useFrameExt = true;		// Use frame extensions
+  outExt = "tif";
+  riboutput = "liquid.rib";
+  m_renderer = PRMan;
+  liqglo_motionSamples = 2;
+  width = 360;
+  height = 243;
+  aspectRatio = 1.0;
+  m_outPadding = 0;
+  ignoreFilmGate = true;
+  renderAllCameras = true;
+  m_lazyCompute = false;
+  m_outputShadersInShadows = false;
+  m_alfredExpand = false;
 #ifdef DEBUG
-    debugMode = 1;
+  debugMode = 1;
 #else	
-    debugMode = 0;
+  debugMode = 0;
 #endif
-    m_errorMode = 0;
-    extension = ".rib";
-    bucketSize[0] = 16;
-	bucketSize[1] = 16;
-    gridSize = 256;
-    textureMemory = 2048;
-    eyeSplits = 10;
-    liqglo_shutterTime = 0.5;
-    m_blurTime = 1.0;
-	fullShadowRib = false;
-	baseShadowName = "";
-	quantValue = 8;
-    liqglo_projectDir = m_systemTempDirectory;
-    liqglo_ribDir = "rib/";
-    liqglo_texDir = "rmantex/";
-    m_pixDir = "rmanpix/";
-    m_tmpDir = "rmantmp/";
-    m_ribDirG.clear();
-    m_texDirG.clear();
-    m_pixDirG.clear();
-    m_tmpDirG.clear();
-    liqglo_preReadArchive.clear();
-    liqglo_preRibBox.clear();
-    m_alfredTags.clear();
-    m_alfredServices.clear();
-    m_defGenKey.clear();
-    m_defGenService.clear();
-    m_preFrameMel.clear();
-    m_postFrameMel.clear();
-    m_preCommand.clear();
-    m_postJobCommand.clear();
-    m_postFrameCommand.clear();
-    m_preFrameCommand.clear();
-    m_outputComments = false;
-    m_shaderDebug = false;
+  m_errorMode = 0;
+  extension = ".rib";
+  bucketSize[0] = 16;
+  bucketSize[1] = 16;
+  gridSize = 256;
+  textureMemory = 2048;
+  eyeSplits = 10;
+  liqglo_shutterTime = 0.5;
+  m_blurTime = 1.0;
+  fullShadowRib = false;
+  baseShadowName = "";
+  quantValue = 8;
+  liqglo_projectDir = m_systemTempDirectory;
+  liqglo_ribDir = "rib/";
+  liqglo_texDir = "rmantex/";
+  m_pixDir = "rmanpix/";
+  m_tmpDir = "rmantmp/";
+  m_ribDirG.clear();
+  m_texDirG.clear();
+  m_pixDirG.clear();
+  m_tmpDirG.clear();
+  liqglo_preReadArchive.clear();
+  liqglo_preRibBox.clear();
+  m_alfredTags.clear();
+  m_alfredServices.clear();
+  m_defGenKey.clear();
+  m_defGenService.clear();
+  m_preFrameMel.clear();
+  m_postFrameMel.clear();
+  m_preCommand.clear();
+  m_postJobCommand.clear();
+  m_postFrameCommand.clear();
+  m_preFrameCommand.clear();
+  m_outputComments = false;
+  m_shaderDebug = false;
 #ifdef _WIN32
-    m_renderCommand = "prman";
+  m_renderCommand = "prman";
 #else
-    m_renderCommand = "render";
+  m_renderCommand = "render";
 #endif
-    m_ribgenCommand = "liquid";
-    m_shaderPath = "&:.:~";
-	createOutputDirectories = true;
-	
-    liqglo_expandShaderArrays = false;   
-	
-    /* Display Driver Defaults */
-    m_numDisplayDrivers = 0;
-    m_DDParams.clear();
-    liqglo_DDimageName.clear();
-    m_DDimageType.clear();
-    m_DDimageMode.clear();
-    m_DDparamType.clear();
-	
-	m_minCPU = m_maxCPU = 1;
-	m_cropX1 = m_cropY1 = 0.0;
-	m_cropX2 = m_cropY2 = 1.0;
-    liqglo_isShadowPass = false;
+  m_ribgenCommand = "liquid";
+  m_shaderPath = "&:.:~";
+  createOutputDirectories = true;
+
+  liqglo_expandShaderArrays = false;   
+
+  // Display Driver Defaults
+  m_numDisplayDrivers = 0;
+  m_DDParams.clear();
+  liqglo_DDimageName.clear();
+  m_DDimageType.clear();
+  m_DDimageMode.clear();
+  m_DDparamType.clear();
+
+  m_minCPU = m_maxCPU = 1;
+  m_cropX1 = m_cropY1 = 0.0;
+  m_cropX2 = m_cropY2 = 1.0;
+  liqglo_isShadowPass = false;
 }   
 
 liqRibTranslator::~liqRibTranslator()
@@ -532,71 +454,72 @@ void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * mess
 //  Description:
 //  Error handling function.  This gets called when the RIB library detects an error.  
 {
-    printf( "The renderman library is reporting and error! Code: %d  Severity: %d", code, severity );
-    MString error( message );
-    throw error;
+  printf( "The renderman library is reporting and error! Code: %d  Severity: %d", code, severity );
+  MString error( message );
+  throw error;
 }
 
 MSyntax liqRibTranslator::syntax()
 {
-	MSyntax syntax;
+  MSyntax syntax;
 
-	syntax.addFlag("p",   "preview");
-	syntax.addFlag("nop", "noPreview");
-	syntax.addFlag("GL",  "useGlobals");
-	syntax.addFlag("sel", "selected");
-	syntax.addFlag("ra",  "readArchive");
-	syntax.addFlag("acv", "allCurves");
-	syntax.addFlag("tif", "tiff");
-	syntax.addFlag("dof", "dofOn");
-	syntax.addFlag("bin", "doBinary");
-	syntax.addFlag("sh",  "shadows");
-	syntax.addFlag("nsh", "noShadows");
-	syntax.addFlag("zip", "doCompression");
-	syntax.addFlag("cln", "cleanRib");
-	syntax.addFlag("pro", "progress");
-	syntax.addFlag("mb",  "motionBlur");
-	syntax.addFlag("db",  "deformationBlur");
-	syntax.addFlag("d",   "debug");
-	syntax.addFlag("net", "netRender");
-	syntax.addFlag("fsr", "fullShadowRib");
-	syntax.addFlag("rem", "remote");
-	syntax.addFlag("alf", "alfred");
-	syntax.addFlag("nal", "noAlfred");
-	syntax.addFlag("err", "errHandler");
-	syntax.addFlag("sdb", "shaderDebug");
-	syntax.addFlag("n",   "sequence", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
-	syntax.addFlag("m",   "mbSamples", MSyntax::kLong);
-	syntax.addFlag("dbs", "defBlock");
-	syntax.addFlag("cam", "camera",  MSyntax::kString);
-	syntax.addFlag("s",   "samples", MSyntax::kLong);
-	syntax.addFlag("rnm", "ribName", MSyntax::kString);
-	syntax.addFlag("pd",  "projectDir", MSyntax::kString);
-	syntax.addFlag("prm", "preFrameMel",  MSyntax::kString);
-	syntax.addFlag("pom", "postFrameMel", MSyntax::kString);
-	syntax.addFlag("rid", "ribdir", MSyntax::kString);
-	syntax.addFlag("txd", "texdir", MSyntax::kString);
-	syntax.addFlag("tmd", "tmpdir", MSyntax::kString);
-	syntax.addFlag("pid", "picdir", MSyntax::kString);
-	syntax.addFlag("pec", "preCommand", MSyntax::kString);
-	syntax.addFlag("poc", "postJobCommand",   MSyntax::kString);
-	syntax.addFlag("pof", "postFrameCommand", MSyntax::kString);
-	syntax.addFlag("prf", "preFrameCommand",  MSyntax::kString);
-	syntax.addFlag("rec", "renderCommand",    MSyntax::kString);
-	syntax.addFlag("rgc", "ribgenCommand",    MSyntax::kString);
-	syntax.addFlag("blt", "blurTime",    MSyntax::kDouble);
-	syntax.addFlag("sr",  "shadingRate", MSyntax::kDouble);
-	syntax.addFlag("bs",  "bucketSize",  MSyntax::kLong, MSyntax::kLong);
-	syntax.addFlag("pf",  "pixelFilter", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
-	syntax.addFlag("gs",  "gridSize",  MSyntax::kLong);
-	syntax.addFlag("txm", "texmem",    MSyntax::kLong);
-	syntax.addFlag("es",  "eyeSplits", MSyntax::kLong);
-	syntax.addFlag("ar",  "aspect",    MSyntax::kDouble);
-	syntax.addFlag("x",   "width",     MSyntax::kLong);
-	syntax.addFlag("y",   "height",    MSyntax::kLong);
-	syntax.addFlag("ndf", "noDef");
-	syntax.addFlag("pad", "padding", MSyntax::kLong);
-
+  syntax.addFlag("p",   "preview");
+  syntax.addFlag("nop", "noPreview");
+  syntax.addFlag("GL",  "useGlobals");
+  syntax.addFlag("sel", "selected");
+  syntax.addFlag("ra",  "readArchive");
+  syntax.addFlag("acv", "allCurves");
+  syntax.addFlag("tif", "tiff");
+  syntax.addFlag("dof", "dofOn");
+  syntax.addFlag("bin", "doBinary");
+  syntax.addFlag("sh",  "shadows");
+  syntax.addFlag("nsh", "noShadows");
+  syntax.addFlag("zip", "doCompression");
+  syntax.addFlag("cln", "cleanRib");
+  syntax.addFlag("pro", "progress");
+  syntax.addFlag("mb",  "motionBlur");
+  syntax.addFlag("db",  "deformationBlur");
+  syntax.addFlag("d",   "debug");
+  syntax.addFlag("net", "netRender");
+  syntax.addFlag("fsr", "fullShadowRib");
+  syntax.addFlag("rem", "remote");
+  syntax.addFlag("alf", "alfred");
+  syntax.addFlag("nal", "noAlfred");
+  syntax.addFlag("err", "errHandler");
+  syntax.addFlag("sdb", "shaderDebug");
+  syntax.addFlag("n",   "sequence", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+  syntax.addFlag("m",   "mbSamples", MSyntax::kLong);
+  syntax.addFlag("dbs", "defBlock");
+  syntax.addFlag("cam", "camera",  MSyntax::kString);
+  syntax.addFlag("s",   "samples", MSyntax::kLong);
+  syntax.addFlag("rnm", "ribName", MSyntax::kString);
+  syntax.addFlag("pd",  "projectDir", MSyntax::kString);
+  syntax.addFlag("prm", "preFrameMel",  MSyntax::kString);
+  syntax.addFlag("pom", "postFrameMel", MSyntax::kString);
+  syntax.addFlag("rid", "ribdir", MSyntax::kString);
+  syntax.addFlag("txd", "texdir", MSyntax::kString);
+  syntax.addFlag("tmd", "tmpdir", MSyntax::kString);
+  syntax.addFlag("pid", "picdir", MSyntax::kString);
+  syntax.addFlag("pec", "preCommand", MSyntax::kString);
+  syntax.addFlag("poc", "postJobCommand",   MSyntax::kString);
+  syntax.addFlag("pof", "postFrameCommand", MSyntax::kString);
+  syntax.addFlag("prf", "preFrameCommand",  MSyntax::kString);
+  syntax.addFlag("rec", "renderCommand",    MSyntax::kString);
+  syntax.addFlag("rgc", "ribgenCommand",    MSyntax::kString);
+  syntax.addFlag("blt", "blurTime",    MSyntax::kDouble);
+  syntax.addFlag("sr",  "shadingRate", MSyntax::kDouble);
+  syntax.addFlag("bs",  "bucketSize",  MSyntax::kLong, MSyntax::kLong);
+  syntax.addFlag("pf",  "pixelFilter", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+  syntax.addFlag("gs",  "gridSize",  MSyntax::kLong);
+  syntax.addFlag("txm", "texmem",    MSyntax::kLong);
+  syntax.addFlag("es",  "eyeSplits", MSyntax::kLong);
+  syntax.addFlag("ar",  "aspect",    MSyntax::kDouble);
+  syntax.addFlag("x",   "width",     MSyntax::kLong);
+  syntax.addFlag("y",   "height",    MSyntax::kLong);
+  syntax.addFlag("ndf", "noDef");
+  syntax.addFlag("pad", "padding", MSyntax::kLong);
+  syntax.addFlag("rgo", "ribGenOnly");
+  
 	return syntax;
 }
 
@@ -895,7 +818,11 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       argValue = args.asString( i, &status );
       m_outPadding = argValue.asInt();
       LIQCHECKSTATUS(status, "error in -padding parameter");
-    } 
+    } else if ((arg == "-rgo") || (arg == "-ribGenOnly")) {
+      LIQCHECKSTATUS(status, "error in -ribGenOnly parameter");
+      m_justRib = true;
+    }
+     
   }
   return MS::kSuccess;
 }
