@@ -427,6 +427,7 @@ liqRibTranslator::liqRibTranslator()
   m_DDimageType.clear();
   m_DDimageMode.clear();
   m_DDparamType.clear();
+  m_DDenabled.clear();
 
   m_minCPU = m_maxCPU = 1;
   m_cropX1 = m_cropY1 = 0.0;
@@ -849,6 +850,8 @@ void liqRibTranslator::liquidReadGlobals()
 			structDDParam parameters;
 			MString varName;
 			MString varVal;
+			bool varValBool=true;
+			
 			varName = "dd";
 			varName += k;
 			varName += "imageName";
@@ -856,6 +859,7 @@ void liqRibTranslator::liquidReadGlobals()
 			if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
 			gStatus.clear();
 			liqglo_DDimageName.append( varVal );
+			
 			varName = "dd";
 			varName += k;
 			varName += "imageType";
@@ -863,6 +867,7 @@ void liqRibTranslator::liquidReadGlobals()
 			if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
 			gStatus.clear();
 			m_DDimageType.append( varVal );
+			
 			varName = "dd";
 			varName += k;
 			varName += "imageMode";
@@ -870,6 +875,7 @@ void liqRibTranslator::liquidReadGlobals()
 			if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
 			gStatus.clear();
 			m_DDimageMode.append( varVal );
+			
 			varName = "dd";
 			varName += k;
 			varName += "paramType";
@@ -877,6 +883,15 @@ void liqRibTranslator::liquidReadGlobals()
 			if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
 			gStatus.clear();
 			m_DDparamType.append( varVal );
+			
+			varName = "dd";
+			varName += k;
+			varName += "enable";
+			gPlug = rGlobalNode.findPlug( varName, &gStatus );
+			if ( gStatus == MS::kSuccess ) gPlug.getValue( varValBool );
+			gStatus.clear();
+			m_DDenabled.append( varValBool );
+			
 			varName = "numDD";
 			varName += k;
 			varName += "Param";
@@ -887,6 +902,7 @@ void liqRibTranslator::liquidReadGlobals()
 				parameters.num = 0;
 			}
 			gStatus.clear();
+      
 			for ( int p = 1; p <= parameters.num; p++ ) {
 				varName = "dd";
 				varName += k;
@@ -3136,6 +3152,11 @@ MStatus liqRibTranslator::framePrologue(long lframe)
 				MString imageName;
 				MString formatType;
 				MString imageMode;
+				// first check if additional display is enabled
+				if ((k != 0) && !m_DDenabled[k]) {
+					k++; 
+					continue;
+				}
 				// handle the output type, declaring new types in RIB as necessary
 				if ( m_DDimageType[k] == "" ) {
 					formatType = liqglo_currentJob.format;
