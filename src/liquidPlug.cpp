@@ -79,8 +79,9 @@ extern "C" {
 #include <liquidGetSloInfo.h>
 #include <liquidGetAttr.h>
 #include <liquidAttachPrefAttribute.h>
-#include <liqPreviewShader.h>
 #include <liquidMemory.h>
+#include <liqPreviewShader.h>
+#include <liqWriteArchive.h>
 
 extern  bool	liquidBin;
 
@@ -102,7 +103,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
 //
 {
     liquidBin = false;
-		
+
     MFnPlugin plugin( obj, LIQVENDOR, LIQUIDVERSION, "Any");
 
     MStatus status;
@@ -129,6 +130,10 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     // register the liquidGetAttr command
     status = plugin.registerCommand( "liquidGetAttr", liquidGetAttr::creator );
     LIQCHECKSTATUS( status, "Can't register liquidGetAttr command" );
+
+	// register the liquidWriteArchive command
+	status = plugin.registerCommand( "liquidWriteArchive", liqWriteArchive::creator, liqWriteArchive::syntax );
+	LIQCHECKSTATUS( status, "Can't register liquidWriteArchive command" );
 
     // setup all of the base liquid interface
     command = "source liquidStartup.mel";
@@ -164,6 +169,10 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
 
     status = plugin.deregisterCommand("liquidGetAttr");
     LIQCHECKSTATUS( status, "Can't deregister liquidGetAttr command" );
+
+	status = plugin.deregisterCommand("liquidWriteArchive");
+	LIQCHECKSTATUS( status, "Can't deregister liquidWriteArchive command" );
+
     // remove the UI
     MGlobal::displayInfo("\n--* Liquid *--\n");
     MGlobal::displayInfo("\nUninitialized...\n");
