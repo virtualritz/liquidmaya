@@ -32,162 +32,167 @@
 #include <maya/MGlobal.h>
 #include <maya/MSelectionList.h>
 #include <maya/MMatrix.h>
+#include <maya/MFnDagNode.h>
+#include <maya/MArgParser.h>
 
 #include <ri.h>
 
 
 void* liqWriteArchive::creator()
 {
-	return new liqWriteArchive();
+  return new liqWriteArchive();
 }
 
 MSyntax liqWriteArchive::syntax()
 {
-	MSyntax syn;
+  MSyntax syn;
 
-	syn.addArg(MSyntax::kString); // object name
-	syn.addArg(MSyntax::kString); // RIB output filename
+  syn.addArg(MSyntax::kString); // object name
+  syn.addArg(MSyntax::kString); // RIB output filename
 
-	syn.addFlag("rt", "rootTransform",   MSyntax::kBoolean);
-	syn.addFlag("ct", "childTransforms", MSyntax::kBoolean);
+  syn.addFlag("rt", "rootTransform",   MSyntax::kBoolean);
+  syn.addFlag("ct", "childTransforms", MSyntax::kBoolean);
 
-	return syn;
+  return syn;
 }
 
 
 MStatus liqWriteArchive::doIt(const MArgList& args)
 {
-	MStatus status;
+  MStatus status;
+  MArgParser argParser(syntax(), args);
+    
+  MString tempStr;
+  status = argParser.getCommandArgument(0, tempStr);
+  if (!status) {
+    MGlobal::displayError("error parsing object name argument");
+    return MS::kFailure;
+  }
+  objectNames.append(tempStr);
 
-	MString objName = args.asString(0, &status);
-	if (!status) {
-		MGlobal::displayError("error parsing object name argument");
-		return MS::kFailure;
-	}
-	objectNames.append(objName);
+  status = argParser.getCommandArgument(1, outputFilename);
+  if (!status) {
+    MGlobal::displayError("error parsing rib filename argument");
+    return MS::kFailure;
+  }
 
-	outputFilename = args.asString(1, &status);
-	if (!status) {
-		MGlobal::displayError("error parsing rib filename argument");
-		return MS::kFailure;
-	}
+  outputRootTransform = false;
+  int flagIndex = args.flagIndex("rt", "rootTransform");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    outputRootTransform   = args.asBool(flagIndex + 1, &status);
+    if (!status) {
+    MGlobal::displayError("error parsing rootTransform flag's bool argument");
+    }
+  }
 
-	outputRootTransform = false;
-	int flagIndex = args.flagIndex("rt", "rootTransform");
-	if (flagIndex != MArgList::kInvalidArgIndex) {
-		outputRootTransform   = args.asBool(flagIndex + 1, &status);
-		if (!status) {
-		MGlobal::displayError("error parsing rootTransform flag's bool argument");
-		}
-	}
-
-	outputChildTransforms = true;
-	flagIndex = args.flagIndex("ct", "childTransforms");
-	if (flagIndex != MArgList::kInvalidArgIndex) {
-		outputChildTransforms = args.asBool(flagIndex + 1, &status);
-		if (!status) {
-		MGlobal::displayError("error parsing childTransform flag's bool argument");
-		}
-	}
+  outputChildTransforms = true;
+  flagIndex = args.flagIndex("ct", "childTransforms");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    outputChildTransforms = args.asBool(flagIndex + 1, &status);
+    if (!status) {
+    MGlobal::displayError("error parsing childTransform flag's bool argument");
+    }
+  }
 
 	return redoIt();
 }
 
 MStatus liqWriteArchive::redoIt()
 {
-	MString objName = objectNames[0]; // TEMP - just handling one object at the moment
+  MString objName = objectNames[0]; // TEMP - just handling one object at the moment
 
-	// get a handle on the named object
-	MSelectionList selList;
-	selList.add(objName);
-	MDagPath objDagPath;
-	MStatus status = selList.getDagPath(0, objDagPath);
-	if (!status) {
-		MGlobal::displayError("Error retrieving object " + objName);
-		return MS::kFailure;
-	}
+  // get a handle on the named object
+  MSelectionList selList;
+  selList.add(objName);
+  MDagPath objDagPath;
+  MStatus status = selList.getDagPath(0, objDagPath);
+  if (!status) {
+    MGlobal::displayError("Error retrieving object " + objName);
+    return MS::kFailure;
+  }
 
-	// test that the output file is writable
-	FILE *f = fopen(outputFilename.asChar(), "w");
-	if (!f) {
-		MGlobal::displayError("Error writing to output file " + outputFilename + ". Check file permissions there");
-		return MS::kFailure;
-	}
-	fclose(f);
+  // test that the output file is writable
+  FILE *f = fopen(outputFilename.asChar(), "w");
+  if (!f) {
+    MGlobal::displayError("Error writing to output file " + outputFilename + ". Check file permissions there");
+    return MS::kFailure;
+  }
+  fclose(f);
 
-	// write the RIB file
-	RiBegin(const_cast<char*>(outputFilename.asChar()));
-	
-	writeObjectToRib(objDagPath, outputRootTransform);
-	
-	RiEnd();
+  // write the RIB file
+  RiBegin(const_cast<char*>(outputFilename.asChar()));
 
-	return MS::kSuccess;
+  writeObjectToRib(objDagPath, outputRootTransform);
+
+  RiEnd();
+
+  return MS::kSuccess;
 }
 
 void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTransform)
 {
-	if (objDagPath.node().hasFn(MFn::kShape)) {
-		// we're looking at a shape node, so write out the geometry to the RIB
-		outputObjectName(objDagPath);
-		if (objDagPath.hasFn(MFn::kMesh)) {
-			liquidRibObj ribObj(objDagPath, MRT_Mesh);
-			ribObj.writeObject();
-		} else if (objDagPath.hasFn(MFn::kNurbsSurface)) {
-			liquidRibObj ribObj(objDagPath, MRT_Nurbs);
-			ribObj.writeObject();
-		} else {
-			MGlobal::displayWarning("skipping unknown geometry type in liquidWriteArchive");
-		}
-	} else {
-		// we're looking at a transform node
-		bool wroteTransform = false;
-		if (writeTransform && (objDagPath.apiType() == MFn::kTransform)) {
-			// push the transform onto the RIB stack
-			outputObjectName(objDagPath);
-			MMatrix tm = objDagPath.inclusiveMatrix();
-			if (true) { //(!tm.isEquivalent(MMatrix::identity)) {
-				RtMatrix riTM;
-				tm.get(riTM);
-				wroteTransform = true;
-				outputIndentation();
-				RiAttributeBegin();
-				indentLevel++;
-				outputIndentation();
-				RiTransform(riTM);
-			}
-		}
-		// go through all the children of this node and deal with each of them
-		int nChildren = objDagPath.childCount();
-		for(int i=0; i<nChildren; ++i) {
-			MDagPath childDagNode;
-			MStatus stat = MDagPath::getAPathTo(objDagPath.child(i), childDagNode);
-			if (stat) {
-				writeObjectToRib(childDagNode, outputChildTransforms);
-			} else {
-				MGlobal::displayWarning("error getting a dag path to child node of object " + objDagPath.fullPathName());
-			}
-		}
-		if (wroteTransform) {
-			indentLevel--;
-			outputIndentation();
-			RiAttributeEnd();
-		}
-	}
+  if (objDagPath.node().hasFn(MFn::kShape)) {
+    // we're looking at a shape node, so write out the geometry to the RIB
+    outputObjectName(objDagPath);
+    if (objDagPath.hasFn(MFn::kMesh)) {
+      liquidRibObj ribObj(objDagPath, MRT_Mesh);
+      ribObj.writeObject();
+    } else if (objDagPath.hasFn(MFn::kNurbsSurface)) {
+      liquidRibObj ribObj(objDagPath, MRT_Nurbs);
+      ribObj.writeObject();
+    } else {
+      MGlobal::displayWarning("skipping unknown geometry type in liquidWriteArchive");
+    }
+  } else {
+    // we're looking at a transform node
+    bool wroteTransform = false;
+    if (writeTransform && (objDagPath.apiType() == MFn::kTransform)) {
+      // push the transform onto the RIB stack
+      outputObjectName(objDagPath);
+      MFnDagNode mfnDag(objDagPath);
+      MMatrix tm = mfnDag.transformationMatrix();
+      if (true) { // (!tm.isEquivalent(MMatrix::identity)) {
+        RtMatrix riTM;
+        tm.get(riTM);
+        wroteTransform = true;
+        outputIndentation();
+        RiAttributeBegin();
+        indentLevel++;
+        outputIndentation();
+        RiConcatTransform(riTM);
+      }
+    }
+    // go through all the children of this node and deal with each of them
+    int nChildren = objDagPath.childCount();
+    for(int i=0; i<nChildren; ++i) {
+      MDagPath childDagNode;
+      MStatus stat = MDagPath::getAPathTo(objDagPath.child(i), childDagNode);
+      if (stat) {
+        writeObjectToRib(childDagNode, outputChildTransforms);
+      } else {
+        MGlobal::displayWarning("error getting a dag path to child node of object " + objDagPath.fullPathName());
+      }
+    }
+    if (wroteTransform) {
+      indentLevel--;
+      outputIndentation();
+      RiAttributeEnd();
+    }
+  }
 }
 
 void liqWriteArchive::outputIndentation()
 {
-	for(unsigned int i=0; i<indentLevel; ++i) {
-		RiArchiveRecord(RI_VERBATIM, "\t");
-	}
+  for(unsigned int i=0; i<indentLevel; ++i) {
+    RiArchiveRecord(RI_VERBATIM, "\t");
+  }
 }
 
 void liqWriteArchive::outputObjectName(const MDagPath &objDagPath)
 {
-	MString name = objDagPath.fullPathName();
-	const char *namePtr = name.asChar();
-	RiArchiveRecord(RI_VERBATIM, "\n");
-	outputIndentation();
-	RiAttribute("identifier", "name", &namePtr, RI_NULL);
+  MString name = objDagPath.fullPathName();
+  const char *namePtr = name.asChar();
+  RiArchiveRecord(RI_VERBATIM, "\n");
+  outputIndentation();
+  RiAttribute("identifier", "name", &namePtr, RI_NULL);
 }
