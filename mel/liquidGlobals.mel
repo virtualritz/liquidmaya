@@ -115,8 +115,8 @@ global proc liquidInitGlobalVals()
     ,"numProcs", "long", 0
     ,"gain", "float", 1.0
     ,"gamma", "float", 1.0
-    ,"xResolution", "long", 0
-    ,"yResolution", "long", 0
+    ,"xResolution", "long", 640
+    ,"yResolution", "long", 480
     ,"pixelAspectRatio", "float", 1.0
     ,"imageDriver", "string", ""
 
@@ -749,7 +749,7 @@ global proc liquidDrawDisplayDrivers()
         liquidShowBoolGlobal   ( "dd" + $i + "enable" )    "Enable Output";
       }
       gridLayout -numberOfColumns 2 -cellWidthHeight 100 20 ( "DD" + $i + "buttonGridLayoutDD" );
-        button -command ( "liquidGlobalsAddDDParam " + $i ) -label "Add Param" ( "DD" + $i + "DDaddButton" );
+        button -command ( "liquidGlobalsAddDDParam " + $i )    -label "Add Param"    ( "DD" + $i + "DDaddButton" );
         button -command ( "liquidGlobalsDeleteDDParam " + $i ) -label "Remove Param" ( "DD" + $i + "DDremoveButton" );
       setParent ( "DD" + $i + "columnLayoutDD" );
       int $j;
