@@ -161,35 +161,41 @@ int main(int argc, char **argv)
     printf( "ALF_EXIT_STATUS 1\n" );
     MLibrary::cleanup( 1 );
     return (1);
-  } else if ( !fileExists( fileName ) ) {
+  }
+  if ( !fileExists( fileName ) ) {
     status.perror("Liquid -> file not found: " + fileName + "\n");
     printf( "ALF_EXIT_STATUS 1\n" );
     MLibrary::cleanup( 1 );
     return ( 1 );
-  } else {
-    // load the file into liquid's virtual maya
-    status = MFileIO::open( fileName );
-    if ( !status ) {
-      MString error = " Error opening file: ";
-      error += fileName.asChar();
-      status.perror( error );
-      printf( "ALF_EXIT_STATUS 1\n" );
-      MLibrary::cleanup( 1 );
-      return( 1 ) ;
-    }
-
-    liqRibTranslator liquidTrans;
-
-#ifndef _WIN32
-    for (i = 0; i <= SIGRTMAX; i++) {
-      signal(i, signalHandler);
-    }
-#endif
-
-    liquidTrans.doIt( myArgs );
+  }
+  
+  // load the file into liquid's virtual maya
+  status = MFileIO::open( fileName );
+  if ( !status ) {
+    MString error = " Error opening file: ";
+    error += fileName.asChar();
+    status.perror( error );
+    printf( "ALF_EXIT_STATUS 1\n" );
+    MLibrary::cleanup( 1 );
+    return( 1 ) ;
   }
 
-  printf( "ALF_EXIT_STATUS 0\n" );
+  liqRibTranslator liquidTrans;
+
+#ifndef _WIN32
+  for (i = 0; i <= SIGRTMAX; i++) {
+    signal(i, signalHandler);
+  }
+#endif
+
+  status = liquidTrans.doIt( myArgs );
+  
+  if (status) {
+    printf( "ALF_EXIT_STATUS 0\n" );
+  } else {
+    printf( "ALF_EXIT_STATUS 1\n" );
+  }
+  
   MLibrary::cleanup( 0 );
   return (0);
 }
