@@ -100,16 +100,19 @@ $(VPATH) :
 liquidPlug : $(LIQUIDPLUG)
 
 $(LIQUIDPLUG) : liquidPlug.$(OBJEXT) $(LIQUIDMAINOBJS)
-	$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDOUTMAINOBJS) $(LIBS)
+	@echo $@
+	@$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDOUTMAINOBJS) $(LIBS)
 	
 $(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDMAINOBJS)
-	$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(VPATH)/$(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDOUTMAINOBJS) $(LIQUIDBINLIBS)
+	@echo $@
+	@$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(VPATH)/$(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDOUTMAINOBJS) $(LIQUIDBINLIBS)
 
 
 $(LIQUIDMAINOBJS) : ../include/liquid.h
 
 .cpp.$(OBJEXT):
-	$(CPP) -c $(INCLUDES) $(CPPFLAGS) -o $(VPATH)/$@ $<
+	@echo $@
+	@$(CPP) -c $(INCLUDES) $(CPPFLAGS) -o $(VPATH)/$@ $<
 
 .cpp.i:
 	$(CPP) -E $(INCLUDES) $(CPPFLAGS) $*.cc > $(VPATH)/$*.i
