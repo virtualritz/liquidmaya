@@ -1,5 +1,4 @@
 #include "liquidversion.iss"
-#include "password.iss"
 
 [Setup]
 AppPublisher=Liquidmaya at Sourceforge
@@ -10,7 +9,7 @@ DefaultDirName={pf}\Liquid
 DefaultGroupName=Liquid
 AllowNoIcons=true
 LicenseFile=mpl.rtf
-WizardImageFile=.\liquidlarge-x.bmp
+WizardImageFile=.\liquidlarge.bmp
 WizardSmallImageFile=.\liquidsmall.bmp
 WizardImageBackColor=$FFFFFF
 AlwaysShowDirOnReadyPage=true
