@@ -16,36 +16,55 @@ global proc string liquidGetHome()
 
 global proc liquidLoadScripts()
 {
+string $mel_files[] = {
+"AEdagNodeInclude.mel",
+"AEliquidFGGIOverrideFlags.mel",
+"AEliquidInstanceFlags.mel",
+"AEliquidNurbsCurveShape.mel",
+"AEliquidSetFlags.mel",
+"AEliquidSubdivisionSurfaceShape.mel",
+"AEobjectSetTemplate.mel",
+"getMultiListerSelection.mel",
+"liquidAttachParams.mel",
+"liquidAttrWindow.mel",
+"liquidAttributes.mel",
+"liquidCommon.mel",
+"liquidConvMTOR.mel",
+"liquidConvertMtor.mel",
+"liquidDelayedReadArchive.mel",
+"liquidFileBrowser.mel",
+"liquidFluid.mel",
+"liquidFluidOutliner.mel",
+"liquidGlobals.mel",
+"liquidHelpers.mel",
+"liquidIni.mel",
+"liquidMenuHelp.mel",
+"liquidParamDialogWindow.mel",
+"liquidParseSlShader.mel",
+"liquidPrefAttribute.mel",
+"liquidReAttachParams.mel",
+"liquidReadArchive.mel",
+"liquidRenderCurve.mel",
+"liquidRibBox.mel",
+"liquidRibGen.mel",
+/*"liquidSLManager.mel",*/
+"liquidShaders.mel",
+"liquidShutdown.mel",
+"liquidSlInfo.mel",
+"liquidSlParseSdl.mel",
+"liquidSlParseSdr.mel",
+"liquidSlParseSlo.mel",
+"liquidSlParseSlx.mel",
+/*"liquidStartup.mel",*/
+"liquidSubdiv.mel",
+"liquidSubdivInspector.mel"
+};
+
   string $liquidHome = liquidGetHome();
-  eval( "source \"" + $liquidHome + "/mel/liquidGlobals.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidCommon.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidIni.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidHelpers.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidFluid.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidParamDialogWindow.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidShaders.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidRibGen.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidMenuHelp.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidPrefAttribute.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidRibBox.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidReadArchive.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidDelayedReadArchive.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidFileBrowser.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidSubdiv.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidRenderCurve.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidAttributes.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidSubdivInspector.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidConvertMtor.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/liquidShutdown.mel\"" );
-  // eval( "source \"" + $liquidHome + "/mel/liquidSLManager.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/AEliquidFGGIOverrideFlags.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/AEliquidSubdivisionSurfaceShape.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/AEliquidNurbsCurveShape.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/AEliquidInstanceFlags.mel\"" );
-  eval( "source \"" + $liquidHome + "/mel/AEliquidSetFlags.mel\"" );
-  // eval( "source \"" + $liquidHome + "/mel/AEobjectSetTemplate.mel\"" );
-  // eval( "source \"" + $liquidHome + "/mel/AEdagNodeInclude.mel\"" );
-  // eval( "source \"" + $liquidHome + "/mel/AEtransformTemplate.mel\"" );
+  int $i;
+  for ( $i = 0; $i < size($mel_files); $i++) {
+  	eval( "source \"" + $liquidHome + "/mel/" + $mel_files[$i]  + "\"" );
+  }
 }
 
 
