@@ -1,0 +1,55 @@
+2002-12-17  sdeverly
+    * Added this file
+    * Changed Liquid version to 1.5.1
+    * compilation
+    	Removed conditionnal statements which do not work on irix
+	Added LIQRMAN env variable defaulted to aqsis
+	Added default LIQRMANPATH for each LIQRMAN
+	Added default MAYA_LOCATION value
+	Added prelimanary checks for MAYA_LOCATION and LIQRMANPATH
+	Added Makefile.<os name> with specific flags
+	Corrected compilation flags
+	Output in ../bin/liquid<LIQUIDVERSION>/<MAYA VERSION>/<OS NAME>
+	Compilation ok with Entropy on suse 71
+	Compilation ok with Entropy on irix 6.5.17
+	--- Compilation ok with PRman
+	--- Compilation ok with Air
+	--- Compilation ok with Aqsis
+	--- Compilation ok with Dotc
+	--- Compilation ok with 3dlight
+    * cleaned up code
+    	Added LIQDEBUGPRINTF macro
+	Removed include <slo.h> where not used
+	---- Corrected Indentation 4 + 4 + 4
+	Moved rTokenPointer to liqTokenPointer with .h and .cpp
+	Added liquid prefix to Rib<type>Data classes
+	--- Renamed liquidRib<type>Data into liqRib<type>Data
+	Used LIQUIDVERSION defined in Makefile
+	Removed time check in registerPlugin
+	Removed share of CVs array with tokens liquidRibSurfaceData
+	Removed liquidRibParticleData pcolor, pwidth, particles pocap menbers
+	--- Changed loading message
+	--- Added m_ prefix to class members
+    	--- Added liq prefix to class and struct
+	--- Tried to make class member private
+	--- Added typedef struct where needed
+	--- Use assert only in debug version
+	Removed all sprintf used as strcpy
+	--- Fixed various string overflow
+	--- Removed global variables
+	    	Removed liquidVersion
+		Removed isRegistred
+		--- Create a lidJobOption class and pass it to data.write( ) to remove last global variables
+    	Removed liquidRibMeshData polyuvparam
+	Used simple char for MString index and rindex instead of string
+	--- Rewrote general shader parsing
+	--- Check float to int conversion warning messages
+	Changed ifdef UNIX to ifndef _WIN32
+	Changed #include <malloc.h> to #include <stdlib.h> for efence when not _WIN32
+	Removed normalizeNurbsUV global option ( always true )
+	--- Remove all alloca calls
+	--- Use const_cast for const char * to char * casting
+	Changed struct structShader to  class liqShader
+	Changed SLO_TYPE_* to SHADER_TYPE_*
+	--- Fixed bug : crash in fluids editor when the plugin is unloaded and reloaded
+	

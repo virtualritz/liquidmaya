@@ -39,7 +39,7 @@
 **/
 
 // Standard Headers
-#include <malloc.h>
+#include <stdlib.h>
 #include <sys/types.h>
 
 // maya headers
@@ -85,41 +85,36 @@ void removeTrack( long addr )
     }
 		++i;
 	}
-};
+}
 
 void ldumpUnfreed()
 {
-	long totalSize = 0;
-	char buf[1024];
+    long totalSize = 0;
+    char buf[1024];
 
-	sprintf(buf, "-------------- Liquid - Current Memory Usage --------------\n");
-	printf(buf);
+    printf("-------------- Liquid - Current Memory Usage --------------\n");
 
-	std::list<ALLOC_INFO>::iterator i = allocList.begin();
-	while ( i != allocList.end() ) {
-		sprintf(buf, "%-50s:\t\tLINE %d,\t\tADDRESS %d\t%d unfreed\n",
-    i->file, i->line, i->address, i->size);
-    printf( buf );
-    totalSize += i->size;
-		++i;
-  }
-	sprintf(buf, "-----------------------------------------------------------\n");
-	printf(buf);
-	sprintf(buf, "Total Unfreed: %d bytes\n", totalSize);
-	printf(buf);
-};
+    std::list<ALLOC_INFO>::iterator i = allocList.begin();
+    while ( i != allocList.end() ) {
+	    printf("%-50s:\t\tLINE %d,\t\tADDRESS %d\t%d unfreed\n", i->file, i->line, i->address, i->size);
+    	    totalSize += i->size;
+	    ++i;
+    }
+    printf("-----------------------------------------------------------\n");
+    printf("Total Unfreed: %d bytes\n", totalSize);
+}
 
 int lmemUsage() 
 {
-	long totalSize = 0;
+    long totalSize = 0;
 	
-	std::list<ALLOC_INFO>::iterator i = allocList.begin();
-	while ( i != allocList.end() ) {
-    totalSize += i->size;
-		++i;
-  }
+    std::list<ALLOC_INFO>::iterator i = allocList.begin();
+    while ( i != allocList.end() ) {
+    	totalSize += i->size;
+    	++i;
+    }
 
-	return totalSize;
+    return totalSize;
 }
 
 // wrapper for malloc that keeps track of allocated memory as well as

@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -46,7 +45,6 @@
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-#include <slo.h>
 }
 
 #ifdef _WIN32
@@ -75,18 +73,19 @@ extern "C" {
 #include <liquidRIBGen.h>
 
 extern int debugMode;
-extern FILE *ribFP;
-extern long lframe;
-extern structJob currentJob;
-extern bool doMotion;
-extern bool doDef;
-extern bool doCompression;
-extern bool doBinary;
-extern RtFloat sampleTimes[5];
-extern liquidlong motionSamples;
-extern float shutterTime;
 
-RibGenData::RibGenData( MObject obj, MDagPath path )
+extern FILE *liqglo_ribFP;
+extern long liqglo_lframe;
+extern structJob liqglo_currentJob;
+extern bool liqglo_doMotion;
+extern bool liqglo_doDef;
+extern bool liqglo_doCompression;
+extern bool liqglo_doBinary;
+extern RtFloat liqglo_sampleTimes[5];
+extern liquidlong liqglo_motionSamples;
+extern float liqglo_shutterTime;
+
+liquidRibGenData::liquidRibGenData( MObject obj, MDagPath path )
 //
 //  Description:
 //      create a RIB Gen
@@ -117,11 +116,11 @@ RibGenData::RibGenData( MObject obj, MDagPath path )
 	ribGenPlug.getValue( plugVal );
 	ribGenSoName = parseString( plugVal );
 	ribStatus.objectName = (char *)lmalloc( sizeof(char) * ( fnNode.name().length() + 1 ) );
-	sprintf( ribStatus.objectName, fnNode.name().asChar() );
+	strcpy( ribStatus.objectName, fnNode.name().asChar() );
 	ribStatus.dagPath = path;
 }
 
-RibGenData::~RibGenData()
+liquidRibGenData::~liquidRibGenData()
 //
 //  Description:
 //      class destructor
@@ -132,41 +131,42 @@ RibGenData::~RibGenData()
 		ribStatus.objectName = NULL; 
 }
 
-void RibGenData::write()
+void liquidRibGenData::write()
 {
 	if ( debugMode ) { printf("-> writing ribgen\n"); }
+#ifdef PRMAN
 #ifndef _WIN32
 	void *handle;
 #else 
 	HINSTANCE handle;
 #endif
 	char *dlStatus = NULL;
-	
-	ribStatus.ribFP = ribFP;
-	ribStatus.frame = lframe;
-	if ( currentJob.isShadow ) {
+	// Hmmmmmm do not really understand what's going on here 
+	ribStatus.ribFP = liqglo_ribFP;
+	ribStatus.frame = liqglo_lframe;
+	if ( liqglo_currentJob.isShadow ) {
 		ribStatus.renderPass = liquidRIBStatus::rpShadow;
 	} else {
 		ribStatus.renderPass = liquidRIBStatus::rpFinal;
 	}
-	ribStatus.transBlur = doMotion;
-	ribStatus.defBlur = doDef;
-	ribStatus.compressed = doCompression;
-	ribStatus.binary = doBinary;
-	currentJob.camera[0].mat.get( ribStatus.cameraMatrix );
-	ribStatus.sampleTimes = sampleTimes;
-	if ( doMotion || doDef ) {
-		if ( !currentJob.isShadow ) {
-			ribStatus.motionSamples = motionSamples;
+	ribStatus.transBlur = liqglo_doMotion;
+	ribStatus.defBlur = liqglo_doDef;
+	ribStatus.compressed = liqglo_doCompression;
+	ribStatus.binary = liqglo_doBinary;
+	liqglo_currentJob.camera[0].mat.get( ribStatus.cameraMatrix );
+	ribStatus.sampleTimes = liqglo_sampleTimes;
+	if ( liqglo_doMotion || liqglo_doDef ) {
+		if ( !liqglo_currentJob.isShadow ) {
+			ribStatus.motionSamples = liqglo_motionSamples;
 		} else {
 			ribStatus.motionSamples = 1;
 		}
 	} else {
 		ribStatus.motionSamples = 1;
 	}		
-	ribStatus.shutterAngle = shutterTime;
+	ribStatus.shutterAngle = liqglo_shutterTime;
+    	// Hmmmmmm what is it ?
 	ribStatus.RiConnection = RiDetach();
-	
 	typedef liquidRIBGen *(*createRibGen)();
 	typedef void (*destroyRibGen)( liquidRIBGen * );
 	
@@ -210,11 +210,14 @@ void RibGenData::write()
 		errorString += ribStatus.objectName;
 		liquidInfo( errorString );
 	}
-	
+    	// Hmmmmm what is it ?
 	RiFreeConnection( ( char * )ribStatus.RiConnection );
+#else
+    liquidInfo( "Sorry : Can't handle Rib Gen ...\n" );
+#endif
 }
 		
-bool RibGenData::compare( const RibData & otherObj ) const
+bool liquidRibGenData::compare( const liquidRibData & otherObj ) const
 //
 //  Description:
 //      Compare this ribgen to the other for the purpose of determining
@@ -226,7 +229,7 @@ bool RibGenData::compare( const RibData & otherObj ) const
 	return true;
 }
 		
-ObjectType RibGenData::type() const
+ObjectType liquidRibGenData::type() const
 //
 //  Description:
 //      return the geometry type

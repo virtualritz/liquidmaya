@@ -1,72 +1,43 @@
-LIQUIDVERSION = 1_3
+SHELL = sh
+LIQUIDVERSION 	= "1.5.1"
+#------------------------------------------------------
+all : debug
 
-ifeq ($(OS),linux)
-	C++			= g++
-	ALIBS = 
-	ABINLIBS = 
-	C++FLAGS	= -g -x c++ -MD -pipe -march=pentiumpro -LANG:std -DUNIX -D_LINUX -DLINUX -D_BOOL -D_ISOC9X_SOURCE -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -fexceptions -fno-gnu-keywords -fno-dollars-in-identifiers -Wall -W -Wno-comment -Wtraditional -Wundef -Wpointer-arith -Wcast-qual -Wwrite-strings -Winline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses
-	#C++FLAGS	= -g -x c++ -MD -pipe -march=pentiumpro -LANG:std -DUNIX -D_LINUX -DLINUX -D_BOOL -D_ISOC9X_SOURCE -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -fexceptions -fno-gnu-keywords -fno-dollars-in-identifiers -fno-handle-signatures -Wall -W -Wno-comment -Wtraditional -Wundef -Wpointer-arith -Wcast-qual -Wwrite-strings -Winline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses
-	LDFLAGS = 
-	NO_TRANS_LINK = 
-else
-	C++			= CC
-	ALIBS = -lC -lgen  -lmalloc
-	ABINLIBS =
-	C++FLAGS = -g -mips3 -n32 -LANG:std -D_IRIX -DUNIX
-	C++FLAGSO = -Ofast=ip30 -mips3 -n32 -LANG:std
-	MAYALIBAPP = 
-	LDFLAGS = -n32
-	NO_TRANS_LINK = -no_transitive_link
-endif
-
-INCLUDES	= -I. -I.. -I$(MAYA_LOCATION)/include -I../riboutput -I$(RMANTREE)/include -I$(ENTROPYHOME)/include -I../include
-
-LIBS		= -L../lib/$(OS) -lribwrite -L$(MAYA_LOCATION)/lib -L$(RMANTREE)/lib -L$(ENTROPYHOME)/lib $(ALIBS)  -lOpenMayaUI -lOpenMayaAnim -lsloargs -lm -llkm -lzip -ltarget -lsleargs
-PLUGINLIBS = -lOpenMaya -lOpenMayaRender
-BINLIBS = $(ABINLIBS)
-LD			= $(MAYA_LOCATION)/bin/mayald $(LDFLAGS)
-
-.SUFFIXES: .cpp .o .so .c
-
-default: liquidPlug liquidBin
-
-LIQUIDMAINOBJS =  liquidRibObj.o \
-		  liquidRibNode.o \
-		  liquidRibData.o \
-		  liquidGlobalHelpers.o \
-		  liquidRibSurfaceData.o \
-		  liquidRibNuCurveData.o \
-		  liquidRibParticleData.o \
-		  liquidRibMeshData.o \
-		  liquidRibLocatorData.o \
-		  liquidRibCoordData.o \
-		  liquidRibLightData.o \
-		  liquidRibHT.o \
-		  liquidRibTranslator.o \
-		  liquidGetSloInfo.o \
-		  liquidGetAttr.o \
-		  liquidAttachPrefAttribute.o \
-		  liquidRibGenData.o \
-		  liquidPreviewShader.o \
-		  liquidRibSubdivisionData.o \
-		  liquidMemory.o
-
-liquidPlug : liquidPlug.o $(LIQUIDMAINOBJS)
-	$(C++) -o ../bin/$(OS)/liquid$(LIQUIDVERSION).so -shared $@.o $(LIQUIDMAINOBJS) $(LIBS) $(PLUGLIBS) $(NO_TRANS_LINK) $(C++FLAGS)
-	
-liquidBin : liquidBin.o $(LIQUIDMAINOBJS)
-	$(LD) -o ../bin/$(OS)/liquid$(LIQUIDVERSION) $@.o $(LIQUIDMAINOBJS) $(LIBS) $(BINLIBS) $(NO_TRANS_LINK) $(C++FLAGS) -DLIQUIDBIN
-	
-.cpp.o:
-	$(C++) -c $(INCLUDES) $(C++FLAGS) $<
-
-.cpp.i:
-	$(C++) -E $(INCLUDES) $(C++FLAGS) $*.cc > $*.i
-
-depend:
-	makedepend $(INCLUDES) -I/usr/include/CC liquid.cc
-
-clean:
-	rm -rf *.so *.o *.d ii_files so_locations
-
-# DO NOT DELETE
+newversion clean debug : 
+	@if( test `uname` = 'IRIX' || test `uname` = 'IRIX64'); then\
+	    whichflags=irix65dbg;\
+	    os=irix;\
+	elif( test `uname` = 'Linux' ); then\
+	    if( test -f "/etc/redhat-release" ); then\
+		whichflags=redhat62dbg;\
+		os=redhat;\
+	    else \
+		whichflags="suse71dbg";\
+		os=suse;\
+	    fi;\
+	fi; \
+	LIQRMAN=$${LIQRMAN:=aqsis}; \
+	case $${LIQRMAN} in \
+	    aqsis) LIQRMANPATH=$${AQSIS_BASE_PATH:=/usr/local/aqsis} LIQRMANFLAGS=-DAQSIS LIQRMANLIBS=-lrib2 USEDVAR=AQSIS_BASE_PATH;; \
+	    entropy) LIQRMANPATH=$${ENTROPYHOME:=/usr/local/exluna/Entropy} LIQRMANFLAGS=-DENTROPY LIQRMANLIBS="-lribout -lsleargs" USEDVAR=ENTROPYHOME;; \
+	    prman) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lribwrite -lsloargs" USEDVAR=RMANTREE;; \
+	    (*) echo "Do not know how to handle" $${LIQRMAN}". Set LIQRMAN to either aqsis entropy or prman"; exit 1;; \
+	esac; \
+	if( test ! -d  $${LIQRMANPATH} ); then \
+	    echo $${LIQRMANPATH} "do not seem to exist. Check your" $${USEDVAR} "env var."; exit 1; \
+	fi; \
+	if( test $@ = 'debug' ); then \
+	    EXTRAFLAGS="-g -DDEBUG -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\""; \
+	    MAYA_LOCATION=$${MAYA_LOCATION:=/usr/aw/maya} ;\
+	    if( test -d $${MAYA_LOCATION}); then\
+	    	( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="debug" $(make) -f Makefile.$${os} $@ ); \
+	    else \
+		echo $${MAYA_LOCATION} " do not seem to exists. Please set MAYA_LOCATION to a correct value."; exit 1; \
+	    fi; \
+	else \
+	    ( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="debug" $(make) -f Makefile.$${os} $@ ); \
+	    EXTRAFLAGS="-O -DLIQUIDVERSION=\"$LIQUIDVERSION\""; \
+	    for vers in /usr/aw/maya*.*;\
+		    do ( echo Got $${whichflags} $${vers:=none}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${vers:=none} MAYA_VERSION=`echo $${vers:=none} | sed -e 's/\/usr\/aw\///' | sed -e 'y/./_/'` $(make) -f Makefile.$${os} $@ );\
+	    done; \
+	fi;

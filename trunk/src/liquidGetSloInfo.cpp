@@ -36,24 +36,26 @@
 #include <time.h>
 #include <stdio.h>
 #include <iostream.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 // Renderman Headers
 extern "C" {
-	#include <ri.h>
-	#include <slo.h>
+#include <ri.h>
+#ifdef PRMAN
+#include <slo.h>
+#endif
 }
 // Entropy Headers
+#ifdef ENTROPY
 #include <sleargs.h>
-
+#endif
 #ifdef _WIN32
-	#include <process.h>
-	#include <malloc.h>
+#include <process.h>
+#include <malloc.h>
 #else
-	#include <unistd.h>
-	#include <stdlib.h>
-	#include <alloca.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <alloca.h>
 #endif
 
 // Maya's Headers
@@ -134,13 +136,15 @@ float liquidGetSloInfo::getArgFloatDefault( int num, int entry )
 
 int liquidGetSloInfo::setShader( MString shaderName )
 {
+    int rstatus = 0;
 	resetIt();
 	MString shaderExtension = shaderName.substring( shaderName.length() - 3, shaderName.length() - 1 );
 	MString shaderFileName = shaderName.substring( 0, shaderName.length() - 5 );
+#ifdef PRMAN
 	if ( shaderExtension == MString( "slo" ) ) {
 		/* Pixar's Photorealistic Renderman Shader */
 		char *sloFileName = (char *)alloca(shaderFileName.length() + 1 );
-		sprintf(sloFileName, shaderFileName.asChar());
+		strcpy(sloFileName, shaderFileName.asChar());
 		int err = Slo_SetShader( sloFileName );
 		if (err != 0) {
 			printf( "Error finding shader %s \n",shaderFileName.asChar() ); 
@@ -160,7 +164,7 @@ int liquidGetSloInfo::setShader( MString shaderName )
 				if ( arg->svd_valisvalid ) { 
 					switch ( arg->svd_type ) {
 					case SLO_TYPE_STRING: {
-						char *strings = ( char * )lmalloc( sizeof( char ) * sizeof( arg->svd_default.stringval ) );
+						char *strings = ( char * )lmalloc( sizeof( char ) * sizeof( arg->svd_default.stringval ) + 1 );
 						strcpy( strings, arg->svd_default.stringval );
 						argDefault.push_back( ( void * )strings );
 						break;
@@ -225,10 +229,17 @@ int liquidGetSloInfo::setShader( MString shaderName )
 			}
 		}
 		Slo_EndShader();
-	} else if ( shaderExtension == MString( "sle" ) ) {
+		rstatus = 1;
+	} 
+#ifdef ENTROPY // PRMAN + ENTROPY
+	else 
+#endif
+#endif // PRMAN
+#ifdef ENTROPY	
+	if ( shaderExtension == MString( "sle" ) ) {
 		/* Exluna's Entropy Shader */
 		char *sleFileName = (char *)alloca(shaderFileName.length() + 1 );
-		sprintf(sleFileName, shaderFileName.asChar());
+		strcpy(sleFileName, shaderFileName.asChar());
 		sleArgs currentShader( sleFileName );
 		if ( sleFileName == NULL ) {
 			printf( "Error finding shader %s \n",shaderFileName.asChar() ); fflush( stdout );
@@ -271,6 +282,7 @@ int liquidGetSloInfo::setShader( MString shaderName )
 						}
 						break;
 											  }
+					// Hmmmmmmmm what about array args in this case ?
 					case sleArgs::TYPE_COLOR:
 					case sleArgs::TYPE_POINT:
 					case sleArgs::TYPE_VECTOR:
@@ -312,9 +324,11 @@ int liquidGetSloInfo::setShader( MString shaderName )
 					}
 				}
 			}
+		rstatus = 1;
 		}
 	}
-	return 1;
+#endif // ENTROPY
+	return rstatus;
 }
 
 void liquidGetSloInfo::resetIt()

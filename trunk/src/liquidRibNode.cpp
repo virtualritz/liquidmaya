@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -46,11 +45,11 @@
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-#include <slo.h>
 }
 
 #ifdef _WIN32
 #include <process.h>
+#include <malloc.h>
 #else
 #include <unistd.h>
 #include <stdlib.h>
@@ -79,12 +78,13 @@ extern "C" {
 #include <liquidMemory.h>
 
 extern int debugMode;
-extern MStringArray preReadArchive;
-extern MStringArray preRibBox;
-extern MStringArray preReadArchiveShadow;
-extern MStringArray preRibBoxShadow;
 
-RibNode::RibNode( RibNode * instanceOfNode )
+extern MStringArray liqglo_preReadArchive;
+extern MStringArray liqglo_preRibBox;
+extern MStringArray liqglo_preReadArchiveShadow;
+extern MStringArray liqglo_preRibBoxShadow;
+
+liquidRibNode::liquidRibNode( liquidRibNode * instanceOfNode )
 // 
 //  Description:
 //      construct a new hash table entry
@@ -111,7 +111,7 @@ instance( instanceOfNode )
 	nodeShadingRate = 0.0;
 }
 
-RibNode::~RibNode()
+liquidRibNode::~liquidRibNode()
 // 
 //  Description:
 //      class destructor
@@ -130,14 +130,14 @@ RibNode::~RibNode()
     if (objects[4] != NULL) { objects[4]->unref(); objects[4] = NULL; }
     if ( debugMode ) { printf("-> killing no obj\n" ); }
     no = NULL;
-	name.clear();
-	ribBoxString.clear();
-	archiveString.clear();
-	delayedArchiveString.clear();
+    name.clear();
+    ribBoxString.clear();
+    archiveString.clear();
+    delayedArchiveString.clear();
     if ( debugMode ) { printf("-> finished killing rib node.\n" ); }
 }	
 
-RibObj * RibNode::object(int interval)
+liquidRibObj * liquidRibNode::object(int interval)
 // 
 //  Description:
 //      get the object (surface, mesh, light, etc) refered to by this node
@@ -146,7 +146,7 @@ RibObj * RibNode::object(int interval)
     return objects[interval];
 }
 
-void RibNode::set( MDagPath &path, int sample, ObjectType objType )
+void liquidRibNode::set( MDagPath &path, int sample, ObjectType objType )
 // 
 //  Description:
 //      set this node with the given path.  If this node already refers to
@@ -156,8 +156,9 @@ void RibNode::set( MDagPath &path, int sample, ObjectType objType )
 {
 	if ( debugMode ) { printf("-> setting rib node\n"); }
 	DagPath = path;
+#if 0
 	int instanceNum = path.instanceNumber();
-	
+#endif	
 	isRibBox = false;
 	isArchive = false;
 	isDelayedArchive = false;
@@ -187,10 +188,10 @@ void RibNode::set( MDagPath &path, int sample, ObjectType objType )
 		nPlug.getValue( ribBoxValue );
 		if ( ribBoxValue.substring(0,2) == "*H*" ) {
 			MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
-			preRibBox.append( parseString( parseThis ) );
+			liqglo_preRibBox.append( parseString( parseThis ) );
 		} else if ( ribBoxValue.substring(0,3) == "*SH*" ) {
 			MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
-			preRibBoxShadow.append( parseString( parseThis ) );
+			liqglo_preRibBoxShadow.append( parseString( parseThis ) );
 		} else { 
 			ribBoxString = parseString( ribBoxValue );
 			isRibBox = true;
@@ -203,10 +204,10 @@ void RibNode::set( MDagPath &path, int sample, ObjectType objType )
 		nPlug.getValue( archiveValue );
 		if ( archiveValue.substring(0,2) == "*H*" ) {
 			MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
-			preReadArchive.append( parseString( parseThis ) );
+			liqglo_preReadArchive.append( parseString( parseThis ) );
 		} else if ( archiveValue.substring(0,3) == "*SH*" ) {
 			MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
-			preReadArchiveShadow.append( parseString( parseThis ) );
+			liqglo_preReadArchiveShadow.append( parseString( parseThis ) );
 		} else {			
 			archiveString = parseString( archiveValue );
 			isArchive = true;
@@ -268,7 +269,7 @@ void RibNode::set( MDagPath &path, int sample, ObjectType objType )
 	if ( debugMode ) { printf("-> creating rib object for given path\n"); }
 	
 	MObject obj = path.node();
-	no = new RibObj( path, objType );
+	no = new liquidRibObj( path, objType );
 	if ( debugMode ) { printf("-> creating rib object for reference\n"); }
 	no->ref();
 	
@@ -294,7 +295,7 @@ void RibNode::set( MDagPath &path, int sample, ObjectType objType )
 	if ( debugMode ) { printf("-> done creating rib object for given path\n"); }
 }
 
-MDagPath & RibNode::path()
+MDagPath & liquidRibNode::path()
 //
 //  Description:
 //      Return the path in the DAG to the instance that this node represents
@@ -303,7 +304,7 @@ MDagPath & RibNode::path()
 	return DagPath;   
 }
 
-MObject RibNode::findShadingGroup( const MDagPath& path )
+MObject liquidRibNode::findShadingGroup( const MDagPath& path )
 //
 //  Description:
 //      Find the shading group assigned to the given object
@@ -334,7 +335,7 @@ MObject RibNode::findShadingGroup( const MDagPath& path )
 	return MObject::kNullObj;
 }
 
-MObject RibNode::findShader( MObject& group )
+MObject liquidRibNode::findShader( MObject& group )
 //
 //  Description:
 //      Find the shading node for the given shading group
@@ -359,7 +360,7 @@ MObject RibNode::findShader( MObject& group )
 	return MObject::kNullObj;
 }
 
-MObject RibNode::findDisp( MObject& group )
+MObject liquidRibNode::findDisp( MObject& group )
 //
 //  Description:
 //      Find the shading node for the given shading group
@@ -384,7 +385,7 @@ MObject RibNode::findDisp( MObject& group )
 	return MObject::kNullObj;
 }
 
-MObject RibNode::findVolume( MObject& group )
+MObject liquidRibNode::findVolume( MObject& group )
 //
 //  Description:
 //      Find the shading node for the given shading group
@@ -409,7 +410,7 @@ MObject RibNode::findVolume( MObject& group )
 	return MObject::kNullObj;
 }
 
-void RibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
+void liquidRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
 //
 //  Description:
 //      Get the list of all ignored lights for the given shading group
@@ -444,7 +445,7 @@ void RibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
 	}			
 }
 
-void RibNode::getIgnoredLights( MObjectArray& ignoredLights )
+void liquidRibNode::getIgnoredLights( MObjectArray& ignoredLights )
 //
 //  Description:
 //      Get the list of all ignored lights for the given for *this* node
@@ -500,15 +501,14 @@ void RibNode::getIgnoredLights( MObjectArray& ignoredLights )
 }
 
 
-bool RibNode::getColor( MObject& shader, MColor& color )
+bool liquidRibNode::getColor( MObject& shader, MColor& color )
 //
 //  Description:
 //      Get the color of the given shading node.
 //
 {
 	if ( debugMode ) { printf("-> getting a shader color\n"); }
-	switch ( 
-		shader.apiType() )
+	switch ( shader.apiType() )
 	{ 
 	case MFn::kLambert :
 		{			
@@ -541,7 +541,7 @@ bool RibNode::getColor( MObject& shader, MColor& color )
 	return true;
 }	
 
-bool RibNode::getMatteMode( MObject& shader )
+bool liquidRibNode::getMatteMode( MObject& shader )
 //
 //  Description:
 //      check to see if we should make this a matte object.

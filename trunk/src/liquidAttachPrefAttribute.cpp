@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -45,17 +44,16 @@
 
 // Renderman Headers
 extern "C" {
-	#include <ri.h>
-	#include <slo.h>
+#include <ri.h>
 }
 
 #ifdef _WIN32
-	#include <process.h>
-	#include <malloc.h>
+#include <process.h>
+#include <malloc.h>
 #else
-	#include <unistd.h>
-	#include <stdlib.h>
-	#include <alloca.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <alloca.h>
 #endif
 
 // Maya's Headers

@@ -35,7 +35,6 @@
 #include <assert.h>
 #include <time.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -46,7 +45,6 @@
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-#include <slo.h>
 }
 
 #ifdef _WIN32
@@ -76,16 +74,15 @@ extern "C" {
 #include <liquidMemory.h>
 
 extern int debugMode;
-extern bool normalizeNurbsUV;
 
-RibSurfaceData::RibSurfaceData( MObject surface )
+liquidRibSurfaceData::liquidRibSurfaceData( MObject surface )
 
 //  Description:
 //      create a RIB compatible representation of a Maya nurbs surface
 
-:   uknot( NULL ), vknot( NULL ), CVs( NULL ), ncurves( NULL ), order( NULL ),
+:   hasTrims( false ), uknot( NULL ), vknot( NULL ), CVs( NULL ), ncurves( NULL ), order( NULL ),
 n( NULL ), knot( NULL ), minKnot( NULL ), maxKnot( NULL ), u( NULL ), v( NULL ), 
-w( NULL ), hasTrims( false )
+w( NULL )
 
 {
     if ( debugMode ) { 
@@ -94,6 +91,8 @@ w( NULL ), hasTrims( false )
 		MString name = myDep.name();
 		printf("-> surface path %s \n", name.asChar() );
 	}
+    // Hmmmmm Was global but never changed ...
+    bool normalizeNurbsUV = true;
 	
     MStatus status = MS::kSuccess;
     MFnNurbsSurface nurbs( surface, &status );
@@ -172,10 +171,10 @@ w( NULL ), hasTrims( false )
 		while(!cvs.isDone()) {
 			while(!cvs.isRowDone()) {
 				MPoint pt = cvs.position(MSpace::kObject);
-				*cvPtr++ = (RtFloat)pt.x;
-				*cvPtr++ = (RtFloat)pt.y;
-				*cvPtr++ = (RtFloat)pt.z;
-				*cvPtr++ = (RtFloat)pt.w;
+				*cvPtr = (RtFloat)pt.x; cvPtr++;
+				*cvPtr = (RtFloat)pt.y; cvPtr++;
+				*cvPtr = (RtFloat)pt.z; cvPtr++;
+				*cvPtr = (RtFloat)pt.w; cvPtr++;
 				cvs.next();
 			}
 			cvs.nextRow();
@@ -299,22 +298,17 @@ w( NULL ), hasTrims( false )
 	
 	// now place our tokens and parameters into our tokenlist
 	
-	rTokenPointer tokenPointerPair;
-	tokenPointerPair.pType = rPoint;
-	tokenPointerPair.arraySize = nu * nv * 4;
-	sprintf( tokenPointerPair.tokenName, "Pw" );
-	tokenPointerPair.tokenFloats = CVs;
-	tokenPointerPair.isArray = true;
-	tokenPointerPair.isUArray = false;
-	tokenPointerPair.isNurbs = true;
-	tokenPointerPair.dType = rVertex;
+	liqTokenPointer tokenPointerPair;
+	tokenPointerPair.set( "Pw", rPoint, true, true, false , nu * nv );
+	tokenPointerPair.setDetailType( rVertex );
+	tokenPointerPair.setTokenFloats( CVs );
 	tokenPointerArray.push_back( tokenPointerPair );
 	
 	addAdditionalSurfaceParameters( surface );
 	}
 }
 
-RibSurfaceData::~RibSurfaceData()
+liquidRibSurfaceData::~liquidRibSurfaceData()
 //  Description:
 //      class destructor
 {
@@ -323,7 +317,8 @@ RibSurfaceData::~RibSurfaceData()
     if ( uknot != NULL ) { lfree( uknot ); uknot = NULL; }
     if ( vknot != NULL ) { lfree( vknot ); vknot = NULL; }
 	// this is freed by the ribdata destructor
-    //if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
+	// this is not true anymore 
+    if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
     if ( ncurves != NULL ) { lfree( ncurves ); ncurves = NULL; }
     if ( order != NULL ) { lfree( order ); order = NULL; }
     if ( n != NULL ) { lfree( n ); n = NULL; }
@@ -336,7 +331,7 @@ RibSurfaceData::~RibSurfaceData()
     if ( debugMode ) { printf("-> finished killing nurbs surface\n"); }
 }
 
-void RibSurfaceData::write()
+void liquidRibSurfaceData::write()
 //  Description:
 //      Write the RIB for this surface
 {
@@ -360,7 +355,7 @@ void RibSurfaceData::write()
 	if ( debugMode ) { printf("-> done writing nurbs surface\n"); }
 }
 
-bool RibSurfaceData::compare( const RibData & otherObj ) const
+bool liquidRibSurfaceData::compare( const liquidRibData & otherObj ) const
 //
 //  Description:
 //      Compare this surface to the other for the purpose of determining
@@ -369,7 +364,7 @@ bool RibSurfaceData::compare( const RibData & otherObj ) const
 {
 	if ( debugMode ) { printf("-> comparing nurbs surface\n"); }
     if ( otherObj.type() != MRT_Nurbs ) return false;
-    const RibSurfaceData & other = (RibSurfaceData&)otherObj;
+    const liquidRibSurfaceData & other = (liquidRibSurfaceData&)otherObj;
     
     if ( ( nu != other.nu ) ||
 		( nv != other.nv ) ||
@@ -406,7 +401,7 @@ bool RibSurfaceData::compare( const RibData & otherObj ) const
     return true;
 }
 
-ObjectType RibSurfaceData::type() const
+ObjectType liquidRibSurfaceData::type() const
 //
 //  Description:
 //      return the geometry type
@@ -416,13 +411,13 @@ ObjectType RibSurfaceData::type() const
 	return MRT_Nurbs;
 }
 
-bool RibSurfaceData::hasTrimCurves() const
+bool liquidRibSurfaceData::hasTrimCurves() const
 {
 	if ( debugMode ) { printf("-> checking for nurbs surface trims\n"); }
 	return hasTrims;   
 }
 
-void RibSurfaceData::writeTrimCurves() const
+void liquidRibSurfaceData::writeTrimCurves() const
 {
 	if ( debugMode ) { printf("-> writing nurbs surface trims\n"); }
     if ( hasTrims ) {
