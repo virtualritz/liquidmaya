@@ -2100,9 +2100,13 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
         if (m_renderScriptFormat == NONE) {
           MGlobal::displayWarning("no render script format specified to Liquid, and direct render execution not selected");
         }
-        liqProcessLauncher::execute( m_renderScriptCommand.asChar(), renderScriptName.asChar() );
+        MString scriptQuoted = "\"" + renderScriptName + "\"";
+        if ( debugMode ) { printf("-> executing render with command line '%s %s'\n", m_renderScriptCommand.asChar(), renderScriptName.asChar() ); }
+        liqProcessLauncher::execute( m_renderScriptCommand, scriptQuoted );
       } else {
-        liqProcessLauncher::execute( m_renderCommand, liqglo_currentJob.ribFileName );
+        MString ribFileQuoted = "\"" + liqglo_currentJob.ribFileName + "\"";
+        if ( debugMode ) { printf("-> executing render with command line '%s %s'\n", m_renderCommand.asChar(), ribFileQuoted.asChar() ); }
+        liqProcessLauncher::execute( m_renderCommand, ribFileQuoted );
       }
     }
 
