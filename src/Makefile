@@ -1,5 +1,5 @@
 SHELL = sh
-LIQUIDVERSION 	= "1.5.3"
+LIQUIDVERSION 	= `cat liquid.version`
 #------------------------------------------------------
 all : debug
 
