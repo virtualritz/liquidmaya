@@ -68,7 +68,7 @@ extern int debugMode;
 //typedef RtFloat textcoords[2];
 // this has to be added to make up for differences between linux and irix maya
 
-/* between Maya 3.0 /4.0/Linux/Other Platforms some functions changed their input type from long to int so 
+/* between Maya 3.0 /4.0/Linux/Other Platforms some functions changed their input type from long to int so
 a stand-in type called liquidlong was created to get around the problem */
 #ifdef LINUX
 typedef int liquidlong;
@@ -96,16 +96,6 @@ inline bool equiv( float val1, float val2 )
 #ifndef  MM_TO_INCH
 #define MM_TO_INCH                     0.03937
 #endif 
-
-// Hacked Licensing Information
-//
-#define VERSION "1.2"
-#define COMPFOR "Beta Compiled for Testing."
-#define VENDOR "Colin Doncaster"
-#define NOLICMSG "Can't find license!"
-#define expmonth 4
-#define expyear 102 // 2002 - 1900 = 102
-#define expday 30
 
 
 ///////////

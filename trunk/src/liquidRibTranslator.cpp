@@ -598,9 +598,6 @@ MStatus liquidRibTranslator::liquidDoArgs( MArgList args )
 		} else if ( MString( "-fullShadowRib" ) == args.asString( i, &status ) ) {
 			LIQCHECKSTATUS(status, "error in -fullShadowRib parameter");
 			fullShadowRib = true;
-		} else if ( MString( "-compFor" ) == args.asString( i, &status ) ) {
-			LIQCHECKSTATUS(status, "error in -compFor parameter");
-			cout << "Compiled For: " << COMPFOR << "\n";
 		} else if ( MString( "-remote" ) == args.asString( i, &status ) ) {
 			LIQCHECKSTATUS(status, "error in -remote parameter");
 			remoteRender = true;
@@ -1551,7 +1548,7 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 							
 							//write the main job info
 							if ( alfredJobName == "" ) { alfredJobName = liqglo_sceneName; }
-							alfFile << "Job -title {" << alfredJobName.asChar() << "(liquid job)} -comment {#Created By Liquid " << VERSION << "} "
+							alfFile << "Job -title {" << alfredJobName.asChar() << "(liquid job)} -comment {#Created By Liquid " << LIQUIDVERSION << "} "
 								<< "-service " << "{}" << " " 
 								<< "-tags " << "{}" << " "; 
 							if ( useNetRman ) {
