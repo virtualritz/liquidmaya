@@ -9,3 +9,4 @@ setAttr "liquidGlobals.bits_features" -type "string" "Blobbies Points Curves Eye
 setAttr "liquidGlobals.bits_required" -type "string" "Swap_UV __Pref "
 setAttr "liquidGlobals.dshDisplayName" -type "string" "tsm"
 setAttr "liquidGlobals.dshImageMode" -type "string" "mode"
+setAttr "liquidGlobals.previewDisplayDriver" -type "string" "framebuffer"
