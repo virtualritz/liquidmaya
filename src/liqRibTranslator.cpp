@@ -1557,7 +1557,7 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "transformationBlur", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_doMotion );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "transformationBlur", &gStatus );
+  gPlug = rGlobalNode.findPlug( "cameraBlur", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( doCameraMotion );
   gStatus.clear();
   gPlug = rGlobalNode.findPlug( "deformationBlur", &gStatus );
@@ -2087,15 +2087,15 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
               subframe = liqglo_lframe + ( 1 - ( liqglo_shutterTime * m_blurTime ) ) + ( msampleOn * sampleinc );
               break;
           }
-          liqglo_sampleTimes[msampleOn] = subframe;
+          liqglo_sampleTimes[ msampleOn ] = subframe;
         }
 
-        if ( liqglo_doMotion || liqglo_doDef ) {
+        if ( doCameraMotion || liqglo_doMotion || liqglo_doDef ) {
           for ( int msampleOn = 0; msampleOn < liqglo_motionSamples; msampleOn++ ) {
-            scanScene( liqglo_sampleTimes[msampleOn] , msampleOn );
+            scanScene( liqglo_sampleTimes[ msampleOn ] , msampleOn );
           }
         } else {
-          liqglo_sampleTimes[0] = liqglo_lframe;
+          liqglo_sampleTimes[ 0 ] = liqglo_lframe;
           scanScene( liqglo_lframe, 0 );
         }
         if ( m_showProgress ) printProgress( 2, frameFirst, frameLast, liqglo_lframe );
@@ -4089,7 +4089,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     }
     // Set up for camera motion blur
     /* doCameraMotion = liqglo_currentJob.camera[0].motionBlur && liqglo_doMotion; */
-    if ( liqglo_doMotion || liqglo_doDef ) {
+    if ( doCameraMotion || liqglo_doMotion || liqglo_doDef ) {
       switch( shutterConfig ) {
         case OPEN_ON_FRAME:
         default:
@@ -4514,7 +4514,6 @@ MStatus liqRibTranslator::objectBlock()
           case liqRibNode::photon::SHADINGMODEL_MATTE:
           default:
             model = "matte";
-            model = "rw";
         }
         RiAttribute( "photon", (RtToken) "shadingmodel", &model, RI_NULL );
       }
@@ -4524,6 +4523,11 @@ MStatus liqRibTranslator::objectBlock()
         RiAttribute( "photon", (RtToken) "estimator", &estimator, RI_NULL );
       }
 
+      if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur &&
+          ribNode->motion.factor != 2.0f ) {
+        RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
+      }      
+      
       if ( hasSurfaceShader && !m_ignoreSurfaces ) {
 
         liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
@@ -4616,7 +4620,7 @@ MStatus liqRibTranslator::objectBlock()
       RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
     }
 
-    if (liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
+    if( liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
         && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
       // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
       RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );

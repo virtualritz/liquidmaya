@@ -1,5 +1,9 @@
 Release 1.6.7 ------------------------------------------------------------------
 
+2005-02-09 mauritio
+    - Added global/fixed code for separate camera motion blur control
+    - Various attribute UI improvements
+
 2005-02-08 mauritio
     - Fixed bug in liqRibNode that led to early exiting of the attribute scanning loop (and thus no attributes ever ending up in the RIB)
     - Removed compiledShaderExt/shaderExt redundancy from Globals -- Fluid now always uses the shaderExt set in the Globals' Renderer tab

@@ -54,7 +54,7 @@ Name: {group}\Uninstall Liquid; Filename: {uninstallexe}
 Name: {group}\Artwork; Filename: {app}\artwork; Flags: foldershortcut
 
 [Messages]
-WelcomeLabel2=This will install [name/ver] on your computer.%n%nIt is recommended — but not strictly neccessary — that you close all other applications before continuing.%n%nThe source code for this plug-in is available via anonymous Subversion access from http://svn.sektor37.de:8080/liquid/. The project homepage is at http://liquidmaya.sf.net/.
+WelcomeLabel2=This will install [name/ver] on your computer.%n%nIt is recommended — but not strictly neccessary — that you close all other applications before continuing.%n%nThe source code for this plug-in is available via anonymous CVS access from cvs.sourceforge.net:/cvsroot/liquidmaya. The project’s homepage is at http://liquidmaya.sf.net/.
 DiskSpaceMBLabel=The program requires at least [mb] MB of disk space.
 ComponentsDiskSpaceMBLabel=The current selection requires at least [mb] MB of disk space.
 FinishedLabel=Setup has finished installing [name] on your computer.%n%nThanks for using [name].%n
