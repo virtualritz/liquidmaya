@@ -54,15 +54,15 @@ global proc string[] liquidGetFileList( string $dir, string $fileMatch )
 
 global proc string liquidFileBrowserUpOneDir( string $dir )
 {
-	string $OS = liquidOsTest();
+	string $OS = `about -os`; // "nt", "mac", "irix" or "linux"
 	string $returnValue;
 	string $dirList[];
 	tokenize $dir "/" $dirList;
 	int $i = 0;
 	if ( size( $dirList ) == 1 ) {
-		if ( $OS == "WINNT" ) $returnValue = ( $dirList[0] + "/" );
+		if ( $OS == "nt" ) $returnValue = ( $dirList[0] + "/" );
 	}
-	if ( $OS != "WINNT" ) {
+	if ( $OS != "nt" ) {
 		$returnValue += "/";
 	}
 	while ( $i < ( size( $dirList ) - 1 ) ) {
