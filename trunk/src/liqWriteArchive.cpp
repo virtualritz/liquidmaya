@@ -26,6 +26,7 @@
 #include <liquid.h>
 #include <liqWriteArchive.h>
 #include <liqRibObj.h>
+#include <liqGlobalHelpers.h>
 
 #include <maya/MArgList.h>
 #include <maya/MSyntax.h>
@@ -143,6 +144,10 @@ MStatus liqWriteArchive::redoIt()
 
 void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTransform)
 {
+  if (!isObjectVisible(objDagPath)) {
+    return;
+  }
+
   if (debug) { cout << "liquidWriteArchive: writing object: " << objDagPath.fullPathName() << endl; }
   if (objDagPath.node().hasFn(MFn::kShape)) {
     // we're looking at a shape node, so write out the geometry to the RIB
