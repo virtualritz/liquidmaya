@@ -1954,18 +1954,18 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 		
 		if ( debugMode ) { printf("-> spawning command.\n" ); }
 		if ( useAlfred && ( outputpreview == 1 )) {
-#ifdef _LINUX
+#ifdef LINUX
 			if (fork() == 0) execlp( "alfred", "alfred", alfredFileName, NULL);
 #endif
-#ifdef _IRIX
+#ifdef IRIX
 			pcreatelp( "alfred", "alfred", alfredFileName, NULL); 
 #endif
 		} else if ( outputpreview == 1 ) {	   
 			// if we are previewing the scene spawn the preview
-#ifdef _LINUX
+#ifdef LINUX
 			if (vfork() == 0) execlp( m_renderCommand.asChar(), m_renderCommand.asChar(), liqglo_currentJob.ribFileName.asChar(), NULL);
 #endif
-#ifdef _IRIX
+#ifdef IRIX
 			pcreatelp( m_renderCommand.asChar(), m_renderCommand.asChar(), liqglo_currentJob.ribFileName.asChar(), NULL);
 #endif
 		}
