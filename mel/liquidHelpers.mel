@@ -34,20 +34,6 @@
 //  Returns:
 //
 
-global proc string liquidOsTest ()
-{
-	string $irixOS = `system("uname")`;
-	string $winNTOS= `system("ver")`;
-	string $osName;
-
-	if (`gmatch $irixOS "*IRIX*"`) $osName = "IRIX";
-	else if (`gmatch $winNTOS "*Windows NT*"`) $osName = "WINNT";
-	else if (`gmatch $winNTOS "*Windows 2000*"`) $osName = "WINNT";
-	else if (`gmatch $winNTOS "*Windows XP*"`) $osName = "WINNT";
-	else $osName = "UNKNOWN";
-
-	return $osName;
-}
 
 global proc liquidViewLastRib()
 {
