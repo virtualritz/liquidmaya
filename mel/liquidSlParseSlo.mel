@@ -316,6 +316,13 @@ liquidSlParseSlo( string $sloFile )
 
     while ( ! `feof $fid` )
     {
+        // Skip empty lines
+        if ( `substitute "^[ \t\r\n]*$" $line ""` == "" )
+        {
+            $line = `fgetline $fid`;
+            continue;
+        }
+
         string $paramName = getParamName( $line );
         if ( $paramName == "" )
         {
