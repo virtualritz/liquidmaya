@@ -239,6 +239,15 @@ global proc liquidFluidRemoveCMD ()
       }
       if ( $yesno == "Yes" ) {
         string $connections[];
+
+        // Disconnect our shader node from the Liquid globals, so they don't
+        // get destroyed when we delete the shader (which can happen).
+        //
+        if ( `attributeQuery -node $currentNode -ex "liquidShaderManager"`) {
+          $connections = `listConnections -plugs on ( $currentNode + ".liquidShaderManager" )`;
+          disconnectAttr $connections[0] ( $currentNode + ".liquidShaderManager" );
+        }
+
         if ( `attributeQuery -node $currentNode -ex "assignedObjects"`) {
           $connections = `listConnections ( $currentNode + ".assignedObjects" )`;
         }
