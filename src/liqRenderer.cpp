@@ -40,16 +40,16 @@ const liqRenderer & liquidRenderer()
   // TODO: got to make this much better in the future -- get the renderer
   // and version from the globals UI
 #if defined(ENTROPY)
-  static liqRenderer *renderer = new liqEntropyRenderer("3.1");
+  static liqEntropyRenderer renderer("3.1");
 #elif defined(PRMAN)
-  static liqRenderer *renderer = new liqPrmanRenderer("3.9");
+  static liqPrmanRenderer   renderer("3.9");
 #elif defined(AQSIS)
-  static liqRenderer *renderer = new liqAqsisRenderer("0.7.4");
+  static liqAqsisRenderer   renderer("0.7.4");
 #elif defined(DELIGHT)
-  static liqRenderer *renderer = new liqDelightRenderer("1.0.0");
+  static liqDelightRenderer renderer("1.0.0");
 #else
   ERROR: unknown renderer
 #endif
 
-  return *renderer;
+  return renderer;
 }
