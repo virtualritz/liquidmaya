@@ -69,6 +69,10 @@ liquidSlSetShader( string $shaderFile )
         // aqsis shader
         liquidSlParseSlx( $shaderFile );
         break;
+    case "sdr":
+        // aqsis shader
+        liquidSlParseSdr( $shaderFile );
+        break;
     default:
         error( "unknown shader extension: " + $ext );
     }

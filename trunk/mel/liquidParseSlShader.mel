@@ -191,7 +191,8 @@ global proc int liquidParseSlShader ( string $shaderNode, string $fileName )
 			"bmrt",     "slc",  	    "slctell",
 			"air",      "slb",  	    "slbtell",
 			"aqsis",    "slx",  	    "aqsltell",
-			"3delight", "sdl",  	    "shaderinfo"
+			"3delight", "sdl",  	    "shaderinfo",
+			"rndr",		"sdr",			"sdrinfo"
 		    };
 
     // Find extension
