@@ -1,10 +1,3 @@
-1.6.7
-
-- George Harker: fix LIQDEBUGPRINTF for OSX
-	swapped final fallback for temp location,
-	had windows and nonwindows cases swapped
-	Mixed line ending issues - (lots of)
-
 1.6.6 (not on sourceforge):
 
 - Yuri Meshalkin: Support for creases/corners/holes on subdivison meshes
