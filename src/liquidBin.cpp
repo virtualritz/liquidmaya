@@ -134,10 +134,12 @@ int main(int argc, char **argv)
   MString mainArg = "-GL";
   myArgs.addArg( mainArg );
 
+#ifdef SIGRTMAX
 #ifndef _WIN32
   for (i = 0; i <= SIGRTMAX; i++) {
     signal(i, signalHandler);
   }
+#endif
 #endif
 
   // user must at least specify the Maya scene file to render
@@ -182,10 +184,12 @@ int main(int argc, char **argv)
 
   liqRibTranslator liquidTrans;
 
+#ifdef SIGRTMAX
 #ifndef _WIN32
   for (i = 0; i <= SIGRTMAX; i++) {
     signal(i, signalHandler);
   }
+#endif
 #endif
 
   status = liquidTrans.doIt( myArgs );
