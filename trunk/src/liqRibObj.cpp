@@ -65,6 +65,7 @@ extern "C" {
 #include <maya/MFnDagNode.h>
 #include <maya/MDagPathArray.h>
 #include <maya/MPlug.h>
+#include <maya/MPxNode.h>
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
@@ -78,9 +79,11 @@ extern "C" {
 #include <liqRibSubdivisionData.h>
 #include <liqRibCoordData.h>
 #include <liqRibGenData.h>
+#include <liqRibCustomNode.h>
 #include <liqMemory.h>
 
 extern int debugMode;
+
 
 liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 //
@@ -93,6 +96,8 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
   data( NULL )   
 {
     if ( debugMode ) { printf("-> creating dag node handle rep\n"); }
+    
+    MStatus status;
     MObject obj = path.node();
     
     written = 0;
@@ -136,8 +141,22 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
         type = MRT_RibGen;
         data = new liqRibGenData( obj, path );
       } else {
+      
+        // check to see if object's class is derived from liqCustomNode
+        liqCustomNode *customNode = NULL;
+        MFnDependencyNode mfnDepNode(obj, &status);
+        if (status) {
+          MPxNode *mpxNode = mfnDepNode.userNode();
+          if (mpxNode) {
+            customNode = dynamic_cast<liqCustomNode*>(mpxNode); // will be NULL if cast is not invalid
+          }
+        }
+        
         // Store the geometry/light/shader data for this object in RIB format
-        if ( obj.hasFn(MFn::kNurbsSurface) ) {
+        if (customNode) {
+          type = MRT_Custom;
+          data = new liqRibCustomNode( obj, customNode );
+        } else if ( obj.hasFn(MFn::kNurbsSurface) ) {
           type = MRT_Nurbs;
           data = new liqRibSurfaceData( obj );
         } else if ( obj.hasFn(MFn::kNurbsCurve) ) {
@@ -149,10 +168,9 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
         } else if ( obj.hasFn(MFn::kMesh) ) {
           // we know we are dealing with a mesh here, now we check to see if it
           // needs to be handled as a subdivision surface
-          MStatus subDAttrStatus;
           bool usingSubD = false;
-          MPlug subDivPlug = nodeFn.findPlug( "subDMesh", &subDAttrStatus );
-          if ( subDAttrStatus == MS::kSuccess ) {
+          MPlug subDivPlug = nodeFn.findPlug( "subDMesh", &status );
+          if ( status == MS::kSuccess ) {
             subDivPlug.getValue( usingSubD );
           }
           if ( usingSubD ) {
@@ -188,11 +206,11 @@ liqRibObj::~liqRibObj()
 //      Class destructor
 //  
 {
-	if ( debugMode ) { printf("-> killing ribobj data\n"); }
-	delete data;
-	if ( debugMode ) { printf("-> killing ribobj matrices\n"); }
-	delete [] instanceMatrices;
-	if ( debugMode ) { printf("-> finished killing ribobj\n"); }
+  if ( debugMode ) { printf("-> killing ribobj data\n"); }
+  delete data;
+  if ( debugMode ) { printf("-> killing ribobj matrices\n"); }
+  delete [] instanceMatrices;
+  if ( debugMode ) { printf("-> finished killing ribobj\n"); }
 }
 
 inline RtObjectHandle liqRibObj::handle() const
@@ -202,7 +220,7 @@ inline RtObjectHandle liqRibObj::handle() const
 //      RIB data that was previously written in the frame prologue.
 //  
 {
-    return objectHandle;
+  return objectHandle;
 }
 
 inline void liqRibObj::setHandle( RtObjectHandle handle )
@@ -211,7 +229,7 @@ inline void liqRibObj::setHandle( RtObjectHandle handle )
 //      set the RenderMan instance handle 
 //  
 {
-    objectHandle = handle;
+  objectHandle = handle;
 }
 
 RtLightHandle liqRibObj::lightHandle() const
