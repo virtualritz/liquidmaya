@@ -1,5 +1,8 @@
 1.6.7 (on sourceforge again!)
 
+- Fixed shader preview for Linux platform (untested on OS X!)
+- Linux installer script now automatically compiles the Liquid shaders for all
+    installed renderers
 - Added new global to allow separate control for camera motion blur
 - UI improvements for all file browser dialogs (including Fluid's browser)
     thanks to Alexandre Paes
