@@ -1,3 +1,28 @@
+Release 1.5.6 ------------------------------------------------------------------
+2004-04-06 chapman
+  - added support for XML format render scripts
+  - tidied up render-script code considerably (attribute and command line changes below)
+    - render global changed name from 'previewMode' to 'launchRender'
+    - render global changed name from 'lastAlfredScript' to 'lastRenderScript'
+    - render global changed name from 'cleanAlf' to 'cleanRenderScript'
+    - render global changed name from 'ignoreAlfred' to 'useRenderScript' (and meaning reversed)
+    - render global changed name from 'alfredFileName' to 'renderScriptFileName'
+    - render globals added for 'renderScriptFormat' and 'renderScriptCommand'
+    - default alfred key changed from 'maya3.0' to 'maya'
+    - command line params changed from -alf/-noalf to -renderScript -noRenderScript
+    - command line params changed from -preview/-noPreview to -launchRender/-noLaunchRender
+    - added a pre-job command to the render globals (there was already a post-job and pre/post-frame, but no pre-job)
+  - 'About' box added to Liquid menu with some basic info
+  - fixed win32 build to use 'cmd.exe /c del' for cleanup commands rather than /bin/rm
+
+Release 1.5.5 ------------------------------------------------------------------
+2004-02-08 chapman
+  - Maya 5.0 release
+  - fixed Fluid crashing when reading PRMan .slo shaders
+  
+2004-02-08 scruby
+  - face-varying normals fixed for subdiv meshes
+  
 
 Release 1.5.4 ------------------------------------------------------------------
 

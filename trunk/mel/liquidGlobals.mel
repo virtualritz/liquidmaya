@@ -35,114 +35,125 @@
 //
 
 //  set's up all the default liquid globals
-global string $liquidGlobalsVals[] = {
-  "previewMode", "bool", "true"
-  ,"renderCamera", "string", ""
-  ,"dd1imageName", "string", ""
-  ,"dd1imageType", "string", "it"
-  ,"dd1imageMode", "string", "rgba"
-  ,"dd1paramType", "string", ""
-  ,"dd1enable", "bool", "1"
-  ,"numDD", "long", "1"
-  ,"numDD1Param", "long", "0"
-  ,"createOutputDirectories", "bool", "true"
-  ,"expandShaderArrays", "bool", "false"
-  ,"shaderPath", "string", ""
-  ,"ribName", "string", ""
-  ,"pictureDirectory", "string", ""
-  ,"textureDirectory", "string", ""
-  ,"ribDirectory", "string", ""
-  ,"tempDirectory", "string", ""
-  ,"deferredGen", "bool", "false"
-  ,"deferredBlock", "long", "1"
-  ,"preframeMel", "string", ""
-  ,"postframeMel", "string", "" 
-  ,"ignoreAlfred", "bool", "false" 
-  ,"remoteRender", "bool", "false" 
-  ,"netRManRender", "bool", "false"
-  ,"minCPU", "long", "1"
-  ,"maxCPU", "long", "1"
-  ,"ignoreShadows", "bool", "false" 
-  ,"fullShadowRibs", "bool", "false" 
-  ,"binaryOutput", "bool", "false" 
-  ,"compressedOutput", "bool", "false" 
-  ,"renderAllCurves", "bool", "false" 
-  ,"ignoreSurfaces", "bool", "false" 
-  ,"ignoreDisplacements", "bool", "false" 
-  ,"ignoreLights", "bool", "false"
-  ,"ignoreVolumes", "bool", "false"
-  ,"outputShadersInShadows", "bool", "false"
-  ,"outputShadowPass", "bool", "false" 
-  ,"outputHeroPass", "bool", "true" 
-  ,"outputComments", "bool", "false"
-  ,"shaderDebug", "bool", "false" 
-  ,"showProgress", "bool", "false" 
-  ,"doAnimation", "bool", "false"
-  ,"startFrame", "long", "1" 
-  ,"endFrame", "long", "100"
-  ,"frameStep", "long", "1"
-  ,"doPadding", "bool", "false" 
-  ,"padding", "long", "0" 
-  ,"numProcs", "long", "0" 
-  ,"gain", "float", "1.0" 
-  ,"gamma", "float", "1.0"
-  ,"xResolution", "long", "0"
-  ,"yResolution", "long", "0"
-  ,"pixelAspectRatio", "float", "1.0"
-  ,"imageDriver", "string", "" 
-  ,"transformationBlur", "bool", "false" 
-  ,"deformationBlur", "bool", "false" 
-  ,"motionBlurSamples", "long", "2"
-  ,"depthOfField", "bool", "false" 
-  ,"pixelSamples", "long", "3"
-  ,"shadingRate", "float", "1.0"
-  ,"bucketXSize", "long", "16"
-  ,"bucketYSize", "long", "16"
-  ,"gridSize", "long", "256"
-  ,"textureMemory", "long", "256"
-  ,"eyeSplits", "long", "10"
-  ,"imageDepth", "long", "8"
-  ,"PixelFilter", "long", "2" 
-  ,"PixelFilterX", "float", "3.0"
-  ,"PixelFilterY", "float", "3.0"
-  ,"cleanRib", "bool", "false" 
-  ,"cleanTex", "bool", "false" 
-  ,"cleanShad", "bool", "false" 
-  ,"cleanAlfred", "bool", "false"
-  ,"justRib", "bool", "false" 
-  ,"alfredTags", "string", "prman"
-  ,"alfredServices", "string", "pixarRender" 
-  ,"renderCommand", "string", ""
-  ,"ribgenCommand", "string", ""
-  ,"preCommand", "string", ""
-  ,"postFrameCommand", "string", ""
-  ,"preFrameCommand", "string", ""
-  ,"postJobCommand", "string", ""
-  ,"key", "string", "maya3.0" 
-  ,"service", "string", "liquid"
-  ,"cleanAlf", "bool", "false" 
-  ,"lastAlfredScript", "string", ""
-  ,"lastRibFile", "string", ""
-  ,"BMRTAttrs", "bool", "false" 
-  ,"BMRTDStep", "long", "0"
-  ,"BMRTusePrmanDisp", "bool", "true"
-  ,"BMRTusePrmanSpec", "bool", "false" 
-  ,"RadSteps", "long", "0"
-  ,"RadMinPatchSamples", "long", "1"
-  ,"simpleGlobalsWindow", "bool", "true"
-  ,"lazyCompute", "bool", "false"
-  ,"cropX1", "float", "0.0"
-  ,"cropX2", "float", "1.0"
-  ,"cropY1", "float", "0.0"
-  ,"cropY2", "float", "1.0"
-  ,"exportReadArchive", "bool", "false"
-  ,"alfredJobName", "string", ""
-  ,"shortShaderNames", "bool", "false"
-  ,"expandAlfred", "bool", "false"
-  ,"previewer", "string", ""
-  ,"preWorld",  "string", ""
-  ,"postWorld", "string", ""
-};
+global string $liquidGlobalsVals[];
+liquidInitGlobalVals();
+
+// the code to initialise the globals needs to be within a function, otherwise
+// it won't be updated in Maya if it is changed and the script re-sourced
+global proc liquidInitGlobalVals()
+{
+  global string $liquidGlobalsVals[];
+  $liquidGlobalsVals = {
+    "launchRender", "bool", "true"
+    ,"renderCamera", "string", ""
+    ,"dd1imageName", "string", ""
+    ,"dd1imageType", "string", "it"
+    ,"dd1imageMode", "string", "rgba"
+    ,"dd1paramType", "string", ""
+    ,"dd1enable", "bool", "1"
+    ,"numDD", "long", "1"
+    ,"numDD1Param", "long", "0"
+    ,"createOutputDirectories", "bool", "true"
+    ,"expandShaderArrays", "bool", "false"
+    ,"shaderPath", "string", ""
+    ,"ribName", "string", ""
+    ,"pictureDirectory", "string", ""
+    ,"textureDirectory", "string", ""
+    ,"ribDirectory", "string", ""
+    ,"tempDirectory", "string", ""
+    ,"deferredGen", "bool", "false"
+    ,"deferredBlock", "long", "1"
+    ,"preframeMel", "string", ""
+    ,"postframeMel", "string", "" 
+    ,"useRenderScript", "bool", "true" 
+    ,"remoteRender", "bool", "false" 
+    ,"netRManRender", "bool", "false"
+    ,"minCPU", "long", "1"
+    ,"maxCPU", "long", "1"
+    ,"ignoreShadows", "bool", "false" 
+    ,"fullShadowRibs", "bool", "false" 
+    ,"binaryOutput", "bool", "false" 
+    ,"compressedOutput", "bool", "false" 
+    ,"renderAllCurves", "bool", "false" 
+    ,"ignoreSurfaces", "bool", "false" 
+    ,"ignoreDisplacements", "bool", "false" 
+    ,"ignoreLights", "bool", "false"
+    ,"ignoreVolumes", "bool", "false"
+    ,"outputShadersInShadows", "bool", "false"
+    ,"outputShadowPass", "bool", "false" 
+    ,"outputHeroPass", "bool", "true" 
+    ,"outputComments", "bool", "false"
+    ,"shaderDebug", "bool", "false" 
+    ,"showProgress", "bool", "false" 
+    ,"doAnimation", "bool", "false"
+    ,"startFrame", "long", "1" 
+    ,"endFrame", "long", "100"
+    ,"frameStep", "long", "1"
+    ,"doPadding", "bool", "false" 
+    ,"padding", "long", "0" 
+    ,"numProcs", "long", "0" 
+    ,"gain", "float", "1.0" 
+    ,"gamma", "float", "1.0"
+    ,"xResolution", "long", "0"
+    ,"yResolution", "long", "0"
+    ,"pixelAspectRatio", "float", "1.0"
+    ,"imageDriver", "string", "" 
+    ,"transformationBlur", "bool", "false" 
+    ,"deformationBlur", "bool", "false" 
+    ,"motionBlurSamples", "long", "2"
+    ,"depthOfField", "bool", "false" 
+    ,"pixelSamples", "long", "3"
+    ,"shadingRate", "float", "1.0"
+    ,"bucketXSize", "long", "16"
+    ,"bucketYSize", "long", "16"
+    ,"gridSize", "long", "256"
+    ,"textureMemory", "long", "256"
+    ,"eyeSplits", "long", "10"
+    ,"imageDepth", "long", "8"
+    ,"PixelFilter", "long", "2" 
+    ,"PixelFilterX", "float", "3.0"
+    ,"PixelFilterY", "float", "3.0"
+    ,"cleanRib", "bool", "false" 
+    ,"cleanTex", "bool", "false" 
+    ,"cleanShad", "bool", "false" 
+    ,"cleanRenderScript", "bool", "false"
+    ,"justRib", "bool", "false" 
+    ,"alfredTags", "string", "prman"
+    ,"alfredServices", "string", "pixarRender" 
+    ,"renderCommand", "string", ""
+    ,"ribgenCommand", "string", ""
+    ,"preCommand", "string", ""
+    ,"postFrameCommand", "string", ""
+    ,"preFrameCommand", "string", ""
+    ,"preJobCommand", "string", ""
+    ,"postJobCommand", "string", ""
+    ,"key", "string", "maya" 
+    ,"service", "string", "liquid"
+    ,"lastRenderScript", "string", ""
+    ,"lastRibFile", "string", ""
+    ,"BMRTAttrs", "bool", "false" 
+    ,"BMRTDStep", "long", "0"
+    ,"BMRTusePrmanDisp", "bool", "true"
+    ,"BMRTusePrmanSpec", "bool", "false" 
+    ,"RadSteps", "long", "0"
+    ,"RadMinPatchSamples", "long", "1"
+    ,"simpleGlobalsWindow", "bool", "true"
+    ,"lazyCompute", "bool", "false"
+    ,"cropX1", "float", "0.0"
+    ,"cropX2", "float", "1.0"
+    ,"cropY1", "float", "0.0"
+    ,"cropY2", "float", "1.0"
+    ,"exportReadArchive", "bool", "false"
+    ,"renderJobName", "string", ""
+    ,"shortShaderNames", "bool", "false"
+    ,"expandAlfred", "bool", "false"
+    ,"previewer", "string", ""
+    ,"preWorld",  "string", ""
+    ,"postWorld", "string", ""
+    ,"renderScriptFormat", "long", 1
+    ,"renderScriptCommand", "string", "alfred"
+  };
+}
 
 // WETA SPECIFIC: Start 
 global proc liquidAddNimbusLightParam() 
@@ -192,7 +203,7 @@ global proc int liquidGlobalsExists()
   return $returnVal;
 }
 
-/* Create the Liquid Render Globals node */
+// Create the Liquid Render Globals node
 global proc liquidCreateGlobals()
 {
   if ( `liquidGlobalsExists` ) {
@@ -201,17 +212,15 @@ global proc liquidCreateGlobals()
   if ( `window -exists liquidGlobalsWindow` ) {
     deleteUI liquidGlobalsWindow;
   }
-  // check to make sure the node doesn't already exist
   if ( !`liquidGlobalsExists` ) {
     createNode "oldBlindDataBase" -n "liquidGlobals";
     print "Liquid Globals Created!\n";
   }
   liquidAddGlobals;
-
   liquidLoadGlobals("default");
 }
 
-/* Check and add the default render globals attributes to the Liquid Render Globals node */
+// Check and add the default render globals attributes to the Liquid Render Globals node
 global proc liquidAddGlobals()
 {
   global string $liquidGlobalsVals[];
@@ -251,7 +260,7 @@ global proc liquidAddGlobals()
 global proc liquidAddPresets() {
   string $homeDirectory = `getenv "HOME"`;
   string $liquidDirectory = ( $homeDirectory + "/.liquid/" );
-  if  ( `filetest -d $liquidDirectory` ) {
+  if ( `filetest -d $liquidDirectory` ) {
     string $presetsList[] = `getFileList -fld $liquidDirectory -fs "*.lg"`;
     for ( $currentPreset in $presetsList ) {
       string $preset = substring( $currentPreset, 1, size( $currentPreset ) - 3 );
@@ -289,7 +298,7 @@ global proc liquidLoadGlobals( string $name ) {
   string $homeDirectory = `getenv "HOME"`;
   string $liquidDirectory = ( $homeDirectory + "/.liquid" );
   string $globalName = ( $liquidDirectory + "/" + $name + ".lg" );
-  if  ( `filetest -r $globalName` ) {
+  if ( `filetest -r $globalName` ) {
     $fileId = `fopen $globalName "r"`;
     while ( !`feof $fileId` ) {
       $line = `fgetline $fileId`;
@@ -337,7 +346,7 @@ global proc liquidShowBoolGlobal( string $name, string $label )
   if ( `attributeQuery -node liquidGlobals -ex $name` ) {
     checkBoxGrp -label $label -l1 " " -value1 `getAttr ("liquidGlobals." + $name)` -on1 $onCommand -of1 $offCommand ( "liquidGlobals" + $name + "Check" );
   } else {
-      print ( "Warning : global attribute " + $name + " does not exist\n" );
+    print ( "Warning : global attribute " + $name + " does not exist\n" );
   }
 }
 
@@ -348,12 +357,9 @@ global proc liquidShowStringGlobal( string $name, string $label )
     string $currentVal;
     $cmd = ( "liquidChangeTextAttr liquidGlobals " + $name + " liquidGlobals" + $name + "Field" );
     $currentVal = `getAttr ( "liquidGlobals." + $name )`;
-    textFieldGrp -label $label -adj 2
-      -text ( $currentVal )
-      -cc $cmd
-      ( "liquidGlobals" + $name + "Field" );
+    textFieldGrp -label $label -adj 2 -text ( $currentVal ) -cc $cmd ( "liquidGlobals" + $name + "Field" );
   } else {
-      print ( "Warning : global attribute " + $name + " does not exist\n" );
+    print ( "Warning : global attribute " + $name + " does not exist\n" );
   }
 }
 
@@ -362,7 +368,7 @@ global proc liquidShowIntGlobal( string $name, string $label )
   if ( `attributeQuery -node liquidGlobals -ex $name` ) {
     attrFieldSliderGrp -label $label -attribute ( "liquidGlobals." + $name ) ( "liquidGlobals" + $name + "Field" );
   } else {
-      print ( "Warning : global attribute " + $name + " does not exist\n" );
+    print ( "Warning : global attribute " + $name + " does not exist\n" );
   }
 }
 
@@ -371,7 +377,25 @@ global proc liquidShowFloatGlobal( string $name, string $label )
   if ( `attributeQuery -node liquidGlobals -ex $name` ) {
     attrFieldSliderGrp -label $label -attribute ( "liquidGlobals." + $name ) ( "liquidGlobals" + $name + "Field" );
   } else {
-      print ( "Warning : global attribute " + $name + " does not exist\n" );
+    print ( "Warning : global attribute " + $name + " does not exist\n" );
+  }
+}
+
+global proc liquidShowIntGlobalMenu( string $name, string $label, string $items[] )
+{
+  if (size($items) == 0) {
+    print ( "Warning : empty list specified in liquidShowIntGlobalMenu() for attribute " + $name + "\n");
+    return;
+  }
+  if ( `attributeQuery -node liquidGlobals -ex $name` ) {
+    string $menu = `optionMenuGrp -label $label`;
+    int $i;
+    for($i=0; $i<size($items); ++$i) {
+      menuItem -data $i -label $items[$i];
+    }
+    connectControl -index 2 $menu ("liquidGlobals." + $name);
+  } else {
+    print ( "Warning : global attribute " + $name + " does not exist\n" );
   }
 }
 
@@ -556,10 +580,10 @@ global proc liquidGlobalsForm() {
       columnLayout -cat left 0 -adj true liquidGlobalsFileSet;
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-Directories-" -cll false;
           columnLayout -adj true;
-            liquidShowStringGlobal "ribName" "Rib Name";
+            liquidShowStringGlobal "ribName" "RIB Name";
             liquidShowStringGlobal "pictureDirectory" "Picture Directory";
             liquidShowStringGlobal "textureDirectory" "Texture Directory";
-            liquidShowStringGlobal "ribDirectory" "Rib Directory";
+            liquidShowStringGlobal "ribDirectory" "RIB Directory";
             liquidShowStringGlobal "tempDirectory" "Temporary Directory";
             liquidShowStringGlobal "shaderPath" "Shader Path";
             liquidShowBoolGlobal "createOutputDirectories" "Create Output Directories";
@@ -567,7 +591,7 @@ global proc liquidGlobalsForm() {
         setParent ..;
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-Padding-" -cll false;
           columnLayout -adj true;
-            liquidShowBoolGlobal "doPadding" "Rib Extension Padding";
+            liquidShowBoolGlobal "doPadding" "RIB Extension Padding";
             liquidShowIntGlobal "padding" "Padding";
           setParent ..;
         setParent ..;
@@ -614,27 +638,34 @@ global proc liquidGlobalsForm() {
         setParent ..;
       setParent ..;
       columnLayout -cal left -adj true liquidGlobalsNetSet;
-        liquidShowStringGlobal "alfredJobName" "Alfred Job Name";
-        liquidShowBoolGlobal "deferredGen" "Deferred Generation";
-        liquidShowIntGlobal "deferredBlock" "Deferred Block Size";
-        liquidShowBoolGlobal "ignoreAlfred" "Don't Use Alfred";
-        liquidShowBoolGlobal "remoteRender" "Remote Render";
-        liquidShowBoolGlobal "netRManRender" "Net Renderman";
-        liquidShowIntGlobal "minCPU" "Min CPU";
-        liquidShowIntGlobal "maxCPU" "Max CPU";
-        liquidShowBoolGlobal "previewMode" "Launch Render";
-        liquidShowStringGlobal "renderCommand" "Render Command";
-        liquidShowStringGlobal "ribgenCommand" "Rib Gen Command";
-        liquidShowStringGlobal "preCommand" "Pre Command";
-        liquidShowStringGlobal "preFrameCommand" "Pre Frame Command";
-        liquidShowStringGlobal "postFrameCommand" "Post Frame Command";
-        liquidShowStringGlobal "postJobCommand" "Post Job Command";
-        liquidShowStringGlobal "alfredTags" "Alfred Tags";
-        liquidShowStringGlobal "alfredServices" "Alfred Services";
-        liquidShowStringGlobal "key" "Deferred Tag";
-        liquidShowStringGlobal "service" "Deferred Service";
-        liquidShowBoolGlobal "cleanAlf" "Clean Alfred";
-        liquidShowBoolGlobal "expandAlfred" "Alfred Expand Support";
+        liquidShowIntGlobalMenu "renderScriptFormat" "Render Script Format" {"None","Alfred","XML"};
+        liquidShowStringGlobal  "renderJobName" "Job Name";
+        liquidShowBoolGlobal    "deferredGen"   "Deferred RIB Gen";
+        liquidShowIntGlobal     "deferredBlock" "Deferred Block Size";
+        liquidShowBoolGlobal    "useRenderScript" "Exec. Render Script";
+        liquidShowBoolGlobal    "remoteRender"  "Remote Render";
+        liquidShowBoolGlobal    "netRManRender" "Net Renderman";
+        liquidShowIntGlobal     "minCPU" "Min CPU";
+        liquidShowIntGlobal     "maxCPU" "Max CPU";
+        liquidShowBoolGlobal    "launchRender" "Launch Render";
+        liquidShowStringGlobal  "renderScriptCommand" "Render Script Command";
+        liquidShowStringGlobal  "renderCommand" "Render Command";
+        liquidShowStringGlobal  "ribgenCommand" "RIB Gen Command";
+        liquidShowStringGlobal  "preCommand" "Pre Command";
+        liquidShowStringGlobal  "preFrameCommand"  "Pre Frame Command";
+        liquidShowStringGlobal  "postFrameCommand" "Post Frame Command";
+        liquidShowStringGlobal  "preJobCommand"  "Pre Job Command";
+        liquidShowStringGlobal  "postJobCommand" "Post Job Command";
+        liquidShowStringGlobal  "key" "Deferred Tag";
+        liquidShowStringGlobal  "service"  "Deferred Service";
+        liquidShowBoolGlobal    "cleanRenderScript" "Clean Render Script";
+        frameLayout -mh 5 -mw 5 -bs "etchedIn" -label "Alfred Specific" -cll false;
+          columnLayout;
+            liquidShowStringGlobal "alfredTags"     "Alfred Tags";
+            liquidShowStringGlobal "alfredServices" "Alfred Services";
+            liquidShowBoolGlobal   "expandAlfred"   "Alfred Expand Support";
+          setParent ..;
+        setParent ..;
       setParent ..;
       columnLayout -cal left -adj true liquidGlobalsOptionSet;
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-Feedback-" -cll false;
@@ -657,10 +688,10 @@ global proc liquidGlobalsForm() {
         setParent ..;
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-RIB Options-" -cll false;
           columnLayout -adj true;
-            liquidShowBoolGlobal "justRib" "Just Generate Rib Files";
+            liquidShowBoolGlobal "justRib" "Just Generate RIB Files";
             liquidShowBoolGlobal "exportReadArchive" "Read Archivable";
             liquidShowBoolGlobal "renderAllCurves" "Render All Displayed Nurbs Curves";
-            liquidShowBoolGlobal "fullShadowRibs" "Output Full Shadow Ribs";
+            liquidShowBoolGlobal "fullShadowRibs" "Output Full Shadow RIBs";
             liquidShowBoolGlobal "binaryOutput" "Binary Output";
             liquidShowBoolGlobal "compressedOutput" "Compressed Output";
             liquidShowBoolGlobal "expandShaderArrays" "Expand Shader Arrays";
@@ -669,7 +700,7 @@ global proc liquidGlobalsForm() {
         setParent ..;
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "-Clean Up-" -cll false;
           columnLayout -adj true;
-            liquidShowBoolGlobal "cleanRib" "Clean Rib";
+            liquidShowBoolGlobal "cleanRib" "Clean RIB";
             liquidShowBoolGlobal "cleanTex" "Clean Textures";
             liquidShowBoolGlobal "cleanShad" "Clean Shadows (SHD/LTA)";
           setParent ..;
@@ -697,13 +728,13 @@ global proc liquidGlobalsForm() {
       setParent ..;
 
       tabLayout -e -tabLabel "liquidGlobalsFileSet" "File" 
-              -tabLabel "liquidGlobalsFrameSet"   "Frame"
-              -tabLabel "liquidGlobalsDDSet"      "Display Driver"
-              -tabLabel "liquidGlobalsQualitySet" "Image"
-              -tabLabel "liquidGlobalsNetSet"     "Network"
-              -tabLabel "liquidGlobalsBMRTSet"    "BMRT"
-              -tabLabel "liquidGlobalsOptionSet"  "Options"
-              liquidGlobalsTab;
+        -tabLabel "liquidGlobalsFrameSet"   "Frame"
+        -tabLabel "liquidGlobalsDDSet"      "Display Driver"
+        -tabLabel "liquidGlobalsQualitySet" "Image"
+        -tabLabel "liquidGlobalsNetSet"     "Network"
+        -tabLabel "liquidGlobalsBMRTSet"    "BMRT"
+        -tabLabel "liquidGlobalsOptionSet"  "Options"
+        liquidGlobalsTab;
 
     setParent ..;
       
@@ -736,7 +767,7 @@ global proc liquidGlobalsWindow()
   }
   if ( !`window -exists liquidGlobalsWindow` ) {
   liquidAddGlobals;
-  window -widthHeight 410 552 -retain -mb true -title "liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
+  window -widthHeight 552 827 -retain -mb true -title "liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
   menu -label "Presets" -p liquidGlobalsWindow liquidGlobalsPresetMenu;
     menuItem -label "Save" -c liquidSavePreset -p liquidGlobalsPresetMenu liquidGlobalsPresetMenuSave;
     menuItem -divider true;

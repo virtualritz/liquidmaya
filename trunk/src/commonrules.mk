@@ -132,6 +132,7 @@ $(LIQUIDLIB) : $(LIQUIDMAINOBJS)
 	@$(AR) $(VPATH)/$(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
 
 $(LIQUIDMAINOBJS) : ../include/liquid.h
+liqRibTranslator.o: ../include/liqRenderScript.h
 
 .cpp.$(OBJEXT):
 	@echo $@

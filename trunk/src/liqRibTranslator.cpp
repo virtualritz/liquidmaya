@@ -100,6 +100,12 @@ static const char * LIQUIDVERSION =
 ;
 #endif
 
+#ifdef _WIN32
+#  define RM_CMD "cmd.exe /c del"
+#else
+#  define RM_CMD "/bin/rm"
+#endif
+
 // Maya headers
 #include <maya/MItDag.h>
 #include <maya/MFnTransform.h>
@@ -245,54 +251,50 @@ MStatus liqRibTranslator::liqShaderParseVectorAttr ( liqShader & currentShader, 
 }
 
 void liqRibTranslator::printProgress( int stat, long first, long last, long where )
-// Description:
-// Member function for printing the progress to the
-// Maya Console or stdout.  If alfred is being used
-// it will print it in a format that causes the correct
-// formatting for the progress meters
+// for printing the progress to the Maya Console or stdout. If alfred is being used it
+// will print it in a format that causes the correct formatting for the progress meters
+//
+// TODO - should be able to set the progress output format somehow to cater for
+// different render pipelines - with a user-specifiable string in printf format?
 {
-    float numFrames = ( last - first ) + 1;
-    float framesDone = where - first;
-    float statSize = ( ( 1 / (float)numFrames ) / 4 ) * (float)stat * 100.0;
-    float progressf = (( (float)framesDone / (float)numFrames ) * 100.0 ) + statSize;
-    int progress = ( int ) progressf;
+  float numFrames  = ( last - first ) + 1;
+  float framesDone = where - first;
+  float statSize   = ( ( 1 / (float)numFrames ) / 4 ) * (float)stat * 100.0;
+  float progressf  = (( (float)framesDone / (float)numFrames ) * 100.0 ) + statSize;
+  int progress     = ( int ) progressf;
 
-    if ( !liquidBin ) {
-        MString progressOutput = "Progress: ";
-        progressOutput += (int)progress;
-        progressOutput += "%";
-        liquidInfo( progressOutput );
-    } else {
-        cout << "ALF_PROGRESS " << progress << "%\n" << flush;
-    }
+  if ( liquidBin ) {
+    cout << "ALF_PROGRESS " << progress << "%\n" << flush;
+  } else {
+    MString progressOutput = "Progress: ";
+    progressOutput += (int)progress;
+    progressOutput += "%";
+    liquidInfo( progressOutput );
+  }
 }
 
 bool liqRibTranslator::liquidInitGlobals()
 // Description:
 // checks to see if the liquidGlobals are available
 {
-    MStatus status;
-    MSelectionList rGlobalList;
-    status = rGlobalList.add( "liquidGlobals" );
-    if ( rGlobalList.length() > 0 ) {
-        status.clear();
-        status = rGlobalList.getDependNode( 0, rGlobalObj );
-        if ( status == MS::kSuccess ) {
-            return true;
-        } else {
-            return false;
-        }
+  MStatus status;
+  MSelectionList rGlobalList;
+  status = rGlobalList.add( "liquidGlobals" );
+  if ( rGlobalList.length() > 0 ) {
+    status.clear();
+    status = rGlobalList.getDependNode( 0, rGlobalObj );
+    if ( status == MS::kSuccess ) {
+      return true;
     } else {
-        return false;
+      return false;
     }
+  } else {
     return false;
+  }
+  return false;
 }
 
 liqRibTranslator::liqRibTranslator()
-//
-//  Description:
-//      Class constructor
-//
 {
 #ifdef _WIN32
     m_systemTempDirectory = getenv("TEMP");
@@ -333,18 +335,18 @@ liqRibTranslator::liqRibTranslator()
     m_exportReadArchive = false;
     useNetRman = false;
     remoteRender = false;
-    useAlfred = false;
+    useRenderScript = true;
     cleanRib = false;
-    cleanAlf = false;
+    cleanRenderScript = false;
     liqglo_doBinary = false;
     liqglo_doCompression = false;
     doDof = false;
-    outputpreview = 0;
-    liqglo_doMotion = false;  // matrix motion blocks
-    liqglo_doDef = false;   // geometry motion blocks
-    doCameraMotion = false;  // camera motion blocks
-    doExtensionPadding = 0; // pad the frame number in the rib file names
-    liqglo_doShadows = true;   // render shadows
+    launchRender = false;
+    liqglo_doMotion = false;    // matrix motion blocks
+    liqglo_doDef = false;       // geometry motion blocks
+    doCameraMotion = false;     // camera motion blocks
+    doExtensionPadding = false; // pad the frame number in the rib file names
+    liqglo_doShadows = true;    // render shadows
     m_justRib = false;
     cleanShadows = 0;   // render shadows
     cleanTextures = 0;   // render shadows
@@ -406,6 +408,7 @@ liqRibTranslator::liqRibTranslator()
     m_preFrameMel.clear();
     m_postFrameMel.clear();
     m_preCommand.clear();
+    m_preJobCommand.clear();
     m_postJobCommand.clear();
     m_postFrameCommand.clear();
     m_preFrameCommand.clear();
@@ -438,6 +441,8 @@ liqRibTranslator::liqRibTranslator()
 
     m_preWorldRIB.clear();
     m_postWorldRIB.clear();
+    
+    m_renderScriptFormat = ALFRED;
 }
 
 liqRibTranslator::~liqRibTranslator()
@@ -469,8 +474,8 @@ MSyntax liqRibTranslator::syntax()
 {
     MSyntax syntax;
 
-    syntax.addFlag("p",   "preview");
-    syntax.addFlag("nop", "noPreview");
+    syntax.addFlag("lr",  "launchRender");
+    syntax.addFlag("nlr", "noLaunchRender");
     syntax.addFlag("GL",  "useGlobals");
     syntax.addFlag("sel", "selected");
     syntax.addFlag("ra",  "readArchive");
@@ -489,8 +494,8 @@ MSyntax liqRibTranslator::syntax()
     syntax.addFlag("net", "netRender");
     syntax.addFlag("fsr", "fullShadowRib");
     syntax.addFlag("rem", "remote");
-    syntax.addFlag("alf", "alfred");
-    syntax.addFlag("nal", "noAlfred");
+    syntax.addFlag("rs",  "renderScript");
+    syntax.addFlag("nrs", "noRenderScript");
     syntax.addFlag("err", "errHandler");
     syntax.addFlag("sdb", "shaderDebug");
     syntax.addFlag("n",   "sequence", MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
@@ -580,12 +585,12 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
 
     for (unsigned int i = 0; i < args.length(); i++ ) {
         MString arg = args.asString( i, &status );
-        if ((arg == "-p") || (arg == "-preview")) {
+        if ((arg == "-lr") || (arg == "-launchRender")) {
             LIQCHECKSTATUS(status, "error in -preview parameter");
-            outputpreview = 1;
-        } else if ((arg == "-nop") || (arg == "-noPreview")) {
+            launchRender = true;
+        } else if ((arg == "-nolr") || (arg == "-noLaunchRender")) {
             LIQCHECKSTATUS(status, "error in -noPreview parameter");
-            outputpreview = 0;
+            launchRender = false;
         } else if ((arg == "-GL") || (arg == "-useGlobals")) {
             LIQCHECKSTATUS(status, "error in -useGlobals parameter");
             //load up all the render global parameters!
@@ -641,12 +646,12 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
         } else if ((arg == "-rem") || (arg == "-remote")) {
             LIQCHECKSTATUS(status, "error in -remote parameter");
             remoteRender = true;
-        } else if ((arg == "-alf") || (arg == "-alfred")) {
-            LIQCHECKSTATUS(status, "error in -alfred parameter");
-            useAlfred = true;
-        } else if ((arg == "-nal") || (arg == "-noAlfred")) {
-            LIQCHECKSTATUS(status, "error in -noAlfred parameter");
-            useAlfred = false;
+        } else if ((arg == "-rs") || (arg == "-renderScript")) {
+            LIQCHECKSTATUS(status, "error in -renderScript parameter");
+            useRenderScript = true;
+        } else if ((arg == "-nrs") || (arg == "-noRenderScript")) {
+            LIQCHECKSTATUS(status, "error in -noRenderScript parameter");
+            useRenderScript = false;
         } else if ((arg == "-err") || (arg == "-errHandler")) {
             LIQCHECKSTATUS(status, "error in -errHandler parameter");
             m_errorMode = 1;
@@ -840,7 +845,8 @@ void liqRibTranslator::liquidReadGlobals()
     MStatus gStatus;
     MPlug gPlug;
     MFnDependencyNode rGlobalNode( rGlobalObj );
-    /* Display Driver Globals */
+    
+    // Display Driver Globals
     {
         gPlug = rGlobalNode.findPlug( "numDD", &gStatus );
         if ( gStatus == MS::kSuccess ) {
@@ -939,6 +945,7 @@ void liqRibTranslator::liquidReadGlobals()
             k++;
         }
     }
+    
     // Hmmmmmmmmm duplicated code : bad
     {
         MString varVal;
@@ -966,15 +973,22 @@ void liqRibTranslator::liquidReadGlobals()
     }
     {
         MString varVal;
-        gPlug = rGlobalNode.findPlug( "alfredFileName", &gStatus );
+        gPlug = rGlobalNode.findPlug( "renderScriptFileName", &gStatus );
         if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-        if ( varVal != MString("") ) m_userAlfredFileName = varVal;
+        if ( varVal != MString("") ) m_userRenderScriptFileName = varVal;
         gStatus.clear();
     }
     {
         MString varVal;
         gPlug = rGlobalNode.findPlug( "preCommand", &gStatus );
         if ( gStatus == MS::kSuccess ) gPlug.getValue( m_preCommand );
+        gStatus.clear();
+    }
+    {
+        MString varVal;
+        gPlug = rGlobalNode.findPlug( "preJobCommand", &gStatus );
+        if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+        m_preJobCommand = parseString( varVal );
         gStatus.clear();
     }
     {
@@ -996,8 +1010,8 @@ void liqRibTranslator::liquidReadGlobals()
         if ( gStatus == MS::kSuccess ) gPlug.getValue( m_preFrameCommand );
         gStatus.clear();
     }
-    gPlug = rGlobalNode.findPlug( "previewMode", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( outputpreview );
+    gPlug = rGlobalNode.findPlug( "launchRender", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( launchRender );
     gStatus.clear();
     {
         MString varVal;
@@ -1108,7 +1122,7 @@ void liqRibTranslator::liquidReadGlobals()
         }
     }
 
-    /* PIXELFILTER OPTIONS: BEGIN */
+    // PIXELFILTER OPTIONS: BEGIN
     gPlug = rGlobalNode.findPlug( "PixelFilter", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_rFilter );
     gStatus.clear();
@@ -1118,9 +1132,9 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "PixelFilterY", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_rFilterY );
     gStatus.clear();
-    /* PIXELFILTER OPTIONS: END */
+    // PIXELFILTER OPTIONS: END
 
- /* BMRT OPTIONS:BEGIN */
+    // BMRT OPTIONS:BEGIN
     gPlug = rGlobalNode.findPlug( "BMRTAttrs", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_useBMRT );
     gStatus.clear();
@@ -1147,7 +1161,7 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "BMRTusePrmanDisp", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_BMRTusePrmanDisp );
     gStatus.clear();
-    /* BMRT OPTIONS:END */
+    // BMRT OPTIONS:END
 
     MStatus cropStatus;
     gPlug = rGlobalNode.findPlug( "cropX1", &cropStatus );
@@ -1200,10 +1214,9 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "deferredBlock", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_deferredBlockSize );
     gStatus.clear();
-    gPlug = rGlobalNode.findPlug( "ignoreAlfred", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( useAlfred );
+    gPlug = rGlobalNode.findPlug( "useRenderScript", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( useRenderScript );
     gStatus.clear();
-    useAlfred = !useAlfred;
     gPlug = rGlobalNode.findPlug( "remoteRender", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( remoteRender );
     gStatus.clear();
@@ -1253,8 +1266,8 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "exportReadArchive", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_exportReadArchive );
     gStatus.clear();
-    gPlug = rGlobalNode.findPlug( "alfredJobName", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( alfredJobName );
+    gPlug = rGlobalNode.findPlug( "renderJobName", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( renderJobName );
     gStatus.clear();
     gPlug = rGlobalNode.findPlug( "doAnimation", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_animation );
@@ -1331,8 +1344,8 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "cleanRib", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanRib );
     gStatus.clear();
-    gPlug = rGlobalNode.findPlug( "cleanAlf", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanAlf );
+    gPlug = rGlobalNode.findPlug( "cleanRenderScript", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanRenderScript );
     gStatus.clear();
     gPlug = rGlobalNode.findPlug( "cleanTex", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanTextures );
@@ -1383,6 +1396,14 @@ void liqRibTranslator::liquidReadGlobals()
             m_postWorldRIB = parseString( varVal );
         }
     }
+    
+    gPlug = rGlobalNode.findPlug( "renderScriptFormat", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( (liquidlong)m_renderScriptFormat );
+    gStatus.clear();
+    
+    gPlug = rGlobalNode.findPlug( "renderScriptCommand", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_renderScriptCommand );
+    gStatus.clear();
 }
 
 bool liqRibTranslator::verifyOutputDirectories()
@@ -1450,6 +1471,59 @@ bool liqRibTranslator::verifyOutputDirectories()
     return problem;
 }
 
+MString liqRibTranslator::generateRenderScriptName() const
+{
+  MString renderScriptName = m_tmpDir;
+  if ( m_userRenderScriptFileName != MString( "" ) ){
+    renderScriptName += m_userRenderScriptFileName;
+  } else {
+    renderScriptName += liqglo_sceneName;
+#ifndef _WIN32
+    struct timeval  t_time;
+    struct timezone t_zone;
+    size_t tempSize = 0;
+    char currentHostName[1024];
+    gethostname( currentHostName, tempSize );
+    liquidlong hashVal = liquidHash( currentHostName );
+    gettimeofday( &t_time, &t_zone );
+    srandom( t_time.tv_usec + hashVal );
+    short alfRand = random();
+    renderScriptName += alfRand;
+#endif
+  }
+  
+  if (m_renderScriptFormat == ALFRED) {
+    renderScriptName += ".alf";
+  }
+  if (m_renderScriptFormat == XML) {
+    renderScriptName += ".xml";
+  }
+  
+  return renderScriptName;
+}
+
+MString liqRibTranslator::generateTempMayaSceneName() const
+{
+  MString tempDefname = m_tmpDir;
+  tempDefname += liqglo_sceneName;
+#ifndef _WIN32
+  struct timeval  t_time;
+  struct timezone t_zone;
+  size_t tempSize = 0;
+  char currentHostName[1024];
+  gethostname( currentHostName, tempSize );
+  liquidlong hashVal = liquidHash( currentHostName );
+  gettimeofday( &t_time, &t_zone );
+  srandom( t_time.tv_usec + hashVal );
+  short defRand = random();
+  tempDefname += defRand;
+#endif
+  MString currentFileType = MFileIO::fileType();
+  if ( MString( "mayaAscii" )  == currentFileType ) tempDefname += ".ma";
+  if ( MString( "mayaBinary" ) == currentFileType ) tempDefname += ".mb";
+  return tempDefname;
+}
+
 MStatus liqRibTranslator::doIt( const MArgList& args )
 //  Description:
 //      This method actually does the renderman output
@@ -1474,7 +1548,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     liqglo_FPS = oneSecond.as( MTime::uiUnit() );
 
     // append the progress flag for alfred feedback
-    if ( useAlfred ) {
+    if ( useRenderScript ) {
         if ( ( m_renderCommand == MString( "render" ) ) || ( m_renderCommand == MString( "prman" ) ) ) {
             m_renderCommand = m_renderCommand + " -Progress";
         }
@@ -1520,7 +1594,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
     MString alfredRemoteTagsAndServices;
     if ( remoteRender || useNetRman ) {
-        alfredRemoteTagsAndServices = MString( "-service { " );
+        alfredRemoteTagsAndServices  = MString( "-service { " );
         alfredRemoteTagsAndServices += m_alfredServices.asChar();
         alfredRemoteTagsAndServices += MString( " } -tags { " );
         alfredRemoteTagsAndServices += m_alfredTags.asChar();
@@ -1530,7 +1604,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     /*  A seperate one for cleanup as it doens't need a tag! */
     MString alfredCleanupRemoteTagsAndServices;
     if ( remoteRender || useNetRman ) {
-        alfredCleanupRemoteTagsAndServices = MString( "-service { " );
+        alfredCleanupRemoteTagsAndServices  = MString( "-service { " );
         alfredCleanupRemoteTagsAndServices += m_alfredServices.asChar();
         alfredCleanupRemoteTagsAndServices += MString( " } " );
     }
@@ -1555,77 +1629,44 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             liqglo_doDef = false;
         }
 
-        char *alfredFileName;
-        ofstream alfFile;
-#ifndef _WIN32
-        struct timeval t_time;
-        struct timezone t_zone;
-        size_t tempSize = 0;
-
-        char currentHostName[1024];
-        gethostname( currentHostName, tempSize );
-        liquidlong hashVal = liquidHash( currentHostName );
-#endif
-        // build alfred file name
-        MString tempAlfname = m_tmpDir;
-        if ( m_userAlfredFileName != MString( "" ) ){
-            tempAlfname += m_userAlfredFileName;
-        } else {
-            tempAlfname += liqglo_sceneName;
-#ifndef _WIN32
-            gettimeofday( &t_time, &t_zone );
-            srandom( t_time.tv_usec + hashVal );
-            short alfRand = random();
-            tempAlfname += alfRand;
-#endif
-        }
-        tempAlfname += ".alf";
-
-        alfredFileName = (char *)alloca( sizeof( char ) * tempAlfname.length() +1);
-        strcpy( alfredFileName , tempAlfname.asChar() );
-
-        // build deferred temp maya file name
-        MString tempDefname = m_tmpDir;
-        tempDefname += liqglo_sceneName;
-#ifndef _WIN32
-        gettimeofday( &t_time, &t_zone );
-        srandom( t_time.tv_usec + hashVal );
-        short defRand = random();
-        tempDefname += defRand;
-#endif
-
-        MString currentFileType = MFileIO::fileType();
-        if ( MString( "mayaAscii" ) == currentFileType ) tempDefname += ".ma";
-        if ( MString( "mayaBinary" ) == currentFileType ) tempDefname += ".mb";
+        // build temp file names
+        MString renderScriptName = generateRenderScriptName();
+        MString tempDefname    = generateTempMayaSceneName();
+        
         if ( m_deferredGen ) {
-            MFileIO::exportAll( tempDefname, currentFileType.asChar() );
+          MString currentFileType = MFileIO::fileType();
+          MFileIO::exportAll( tempDefname, currentFileType.asChar() );
         }
 
-        if ( !m_deferredGen && m_justRib ) useAlfred = false;
+        if ( !m_deferredGen && m_justRib ) {
+          useRenderScript = false;
+        }
 
-        if ( useAlfred ) {
-            alfFile.open( alfredFileName );
+        liqRenderScript jobScript;
+        liqRenderScript::Job preJobInstance;
+        preJobInstance.title = "liquid pre-job";
+        preJobInstance.isInstance = true;
+            
+        if ( useRenderScript ) {
+          if ( renderJobName == "" ) {
+            renderJobName = liqglo_sceneName;
+          }
+          jobScript.title = renderJobName.asChar();
 
-            //write the little header information alfred needs
-            alfFile << "##AlfredToDo 3.0" << "\n";
+          if ( useNetRman ) {
+            jobScript.minServers = m_minCPU;
+            jobScript.maxServers = m_maxCPU;
+          } else {
+            jobScript.minServers = 1;
+            jobScript.maxServers = 1;
+          }
 
-            //write the main job info
-            if ( alfredJobName == "" ) { alfredJobName = liqglo_sceneName; }
-            alfFile << "Job -title {" << alfredJobName.asChar()
-                    << "(liquid job)} -comment {#Created By Liquid " << LIQUIDVERSION << "} "
-                    << "-service " << "{}" << " "
-                    << "-tags " << "{}" << " ";
-            if ( useNetRman ) {
-                alfFile << "-atleast " << m_minCPU << " " << "-atmost " << m_maxCPU << " ";
-            } else {
-                alfFile << "-atleast " << "1" << " "
-                        << "-atmost " << "1" << " ";
-            }
-            alfFile << "-init " << "{" << " "
-                    << "\n";
-
-            alfFile << "} -subtasks {" << "\n";
-            alfFile << flush;
+          if ( m_preJobCommand != MString("") ) {
+            liqRenderScript::Job preJob;
+            preJob.title = "liquid pre-job";
+            preJob.commands.push_back(liqRenderScript::Cmd(m_preJobCommand.asChar(), (remoteRender && !useNetRman)));
+            jobScript.addJob(preJob);
+          }
         }
 
         // start looping through the frames
@@ -1633,6 +1674,8 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
         for( liqglo_lframe=frameFirst; liqglo_lframe<=frameLast; liqglo_lframe = liqglo_lframe + frameBy ) {
             if ( m_showProgress ) printProgress( 1, frameFirst, frameLast, liqglo_lframe );
 
+            liqRenderScript::Job frameScriptJob;
+ 
             m_shadowRibGen = false;
             m_alfShadowRibGen = false;
             liqglo_preReadArchive.clear();
@@ -1641,50 +1684,61 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             liqglo_preRibBoxShadow.clear();
 
             // make sure all the global strings are parsed for this frame
-            MString frameRenderCommand = parseString( m_renderCommand );
-            MString frameRibgenCommand = parseString( m_ribgenCommand );
-            MString framePreCommand = parseString( m_preCommand );
-            MString framePreFrameCommand = parseString( m_preFrameCommand );
+            MString frameRenderCommand    = parseString( m_renderCommand );
+            MString frameRibgenCommand    = parseString( m_ribgenCommand );
+            MString framePreCommand       = parseString( m_preCommand );
+            MString framePreFrameCommand  = parseString( m_preFrameCommand );
             MString framePostFrameCommand = parseString( m_postFrameCommand );
 
-            if ( useAlfred ) {
+            if ( useRenderScript ) {
                 if ( m_deferredGen ) {
+                    liqRenderScript::Job deferredJob;
                     if ( (( liqglo_lframe - frameFirst ) % m_deferredBlockSize ) == 0 ) {
                         if ( m_deferredBlockSize == 1 ) {
                             currentBlock = liqglo_lframe;
                         } else {
                             currentBlock++;
                         }
-                        alfFile << " Task -title {" << liqglo_sceneName.asChar() << "FrameRIBGEN" << currentBlock << "} -subtasks {\n";
-                        alfFile << "   } -cmds { \n";
-                        if ( remoteRender ) {
-                            alfFile << "         RemoteCmd { " << framePreCommand.asChar() << "  ";
-                            alfFile << frameRibgenCommand.asChar();
-                        } else {
-                            alfFile << "         Cmd { " << framePreCommand.asChar() << "  ";
-                            alfFile << frameRibgenCommand.asChar();
-                        }
+                                                
                         int lastGenFrame = ( liqglo_lframe + ( m_deferredBlockSize - 1 ) );
-                        if ( lastGenFrame > frameLast ) lastGenFrame = frameLast;
-                        alfFile << " -progress -noDef -nop -noalfred -projectDir " << liqglo_projectDir.asChar() << " -ribName " << liqglo_sceneName.asChar() << " -mf " << tempDefname.asChar() << " -n " << liqglo_lframe << " " << lastGenFrame << " " << frameBy << " } ";
-                        if ( m_alfredExpand ) {
-                            alfFile << "-expand 1 ";
+                        if ( lastGenFrame > frameLast ) {
+                          lastGenFrame = frameLast;
                         }
-                        alfFile << "-service { " << m_defGenService.asChar() << " } ";
-                        alfFile << "-tags { " << m_defGenKey.asChar() << " }\n";
-                        alfFile << "   }\n";
+                        std::stringstream ribGenExtras;
+                        ribGenExtras << " -progress -noDef -nop -noalfred -projectDir " << liqglo_projectDir.asChar() << " -ribName " << liqglo_sceneName.asChar() << " -mf " << tempDefname.asChar() << " -n " << liqglo_lframe << " " << lastGenFrame << " " << frameBy;
+
+                        std::stringstream titleStream;
+                        titleStream << liqglo_sceneName.asChar() << "FrameRIBGEN" << currentBlock;
+                        deferredJob.title = titleStream.str();
+                        
+                        std::stringstream ss;
+                        ss << framePreCommand.asChar() << " " << frameRibgenCommand.asChar() << ribGenExtras.str();
+                        liqRenderScript::Cmd cmd(ss.str(), remoteRender);
+                        cmd.alfredServices = m_defGenService.asChar();
+                        cmd.alfredTags     = m_defGenKey.asChar();
+                        if ( m_alfredExpand ) {
+                          cmd.alfredExpand = true;
+                        }
+                        deferredJob.commands.push_back(cmd);
+                        jobScript.addJob(deferredJob);
                     }
                 }
                 if ( !m_justRib ) {
-                    alfFile << " Task -title {" << liqglo_sceneName.asChar() << "Frame" << liqglo_lframe << "} -subtasks {\n";
+                    std::stringstream titleStream;
+                    titleStream << liqglo_sceneName.asChar() << "Frame" << liqglo_lframe;
+                    frameScriptJob.title = titleStream.str();
 
                     if ( m_deferredGen ) {
-                        alfFile << "  Instance {" << liqglo_sceneName.asChar() << "FrameRIBGEN" << currentBlock << "}\n";
+                        std::stringstream ss;
+                        ss << liqglo_sceneName.asChar() << "FrameRIBGEN" << currentBlock;
+                        liqRenderScript::Job instanceJob;
+                        instanceJob.isInstance = true;
+                        instanceJob.title = ss.str();
+                        frameScriptJob.childJobs.push_back(instanceJob);
                     }
-
-                    alfFile << flush;
                 }
             }
+            
             // Hmmmmmm not really clean ....
             if ( buildJobs() != MS::kSuccess ) break;
 
@@ -1831,45 +1885,56 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
                 htable = NULL;
             }
 
+            // set the rib file for the 'view last rib' menu command
+            // NOTE: this may be overridden later on in certain code paths
+            if ( !m_deferredGen ) {
+              lastRibName = liqglo_currentJob.ribFileName.asChar();
+            }
+
+                        
             // now we re-iterate through the job list to write out the alfred file if we are using it
 
             // write out shadows
-
-            if ( useAlfred && !m_justRib ) {
+            if ( useRenderScript && !m_justRib ) {
                 if ( liqglo_doShadows ) {
                     if ( debugMode ) { printf("-> writing out shadow information to alfred file.\n" ); }
                     std::vector<structJob>::iterator iter = shadowList.begin();
                     while ( iter != shadowList.end() ) {
-                        alfFile << "       Task -title {" << iter->name.asChar() << "} -subtasks {\n";
+                        liqRenderScript::Job shadowJob;
+                        shadowJob.title = iter->name.asChar();
                         if ( m_deferredGen ) {
-                            alfFile << "  Instance {" << liqglo_sceneName.asChar() << "FrameRIBGEN" << currentBlock << "}\n";
+                            std::stringstream ss;
+                            ss << liqglo_sceneName.asChar() << "FrameRIBGEN" << currentBlock;
+                            liqRenderScript::Job instanceJob;
+                            instanceJob.isInstance = true;
+                            instanceJob.title = ss.str();
+                            shadowJob.childJobs.push_back(instanceJob);
                         }
-                        alfFile << "   } -cmds { \n";
+                        std::stringstream ss;
                         if ( useNetRman ) {
-                            alfFile << "         Cmd { " << framePreCommand.asChar() << " netrender %H -Progress " << iter->ribFileName.asChar() << "} ";
-                        } else if ( remoteRender ) {
-                            alfFile << "         RemoteCmd { " << framePreCommand.asChar() << "  " << frameRenderCommand.asChar() << " " << iter->ribFileName.asChar() << "} ";
+                            ss << framePreCommand.asChar() << " netrender %H -Progress " << iter->ribFileName.asChar();
                         } else {
-                            alfFile << "         Cmd { " << framePreCommand.asChar() << "  " << frameRenderCommand.asChar() << " " << iter->ribFileName.asChar() << "} ";
+                            ss << framePreCommand.asChar() << " " << frameRenderCommand.asChar() << " " << iter->ribFileName.asChar();
                         }
+                        liqRenderScript::Cmd cmd(ss.str(), (remoteRender && !useNetRman));
                         if ( m_alfredExpand ) {
-                            alfFile << "-expand 1 ";
+                            cmd.alfredExpand = true;
                         }
-                        alfFile << alfredRemoteTagsAndServices.asChar() << "\n";
-
+                        cmd.alfredServices = m_alfredServices.asChar();
+                        cmd.alfredTags     = m_alfredTags.asChar();
+                        shadowJob.commands.push_back(cmd);
 
                         if (cleanRib)  {
-                            alfFile << "   } -cleanup {\n";
-                            alfFile << "         " << alfredCleanUpCommand.asChar() << " { " << framePreCommand.asChar();
-                            alfFile << "  /bin/rm ";
-                            alfFile << iter->ribFileName.asChar() << "} " << alfredCleanupRemoteTagsAndServices.asChar() << "\n";
+                            std::stringstream ss;
+                            ss << framePreCommand.asChar() << " " << RM_CMD << " " << iter->ribFileName.asChar();
+                            shadowJob.cleanupCommands.push_back(liqRenderScript::Cmd(ss.str(), remoteRender));
                         }
-                        alfFile << "   } -chaser {\n";
-                        alfFile << "      sho \"" << iter->imageName.asChar() << "\"\n";
-                        alfFile << "   }\n";
+                        shadowJob.chaserCommand = (std::string("sho \"") + iter->imageName.asChar() + "\"");
 
                         ++iter;
                         if ( !m_alfShadowRibGen && !fullShadowRib ) m_alfShadowRibGen = true;
+                        
+                        frameScriptJob.childJobs.push_back(shadowJob);
                     }
                 }
                 if ( debugMode ) { printf("-> finished writing out shadow information to alfred file.\n" ); }
@@ -1888,108 +1953,111 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
                 }
                 if ( debugMode ) { printf("-> hero pass set.\n" ); }
 
-                alfFile << " } -cmds {\n";
-
                 if ( debugMode ) { printf("-> writing out pre frame command information to alfred file.\n" ); }
                 if ( framePreFrameCommand != MString("") ) {
-                    if ( useNetRman ) {
-                        alfFile << "      Cmd { " << framePreFrameCommand.asChar() << "} " << alfredRemoteTagsAndServices.asChar() << "\n";
-                    } else if ( remoteRender ) {
-                        alfFile << "      RemoteCmd { " << framePreFrameCommand.asChar() << "} " << alfredRemoteTagsAndServices.asChar() << "\n";
-                    } else {
-                        alfFile << "      Cmd { " << framePreFrameCommand.asChar() << "} " << alfredRemoteTagsAndServices.asChar() << "\n";
-                    }
+                    liqRenderScript::Cmd cmd(framePreFrameCommand.asChar(), (remoteRender && !useNetRman));
+                    cmd.alfredServices = m_alfredServices.asChar();
+                    cmd.alfredTags     = m_alfredTags.asChar();
+                    frameScriptJob.commands.push_back(cmd);
                 }
 
                 if ( m_outputHeroPass ) {
+                    std::stringstream ss;
                     if ( useNetRman ) {
-                        alfFile << "         Cmd { " << framePreCommand.asChar() << "  netrender %H -Progress " << frameJob->ribFileName.asChar() << "} ";
-                    } else if ( remoteRender ) {
-                        alfFile << "         RemoteCmd { " << framePreCommand.asChar() << "  " << frameRenderCommand.asChar() << " " << frameJob->ribFileName.asChar() << "} ";
+                        ss << framePreCommand.asChar() << " netrender %H -Progress " << frameJob->ribFileName.asChar();
                     } else {
-                        alfFile << "         Cmd { " << framePreCommand.asChar() << "  " << frameRenderCommand.asChar() << " " << frameJob->ribFileName.asChar() << "} ";
+                        ss << framePreCommand.asChar() << " " << frameRenderCommand.asChar() << " " << frameJob->ribFileName.asChar();
                     }
+                    liqRenderScript::Cmd cmd(ss.str(), (remoteRender && !useNetRman));
                     if ( m_alfredExpand ) {
-                        alfFile << "-expand 1 ";
+                        cmd.alfredExpand = true;
                     }
-                    alfFile << alfredRemoteTagsAndServices.asChar() << "\n";
-
+                    cmd.alfredServices = m_alfredServices.asChar();
+                    cmd.alfredTags     = m_alfredTags.asChar();
+                    frameScriptJob.commands.push_back(cmd);
                 }
                 if ( debugMode ) { printf("-> finished writing out hero information to alfred file.\n" ); }
-                alfFile << flush;
 
                 if ( m_outputShadowPass ) {
+                    std::stringstream ss;
                     if ( useNetRman ) {
-                        alfFile << "         Cmd { " << framePreCommand.asChar() << "  netrender %H -Progress " << shadowPassJob->ribFileName.asChar() << "} ";
-                    } else if ( remoteRender ) {
-                        alfFile << "         RemoteCmd { " << framePreCommand.asChar() << "  " << frameRenderCommand.asChar() << " " << shadowPassJob->ribFileName.asChar() << "} ";
+                        ss << framePreCommand.asChar() << " netrender %H -Progress " << shadowPassJob->ribFileName.asChar();
                     } else {
-                        alfFile << "         Cmd { " << framePreCommand.asChar() << "  " << frameRenderCommand.asChar() << " " << shadowPassJob->ribFileName.asChar() << "} ";
+                        ss << framePreCommand.asChar() << " " << frameRenderCommand.asChar() << " " << shadowPassJob->ribFileName.asChar();
                     }
+                    liqRenderScript::Cmd cmd(ss.str(), (remoteRender && !useNetRman));
                     if ( m_alfredExpand ) {
-                        alfFile << "-expand 1 ";
+                        cmd.alfredExpand = true;
                     }
-                    alfFile << alfredRemoteTagsAndServices.asChar() << "\n";
-
+                    cmd.alfredServices = m_alfredServices.asChar();
+                    cmd.alfredTags     = m_alfredTags.asChar();
+                    frameScriptJob.commands.push_back(cmd);
                 }
-                alfFile << flush;
 
                 if (cleanRib || (framePostFrameCommand != MString("")) ) {
-                    alfFile << " } -cleanup {\n";
-
                     if (cleanRib) {
-
-                        if ( m_outputHeroPass ) alfFile << "       " << alfredCleanUpCommand.asChar() << " { " << framePreCommand.asChar() << "  /bin/rm " << frameJob->ribFileName.asChar() << "} " << alfredCleanupRemoteTagsAndServices.asChar() << "\n";
-                        if ( m_outputShadowPass ) alfFile << "       " << alfredCleanUpCommand.asChar() << " { " << framePreCommand.asChar() << "  /bin/rm " << shadowPassJob->ribFileName.asChar() << "} " << alfredCleanupRemoteTagsAndServices.asChar() << "\n";
-                        if ( m_alfShadowRibGen ) alfFile << "       " << alfredCleanUpCommand.asChar() << " { " << framePreCommand.asChar() << "  /bin/rm " << baseShadowName.asChar() << "} " << alfredCleanupRemoteTagsAndServices.asChar() << "\n";
+                        std::stringstream ss;
+                        if ( m_outputHeroPass  ) {
+                          ss << framePreCommand.asChar() << " " << RM_CMD << " " << frameJob->ribFileName.asChar();
+                        }
+                        if ( m_outputShadowPass) {
+                          ss << framePreCommand.asChar() << " " << RM_CMD << " " << shadowPassJob->ribFileName.asChar();
+                        }
+                        if ( m_alfShadowRibGen ) {
+                          ss << framePreCommand.asChar() << " " << RM_CMD << " " << baseShadowName.asChar();
+                        }
+                        frameScriptJob.cleanupCommands.push_back(liqRenderScript::Cmd(ss.str(), remoteRender));
                     }
                     if ( framePostFrameCommand != MString("") ) {
-                        if ( useNetRman ) {
-                            alfFile << "      Cmd { " << framePostFrameCommand.asChar() << "} " << alfredRemoteTagsAndServices.asChar() << "\n";
-                        } else if ( remoteRender ) {
-                            alfFile << "      RemoteCmd { " << framePostFrameCommand.asChar() << "} " << alfredRemoteTagsAndServices.asChar() << "\n";
-                        } else {
-                            alfFile << "      Cmd { " << framePostFrameCommand.asChar() << "} " << alfredRemoteTagsAndServices.asChar() << "\n";
-                        }
+                        liqRenderScript::Cmd cmd(framePostFrameCommand.asChar(), (remoteRender && !useNetRman));
+                        frameScriptJob.cleanupCommands.push_back(cmd);
                     }
-
                 }
-                alfFile << " } -chaser {\n";
-                if ( m_outputHeroPass ) alfFile << "    sho \"" << frameJob->imageName.asChar() << "\"\n";
-                if ( m_outputShadowPass ) alfFile << "    sho \"" << shadowPassJob->imageName.asChar() << "\"\n";
-                alfFile << " }\n";
+                if ( m_outputHeroPass ) {
+                  frameScriptJob.chaserCommand = (std::string("sho \"") + frameJob->imageName.asChar() + "\"");
+                }
+                if ( m_outputShadowPass ) {
+                  frameScriptJob.chaserCommand = (std::string("sho \"") + shadowPassJob->imageName.asChar() + "\"");
+                }
                 if ( m_outputShadowPass && !m_outputHeroPass ) {
-                    lastRibName = shadowPassJob->ribFileName.asChar();
+                  lastRibName = shadowPassJob->ribFileName.asChar();
                 } else {
-                    lastRibName = frameJob->ribFileName.asChar();
+                  lastRibName = frameJob->ribFileName.asChar();
                 }
             }
 
+            jobScript.addJob(frameScriptJob);
+            
             if ( ( ribStatus != kRibOK ) && !m_deferredGen ) break;
-        }
+        } // frame for-loop
 
-        if ( useAlfred ) {
+        if ( useRenderScript ) {
+            if ( m_preJobCommand != MString("") ) {
+              jobScript.addLeafDependency(preJobInstance);
+            }
+        
             // clean up the alfred file in the future
             if ( !m_justRib ) {
-                alfFile << "} -cleanup { \n";
                 if ( m_deferredGen ) {
-                    alfFile << "" << alfredCleanUpCommand.asChar() << " { /bin/rm " << tempDefname.asChar() << "} " << alfredCleanupRemoteTagsAndServices.asChar() << "\n";
+                    std::stringstream ss;
+                    ss << RM_CMD << " " << tempDefname.asChar();
+                    jobScript.cleanupCommands.push_back(liqRenderScript::Cmd(ss.str(), remoteRender));
                 }
-                if ( cleanAlf ) {
-                    alfFile << "" << alfredCleanUpCommand.asChar() << " { /bin/rm " << alfredFileName << "} " << alfredCleanupRemoteTagsAndServices.asChar() << "\n";
+                if ( cleanRenderScript ) {
+                    std::stringstream ss;
+                    ss << RM_CMD << " " << renderScriptName;
+                    jobScript.cleanupCommands.push_back(liqRenderScript::Cmd(ss.str(), remoteRender));
                 }
                 if ( m_postJobCommand != MString("") ) {
-                    if ( useNetRman ) {
-                        alfFile << "      Cmd { " << m_postJobCommand.asChar() << "}\n";
-                    } else if ( remoteRender ) {
-                        alfFile << "      RemoteCmd { " << m_postJobCommand.asChar() << "}\n";
-                    } else {
-                        alfFile << "      Cmd { " << m_postJobCommand.asChar() << "}\n";
-                    }
+                    jobScript.cleanupCommands.push_back(liqRenderScript::Cmd(m_postJobCommand.asChar(), (remoteRender && !useNetRman)));
                 }
             }
-            alfFile << "}\n";
-            alfFile.close();
+            if (m_renderScriptFormat == ALFRED) {
+              jobScript.writeALF(renderScriptName.asChar());
+            }
+            if (m_renderScriptFormat == XML) {
+              jobScript.writeXML(renderScriptName.asChar());
+            }
         }
 
         if ( debugMode ) { printf("-> ending escape handler.\n" ); }
@@ -1998,29 +2066,36 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
         if ( !liquidBin ) liquidInfo("...Finished Creating Rib.");
         if ( debugMode ) { printf("-> clearing job list.\n" ); }
         jobList.clear();
+        jobScript.clear();
 
         // set the attributes on the liquidGlobals for the last rib file and last alfred script name
         if ( debugMode ) { printf("-> setting lastAlfredScript and lastRibFile.\n" ); }
+        MGlobal::executeCommand("if (!attributeExists(\"lastRenderScript\",\"liquidGlobals\")) { addAttr -ln \"lastRenderScript\" -dt \"string\" liquidGlobals; }");
         MFnDependencyNode rGlobalNode( rGlobalObj );
         MPlug nPlug;
-        nPlug = rGlobalNode.findPlug( "lastAlfredScript" );
-        nPlug.setValue( tempAlfname );
+        nPlug = rGlobalNode.findPlug( "lastRenderScript" );
+        nPlug.setValue( renderScriptName );
         nPlug = rGlobalNode.findPlug( "lastRibFile" );
         nPlug.setValue( lastRibName );
 
         if ( debugMode ) { printf("-> spawning command.\n" ); }
-
-        if ( outputpreview ) {
-            if ( useAlfred ) {
-                liqProcessLauncher::execute( "alfred", alfredFileName );
+        if ( launchRender ) {
+            if ( useRenderScript ) {
+                if (m_renderScriptCommand == "") {
+                  m_renderScriptCommand = "alfred";
+                }
+                if (m_renderScriptFormat == NONE) {
+                  MGlobal::displayWarning("no render script format specified to Liquid, and direct render execution not selected");
+                }
+                liqProcessLauncher::execute( m_renderScriptCommand.asChar(), renderScriptName.asChar() );
             } else {
                 liqProcessLauncher::execute( m_renderCommand, liqglo_currentJob.ribFileName );
             }
         }
 
-        if ( debugMode ) { printf("-> setting frame to current frame.\n" ); }
+        //if ( debugMode ) { printf("-> setting frame to current frame.\n" ); }
         // Return to the frame we were at before we ran the animation
-        //MGlobal::viewFrame (currentFrame);
+        // MGlobal::viewFrame (currentFrame);
 
         return (ribStatus == kRibOK ? MS::kSuccess : MS::kFailure);
 
@@ -3239,7 +3314,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
 
         if ( liqglo_currentJob.camera[0].isOrtho ) {
             RtFloat frameWidth, frameHeight;
-            frameWidth = liqglo_currentJob.camera[0].orthoWidth * 0.5; // the whole frame width has to be divided in half!
+            frameWidth  = liqglo_currentJob.camera[0].orthoWidth  * 0.5; // the whole frame width has to be divided in half!
             frameHeight = liqglo_currentJob.camera[0].orthoHeight * 0.5; // the whole frame height has to be divided in half!
             RiProjection( "orthographic", RI_NULL );
             RiScreenWindow( -frameWidth, frameWidth, -frameHeight, frameHeight );
