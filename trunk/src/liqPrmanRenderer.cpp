@@ -60,6 +60,9 @@ liqPrmanRenderer::requires(e_requirement requirement) const
 	case SWAPPED_UVS:
 	    required = true;
 	    break;
+    case __PREF:
+	    required = false;
+        break;
 	
 	// no default case. let the compiler catch it if we're missing
 	// something

@@ -210,6 +210,10 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
             tokenPointerPair.setDetailType( rVarying );
             break; 
           }
+        case SHADER_DETAIL_UNKNOWN:
+          {
+            break;
+          }
         }
         switch (currentArgType) {
         case SHADER_TYPE_STRING: {
@@ -510,6 +514,14 @@ void liqRibLightData::write()
 
         handle = RiLightSourceV( shaderName, tokenPointerArray.size(), tokenArray, pointerArray );
         break;
+        }
+      case MRLT_Area:
+        {
+          break;
+        }
+      case MRLT_Unknown:
+        {
+          break;
         }
       }
     }

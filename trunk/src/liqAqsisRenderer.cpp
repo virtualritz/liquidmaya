@@ -27,47 +27,50 @@
 bool
 liqAqsisRenderer::supports(e_capability capability) const
 {
-    bool supported = false;
+  bool supported = false;
 
-    // TODO: unsure of these for aqsis
+  // TODO: unsure of these for aqsis
 
-    switch(capability)
-    {
+  switch(capability)
+  {
 	case BLOBBIES:
-	    supported = true;
-	    break;
+    supported = true;
+    break;
 
 	case POINTS:
-	    supported = true;
-	    break;
+    supported = true;
+    break;
 
 	case EYESPLITS:
-	    supported = true;
-	    break;
+    supported = true;
+    break;
 
-	// no default case. let the compiler catch it if we're missing
-	// something
-    }
+    // no default case. let the compiler catch it if we're missing
+    // something
+  }
 
-    return supported;
+  return supported;
 }
 
 bool
 liqAqsisRenderer::requires(e_requirement requirement) const
 {
-    bool required = false;
+  bool required = false;
 
-    // TODO: unsure of these for aqsis
+  // TODO: unsure of these for aqsis
 
-    switch(requirement)
-    {
+  switch(requirement)
+  {
 	case SWAPPED_UVS:
-	    required = false;
-	    break;
+    required = false;
+    break;
+  case __PREF:
+    required = false;
+    break;
 	
-	// no default case. let the compiler catch it if we're missing
-	// something
-    }
+    // no default case. let the compiler catch it if we're missing
+    // something
+  }
 
-    return required;
+  return required;
 }

@@ -73,14 +73,14 @@ extern "C" {
 
 extern int debugMode;
 
-liqRibLocatorData::liqRibLocatorData( MObject locator )
+liqRibLocatorData::liqRibLocatorData( MObject /*locator*/ )
 //
 //  Description:
 //      create a RIB compatible representation of a Maya polygon mesh
 //
 
 {
-	if ( debugMode ) { printf("-> creating locator\n"); }
+  if ( debugMode ) { printf("-> creating locator\n"); }
 }
 
 liqRibLocatorData::~liqRibLocatorData()
@@ -89,7 +89,7 @@ liqRibLocatorData::~liqRibLocatorData()
 //      class destructor
 //
 {
-	if ( debugMode ) { printf("-> killing locator\n"); }
+  if ( debugMode ) { printf("-> killing locator\n"); }
 }
 
 void liqRibLocatorData::write()
@@ -98,7 +98,7 @@ void liqRibLocatorData::write()
 //      Write the RIB for this mesh
 //
 {
-	if ( debugMode ) { printf("-> writing locator"); }
+  if ( debugMode ) { printf("-> writing locator"); }
 }
 
 bool liqRibLocatorData::compare( const liqRibData & otherObj ) const
@@ -108,9 +108,9 @@ bool liqRibLocatorData::compare( const liqRibData & otherObj ) const
 //      if its animated
 //
 {
-	if ( debugMode ) { printf("-> comparing locator\n"); }
-	if ( otherObj.type() != MRT_Locator ) return false;
-    return true;
+  if ( debugMode ) { printf("-> comparing locator\n"); }
+  if ( otherObj.type() != MRT_Locator ) return false;
+  return true;
 }
 
 ObjectType liqRibLocatorData::type() const
@@ -119,6 +119,6 @@ ObjectType liqRibLocatorData::type() const
 //      return the geometry type
 //
 {
-	if ( debugMode ) { printf("-> returning locator type\n"); }
- 	return MRT_Locator;
+  if ( debugMode ) { printf("-> returning locator type\n"); }
+  return MRT_Locator;
 }

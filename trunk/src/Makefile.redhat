@@ -3,7 +3,7 @@ PLUGSUF       = so
 OBJEXT        = o
 CPP           = g++
 LD            = $(MAYA_LOCATION)/bin/mayald
-LOCFLAGS      = -ffast-math -mcpu=pentiumpro -D_BOOL -DLINUX
+LOCFLAGS    	= -ffast-math -march=pentiumpro -D_BOOL -DLINUX
 WARNFLAGS     = -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
 NO_TRANS_LINK =
 VBIN          = redhat
