@@ -179,6 +179,12 @@ int debugMode;
 #define LIQ_ADD_SLASH_IF_NEEDED(a) if ( a.asChar()[a.length() - 1] != '/' ) a += "/"
 #define LIQ_ANIM_EXT MString( ".%0*d");
 
+#ifndef _WIN32
+#define LIQ_GET_SHADER_FILE_NAME(a, b, c) if( b ) a = basename( const_cast<char *>(c.file.c_str())); else a = const_cast<char *>(c.file.c_str());
+#else
+#define LIQ_GET_SHADER_FILE_NAME(a, b, c) a = const_cast<char *>(c.file.c_str());
+#endif
+
 const char *liquidRibTranslator::m_default_tmp_dir = "/tmp";
 
 // Kept global for liquidRigGenData and liquidRibParticleData
@@ -257,15 +263,12 @@ void *liquidRibTranslator::creator()
 liqShader & liquidRibTranslator::liqGetShader( MObject shaderObj )
 {
     MString rmShaderStr;
-    MStatus status;
 
     MFnDependencyNode shaderNode( shaderObj );
     MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
     rmanShaderNamePlug.getValue( rmShaderStr );
 
     if ( debugMode ) { printf("-> Using Renderman Shader %s. \n", rmShaderStr.asChar() ) ;}
-
-    int 			numArgs;
 
     std::vector<liqShader>::iterator iter = m_shaders.begin();
     while ( iter != m_shaders.end() ){
@@ -277,150 +280,8 @@ liqShader & liquidRibTranslator::liqGetShader( MObject shaderObj )
 	    ++iter;
     }
     liqShader currentShader( shaderObj );
-#if 0				
-    /* if this shader instant isn't currently used already then load it into the lookup */
-	// set it as my slo lookup
-    currentShader.name = shaderNode.name().asChar();
-    currentShader.file = rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar();
-
-    liquidGetSloInfo shaderInfo;
-    int success = shaderInfo.setShader( rmShaderStr );
-    if ( !success ) {
-	perror("Slo_SetShader");
-	printf("Error Using Shader %s!\n", shaderNode.name().asChar() );
-	currentShader.rmColor[0] = 1.0;
-	currentShader.rmColor[1] = 0.0;
-	currentShader.rmColor[2] = 0.0;
-	currentShader.name = "plastic";
-	currentShader.numTPV = 0;
-	currentShader.hasErrors = true;
-    } else { 
-    /* Used to handling shading rates set in the surface shader, 
-    this is a useful way for shader writers to ensure that their 
-    shaders are always rendered as they were designed.  This value
-    overrides the global shading rate but gets overridden with the 
-	    node specific shading rate. */
-
-	    // Set RiColor and RiOpacity
-	MPlug colorPlug = shaderNode.findPlug( "color" );
-
-	colorPlug.child(0).getValue( currentShader.rmColor[0] );
-	colorPlug.child(1).getValue( currentShader.rmColor[1] );
-	colorPlug.child(2).getValue( currentShader.rmColor[2] );
-
-	MPlug opacityPlug = shaderNode.findPlug( "opacity" );
-
-	double opacityVal;
-	opacityPlug.getValue( opacityVal );
-	currentShader.rmOpacity[0] = RtFloat( opacityVal );
-	currentShader.rmOpacity[1] = RtFloat( opacityVal );
-	currentShader.rmOpacity[2] = RtFloat( opacityVal );
-
-	// find the parameter details and declare them in the rib stream
-	numArgs = shaderInfo.getNumParam();
-	int i;
-	for ( i = 0; i < numArgs; i++ )
-	{
-	    if ( shaderInfo.getArgName( i ) == "liquidShadingRate" ) {
-
-		/* BUGFIX: Monday 6th August - fixed shading rate bug where it only accepted the default value */
-
-		MPlug floatPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-		if ( status == MS::kSuccess ) {
-			float floatPlugVal;
-			floatPlug.getValue( floatPlugVal );
-			currentShader.shadingRate = floatPlugVal;
-		} else {
-			currentShader.shadingRate = shaderInfo.getArgFloatDefault( i, 0 );
-		}
-		currentShader.hasShadingRate = true;
-		continue;
-	    }
-	    switch ( shaderInfo.getArgDetail(i) ) {
-	    case SHADER_DETAIL_UNIFORM: {
-		    currentShader.tokenPointerArray[currentShader.numTPV].setDetailType( rUniform );
-		    break;
-								    }
-	    case SHADER_DETAIL_VARYING: {
-		    currentShader.tokenPointerArray[currentShader.numTPV].setDetailType( rVarying);
-		    break; 
-								    }
-	    case SHADER_DETAIL_UNKNOWN:
-		    currentShader.tokenPointerArray[currentShader.numTPV].setDetailType( rUniform);
-		    break;
-	    }	     
-	    switch ( shaderInfo.getArgType( i ) ) {
-	    case SHADER_TYPE_STRING: {
-		MPlug stringPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-		if ( status == MS::kSuccess ) {
-			MString stringPlugVal;
-			stringPlug.getValue( stringPlugVal );
-			MString stringDefault = shaderInfo.getArgStringDefault( i, 0 );
-			if ( stringPlugVal != stringDefault ) {
-				MString stringVal = parseString( stringPlugVal );
-				currentShader.tokenPointerArray[ currentShader.numTPV ].set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
-				currentShader.tokenPointerArray[ currentShader.numTPV ].setTokenString( stringVal.asChar(), stringVal.length() );
-				currentShader.numTPV++;
-			}
-		}
-		break; }
-	    case SHADER_TYPE_SCALAR: {
-		MPlug floatPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-		if ( status == MS::kSuccess ) {
-			unsigned int arraySize = shaderInfo.getArgArraySize( i );
-			if ( arraySize > 0 ) {
-				MObject plugObj;
-				floatPlug.getValue( plugObj );
-				MFnDoubleArrayData  fnDoubleArrayData( plugObj );
-				MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
-				// Hmmmmmmm Really a uArray ?
-				currentShader.tokenPointerArray[ currentShader.numTPV ].set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
-    	    	    	    	for( int kk = 0; kk < arraySize; kk++ ) {
-				    currentShader.tokenPointerArray[currentShader.numTPV].setTokenFloat( kk, doubleArrayData[kk] );
-				}
-			} else {
-				float floatPlugVal;
-				floatPlug.getValue( floatPlugVal );
-				currentShader.tokenPointerArray[ currentShader.numTPV ].set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, false, 0 );
-    	    	    	    	currentShader.tokenPointerArray[currentShader.numTPV].setTokenFloat( 0, floatPlugVal );
-			}
-			currentShader.numTPV++;
-		}
-		break; }
-	    case SHADER_TYPE_COLOR:
-		status = liqShaderParseVectorAttr( currentShader, shaderNode, shaderInfo.getArgName( i ).asChar(), rColor );
-		break;
-	    case SHADER_TYPE_POINT:
-		status = liqShaderParseVectorAttr( currentShader, shaderNode,  shaderInfo.getArgName( i ).asChar(), rPoint );
-		break;
-	    case SHADER_TYPE_VECTOR:
-		status = liqShaderParseVectorAttr( currentShader, shaderNode,  shaderInfo.getArgName( i ).asChar(), rVector );
-		break;
-	    case SHADER_TYPE_NORMAL:
-    	    	status = liqShaderParseVectorAttr( currentShader, shaderNode,  shaderInfo.getArgName( i ).asChar(), rNormal );
-		break; 
-	    case SHADER_TYPE_MATRIX: {
-		printf( "WHAT IS THE MATRIX!\n" );
-		break; }
-    	    case SHADER_TYPE_UNKNOWN :
-	    default:
-		printf("Unknown\n");
-		break;
-	    }
-	}
-	m_shaders.push_back( currentShader );
-    }
-    shaderInfo.resetIt();
-#endif
-    // Hmmmmmm shouldn't we add it to the list anyway ?
-    if( ! currentShader.hasErrors  )
-    {
-    	m_shaders.push_back( currentShader );
-    	return m_shaders.back();
-    }
-    // Hmmmmmm is it valid to return a reference to
-    // a variable which will no longer exists
-    return currentShader;
+    m_shaders.push_back( currentShader );
+    return m_shaders.back();
 }
 
 MStatus liquidRibTranslator::liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType )
@@ -1830,14 +1691,10 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 									}
 									
 									// world RiReadArchives and Rib Boxes
-#ifdef ENTROPY
-    	    	    	    	    	    	    	    	    	char tmpStr[1024];
-#endif							
 									if ( liqglo_currentJob.isShadow && !m_shadowRibGen && !fullShadowRib ) {
-#ifdef	ENTROPY
+#ifndef	PRMAN
 										if ( debugMode ) { printf("-> beginning rib output\n"); }
-									    	strcpy( tmpStr, baseShadowName.asChar() );
-										RiBegin(tmpStr);
+										RiBegin( const_cast<char *>( baseShadowName.asChar()));
 #else
 										liqglo_ribFP = fopen( baseShadowName.asChar(), "w" );
 										if ( liqglo_ribFP ) {
@@ -1850,16 +1707,15 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 #endif
 										if (   frameBody() != MS::kSuccess ) break;
 										RiEnd();
-#ifndef ENTROPY
+#ifdef PRMAN
 										fclose( liqglo_ribFP );
 #endif
 										liqglo_ribFP = NULL;
 										m_shadowRibGen = true;
 										m_alfShadowRibGen = true;
 									}	
-#ifdef	ENTROPY
-									strcpy( tmpStr, liqglo_currentJob.ribFileName.asChar() );
-									RiBegin( tmpStr );
+#ifndef	PRMAN
+									RiBegin( const_cast<char *>( liqglo_currentJob.ribFileName.asChar() ) );
 #else
 									liqglo_ribFP = fopen( liqglo_currentJob.ribFileName.asChar(), "w" );
 									if ( liqglo_ribFP ) {
@@ -1887,7 +1743,7 @@ MStatus liquidRibTranslator::doIt( const MArgList& args )
 									}
 									
 									RiEnd();
-#ifndef ENTROPY
+#ifdef PRMAN
 									fclose( liqglo_ribFP );
 #endif
 									liqglo_ribFP = NULL;
@@ -3181,14 +3037,10 @@ MStatus liquidRibTranslator::framePrologue(long lframe)
 		if ( debugMode ) printf( "-> Setting Display Options\n" );
 		
 		if ( liqglo_currentJob.isShadow ) {
-			char *outName = (char *)alloca( liqglo_currentJob.imageName.length()+1);
-			strcpy(outName, liqglo_currentJob.imageName.asChar());
-			char *outFormatType = (char *)alloca(20);
-			strcpy(outFormatType, liqglo_currentJob.format.asChar());
 			if ( !liqglo_currentJob.isMinMaxShadow ) {
-				RiDisplay( outName, outFormatType, (RtToken)liqglo_currentJob.imageMode.asChar(), RI_NULL ); 
+				RiDisplay( const_cast<char *>(liqglo_currentJob.imageName.asChar()), const_cast<char *>(liqglo_currentJob.format.asChar()), (RtToken)liqglo_currentJob.imageMode.asChar(), RI_NULL ); 
 			} else {
-				RiArchiveRecord( RI_COMMENT, "Display Driver: \nDisplay \"%s\" \"%s\" \"%s\" \"minmax\" [ 1 ]", outName, outFormatType, (RtToken)liqglo_currentJob.imageMode.asChar() );
+				RiArchiveRecord( RI_COMMENT, "Display Driver: \nDisplay \"%s\" \"%s\" \"%s\" \"minmax\" [ 1 ]", const_cast<char *>(liqglo_currentJob.imageName.asChar()), const_cast<char *>(liqglo_currentJob.format.asChar()), (RtToken)liqglo_currentJob.imageMode.asChar() );
 			}
 		} else {
 			if ( ( m_cropX1 != 0.0 ) || ( m_cropY1 != 0.0 ) || ( m_cropX2 != 1.0 ) || ( m_cropY2 != 1.0 ) ) {
@@ -3547,13 +3399,11 @@ MStatus liquidRibTranslator::frameBody()
 			
 				if ( !currentShader.hasErrors ) {				
 					RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * currentShader.numTPV );
-					RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * currentShader.numTPV );
-
-					char *assignedRManShader = (char *)alloca(currentShader.file.size() + 1);
-					strcpy(assignedRManShader, currentShader.file.c_str() );
-					
+					RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * currentShader.numTPV );					
 					assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
-					RiAtmosphereV ( assignedRManShader, currentShader.numTPV, tokenArray, pointerArray );
+					char *shaderFileName;
+					LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
+					RiAtmosphereV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
 				}
 			} 
 			
@@ -3568,18 +3418,7 @@ MStatus liquidRibTranslator::frameBody()
 				RiColor( currentShader.rmColor );
 				RiOpacity( currentShader.rmOpacity );
 
-				char *assignedRManShader = (char *)lmalloc(currentShader.file.size() + 1);
-				strcpy(assignedRManShader, currentShader.file.c_str() );
 
-					
-#ifndef _WIN32
-				if ( liqglo_shortShaderNames ) {
-					MString shaderString = basename( assignedRManShader );
-					lfree( assignedRManShader ); assignedRManShader = NULL;
-					assignedRManShader = (char *)lmalloc(shaderString.length()+1);
-					strcpy(assignedRManShader, shaderString.asChar());
-				}
-#endif
 				if ( ribNode->nodeShadingRateSet && ( ribNode->nodeShadingRate != currentNodeShadingRate ) ) {
 					RiShadingRate ( ribNode->nodeShadingRate );
 					currentNodeShadingRate = ribNode->nodeShadingRate;
@@ -3587,9 +3426,9 @@ MStatus liquidRibTranslator::frameBody()
 					RiShadingRate ( currentShader.shadingRate );
 					currentNodeShadingRate = currentShader.shadingRate;
 				}
-
-				RiSurfaceV ( assignedRManShader, currentShader.numTPV, tokenArray, pointerArray );
-
+    	    	    	    	char *shaderFileName;
+    	    	    	    	LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
+    	    	    	    	RiSurfaceV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
 			} else {
 				RtColor rColor;
 				if ( m_shaderDebug ) {
@@ -3630,17 +3469,6 @@ MStatus liquidRibTranslator::frameBody()
 				
 				assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
 				
-				char *assignedRManShader = (char *)lmalloc(currentShader.file.size() + 1);
-				strcpy(assignedRManShader, currentShader.file.c_str() );
-
-#ifndef _WIN32
-				if ( liqglo_shortShaderNames ) {
-					MString shaderString = basename( assignedRManShader );
-					lfree( assignedRManShader ); assignedRManShader = NULL;
-					assignedRManShader = (char *)lmalloc(shaderString.length()+1);
-					strcpy(assignedRManShader, shaderString.asChar());
-				}
-#endif
 				if ( ribNode->nodeShadingRateSet && ( ribNode->nodeShadingRate != currentNodeShadingRate ) ) {
 					RiShadingRate ( ribNode->nodeShadingRate );
 					currentNodeShadingRate = ribNode->nodeShadingRate;
@@ -3648,7 +3476,9 @@ MStatus liquidRibTranslator::frameBody()
 					RiShadingRate ( currentShader.shadingRate );
 					currentNodeShadingRate = currentShader.shadingRate;
 				}
-				RiDisplacementV ( assignedRManShader, currentShader.numTPV, tokenArray, pointerArray );
+				char *shaderFileName;
+    	    	    	    	LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
+				RiDisplacementV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
 			}
 		}
 		

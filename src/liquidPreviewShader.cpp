@@ -33,7 +33,6 @@
 #include <stdio.h>
 #include <iostream.h>
 #include <sys/types.h>
-
 // Renderman Headers
 extern "C" {
 #include <ri.h>
@@ -41,7 +40,7 @@ extern "C" {
 #include <slo.h>
 #endif
 }
-
+extern int debugMode;
 #ifdef _WIN32
 #include <process.h>
 #include <malloc.h>
@@ -49,6 +48,11 @@ extern "C" {
 #include <unistd.h>
 #include <stdlib.h>
 #include <alloca.h>
+#include <pthread.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <fcntl.h>
 #endif
 
 // Maya's Headers
@@ -85,11 +89,63 @@ liquidPreviewShader::~liquidPreviewShader()
 //      Class destructor
 //
 {
-} 
+}
+
+typedef struct liqPreviewShoptions
+{
+    const char *shaderName;
+    const char *displayDriver;
+    const char *renderCommand;
+} liqPreviewShoptions; 
+
+int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, const char *ddName );
+
+void liquidNewPreview( liqPreviewShoptions *options )
+{
+    int val = 0;
+    int ret;
+    if( !options->shaderName || !options->displayDriver || !options->renderCommand )
+    {
+    	cerr << "Invalid options for shader preview" << endl;
+    	pthread_exit( ( void * )&val);
+    }
+    	
+    fflush(NULL);
+    // Open a pipe to a command
+    FILE *fp = popen( options->renderCommand, "w");
+    if( !fp )
+    {
+    	char str[256];
+	sprintf( str, "Opening pipe to %s ", options->renderCommand );
+    	perror( str );
+    	pthread_exit( ( void * )&val);
+    }
+    int fd = fileno(fp); 
+    int oldOut = dup(1);    // Dup stdout file descriptor to restore it after render
+    // Redirect stdout to pipe
+    // Warning : messages should be sent to sdterr until stdout is restored
+    ret = dup2( fd, 1 );
+    if( ret < 0 )
+    {
+    	perror( "Pipe redirect failed " );
+    	pthread_exit( ( void * )&val);
+   }
+   // And output RIB stdout
+    cout << "# Outputing " << options->shaderName << endl;
+    liquidOutpuPreviewShader( "/dev/stdout", options->shaderName, options->displayDriver );
+    fputc( EOF, fp );	// Make sure renderer got an end of file
+    cerr << "Waiting for " << options->renderCommand << " to finish" << endl;
+    pclose( fp );   	// Wait until render finish
+    // Restore stdout
+    ret = dup2( oldOut, 1 );
+    LIQDEBUGPRINTF("-> Creating thread preview.\n" );
+    val = 1;	// Set a "all is ok" returned value
+    pthread_exit( ( void * )&val);
+}
 
 MStatus	liquidPreviewShader::doIt( const MArgList& args )
 {
-#if defined( PRMAN ) || defined( ENTROPY )
+#if defined( PRMAN ) || defined( ENTROPY ) || defined( AQSIS )
     MStatus status;
     int i;
     MString	shaderName;
@@ -106,7 +162,6 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
 		    shaderName = args.asString( i, &status );
 	    }
     }
-
 #ifdef _WIN32
     char *systemTempDirectory;
     systemTempDirectory = getenv("TEMP");
@@ -115,31 +170,71 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
     free( systemTempDirectory );
     systemTempDirectory = (char *)malloc( sizeof( char ) * 256 );
     strcpy( systemTempDirectory, tempRibName.asChar() );
-    RiBegin( systemTempDirectory );
+    outpuPreviewShader( systemTempDirectory, shaderName.asChar(), useIt ? "it" : "framebuffer" );
+    // Hmmmmmmm should do something here for entropy and Aqsis
+    _spawnlp(_P_DETACH, "prman", "prman", tempRibName.asChar(), NULL);
+    free( systemTempDirectory );
 #else
-#ifdef PRMAN
-    FILE *fp = popen("render", "w");
+    liqPreviewShoptions preview;
+    preview.shaderName = shaderName.asChar();
+#if defined(PRMAN) || defined(AQSIS )
+#ifdef AQSIS
+    preview.renderCommand = "aqsis";
+    preview.displayDriver = "framebuffer";
+#else	// PRMAN
+    preview.renderCommand = "render";
+    preview.displayDriver = useIt ? "it" : "framebuffer";
+#endif
+    FILE *fp = popen(preview.renderCommand, "w");
     if( !fp )
     {
     	return MS::kFailure;
     }
-    RtInt fd = fileno(fp); 
-    RiOption("rib", "pipe", (RtPointer)&fd, RI_NULL); 
-    RiBegin( RI_NULL );
-#endif // PRMAN
+    RtInt fd = fileno(fp);
+#ifdef AQSIS
+    RiOption( "RI2RIB_Output", ( RtToken ) "PipeHandle", ( RtPointer ) &fd, RI_NULL );
+#else
+    RiOption("rib", "pipe", (RtPointer)&fd, RI_NULL);
+#endif
+    liquidOutpuPreviewShader( RI_NULL, preview.shaderName, preview.displayDriver );
+    pclose( fp );
+#else // PRMAN || AQSIS
 #ifdef ENTROPY
-    // Hmmmmmm Should be "|entropy" but does not seem to work
-    // This output to stdout
-    RiBegin( NULL );
-#endif // ENTROPY
+    preview.renderCommand = "entropy";
+    preview.displayDriver = useIt ? "iv" : "framebuffer";
+#endif
+    LIQDEBUGPRINTF("-> Creating thread preview.\n" );
+    pthread_t prevthread;
+    if( pthread_create( & prevthread, NULL, (void *(*)(void *)) liquidNewPreview, ( void * ) &preview))
+    {
+    	perror( "Thread create" );
+    	return MS::kFailure; 
+    }
+    void * threadreturn;
+    // Wait for end of rendering thread
+    // must do so to make sure local variables always exist for the renderer
+    pthread_join( prevthread, &threadreturn  ); 
+    LIQDEBUGPRINTF("-> End of thread preview.\n" );
+#endif // PRMAN || AQSIS
 #endif // _WIN32
+    return MS::kSuccess; 
+#else // PRMAN || ENTROPY || Aqsis
+    return MS::kFailure; 
+#endif
+};
+// Output preview RIB into fileName for a shader
+// if fileName is RI_NULL : output to stdout
+// return 1 on success
+int liquidOutpuPreviewShader( const char *fileName, const char *shaderName, const char *ddName )
+{
+    MStatus status;
+    if( fileName )
+    	RiBegin( const_cast<char *>(fileName) );
+    else
+    	RiBegin( NULL );
     RiFrameBegin( 1 );
     RiFormat( 100, 100, 1 );
-    if ( useIt ) {
-    	RiDisplay( "liquidpreview", "it", "rgba", RI_NULL );
-    } else {
-    	RiDisplay( "liquidpreview", "framebuffer", "rgba", RI_NULL );
-    }
+    RiDisplay( "liquidpreview", const_cast<char *>( ddName), "rgba", RI_NULL );
     RtFloat fov = 38;
     RiProjection( "perspective", "fov", &fov, RI_NULL );
     RiWorldBegin();
@@ -159,6 +254,11 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
     MObject	shaderObj;
     shaderNameList.add( shaderName );
     shaderNameList.getDependNode( 0, shaderObj );
+    if( shaderObj == MObject::kNullObj )
+    {
+    	cerr << "Can't find node for " << shaderName << endl;
+    	return 0;
+    }
     MFnDependencyNode assignedShader( shaderObj );
     liqShader currentShader( shaderObj );
     RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * currentShader.numTPV );
@@ -188,16 +288,6 @@ MStatus	liquidPreviewShader::doIt( const MArgList& args )
     RiWorldEnd();
     RiFrameEnd();
     RiEnd();
-#ifdef _WIN32
-    // Hmmmmmmm should do something here for entropy 
-	_spawnlp(_P_DETACH, "prman", "prman", tempRibName.asChar(), NULL);
-	free( systemTempDirectory );
-#endif
-	return MS::kSuccess; 
-#else // PRMAN || ENTROPY
-    return MS::kFailure; 
-#endif
-};
-
-
+    return 1;
+}
 

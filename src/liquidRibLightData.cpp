@@ -48,9 +48,6 @@
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-#ifdef PRMAN
-#include <slo.h>
-#endif
 }
 
 #ifdef _WIN32

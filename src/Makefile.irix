@@ -8,5 +8,5 @@ LOCFLAGS    	= -g -mips4 -n32 -LANG:std -D_IRIX -DUNIX -FE:template_in_elf_secti
 WARNFLAGS   	= 
 NO_TRANS_LINK = -no_transitive_link 
 VBIN=irix
-EXTRA_LIBS = -lgen
+EXTRA_LIBS = -lgen -lpthread
 include commonrules.mk

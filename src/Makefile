@@ -1,5 +1,5 @@
 SHELL = sh
-LIQUIDVERSION 	= "1.5.1"
+LIQUIDVERSION 	= "1.5.2"
 #------------------------------------------------------
 all : debug
 
@@ -18,7 +18,7 @@ newversion clean debug :
 	fi; \
 	LIQRMAN=$${LIQRMAN:=aqsis}; \
 	case $${LIQRMAN} in \
-	    aqsis) LIQRMANPATH=$${AQSIS_BASE_PATH:=/usr/local/aqsis} LIQRMANFLAGS=-DAQSIS LIQRMANLIBS=-lrib2 USEDVAR=AQSIS_BASE_PATH;; \
+	    aqsis) LIQRMANPATH=$${AQSIS_BASE_PATH:=/usr/local/aqsis} LIQRMANFLAGS=-DAQSIS LIQRMANLIBS="-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs" USEDVAR=AQSIS_BASE_PATH;; \
 	    entropy) LIQRMANPATH=$${ENTROPYHOME:=/usr/local/exluna/Entropy} LIQRMANFLAGS=-DENTROPY LIQRMANLIBS="-lribout -lsleargs" USEDVAR=ENTROPYHOME;; \
 	    prman) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lribwrite -lsloargs" USEDVAR=RMANTREE;; \
 	    (*) echo "Do not know how to handle" $${LIQRMAN}". Set LIQRMAN to either aqsis entropy or prman"; exit 1;; \
@@ -35,8 +35,8 @@ newversion clean debug :
 		echo $${MAYA_LOCATION} " do not seem to exists. Please set MAYA_LOCATION to a correct value."; exit 1; \
 	    fi; \
 	else \
-	    ( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="debug" $(make) -f Makefile.$${os} $@ ); \
-	    EXTRAFLAGS="-O -DLIQUIDVERSION=\"$LIQUIDVERSION\""; \
+	    ( echo Got for newversion $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=/usr/aw/maya MAYA_VERSION="debug" $(make) -f Makefile.$${os} $@ ); \
+	    EXTRAFLAGS="-O -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\""; \
 	    for vers in /usr/aw/maya*.*;\
 		    do ( echo Got $${whichflags} $${vers:=none}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${vers:=none} MAYA_VERSION=`echo $${vers:=none} | sed -e 's/\/usr\/aw\///' | sed -e 'y/./_/'` $(make) -f Makefile.$${os} $@ );\
 	    done; \

@@ -49,6 +49,9 @@ extern "C" {
 #ifdef ENTROPY
 #include <sleargs.h>
 #endif
+#ifdef AQSIS
+#include <slx.h>
+#endif
 #ifdef _WIN32
 #include <process.h>
 #include <malloc.h>
@@ -70,26 +73,29 @@ extern "C" {
 #include <liquidMemory.h>
 
 extern int debugMode;
-
+// Entropy to PRman type conversion : numbering has a break between
+// string ( 7 -> 4 ) and surface ( 16 -> 5 ) 
 int SLEtoSLOMAP[21] = { 0, 3, 2, 1, 11, 12, 13, 4, 5, 7, 6, 8, 10, 0, 0, 0, 5, 7, 6, 8, 10 };
-char* shaderTypeStr[14] = { "unknown", 
-							"point",
-							"color",
-							"float",
-							"string",
-							"surface",
-							"light",
-							"displacement",
-							"volume",
-							"transformation",
-							"imager",
-							"vector",
-							"normal",
-							"matrix" };
+// Aqsis to PRman type conversion : looks the same
+int SLXtoSLOMAP[14] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+const char* shaderTypeStr[14] = { 	"unknown", 
+				    "point",
+				    "color",
+				    "float",
+				    "string",
+				    "surface",
+				    "light",
+				    "displacement",
+				    "volume",
+				    "transformation",
+				    "imager",
+				    "vector",
+				    "normal",
+				    "matrix" };
 
-char* shaderDetailStr[3] = { "unknown",
-							 "varying",
-							 "uniform" };
+const char* shaderDetailStr[3] = {  	"unknown",
+    	    	    	    	    	    "varying",
+    	    	    	    	    	    "uniform" };
 
 void* liquidGetSloInfo::creator()
 //
@@ -231,17 +237,15 @@ int liquidGetSloInfo::setShader( MString shaderName )
 		Slo_EndShader();
 		rstatus = 1;
 	} 
-#ifdef ENTROPY // PRMAN + ENTROPY
+#if defined( ENTROPY ) || defined( AQSIS) // PRMAN + ENTROPY || AQSIS
 	else 
 #endif
 #endif // PRMAN
 #ifdef ENTROPY	
 	if ( shaderExtension == MString( "sle" ) ) {
 		/* Exluna's Entropy Shader */
-		char *sleFileName = (char *)alloca(shaderFileName.length() + 1 );
-		strcpy(sleFileName, shaderFileName.asChar());
-		sleArgs currentShader( sleFileName );
-		if ( sleFileName == NULL ) {
+		sleArgs currentShader( const_cast<char *>( shaderFileName.asChar() ) );
+		if ( currentShader.shadertype() == sleArgs::TYPE_ERROR ) {
 			printf( "Error finding shader %s \n",shaderFileName.asChar() ); fflush( stdout );
 			resetIt();
 			return 0;
@@ -327,7 +331,107 @@ int liquidGetSloInfo::setShader( MString shaderName )
 		rstatus = 1;
 		}
 	}
+#if defined( AQSIS )	// ENTROPY + AQSIS
+    	else
+#endif	
 #endif // ENTROPY
+#ifdef AQSIS
+	if( shaderExtension == MString( "slx" ) )
+	{
+	    MString slxOnlyShaderName = shaderFileName.substring(shaderFileName.rindex('/')+1,shaderFileName.length());
+	    MString slxOnlyShaderDir = shaderFileName.substring(0,shaderFileName.rindex('/')-1);
+	    SLX_SetPath(const_cast<char *>( slxOnlyShaderDir.asChar()));
+	    int err = SLX_SetShader( const_cast<char *>( slxOnlyShaderName.asChar()) );
+	    if (err != 0) 
+	    {
+		printf( "Error finding shader %s \n",shaderFileName.asChar() ); 
+		resetIt();
+		return 0;
+	    } 
+	    else 
+	    {
+    	    	shaderName = SLX_GetName();
+    	    	shaderType = ( SHADER_TYPE )SLXtoSLOMAP[SLX_GetType()];
+    	    	numParam = SLX_GetNArgs();
+    	    	for ( unsigned k = 0; k < numParam; k++ ) {
+    	    	    SLX_VISSYMDEF *arg;
+    	    	    arg = SLX_GetArgById( k );
+    	    	    argName.push_back( arg->svd_name );
+    	    	    argType.push_back( ( SHADER_TYPE )SLXtoSLOMAP[arg->svd_type] );
+		    argArraySize.push_back( arg->svd_arraylen );
+		    argDetail.push_back( ( SHADER_DETAIL )arg->svd_detail );
+			    //commented the following line since Aqsis does not have a svd_valisvalid var
+			    //if ( arg->svd_valisvalid ) { 
+		    switch ( arg->svd_type ) {
+		    case SLX_TYPE_STRING: {
+			char *strings = ( char * )lmalloc( sizeof( char ) * sizeof( *arg->svd_default.stringval ) );
+			strcpy( strings, *arg->svd_default.stringval );
+			argDefault.push_back( ( void * )strings );
+			break;
+    	    	    	}
+		    case SLX_TYPE_SCALAR: {
+			    if ( arg->svd_arraylen > 0 ) {
+				    SLX_VISSYMDEF *subarg;
+				    float *floats = ( float *)lmalloc( sizeof( float ) * arg->svd_arraylen );
+				    for (int kk = 0; kk < arg->svd_arraylen; kk ++ ) {
+					    subarg = SLX_GetArrayArgElement(arg, kk);
+					    floats[kk] = *subarg->svd_default.scalarval;
+				    }
+				    argDefault.push_back( ( void * )floats );
+			    } else {
+				    float *floats = ( float *)lmalloc( sizeof( float ) * 1 );
+				    floats[0] = *arg->svd_default.scalarval;
+				    argDefault.push_back( ( void * )floats );
+			    }
+			    break;
+							      }
+		    case SLX_TYPE_COLOR:
+		    case SLX_TYPE_POINT:
+		    case SLX_TYPE_VECTOR:
+		    case SLX_TYPE_NORMAL: {
+			    float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
+			    floats[0] = arg->svd_default.pointval->xval;
+			    floats[1] = arg->svd_default.pointval->yval;
+			    floats[2] = arg->svd_default.pointval->zval;
+			    argDefault.push_back( ( void * )floats );
+			    break;
+    	    	    	    }
+		    case SLX_TYPE_MATRIX: {
+			    printf("\"%s\" [%f %f %f %f\n",
+				    arg->svd_spacename,
+				    (double) (arg->svd_default.matrixval[0]),
+				    (double) (arg->svd_default.matrixval[1]),
+				    (double) (arg->svd_default.matrixval[2]),
+				    (double) (arg->svd_default.matrixval[3]));
+			    printf("\t\t\t%f %f %f %f\n",
+				    (double) (arg->svd_default.matrixval[4]),
+				    (double) (arg->svd_default.matrixval[5]),
+				    (double) (arg->svd_default.matrixval[6]),
+				    (double) (arg->svd_default.matrixval[7]));
+			    printf("\t\t\t%f %f %f %f\n",
+				    (double) (arg->svd_default.matrixval[8]),
+				    (double) (arg->svd_default.matrixval[9]),
+				    (double) (arg->svd_default.matrixval[10]),
+				    (double) (arg->svd_default.matrixval[11]));
+			    printf("\t\t\t%f %f %f %f]\n",
+				    (double) (arg->svd_default.matrixval[12]),
+				    (double) (arg->svd_default.matrixval[13]),
+				    (double) (arg->svd_default.matrixval[14]),
+				    (double) (arg->svd_default.matrixval[15]));
+			    break;
+							      }
+		    default: {
+			    argDefault.push_back( NULL );
+			    break;
+				     }
+		    }
+			    //}
+		    }
+	    }
+	    SLX_EndShader();
+	    rstatus = 1;
+    }
+#endif	// AQSIS
 	return rstatus;
 }
 
