@@ -50,6 +50,10 @@ bool LiquidProcessLauncher::execute(const MString &command, const MString &argum
 ** ______________________________________________________________________
 */ 
 #if defined(IRIX)
+
+#include <sys/types.h>
+#include <unistd.h>
+
 bool LiquidProcessLauncher::execute(const MString &command, const MString &arguments)
 {
 	pcreatelp(command.asChar(), command.asChar(), arguments.asChar(), NULL);
