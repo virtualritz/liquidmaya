@@ -65,18 +65,19 @@ global proc liquidInitGlobalVals()
     ,"numDD1Param", "long", 0
     ,"createOutputDirectories", "bool", true
     ,"expandShaderArrays", "bool", false
+    
     ,"shaderPath", "string", ""
-
     ,"texturePath", "string", ""
-
     ,"archivePath", "string", ""
-
     ,"proceduralPath", "string", ""    
+    
     ,"ribName", "string", ""
+    
     ,"pictureDirectory", "string", ""
     ,"textureDirectory", "string", ""
     ,"ribDirectory", "string", ""
     ,"tempDirectory", "string", ""
+    
     ,"deferredGen", "bool", false
     ,"deferredBlock", "long", 1
     ,"preframeMel", "string", ""
@@ -1326,6 +1327,8 @@ global proc liquidGlobalsWindow()
     window -mb true -title "Liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
     menu -label "Presets" -p liquidGlobalsWindow liquidGlobalsPresetMenu;
       menuItem -label "Save..." -c liquidSavePreset -p liquidGlobalsPresetMenu liquidGlobalsPresetMenuSave;
+      menuItem -label "Save as Default" -enable false;
+      menuItem -label "Reset to Default" -enable false;
       menuItem -divider true;
     liquidAddPresets;
     setParent liquidGlobalsWindow;

@@ -453,7 +453,7 @@ liqRibTranslator::liqRibTranslator()
   
   m_rFilterX = 1;
   m_rFilterY = 1;
-  m_rFilter = fBoxFilter;
+  m_rFilter = pfBoxFilter;
 
   liqglo_shortShaderNames = false;
   liqglo_relativeFileNames = false;
@@ -3305,45 +3305,45 @@ MStatus liqRibTranslator::ribPrologue()
       RiShadingRate( shadingRate );
       if ( m_rFilterX > 1 || m_rFilterY > 1 ) {
         switch (m_rFilter) {
-        case fBoxFilter:
+        case pfBoxFilter:
           RiPixelFilter( RiBoxFilter, m_rFilterX, m_rFilterY );
           break;
-        case fTriangleFilter:
+        case pfTriangleFilter:
           RiPixelFilter( RiTriangleFilter, m_rFilterX, m_rFilterY );
           break;
-        case fCatmullRomFilter:
+        case pfCatmullRomFilter:
           RiPixelFilter( RiCatmullRomFilter, m_rFilterX, m_rFilterY );
           break;
-        case fGaussianFilter:
+        case pfGaussianFilter:
           RiPixelFilter( RiGaussianFilter, m_rFilterX, m_rFilterY );
           break;
-        case fSincFilter:
+        case pfSincFilter:
           RiPixelFilter( RiSincFilter, m_rFilterX, m_rFilterY );
           break;
 #if defined DELIGHT || PRMAN
-        case fBlackmanHarrisFilter:
+        case pfBlackmanHarrisFilter:
           RiArchiveRecord( RI_VERBATIM, "PixelFilter \"blackman-harris\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
-        case fMitchellFilter:
+        case pfMitchellFilter:
           RiArchiveRecord( RI_VERBATIM, "PixelFilter \"mitchell\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
-        case fSepCatmullRomFilter:
+        case pfSepCatmullRomFilter:
           RiArchiveRecord( RI_VERBATIM, "PixelFilter \"separable-catmull-rom\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
-        case fBesselFilter:
+        case pfBesselFilter:
           RiPixelFilter( RiBesselFilter, m_rFilterX, m_rFilterY );
           break;
 #endif
 #ifdef PRMAN
-        case fLanczosFilter:
+        case pfLanczosFilter:
           RiPixelFilter( RiLanczosFilter, m_rFilterX, m_rFilterY );
           break;
-        case fDiskFilter:
+        case pfDiskFilter:
           RiPixelFilter( RiDiskFilter, m_rFilterX, m_rFilterY );
           break;
 #endif
         default:
-          RiArchiveRecord( RI_COMMENT, "Unknown filter type selected" );
+          RiArchiveRecord( RI_COMMENT, "Unknown Pixel Filter selected" );
           break;
         }
       }

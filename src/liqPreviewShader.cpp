@@ -336,6 +336,7 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   RiProjection( "perspective", "fov", &fov, RI_NULL );
   RiTranslate( 0, 0, 2.75 );
   RiWorldBegin();
+  RiReverseOrientation();
   RtLightHandle ambientLightH, directionalLightH;
   RtFloat intensity;
   intensity = 0.05f;
