@@ -153,7 +153,7 @@ liqRibObj * liqRibNode::object(int interval)
     return objects[interval];
 }
 
-void liqRibNode::set( MDagPath &path, int sample, ObjectType objType )
+void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType )
 // 
 //  Description:
 //      set this node with the given path.  If this node already refers to
