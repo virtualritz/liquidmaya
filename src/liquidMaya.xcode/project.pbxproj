@@ -1539,7 +1539,7 @@
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
 				PREBINDING = NO;
-				PRODUCT_NAME = liquid.lib;
+				PRODUCT_NAME = liquid_pixie.lib;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -1547,7 +1547,7 @@
 			dependencies = (
 			);
 			isa = PBXNativeTarget;
-			name = liquid;
+			name = "liquid-pixie";
 			productName = liquid;
 			productReference = 1FC7AA2406A00A5C00954BD2;
 			productType = "com.apple.product-type.library.dynamic";
@@ -1556,7 +1556,7 @@
 			explicitFileType = "compiled.mach-o.dylib";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = liquid.lib.dylib;
+			path = liquid_pixie.lib.dylib;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1731,11 +1731,11 @@
 			);
 			isa = PBXShellScriptBuildPhase;
 			outputPaths = (
-				liquid.lib,
+				liquid_pixie.lib,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p ../liquid1.6/bin/OSX/\ncp build/liquid.lib.dylib ../liquid1.6/bin/OSX/liquid.lib";
+			shellScript = "mkdir -p ../liquid1.6/bin/OSX/\ncp build/liquid_pixie.lib.dylib ../liquid1.6/bin/OSX/liquid_pixie.lib";
 		};
 		1FCCD02B079F209C0069EDB7 = {
 			children = (
