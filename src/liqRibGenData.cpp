@@ -148,9 +148,9 @@ void liqRibGenData::write()
 	ribStatus.ribFP = liqglo_ribFP;
 	ribStatus.frame = liqglo_lframe;
 	if ( liqglo_currentJob.isShadow ) {
-		ribStatus.renderPass = liqRIBStatus::rpShadow;
+		ribStatus.renderPass = liqRibStatus::rpShadow;
 	} else {
-		ribStatus.renderPass = liqRIBStatus::rpFinal;
+		ribStatus.renderPass = liqRibStatus::rpFinal;
 	}
 	ribStatus.transBlur = liqglo_doMotion;
 	ribStatus.defBlur = liqglo_doDef;
