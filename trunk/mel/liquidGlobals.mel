@@ -204,7 +204,7 @@ global proc liquidCreateGlobals()
   // check to make sure the node doesn't already exist
   if ( !`liquidGlobalsExists` ) {
     createNode "oldBlindDataBase" -n "liquidGlobals";
-    print "Liquid Globals Created!";
+    print "Liquid Globals Created!\n";
   }
   liquidAddGlobals;
 
