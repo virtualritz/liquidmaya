@@ -83,7 +83,7 @@ extern int debugMode;
 #elif defined(ENTROPY)
     const char * liqPreviewShader::m_default_previewer = "entropy";
 #elif defined(PIXIE)
-    const char * liqPreviewShader::m_default_previewer = "pixie";
+    const char * liqPreviewShader::m_default_previewer = "rndr";
 #else
     // Force error at compile time
       error - unknown renderer
@@ -174,7 +174,7 @@ void liquidNewPreview( liqPreviewShoptions *options )
 
 MStatus	liqPreviewShader::doIt( const MArgList& args )
 {
-#if defined( PRMAN ) || defined( ENTROPY ) || defined( AQSIS )
+#if defined( PRMAN ) || defined( ENTROPY ) || defined( AQSIS ) || defined( PIXIE )
     MStatus status;
     int i;
     liqPreviewShoptions preview;
