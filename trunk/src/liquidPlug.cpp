@@ -79,7 +79,7 @@ extern "C" {
 #include <liquid.h>
 #include <liquidRibTranslator.h>
 #include <liquidGetSloInfo.h>
-#include <liquidGetAttr.h>
+#include <liqGetAttr.h>
 #include <liqAttachPrefAttribute.h>
 #include <liquidMemory.h>
 #include <liqPreviewShader.h>
@@ -130,7 +130,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     LIQCHECKSTATUS( status, "Can't register liquidGetSloInfo command" );
 
     // register the liquidGetAttr command
-    status = plugin.registerCommand( "liquidGetAttr", liquidGetAttr::creator );
+    status = plugin.registerCommand( "liquidGetAttr", liqGetAttr::creator );
     LIQCHECKSTATUS( status, "Can't register liquidGetAttr command" );
 
     // register the liquidWriteArchive command

@@ -53,7 +53,7 @@ LIQUIDMAINOBJS =    liqShader.$(OBJEXT) \
     	    	    liquidRibLightData.$(OBJEXT) \
     	    	    liquidRibHT.$(OBJEXT) \
     	    	    liquidGetSloInfo.$(OBJEXT) \
-    	    	    liquidGetAttr.$(OBJEXT) \
+    	    	    liqGetAttr.$(OBJEXT) \
     	    	    liquidRibGenData.$(OBJEXT) \
     	    	    liquidRibSubdivisionData.$(OBJEXT) \
     	    	    liquidMemory.$(OBJEXT) \
@@ -82,7 +82,7 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibLightData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibHT.$(OBJEXT) \
     	    	    $(VPATH)/liquidGetSloInfo.$(OBJEXT) \
-    	    	    $(VPATH)/liquidGetAttr.$(OBJEXT) \
+    	    	    $(VPATH)/liqGetAttr.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibGenData.$(OBJEXT) \
     	    	    $(VPATH)/liquidRibSubdivisionData.$(OBJEXT) \
     	    	    $(VPATH)/liquidMemory.$(OBJEXT) \
