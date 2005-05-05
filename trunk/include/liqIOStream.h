@@ -6,7 +6,7 @@
 // compilers, some of which try and help by auto-including or auto-namespacing,
 // and others do not
 
-#define MAYA_API_VERSION 600
+//#define MAYA_API_VERSION 600
 
 #if MAYA_API_VERSION < 500
   #include <iostream>
