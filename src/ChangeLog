@@ -1,3 +1,9 @@
+2005-03-15
+	- Fixed a really hard to track down bug where liquidParamDialogWindow's attrColorSliderGrp
+	  controls would crash.  Caused by an attribute being used as a color without -usedAsColor
+	  tagged on the attribute, and when the color is defined as double3.  I now define all
+	  colors as float3 and use -usedAsColor on them.  This is one to watch out for!
+
 2005-03-03 geohar
 	- 3Delight 4.0.1 as default 3Delight to build against
 	- Made Swap_UV match in mel and C++ code
