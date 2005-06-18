@@ -38,8 +38,14 @@
 
 #include <liqRibNode.h>
 
+//#ifdef OSX
+//	#include <Maya/flib.h>
+//#endif
+
 #ifdef OSX
-	#include <Maya/flib.h>
+	#ifndef ulong
+		typedef unsigned long ulong;
+	#endif
 #endif
 
 #include <map>
