@@ -80,6 +80,7 @@
 				1FC7AA2306A00A5C00954BD2,
 				1FADF82607721BF5007DC910,
 				1FAC5D9407BE25410083A3E5,
+				1F5E729B07E632E0006FAA8F,
 			);
 		};
 		08FB7794FE84155DC02AAC07 = {
@@ -127,6 +128,7 @@
 				1FC7A9F806A0016A00954BD2,
 				1FC7A9F906A0016A00954BD2,
 				1FC7A9FA06A0016A00954BD2,
+				1F37447A07E6328F00CD9E3C,
 				1FC7A9FB06A0016A00954BD2,
 				1FF48EC5077A116B006AE147,
 			);
@@ -150,6 +152,7 @@
 				1FC7AA2406A00A5C00954BD2,
 				1FADF84C07721BF5007DC910,
 				1FAC5DDB07BE25410083A3E5,
+				1F5E729C07E632E0006FAA8F,
 			);
 			isa = PBXGroup;
 			name = Products;
@@ -166,6 +169,312 @@
 //1F2
 //1F3
 //1F4
+		1F37447A07E6328F00CD9E3C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = liquidBin.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1F592EA40864475700480658 = {
+			fileRef = 1FC7A9FA06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E729907E632E0006FAA8F = {
+			buildActionMask = 2147483647;
+			files = (
+				1F5E72A807E633DE006FAA8F,
+				1F5E72A907E633DE006FAA8F,
+				1F5E72AA07E633DE006FAA8F,
+				1F5E72AB07E633DF006FAA8F,
+				1F5E72AC07E633DF006FAA8F,
+				1F5E72AD07E633E0006FAA8F,
+				1F5E72AE07E633E0006FAA8F,
+				1F5E72AF07E633E0006FAA8F,
+				1F5E72B007E633E1006FAA8F,
+				1F5E72B107E633E1006FAA8F,
+				1F5E72B207E633E1006FAA8F,
+				1F5E72B307E633E2006FAA8F,
+				1F5E72B407E633E2006FAA8F,
+				1F5E72B507E633E3006FAA8F,
+				1F5E72B607E633E3006FAA8F,
+				1F5E72B707E633E4006FAA8F,
+				1F5E72B807E633E4006FAA8F,
+				1F5E72B907E633E5006FAA8F,
+				1F5E72BA07E633E5006FAA8F,
+				1F5E72BB07E633E6006FAA8F,
+				1F5E72BC07E633E7006FAA8F,
+				1F5E72BD07E633E7006FAA8F,
+				1F5E72BE07E633E9006FAA8F,
+				1F5E72BF07E633EA006FAA8F,
+				1F5E72C007E633EA006FAA8F,
+				1F5E72C107E633EB006FAA8F,
+				1F5E72C407E633F4006FAA8F,
+				1F5E72C507E633F7006FAA8F,
+				1F5E72C607E633F8006FAA8F,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F5E729A07E632E0006FAA8F = {
+			buildActionMask = 2147483647;
+			files = (
+				1F5E72C307E633F0006FAA8F,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F5E729B07E632E0006FAA8F = {
+			buildPhases = (
+				1F5E729907E632E0006FAA8F,
+				1F5E729A07E632E0006FAA8F,
+				1F5E72D807E636BA006FAA8F,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = "OSX MAC_PLUGIN OSMac_ _BOOL OSMac_MachO_ PIXIE LIQUIDVERSION='\"1.6.7\"' REQUIRE_IOSTREAM=1";
+				HEADER_SEARCH_PATHS = "../include/ $(MAYA_LOCATION)../../devkit/include $(PIXIEHOME)/include /Users/geohar/Desktop/pixie/Pixie.1.4.1/src/";
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = "\"$(PIXIEHOME)/lib\" \"$(MAYA_LOCATION)/MacOS\" \"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib\" \"$(SYSTEM_APPS_DIR)/Graphics/MacAqsis.0.9.1/lib\"";
+				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-framework Carbon -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lAnimSlice -lDeformSlice -lDynSlice -lKinSlice -lModelSlice -lNurbsSlice -lPolySlice -lProjectSlice -lImage  -lShared  -lTranslators -lDataModel -lRenderModel -lNurbsEngine -lDependEngine -lCommandEngine -lFoundation -lAppVersion -lUrchinSlice -lAG -lGeometryEngine -lNurbs -lAnimEngine -lPolyEngine -lDeformSlice -lPoly -lDependCommand -lExtensionLayer -l3dGraphics -lSharedUI -lBase -lIMF -lxpcom -lnspr4 -lplds4 -lHWRender -lHWFoundation -lHWGL -lManips -lModelUISlice -lplc4 -lSubdivEngine -lSubdiv -lImageUI -lSubdivGeom -Wl,-executable_path,\"$(MAYA_LOCATION)\"";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "liquidbin-pixie";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = "liquidbin-pixie";
+			productName = "liquidbin-pixie";
+			productReference = 1F5E729C07E632E0006FAA8F;
+			productType = "com.apple.product-type.tool";
+		};
+		1F5E729C07E632E0006FAA8F = {
+			explicitFileType = "compiled.mach-o.executable";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = "liquidbin-pixie";
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1F5E72A807E633DE006FAA8F = {
+			fileRef = 1FC7A9F906A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72A907E633DE006FAA8F = {
+			fileRef = 1FC7A9F806A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72AA07E633DE006FAA8F = {
+			fileRef = 1FC7A9F706A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72AB07E633DF006FAA8F = {
+			fileRef = 1FC7A9F606A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72AC07E633DF006FAA8F = {
+			fileRef = 1FC7A9F506A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72AD07E633E0006FAA8F = {
+			fileRef = 1FC7A9F406A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72AE07E633E0006FAA8F = {
+			fileRef = 1FC7A9F306A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72AF07E633E0006FAA8F = {
+			fileRef = 1FC7A9F206A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B007E633E1006FAA8F = {
+			fileRef = 1FC7A9F106A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B107E633E1006FAA8F = {
+			fileRef = 1FC7A9F006A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B207E633E1006FAA8F = {
+			fileRef = 1FC7A9EF06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B307E633E2006FAA8F = {
+			fileRef = 1FC7A9EE06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B407E633E2006FAA8F = {
+			fileRef = 1FC7A9ED06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B507E633E3006FAA8F = {
+			fileRef = 1FC7A9EC06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B607E633E3006FAA8F = {
+			fileRef = 1FC7A9EB06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B707E633E4006FAA8F = {
+			fileRef = 1FC7A9E906A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B807E633E4006FAA8F = {
+			fileRef = 1FC7A9EA06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72B907E633E5006FAA8F = {
+			fileRef = 1FC7A9E806A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72BA07E633E5006FAA8F = {
+			fileRef = 1FC7A9E706A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72BB07E633E6006FAA8F = {
+			fileRef = 1FC7A9E306A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72BC07E633E7006FAA8F = {
+			fileRef = 1FC7A9E506A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72BD07E633E7006FAA8F = {
+			fileRef = 1FC7A9E206A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72BE07E633E9006FAA8F = {
+			fileRef = 1FC7A9E006A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72BF07E633EA006FAA8F = {
+			fileRef = 1FC7A9DD06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72C007E633EA006FAA8F = {
+			fileRef = 1FD593F20794629900F9DE2C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72C107E633EB006FAA8F = {
+			fileRef = 1FC7A9E106A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72C307E633F0006FAA8F = {
+			fileRef = 1FADF82007721B95007DC910;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72C407E633F4006FAA8F = {
+			fileRef = 1F37447A07E6328F00CD9E3C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72C507E633F7006FAA8F = {
+			fileRef = 1FC7A9FB06A0016A00954BD2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72C607E633F8006FAA8F = {
+			fileRef = 1FF48EC5077A116B006AE147;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1F5E72D807E636BA006FAA8F = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+				"liquidbin-pixie",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp build/liquidbin-pixie ../bin/OSX/liquidbin-pixie";
+		};
+		1F96851A0864455D0054B6CE = {
+			compilerSpec = com.apple.compilers.gcc.3_3;
+			fileType = sourcecode.c;
+			isEditable = 1;
+			isa = PBXBuildRule;
+			outputFiles = (
+			);
+		};
+		1F96851B086445620054B6CE = {
+			compilerSpec = com.apple.compilers.gcc.3_3;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			isa = PBXBuildRule;
+			outputFiles = (
+			);
+		};
 		1FAC5D9407BE25410083A3E5 = {
 			buildPhases = (
 				1FAC5D9507BE25410083A3E5,
@@ -1498,10 +1807,10 @@
 				1FC7AA4106A00B0500954BD2,
 				1FC7AA4206A00B0500954BD2,
 				1FC7AA4306A00B0600954BD2,
-				1FC7AA4406A00B0600954BD2,
 				1FC7AA4506A00B0700954BD2,
 				1FF48EC6077A116B006AE147,
 				1FD593F30794629900F9DE2C,
+				1F592EA40864475700480658,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1522,6 +1831,8 @@
 				1FC7AA6206A02AFF00954BD2,
 			);
 			buildRules = (
+				1F96851B086445620054B6CE,
+				1F96851A0864455D0054B6CE,
 			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
@@ -1532,7 +1843,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "OSX MAC_PLUGIN OSMac_ _BOOL OSMac_MachO_ PIXIE LIQUIDVERSION='\"1.6.7\"' REQUIRE_IOSTREAM=1";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "../include/ $(MAYA_LOCATION)../../devkit/include $(PIXIEHOME)/include /Users/geohar/Desktop/pixie/Pixie.1.4.1/src/";
+				HEADER_SEARCH_PATHS = "../include/ $(MAYA_LOCATION)../../devkit/include $(PIXIEHOME)/include /Users/geohar/Desktop/pixie/Pixie.1.4.2/src/";
 				INSTALL_PATH = ../bin/OSX/;
 				LIBRARY_SEARCH_PATHS = "\"$(PIXIEHOME)/lib\" \"$(MAYA_LOCATION)/MacOS\" \"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib\"";
 				LIBRARY_STYLE = DYNAMIC;
@@ -1709,12 +2020,6 @@
 		};
 		1FC7AA4306A00B0600954BD2 = {
 			fileRef = 1FC7A9F906A0016A00954BD2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		1FC7AA4406A00B0600954BD2 = {
-			fileRef = 1FC7A9FA06A0016A00954BD2;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2619,7 +2924,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = sdr.cpp;
-			path = /Users/geohar/Desktop/pixie/Pixie.1.3.25/src/sdr/sdr.cpp;
+			path = /Users/geohar/Desktop/pixie/Pixie.1.4.2/src/sdr/sdr.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
