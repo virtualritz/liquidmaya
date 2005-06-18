@@ -4515,14 +4515,11 @@ MStatus liqRibTranslator::objectBlock()
         RiAttribute( "photon", (RtToken) "estimator", &estimator, RI_NULL );
       }
 
-#ifndef PIXIE
-	  // Pixie doesn't currently support this
-      if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur &&
-          ribNode->motion.factor != 2.0f ) {
-        RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
+	    if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur &&
+        ribNode->motion.factor != 2.0f ) {
+					RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
       }
-#endif
-      
+
       if ( hasSurfaceShader && !m_ignoreSurfaces ) {
 
         liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
@@ -4547,19 +4544,23 @@ MStatus liqRibTranslator::objectBlock()
         LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
         RiSurfaceV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
       } else {
-        RtColor rColor;
+        RtColor rColor,rOpacity;
         if ( m_shaderDebug ) {
           rColor[0] = 1;
           rColor[1] = 0;
           rColor[2] = 0;
           RiColor( rColor );
+          rOpacity[0] = 1;
+          rOpacity[1] = 1;
+          rOpacity[1] = 1;
+          RiOpacity( rOpacity );
         } else if ( ( ribNode->color.r != -1.0 ) ) {
           rColor[0] = ribNode->color[0];
           rColor[1] = ribNode->color[1];
           rColor[2] = ribNode->color[2];
           RiColor( rColor );
         }
-
+		
         if ( !m_ignoreSurfaces ) {
           MObject shadingGroup = ribNode->assignedShadingGroup.object();
           MObject shader = ribNode->findShader( shadingGroup );
