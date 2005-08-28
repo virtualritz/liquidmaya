@@ -15,13 +15,20 @@ global proc AEliquidInstanceFlags( string $node )
 
     editorTemplate -endLayout;
 
+	editorTemplate -beginLayout "Visibility" -collapse false;
+	
+	  editorTemplate -label "Visible To Camera" -addDynamicControl "liqVisibilityCamera";
+	  editorTemplate -label "Visible To Ray Tracer" -addDynamicControl "liqVisibilityTrace";
+	  editorTemplate -label "Transmission" -addDynamicControl "liqVisibilityTransmission";
+	  
+	editorTemplate -endLayout;
+	
     editorTemplate -beginLayout "Ray Tracing" -collapse false;
 
-      editorTemplate -label "Visible To Ray Tracer" -addDynamicControl "liqVisibilityTrace";
+      
       editorTemplate -label "Sample Motion" -addDynamicControl "liqTraceSampleMotion";            
       editorTemplate -label "Trace Displacements" -addDynamicControl "liqTraceDisplacements";
       editorTemplate -label "Trace Bias" -addDynamicControl "liqTraceBias";
-      editorTemplate -label "Transmission" -addDynamicControl "liqVisibilityTransmission";
 
     editorTemplate -endLayout;
 
@@ -31,6 +38,14 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "Samples" -addDynamicControl "liqIrradianceNSamples";
       editorTemplate -label "Maximum Error" -addDynamicControl "liqIrradianceMaxError";
 
+    editorTemplate -endLayout;
+    
+    editorTemplate -beginLayout "Photon" -collapse false;
+    
+      editorTemplate -label "Global Map" -addDynamicControl "liqPhotonGlobalMap";
+      editorTemplate -label "Caustic Map" -addDynamicControl "liqPhotonCausticMap";
+      editorTemplate -label "Photon Estimator" -addDynamicControl "liqPhotonEstimator";
+    
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Motion Blur" -collapse false;
