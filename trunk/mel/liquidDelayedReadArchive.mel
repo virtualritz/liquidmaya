@@ -38,8 +38,8 @@ global proc liquidDelayedReadArchive ()
 	string $currentNode;
 	for ( $currentNode in $nodes ) {
 		string $currentNodeParent[] = `listRelatives -p $currentNode`;
-		if ( !`attributeQuery -node $currentNode -ex "ribDelayedArchive"` ) {
-			addAttr -ln "ribDelayedArchive" -dt "string" $currentNode;
+		if ( !`attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchive"` ) {
+			addAttr -ln "liqRIBDelayedReadArchive" -dt "string" $currentNode;
 		}
 		if ( !`attributeQuery -node $currentNode -ex "ribDelayedArchiveBBox"` ) {
 			addAttr -ln "ribDelayedArchiveBBox" -at message $currentNode;
@@ -70,8 +70,8 @@ global proc liquidDeleteDelayedReadArchive ()
 	string $nodes[] = `ls -dag -s -sl`;
 	string $currentNode;
 	for ( $currentNode in $nodes ) {
-		if ( `attributeQuery -node $currentNode -ex "ribDelayedArchive"` ) {
-			deleteAttr ( $currentNode + ".ribDelayedArchive" );
+		if ( `attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchive"` ) {
+			deleteAttr ( $currentNode + ".liqRIBDelayedReadArchive" );
 		}
 		if ( `attributeQuery -node $currentNode -ex "ribDelayedArchiveBBox"` ) {
 			string $connected[] = `listConnections ( $currentNode + ".ribDelayedArchiveBBox" )`;
