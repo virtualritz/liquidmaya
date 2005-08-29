@@ -29,6 +29,8 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "Sample Motion" -addDynamicControl "liqTraceSampleMotion";            
       editorTemplate -label "Trace Displacements" -addDynamicControl "liqTraceDisplacements";
       editorTemplate -label "Trace Bias" -addDynamicControl "liqTraceBias";
+      editorTemplate -label "Max Specular depth" -addDynamicControl "liqMaxSpecularDepth";
+      editorTemplate -label "Max Diffuse depth" -addDynamicControl "liqMaxDiffuseDepth";
 
     editorTemplate -endLayout;
 
