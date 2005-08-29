@@ -197,7 +197,7 @@ global proc liquidCreateMaxDiffuseDepthAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqMaxDiffuseDepth"` ) {
-      addAttr -ln "liqMaxDiffuseDepth" -at -at "float" -dv 1 $currentNode;
+      addAttr -ln "liqMaxDiffuseDepth" -at "float" -dv 1 $currentNode;
     }
   }
 }
@@ -208,7 +208,7 @@ global proc liquidCreateMaxSpecularDepthAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqMaxSpecularDepth"` ) {
-      addAttr -ln "liqMaxSpecularDepth" -at -at "float" -dv 3 $currentNode;
+      addAttr -ln "liqMaxSpecularDepth" -at "float" -dv 3 $currentNode;
     }
   }
 }
@@ -343,8 +343,8 @@ global proc liquidCreatePhotonAttributes()
 {
   liquidCreateGlobalMapAttribute;
   liquidCreateCausticMapAttribute;
-  liquidCreatePhotonModelAttribute;
   liquidCreatePhotonEstimatorAttribute;
+  liquidCreatePhotonShadingModelAttribute;
 }
 
 
@@ -358,7 +358,7 @@ global proc liquidDeletePhotonAttributes()
     }
 
     if ( `attributeQuery -node $currentNode -ex "liqPhotonCausticMap"` ) {
-      deleteAttr ( $currentNode + ".liqPhotonGlobalMap" );
+      deleteAttr ( $currentNode + ".liqPhotonCausticMap" );
     }
 
     if ( `attributeQuery -node $currentNode -ex "liqPhotonEstimator"` ) {
@@ -373,19 +373,19 @@ global proc liquidCreateGlobalMapAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqPhotonGlobalMap"` ) {
-      addAttr -ln "liqPhotonGlobalMap" -at "string" -dv "" $currentNode;
+      addAttr -ln "liqPhotonGlobalMap" -dt "string" $currentNode;
     }
   }
 }
 
 
-global proc liquidCreatePhotonModelAttribute()
+global proc liquidCreateCausticMapAttribute()
 {
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
   for ( $currentNode in $nodes ) {
-    if ( !`attributeQuery -node $currentNode -ex "liqPhotonGlobalMap"` ) {
-      addAttr -ln "liqPhotonGlobalMap" -at "string" -dv "" $currentNode;
+    if ( !`attributeQuery -node $currentNode -ex "liqPhotonCausticMap"` ) {
+      addAttr -ln "liqPhotonCausticMap" -dt "string" $currentNode;
     }
   }
 }
@@ -408,7 +408,7 @@ global proc liquidCreatePhotonShadingModelAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqPhotonShadingModel"` ) {
-      addAttr -ln "liqPhotonShadingModel" -at "string" -dv "matte" $currentNode;
+      addAttr -ln "liqPhotonShadingModel" -dt "string" $currentNode;
     }
   }
 }
