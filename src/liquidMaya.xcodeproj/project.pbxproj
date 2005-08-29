@@ -726,7 +726,7 @@
 					_BOOL,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.6.7\"",
+					"LIQUIDVERSION=1.6.7",
 					"REQUIRE_IOSTREAM=1",
 				);
 				HEADER_SEARCH_PATHS = (
@@ -842,7 +842,7 @@
 					_BOOL,
 					OSMac_MachO_,
 					DELIGHT,
-					"LIQUIDVERSION=\"1.6.7\"",
+					"LIQUIDVERSION=1.6.7",
 					"REQUIRE_IOSTREAM=1",
 				);
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -956,7 +956,7 @@
 					_BOOL,
 					OSMac_MachO_,
 					AQSIS,
-					"LIQUIDVERSION=\"1.6.7\"",
+					"LIQUIDVERSION=1.6.7",
 					"REQUIRE_IOSTREAM=1",
 				);
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -1073,7 +1073,7 @@
 					_BOOL,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.6.7\"",
+					"LIQUIDVERSION=1.6.7",
 					"REQUIRE_IOSTREAM=1",
 				);
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -1200,7 +1200,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p ../bin/OSX/\ncp build/liquid_pixie.lib.dylib ../bin/OSX/liquid_pixie.lib";
+			shellScript = "mkdir -p ../bin/OSX/\ncp ${TARGET_BUILD_DIR}/liquid_pixie.lib.dylib ../bin/OSX/liquid_pixie.lib";
 		};
 		1F21B3EC08C257BE000A819E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1213,7 +1213,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p ../bin/OSX/\ncp build/liquid_aqsis.lib.dylib ../bin/OSX/liquid_aqsis.lib";
+			shellScript = "mkdir -p ../bin/OSX/\ncp ${TARGET_BUILD_DIR}/liquid_aqsis.lib.dylib ../bin/OSX/liquid_aqsis.lib";
 		};
 		1F21B3F008C257D2000A819E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1226,7 +1226,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p ../bin/OSX/\ncp build/liquid_3delight.lib.dylib ../bin/OSX/liquid_3delight.lib";
+			shellScript = "mkdir -p ../bin/OSX/\ncp ${TARGET_BUILD_DIR}/liquid_3delight.lib.dylib ../bin/OSX/liquid_3delight.lib";
 		};
 		1F5E72D807E636BA006FAA8F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2341,7 +2341,7 @@
 					_BOOL,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.6.7\"",
+					"LIQUIDVERSION=1.6.7",
 					"REQUIRE_IOSTREAM=1",
 				);
 				HEADER_SEARCH_PATHS = (
@@ -2441,7 +2441,7 @@
 					_BOOL,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.6.7\"",
+					"LIQUIDVERSION=1.6.7",
 					"REQUIRE_IOSTREAM=1",
 				);
 				HEADER_SEARCH_PATHS = (
@@ -2538,7 +2538,7 @@
 					_BOOL,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.6.7\"",
+					"LIQUIDVERSION=1.6.7",
 					"REQUIRE_IOSTREAM=1",
 				);
 				HEADER_SEARCH_PATHS = (

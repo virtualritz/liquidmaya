@@ -1182,7 +1182,7 @@ void liqRibTranslator::liquidReadGlobals()
         if ( tokens[i] == "Raytrace") { liquidRenderer.supports_RAYTRACE = true; continue; }
       }
     }
-    gPlug = rGlobalNode.findPlug( "bits_required", &gStatus );
+		gPlug = rGlobalNode.findPlug( "bits_required", &gStatus );
     if ( gStatus == MS::kSuccess ) {
       gPlug.getValue( varVal );
       MStringArray tokens;
@@ -1190,6 +1190,7 @@ void liqRibTranslator::liquidReadGlobals()
       liquidRenderer.requires__PREF = false;
       liquidRenderer.requires_SWAPPED_UVS = false;
       liquidRenderer.requires_MAKESHADOW = false;
+			
       for( i = 0; i<tokens.length() ; i++ ) {
         if ( tokens[i] == "__Pref") { liquidRenderer.requires__PREF = true; continue; }
         if ( tokens[i] == "Swap_UV") { liquidRenderer.requires_SWAPPED_UVS = true; continue; }
