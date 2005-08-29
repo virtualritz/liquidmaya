@@ -169,6 +169,22 @@
 //1F2
 //1F3
 //1F4
+		1F074608087E561900EBD2F1 = {
+			compilerSpec = com.apple.compilers.gcc;
+			fileType = sourcecode.c;
+			isEditable = 1;
+			isa = PBXBuildRule;
+			outputFiles = (
+			);
+		};
+		1F074609087E561C00EBD2F1 = {
+			compilerSpec = com.apple.compilers.gcc.3_3;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			isa = PBXBuildRule;
+			outputFiles = (
+			);
+		};
 		1F37447A07E6328F00CD9E3C = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -483,6 +499,8 @@
 				1FAC5DDA07BE25410083A3E5,
 			);
 			buildRules = (
+				1F074609087E561C00EBD2F1,
+				1F074608087E561900EBD2F1,
 			);
 			buildSettings = {
 				DELIGHT = "/Applications/Graphics/3Delight-4.0.1";
