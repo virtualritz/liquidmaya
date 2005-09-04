@@ -1582,19 +1582,19 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "shadingRate", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( shadingRate );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "bucketXSize", &gStatus );
+  gPlug = rGlobalNode.findPlug( "limitsBucketXSize", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( bucketSize[0] );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "bucketYSize", &gStatus );
+  gPlug = rGlobalNode.findPlug( "limitsBucketYSize", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( bucketSize[1] );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "gridSize", &gStatus );
+  gPlug = rGlobalNode.findPlug( "limitsGridSize", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( gridSize );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "textureMemory", &gStatus );
+  gPlug = rGlobalNode.findPlug( "limitsTextureMemory", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( textureMemory );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "eyeSplits", &gStatus );
+  gPlug = rGlobalNode.findPlug( "limitsEyeSplits", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( eyeSplits );
   gStatus.clear();
 
