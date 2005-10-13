@@ -4214,13 +4214,25 @@ MStatus liqRibTranslator::objectBlock()
     }
 
     // If this is a matte object, then turn that on if it isn't currently set
-    if ( ribNode->matteMode ) {
-      if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
-      m_currentMatteMode = true;
-    } else {
-      if ( m_currentMatteMode ) RiMatte( RI_FALSE );
-      m_currentMatteMode = false;
-    }
+		if ( ribNode->shading.matte == -1){
+			// Respect the maya shading node setting
+			if ( ribNode->matteMode ) {
+				if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
+				m_currentMatteMode = true;
+			} else {
+				if ( m_currentMatteMode ) RiMatte( RI_FALSE );
+				m_currentMatteMode = false;
+			}
+		} else {
+			// The dag had a liqMatte property, use that (overriding the maya shader)
+			if ( ribNode->shading.matte > 0 ) {	// Slightly nasty test to verify we've actually got a value here
+				if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
+				m_currentMatteMode = true;
+			} else {
+				if ( m_currentMatteMode ) RiMatte( RI_FALSE );
+				m_currentMatteMode = false;
+			}
+		}
     // If this is a single sided object, then turn that on (RMan default is Sides 2)
     if ( !ribNode->doubleSided ) {
       RiSides( 1 );
@@ -4520,7 +4532,7 @@ MStatus liqRibTranslator::objectBlock()
         ribNode->motion.factor != 2.0f ) {
 					RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
       }
-
+      
       if ( hasSurfaceShader && !m_ignoreSurfaces ) {
 
         liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
@@ -4529,18 +4541,28 @@ MStatus liqRibTranslator::objectBlock()
         RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * currentShader.numTPV );
 
         assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
-        RiColor( currentShader.rmColor );
-        RiOpacity( currentShader.rmOpacity );
-
-        /* Moritz: this should be obsolete when new per-node attributes are woven in
-        if ( ribNode->nodeShadingRateSet && ( ribNode->nodeShadingRate != currentNodeShadingRate ) ) {
-          RiShadingRate ( ribNode->nodeShadingRate );
-          currentNodeShadingRate = ribNode->nodeShadingRate;
-        } else if ( currentShader.hasShadingRate ) {
-          RiShadingRate ( currentShader.shadingRate );
-          currentNodeShadingRate = currentShader.shadingRate;
-        }*/
-
+        
+        // Output color overrides or color
+        
+        if (ribNode->shading.color.r != -1.0) {
+        	RtColor rColor;
+        	rColor[0] = ribNode->shading.color[0];
+			rColor[1] = ribNode->shading.color[1];
+			rColor[2] = ribNode->shading.color[2];
+        	RiColor( rColor );
+        } else {
+        	RiColor( currentShader.rmColor );
+        }
+        
+        if (ribNode->shading.opacity.r != -1.0) {
+        	RtColor rOpacity;
+        	rOpacity[0] = ribNode->shading.opacity[0];
+			rOpacity[1] = ribNode->shading.opacity[1];
+			rOpacity[2] = ribNode->shading.opacity[2];
+	        RiOpacity( rOpacity );
+	    } else {
+	    	RiOpacity( currentShader.rmOpacity );
+	    }
         char *shaderFileName;
         LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
         RiSurfaceV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
@@ -4555,11 +4577,30 @@ MStatus liqRibTranslator::objectBlock()
           rOpacity[1] = 1;
           rOpacity[1] = 1;
           RiOpacity( rOpacity );
-        } else if ( ( ribNode->color.r != -1.0 ) ) {
-          rColor[0] = ribNode->color[0];
-          rColor[1] = ribNode->color[1];
-          rColor[2] = ribNode->color[2];
-          RiColor( rColor );
+        } else {
+        	if (ribNode->shading.color.r != -1.0) {
+        	  rColor[0] = ribNode->shading.color[0];
+			  rColor[1] = ribNode->shading.color[1];
+			  rColor[2] = ribNode->shading.color[2];
+        	  RiColor( rColor );
+        	} else if ( ( ribNode->color.r != -1.0 ) ) {
+			  rColor[0] = ribNode->color[0];
+			  rColor[1] = ribNode->color[1];
+			  rColor[2] = ribNode->color[2];
+			  RiColor( rColor );
+			}
+			
+			if (ribNode->shading.opacity.r != -1.0) {
+        	  rOpacity[0] = ribNode->shading.opacity[0];
+			  rOpacity[1] = ribNode->shading.opacity[1];
+			  rOpacity[2] = ribNode->shading.opacity[2];
+	          RiOpacity( rOpacity );
+			} else if ( ( ribNode->opacity.r != -1.0 ) ) {
+			  rOpacity[0] = ribNode->opacity[0];
+			  rOpacity[1] = ribNode->opacity[1];
+			  rOpacity[2] = ribNode->opacity[2];
+			  RiOpacity( rOpacity );
+			}
         }
 		
         if ( !m_ignoreSurfaces ) {
@@ -4588,14 +4629,6 @@ MStatus liqRibTranslator::objectBlock()
 
         assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
 
-        /*  Moritz: this should be obsolete when new per-node attributes are woven in (bad duplicated code from above anyway)
-        if ( ribNode->nodeShadingRateSet && ( ribNode->nodeShadingRate != currentNodeShadingRate ) ) {
-          RiShadingRate ( ribNode->nodeShadingRate );
-          currentNodeShadingRate = ribNode->nodeShadingRate;
-        } else if ( currentShader.hasShadingRate ) {
-          RiShadingRate ( currentShader.shadingRate );
-          currentNodeShadingRate = currentShader.shadingRate;
-        }*/
         char *shaderFileName;
         LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
         RiDisplacementV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
