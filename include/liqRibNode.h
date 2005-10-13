@@ -43,16 +43,20 @@
 #include <maya/MDagPath.h>
 #include <maya/MObjectArray.h>
 
+
 //enum transmissions {TRANS, OPAQUE, OS, SHADER};
+
 
 class liqRibNode {
   public:
+
   
     liqRibNode( liqRibNode * instanceOfNode = NULL,
                 const MString instanceOfNodeStr = "" );
     ~liqRibNode();
 
     void set( const MDagPath &, int, ObjectType objType, int particleId = -1 );
+
 
     liqRibNode *       next;
     MString            name;
@@ -66,6 +70,7 @@ class liqRibNode {
     MDagPath &         path();
 
     MColor             color;
+    MColor             opacity;
     bool               matteMode;
     bool               doubleSided;
     MString            shaderName;
@@ -83,6 +88,7 @@ class liqRibNode {
     void     getIgnoredLights( MObject& group, MObjectArray& lights );
     void     getIgnoredLights( MObjectArray& lights );
     bool     getColor( MObject& shader, MColor& color );
+    bool     getOpacity( MObject& shader, MColor& opacity );
     bool     getMatteMode( MObject& shader );
     bool     hasRibGen();
     void     doRibGen();
@@ -102,21 +108,28 @@ class liqRibNode {
     bool     hasNObjects( unsigned n );
     bool     colorOverridden() { return overrideColor; };
 
+
     struct shading {
       float    shadingRate;
       bool     diceRasterOrient;
-      MColor    color;
-      MColor    opacity;
-      bool      matte;
+      MColor   color;
+      MColor   opacity;
+      int      matte;
+
     } shading;
+
 
     struct trace {
       bool      sampleMotion;
       bool      displacements;
       float     bias;
+
       int       maxDiffuseDepth;
+
       int       maxSpecularDepth;
     } trace;
+
+
 
     struct visibility {
       bool      camera;
@@ -130,11 +143,14 @@ class liqRibNode {
       } transmission;
     } visibility;
 
+
     struct irradiance {
       float     shadingRate;
       int       nSamples;
       float     maxError;
+
       MString   handle;
+
       enum {
         FILEMODE_NONE = 0,
         FILEMODE_READ = 1,
@@ -142,6 +158,7 @@ class liqRibNode {
         FILEMODE_READ_WRITE = 3
       } fileMode;
     } irradiance;
+
 
     struct photon {
       MString   globalMap;
@@ -155,24 +172,32 @@ class liqRibNode {
       } shadingModel;
       int estimator;
     } photon;    
+
     
+
     struct motion {
       bool    transformationBlur;
       bool    deformationBlur;
       int     samples;
       float   factor;
+
     } motion;
+
 
     struct rib {
       MString box;
       MString generator;
       MString readArchive;
       MString delayedReadArchive;
+
     } rib;
+
     
+
     struct grouping {
       MString membership;
     } grouping;
+
 
     struct delight {
       struct {
@@ -185,19 +210,27 @@ class liqRibNode {
       } subSurface;
     } delight;
 
+
     struct subdivMesh {
       bool  render;
       bool  interpBounday;
+
       bool  edgeCreasing;
+
     } subdivMesh;
+
 
     struct curve {
       bool  render;
       float constantwidth;
+
     } curve;
 
+
     bool    instanceInheritPPColor;
+
     bool    invisible;
+
 
 private:
 
