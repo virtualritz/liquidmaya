@@ -173,9 +173,10 @@ global proc liquidFluidAssignCMD ()
     for ( $currentSelected in $selectedShader ) {
       string $type = `liquidGetShaderNodeType $currentSelected`;
       if( $type == "Surface" || $type == "Disp" || $type == "Volume" ) {
-        string $selectedNode[] = `ls -dag -shapes -mat -sl`;
+        string $selectedNode[] = `ls -dag -shapes -mat -type "shadingEngine" -sl`;
         string $currentNode;
         for ( $currentNode in $selectedNode ) {
+        print( $currentNode);
           liquidAssignShaderNode $currentNode $currentSelected;
         }
         $selectedNode = `liquidGetMultiListerSelection`;
