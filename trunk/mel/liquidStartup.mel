@@ -57,13 +57,14 @@ string $mel_files[] = {
 "liquidSlParseSlx.mel",
 /*"liquidStartup.mel",*/
 "liquidSubdiv.mel",
-"liquidSubdivInspector.mel"
+"liquidSubdivInspector.mel",
+"liquidConvertShadingNetworkToRSL.mel"
 };
 
   string $liquidHome = liquidGetHome();
   int $i;
   for ( $i = 0; $i < size($mel_files); $i++) {
-  	eval( "source \"" + $liquidHome + "/mel/" + $mel_files[$i]  + "\"" );
+    eval( "source \"" + $liquidHome + "/mel/" + $mel_files[$i]  + "\"" );
   }
 }
 
@@ -270,6 +271,8 @@ global proc liquidCreateMenus()
         menuItem -label "View Last Generated RIB" -command liquidViewLastRib;
         menuItem -label "View Last Render Script" -command liquidViewLastRenderScript;
         menuItem -d true;
+        menuItem  -label "Convert Shading Network to RSL" -command liquidConvertShadingNetworkToRSL
+                  -ann "Tries to convert selected hypershade shaders / networks to Sl, compile them and attach them";
         menuItem  -label "Convert MtoR to Liquid" -command liquidConvMTOR
                   -ann "Tries to convert any reference to MtoR/RAT in the scene into matching liquid assignments BASED ON CURRENT PALETTE";
         menuItem -label "Shader Manager" -ann "Shader Source Manager" -command "liquidSLManager";

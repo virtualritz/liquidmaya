@@ -72,6 +72,7 @@ global proc liquidInitGlobalVals()
     ,"pictureDirectory", "string", ""
     ,"textureDirectory", "string", ""
     ,"ribDirectory", "string", ""
+    ,"shaderDirectory", "string", "liqshaders"
     ,"tempDirectory", "string", ""
     
     ,"deferredGen", "bool", false
@@ -211,6 +212,7 @@ global proc liquidInitGlobalVals()
     ,"renderCmdFlags","string", ""           // Render Command line flags e.g. -radio 5 for BMRT
 
     ,"shaderInfo",    "string", "shaderinfo" // shader info utility
+    ,"shaderComp",    "string", "shader"     // shader compiler
     ,"shaderExt",     "string", "sdl"        // shader extension
     ,"makeTexture",   "string", "tdlmake"    // texture make utilite
     ,"bits_hiders",   "string", "Hidden"     // -Photon -ZBuffer -Raytrace -OpenGL
@@ -270,6 +272,7 @@ global proc liquidInitGlobalVals()
     "renderCommand",
     "previewer",
     "shaderInfo",
+    "shaderComp",
     "shaderExt",
     "makeTexture",
     "bits_hiders",
@@ -357,23 +360,6 @@ global proc int liquidGlobalsExists()
   int $returnVal;
   $returnVal = `objExists liquidGlobals`;
   return $returnVal;
-}
-
-// Create the Liquid Render Globals node
-global proc liquidCreateGlobals()
-{
-  if ( `liquidGlobalsExists` ) {
-    delete liquidGlobals;
-  }
-  if ( `window -exists liquidGlobalsWindow` ) {
-    deleteUI liquidGlobalsWindow;
-  }
-  if ( !`liquidGlobalsExists` ) {
-    createNode "oldBlindDataBase" -n "liquidGlobals";
-    print "Liquid Globals Created!\n";
-  }
-  liquidAddGlobals;
-  liquidLoadGlobals( "default", "global" );
 }
 
 // Create the Liquid Render Globals node
@@ -923,6 +909,7 @@ global proc liquidGlobalsForm() {
             liquidShowStringGlobal "pictureDirectory" "Rendered Pictures";
             liquidShowStringGlobal "textureDirectory" "Textures/Generated Maps";
             liquidShowStringGlobal "ribDirectory"     "RIBs";
+            liquidShowStringGlobal "shaderDirectory"  "Generated Shaders";
             liquidShowStringGlobal "tempDirectory"    "Temporary Files";
 
             liquidShowBoolGlobal   "createOutputDirectories" "Create Missing Directories";
@@ -1205,6 +1192,7 @@ global proc liquidGlobalsForm() {
             separator;
             liquidShowStringGlobal "previewer" "Previewer";
             liquidShowStringGlobal "shaderInfo" "Shader Info";
+            liquidShowStringGlobal "shaderComp" "Shader Compiler";
             liquidShowStringGlobal "makeTexture" "Make Texture";
             
             separator;
@@ -1260,7 +1248,7 @@ global proc liquidGlobalsForm() {
         setParent ..;
         frameLayout -bs "etchedIn" -l "Shader Browser" -cll true;
           columnLayout -adj true;
-	    liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path";
+            liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path";
           setParent ..;
         setParent ..;
       setParent ..;

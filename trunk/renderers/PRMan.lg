@@ -1,5 +1,6 @@
 setAttr "liquidGlobals.renderCommand" -type "string" "prman"
 setAttr "liquidGlobals.previewer" -type "string" "prman"
+setAttr "liquidGlobals.shaderComp" -type "string" "shader"
 setAttr "liquidGlobals.shaderInfo" -type "string" "sloinfo"
 setAttr "liquidGlobals.shaderExt" -type "string" "slo"
 setAttr "liquidGlobals.makeTexture" -type "string" "txmake"
