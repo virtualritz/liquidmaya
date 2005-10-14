@@ -32,10 +32,10 @@
 ** Liquid Liquid Global Helpers Header File
 ** ______________________________________________________________________
 */
-#include <liqIOStream.h>
 
 #include <string>
 #include <vector>
+
 #include <maya/MString.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MObject.h>
@@ -43,6 +43,7 @@
 #include <liquid.h>
 #include <liqTokenPointer.h>
 #include <liqShader.h>
+
 
 // Moritz: basename() is missing in Windoze, we define our own in liqGlobalHelpers.cpp
 #ifdef _WIN32

@@ -33,34 +33,13 @@
 ** ______________________________________________________________________
 */
 
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
 
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 }
 
-#ifdef _WIN32
-#include <process.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
-
 // Maya's Headers
-#include <maya/MStringArray.h>
-#include <maya/MFnDependencyNode.h>
 #include <maya/MFnDagNode.h>
 #include <maya/MDagPathArray.h>
 #include <maya/MPlug.h>
@@ -80,10 +59,10 @@ extern "C" {
 #include <liqRibCoordData.h>
 #include <liqRibGenData.h>
 #include <liqRibCustomNode.h>
-#include <liqMemory.h>
 
 extern int debugMode;
 extern bool liqglo_useMtorSubdiv;
+
 
 liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 //

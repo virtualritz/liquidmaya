@@ -35,17 +35,10 @@ extern "C" {
   #include <ri.h>
 }
 
-#ifndef _WIN32
-#include <unistd.h>
-#include <stdlib.h>
-#endif
-
-// Maya's Headers
 #include <maya/MFnDependencyNode.h>
 
 #include <liquid.h>
 #include <liqRibCoordData.h>
-
 
 extern int debugMode;
 

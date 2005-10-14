@@ -26,63 +26,28 @@
 
 /* ______________________________________________________________________
 ** 
-** Liquid RibData Soruce File
+** Liquid RibData Source File
 ** ______________________________________________________________________
 */
-
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
 
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 }
 
-#ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
-
 // Maya's Headers
-#include <maya/MFn.h>
 #include <maya/MDoubleArray.h>
 #include <maya/MFnDoubleArrayData.h>
-#include <maya/MFloatArray.h>
-#include <maya/MIntArray.h>
 #include <maya/MPointArray.h>
-#include <maya/MFloatVectorArray.h>
-#include <maya/MMatrix.h>
 #include <maya/MPlug.h>
-#include <maya/MPoint.h>
 #include <maya/MFnPointArrayData.h>
-#include <maya/MString.h>
-#include <maya/MVector.h>
-#include <maya/MFloatVector.h>
-#include <maya/MColor.h>
-#include <maya/MFnStringData.h>
 #include <maya/MFnVectorArrayData.h>
 #include <maya/MVectorArray.h>
-#include <maya/MStringArray.h>
-#include <maya/MFnDependencyNode.h>
 #include <maya/MFnMesh.h>
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibData.h>
-#include <liqMemory.h>
 
 extern int debugMode;
 

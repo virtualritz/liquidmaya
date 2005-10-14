@@ -32,31 +32,11 @@
 ** ______________________________________________________________________
 */
 
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
 
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 }
-
-#ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
 
 // Maya's Headers
 #include <maya/MPlug.h>
@@ -71,10 +51,10 @@ extern "C" {
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibMeshData.h>
-#include <liqMemory.h>
 
 extern int debugMode;
 extern bool liqglo_outputMeshUVs;
+
 
 liqRibMeshData::liqRibMeshData( MObject mesh )
 //
@@ -96,7 +76,6 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
 
   name = fnMesh.name();
 
-//  MStatus status;
   MStatus astatus;
   astatus == MS::kFailure;
 
@@ -197,7 +176,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
         pVertexSTPointerPair->setTokenFloat( faceVertex, 0, S );
         pVertexSTPointerPair->setTokenFloat( faceVertex, 1, 1 - T );
         
-		if( liqglo_outputMeshUVs ) {
+      if( liqglo_outputMeshUVs ) {
           pFaceVertexSPointer->setTokenFloat( faceVertex, S );
           pFaceVertexTPointer->setTokenFloat( faceVertex, 1 - T );
         }

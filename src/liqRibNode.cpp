@@ -32,41 +32,18 @@
 ** ______________________________________________________________________
 */
 
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
 
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 }
 
-#ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
-
 // Maya's Headers
 #include <maya/MPlug.h>
-#include <maya/MFnDependencyNode.h>
-#include <maya/MColor.h>
-#include <maya/MFnPhongShader.h>
-#include <maya/MFnBlinnShader.h>
 #include <maya/MFnLambertShader.h>
+#include <maya/MFnBlinnShader.h>
+#include <maya/MFnPhongShader.h>
 #include <maya/MPlugArray.h>
-#include <maya/MObjectArray.h>
 #include <maya/MFnSet.h>
 #include <maya/MGlobal.h>
 #include <maya/MSelectionList.h>
@@ -80,11 +57,10 @@ extern "C" {
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibNode.h>
-#include <liqMemory.h>
 
 #ifdef _WIN32
-#undef min
-#undef max
+#  undef min
+#  undef max
 #endif
 
 extern int debugMode;
@@ -113,7 +89,7 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
     objects[ i ] = NULL;
 
   name.clear();
-  isRibBox = false;
+  isRibBox  = false;
   isArchive = false;
   isDelayedArchive = false;
   matteMode = false;
@@ -126,13 +102,13 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
   shading.matte = -1;
 
   trace.displacements = false;
-  trace.sampleMotion = false;
+  trace.sampleMotion  = false;
   trace.bias = 0.01f;
-  trace.maxDiffuseDepth = 1;
+  trace.maxDiffuseDepth  = 1;
   trace.maxSpecularDepth = 2;
 
   visibility.camera = true;
-  visibility.trace = false;
+  visibility.trace  = false;
   visibility.photon = false;
   visibility.transmission = visibility::TRANSMISSION_TRANSPARENT;
 
@@ -146,13 +122,12 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
   photon.causticMap = "";
   photon.shadingModel = photon::SHADINGMODEL_MATTE;
   photon.estimator = 100;
-  
 
   motion.transformationBlur = true;;
   motion.deformationBlur = true;
   motion.samples = 2;
   motion.factor = 2.0;
- 
+
   invisible = false;
 }
 
@@ -164,14 +139,11 @@ liqRibNode::~liqRibNode()
 {
   LIQDEBUGPRINTF( "-> killing rib node %s\n", name.asChar() );
 
-
-
   for( unsigned i = 0; i < LIQMAXMOTIONSAMPLES; i++ ) {
     if ( objects[ i ] != NULL ) {
       LIQDEBUGPRINTF( "-> killing %d. ref\n", i );
       objects[ i ]->unref();
       objects[ i ] = NULL;
-
     }
 
   }
@@ -181,11 +153,8 @@ liqRibNode::~liqRibNode()
   ribBoxString.clear();
   archiveString.clear();
   delayedArchiveString.clear();
-
   irradiance.handle.clear();
-
   photon.globalMap.clear();
-
   photon.causticMap.clear();
   LIQDEBUGPRINTF( "-> finished killing rib node.\n" );
 }
@@ -223,8 +192,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
   MPlug nPlug;
   status.clear();
 
-
-
   MSelectionList hierarchy; // needed to find objectSets later below
   MDagPath dagSearcher( path );
 
@@ -232,28 +199,28 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
     dagSearcher.pop(); // Go upwards (should be a transform node)
 
     hierarchy.add( dagSearcher, MObject::kNullObj, true );
+
     if ( dagSearcher.apiType( &status ) == MFn::kTransform ) {
       MFnDagNode nodePeeker( dagSearcher );
       
       // Shading. group ----------------------------------------------------------
-      
 	  if ( !invisible ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "template" ), &status );
         if ( status == MS::kSuccess ) {
           nPlug.getValue( invisible );
-	  if( invisible )
-            break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
+        if ( invisible )
+          break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
         } else {
           status.clear();
           nPlug = nodePeeker.findPlug( MString( "liqInvisible" ), &status );
           if ( status == MS::kSuccess ) {
             nPlug.getValue( invisible );
-	    if( invisible )
+            if( invisible )
               break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
           }
         }
-      }      
+      }
 
       if ( shading.shadingRate == 1.0f ) {
         status.clear();
@@ -268,43 +235,42 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         if ( status == MS::kSuccess )
           nPlug.getValue( shading.diceRasterOrient );
       }
-      
-      if (shading.color.r == -1.0f) {
-	  	status.clear();
-	  	nPlug = nodePeeker.findPlug( MString( "liqColor"), &status );
-	  	if ( status == MS::kSuccess) {
-	  		MPlug tmpPlug;
-	  		tmpPlug = nPlug.child(0,&status);
-			if(status == MS::kSuccess) tmpPlug.getValue( shading.color.r );
-			tmpPlug = nPlug.child(1,&status);
-			if(status == MS::kSuccess) tmpPlug.getValue( shading.color.g );
-			tmpPlug = nPlug.child(2,&status);
-			if(status == MS::kSuccess) tmpPlug.getValue( shading.color.b );
-	  	}
-	 }
-	  
-	  if (shading.opacity.r == -1.0f) {
-	  	status.clear();
-	  	nPlug = nodePeeker.findPlug( MString( "liqOpacity"), &status );
-	  	if ( status == MS::kSuccess) {
-			MPlug tmpPlug;
-	  		tmpPlug = nPlug.child(0,&status);
-			if(status == MS::kSuccess) tmpPlug.getValue( shading.opacity.r );
-			tmpPlug = nPlug.child(1,&status);
-			if(status == MS::kSuccess) tmpPlug.getValue( shading.opacity.g );
-			tmpPlug = nPlug.child(2,&status);
-			if(status == MS::kSuccess) tmpPlug.getValue( shading.opacity.b );
-	  	}
-	  }
-	  
-	  if (shading.matte == -1) {
-	  	status.clear();
-	  	nPlug = nodePeeker.findPlug( MString( "liqMatte"), &status );
-	  	if ( status == MS::kSuccess) {
-	  		nPlug.getValue( shading.matte );
-	  	}
-	  }
 
+      if (shading.color.r == -1.0f) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqColor"), &status );
+        if ( status == MS::kSuccess) {
+          MPlug tmpPlug;
+          tmpPlug = nPlug.child(0,&status);
+          if(status == MS::kSuccess) tmpPlug.getValue( shading.color.r );
+          tmpPlug = nPlug.child(1,&status);
+          if(status == MS::kSuccess) tmpPlug.getValue( shading.color.g );
+          tmpPlug = nPlug.child(2,&status);
+          if(status == MS::kSuccess) tmpPlug.getValue( shading.color.b );
+        }
+      }
+
+      if (shading.opacity.r == -1.0f) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqOpacity"), &status );
+        if ( status == MS::kSuccess) {
+        MPlug tmpPlug;
+          tmpPlug = nPlug.child(0,&status);
+        if(status == MS::kSuccess) tmpPlug.getValue( shading.opacity.r );
+        tmpPlug = nPlug.child(1,&status);
+        if(status == MS::kSuccess) tmpPlug.getValue( shading.opacity.g );
+        tmpPlug = nPlug.child(2,&status);
+        if(status == MS::kSuccess) tmpPlug.getValue( shading.opacity.b );
+        }
+      }
+
+      if (shading.matte == -1) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqMatte"), &status );
+        if ( status == MS::kSuccess) {
+          nPlug.getValue( shading.matte );
+        }
+      }
 
       // trace group ----------------------------------------------------------
       if ( trace.sampleMotion == false ) {
@@ -342,9 +308,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( trace.maxSpecularDepth );
       }
 
-
       // visibility group -----------------------------------------------------
-
       if ( visibility.camera == true ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqVisibilityCamera" ), &status );
@@ -366,9 +330,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( ( int& ) visibility.transmission );
       }
 
-
       // irradiance group -----------------------------------------------------
-
       if ( irradiance.shadingRate == 1.0f ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqIrradianceShadingRate" ), &status );
@@ -383,15 +345,12 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( irradiance.nSamples );
       }
 
-
-
       if ( irradiance.maxError == 1.0f ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqIrradianceMaxError" ), &status );
         if ( status == MS::kSuccess )
           nPlug.getValue( irradiance.maxError );
       }
-
 
       if ( irradiance.handle == "" ) {
         status.clear();
@@ -408,7 +367,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       }
 
       // photon group ---------------------------------------------------------
-
       if ( photon.globalMap == "" ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqPhotonGlobalMap" ), &status );
@@ -438,21 +396,18 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       }
 
       // Motion blur group ---------------------------------------------------------
- 
       if ( motion.transformationBlur == true ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqTransformationBlur" ), &status );
         if ( status == MS::kSuccess )
           nPlug.getValue( motion.transformationBlur );
       }
-     
       if ( motion.deformationBlur == true ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqDeformationBlur" ), &status );
         if ( status == MS::kSuccess )
           nPlug.getValue( motion.deformationBlur );
       }      
- 
       if ( motion.samples == 2 ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqMotionSamples" ), &status );
@@ -467,7 +422,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( motion.factor );
       }  
       
-
       /*MFnDependencyNode nodeFn( nodePeeker );
       MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
       MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodeFn );
@@ -476,14 +430,11 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodeFn );
       MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );*/
     } // if ( dagSearcher.apiType( &status ) == MFn::kTransform ) 
-
   }
 
   while( dagSearcher.length() > 0 );
 
   // Set membership handling
-  //
-
   if ( grouping.membership == "" ) {
     MObjectArray setArray;
     MGlobal::getAssociatedSets( hierarchy, setArray );
@@ -495,16 +446,17 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if ( status == MS::kSuccess ) {
         bool value = false;
         plug.getValue( value );
+
         if ( value ) {
           status.clear();
           grouping.membership += " +" + depNodeFn.name( &status );
         }
       }
     }
+
     status.clear();
     grouping.membership = path.fullPathName( &status ) + grouping.membership;
   }
-
 
   status.clear();
   nPlug = fnNode.findPlug( MString( "liqRIBBox" ), &status );
@@ -522,6 +474,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       isRibBox = true;
     }
   }
+  
   status.clear();
   nPlug = fnNode.findPlug( MString( "liqRIBReadArchive" ), &status );
   if ( status == MS::kSuccess ) {
@@ -538,6 +491,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       isArchive = true;
     }
   }
+  
   status.clear();
   nPlug = fnNode.findPlug( MString( "liqRIBDelayedReadArchive" ), &status );
   if ( status == MS::kSuccess ) {
@@ -567,12 +521,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
     }
   }
 
-
-
-
-
   // Get the object's color
-  //
   if ( objType != MRT_Shader ) {
     MObject shadingGroup = findShadingGroup( path );
     if ( shadingGroup != MObject::kNullObj ) {
@@ -583,7 +532,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       assignedVolume.setObject( findVolume( shadingGroup ) );
       if ( ( surfaceShader == MObject::kNullObj ) || !getColor( surfaceShader, color ) ) {
         // This is how we specify that the color was not found.
-        //
         color.r = -1.0;
       }
       if ( ( surfaceShader == MObject::kNullObj ) || !getOpacity( surfaceShader, opacity ) ) {
@@ -744,23 +692,17 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
     LIQDEBUGPRINTF( "-> found name\n");
   }
 
-  
   if ( objType == MRT_RibGen ) {
-
     name += "RIBGEN";
-
   }
 
   LIQDEBUGPRINTF( "-> inserting object into ribnode's obj sample table\n" );
   if ( objects[ sample ] == NULL ) {
     objects[ sample ] = no;
   }
-
   
   LIQDEBUGPRINTF( "-> done creating rib object for given path\n");
 }
-
-
 
 
 /**

@@ -31,39 +31,27 @@
 ** ______________________________________________________________________
 */
 
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
 // PRMan/3Delight Headers
 extern "C" {
 #include <ri.h>
 #if defined( PRMAN ) || defined( DELIGHT )
-#include <slo.h>
+#  include <slo.h>
 #endif
 }
+
 // Entropy Headers
 #ifdef ENTROPY
-#include <sleargs.h>
+#  include <sleargs.h>
 #endif
+
 // Aqsis Headers
 #ifdef AQSIS
-#include <slx.h>
+#  include <slx.h>
 #endif
+
 // Pixie Headers
 #ifdef PIXIE
-#include <sdr.h>
-#endif
-#ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
+#  include <sdr.h>
 #endif
 
 // Maya's Headers
@@ -76,10 +64,9 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqGetSloInfo.h>
-#include <liqMemory.h>
-#include <liqIOStream.h>
 
 extern int debugMode;
+
 // Entropy to PRman type conversion : numbering has a break between
 // string ( 7 -> 4 ) and surface ( 16 -> 5 ) 
 int SLEtoSLOMAP[21] = { 0, 3, 2, 1, 11, 12, 13, 4, 5, 7, 6, 8, 10, 0, 0, 0, 5, 7, 6, 8, 10 };
@@ -118,10 +105,6 @@ void* liqGetSloInfo::creator()
 }
 
 liqGetSloInfo::~liqGetSloInfo()
-//
-//  Description:
-//      Class destructor
-//
 {
 } 
 

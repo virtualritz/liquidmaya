@@ -24,16 +24,16 @@
 ** RenderMan (R) is a registered trademark of Pixar
 */
 
-#include <liquid.h>
-
 #include <maya/MPlug.h>
 #include <maya/MDoubleArray.h>
 #include <maya/MFnDoubleArrayData.h>
+
+#include <liquid.h>
 #include <liqShader.h>
 #include <liqGlobalHelpers.h>
 
-
 extern int debugMode;
+
 
 liqShader::liqShader()
 {

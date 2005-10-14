@@ -32,57 +32,30 @@
 ** ______________________________________________________________________
 */
 
-/* Standard Headers */
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
-#ifndef _WIN32
-/* Dynamic Object Headers */
-#include <dlfcn.h>
-#endif
 
 /* Renderman Headers */
 extern "C" {
 #include <ri.h>
 }
 
-#ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
-
-/* Maya's Headers */
+// Maya's Headers
 #include <maya/MPlug.h>
 #include <maya/MPlugArray.h>
-#include <maya/MFloatVectorArray.h>
 #include <maya/MItMeshPolygon.h>
 #include <maya/MItMeshEdge.h>
 #include <maya/MItMeshVertex.h>
-#include <maya/MItMeshPolygon.h>
-#include <maya/MIntArray.h>
 #include <maya/MFnMesh.h>
-#include <maya/MTransformationMatrix.h>
-#include <maya/MMatrix.h>
-#include <maya/MFloatPointArray.h>
 #include <maya/MFnSet.h>
 #include <maya/MSelectionList.h>
-#include <maya/MItSelectionList.h>
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibSubdivisionData.h>
-#include <liqMemory.h>
 
 extern int debugMode;
 extern bool liqglo_outputMeshUVs;
 extern bool liqglo_useMtorSubdiv;  // interpret mtor subdiv attributes
+
 
 liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
 //  Description: create a RIB compatible subdivision surface representation using a Maya polygon mesh
@@ -97,9 +70,9 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
   MFnMesh fnMesh( mesh );
   name = fnMesh.name();
 
+  /*
   MStatus status;
 
-  /*
   MPlug interpolateBoundaryPlug = fnMesh.findPlug( "liqSubdivInterpolateBoundary", &status );
   if ( status == MS::kSuccess ) {
     interpolateBoundaryPlug.getValue( interpolateBoundary );

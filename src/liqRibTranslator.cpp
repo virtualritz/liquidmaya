@@ -26,17 +26,6 @@
 ** RenderMan (R) is a registered trademark of Pixar
 */
 
- 
-// Error macro: if not successful, print error message and return
-// the MStatus instance containing the error code.
-// Assumes that "stat" contains the error value
-
-
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
 
 #ifdef OSX
   #include <stdlib.h>
@@ -45,48 +34,41 @@
 #endif
 
 #include <sys/types.h>
+
 #ifndef _WIN32
-#include <sys/time.h>
-#include <sys/stat.h>
+#  include <sys/time.h>
+#  include <sys/stat.h>
 #endif
 
 #ifndef _WIN32
 // Dynamic Object Headers
-#include <dlfcn.h>
+#  include <dlfcn.h>
 #endif
 
 #ifdef _WIN32
-#pragma warning(disable:4786)
+#  pragma warning(disable:4786)
 #endif
 
 // win32 mkdir only has name arg
 #ifdef _WIN32
-#define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_))
+#  define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_))
 #else
-#define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_, _MODE_))
+#  define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_, _MODE_))
 #endif
 
 // Renderman Headers
 extern "C" {
 #include <ri.h>
-  // Rib Stream Defines
-  // Commented out for Win32 as there is conflicts with Maya's drand on Win32 - go figure
-#ifndef _WIN32
-#if 0
-// Hmmmmmm do not compile
-#include <target.h>
-#endif
-#endif
 }
 
 #ifdef _WIN32
-#include <process.h>
-#include <io.h>
-#include <direct.h>
+#  include <process.h>
+#  include <io.h>
+#  include <direct.h>
 #else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
+#  include <unistd.h>
+#  include <stdlib.h>
+#  include <alloca.h>
 #endif
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
@@ -117,15 +99,15 @@ extern "C" {
 #include <maya/MSyntax.h>
 #include <maya/MDistance.h>
 
-// Liquid headers
+// Liquid headers 
 #include <liquid.h>
 #include <liqRibTranslator.h>
 #include <liqGlobalHelpers.h>
 #include <liqProcessLauncher.h>
 #include <liqRenderer.h>
 
-
 typedef int RtError;
+
 
 // this get's set if we are running the commandline version of liquid
 bool liquidBin;
@@ -153,22 +135,12 @@ double       liqglo_FPS;                    // Frame-rate (for particle streak l
 bool         liqglo_outputMeshUVs;          // true if we are writing uvs for subdivs/polys (in addition to "st")
 
 // Kept global for liquidGlobalHelper
-
 MString      liqglo_projectDir;
-
-
 MString      liqglo_ribDir;
 MString      liqglo_textureDir;
-
-
-
-
 MString      liqglo_shaderPath;             // Shader searchpath
-
-MString      liqglo_texturePath;             // Texture searchpath
-
+MString      liqglo_texturePath;            // Texture searchpath
 MString      liqglo_archivePath;
-
 MString      liqglo_proceduralPath;
 
 // Kept global for liqRibNode.cpp
@@ -181,16 +153,6 @@ bool         liqglo_useMtorSubdiv;  // use mtor subdiv attributes
 HiderType    liqglo_hider;
 RtInt        liqglo_jitter;
 MString      liqglo_makeTexture; // MakeTexture utilite name
-
-
-#if 0
-#ifdef _WIN32
-// Hmmmmmmmm what's this ?
-int RiNColorSamples;
-#endif
-// these are little storage variables to keep track of the current graphics state and will eventually be wrapped in
-// a specific class
-#endif
 
 
 void liqRibTranslator::freeShaders( void )

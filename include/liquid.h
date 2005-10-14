@@ -33,11 +33,6 @@
 ** ______________________________________________________________________
 */
 
-#include <maya/M3dView.h>
-#include <maya/MComputation.h>
-#include <maya/MString.h>
-#include <maya/MMatrix.h>
-#include <maya/MDagPath.h>
 #include <math.h>
 #include <string>
 
@@ -52,6 +47,13 @@
 #endif
 
 #include <liqMemory.h>
+#include <liqIOStream.h>
+
+#include <maya/M3dView.h>
+#include <maya/MComputation.h>
+#include <maya/MString.h>
+#include <maya/MMatrix.h>
+#include <maya/MDagPath.h>
 
 ////////////////////////
 // Macros and Defines //
@@ -166,7 +168,6 @@ enum PointLightDirection {
   pNY     = 4,
   pNZ     = 5
 };
-
 
 enum PixelFilterType {
   pfBoxFilter            = 0,

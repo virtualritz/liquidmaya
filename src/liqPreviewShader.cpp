@@ -26,32 +26,20 @@
 
 /* liquid command to export a shader ball with the selected shader */
 
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 #ifdef PRMAN
-#include <slo.h>
+#  include <slo.h>
 #endif
 }
-extern int debugMode;
+
 #ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
+#  include <process.h>
+#  include <malloc.h>
 #else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#include <pthread.h>
-#include <errno.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <fcntl.h>
+#  include <unistd.h>
+#  include <sys/wait.h>
 #endif
 
 // Maya's Headers
@@ -66,18 +54,19 @@ extern int debugMode;
 #include <maya/MFnDoubleArrayData.h>
 #include <maya/MPlug.h>
 #include <maya/MDoubleArray.h>
-
 #include <maya/MGlobal.h>
 
+#include <liquid.h>
 #include <liqShader.h>
 #include <liqPreviewShader.h>
 #include <liqMemory.h>
-#include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqIOStream.h>
 
+extern int debugMode;
 
-  // Set default values
+
+// Set default values
 #if defined(PRMAN)
   const char * liqPreviewShader::m_default_previewer = "prman";
 #elif defined(AQSIS)

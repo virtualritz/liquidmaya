@@ -6,7 +6,10 @@
 // compilers, some of which try and help by auto-including or auto-namespacing,
 // and others do not
 
-//#define MAYA_API_VERSION 600
+// NOTE: as of Maya 7.0 it seems you need to put this include before any Maya 
+//       includes, or things can get confused (you'll get errors like "introduced 
+//       ambiguous type `iostream'")
+
 
 #if MAYA_API_VERSION < 500
   #include <iostream>
