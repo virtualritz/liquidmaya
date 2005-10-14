@@ -43,10 +43,10 @@ extern "C" {
 }
 
 #ifdef _WIN32
-#include <malloc.h>
+#  include <malloc.h>
 #else
-#include <alloca.h>
-#include <stdlib.h>
+#  include <alloca.h>
+#  include <stdlib.h>
 #endif
 
 #include <vector>
@@ -76,7 +76,6 @@ extern "C" {
 
 extern int debugMode;
 extern bool liquidBin;
-
 
 extern long    liqglo_lframe;
 extern MString liqglo_sceneName;

@@ -32,34 +32,10 @@
 ** ______________________________________________________________________
 */
 
-// Standard Headers
-#ifndef _WIN32
-#  include <libgen.h> // for basename()
-#endif
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
-
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 }
-
-#ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
 
 // Maya's Headers
 #include <maya/MFnDependencyNode.h>
@@ -78,7 +54,6 @@ extern "C" {
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibLightData.h>
-#include <liqMemory.h>
 #include <liqGetSloInfo.h>
 
 extern int debugMode;
@@ -403,16 +378,15 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   shadowColor[ 2 ]  = colorVal.b;
 
   MTransformationMatrix worldMatrix = light.inclusiveMatrix();
-  //MMatrix worldMatrixM = worldMatrix.asMatrix();
   double scale[] = { 1.0, 1.0, -1.0 };
   worldMatrix.setScale( scale, MSpace::kTransform );
-  //MMatrix worldMatrixM = lightFix * worldMatrix.asMatrix();
   MMatrix worldMatrixM = worldMatrix.asMatrix();
   worldMatrixM.get( transformationMatrix );
 
   if ( rmanLight ) {
     lightType  = MRLT_Rman;
   } else {
+  
     if ( light.hasFn( MFn::kAmbientLight ) ) {
       lightType      = MRLT_Ambient;
 

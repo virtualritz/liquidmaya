@@ -33,23 +33,25 @@
 ** ______________________________________________________________________
 */
 
+#include <liqRibData.h>
+#include <maya/MIntArray.h>
 
 class liqRibParticleData : public liqRibData {
-public: // Methods
+public:
     
-            liqRibParticleData( MObject curve );
+    liqRibParticleData( MObject curve );
     virtual ~liqRibParticleData();
         
     virtual void	write();
     virtual bool	compare( const liqRibData & other ) const;
     virtual ObjectType	type() const;
 
-    void		addAdditionalParticleParameters( MObject node );
-
-    void 		addAdditionalFloatParameters( MFnDependencyNode nodeFn);
-    void 		addAdditionalPointParameters( MFnDependencyNode nodeFn);
-    void 		addAdditionalVectorParameters( MFnDependencyNode nodeFn );
-    void 		addAdditionalColorParameters( MFnDependencyNode nodeFn);
+    void addAdditionalParticleParameters( MObject node );
+    
+    void addAdditionalFloatParameters ( MFnDependencyNode nodeFn);
+    void addAdditionalPointParameters ( MFnDependencyNode nodeFn);
+    void addAdditionalVectorParameters( MFnDependencyNode nodeFn);
+    void addAdditionalColorParameters ( MFnDependencyNode nodeFn);
 
     // pType data type, these values corrospond to the types of
     // particleRenderType in maya!
@@ -68,24 +70,20 @@ public: // Methods
 
     pType particleType; 
     
-private: // Data
-        
+private:
     // Data storage for blobby particles 
-    RtInt	bCodeArraySize;
-    RtInt*	bCodeArray;	
-    RtInt	bFloatArraySize;
-    RtFloat*	bFloatArray;
-    RtInt	bStringArraySize;
-    RtString*	bStringArray;
+    RtInt     bCodeArraySize;
+    RtInt*    bCodeArray;	
+    RtInt     bFloatArraySize;
+    RtFloat*  bFloatArray;
+    RtInt     bStringArraySize;
+    RtString* bStringArray;
 
-    MIntArray	m_validParticles;
+    MIntArray m_validParticles;
 
-    unsigned	m_numParticles;
-    unsigned	m_numValidParticles;
-
-    // Support for multi-point and multi-streak.
-    //
-    short     m_multiCount;
+    unsigned  m_numParticles;
+    unsigned  m_numValidParticles;
+    short     m_multiCount;  // Support for multi-point and multi-streak.
 };
 
 #endif

@@ -30,70 +30,31 @@
 ** ______________________________________________________________________
 */
 
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
-
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 }
 
 #ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
+#  include <hash_map>
 #else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
-
-#include <algorithm>
-
-
-
-#ifdef _WIN32
-
-#include <hash_map>
-
-#else
-#include <hash_map.h>
-
+#  include <hash_map.h>
 #endif
 
 // Maya's Headers
 #include <maya/MFnVectorArrayData.h>
 #include <maya/MFnDoubleArrayData.h>
-#include <maya/MFnDependencyNode.h>
 #include <maya/MPlug.h>
-#include <maya/MObject.h>
-#include <maya/MString.h>
-#include <maya/MPoint.h>
-#include <maya/MFnMesh.h>
-#include <maya/MDoubleArray.h>
-#include <maya/MFnDoubleArrayData.h>
+#include <maya/MVectorArray.h>
 #include <maya/MFloatArray.h>
-#include <maya/MIntArray.h>
-#include <maya/MPointArray.h>
 #include <maya/MAnimControl.h>
 #include <maya/MGlobal.h>
 #include <maya/MFnParticleSystem.h>
-#include <maya/MFnCamera.h>
 #include <maya/MQuaternion.h>
 
 #include <liquid.h>
-#include <liqGlobalHelpers.h>
-#include <liqRibData.h>
 #include <liqRibParticleData.h>
-#include <liqMemory.h>
+#include <liqGlobalHelpers.h>
 
 extern int debugMode;
 
@@ -103,8 +64,8 @@ extern bool liqglo_doDef;
 extern bool liqglo_doMotion;
 extern structJob liqglo_currentJob;
 
-// these classes are needed to produce a list of particles sorted by their
-// ids.
+
+// these classes are needed to produce a list of particles sorted by their ids
 class liq_particleInfo
 {
 public:

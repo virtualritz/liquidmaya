@@ -32,37 +32,14 @@
 ** ______________________________________________________________________
 */
 
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
-
 #ifdef _WIN32
 #pragma warning(disable:4786)
 #endif
-
-// Standard Headers
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <vector>
 
 // Renderman Headers
 extern "C" {
 #include <ri.h>
 }
-
-#ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
 
 // Maya's Headers
 #include <maya/MFnDagNode.h>
@@ -73,7 +50,6 @@ extern "C" {
 #include <liquid.h>
 #include <liqRibNode.h>
 #include <liqRibHT.h>
-#include <liqMemory.h>
 
 extern int debugMode;
 
