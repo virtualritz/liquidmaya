@@ -1,5 +1,6 @@
 setAttr "liquidGlobals.renderCommand" -type "string" "aqsis"
 setAttr "liquidGlobals.previewer" -type "string" "aqsis"
+setAttr "liquidGlobals.shaderComp" -type "string" "aqsl"
 setAttr "liquidGlobals.shaderInfo" -type "string" "aqsltell"
 setAttr "liquidGlobals.shaderExt" -type "string" "aqsl"
 setAttr "liquidGlobals.makeTexture" -type "string" "teqser"
