@@ -32,20 +32,6 @@
 ** ______________________________________________________________________
 */
 
-// Standard Headers
-//#include <fstream.h>
-#include <liqIOStream.h>
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <stdio.h>
-#include <sys/types.h>
-
-#ifndef _WIN32
-// Dynamic Object Headers
-#include <dlfcn.h>
-#endif
-
 #ifdef _WIN32
 #pragma warning(disable:4786)
 #endif
@@ -62,15 +48,6 @@ extern "C" {
 #include <ri.h>
 }
 
-#ifdef _WIN32
-#include <process.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
-#include <stdlib.h>
-#include <alloca.h>
-#endif
-
 // Maya's Headers
 #include <maya/MFnPlugin.h>
 #include <maya/MGlobal.h>
@@ -78,15 +55,12 @@ extern "C" {
 
 #include <liquid.h>
 #include <liqRibTranslator.h>
-#include <liqGetSloInfo.h>
 #include <liqGetAttr.h>
 #include <liqAttachPrefAttribute.h>
-#include <liqMemory.h>
 #include <liqPreviewShader.h>
 #include <liqWriteArchive.h>
 #include <liqGlobalHelpers.h>
 
-extern bool liquidBin;
 
 #define LIQVENDOR "http://liquidmaya.sourceforge.net/"
 
@@ -97,6 +71,8 @@ static const char * LIQUIDVERSION =
 ;
 #define DEFINED_LIQUIDVERSION
 #endif
+
+extern bool liquidBin;
 
 
 ////////////////////// EXPORTS /////////////////////////////////////////////////////////
