@@ -6,9 +6,13 @@
 //
 //--------------------------------------------------------------------
 
-source "liquidWriteRSL_materials.mel";
-source "liquidWriteRSL_textures.mel";
-source "liquidWriteRSL_utilities.mel";
+//source "liquidWriteRSL_materials.mel";
+//source "liquidWriteRSL_textures.mel";
+//source "liquidWriteRSL_utilities.mel";
+eval("source \"" + `liquidGetHome` + "/mel/liquidWriteRSL_materials.mel\"");
+eval("source \"" + `liquidGetHome` + "/mel/liquidWriteRSL_textures.mel\"");
+eval("source \"" + `liquidGetHome` + "/mel/liquidWriteRSL_utilities.mel\"");
+
 
 //--------------------------------------------------------------------
 // Check to see if we know how to convert this node to RSL.
