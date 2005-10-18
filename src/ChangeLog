@@ -1,4 +1,13 @@
-2005-03-15
+2005-10-14 geohar
+	- Added support for dag-node attributes Color,Opacity and Matte mode.
+	  The strategy when searching for these is dag first, then shader, then maya shader node
+	- Added Rob's Hypershade -> RSL converter
+	- Fixed an issue (some time ago really) where the texture memory would end up in the rib with
+	  a limited size despite the current setting, causing excessive render times
+	- Added delete crease / hole / stitch group for liquid tagged subdivs
+	- Assigning to the hypershade selection for shaders is now properly supported
+
+2005-03-15 geohar
 	- Fixed a really hard to track down bug where liquidParamDialogWindow's attrColorSliderGrp
 	  controls would crash.  Caused by an attribute being used as a color without -usedAsColor
 	  tagged on the attribute, and when the color is defined as double3.  I now define all
