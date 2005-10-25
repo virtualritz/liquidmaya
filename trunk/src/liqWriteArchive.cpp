@@ -159,14 +159,14 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
     liqRibNode ribNode;
     ribNode.set(objDagPath, 0, MRT_Unknown);
 
-    if ( ribNode.isRibBox ) {
-      RiArchiveRecord( RI_COMMENT, "Additional RIB:\n%s", ribNode.ribBoxString.asChar() );
+    if ( ribNode.rib.box != "" && ribNode.rib.box != "-" ) {
+      RiArchiveRecord( RI_COMMENT, "Additional RIB:\n%s", ribNode.rib.box.asChar() );
     }
-    if ( ribNode.isArchive ) {
-      RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode.archiveString.asChar() );
+    if ( ribNode.rib.readArchive != "" && ribNode.rib.readArchive != "-" ) {
+      RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode.rib.readArchive.asChar() );
     }
-    if ( ribNode.isDelayedArchive ) {
-      RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.delayedArchiveString.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
+    if ( ribNode.rib.delayedReadArchive != "" && ribNode.rib.delayedReadArchive != "-" ) {
+      RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.rib.delayedReadArchive.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
     }
 
     // If it's a curve we should write the basis function

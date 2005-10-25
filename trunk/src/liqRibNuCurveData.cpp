@@ -62,141 +62,140 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
     CVs( NULL ),
     NuCurveWidth( NULL )
 {
-  LIQDEBUGPRINTF( "-> creating nurbs curve\n" );
-  MStatus status = MS::kSuccess;
-  MFnNurbsCurve nurbs( curve, &status );
-  assert(status==MS::kSuccess);
+	LIQDEBUGPRINTF( "-> creating nurbs curve\n" );
+	MStatus status = MS::kSuccess;
+	MFnNurbsCurve nurbs( curve, &status );
+	assert(status==MS::kSuccess);
 
-  // Extract the order and number of CVs in the surface keeping
-  // in mind that UV order is switched between Renderman and Maya
-  ncurves = 1;  //RiNuCurves can be passed many curves but right now it only passes one from maya at a time
-  nverts = (RtInt*)lmalloc( sizeof( RtInt )   * ( ncurves ) );
-  order  = (RtInt*)lmalloc( sizeof( RtInt )   * ( ncurves ) );
-  min  = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( ncurves ) );
-  max  = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( ncurves ) );
+	// Extract the order and number of CVs in the surface keeping
+	// in mind that UV order is switched between Renderman and Maya
+	ncurves = 1;  //RiNuCurves can be passed many curves but right now it only passes one from maya at a time
+	nverts = (RtInt*)lmalloc( sizeof( RtInt ) * ( ncurves ) );
+	order = (RtInt*)lmalloc( sizeof( RtInt ) * ( ncurves ) );
+	min = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( ncurves ) );
+	max = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( ncurves ) );
 
-  order[0]  = nurbs.degree() + 1;
-  nverts[0] = nurbs.numCVs() + 4;
-  
-  /*if (nverts[0] < 2) {
-  // seems like some ill-defined patches are sometimes
-  // present in the database (cf: test scene)
-  // Might be able to add some sort of throw here where it passes it to RiCurve
-  //
-  MString error("Ill-defined nurbs curve: ");
-  error += nurbs.name();
-  printf( "Bad Curve!" );
-  throw( error );
-  }*/
+	order[0] = nurbs.degree() + 1;
+	nverts[0] = nurbs.numCVs() + 4;
 
-  // Read the knot information
-  //
-  /*MDoubleArray Knots;
-  nurbs.getKnots(Knots);
+	/*if (nverts[0] < 2) {
+	// seems like some ill-defined patches are sometimes
+	// present in the database (cf: test scene)
+	// Might be able to add some sort of throw here where it passes it to RiCurve
+	//
+	MString error("Ill-defined nurbs curve: ");
+	error += nurbs.name();
+	printf( "Bad Curve!" );
+	throw( error );
+}*/
 
-  double Min_d, Max_d;
-  nurbs.getKnotDomain(Min_d, Max_d);
-  min[0] = (RtFloat)Min_d;
-  max[0] = (RtFloat)Max_d;
+	// Read the knot information
+	//
+/*	MDoubleArray Knots;
+	nurbs.getKnots(Knots);
+
+	double Min_d, Max_d;
+	nurbs.getKnotDomain(Min_d, Max_d);
+	min[0] = (RtFloat)Min_d;
+	max[0] = (RtFloat)Max_d;
+*/
+	// Allocate CV and knot storage
+	//
+//	CVs   = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( nverts[0] * 4 ) );
+	CVs   = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( nverts[0] * 3 ) );
+//	knot = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( Knots.length() + 2 ) );
+
+/*  unsigned k;
+	for ( k = 0; k < Knots.length(); k++ ) knot[k+1] = (RtFloat)Knots[k];
+	// Maya doesn't store the first and last knots, so we double them up
+	// manually
+	//
+	knot[0] = knot[1];
+	knot[k+1] = knot[k];
   */
-  // Allocate CV and knot storage
-  //
-  //CVs = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( nverts[0] * 4 ) );
-  CVs = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( nverts[0] * 3 ) );
-  //knot = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( Knots.length() + 2 ) );
 
-  /*unsigned k;
-  for ( k = 0; k < Knots.length(); k++ ) knot[k+1] = (RtFloat)Knots[k];
-  // Maya doesn't store the first and last knots, so we double them up
-  // manually
-  //
-  knot[0] = knot[1];
-  knot[k+1] = knot[k];
-  */
+	// Read CV information
+	//
+	MItCurveCV cvs( curve, &status );
+	RtFloat* cvPtr = CVs;
 
-  // Read CV information
-  //
-  MItCurveCV cvs( curve, &status );
-  RtFloat* cvPtr = CVs;
+	// Double up start and end to simulate knot, MToor style (we should really be using RiNuCurves) - Paul
+	MPoint pt = cvs.position(MSpace::kObject);
+	*cvPtr = (RtFloat)pt.x; cvPtr++;
+	*cvPtr = (RtFloat)pt.y; cvPtr++;
+	*cvPtr = (RtFloat)pt.z; cvPtr++;
 
-  // Double up start and end to simulate knot, MToor style (we should really be using RiNuCurves) - Paul
-  MPoint pt = cvs.position(MSpace::kObject);
-  *cvPtr = (RtFloat)pt.x; cvPtr++;
-  *cvPtr = (RtFloat)pt.y; cvPtr++;
-  *cvPtr = (RtFloat)pt.z; cvPtr++;
+	*cvPtr = (RtFloat)pt.x; cvPtr++;
+	*cvPtr = (RtFloat)pt.y; cvPtr++;
+	*cvPtr = (RtFloat)pt.z; cvPtr++;
 
-  *cvPtr = (RtFloat)pt.x; cvPtr++;
-  *cvPtr = (RtFloat)pt.y; cvPtr++;
-  *cvPtr = (RtFloat)pt.z; cvPtr++;
+	while(!cvs.isDone()) {
+		pt = cvs.position(MSpace::kObject);
+		*cvPtr = (RtFloat)pt.x; cvPtr++;
+		*cvPtr = (RtFloat)pt.y; cvPtr++;
+		*cvPtr = (RtFloat)pt.z; cvPtr++;
+	//	*cvPtr = (RtFloat)pt.w; cvPtr++;
+		cvs.next();
+	}
 
-  while(!cvs.isDone()) {
-    pt = cvs.position(MSpace::kObject);
-    *cvPtr = (RtFloat)pt.x; cvPtr++;
-    *cvPtr = (RtFloat)pt.y; cvPtr++;
-    *cvPtr = (RtFloat)pt.z; cvPtr++;
-    //*cvPtr = (RtFloat)pt.w; cvPtr++;
-    cvs.next();
-  }
+	*cvPtr = (RtFloat)pt.x; cvPtr++;
+	*cvPtr = (RtFloat)pt.y; cvPtr++;
+	*cvPtr = (RtFloat)pt.z; cvPtr++;
 
-  *cvPtr = (RtFloat)pt.x; cvPtr++;
-  *cvPtr = (RtFloat)pt.y; cvPtr++;
-  *cvPtr = (RtFloat)pt.z; cvPtr++;
+	*cvPtr = (RtFloat)pt.x; cvPtr++;
+	*cvPtr = (RtFloat)pt.y; cvPtr++;
+	*cvPtr = (RtFloat)pt.z; cvPtr++;
 
-  *cvPtr = (RtFloat)pt.x; cvPtr++;
-  *cvPtr = (RtFloat)pt.y; cvPtr++;
-  *cvPtr = (RtFloat)pt.z; cvPtr++;
+	liqTokenPointer pointsPointerPair;
+	liqTokenPointer* pConstWidthPointerPair = NULL;
 
-  liqTokenPointer pointsPointerPair;
-  liqTokenPointer* pConstWidthPointerPair = NULL;
+	pointsPointerPair.set( "P", rPoint, false, true, false, nverts[0] );
+	pointsPointerPair.setDetailType( rVertex );
+	pointsPointerPair.setTokenFloats( CVs );
+	tokenPointerArray.push_back( pointsPointerPair );
 
-  // pointsPointerPair.set( "Pw", rPoint, true, true, false, nverts[0] );
-  pointsPointerPair.set( "P", rPoint, false, true, false, nverts[0] );
-  pointsPointerPair.setDetailType( rVertex );
-  pointsPointerPair.setTokenFloats( CVs );
-  tokenPointerArray.push_back( pointsPointerPair );
+	// Constant width, MToor style - Paul
+	MPlug curveWidthPlug = nurbs.findPlug( "liquidCurveWidth", &status );
 
-  // Constant width, MToor style - Paul
-  MPlug curveWidthPlug = nurbs.findPlug( "liquidCurveWidth", &status );
-
-  if ( status == MS::kSuccess ) {	
-    float curveWidth;
-    curveWidthPlug.getValue( curveWidth );
-    pConstWidthPointerPair = new liqTokenPointer;
+	if ( status == MS::kSuccess ) {
+		float curveWidth;
+		curveWidthPlug.getValue( curveWidth );
+		pConstWidthPointerPair = new liqTokenPointer;
 #ifndef DELIGHT
-    pConstWidthPointerPair->set( "constantwidth", rFloat, false, false, false, 0 );
-    pConstWidthPointerPair->setDetailType( rUniform );
-    pConstWidthPointerPair->setTokenFloat(0, curveWidth );
+		pConstWidthPointerPair->set( "constantwidth", rFloat, false, false, false, 0 );
+		pConstWidthPointerPair->setDetailType( rUniform );
+		pConstWidthPointerPair->setTokenFloat(0, curveWidth );
 #else // Arrgh! 3Delight wants "constantwidth" per curve segment	so we make it varying :(
-    pConstWidthPointerPair->set( "constantwidth", rFloat, false, true, false, nverts[0] - 2 );
-    pConstWidthPointerPair->setDetailType( rVarying );
-    for( int i = 0; i < nverts[0] - 2; i++ ) {
-      pConstWidthPointerPair->setTokenFloat( i, curveWidth );
-    }
+		pConstWidthPointerPair->set( "constantwidth", rFloat, false, true, false, nverts[0] - 2 );
+		pConstWidthPointerPair->setDetailType( rVarying );
+		for( int i = 0; i < nverts[0] - 2; i++ ) {
+			pConstWidthPointerPair->setTokenFloat( i, curveWidth );
+		}
 #endif
-    tokenPointerArray.push_back( *pConstWidthPointerPair );
-    delete pConstWidthPointerPair;
+		tokenPointerArray.push_back( *pConstWidthPointerPair );
+		delete pConstWidthPointerPair;
 
-  }
+	}
 
-  addAdditionalSurfaceParameters( curve );
+	addAdditionalSurfaceParameters( curve );
 }
 
 liqRibNuCurveData::~liqRibNuCurveData()
 //  Description:
 //      class destructor
 {
-  // Free all arrays
-  LIQDEBUGPRINTF( "-> killing nurbs curve\n" );
-  // uncomment below if 'knot' is used again
-  // if ( knot != NULL ) { lfree( knot ); knot = NULL; }
-  // this is freed with the ribdata destructor
-  // this is not true anymore
-  if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
-  if ( NuCurveWidth != NULL ) { lfree( NuCurveWidth ); NuCurveWidth = NULL; }
-  if ( nverts != NULL ) { lfree( nverts ); nverts = NULL; }
-  if ( order != NULL ) { lfree( order ); order = NULL; }
-  if ( min != NULL ) { lfree( min ); min = NULL; }
-  if ( max != NULL ) { lfree( max ); max = NULL; }
+	// Free all arrays
+	LIQDEBUGPRINTF( "-> killing nurbs curve\n" );
+	// uncomment below if 'knot' is used again
+	// if ( knot != NULL ) { lfree( knot ); knot = NULL; }
+	// this is freed with the ribdata destructor
+	// this is not true anymore
+	if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
+	if ( NuCurveWidth != NULL ) { lfree( NuCurveWidth ); NuCurveWidth = NULL; }
+	if ( nverts != NULL ) { lfree( nverts ); nverts = NULL; }
+	if ( order != NULL ) { lfree( order ); order = NULL; }
+	if ( min != NULL ) { lfree( min ); min = NULL; }
+	if ( max != NULL ) { lfree( max ); max = NULL; }
 }
 
 void liqRibNuCurveData::write()
@@ -205,14 +204,14 @@ void liqRibNuCurveData::write()
 //      Write the RIB for this surface
 //
 {
-  LIQDEBUGPRINTF( "-> writing nurbs curve\n" );
+	LIQDEBUGPRINTF( "-> writing nurbs curve\n" );
 
-  unsigned numTokens = tokenPointerArray.size();
-  RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * numTokens );
-  RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * numTokens );
+	unsigned numTokens = tokenPointerArray.size();
+	RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * numTokens );
+	RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * numTokens );
 
-  assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
-  RiCurvesV( "cubic", ncurves, nverts, "nonperiodic", numTokens, tokenArray, pointerArray );
+	assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
+	RiCurvesV( "cubic", ncurves, nverts, "nonperiodic", numTokens, tokenArray, pointerArray );
 }
 
 bool liqRibNuCurveData::compare( const liqRibData & otherObj ) const
@@ -227,9 +226,9 @@ bool liqRibNuCurveData::compare( const liqRibData & otherObj ) const
   const liqRibNuCurveData & other = (liqRibNuCurveData&)otherObj;
 
   if ( ( nverts[0] != other.nverts[0] ) ||
-      ( order != other.order ) ||
-      !equiv( min[0], other.min[0] ) ||
-      !equiv( max[0], other.max[0] ))
+       ( order != other.order ) ||
+		   !equiv( min[0], other.min[0] ) ||
+		   !equiv( max[0], other.max[0] ))
   {
     return false;
   }
@@ -257,5 +256,5 @@ ObjectType liqRibNuCurveData::type() const
 //
 {
   LIQDEBUGPRINTF( "-> returning nurbs curve type\n" );
-  return MRT_NuCurve;
+	return MRT_NuCurve;
 }

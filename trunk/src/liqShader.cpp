@@ -1,21 +1,21 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
-** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+** "License"); you may not use this file except in compliance with the License. You may
+** obtain a copy of the License at http://www.mozilla.org/MPL/
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+** WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+** language governing rights and limitations under the License.
 **
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
+** The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+** Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+**
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -103,11 +103,11 @@ liqShader::liqShader( MObject shaderObj )
     name = "plastic";
     numTPV = 0;
     hasErrors = true;
-  } else { 
-    /* Used to handling shading rates set in the surface shader, 
-    this is a useful way for shader writers to ensure that their 
+  } else {
+    /* Used to handling shading rates set in the surface shader,
+    this is a useful way for shader writers to ensure that their
     shaders are always rendered as they were designed.  This value
-    overrides the global shading rate but gets overridden with the 
+    overrides the global shading rate but gets overridden with the
     node specific shading rate. */
 
     shader_type = shaderInfo.getType();
@@ -155,7 +155,7 @@ liqShader::liqShader( MObject shaderObj )
       }
       case SHADER_DETAIL_VARYING: {
         tokenPointerArray[numTPV].setDetailType( rVarying);
-        break; 
+        break;
       }
       case SHADER_DETAIL_UNKNOWN:
         tokenPointerArray[numTPV].setDetailType( rUniform);
@@ -175,47 +175,101 @@ liqShader::liqShader( MObject shaderObj )
             numTPV++;
           }
         }
-        break; 
+        break;
       }
       case SHADER_TYPE_SCALAR: {
         MPlug floatPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
         if ( status == MS::kSuccess ) {
           unsigned int arraySize = shaderInfo.getArgArraySize( i );
           if ( arraySize > 0 ) {
-            MObject plugObj;
-            floatPlug.getValue( plugObj );
-            MFnDoubleArrayData  fnDoubleArrayData( plugObj );
-            MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
-            // Hmmmmmmm Really a uArray ?
-            tokenPointerArray[ numTPV ].set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
-            for( unsigned int kk = 0; kk < arraySize; kk++ ) {
-              tokenPointerArray[numTPV].setTokenFloat( kk, doubleArrayData[kk] );
+
+            bool isArrayAttr = floatPlug.isArray( &status );
+
+            if ( isArrayAttr ) {
+
+              // philippe : new way to store float arrays as multi attr
+
+              MPlug plugObj;
+              tokenPointerArray[ numTPV ].set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
+
+              for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+
+                plugObj = floatPlug.elementByLogicalIndex( kk, &status );
+
+                if ( status == MS::kSuccess ) {
+                  float x;
+                  plugObj.getValue(x);
+                  tokenPointerArray[numTPV].setTokenFloat( kk, x  );
+                }
+
+              }
+
+            } else {
+
+              // philippe : old way to store float arrays as floatArray attr
+
+              MObject plugObj;
+              floatPlug.getValue( plugObj );
+              MFnDoubleArrayData  fnDoubleArrayData( plugObj );
+              MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
+              // Hmmmmmmm Really a uArray ?
+              tokenPointerArray[ numTPV ].set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
+              for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+                tokenPointerArray[numTPV].setTokenFloat( kk, doubleArrayData[kk] );
+              }
+
             }
           } else {
             float floatPlugVal;
             floatPlug.getValue( floatPlugVal );
             tokenPointerArray[ numTPV ].set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, false, 0 );
-            tokenPointerArray[numTPV].setTokenFloat( 0, floatPlugVal );
+            tokenPointerArray[ numTPV ].setTokenFloat( 0, floatPlugVal );
           }
           numTPV++;
         }
-        break; 
+        break;
       }
-      case SHADER_TYPE_COLOR:
-        status = liqShaderParseVectorAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor );
+      case SHADER_TYPE_COLOR: {
+        unsigned int arraySize = shaderInfo.getArgArraySize( i );
+        if ( arraySize > 0 ) {
+          //fprintf( stderr, "Got %i colors in array !\n", arraySize );
+          status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor, arraySize );
+          //fprintf( stderr, "Done with color array !\n", arraySize );
+        } else {
+          status = liqShaderParseVectorAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor );
+        }
         break;
-      case SHADER_TYPE_POINT:
-        status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rPoint );
+      }
+      case SHADER_TYPE_POINT: {
+        unsigned int arraySize = shaderInfo.getArgArraySize( i );
+        if ( arraySize > 0 ) {
+          status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rPoint, arraySize );
+        } else {
+          status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rPoint );
+        }
         break;
-      case SHADER_TYPE_VECTOR:
-        status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rVector );
+      }
+      case SHADER_TYPE_VECTOR: {
+        unsigned int arraySize = shaderInfo.getArgArraySize( i );
+        if ( arraySize > 0 ) {
+          status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rVector, arraySize );
+        } else {
+          status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rVector );
+        }
         break;
-      case SHADER_TYPE_NORMAL:
-        status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rNormal );
-        break; 
+      }
+      case SHADER_TYPE_NORMAL: {
+        unsigned int arraySize = shaderInfo.getArgArraySize( i );
+        if ( arraySize > 0 ) {
+          status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rNormal, arraySize );
+        } else {
+          status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rNormal );
+        }
+        break;
+      }
       case SHADER_TYPE_MATRIX: {
         printf( "WHAT IS THE MATRIX!\n" );
-        break; 
+        break;
       }
       case SHADER_TYPE_UNKNOWN :
       default:
@@ -240,6 +294,35 @@ MStatus liqShader::liqShaderParseVectorAttr ( MFnDependencyNode & shaderNode, co
     tokenPointerArray[ numTPV ].setTokenFloat( 0, x, y, z );
     numTPV++;
   }
+  return status;
+}
+
+// philippe : multi attr support
+MStatus liqShader::liqShaderParseVectorArrayAttr ( MFnDependencyNode & shaderNode, const char * argName, ParameterType pType, unsigned int arraySize )
+{
+  MStatus status = MS::kSuccess;
+  tokenPointerArray[ numTPV ].set( argName, pType, false, false, true, arraySize );
+  MPlug triplePlug;
+
+  triplePlug = shaderNode.findPlug( argName, true, &status );
+
+  for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+
+    MPlug argNameElement = triplePlug.elementByLogicalIndex( kk );
+
+    if ( status == MS::kSuccess ) {
+
+      float x, y, z;
+      argNameElement.child(0).getValue( x );
+      argNameElement.child(1).getValue( y );
+      argNameElement.child(2).getValue( z );
+      tokenPointerArray[numTPV].setTokenFloat( kk, x, y, z );
+    }
+
+  }
+
+  numTPV++;
+
   return status;
 }
 

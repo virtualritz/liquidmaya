@@ -1,3 +1,8 @@
+2005-10-24 pleprince
+	- fix: liqMaxDiffuseDepth and liqMaxSpecularDepth were defined as float, although they should be ints.
+	- fix: rib attributes are now correctly exported.
+	- fix: substitution is working again
+	- added  $OBJ and $OBJPATH to string substitution
 2005-10-14 geohar
 	- Added support for dag-node attributes Color,Opacity and Matte mode.
 	  The strategy when searching for these is dag first, then shader, then maya shader node
