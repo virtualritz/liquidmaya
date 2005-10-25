@@ -163,7 +163,11 @@ global proc int liquidCheckDefaultVals( string $argName, int $argType, int $argA
 
 global proc int liquidParseSlShader ( string $shaderNode, string $fileName )
 {
-    global string $liqShaderTypes[] =
+    global string $liqShaderTypes[];
+    global string $liqShaderArgTypes[];
+    global string $liqRenderers[];
+
+    $liqShaderTypes =
                     {
                 "unknown",
                 "surface",
@@ -171,7 +175,7 @@ global proc int liquidParseSlShader ( string $shaderNode, string $fileName )
                 "volume",
                 "light"
                     };
-    global string $liqShaderArgTypes[] =
+    $liqShaderArgTypes =
                     {
                 "unknown",
                 "float",
@@ -183,7 +187,7 @@ global proc int liquidParseSlShader ( string $shaderNode, string $fileName )
                 "matrix"
                     };
 
-    global string $liqRenderers[] =
+    $liqRenderers =
                     {
                 // Name     Extension	    Teller
                 "unknown",  "",     "",

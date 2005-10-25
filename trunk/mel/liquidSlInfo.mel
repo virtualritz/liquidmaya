@@ -54,6 +54,11 @@
 global proc
 liquidSlSetShader( string $shaderFile )
 {
+    global string $gLiquidSlShaderFile;
+
+    if ( $shaderFile == $gLiquidSlShaderFile ) return;
+    else $gLiquidSlShaderFile = $shaderFile;
+
     string $ext = `substitute "^.*\\." $shaderFile ""`;
     switch ( $ext )
     {
@@ -77,8 +82,39 @@ liquidSlSetShader( string $shaderFile )
         error( "unknown shader extension: " + $ext );
     }
 
-    // TODO: parse the .lif file here and add
-    // liquidSl* routines for querying metada
+    liquidSlParseLif( $shaderFile );
+}
+
+global proc
+liquidSlInfoReset()
+{
+  global string $gLiquidSlShaderFile;
+  global string $gLiquidSlShaderType;
+  global int    $gLiquidSlNumParams;
+  global string $gLiquidSlParamNames[];
+  global string $gLiquidSlParamTypes[];
+  global string $gLiquidSlParamDefaults[];
+  global int    $gLiquidSlParamArraySizes[];
+
+  global int    $gLiquidSlParamGuiOrder[];
+  global string $gLiquidSlParamGuiLabel[];
+  global string $gLiquidSlParamGuiDescription[];
+  global string $gLiquidSlParamGuiType[];
+  global string $gLiquidSlParamGuiRange[];
+  global string $gLiquidSlLifShaderDescription;
+  global int    $gLiquidSlLifGuiSize;
+  global int    $gLiquidSlLifExists;
+
+  clear $gLiquidSlParamGuiOrder;
+  clear $gLiquidSlParamGuiLabel;
+  clear $gLiquidSlParamGuiDescription;
+  clear $gLiquidSlParamGuiType;
+  clear $gLiquidSlParamGuiRange;
+
+  $gLiquidSlShaderFile = "";
+  $gLiquidSlLifExists = 0;
+  $gLiquidSlLifGuiSize = 0;
+  $gLiquidSlLifShaderDescription = "";
 }
 
 
@@ -112,7 +148,7 @@ liquidSlParamName( int $index )
 
     if ( $index < 0 ||
          $index >= $gLiquidSlNumParams )
-        error( "parameter index out of range" );
+        error( "liquidSlParamName( "+$index+" ): parameter index out of range" );
 
     global string $gLiquidSlParamNames[];
     return $gLiquidSlParamNames[$index];
@@ -129,7 +165,7 @@ liquidSlParamType( int $index )
 
     if ( $index < 0 ||
          $index >= $gLiquidSlNumParams )
-        error( "parameter index out of range" );
+        error( "liquidSlParamType: parameter index out of range" );
 
     global string $gLiquidSlParamTypes[];
     return $gLiquidSlParamTypes[$index];
@@ -146,7 +182,7 @@ liquidSlParamArraySize( int $index )
 
     if ( $index < 0 ||
          $index >= $gLiquidSlNumParams )
-        error( "parameter index out of range" );
+        error( "liquidSlParamArraySize: parameter index out of range" );
 
     global int $gLiquidSlParamArraySizes[];
     return $gLiquidSlParamArraySizes[$index];
@@ -163,7 +199,7 @@ liquidSlParamDefault( int $index )
 
     if ( $index < 0 ||
          $index >= $gLiquidSlNumParams )
-        error( "parameter index out of range" );
+        error( "liquidSlParamDefault: parameter index out of range" );
 
     global string $gLiquidSlParamDefaults[];
     return $gLiquidSlParamDefaults[$index];
@@ -179,7 +215,7 @@ global proc string
 liquidSlDefaultToString( string $default )
 {
     // this gets rid of surrounding quotes
-    string $val = eval( "string $foo = " + $default );
+    string $val = eval( "string $foo_S = " + $default );
     return $val;
 }
 
@@ -187,7 +223,7 @@ liquidSlDefaultToString( string $default )
 global proc string[]
 liquidSlDefaultToStringArray( string $default )
 {
-    string $val[] = eval( "string $foo[] = " + $default );
+    string $val[] = eval( "string $foo_Sarray[] = " + $default );
     return $val;
 }
 
@@ -203,7 +239,7 @@ liquidSlDefaultToFloat( string $default )
 global proc float[]
 liquidSlDefaultToFloatArray( string $default )
 {
-    float $val[] = eval( "float $foo[] = " + $default );
+    float $val[] = eval( "float $foo_Farray[] = " + $default );
     return $val;
 }
 
@@ -219,8 +255,8 @@ liquidSlDefaultToVector( string $default )
 global proc vector[]
 liquidSlDefaultToVectorArray( string $default )
 {
-    vector $val[] = eval( "vector $foo[] = " + $default );
-    return $val;
+  vector $val[] = eval("vector $foo_Varray[] =" + $default );
+  return $val;
 }
 
 

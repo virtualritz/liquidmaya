@@ -1,21 +1,21 @@
 //
 //
-// The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-// "License"); you may not use this file except in compliance with the License. You may 
-// obtain a copy of the License at http://www.mozilla.org/MPL/ 
-// 
-// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-// WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-// language governing rights and limitations under the License. 
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+// "License"); you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at http://www.mozilla.org/MPL/
 //
-// The Original Code is the Liquid Rendering Toolkit. 
-// 
-// The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-// Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-// 
-// Contributor(s): Berj Bannayan. 
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+// language governing rights and limitations under the License.
 //
-// 
+// The Original Code is the Liquid Rendering Toolkit.
+//
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+//
+// Contributor(s): Berj Bannayan.
+//
+//
 // The RenderMan (R) Interface Procedures and Protocol are:
 // Copyright 1988, 1989, Pixar
 // All Rights Reserved
@@ -36,7 +36,32 @@
 
 global string $liquidShadersLastDirectory = "";
 
-global proc string liquidGetShaderNodeType( string $node ) 
+
+global proc string[] liquidGetShaderList(string $type)
+{
+	string $out_shaderlist[];
+	if($type == "all")
+	{
+		string $types[] = {"Surface","Light","Displacement","Volume","Ribbox","Container"};
+		for($shader_type in $types)
+		{
+			if(`attributeExists ("liquid"+$shader_type+"Shaders") liquidGlobals`)
+			{
+				$out_shaderlist = stringArrayCatenate($out_shaderlist, `listConnections ("liquidGlobals.liquid"+$shader_type+"Shaders")`);
+			}
+		}
+	}
+	else
+	{
+		if(`attributeExists ("liquid"+$type+"Shaders") liquidGlobals`)
+		{
+			$out_shaderlist = `listConnections ("liquidGlobals.liquid"+$type+"Shaders")`;
+		}
+	}
+	return $out_shaderlist;
+}
+
+global proc string liquidGetShaderNodeType( string $node )
 {
   string $returnValue;
   int $typeId = `getAttr ( $node + ".typeId" ) `;
@@ -53,10 +78,16 @@ global proc string liquidGetShaderNodeType( string $node )
   if( ( $type == "liquidVolu" ) || ( $typeId == 303126793 ) ) {
     $returnValue = "Volume";
   }
-  return $returnValue;	
+  if( ( $type == "liquidRibb" ) || ( $typeId == 303126794 ) ) {
+    $returnValue = "Ribbox";
+  }
+  if( ( $type == "liquidCont" ) || ( $typeId == 303126795 ) ) {
+    $returnValue = "Container";
+  }
+  return $returnValue;
 }
 
-global proc liquidAssignShaderNode( string $node, string $shaderNode ) 
+global proc liquidAssignShaderNode( string $node, string $shaderNode )
 {
   string $type = `liquidGetShaderNodeType $shaderNode`;
 
@@ -66,7 +97,64 @@ global proc liquidAssignShaderNode( string $node, string $shaderNode )
   if ( !`attributeQuery -node $shaderNode -ex "assignedObjects"`) {
     addAttr -m -ln "assignedObjects" -at message $shaderNode;
   }
+  int $ch = `constructionHistory -q -tgl`;
+  if ( !$ch ) constructionHistory -tgl on;
   connectAttr -f ( $shaderNode + ".assignedObjects" ) ( $node + ".liquid" + $type + "ShaderNode" );
+
+  //extra for ribbox
+  if($type == "Ribbox") {
+    string $transform = liquidGetTransform( $node );
+    liquidCreateRIBBoxAttribute();
+
+	  if(`attributeExists liqRIBBox $transform`) {
+	  	string $connection = `connectionInfo -sfd ($transform+".liqRIBBox")`;
+      if ( size( $connection ) ) disconnectAttr $connection ($transform+".liqRIBBox");
+	  }
+	  connectAttr -f ( $shaderNode + ".ribbox" ) ( $transform + ".liqRIBBox" );
+  }
+  constructionHistory -tgl $ch;
+}
+
+global proc string liquidNewRibboxNode( string $nodename )
+{
+	if($nodename == "")
+	{
+		$nodename = "ribbox";
+	}
+	string $shadername = $nodename;
+	string $shaderType = "ribbox";
+	string $newNodeName = "" ;
+	$newNodeName = $shadername;
+	if ( `objExists( $newNodeName )` )
+	{
+		string $testNodeName = $newNodeName;
+		for( $i = 1;; $i++ )
+		{
+			string $cNum = $i;
+			$testNodeName = ( $newNodeName + $cNum );
+			string $testList[] = `ls $testNodeName`;
+			if ( !`objExists( $testNodeName )` ) break;
+		}
+		$newNodeName = $testNodeName;
+	}
+	createNode "oldBlindDataBase" -n $newNodeName;
+	setAttr ( $newNodeName + ".typeId" ) 303126794;
+	addAttr -ln "rmanShaderLong" -dt "string" $newNodeName;
+	addAttr -ln "rmanShader" -dt "string" $newNodeName;
+	addAttr -ln "liquidShaderManager" -at message $newNodeName;
+	setAttr ( $newNodeName + ".rmanShader" ) -type "string" $newNodeName;
+	setAttr ( $newNodeName + ".rmanShaderLong" ) -type "string" $shaderType;
+	addAttr -ln "ribbox" -dt "string" $newNodeName;
+
+	string $returnValue = $newNodeName;
+
+	if ( !`attributeExists "liquidRibboxShaders" "liquidGlobals"`)
+	{
+		addAttr -ln "liquidRibboxShaders" -at message liquidGlobals;
+	}
+    	connectAttr -f "liquidGlobals.liquidRibboxShaders" ( $newNodeName + ".liquidShaderManager" );
+	evalDeferred("liquidFluidUpdateList");
+	return $returnValue;
 }
 
 global proc string liquidNewShaderNode( string $filename )
@@ -75,22 +163,16 @@ global proc string liquidNewShaderNode( string $filename )
   int $i;
   string $returnValue = "";
 
-  string $shortName = $filename;  // this will end up as the shader file name without the path
-  string $longName; // this will end up with the shader file name with the full path name
-  string $subShaderName[];
-  tokenize $shortName "." $subShaderName;
-  $longName = $subShaderName[0];
-  // this next test has to be performed incase path names have dots in them, like prman3.9 etc.
-  for ($i = 1; $i < ( size($subShaderName) - 1 ); $i++)
-  {
-    $longName = ( $longName + "." + $subShaderName[$i] );
-  }
-  tokenize $longName "/" $subShaderName;  
-  $shortName = $subShaderName[( size($subShaderName) - 1)];
+  string $shortName = basenameEx( $filename );
+  string $longName = $filename;
+
+  // parse the shader
+  liquidSlInfoReset();
+  liquidSlSetShader( $filename );
 
   // get the correct name for the shader
   // get the correct shader type - possibilities are surface, light, displacement and volume
-  string $shaderType = `liquidGetSloInfo -type $filename`;
+  string $shaderType = liquidSlShaderType();
 
   // work out the new shader nodes name an
   string $newNodeName = "" ;
@@ -165,7 +247,17 @@ global proc string liquidDuplicateShaderNode( string $nodename )
 {
   string $shaderFileName = `getAttr ( $nodename + ".rmanShaderLong" )`;
 
-  string $currentNodeName = `liquidNewShaderNode $shaderFileName`;
+  string $nodeType = `liquidGetShaderNodeType $nodename`;
+  string $currentNodeName;
+  if($nodeType == "Ribbox")
+  {
+  	$currentNodeName = `liquidNewRibboxNode $shaderFileName`;
+    setAttr -type "string" ($currentNodeName+".ribbox") (`getAttr ($nodename+".ribbox")`);
+  }
+  else
+  {
+  	$currentNodeName = `liquidNewShaderNode $shaderFileName`;
+  }
 
   string $newNodeName = ( $nodename + "Duplicate" );
   if ( `objExists( $newNodeName )` ) {
@@ -181,8 +273,7 @@ global proc string liquidDuplicateShaderNode( string $nodename )
 
   $currentNodeName = `rename $currentNodeName $newNodeName`;
 
-  string $nodeType = `liquidGetShaderNodeType $currentNodeName`;
-  if ( $nodeType == "Surface" ) { 
+  if ( $nodeType == "Surface" ) {
     if (`attributeQuery -n $currentNodeName -ex ( "color" ) `) {
       float $redValue = `getAttr ( $nodename + ".red" )`;
       float $blueValue = `getAttr ( $nodename + ".blue" )`;
@@ -192,7 +283,7 @@ global proc string liquidDuplicateShaderNode( string $nodename )
     if (`attributeQuery -n $currentNodeName -ex ( "opacity" ) `) {
       float $redValue = `getAttr ( $nodename + ".redO" )`;
       float $blueValue = `getAttr ( $nodename + ".blueO" )`;
-      float $greenValue = `getAttr ( $nodename + ".greenO" )`;      
+      float $greenValue = `getAttr ( $nodename + ".greenO" )`;
       setAttr ( $currentNodeName + ".opacity" ) -type float3 $redValue $greenValue $blueValue;
     }
   }
@@ -223,44 +314,8 @@ global proc string liquidDuplicateShaderNode( string $nodename )
     }
   }
 
-  int $numOfArgs = `liquidGetSloInfo -numParam $shaderFileName`;
-  for ( $i = 0; $i < $numOfArgs ; $i++ )
-  {
-    string $argName     = `liquidGetSloInfo -argName $i $shaderFileName`;
-    string $argType     = `liquidGetSloInfo -argType $i $shaderFileName`;
-    string $argDetail   = `liquidGetSloInfo -argDetail $i $shaderFileName`;
-    int    $argArrayLen = `liquidGetSloInfo -argArraySize $i $shaderFileName`;
-    if ( `attributeQuery -n $currentNodeName -ex $argName` )
-    {
-      if ( $argType == "float" ) {
-        if ( $argArrayLen > 0 )
-        {
-          float $argDefault[] = `getAttr ( $nodename + "." + $argName )`;
-          int $size = size($argDefault);
-          string $fDefault = "";
-          int $k;
-          for ( $k = 0; $k < $size; $k++ ) {
-            $fDefault = $fDefault + $argDefault[$k] + " ";
-          }
-          string $nodeName = $currentNodeName + "." + $argName;
-          eval setAttr $nodeName -type doubleArray $size $fDefault;
-        } else { 
-          float $defaultVal = `getAttr ( $nodename + "." + $argName )`;
-          setAttr ( $currentNodeName + "." + $argName ) $defaultVal;
-        }
-      }
-      if ( $argType == "string" ) {
-        string $argDefault = `getAttr ( $nodename + "." + $argName )`;
-        setAttr ( $currentNodeName + "." + $argName ) -type "string" $argDefault;
-      }
-      if ( $argType == "color" || $argType == "point" || $argType == "vector" || $argType == "normal" ) {
-        float $argDefault[] = `getAttr ( $nodename + "." + $argName )`;
-        setAttr ( $currentNodeName + "." + $argName ) -type double3 $argDefault[0] $argDefault[1] $argDefault[2];
-      }
-    }
-  }
+  liquidAttachShaderParams( $currentNodeName, $shaderFileName );
 
   return $currentNodeName;
 }
 
-//print "Initialized Liquid Shaders Interface...\n";

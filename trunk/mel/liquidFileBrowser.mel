@@ -1,21 +1,21 @@
 //
 //
-// The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-// "License"); you may not use this file except in compliance with the License. You may 
-// obtain a copy of the License at http://www.mozilla.org/MPL/ 
-// 
-// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-// WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-// language governing rights and limitations under the License. 
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+// "License"); you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at http://www.mozilla.org/MPL/
 //
-// The Original Code is the Liquid Rendering Toolkit. 
-// 
-// The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-// Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-// 
-// Contributor(s): Berj Bannayan. 
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+// language governing rights and limitations under the License.
 //
-// 
+// The Original Code is the Liquid Rendering Toolkit.
+//
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+//
+// Contributor(s): Berj Bannayan.
+//
+//
 // The RenderMan (R) Interface Procedures and Protocol are:
 // Copyright 1988, 1989, Pixar
 // All Rights Reserved
@@ -24,12 +24,12 @@
 // RenderMan (R) is a registered trademark of Pixar
 //
 
-// liquid's file browser interface  
+// liquid's file browser interface
 
 global string $liquidCFD; // Liquid Current File Directory
 global string $liquidFileMatch; // Current search criteria in fluid
 
-global proc string[] liquidGetDirList( string $dir ) 
+global proc string[] liquidGetDirList( string $dir )
 {
   string $returnValue[];
   string $dirList[] = `getFileList -fld ( $dir + "/" )`;
@@ -44,7 +44,7 @@ global proc string[] liquidGetDirList( string $dir )
   return $returnValue;
 }
 
-global proc string[] liquidGetFileList( string $dir, string $fileMatch ) 
+global proc string[] liquidGetFileList( string $dir, string $fileMatch )
 {
   string $returnValue[];
 
@@ -101,7 +101,7 @@ global proc liquidUpdateFileList( string $widget, string $liquidFileDescText )
       textScrollList -e -append $currentFile $widget;
     }
   }
-}  
+}
 
 global proc liquidFileBrowserDIRDCC( string $fileWidget, string $dirWidget, string $fileMatch, string $curdirWidget )
 {
@@ -165,37 +165,37 @@ global proc string[] liquidFileBrowserIn( string $fileMatch, string $doubleClick
       warning "The Fluid Default Shader Path set in the Globals does not exist!";
     }
   }
-  if ( $liquidFileMatch == "" ) $liquidFileMatch = $fileMatch; 
-  
+  if ( $liquidFileMatch == "" ) $liquidFileMatch = $fileMatch;
+
   string $liquidFileMainWin;
   string $returnValue[];
   $liquidFileForm = `formLayout -w 400 -nd 100`;
-    $liquidFileDescText = `textFieldGrp -w 400 -tx $liquidFileMatch -l "File Spec"`;
-    $liquidCurDirText = `textFieldGrp -w 400 -tx $liquidCFD -l "Current Dir"`;
+    $liquidFileDescText = `textFieldGrp -w 400 -tx $liquidFileMatch -l "File Spec" -adj 2 liquidFileBrowserInFileSpecWidget`;
+    $liquidCurDirText = `textFieldGrp -w 400 -tx $liquidCFD -l "Current Dir" -adj 2 liquidFileBrowserInDirTextWidget`;
     $liquidFileListPane = `paneLayout -configuration "vertical2"`;
-      $liquidDirList = `textScrollList -w 200`;
-      $liquidFileList = `textScrollList -allowMultiSelection true -w 200`;
+      $liquidDirList = `textScrollList -w 200 liquidFileBrowserInDirListWidget`;
+      $liquidFileList = `textScrollList -allowMultiSelection true -w 200 liquidFileBrowserInFileListWidget`;
       setParent ..;
     setParent ..;
 
   popupMenu -p $liquidFileListPane;
     menuItem -label "Load" -command ( "liquidFluidLoadCMD " + $liquidFileList ) liquidFileLoad;
 
-  formLayout -e 
+  formLayout -e
     -attachForm $liquidCurDirText "top" 0
     -attachForm $liquidCurDirText "left" 0
     -attachForm $liquidCurDirText "right" 0
-        
+
     -attachControl $liquidFileDescText "top" 0 $liquidCurDirText
     -attachForm $liquidFileDescText "left" 0
     -attachForm $liquidFileDescText "right" 0
-                
+
     -attachControl $liquidFileListPane "top" 0 $liquidFileDescText
     -attachForm $liquidFileListPane "bottom" 0
     -attachForm $liquidFileListPane "left" 0
     -attachForm $liquidFileListPane "right" 0
     $liquidFileForm;
-    
+
     setParent ..;
   string $command = ( "liquidFileBrowserDIRDCC " + $liquidFileList + " " + $liquidDirList + " " + $liquidFileDescText + " " + $liquidCurDirText  );
   textScrollList -e -dcc $command $liquidDirList;
@@ -204,7 +204,7 @@ global proc string[] liquidFileBrowserIn( string $fileMatch, string $doubleClick
     textScrollList -e -dcc $command $liquidFileList;
   }
   string $command = ( "liquidFileSpecCC " + $liquidFileList + " " + $liquidDirList + " " + $liquidFileDescText );
-  textFieldGrp -e -cc $command $liquidFileDescText;    
+  textFieldGrp -e -cc $command $liquidFileDescText;
   string $command = ( "liquidCurDirCC " + $liquidFileList + " " + $liquidDirList + " " + $liquidFileDescText + " " + $liquidCurDirText );
   textFieldGrp -e -cc $command $liquidCurDirText;
   liquidUpdateFileList $liquidFileList $liquidFileDescText;

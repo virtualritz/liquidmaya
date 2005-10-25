@@ -53,6 +53,7 @@ global proc int liquidCreateUserHomeDir() {
 	}
 	return $ret;
 }
+
 global proc formAttachButtons( string $form, string $buttons[], string $valign, int $dist ) {
 
 	int $i, $num = size( $buttons );
@@ -86,3 +87,28 @@ global proc formAttachButtons( string $form, string $buttons[], string $valign, 
 		}
 	}
 }
+
+global proc string liquidGetTransform( string $shape )
+{
+  if ( !objExists( $shape ) ) error ("liquidGetTransform : \""+$shape+"\" does not exists !");
+  if ( nodeType( $shape ) == "transform" ) return $shape;
+
+  string $parents[] = `listRelatives -parent -type "transform" $shape`;
+
+  if ( !size($parents) ) error ("liquidGetTransform : could not find a transform for \""+$shape+"\"");
+
+  return $parents[0];
+}
+
+global proc string liquidGetModifiersState()
+{
+	int $mods = `getModifiers`;
+	string $result = "";
+	if (($mods / 1) % 2) $result += ("Shift");
+	if (($mods / 2) % 2) $result += ("CapsLock");
+	if (($mods / 4) % 2) $result += ("Ctrl");
+	if (($mods / 8) % 2) $result += ("Alt");
+
+	return $result;
+}
+
