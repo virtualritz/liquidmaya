@@ -103,7 +103,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   }
 
   // check to see if the light is using raytraced shadows
-#ifdef DELIGHT
+#if defined DELIGHT || PRMAN
   lightDepNode.findPlug( MString( "useRayTraceShadows" ) ).getValue( rayTraced );
   if( rayTraced ) {
     usingShadow = true;
@@ -118,7 +118,6 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   MPlug rmanLightPlug = lightDepNode.findPlug( MString( "liquidLightShaderNode" ), &status );
 #if 1
   if ( status == MS::kSuccess && rmanLightPlug.isConnected() ) {
-
     MString liquidShaderNodeName;
     MPlugArray rmanLightPlugs;
     rmanLightPlug.connectedTo( rmanLightPlugs, true, true );
@@ -210,7 +209,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                 stringPlugVal = parseString( parsingString );
                 parsingString = stringPlugVal;
                 parsingString.toLowerCase();
-/*                
+/*
                 if ( parsingString.substring(0, 9) == "autoshadow" ) {
                   MString suffix = "";
                   if ( stringPlugVal.length() > 10 )
@@ -241,7 +240,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                   }
 #endif
                   */
-                  
+
                 tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
                 tokenPointerPair.setTokenString( stringPlugVal.asChar(), stringPlugVal.length() );
                 tokenPointerArray.push_back( tokenPointerPair );
@@ -252,30 +251,49 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
             MPlug floatPlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
             if ( status == MS::kSuccess ) {
               if ( shaderInfo.getArgArraySize( i ) > 0 ) {
-                if ( liqglo_expandShaderArrays ) {
-                  MObject plugObj;
-                  floatPlug.getValue( plugObj );
-                  MFnDoubleArrayData  fnDoubleArrayData( plugObj );
-                  MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
-                  int k;
-                  char tmpStr[256];
-                  for ( k = 0; k < shaderInfo.getArgArraySize( i ); k++ ) {
-                    sprintf( tmpStr , "%s%d", shaderInfo.getArgName( i ).asChar(), ( k + 1 ) );
-                    tokenPointerPair.set( tmpStr, rFloat, false, false, false, 0 );
-                    tokenPointerPair.setTokenFloat( 0, doubleArrayData[k] );
+                // philippe : check we have a multi attr, not a floatArray attr
+                bool isArrayAttr = floatPlug.isArray( &status );
+                if ( isArrayAttr ) {
+                  // philippe : new way to store float arrays as multi attr
+                  MPlug plugObj;
+                  unsigned int arraySize = shaderInfo.getArgArraySize( i );
+                  tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
+                  for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+                    plugObj = floatPlug.elementByLogicalIndex( kk, &status );
+                    if ( status == MS::kSuccess ) {
+                      float x;
+                      plugObj.getValue(x);
+                      tokenPointerPair.setTokenFloat( kk, x  );
+                    }
+                  }
+                  tokenPointerArray.push_back( tokenPointerPair );
+                } else {
+                  // philippe : keep the old stuff for compatibility's sake
+                  if ( liqglo_expandShaderArrays ) {
+                    MObject plugObj;
+                    floatPlug.getValue( plugObj );
+                    MFnDoubleArrayData  fnDoubleArrayData( plugObj );
+                    MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
+                    int k;
+                    char tmpStr[256];
+                    for ( k = 0; k < shaderInfo.getArgArraySize( i ); k++ ) {
+                      sprintf( tmpStr , "%s%d", shaderInfo.getArgName( i ).asChar(), ( k + 1 ) );
+                      tokenPointerPair.set( tmpStr, rFloat, false, false, false, 0 );
+                      tokenPointerPair.setTokenFloat( 0, doubleArrayData[k] );
+                      tokenPointerArray.push_back( tokenPointerPair );
+                    }
+                  } else {
+                    MObject plugObj;
+                    floatPlug.getValue( plugObj );
+                    MFnDoubleArrayData  fnDoubleArrayData( plugObj );
+                    MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
+                    unsigned int arraySize = shaderInfo.getArgArraySize( i );
+                    // Hmmmmmm really a uArray here ?
+                    tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
+                    for( int k = 0; k < arraySize; k++ )
+                      tokenPointerPair.setTokenFloat( k, doubleArrayData[k] );
                     tokenPointerArray.push_back( tokenPointerPair );
                   }
-                } else {
-                  MObject plugObj;
-                  floatPlug.getValue( plugObj );
-                  MFnDoubleArrayData  fnDoubleArrayData( plugObj );
-                  MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
-                  unsigned int arraySize = shaderInfo.getArgArraySize( i );
-                  // Hmmmmmm really a uArray here ?
-                  tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
-                  for( int k = 0; k < arraySize; k++ )
-                    tokenPointerPair.setTokenFloat( k, doubleArrayData[k] );
-                  tokenPointerArray.push_back( tokenPointerPair );
                 }
               } else {
                 float floatPlugVal;
@@ -288,50 +306,128 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
             break; }
           case SHADER_TYPE_COLOR: {
             MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
-            if ( status == MS::kSuccess ) {
-              double x, y, z;
-              triplePlug.child(0).getValue( x );
-              triplePlug.child(1).getValue( y );
-              triplePlug.child(2).getValue( z );
-              tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rColor, false, false, false, 0 );
-              tokenPointerPair.setTokenFloat( 0, x, y, z );
-              tokenPointerArray.push_back( tokenPointerPair );
+            unsigned int arraySize = shaderInfo.getArgArraySize( i );
+            if ( arraySize > 0 ) {
+              // philippe : array support
+              if ( status == MS::kSuccess ) {
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rColor, false, false, true, arraySize );
+                for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+                  MPlug argNameElement = triplePlug.elementByLogicalIndex( kk );
+                  if ( status == MS::kSuccess ) {
+                    float x, y, z;
+                    argNameElement.child(0).getValue( x );
+                    argNameElement.child(1).getValue( y );
+                    argNameElement.child(2).getValue( z );
+                    tokenPointerPair.setTokenFloat( kk, x, y, z );
+                  }
+                }
+                tokenPointerArray.push_back( tokenPointerPair );
+              }
+            } else {
+              if ( status == MS::kSuccess ) {
+                double x, y, z;
+                triplePlug.child(0).getValue( x );
+                triplePlug.child(1).getValue( y );
+                triplePlug.child(2).getValue( z );
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rColor, false, false, false, 0 );
+                tokenPointerPair.setTokenFloat( 0, x, y, z );
+                tokenPointerArray.push_back( tokenPointerPair );
+              }
             }
             break; }
           case SHADER_TYPE_POINT: {
             MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
-            if ( status == MS::kSuccess ) {
-              double x, y, z;
-              triplePlug.child(0).getValue( x );
-              triplePlug.child(1).getValue( y );
-              triplePlug.child(2).getValue( z );
-              tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rPoint, false, false, false, 0 );
-              tokenPointerPair.setTokenFloat( 0, x, y, z );
-              tokenPointerArray.push_back( tokenPointerPair );
+            unsigned int arraySize = shaderInfo.getArgArraySize( i );
+            if ( arraySize > 0 ) {
+              // philippe : array support
+              if ( status == MS::kSuccess ) {
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rPoint, false, false, true, arraySize );
+                for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+                  MPlug argNameElement = triplePlug.elementByLogicalIndex( kk );
+                  if ( status == MS::kSuccess ) {
+                    float x, y, z;
+                    argNameElement.child(0).getValue( x );
+                    argNameElement.child(1).getValue( y );
+                    argNameElement.child(2).getValue( z );
+                    tokenPointerPair.setTokenFloat( kk, x, y, z );
+                  }
+                }
+                tokenPointerArray.push_back( tokenPointerPair );
+              }
+            } else {
+              if ( status == MS::kSuccess ) {
+                double x, y, z;
+                triplePlug.child(0).getValue( x );
+                triplePlug.child(1).getValue( y );
+                triplePlug.child(2).getValue( z );
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rPoint, false, false, false, 0 );
+                tokenPointerPair.setTokenFloat( 0, x, y, z );
+                tokenPointerArray.push_back( tokenPointerPair );
+              }
             }
             break; }
           case SHADER_TYPE_VECTOR: {
             MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
-            if ( status == MS::kSuccess ) {
-              double x, y, z;
-              triplePlug.child(0).getValue( x );
-              triplePlug.child(1).getValue( y );
-              triplePlug.child(2).getValue( z );
-              tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rVector, false, false, false, 0 );
-              tokenPointerPair.setTokenFloat( 0, x, y, z );
-              tokenPointerArray.push_back( tokenPointerPair );
+            unsigned int arraySize = shaderInfo.getArgArraySize( i );
+            if ( arraySize > 0 ) {
+              // philippe : array support
+              if ( status == MS::kSuccess ) {
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rVector, false, false, true, arraySize );
+                for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+                  MPlug argNameElement = triplePlug.elementByLogicalIndex( kk );
+                  if ( status == MS::kSuccess ) {
+                    float x, y, z;
+                    argNameElement.child(0).getValue( x );
+                    argNameElement.child(1).getValue( y );
+                    argNameElement.child(2).getValue( z );
+                    tokenPointerPair.setTokenFloat( kk, x, y, z );
+                  }
+                }
+                tokenPointerArray.push_back( tokenPointerPair );
+              }
+            } else {
+              MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
+              if ( status == MS::kSuccess ) {
+                double x, y, z;
+                triplePlug.child(0).getValue( x );
+                triplePlug.child(1).getValue( y );
+                triplePlug.child(2).getValue( z );
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rVector, false, false, false, 0 );
+                tokenPointerPair.setTokenFloat( 0, x, y, z );
+                tokenPointerArray.push_back( tokenPointerPair );
+              }
             }
             break; }
           case SHADER_TYPE_NORMAL: {
             MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
-            if ( status == MS::kSuccess ) {
-              double x, y, z;
-              triplePlug.child(0).getValue( x );
-              triplePlug.child(1).getValue( y );
-              triplePlug.child(2).getValue( z );
-              tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rNormal, false, false, false, 0 );
-              tokenPointerPair.setTokenFloat( 0, x, y, z );
-              tokenPointerArray.push_back( tokenPointerPair );
+            unsigned int arraySize = shaderInfo.getArgArraySize( i );
+            if ( arraySize > 0 ) {
+              // philippe : array support
+              if ( status == MS::kSuccess ) {
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rNormal, false, false, true, arraySize );
+                for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+                  MPlug argNameElement = triplePlug.elementByLogicalIndex( kk );
+                  if ( status == MS::kSuccess ) {
+                    float x, y, z;
+                    argNameElement.child(0).getValue( x );
+                    argNameElement.child(1).getValue( y );
+                    argNameElement.child(2).getValue( z );
+                    tokenPointerPair.setTokenFloat( kk, x, y, z );
+                  }
+                }
+                tokenPointerArray.push_back( tokenPointerPair );
+              }
+            } else {
+              MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
+              if ( status == MS::kSuccess ) {
+                double x, y, z;
+                triplePlug.child(0).getValue( x );
+                triplePlug.child(1).getValue( y );
+                triplePlug.child(2).getValue( z );
+                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rNormal, false, false, false, 0 );
+                tokenPointerPair.setTokenFloat( 0, x, y, z );
+                tokenPointerArray.push_back( tokenPointerPair );
+              }
             }
             break; }
           case SHADER_TYPE_MATRIX: {
@@ -539,7 +635,7 @@ void liqRibLightData::write()
           RtString sfny = const_cast<char*>( ny.asChar() );
           RtString sfpz = const_cast<char*>( pz.asChar() );
           RtString sfnz = const_cast<char*>( nz.asChar() );
-          
+
           handle = RiLightSource( "liquidpoint",
                                   "intensity",            &intensity,
                                   "lightcolor",           color,
@@ -594,6 +690,7 @@ void liqRibLightData::write()
                                   "float __nonspecular",  &nonSpecular,
                                   RI_NULL );
           } else {
+          RtString shadowname = const_cast< char* >( shadowName.asChar() );
           handle = RiLightSource( "liquidspot",
                                   "intensity",            &intensity,
                                   "lightcolor",           color,
@@ -606,6 +703,9 @@ void liqRibLightData::write()
                                   "float rightbarndoor",  &rightBarnDoor,
                                   "float topbarndoor",    &topBarnDoor,
                                   "float bottombarndoor", &bottomBarnDoor,
+                                  "string shadowname",    &shadowname,
+                                  "float shadowbias",     &shadowBias,
+                                  "float shadowsamples",  &shadowSamples,
                                   "float __nondiffuse",   &nonDiffuse,
                                   "float __nonspecular",  &nonSpecular,
                                   RI_NULL );

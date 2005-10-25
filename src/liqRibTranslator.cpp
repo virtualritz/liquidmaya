@@ -36,24 +36,24 @@
 #include <sys/types.h>
 
 #ifndef _WIN32
-#  include <sys/time.h>
-#  include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/stat.h>
 #endif
 
 #ifndef _WIN32
 // Dynamic Object Headers
-#  include <dlfcn.h>
+#include <dlfcn.h>
 #endif
 
 #ifdef _WIN32
-#  pragma warning(disable:4786)
+#pragma warning(disable:4786)
 #endif
 
 // win32 mkdir only has name arg
 #ifdef _WIN32
-#  define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_))
+#define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_))
 #else
-#  define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_, _MODE_))
+#define MKDIR(_DIR_, _MODE_) (mkdir(_DIR_, _MODE_))
 #endif
 
 // Renderman Headers
@@ -62,13 +62,13 @@ extern "C" {
 }
 
 #ifdef _WIN32
-#  include <process.h>
-#  include <io.h>
-#  include <direct.h>
+#include <process.h>
+#include <io.h>
+#include <direct.h>
 #else
-#  include <unistd.h>
-#  include <stdlib.h>
-#  include <alloca.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <alloca.h>
 #endif
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
@@ -99,7 +99,7 @@ extern "C" {
 #include <maya/MSyntax.h>
 #include <maya/MDistance.h>
 
-// Liquid headers 
+// Liquid headers
 #include <liquid.h>
 #include <liqRibTranslator.h>
 #include <liqGlobalHelpers.h>
@@ -139,7 +139,7 @@ MString      liqglo_projectDir;
 MString      liqglo_ribDir;
 MString      liqglo_textureDir;
 MString      liqglo_shaderPath;             // Shader searchpath
-MString      liqglo_texturePath;            // Texture searchpath
+MString      liqglo_texturePath;             // Texture searchpath
 MString      liqglo_archivePath;
 MString      liqglo_proceduralPath;
 
@@ -153,6 +153,29 @@ bool         liqglo_useMtorSubdiv;  // use mtor subdiv attributes
 HiderType    liqglo_hider;
 RtInt        liqglo_jitter;
 MString      liqglo_makeTexture; // MakeTexture utilite name
+
+// Kept global for raytracing
+bool         rt_useRayTracing;
+RtFloat      rt_traceBreadthFactor;
+RtFloat      rt_traceDepthFactor;
+liquidlong   rt_traceMaxDepth;
+RtFloat      rt_traceSpecularThreshold;
+bool         rt_traceRayContinuation;
+liquidlong   rt_traceCacheMemory;
+bool         rt_traceDisplacements;
+bool         rt_traceSampleMotion;
+RtFloat      rt_traceBias;
+liquidlong   rt_traceMaxDiffuseDepth;
+liquidlong   rt_traceMaxSpecularDepth;
+
+#if 0
+#ifdef _WIN32
+// Hmmmmmmmm what's this ?
+int RiNColorSamples;
+#endif
+// these are little storage variables to keep track of the current graphics state and will eventually be wrapped in
+// a specific class
+#endif
 
 
 void liqRibTranslator::freeShaders( void )
@@ -302,7 +325,7 @@ liqShader & liqRibTranslator::liqGetShader( MObject shaderObj )
   LIQDEBUGPRINTF( rmShaderStr.asChar() );
   LIQDEBUGPRINTF( "\n" );
 
-    
+
   std::vector<liqShader>::iterator iter = m_shaders.begin();
   while ( iter != m_shaders.end() ){
     std::string shaderNodeName = shaderNode.name().asChar();
@@ -391,13 +414,13 @@ liqRibTranslator::liqRibTranslator()
       if( m_systemTempDirectory.length() == 0 ) {
 #ifndef _WIN32
         m_systemTempDirectory = "/tmp";
-#else          
+#else
         m_systemTempDirectory = "%SystemRoot%/Temp";
 #endif
       }
     }
   }
-  
+
   m_rFilterX = 1;
   m_rFilterY = 1;
   m_rFilter = pfBoxFilter;
@@ -428,15 +451,16 @@ liqRibTranslator::liqRibTranslator()
   liqglo_doCompression = false;
   doDof = false;
   launchRender = false;
-  liqglo_doMotion = false;    // matrix motion blocks
-  liqglo_doDef = false;       // geometry motion blocks
-  doCameraMotion = false;     // camera motion blocks
-  doExtensionPadding = false; // pad the frame number in the rib file names
-  liqglo_doShadows = true;    // render shadows
+  liqglo_doMotion = false;          // matrix motion blocks
+  liqglo_doDef = false;             // geometry motion blocks
+  doCameraMotion = false;           // camera motion blocks
+  liqglo_rotateCamera = false;      // rotate the camera 90 degrees around Z axis
+  doExtensionPadding = false;       // pad the frame number in the rib file names
+  liqglo_doShadows = true;          // render shadows
   m_justRib = false;
-  cleanShadows = 0;   // render shadows
-  cleanTextures = 0;   // render shadows
-  frameFirst = 1;   // range
+  cleanShadows = 0;                 // render shadows
+  cleanTextures = 0;                // render shadows
+  frameFirst = 1;                   // range
   frameLast = 1;
   frameBy = 1;
   pixelSamples = 1;
@@ -479,7 +503,7 @@ liqRibTranslator::liqRibTranslator()
   fullShadowRib = false;
   baseShadowName = "";
   quantValue = 8;
-  liqglo_projectDir = m_systemTempDirectory;  
+  liqglo_projectDir = m_systemTempDirectory;
   m_pixDir = "rmanpix/";
   m_tmpDir = "rmantmp/";
   m_ribDirG.clear();
@@ -501,6 +525,19 @@ liqRibTranslator::liqRibTranslator()
   m_preFrameCommand.clear();
   m_outputComments = false;
   m_shaderDebug = false;
+  // raytracing
+  rt_useRayTracing = false;
+  rt_traceBreadthFactor = 1.0;
+  rt_traceDepthFactor = 1.0;
+  rt_traceMaxDepth = 10;
+  rt_traceSpecularThreshold = 10.0;
+  rt_traceRayContinuation = true;
+  rt_traceCacheMemory = 30720;
+  rt_traceDisplacements = false;
+  rt_traceSampleMotion = false;
+  rt_traceBias = 0.05;
+  rt_traceMaxDiffuseDepth = 2;
+  rt_traceMaxSpecularDepth = 2;
 #ifdef AIR
   m_renderCommand = "air";
 #elif defined( AQSIS )
@@ -555,11 +592,11 @@ liqRibTranslator::liqRibTranslator()
 
   liqglo_proceduralPath = "&:@:.:~";
 
-  
+
 
   liqglo_ribDir = "rib";
   liqglo_textureDir = "rmantex";
-  
+
 
   MString tmphome( getenv( "LIQUIDHOME" ) );
 
@@ -578,10 +615,10 @@ liqRibTranslator::liqRibTranslator()
  */
 liqRibTranslator::~liqRibTranslator()
 {
-// this is crashing under Win32
-//#ifdef _WIN32
-// lfree( m_systemTempDirectory );
-//#endif
+  // this is crashing under Win32
+  //#ifdef _WIN32
+  // lfree( m_systemTempDirectory );
+  //#endif
   LIQDEBUGPRINTF( "-> dumping unfreed memory.\n" );
   if ( debugMode ) ldumpUnfreed();
 }
@@ -633,6 +670,7 @@ MSyntax liqRibTranslator::syntax()
   syntax.addFlag("m",   "mbSamples", MSyntax::kLong);
   syntax.addFlag("dbs", "defBlock");
   syntax.addFlag("cam", "camera",  MSyntax::kString);
+  syntax.addFlag("rcam", "rotateCamera");
   syntax.addFlag("s",   "samples", MSyntax::kLong);
   syntax.addFlag("rnm", "ribName", MSyntax::kString);
   syntax.addFlag("pd",  "projectDir", MSyntax::kString);
@@ -665,7 +703,7 @@ MSyntax liqRibTranslator::syntax()
   return syntax;
 }
 
-/** 
+/**
  * Read the values from the command line and set the internal values.
  */
 MStatus liqRibTranslator::liquidDoArgs( MArgList args )
@@ -710,7 +748,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
 
   // check to see if the correct project directory was found
   if ( !fileExists( liqglo_projectDir ) )
-    liqglo_projectDir = m_systemTempDirectory;  
+    liqglo_projectDir = m_systemTempDirectory;
   LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
   if ( !fileExists( liqglo_projectDir ) ) {
     MGlobal::displayWarning ( "Liquid -> Cannot find Project Directory, " + liqglo_projectDir + ", defaulting to system temp directory!\n" );
@@ -818,6 +856,9 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       LIQCHECKSTATUS(status, "error in -camera parameter");   i++;
       renderCamera = args.asString( i, &status );
       LIQCHECKSTATUS(status, "error in -camera parameter");
+    } else if ((arg == "-rcam") || (arg == "-rotateCamera")) {
+      LIQCHECKSTATUS(status, "error in -rotateCamera parameter");
+      liqglo_rotateCamera = true;
     } else if ((arg == "-s") || (arg == "-samples")) {
       LIQCHECKSTATUS(status, "error in -samples parameter");  i++;
       argValue = args.asString( i, &status );
@@ -1144,7 +1185,7 @@ void liqRibTranslator::liquidReadGlobals()
         if ( tokens[i] == "Raytrace") { liquidRenderer.supports_RAYTRACE = true; continue; }
       }
     }
-		gPlug = rGlobalNode.findPlug( "bits_required", &gStatus );
+    gPlug = rGlobalNode.findPlug( "bits_required", &gStatus );
     if ( gStatus == MS::kSuccess ) {
       gPlug.getValue( varVal );
       MStringArray tokens;
@@ -1152,7 +1193,7 @@ void liqRibTranslator::liquidReadGlobals()
       liquidRenderer.requires__PREF = false;
       liquidRenderer.requires_SWAPPED_UVS = false;
       liquidRenderer.requires_MAKESHADOW = false;
-			
+
       for( i = 0; i<tokens.length() ; i++ ) {
         if ( tokens[i] == "__Pref") { liquidRenderer.requires__PREF = true; continue; }
         if ( tokens[i] == "Swap_UV") { liquidRenderer.requires_SWAPPED_UVS = true; continue; }
@@ -1226,6 +1267,9 @@ void liqRibTranslator::liquidReadGlobals()
       renderCamera = parseString( varVal );
     }
   }
+  gPlug = rGlobalNode.findPlug( "rotateCamera", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_rotateCamera );
+  gStatus.clear();
   {
     MString varVal;
     gPlug = rGlobalNode.findPlug( "ribName", &gStatus );
@@ -1370,6 +1414,45 @@ void liqRibTranslator::liquidReadGlobals()
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_cropY2 );
     gStatus.clear();
   }
+
+  // RAYTRACING OPTIONS:BEGIN
+  gPlug = rGlobalNode.findPlug( "useRayTracing", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_useRayTracing );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceMaxDepth", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceMaxDepth );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceSpecularThreshold", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceSpecularThreshold );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceBreadthFactor", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceBreadthFactor );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceDepthFactor", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceDepthFactor );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceRayContinuation", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceRayContinuation );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceCacheMemory", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceCacheMemory );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceDisplacements", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceDisplacements );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceSampleMotion", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceSampleMotion );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceBias", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceBias );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceMaxDiffuseDepth", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceMaxDiffuseDepth );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "traceMaxSpecularDepth", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceMaxSpecularDepth );
+  gStatus.clear();
+  // RAYTRACING OPTIONS:END
 
   gPlug = rGlobalNode.findPlug( "useMtorSubdiv", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_useMtorSubdiv );
@@ -1519,7 +1602,7 @@ void liqRibTranslator::liquidReadGlobals()
   if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_doDef );
   gStatus.clear();
 
-  gPlug = rGlobalNode.findPlug( "shutterConfig", &gStatus );  
+  gPlug = rGlobalNode.findPlug( "shutterConfig", &gStatus );
   if ( gStatus == MS::kSuccess ) {
 
     int var;
@@ -1659,7 +1742,7 @@ bool liqRibTranslator::verifyOutputDirectories()
 
   #define DIR_MISSING_WARNING(type, path) \
     MGlobal::displayWarning( "Liquid -> " + MString( type ) + " Directory, " + path + ", does not exist. Defaulting to system temp directory!\n" )
-    
+
   bool problem = false;
   if ( ( access( liqglo_ribDir.asChar(), 0 )) == -1 ) {
     if ( createOutputDirectories ) {
@@ -2619,8 +2702,8 @@ void liqRibTranslator::portFieldOfView( int port_width, int port_height,
   computeViewingFrustum(aspect,left,right,bottom,top,fnCamera);
 
   double neardb = fnCamera.nearClippingPlane();
-  horizontal = atan( ( ( right - left ) * 0.5 ) / neardb ) * 2.0;
-  vertical = atan( ( ( top - bottom ) * 0.5 ) / neardb ) * 2.0;
+  horizontal    = atan( ( ( right - left ) * 0.5 ) / neardb ) * 2.0;
+  vertical      = atan( ( ( top - bottom ) * 0.5 ) / neardb ) * 2.0;
 }
 
 /**
@@ -3207,12 +3290,12 @@ MStatus liqRibTranslator::ribPrologue()
 
     RtString list = const_cast< char* > ( liqglo_shaderPath.asChar() );
     RiOption( "searchpath", "shader", &list, RI_NULL );
-    
+
     MString texturePath = liqglo_texturePath + ":" + liquidSanitizePath( liqglo_textureDir );
     list = const_cast< char* > ( texturePath.asChar() );
     RiOption( "searchpath", "texture", &list, RI_NULL );
 
-    
+
     MString archivePath = liqglo_archivePath + ":" + liquidSanitizePath( liqglo_ribDir );
 
     list = const_cast< char* > ( archivePath.asChar() );
@@ -3308,6 +3391,22 @@ MStatus liqRibTranslator::ribPrologue()
         }
       }
     }
+
+    // RAYTRACING OPTIONS
+#if defined DELIGHT || PRMAN
+  if ( rt_useRayTracing ) {
+    RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
+    RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,          RI_NULL );
+    RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
+    RiOption( "trace",   "int continuationbydefault",   ( RtPointer ) &rt_traceRayContinuation,   RI_NULL );
+    RiOption( "limits",  "int geocachememory",          ( RtPointer ) &rt_traceCacheMemory,       RI_NULL );
+    RiOption( "user",    "float traceBreadthFactor",    ( RtPointer ) &rt_traceBreadthFactor,     RI_NULL );
+    RiOption( "user",    "float traceDepthFactor",      ( RtPointer ) &rt_traceDepthFactor,       RI_NULL );
+  } else {
+    RiArchiveRecord( RI_COMMENT, "Ray Tracing : OFF" );
+  }
+#endif
+
   }
   ribStatus = kRibBegin;
   return MS::kSuccess;
@@ -3327,12 +3426,42 @@ MStatus liqRibTranslator::ribEpilogue()
  */
 MStatus liqRibTranslator::scanScene(float lframe, int sample )
 {
+
+int count =0;
+
   MTime   mt((double)lframe, MTime::uiUnit());
   if ( MGlobal::viewFrame(mt) == MS::kSuccess) {
 
     if ( m_preFrameMel != "" ) MGlobal::sourceFile( m_preFrameMel );
 
     MStatus returnStatus;
+    // Scan the scene for lights
+    {
+      MItDag dagLightIterator( MItDag::kDepthFirst, MFn::kLight, &returnStatus);
+
+      for (; !dagLightIterator.isDone(); dagLightIterator.next()) {
+        LIQ_CHECK_CANCEL_REQUEST;
+        MDagPath path;
+        MObject currentNode;
+        currentNode = dagLightIterator.item();
+        MFnDagNode dagNode;
+        dagLightIterator.getPath( path );
+        if (MS::kSuccess != returnStatus) continue;
+        if (!currentNode.hasFn(MFn::kDagNode)) continue;
+        returnStatus = dagNode.setObject( currentNode );
+        if (MS::kSuccess != returnStatus) continue;
+
+        // if it's a light then insert it into the hash table
+        if ( currentNode.hasFn( MFn::kLight ) ) {
+          if ( ( sample > 0 ) && isObjectMotionBlur( path )) {
+            htable->insert(path, lframe, sample, MRT_Light,count++ );
+          } else {
+            htable->insert(path, lframe, 0, MRT_Light,count++ );
+          }
+          continue;
+        }
+      }
+    }
 
     // Scan the scene for place3DTextures -- for coordinate systems
     {
@@ -3353,37 +3482,9 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
         // if it's a coordinate system then insert it into the hash table
         if ( currentNode.hasFn( MFn::kPlace3dTexture ) ) {
           if ( ( sample > 0 ) && isObjectMotionBlur( path )) {
-            htable->insert(path, lframe, sample, MRT_Coord );
+            htable->insert(path, lframe, sample, MRT_Coord,count++ );
           } else {
-            htable->insert(path, lframe, 0, MRT_Coord );
-          }
-          continue;
-        }
-      }
-    }
-
-    // Scan the scene for lights
-    {
-      MItDag dagLightIterator( MItDag::kDepthFirst, MFn::kLight, &returnStatus);
-
-      for (; !dagLightIterator.isDone(); dagLightIterator.next()) {
-        LIQ_CHECK_CANCEL_REQUEST;
-        MDagPath path;
-        MObject currentNode;
-        currentNode = dagLightIterator.item();
-        MFnDagNode dagNode;
-        dagLightIterator.getPath( path );
-        if (MS::kSuccess != returnStatus) continue;
-        if (!currentNode.hasFn(MFn::kDagNode)) continue;
-        returnStatus = dagNode.setObject( currentNode );
-        if (MS::kSuccess != returnStatus) continue;
-
-        // if it's a light then insert it into the hash table
-        if ( currentNode.hasFn( MFn::kLight ) ) {
-          if ( ( sample > 0 ) && isObjectMotionBlur( path )) {
-            htable->insert(path, lframe, sample, MRT_Light );
-          } else {
-            htable->insert(path, lframe, 0, MRT_Light );
+            htable->insert(path, lframe, 0, MRT_Coord,count++ );
           }
           continue;
         }
@@ -3416,11 +3517,11 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
             MSelectionList ribGenList;
             MStatus ribGenAddStatus = ribGenList.add( ribGenNode );
             if ( ribGenAddStatus == MS::kSuccess ) {
-              htable->insert( path, lframe, sample, MRT_RibGen );
+              htable->insert( path, lframe, sample, MRT_RibGen,count++ );
             }
           } else {
             if ( ribGenPlug.isConnected() ) {
-              htable->insert( path, lframe, sample, MRT_RibGen );
+              htable->insert( path, lframe, sample, MRT_RibGen,count++ );
             }
           }
 
@@ -3431,9 +3532,9 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
              || currentNode.hasFn(MFn::kLocator)
              || currentNode.hasFn( MFn::kSubdiv) ) {
           if ( ( sample > 0 ) && isObjectMotionBlur( path )){
-            htable->insert(path, lframe, sample, MRT_Unknown );
+            htable->insert(path, lframe, sample, MRT_Unknown,count++ );
           } else {
-            htable->insert(path, lframe, 0, MRT_Unknown );
+            htable->insert(path, lframe, 0, MRT_Unknown,count++ );
           }
         }
         if ( currentNode.hasFn(MFn::kNurbsCurve) ) {
@@ -3444,9 +3545,9 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
             renderCurvePlug.getValue( renderCurve );
             if( renderCurve ) {
               if ( ( sample > 0 ) && isObjectMotionBlur( path )){
-                htable->insert(path, lframe, sample, MRT_Unknown );
+                htable->insert(path, lframe, sample, MRT_Unknown,count++ );
               } else {
-                htable->insert(path, lframe, 0, MRT_Unknown );
+                htable->insert(path, lframe, 0, MRT_Unknown,count++ );
               }
             }
           }
@@ -3468,10 +3569,10 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
         MMatrix instanceMatrix = instancerIter.matrix();
 
         if ( ( sample > 0 ) && isObjectMotionBlur( path )){
-          htable->insert( path, lframe, sample, MRT_Unknown,
+          htable->insert( path, lframe, sample, MRT_Unknown,count++,
                           &instanceMatrix, instanceStr, instancerIter.particleId() );
         } else {
-          htable->insert( path, lframe, 0, MRT_Unknown,
+          htable->insert( path, lframe, 0, MRT_Unknown,count++,
                           &instanceMatrix, instanceStr, instancerIter.particleId() );
         }
         instancerIter.next();
@@ -3503,16 +3604,16 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
           MStatus plugStatus;
           MPlug ribGenPlug = dagNode.findPlug( "liquidRibGen", &plugStatus );
           if ( plugStatus == MS::kSuccess ) {
-            htable->insert( path, lframe, sample, MRT_RibGen );
+            htable->insert( path, lframe, sample, MRT_RibGen,count++ );
           }
           if ( currentNode.hasFn(MFn::kNurbsSurface)
                || currentNode.hasFn(MFn::kMesh)
                || currentNode.hasFn(MFn::kParticle)
                || currentNode.hasFn(MFn::kLocator) ) {
             if ( ( sample > 0 ) && isObjectMotionBlur( path )){
-              htable->insert(path, lframe, sample, MRT_Unknown );
+              htable->insert(path, lframe, sample, MRT_Unknown,count++ );
             } else {
-              htable->insert(path, lframe, 0, MRT_Unknown );
+              htable->insert(path, lframe, 0, MRT_Unknown,count++ );
             }
           }
           if ( currentNode.hasFn(MFn::kNurbsCurve) ) {
@@ -3523,9 +3624,9 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
               renderCurvePlug.getValue( renderCurve );
               if( renderCurve ) {
                 if ( ( sample > 0 ) && isObjectMotionBlur( path )){
-                  htable->insert(path, lframe, sample, MRT_Unknown );
+                  htable->insert(path, lframe, sample, MRT_Unknown,count++ );
                 } else {
-                  htable->insert(path, lframe, 0, MRT_Unknown );
+                  htable->insert(path, lframe, 0, MRT_Unknown,count++ );
                 }
               }
             }
@@ -3548,10 +3649,10 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
         MMatrix instanceMatrix = instancerIter.matrix();
 
         if ( ( sample > 0 ) && isObjectMotionBlur( path )){
-          htable->insert( path, lframe, sample, MRT_Unknown,
+          htable->insert( path, lframe, sample, MRT_Unknown,count++,
                           &instanceMatrix, instanceStr, instancerIter.particleId() );
         } else {
-          htable->insert( path, lframe, 0, MRT_Unknown,
+          htable->insert( path, lframe, 0, MRT_Unknown,count++,
                           &instanceMatrix, instanceStr, instancerIter.particleId() );
         }
         instancerIter.next();
@@ -3591,18 +3692,24 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
         iter->camera[sample].focalLength = fnCamera.focalLength();
         iter->camera[sample].focalDistance = fnCamera.focusDistance();
         iter->camera[sample].fStop = fnCamera.fStop();
-        /*       if ( iter->camera[0].motionBlur ) {
-                 doCameraMotion = 1;
-                 } else {
-                 doCameraMotion = 0;
-                 }*/
+
         fnCamera.getPath(path);
         MTransformationMatrix xform( path.inclusiveMatrix() );
         double scale[] = { 1, 1, -1 };
-        //xform.addScale( scale, MSpace::kTransform );
+
         xform.setScale( scale, MSpace::kTransform );
 
-        iter->camera[sample].mat = xform.asMatrixInverse();
+        // philippe : rotate the main camera 90 degrees around Z-axis if necessary
+        // ( only in main camera )
+        MMatrix camRotMatrix;
+        if ( liqglo_rotateCamera == true ) {
+          float crm[4][4] = {  {  0.0,  1.0,  0.0,  0.0 },
+                               { -1.0,  0.0,  0.0,  0.0 },
+                               {  0.0,  0.0,  1.0,  0.0 },
+                               {  0.0,  0.0,  0.0,  1.0 }};
+          camRotMatrix = crm;
+        }
+        iter->camera[sample].mat = xform.asMatrixInverse() * camRotMatrix;
 
         if ( fnCamera.isClippingPlanes() ) {
           iter->camera[sample].neardb    = fnCamera.nearClippingPlane();
@@ -3769,7 +3876,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 }
 
 /**
- * This method takes care of the blocking together of objects and their children in the DAG. 
+ * This method takes care of the blocking together of objects and their children in the DAG.
  * This method compares two DAG paths and figures out how many attribute levels to push and/or pop.
  * The intention seems clear but this method is not currently used -- anyone cares to comment? --Moritz.
  */
@@ -3937,7 +4044,12 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       }
     } else {
       if ( ( m_cropX1 != 0.0 ) || ( m_cropY1 != 0.0 ) || ( m_cropX2 != 1.0 ) || ( m_cropY2 != 1.0 ) ) {
-        RiCropWindow( m_cropX1, m_cropX2, m_cropY1, m_cropY2 );
+        // philippe : handle the rotated camera case
+        if ( liqglo_rotateCamera == true ) {
+          RiCropWindow( m_cropY2, m_cropY1, 1 - m_cropX1, 1 - m_cropX2 );
+        } else {
+          RiCropWindow( m_cropX1, m_cropX2, m_cropY1, m_cropY2 );
+        }
       };
 
       int k = 0;
@@ -4019,7 +4131,12 @@ MStatus liqRibTranslator::framePrologue(long lframe)
 
     LIQDEBUGPRINTF( "-> Setting Resolution\n" );
 
-    RiFormat( liqglo_currentJob.width, liqglo_currentJob.height, liqglo_currentJob.aspectRatio );
+    if ( liqglo_currentJob.isShadow == false && liqglo_rotateCamera  == true ) {
+      // philippe : Rotated Camera Case
+      RiFormat( liqglo_currentJob.height, liqglo_currentJob.width, liqglo_currentJob.aspectRatio );
+    } else {
+      RiFormat( liqglo_currentJob.width, liqglo_currentJob.height, liqglo_currentJob.aspectRatio );
+    }
 
     if ( liqglo_currentJob.camera[0].isOrtho ) {
       MDistance unitHelper;
@@ -4178,13 +4295,13 @@ MStatus liqRibTranslator::objectBlock()
     // If this is a matte object, then turn that on if it isn't currently set
 		if ( ribNode->shading.matte == -1){
 			// Respect the maya shading node setting
-			if ( ribNode->matteMode ) {
-				if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
-				m_currentMatteMode = true;
-			} else {
-				if ( m_currentMatteMode ) RiMatte( RI_FALSE );
-				m_currentMatteMode = false;
-			}
+    if ( ribNode->matteMode ) {
+      if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
+      m_currentMatteMode = true;
+    } else {
+      if ( m_currentMatteMode ) RiMatte( RI_FALSE );
+      m_currentMatteMode = false;
+    }
 		} else {
 			// The dag had a liqMatte property, use that (overriding the maya shader)
 			if ( ribNode->shading.matte > 0 ) {	// Slightly nasty test to verify we've actually got a value here
@@ -4356,8 +4473,8 @@ MStatus liqRibTranslator::objectBlock()
       // RtFloat currentNodeShadingRate = shadingRate;
 
       LIQDEBUGPRINTF( "-> writing node attributes" );
-      MGlobal::displayInfo( "writing node attributes" );
-      
+      //MGlobal::displayInfo( "writing node attributes" );
+
       if( ribNode->shading.shadingRate != shadingRate )
         RiShadingRate ( ribNode->shading.shadingRate );
 
@@ -4375,20 +4492,20 @@ MStatus liqRibTranslator::objectBlock()
         RtInt on = 1;
         RiAttribute( "trace", (RtToken) "displacements", &on, RI_NULL );
       }
-      
+
       if( ribNode->trace.bias != 0.01f ) {
         RtFloat bias = ribNode->trace.bias;
         RiAttribute( "trace", (RtToken) "bias", &bias, RI_NULL );
       }
 
       if( ribNode->trace.maxDiffuseDepth != 1 ) {
-        RtFloat depth = ribNode->trace.maxDiffuseDepth;
-        RiAttribute( "trace", (RtToken) "maxdiffusedepth", &depth, RI_NULL );
+        RtInt mddepth = ribNode->trace.maxDiffuseDepth;
+        RiAttribute( "trace", (RtToken) "maxdiffusedepth", &mddepth, RI_NULL );
       }
 
       if( ribNode->trace.maxSpecularDepth != 2 ) {
-        RtFloat depth = ribNode->trace.maxSpecularDepth;
-        RiAttribute( "trace", (RtToken) "maxspeculardepth", &depth, RI_NULL );
+        RtInt msdepth = ribNode->trace.maxSpecularDepth;
+        RiAttribute( "trace", (RtToken) "maxspeculardepth", &msdepth, RI_NULL );
       }
 
       if( !ribNode->visibility.camera ) {
@@ -4396,12 +4513,15 @@ MStatus liqRibTranslator::objectBlock()
         RiAttribute( "visibility", (RtToken) "camera", &off, RI_NULL );
       }
 
-      if( ribNode->visibility.trace ) {
+      // old-style raytracing visibility support
+      // philippe: if raytracing is off in the globals, trace visibility is turned off for all objects, transmission is set to TRANSPARENT for all objects
+
+      if( rt_useRayTracing && ribNode->visibility.trace ) {
         RtInt on = 1;
         RiAttribute( "visibility", (RtToken) "trace", &on, RI_NULL );
       }
 
-      if( ribNode->visibility.transmission != liqRibNode::visibility::TRANSMISSION_TRANSPARENT ) {
+      if( rt_useRayTracing && ribNode->visibility.transmission != liqRibNode::visibility::TRANSMISSION_TRANSPARENT ) {
         RtString trans;
         switch( ribNode->visibility.transmission ) {
           case liqRibNode::visibility::TRANSMISSION_OPAQUE:
@@ -4414,8 +4534,83 @@ MStatus liqRibTranslator::objectBlock()
           default:
             trans = "shader";
         }
-        RiAttribute( "visibility", (RtToken) "transmission", &trans, RI_NULL );
+        RiAttribute( "visibility", (RtToken) "string transmission", &trans, RI_NULL );
       }
+
+      // philippe : prman 12.5 visibility support
+
+      if( rt_useRayTracing && ribNode->visibility.diffuse ) {
+        RtInt on = 1;
+        RiAttribute( "visibility", (RtToken) "int diffuse", &on, RI_NULL );
+      }
+
+      if( rt_useRayTracing && ribNode->visibility.specular ) {
+        RtInt on = 1;
+        RiAttribute( "visibility", (RtToken) "int specular", &on, RI_NULL );
+      }
+
+      if( rt_useRayTracing && ribNode->visibility.newtransmission ) {
+        RtInt on = 1;
+        RiAttribute( "visibility", (RtToken) "int transmission", &on, RI_NULL );
+      }
+
+      if( rt_useRayTracing && ribNode->visibility.camera ) {
+        RtInt on = 1;
+        RiAttribute( "visibility", (RtToken) "int camera", &on, RI_NULL );
+      }
+
+      if( rt_useRayTracing && ribNode->hitmode.diffuse != liqRibNode::hitmode::DIFFUSE_HITMODE_PRIMITIVE ) {
+        RtString mode;
+        switch( ribNode->hitmode.diffuse ) {
+          case liqRibNode::hitmode::DIFFUSE_HITMODE_SHADER:
+            mode = "shader";
+            break;
+          case liqRibNode::hitmode::DIFFUSE_HITMODE_PRIMITIVE:
+          default:
+            mode = "primitive";
+        }
+        RiAttribute( "shade", (RtToken) "string diffusehitmode", &mode, RI_NULL );
+      }
+
+      if( rt_useRayTracing && ribNode->hitmode.specular != liqRibNode::hitmode::SPECULAR_HITMODE_SHADER ) {
+        RtString mode;
+        switch( ribNode->hitmode.specular ) {
+          case liqRibNode::hitmode::SPECULAR_HITMODE_PRIMITIVE:
+            mode = "primitive";
+            break;
+          case liqRibNode::hitmode::SPECULAR_HITMODE_SHADER:
+          default:
+            mode = "shader";
+        }
+        RiAttribute( "shade", (RtToken) "string specularhitmode", &mode, RI_NULL );
+      }
+
+      if( rt_useRayTracing && ribNode->hitmode.transmission != liqRibNode::hitmode::TRANSMISSION_HITMODE_SHADER ) {
+        RtString mode;
+        switch( ribNode->hitmode.transmission ) {
+          case liqRibNode::hitmode::TRANSMISSION_HITMODE_PRIMITIVE:
+            mode = "primitive";
+            break;
+          case liqRibNode::hitmode::TRANSMISSION_HITMODE_SHADER:
+          default:
+            mode = "shader";
+        }
+        RiAttribute( "shade", (RtToken) "string transmissionhitmode", &mode, RI_NULL );
+      }
+
+      if( ribNode->hitmode.camera != liqRibNode::hitmode::CAMERA_HITMODE_SHADER ) {
+        RtString mode;
+        switch( ribNode->hitmode.camera ) {
+          case liqRibNode::hitmode::CAMERA_HITMODE_PRIMITIVE:
+            mode = "primitive";
+            break;
+          case liqRibNode::hitmode::CAMERA_HITMODE_SHADER:
+          default:
+            mode = "shader";
+        }
+        RiAttribute( "shade", (RtToken) "string camerahitmode", &mode, RI_NULL );
+      }
+
 
       if( ribNode->irradiance.shadingRate != 1.0f ) {
         RtFloat rate = ribNode->irradiance.shadingRate;
@@ -4427,9 +4622,14 @@ MStatus liqRibTranslator::objectBlock()
         RiAttribute( "irradiance", (RtToken) "nsamples", &samples, RI_NULL );
       }
 
-      if( ribNode->irradiance.maxError != 1.0f ) {
+      if( ribNode->irradiance.maxError != 0.5f ) {
         RtFloat merror = ribNode->irradiance.maxError;
-        RiAttribute( "irradiance", (RtToken) "maxerror", &merror, RI_NULL );
+        RiAttribute( "irradiance", (RtToken) "float maxerror", &merror, RI_NULL );
+      }
+
+      if( ribNode->irradiance.maxPixelDist != 30.0f ) {
+        RtFloat mpd = ribNode->irradiance.maxPixelDist;
+        RiAttribute( "irradiance", (RtToken) "float maxpixeldist", &mpd, RI_NULL );
       }
 
       if( ribNode->irradiance.handle != "" ) {
@@ -4490,11 +4690,11 @@ MStatus liqRibTranslator::objectBlock()
         RiAttribute( "photon", (RtToken) "estimator", &estimator, RI_NULL );
       }
 
-	    if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur &&
-        ribNode->motion.factor != 2.0f ) {
-					RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
+      if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur &&
+          ribNode->motion.factor != 2.0f ) {
+        RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
       }
-      
+
       if ( hasSurfaceShader && !m_ignoreSurfaces ) {
 
         liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
@@ -4503,9 +4703,9 @@ MStatus liqRibTranslator::objectBlock()
         RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * currentShader.numTPV );
 
         assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
-        
+
         // Output color overrides or color
-        
+
         if (ribNode->shading.color.r != -1.0) {
         	RtColor rColor;
         	rColor[0] = ribNode->shading.color[0];
@@ -4515,7 +4715,7 @@ MStatus liqRibTranslator::objectBlock()
         } else {
         	RiColor( currentShader.rmColor );
         }
-        
+
         if (ribNode->shading.opacity.r != -1.0) {
         	RtColor rOpacity;
         	rOpacity[0] = ribNode->shading.opacity[0];
@@ -4545,13 +4745,13 @@ MStatus liqRibTranslator::objectBlock()
 			  rColor[1] = ribNode->shading.color[1];
 			  rColor[2] = ribNode->shading.color[2];
         	  RiColor( rColor );
-        	} else if ( ( ribNode->color.r != -1.0 ) ) {
-			  rColor[0] = ribNode->color[0];
-			  rColor[1] = ribNode->color[1];
-			  rColor[2] = ribNode->color[2];
-			  RiColor( rColor );
-			}
-			
+        } else if ( ( ribNode->color.r != -1.0 ) ) {
+          rColor[0] = ribNode->color[0];
+          rColor[1] = ribNode->color[1];
+          rColor[2] = ribNode->color[2];
+          RiColor( rColor );
+        }
+
 			if (ribNode->shading.opacity.r != -1.0) {
         	  rOpacity[0] = ribNode->shading.opacity[0];
 			  rOpacity[1] = ribNode->shading.opacity[1];
@@ -4564,7 +4764,7 @@ MStatus liqRibTranslator::objectBlock()
 			  RiOpacity( rOpacity );
 			}
         }
-		
+
         if ( !m_ignoreSurfaces ) {
           MObject shadingGroup = ribNode->assignedShadingGroup.object();
           MObject shader = ribNode->findShader( shadingGroup );
@@ -4597,14 +4797,14 @@ MStatus liqRibTranslator::objectBlock()
       }
     }
 
-    if ( ribNode->isRibBox ) {
-      RiArchiveRecord( RI_COMMENT, "Additional Rib:\n%s", ribNode->ribBoxString.asChar() );
+    if ( ribNode->rib.box != "" && ribNode->rib.box != "-" ) {
+      RiArchiveRecord( RI_COMMENT, " RIB Box:\n%s", ribNode->rib.box.asChar() );
     }
-    if ( ribNode->isArchive ) {
-      RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode->archiveString.asChar() );
+    if ( ribNode->rib.readArchive != "" && ribNode->rib.readArchive != "-" ) {
+      RiArchiveRecord( RI_COMMENT, " Read Archive Data: \nReadArchive \"%s\"", ribNode->rib.readArchive.asChar() );
     }
-    if ( ribNode->isDelayedArchive ) {
-      RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode->delayedArchiveString.asChar(), ribNode->bound[0],ribNode->bound[3],ribNode->bound[1],ribNode->bound[4],ribNode->bound[2],ribNode->bound[5] );
+    if ( ribNode->rib.delayedReadArchive != "" && ribNode->rib.delayedReadArchive != "-" ) {
+      RiArchiveRecord( RI_COMMENT, " Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode->rib.delayedReadArchive.asChar(), ribNode->bound[0],ribNode->bound[3],ribNode->bound[1],ribNode->bound[4],ribNode->bound[2],ribNode->bound[5] );
     }
 
     // check to see if we are writing a curve to set the proper basis
@@ -4790,13 +4990,13 @@ MStatus liqRibTranslator::lightBlock()
       }
 
       if( ribNode->trace.maxDiffuseDepth != 1 ) {
-        RtFloat depth = ribNode->trace.maxDiffuseDepth;
-        RiAttribute( "trace", (RtToken) "maxdiffusedepth", &depth, RI_NULL );
+        RtInt mddepth = ribNode->trace.maxDiffuseDepth;
+        RiAttribute( "trace", (RtToken) "maxdiffusedepth", &mddepth, RI_NULL );
       }
 
       if( ribNode->trace.maxSpecularDepth != 2 ) {
-        RtFloat depth = ribNode->trace.maxSpecularDepth;
-        RiAttribute( "trace", (RtToken) "maxspeculardepth", &depth, RI_NULL );
+        RtInt msdepth = ribNode->trace.maxSpecularDepth;
+        RiAttribute( "trace", (RtToken) "maxspeculardepth", &msdepth, RI_NULL );
       }
 
       ribNode->object(0)->writeObject();

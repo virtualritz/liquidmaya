@@ -84,7 +84,7 @@ liqRibHT::~liqRibHT()
 /**
  * Hash function for strings.
  */
-ulong liqRibHT::hash(const char *str)
+ulong liqRibHT::hash(const char *str,int ID)
 {
   LIQDEBUGPRINTF( "-> hashing\n" );
   ulong hc = 0;
@@ -95,7 +95,7 @@ ulong liqRibHT::hash(const char *str)
     str++;
   }
 
-  return (ulong)hc;
+  return (ulong)ID;
 }
 
 /**
@@ -103,6 +103,7 @@ ulong liqRibHT::hash(const char *str)
  */
 int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
                       ObjectType objType,
+		      int CountID,
                       MMatrix *matrix,
                       const MString instanceStr,
                       int particleId )
@@ -116,14 +117,16 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
 
   const char * name = nodeName.asChar();
 
-  ulong hc = hash( name );
+  ulong hc = hash( name ,CountID);
+  
+  RibHashVec.push_back(nodeName);
   LIQDEBUGPRINTF( "-> hashed node name: " );
   LIQDEBUGPRINTF( name );
   LIQDEBUGPRINTF( " size: %ld\n", hc );
 
   liqRibNode * node;
   /*node = find( path.node(), objType );*/
-  node = find( nodeName, path, objType );
+  node = find( nodeName, path, objType);
   liqRibNode *     newNode = NULL;
   liqRibNode *    instance = NULL;
 
@@ -222,9 +225,19 @@ liqRibNode* liqRibHT::find( MString nodeName, MDagPath path, ObjectType
   LIQDEBUGPRINTF( "-> finding node in hash table using object, %s\n", nodeName.asChar() );
   liqRibNode * result = NULL;
 
-  const char * name = nodeName.asChar();
-
-  ulong hc = hash( name );
+ ulong hc;
+ unsigned int indx;
+ 
+for (indx = 0; indx < RibHashVec.size(); indx++)
+{
+ if( RibHashVec[indx]==nodeName.asChar()){
+ 	 hc=indx;
+	break;
+ }
+ 
+}   
+  
+  
   LIQDEBUGPRINTF( "-> Done\n"  );
 
   RNMAP::iterator iter = RibNodeMap.find( hc );

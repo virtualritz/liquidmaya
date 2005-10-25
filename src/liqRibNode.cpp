@@ -44,6 +44,7 @@ extern "C" {
 #include <maya/MFnBlinnShader.h>
 #include <maya/MFnPhongShader.h>
 #include <maya/MPlugArray.h>
+#include <maya/MObjectArray.h>
 #include <maya/MFnSet.h>
 #include <maya/MGlobal.h>
 #include <maya/MSelectionList.h>
@@ -59,8 +60,8 @@ extern "C" {
 #include <liqRibNode.h>
 
 #ifdef _WIN32
-#  undef min
-#  undef max
+#undef min
+#undef max
 #endif
 
 extern int debugMode;
@@ -70,6 +71,8 @@ extern MStringArray liqglo_preRibBox;
 extern MStringArray liqglo_preReadArchiveShadow;
 extern MStringArray liqglo_preRibBoxShadow;
 
+MString liqglo_currentNodeName;
+MString liqglo_currentNodeShortName;
 
 /**
  * Class constructor.
@@ -84,53 +87,64 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
       overrideColor( false )
 {
   LIQDEBUGPRINTF( "-> creating rib node\n");
-
   for( unsigned i = 0; i < LIQMAXMOTIONSAMPLES; i++ )
     objects[ i ] = NULL;
 
   name.clear();
-  isRibBox  = false;
-  isArchive = false;
-  isDelayedArchive = false;
-  matteMode = false;
+  matteMode                 = false;
 
+  shading.shadingRate       = 1.0f;
+  shading.diceRasterOrient  = true;
+  shading.color.r           = -1.0;
+  shading.opacity.r         = -1.0;
+  shading.matte             = -1;
 
-  shading.shadingRate = 1.0f;
-  shading.diceRasterOrient = true;
-  shading.color.r = -1.0;
-  shading.opacity.r = -1.0;
-  shading.matte = -1;
+  trace.displacements       = false;
+  trace.sampleMotion        = false;
+  trace.bias                = 0.01f;
+  trace.maxDiffuseDepth     = 1;
+  trace.maxSpecularDepth    = 2;
 
-  trace.displacements = false;
-  trace.sampleMotion  = false;
-  trace.bias = 0.01f;
-  trace.maxDiffuseDepth  = 1;
-  trace.maxSpecularDepth = 2;
+  visibility.camera         = true;
+  // philippe: pre-prman 12.5 style
+  visibility.trace          = false;
+  visibility.transmission   = visibility::TRANSMISSION_TRANSPARENT;
+  // philippe: prman 12.5 style
+  visibility.diffuse        = false;
+  visibility.specular       = false;
+  visibility.newtransmission = false;
+  visibility.midpoint       = true;
+  visibility.photon         = false;
 
-  visibility.camera = true;
-  visibility.trace  = false;
-  visibility.photon = false;
-  visibility.transmission = visibility::TRANSMISSION_TRANSPARENT;
+  hitmode.diffuse           = hitmode::DIFFUSE_HITMODE_PRIMITIVE;
+  hitmode.specular          = hitmode::SPECULAR_HITMODE_SHADER;
+  hitmode.transmission      = hitmode::TRANSMISSION_HITMODE_SHADER;
+  hitmode.camera            = hitmode::CAMERA_HITMODE_SHADER;
 
-  irradiance.shadingRate = 1.0f;
-  irradiance.nSamples = 64;
-  irradiance.maxError = 1.0f;
-  irradiance.handle = "";
-  irradiance.fileMode = irradiance::FILEMODE_NONE;
+  irradiance.shadingRate    = 1.0f;
+  irradiance.nSamples       = 64;
+  irradiance.maxError       = 0.5f;
+  irradiance.maxPixelDist   = 30.0f;
+  irradiance.handle         = "";
+  irradiance.fileMode       = irradiance::FILEMODE_NONE;
 
-  photon.globalMap = "";
-  photon.causticMap = "";
-  photon.shadingModel = photon::SHADINGMODEL_MATTE;
-  photon.estimator = 100;
+  photon.globalMap          = "";
+  photon.causticMap         = "";
+  photon.shadingModel       = photon::SHADINGMODEL_MATTE;
+  photon.estimator          = 100;
 
   motion.transformationBlur = true;;
-  motion.deformationBlur = true;
-  motion.samples = 2;
-  motion.factor = 2.0;
+  motion.deformationBlur    = true;
+  motion.samples            = 2;
+  motion.factor             = 2.0;
+
+  rib.box                   = "";
+  rib.generator             = "";
+  rib.readArchive           = "";
+  rib.delayedReadArchive    = "";
 
   invisible = false;
 }
-
 
 /**
  * Class destructor.
@@ -145,20 +159,20 @@ liqRibNode::~liqRibNode()
       objects[ i ]->unref();
       objects[ i ] = NULL;
     }
-
   }
   LIQDEBUGPRINTF( "-> killing no obj\n" );
   no = NULL;
   name.clear();
-  ribBoxString.clear();
-  archiveString.clear();
-  delayedArchiveString.clear();
   irradiance.handle.clear();
   photon.globalMap.clear();
   photon.causticMap.clear();
+  rib.box.clear();
+  rib.generator.clear();
+  rib.readArchive.clear();
+  rib.delayedReadArchive.clear();
+
   LIQDEBUGPRINTF( "-> finished killing rib node.\n" );
 }
-
 
 /**
  * Get the object referred to by this node.
@@ -169,8 +183,7 @@ liqRibObj * liqRibNode::object( unsigned interval )
   return objects[ interval ];
 }
 
-
-/** 
+/**
  * Set this node with the given path.
  * If this node already refers to the given object, then it is assumed that the
  * path represents the object at the next frame.
@@ -184,9 +197,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 #if 0
   int instanceNum = path.instanceNumber();
 #endif
-  isRibBox = false;
-  isArchive = false;
-  isDelayedArchive = false;
   MStatus status;
   MFnDagNode fnNode( path );
   MPlug nPlug;
@@ -195,6 +205,10 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
   MSelectionList hierarchy; // needed to find objectSets later below
   MDagPath dagSearcher( path );
 
+  liqglo_currentNodeName      = path.fullPathName();
+  liqglo_currentNodeShortName = path.partialPathName();
+
+
   do { // while( dagSearcher.length() > 0 )
     dagSearcher.pop(); // Go upwards (should be a transform node)
 
@@ -202,15 +216,15 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 
     if ( dagSearcher.apiType( &status ) == MFn::kTransform ) {
       MFnDagNode nodePeeker( dagSearcher );
-      
+
       // Shading. group ----------------------------------------------------------
-	  if ( !invisible ) {
+      if ( !invisible ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "template" ), &status );
         if ( status == MS::kSuccess ) {
           nPlug.getValue( invisible );
-        if ( invisible )
-          break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
+          if( invisible )
+            break; // Exit do..while loop -- IF OBJECT ATTRIBUTES NEED TO BE PARSED FOR INVISIBLE OBJECTS TOO IN THE FUTURE -- REMOVE THIS LINE!
         } else {
           status.clear();
           nPlug = nodePeeker.findPlug( MString( "liqInvisible" ), &status );
@@ -266,10 +280,10 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 
       if (shading.matte == -1) {
         status.clear();
-        nPlug = nodePeeker.findPlug( MString( "liqMatte"), &status );
+        nPlug = nodePeeker.findPlug( MString( "liqMatte" ), &status );
         if ( status == MS::kSuccess) {
           nPlug.getValue( shading.matte );
-        }
+      }
       }
 
       // trace group ----------------------------------------------------------
@@ -309,6 +323,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       }
 
       // visibility group -----------------------------------------------------
+
       if ( visibility.camera == true ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqVisibilityCamera" ), &status );
@@ -316,6 +331,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( visibility.camera );
       }
 
+      // philippe : deprecated in prman 12.5
       if ( visibility.trace == false ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqVisibilityTrace" ), &status );
@@ -330,7 +346,67 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( ( int& ) visibility.transmission );
       }
 
+      // philippe : new visibility attributes in prman 12.5
+
+      if ( visibility.diffuse == false ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqVisibilityDiffuse" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( visibility.diffuse );
+      }
+
+      if ( visibility.specular == false ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqVisibilitySpecular" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( visibility.specular );
+      }
+
+      if ( visibility.newtransmission == false ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqVisibilityNewTransmission" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( visibility.newtransmission );
+      }
+
+      if ( visibility.photon == false ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqVisibilityPhoton" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( visibility.photon );
+      }
+      // philippe : new shading hit-mode attributes in prman 12.5
+
+      if ( hitmode.camera == hitmode::CAMERA_HITMODE_SHADER ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqHitModeCamera" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( ( int& ) hitmode.camera );
+      }
+
+      if ( hitmode.diffuse == hitmode::DIFFUSE_HITMODE_PRIMITIVE ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqHitModeDiffuse" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( ( int& ) hitmode.diffuse );
+      }
+
+      if ( hitmode.specular == hitmode::SPECULAR_HITMODE_SHADER ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqHitModeSpecular" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( ( int& ) hitmode.specular );
+      }
+
+      if ( hitmode.transmission == hitmode::TRANSMISSION_HITMODE_SHADER ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqHitModeTransmission" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( ( int& ) hitmode.transmission );
+      }
+
       // irradiance group -----------------------------------------------------
+
       if ( irradiance.shadingRate == 1.0f ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqIrradianceShadingRate" ), &status );
@@ -345,11 +421,18 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( irradiance.nSamples );
       }
 
-      if ( irradiance.maxError == 1.0f ) {
+      if ( irradiance.maxError == 0.5f ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqIrradianceMaxError" ), &status );
         if ( status == MS::kSuccess )
           nPlug.getValue( irradiance.maxError );
+      }
+
+      if ( irradiance.maxPixelDist == 30.0f ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqIrradianceMaxPixelDist" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( irradiance.maxPixelDist );
       }
 
       if ( irradiance.handle == "" ) {
@@ -367,6 +450,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       }
 
       // photon group ---------------------------------------------------------
+
       if ( photon.globalMap == "" ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqPhotonGlobalMap" ), &status );
@@ -396,6 +480,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       }
 
       // Motion blur group ---------------------------------------------------------
+      // DOES NOT OVERRIDE GLOBALS
       if ( motion.transformationBlur == true ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqTransformationBlur" ), &status );
@@ -407,7 +492,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         nPlug = nodePeeker.findPlug( MString( "liqDeformationBlur" ), &status );
         if ( status == MS::kSuccess )
           nPlug.getValue( motion.deformationBlur );
-      }      
+      }
       if ( motion.samples == 2 ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqMotionSamples" ), &status );
@@ -420,8 +505,105 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         nPlug = nodePeeker.findPlug( MString( "liqMotionFactor" ), &status );
         if ( status == MS::kSuccess )
           nPlug.getValue( motion.factor );
-      }  
-      
+      }
+
+      // RIB group ---------------------------------------------------------
+
+      if ( rib.box == "" ) {
+        status.clear();
+        MString ribBoxValue;
+        nPlug = nodePeeker.findPlug( MString( "liqRIBBox" ), &status );
+        if ( status == MS::kSuccess ) {
+          nPlug.getValue( ribBoxValue );
+          if ( ribBoxValue.substring(0,2) == "*H*" ) {
+            MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
+            liqglo_preRibBox.append( parseString( parseThis ) );
+          } else if ( ribBoxValue.substring(0,3) == "*SH*" ) {
+            MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
+            liqglo_preRibBoxShadow.append( parseString( parseThis ) );
+          }
+        }
+        rib.box = (ribBoxValue == "")? "-" : parseString(ribBoxValue);
+      }
+
+      if ( rib.readArchive == "" ) {
+        status.clear();
+        MString archiveValue;
+        nPlug = nodePeeker.findPlug( MString( "liqRIBReadArchive" ), &status );
+        if ( status == MS::kSuccess ) {
+          nPlug.getValue( archiveValue );
+          if ( archiveValue.substring(0,2) == "*H*" ) {
+            MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
+            liqglo_preReadArchive.append( parseString( parseThis ) );
+          } else if ( archiveValue.substring(0,3) == "*SH*" ) {
+            MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
+            liqglo_preReadArchiveShadow.append( parseString( parseThis ) );
+          }
+        }
+        rib.readArchive = (archiveValue == "")? "-" : parseString(archiveValue);
+      }
+
+      if ( rib.delayedReadArchive == "" ) {
+        status.clear();
+        MString delayedArchiveString, delayedArchiveValue;
+        nPlug = nodePeeker.findPlug( MString( "liqRIBDelayedReadArchive" ), &status );
+        if ( status == MS::kSuccess ) {
+          nPlug.getValue( delayedArchiveValue );
+          delayedArchiveString = parseString( delayedArchiveValue );
+
+          MStatus Dstatus;
+          MPlug delayedPlug = fnNode.findPlug( MString( "ribDelayedArchiveBBox" ), &Dstatus );
+          if ( ( Dstatus == MS::kSuccess ) && ( delayedPlug.isConnected() ) ) {
+            MPlugArray delayedNodeArray;
+            delayedPlug.connectedTo( delayedNodeArray, true, true );
+            MObject delayedNodeObj;
+            delayedNodeObj = delayedNodeArray[0].node();
+            MFnDagNode delayedfnNode( delayedNodeObj );
+
+            MBoundingBox bounding = delayedfnNode.boundingBox();
+            MPoint bMin = bounding.min();
+            MPoint bMax = bounding.max();
+            bound[0] = bMin.x;
+            bound[1] = bMin.y;
+            bound[2] = bMin.z;
+            bound[3] = bMax.x;
+            bound[4] = bMax.y;
+            bound[5] = bMax.z;
+          } else {
+            // retrieve current bouding box of the transform
+            MBoundingBox bounding = nodePeeker.boundingBox();
+            MPoint bMin = bounding.min();
+            MPoint bMax = bounding.max();
+            // retrieve the bounding box expansion attribute
+            Dstatus.clear();
+            float extraX = 0;
+            float extraY = 0;
+            float extraZ = 0;
+            MPlug expandBBoxPlug = nodePeeker.findPlug( MString( "liqRIBDelayedReadArchiveBBoxExpansion" ), &Dstatus );
+            if ( Dstatus == MS::kSuccess ) {
+              float expansionPercentage;
+              expandBBoxPlug.getValue( expansionPercentage );
+              if ( expansionPercentage != 0.0f ) {
+                expansionPercentage *= 0.005;
+                double bSizeX = bounding.width();
+                double bSizeY = bounding.height();
+                double bSizeZ = bounding.depth();
+                extraX = bSizeX * expansionPercentage;
+                extraY = bSizeY * expansionPercentage;
+                extraZ = bSizeZ * expansionPercentage;
+              }
+            }
+            bound[0] = bMin.x - extraX;
+            bound[1] = bMin.y - extraY;
+            bound[2] = bMin.z - extraZ;
+            bound[3] = bMax.x + extraX;
+            bound[4] = bMax.y + extraY;
+            bound[5] = bMax.z + extraZ;
+          }
+        }
+        rib.delayedReadArchive = ( delayedArchiveString == "" )? "-" : delayedArchiveString ;
+      }
+
       /*MFnDependencyNode nodeFn( nodePeeker );
       MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
       MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodeFn );
@@ -429,7 +611,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       MStringArray normalAttributesFound = findAttributesByPrefix( "rmanN", nodeFn );
       MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodeFn );
       MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );*/
-    } // if ( dagSearcher.apiType( &status ) == MFn::kTransform ) 
+    } // if ( dagSearcher.apiType( &status ) == MFn::kTransform )
   }
 
   while( dagSearcher.length() > 0 );
@@ -458,68 +640,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
     grouping.membership = path.fullPathName( &status ) + grouping.membership;
   }
 
-  status.clear();
-  nPlug = fnNode.findPlug( MString( "liqRIBBox" ), &status );
-  if ( status == MS::kSuccess ) {
-    MString ribBoxValue;
-    nPlug.getValue( ribBoxValue );
-    if ( ribBoxValue.substring(0,2) == "*H*" ) {
-      MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
-      liqglo_preRibBox.append( parseString( parseThis ) );
-    } else if ( ribBoxValue.substring(0,3) == "*SH*" ) {
-      MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
-      liqglo_preRibBoxShadow.append( parseString( parseThis ) );
-    } else {
-      ribBoxString = parseString( ribBoxValue );
-      isRibBox = true;
-    }
-  }
-  
-  status.clear();
-  nPlug = fnNode.findPlug( MString( "liqRIBReadArchive" ), &status );
-  if ( status == MS::kSuccess ) {
-    MString archiveValue;
-    nPlug.getValue( archiveValue );
-    if ( archiveValue.substring(0,2) == "*H*" ) {
-      MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
-      liqglo_preReadArchive.append( parseString( parseThis ) );
-    } else if ( archiveValue.substring(0,3) == "*SH*" ) {
-      MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
-      liqglo_preReadArchiveShadow.append( parseString( parseThis ) );
-    } else {
-      archiveString = parseString( archiveValue );
-      isArchive = true;
-    }
-  }
-  
-  status.clear();
-  nPlug = fnNode.findPlug( MString( "liqRIBDelayedReadArchive" ), &status );
-  if ( status == MS::kSuccess ) {
-    MString delayedArchiveValue;
-    nPlug.getValue( delayedArchiveValue );
-    delayedArchiveString = parseString( delayedArchiveValue );
-    isDelayedArchive = true;
-
-    MStatus Dstatus;
-    MPlug delayedPlug = fnNode.findPlug( MString( "ribDelayedArchiveBBox" ), &Dstatus );
-    if ( ( Dstatus == MS::kSuccess ) && ( delayedPlug.isConnected() ) ) {
-      MPlugArray delayedNodeArray;
-      delayedPlug.connectedTo( delayedNodeArray, true, true );
-      MObject delayedNodeObj;
-      delayedNodeObj = delayedNodeArray[0].node();
-      MFnDagNode delayedfnNode( delayedNodeObj );
-
-      MBoundingBox bounding = delayedfnNode.boundingBox();
-      MPoint bMin = bounding.min();
-      MPoint bMax = bounding.max();
-      bound[0] = bMin.x;
-      bound[1] = bMin.y;
-      bound[2] = bMin.z;
-      bound[3] = bMax.x;
-      bound[4] = bMax.y;
-      bound[5] = bMax.z;
-    }
-  }
 
   // Get the object's color
   if ( objType != MRT_Shader ) {
@@ -700,7 +820,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
   if ( objects[ sample ] == NULL ) {
     objects[ sample ] = no;
   }
-  
+
   LIQDEBUGPRINTF( "-> done creating rib object for given path\n");
 }
 

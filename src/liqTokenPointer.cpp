@@ -179,7 +179,10 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
 
 int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, bool asArray, bool asUArray, unsigned int arraySize )
 {
-  return set( name, ptype, asNurbs, arraySize, asUArray ? 2 : 0 );
+  // philippe : passing arraySize when asUArray is true fixed the float array export problem
+  //return set( name, ptype, asNurbs, arraySize, asUArray ? 2 : 0 );
+
+  return set( name, ptype, asNurbs, asArray? arraySize : 1, asUArray ? arraySize : 0  );
 }
 
 int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, unsigned int arraySize, unsigned int uArraySize )
@@ -192,8 +195,9 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
       lfree( m_tokenString );
     }
     m_tokenString = NULL;
-    switch( m_pType )
-    {
+
+    // define element size based on parameter type
+    switch( m_pType ) {
     case rFloat :
       m_eltSize = 1;
       break;
@@ -219,6 +223,8 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
       m_eltSize = 16;
       break;
     }
+
+    // check how much we need if we have an array
     m_isArray = arraySize != 0;
     unsigned long neededSize;
     if( m_isArray ) {
@@ -233,6 +239,8 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
       m_arraySize = 0;
       neededSize = m_eltSize * sizeof( RtFloat);
     }
+
+    // allocate whatever we need
     if( m_tokenFloats ) {
       // Check if we already got enough space
       if( m_tokenSize < neededSize ) {
@@ -253,6 +261,7 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
       }
       m_tokenSize = neededSize;
     }
+
     LIQDEBUGPRINTF( "Needed %ld got %ld\n", neededSize, m_tokenSize );
   } else {
     // Space will be allocated when string will be set
@@ -318,7 +327,7 @@ void liqTokenPointer::setTokenFloat( unsigned int i, unsigned int uIndex, RtFloa
 #ifdef DEBUG
   unsigned int max = m_tokenSize / sizeof( RtFloat);
   if( i * m_uArraySize + uIndex >= max ) {
-    LIQDEBUGPRINTF( "setTokeFloat out of bounds, max: %d, asked: %d\n", max, i * m_uArraySize + uIndex );
+    LIQDEBUGPRINTF( "setTokenFloat out of bounds, max: %d, asked: %d\n", max, i * m_uArraySize + uIndex );
   }
 #endif
   setTokenFloat( i * m_uArraySize + uIndex, val );
@@ -330,6 +339,7 @@ void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFl
   m_tokenFloats[3 * i + 1] = y;
   m_tokenFloats[3 * i + 2] = z;
 }
+
 
 void liqTokenPointer::setTokenFloats( const RtFloat * vals )
 {
@@ -387,8 +397,19 @@ char * liqTokenPointer::getTokenName( void )
 char * liqTokenPointer::getDetailedTokenName( void )
 {
   // Hmmmm should we handle token without name ?
+#ifdef PRMAN
+  // Philippe : in PRMAN, declaring P as a vertex point is not necessary and it make riCurves generation fail.
+  // so when the token is P, we just skip the type declaration.
+  if ( strcmp(m_tokenName, "P\0") == 0 ) {
+    sprintf( m_detailedTokenName, "" );
+  } else {
+    getRiDeclare( m_detailedTokenName );
+    strcat( m_detailedTokenName, " " );
+  }
+#else
   getRiDeclare( m_detailedTokenName );
   strcat( m_detailedTokenName, " " );
+#endif
   strcat( m_detailedTokenName, m_tokenName );
   return m_detailedTokenName;
 }
@@ -404,13 +425,14 @@ RtPointer liqTokenPointer::getRtPointer( void )
 
 void liqTokenPointer::getRiDeclare( char *declare  )
 {
+
   switch ( m_pType ) {
   case rString:
     sprintf( declare, "%s string", StringDetailType[m_dType]  );
     break;
   case rMatrix:
     sprintf( declare, "%s matrix", StringDetailType[m_dType]  );
-    break;  
+    break;
   case rFloat:
     if( m_isUArray ) {
       sprintf( declare, "%s float[%d]", StringDetailType[m_dType], m_uArraySize );
@@ -428,17 +450,33 @@ void liqTokenPointer::getRiDeclare( char *declare  )
         sprintf( declare, "%s point", StringDetailType[m_dType] );
       }
     } else {
-      sprintf( declare, "%s point", StringDetailType[m_dType] );
+      if( m_isUArray ) {
+        sprintf( declare, "%s point[%d]", StringDetailType[m_dType], m_uArraySize );
+      } else {
+        sprintf( declare, "%s point", StringDetailType[m_dType] );
+      }
     }
     break;
   case rVector:
-    sprintf( declare, "%s vector", StringDetailType[m_dType] );
+    if( m_isUArray ) {
+      sprintf( declare, "%s vector[%d]", StringDetailType[m_dType], m_uArraySize );
+    } else {
+      sprintf( declare, "%s vector", StringDetailType[m_dType] );
+    }
     break;
   case rNormal:
-    sprintf( declare, "%s normal", StringDetailType[m_dType] );
+    if( m_isUArray ) {
+      sprintf( declare, "%s normal[%d]", StringDetailType[m_dType], m_uArraySize );
+    } else {
+      sprintf( declare, "%s normal", StringDetailType[m_dType] );
+    }
     break;
   case rColor:
-    sprintf( declare, "%s color", StringDetailType[m_dType] );
+    if( m_isUArray ) {
+      sprintf( declare, "%s color[%d]", StringDetailType[m_dType], m_uArraySize );
+    } else {
+      sprintf( declare, "%s color", StringDetailType[m_dType] );
+    }
     break;
   }
 }

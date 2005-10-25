@@ -83,6 +83,8 @@ extern MString liqglo_ribDir;
 extern MString liqglo_projectDir;
 extern MStringArray liqglo_DDimageName;
 
+extern MString liqglo_currentNodeName;
+extern MString liqglo_currentNodeShortName;
 
 void liquidInfo( MString info )
 //
@@ -471,11 +473,14 @@ MString parseString( const MString & inputString )
         constructedString += liqglo_ribDir;
         inToken = false;
         tokenString.clear();
-      } else {
-        constructedString += "$";
-        constructedString += tokenString;
-        tokenString.clear();
+      } else if ( tokenString == "OBJ" && inputString.substring(i+1, i+4) != "PATH" ) {
+        constructedString += liqglo_currentNodeShortName;
         inToken = false;
+        tokenString.clear();
+      } else if ( tokenString == "OBJPATH" ) {
+        constructedString += liqglo_currentNodeName;
+        inToken = false;
+        tokenString.clear();
       }
     } else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
       constructedString += (int)liqglo_lframe;
@@ -767,7 +772,7 @@ MString liquidSanitizePath( MString & inputString )
   if( inputString.substring( 1, 1 ) == ":" )
     constructedString = "//" + constructedString.substring( 0, 0 ) + constructedString.substring( 2, inputString.length() - 1 );
 #endif // defined DELIGHT || PRMAN
-  
+
   return constructedString;
 }
 

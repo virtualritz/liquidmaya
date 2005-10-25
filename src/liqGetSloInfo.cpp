@@ -1,21 +1,21 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
-** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+** "License"); you may not use this file except in compliance with the License. You may
+** obtain a copy of the License at http://www.mozilla.org/MPL/
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+** WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+** language governing rights and limitations under the License.
 **
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
+** The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+** Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+**
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -26,7 +26,7 @@
 */
 
 /* ______________________________________________________________________
-** 
+**
 ** Liquid Get .slo Info Source
 ** ______________________________________________________________________
 */
@@ -35,23 +35,23 @@
 extern "C" {
 #include <ri.h>
 #if defined( PRMAN ) || defined( DELIGHT )
-#  include <slo.h>
+#include <slo.h>
 #endif
 }
 
 // Entropy Headers
 #ifdef ENTROPY
-#  include <sleargs.h>
+#include <sleargs.h>
 #endif
 
 // Aqsis Headers
 #ifdef AQSIS
-#  include <slx.h>
+#include <slx.h>
 #endif
 
 // Pixie Headers
 #ifdef PIXIE
-#  include <sdr.h>
+#include <sdr.h>
 #endif
 
 // Maya's Headers
@@ -68,7 +68,7 @@ extern "C" {
 extern int debugMode;
 
 // Entropy to PRman type conversion : numbering has a break between
-// string ( 7 -> 4 ) and surface ( 16 -> 5 ) 
+// string ( 7 -> 4 ) and surface ( 16 -> 5 )
 int SLEtoSLOMAP[21] = { 0, 3, 2, 1, 11, 12, 13, 4, 5, 7, 6, 8, 10, 0, 0, 0, 5, 7, 6, 8, 10 };
 // Aqsis to PRman type conversion : looks the same
 int SLXtoSLOMAP[14] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
@@ -105,33 +105,37 @@ void* liqGetSloInfo::creator()
 }
 
 liqGetSloInfo::~liqGetSloInfo()
+//
+//  Description:
+//      Class destructor
+//
 {
-} 
+}
 
-MString liqGetSloInfo::getTypeStr() 
+MString liqGetSloInfo::getTypeStr()
 {
     return MString( shaderTypeStr[ shaderType ] );
 }
 
-MString liqGetSloInfo::getArgTypeStr( int num ) 
-{ 
+MString liqGetSloInfo::getArgTypeStr( int num )
+{
     return MString( shaderTypeStr[ ( int )argType[ num ] ] );
 }
 
 MString liqGetSloInfo::getArgDetailStr( int num )
-{ 
-    return MString( shaderDetailStr[ ( int )argDetail[ num ] ] ); 
-}
-
-MString liqGetSloInfo::getArgStringDefault( int num, int /*entry*/ ) 
 {
-    return MString( ( char * )argDefault[ num ] ); 
+    return MString( shaderDetailStr[ ( int )argDetail[ num ] ] );
 }
 
-float liqGetSloInfo::getArgFloatDefault( int num, int entry ) 
+MString liqGetSloInfo::getArgStringDefault( int num, int /*entry*/ )
+{
+    return MString( ( char * )argDefault[ num ] );
+}
+
+float liqGetSloInfo::getArgFloatDefault( int num, int entry )
 {
     float *floats = ( float * )argDefault[ num ];
-    return floats[ entry ]; 
+    return floats[ entry ];
 }
 
 int liqGetSloInfo::setShader( MString shaderName )
@@ -147,7 +151,7 @@ int liqGetSloInfo::setShader( MString shaderName )
       strcpy(sloFileName, shaderFileName.asChar());
       int err = Slo_SetShader( sloFileName );
       if (err != 0) {
-        printf( "Error finding shader %s \n",shaderFileName.asChar() ); 
+        printf( "Error finding shader %s \n",shaderFileName.asChar() );
         resetIt();
         return 0;
       } else {
@@ -158,7 +162,7 @@ int liqGetSloInfo::setShader( MString shaderName )
         for ( unsigned k = 1; k <= numParam; k++ ) {
           SLO_VISSYMDEF *arg;
           arg = Slo_GetArgById( k );
-          if ( arg->svd_valisvalid ) { 
+          if ( arg->svd_valisvalid ) {
             argName.push_back( arg->svd_name );
             argType.push_back( ( SHADER_TYPE )arg->svd_type );
             argArraySize.push_back( arg->svd_arraylen );
@@ -190,11 +194,23 @@ int liqGetSloInfo::setShader( MString shaderName )
               case SLO_TYPE_POINT:
               case SLO_TYPE_VECTOR:
               case SLO_TYPE_NORMAL: {
-                float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
-                floats[0] = arg->svd_default.pointval->xval;
-                floats[1] = arg->svd_default.pointval->yval;
-                floats[2] = arg->svd_default.pointval->zval;
-                argDefault.push_back( ( void * )floats );
+                if( arg->svd_arraylen > 0  ) {
+                    SLO_VISSYMDEF *subarg;
+                    float *floats = ( float *)lmalloc( sizeof( float ) * 3 * arg->svd_arraylen );
+                    for (int kk = 0; kk < arg->svd_arraylen; kk ++ ) {
+                       subarg = Slo_GetArrayArgElement(arg, kk);
+                       floats[3 * kk] = subarg->svd_default.pointval->xval;
+                       floats[3 * kk + 1] = subarg->svd_default.pointval->yval;
+                       floats[3 * kk + 2] = subarg->svd_default.pointval->zval;
+                    }
+                    argDefault.push_back( ( void * )floats );
+                } else {
+                    float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
+                    floats[0] = arg->svd_default.pointval->xval;
+                    floats[1] = arg->svd_default.pointval->yval;
+                    floats[2] = arg->svd_default.pointval->zval;
+                    argDefault.push_back( ( void * )floats );
+                }
                 break;
               }
               case SLO_TYPE_MATRIX: {
@@ -249,7 +265,7 @@ int liqGetSloInfo::setShader( MString shaderName )
     rstatus = 1;
   }
 #if defined( ENTROPY ) || defined( AQSIS) // PRMAN + ENTROPY || AQSIS
-    else 
+    else
 #endif
 #endif // PRMAN
 #ifdef DELIGHT
@@ -259,7 +275,7 @@ int liqGetSloInfo::setShader( MString shaderName )
         strcpy(sloFileName, shaderFileName.asChar());
         int err = Slo_SetShader( sloFileName );
         if (err != 0) {
-            printf( "Error finding shader %s \n",shaderFileName.asChar() ); 
+            printf( "Error finding shader %s \n",shaderFileName.asChar() );
             resetIt();
             return 0;
         } else {
@@ -275,7 +291,7 @@ int liqGetSloInfo::setShader( MString shaderName )
           for ( unsigned k = 1; k <= numParam; k++ ) {
             SLO_VISSYMDEF *arg;
             arg = Slo_GetArgById( k );
-            if ( arg->svd_valisvalid ) { 
+            if ( arg->svd_valisvalid ) {
               argName.push_back( arg->svd_name );
               argType.push_back( ( SHADER_TYPE )arg->svd_type );
               argArraySize.push_back( arg->svd_arraylen );
@@ -307,11 +323,23 @@ int liqGetSloInfo::setShader( MString shaderName )
                 case SLO_TYPE_POINT:
                 case SLO_TYPE_VECTOR:
                 case SLO_TYPE_NORMAL: {
-                  float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
-                  floats[0] = arg->svd_default.pointval->xval;
-                  floats[1] = arg->svd_default.pointval->yval;
-                  floats[2] = arg->svd_default.pointval->zval;
-                  argDefault.push_back( ( void * )floats );
+                  if( arg->svd_arraylen > 0  ) {
+                    SLO_VISSYMDEF *subarg;
+                    float *floats = ( float *)lmalloc( sizeof( float ) * 3 * arg->svd_arraylen );
+                    for (int kk = 0; kk < arg->svd_arraylen; kk ++ ) {
+                       subarg = Slo_GetArrayArgElement(arg, kk);
+                       floats[3 * kk] = subarg->svd_default.pointval->xval;
+                       floats[3 * kk + 1] = subarg->svd_default.pointval->yval;
+                       floats[3 * kk + 2] = subarg->svd_default.pointval->zval;
+                    }
+                    argDefault.push_back( ( void * )floats );
+                } else {
+                    float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
+                    floats[0] = arg->svd_default.pointval->xval;
+                    floats[1] = arg->svd_default.pointval->yval;
+                    floats[2] = arg->svd_default.pointval->zval;
+                    argDefault.push_back( ( void * )floats );
+                  }
                   break;
                 }
                 case SLO_TYPE_MATRIX: {
@@ -364,9 +392,9 @@ int liqGetSloInfo::setShader( MString shaderName )
         }
       Slo_EndShader();
       rstatus = 1;
-    } 
+    }
 #endif // DELIGHT
-#ifdef ENTROPY 
+#ifdef ENTROPY
         if ( shaderExtension == MString( "sle" ) ) {
             /* Exluna's Entropy Shader */
             sleArgs currentShader( const_cast<char *>( shaderFileName.asChar() ) );
@@ -381,11 +409,11 @@ int liqGetSloInfo::setShader( MString shaderName )
                 int invalidVals = 0;
                 for ( unsigned k = 0; k < numParam; k++ ) {
                     const sleArgs::Symbol *arg = currentShader.getarg( k );
-                    if ( arg->valisvalid() ) { 
+                    if ( arg->valisvalid() ) {
                         argName.push_back( MString( arg->name ) );
                         argType.push_back( ( SHADER_TYPE )SLEtoSLOMAP[ arg->type ] );
                         argArraySize.push_back( arg->arraylen );
-                        
+
                         if ( arg->varying ) {
                             argDetail.push_back( SHADER_DETAIL_VARYING );
                         } else {
@@ -475,7 +503,7 @@ int liqGetSloInfo::setShader( MString shaderName )
         }
 #if defined( AQSIS ) // ENTROPY + AQSIS
         else
-#endif 
+#endif
 #endif // ENTROPY
 #ifdef AQSIS
             if( shaderExtension == MString( "slx" ) )
@@ -484,13 +512,13 @@ int liqGetSloInfo::setShader( MString shaderName )
                 MString slxOnlyShaderDir = shaderFileName.substring(0,shaderFileName.rindex('/')-1);
                 SLX_SetPath(const_cast<char *>( slxOnlyShaderDir.asChar()));
                 int err = SLX_SetShader( const_cast<char *>( slxOnlyShaderName.asChar()) );
-                if (err != 0) 
+                if (err != 0)
                 {
-                    printf( "Error finding shader %s \n",shaderFileName.asChar() ); 
+                    printf( "Error finding shader %s \n",shaderFileName.asChar() );
                     resetIt();
                     return 0;
-                } 
-                else 
+                }
+                else
                 {
                     shaderName = SLX_GetName();
                     shaderType = ( SHADER_TYPE )SLXtoSLOMAP[SLX_GetType()];
@@ -503,7 +531,7 @@ int liqGetSloInfo::setShader( MString shaderName )
                         argArraySize.push_back( arg->svd_arraylen );
                         argDetail.push_back( ( SHADER_DETAIL )arg->svd_detail );
                         //commented the following line since Aqsis does not have a svd_valisvalid var
-                        //if ( arg->svd_valisvalid ) { 
+                        //if ( arg->svd_valisvalid ) {
                         switch ( arg->svd_type ) {
                         case SLX_TYPE_STRING: {
                             char *strings = ( char * )lmalloc( sizeof( char ) * strlen( *arg->svd_default.stringval ) );
@@ -531,15 +559,27 @@ int liqGetSloInfo::setShader( MString shaderName )
                         case SLX_TYPE_POINT:
                         case SLX_TYPE_VECTOR:
                         case SLX_TYPE_NORMAL: {
-                            float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
-                            floats[0] = arg->svd_default.pointval->xval;
-                            floats[1] = arg->svd_default.pointval->yval;
-                            floats[2] = arg->svd_default.pointval->zval;
-                            argDefault.push_back( ( void * )floats );
+                            if( arg->svd_arraylen > 0  ) {
+                                SLO_VISSYMDEF *subarg;
+                                float *floats = ( float *)lmalloc( sizeof( float ) * 3 * arg->svd_arraylen );
+                                for (int kk = 0; kk < arg->svd_arraylen; kk ++ ) {
+                                   subarg = SLX_GetArrayArgElement(arg, kk);
+                                   floats[3 * kk] = subarg->svd_default.pointval->xval;
+                                   floats[3 * kk + 1] = subarg->svd_default.pointval->yval;
+                                   floats[3 * kk + 2] = subarg->svd_default.pointval->zval;
+                                }
+                                argDefault.push_back( ( void * )floats );
+                            } else {
+                                float *floats = ( float *)lmalloc( sizeof( float ) * 3 );
+                                floats[0] = arg->svd_default.pointval->xval;
+                                floats[1] = arg->svd_default.pointval->yval;
+                                floats[2] = arg->svd_default.pointval->zval;
+                                argDefault.push_back( ( void * )floats );
+                            }
                             break;
                         }
                         case SLX_TYPE_MATRIX: {
-                            printf("\"%s\" [%f %f %f %f\n",   
+                            printf("\"%s\" [%f %f %f %f\n",
                                    arg->svd_spacename,
                                    (double) (arg->svd_default.matrixval->val[0][0]),
                                    (double) (arg->svd_default.matrixval->val[0][1]),
@@ -560,7 +600,7 @@ int liqGetSloInfo::setShader( MString shaderName )
                                    (double) (arg->svd_default.matrixval->val[3][1]),
                                    (double) (arg->svd_default.matrixval->val[3][2]),
                                    (double) (arg->svd_default.matrixval->val[3][3]));
-                            break;   
+                            break;
                         }
                         default: {
                             argDefault.push_back( NULL );
@@ -578,25 +618,25 @@ int liqGetSloInfo::setShader( MString shaderName )
             {
                 MString sdrShaderName = shaderFileName.substring(shaderFileName.rindex('/')+1,shaderFileName.length());
                 MString sdrPath = shaderFileName.substring(0,shaderFileName.rindex('/')-1);
-                
+
                 if( !sdrPath.length() ) sdrPath = "%";
-                
+
                 if(TSdrShader *shader = sdrGet(sdrShaderName.asChar(),sdrPath.asChar())){
                     shaderName = shader->name;
                     shaderType = (SHADER_TYPE) SDRTypetoSLOTypeMAP[shader->type];
-                    
+
                     numParam = 0;
                     TSdrParameter *curParam = shader->parameters;
                     while(curParam){
                           argName.push_back( curParam->name );
                           argType.push_back( (SHADER_TYPE) SDRtoSLOMAP[curParam->type] );
                           argArraySize.push_back( (curParam->numItems > 1) ? curParam->numItems : 0 );
-                          
+
                           if( curParam->container == CONTAINER_VARYING )
                              argDetail.push_back( SHADER_DETAIL_VARYING );
                           else
                              argDetail.push_back( SHADER_DETAIL_UNIFORM );
-                          
+
                           switch( curParam->type ){
                           case TYPE_FLOAT:
                           {
@@ -664,7 +704,7 @@ int liqGetSloInfo::setShader( MString shaderName )
                   rstatus = 1;
               }
               else{
-                  printf( "Error finding shader %s \n",shaderFileName.asChar() ); 
+                  printf( "Error finding shader %s \n",shaderFileName.asChar() );
                   resetIt();
                   return 0;
               }
@@ -689,10 +729,10 @@ void liqGetSloInfo::resetIt()
 
 MStatus liqGetSloInfo::doIt( const MArgList& args )
 {
- 
+
     MStatus     status;
     unsigned    i;
- 
+
     try {
         if ( args.length() < 2 ) throw( "Not enough arguments specified for liquidGetSloInfo!\n" );
         MString shaderFileName = args.asString( args.length() - 1, &status );
@@ -755,13 +795,25 @@ MStatus liqGetSloInfo::doIt( const MArgList& args )
                 case SHADER_TYPE_POINT:
                 case SHADER_TYPE_VECTOR:
                 case SHADER_TYPE_NORMAL: {
-                    char defaultTmp[256];
-                    sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, 0 ) );
-                    defaults.append( defaultTmp );
-                    sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, 1 ) );
-                    defaults.append( defaultTmp );
-                    sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, 2 ) );
-                    defaults.append( defaultTmp );
+                    if ( getArgArraySize( argNum ) > 0 ) {
+                        for ( int kk = 0; kk < getArgArraySize( argNum ) * 3; kk+=3 ) {
+                            char defaultTmp[256];
+                            sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, kk ) );
+                            defaults.append( defaultTmp );
+                            sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, kk+1 ) );
+                            defaults.append( defaultTmp );
+                            sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, kk+2 ) );
+                            defaults.append( defaultTmp );
+                        }
+                    } else {
+                        char defaultTmp[256];
+                        sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, 0 ) );
+                        defaults.append( defaultTmp );
+                        sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, 1 ) );
+                        defaults.append( defaultTmp );
+                        sprintf( defaultTmp, "%f", getArgFloatDefault( argNum, 2 ) );
+                        defaults.append( defaultTmp );
+                    }
                     break;
                 }
                 default: {
@@ -791,6 +843,6 @@ MStatus liqGetSloInfo::doIt( const MArgList& args )
         cerr << "liquidGetSloInfo: Unknown exception thrown\n" << endl;
     }
     resetIt();
-    return MS::kSuccess; 
+    return MS::kSuccess;
 };
 

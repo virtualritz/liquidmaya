@@ -30,16 +30,15 @@
 extern "C" {
 #include <ri.h>
 #ifdef PRMAN
-#  include <slo.h>
+#include <slo.h>
 #endif
 }
-
 #ifdef _WIN32
-#  include <process.h>
-#  include <malloc.h>
+#include <process.h>
+#include <malloc.h>
 #else
-#  include <unistd.h>
-#  include <sys/wait.h>
+#include <unistd.h>
+#include <sys/wait.h>
 #endif
 
 // Maya's Headers
@@ -66,7 +65,7 @@ extern "C" {
 extern int debugMode;
 
 
-// Set default values
+  // Set default values
 #if defined(PRMAN)
   const char * liqPreviewShader::m_default_previewer = "prman";
 #elif defined(AQSIS)
@@ -240,7 +239,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.renderCommand = renderCommand.asChar();
   preview.displayDriver = displayDriver.asChar();
   preview.displayName = displayName.asChar();
-  
+
   char *tempString = getenv( "LIQUIDHOME" );
   MString tempBackPlaneShader( tempString );
 
@@ -272,7 +271,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
 #endif
 
 #ifdef _WIN32
-    // Bad, better use global from liqRibTranslator	  
+    // Bad, better use global from liqRibTranslator
     tempString = getenv("TEMP");
     if( !tempString ) {
       tempString = getenv("TMP");
@@ -281,7 +280,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
         return MS::kFailure;
       }
     }
-    
+
     MString tempRibName( tempString );
     LIQ_ADD_SLASH_IF_NEEDED( tempRibName );
 #else
@@ -295,7 +294,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
 #ifdef _WIN32
     _spawnlp( _P_DETACH, preview.renderCommand, preview.renderCommand, tempRibName.asChar(), NULL );
 #else
-    system( ( MString( preview.renderCommand ) + " " +  tempRibName + "&" ).asChar() );
+    system( ( MString( preview.renderCommand ) + " " +  tempRibName + ";touch " + displayName + ".done&" ).asChar() );
   }
 #endif
   return MS::kSuccess;
@@ -304,7 +303,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
 #endif
 };
 
-/** 
+/**
  * Writes preview RIB into fileName for a shader
  * If fileName is RI_NULL : output to stdout
  * returns 1 on success
@@ -387,7 +386,7 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   if ( currentShader.shader_type == SHADER_TYPE_SURFACE ) {
     RiColor( currentShader.rmColor );
     RiOpacity( currentShader.rmOpacity );
-    RiSurfaceV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
+    RiSurfaceV( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
   } else if ( currentShader.shader_type == SHADER_TYPE_DISPLACEMENT ) {
     RiDisplacementV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
   }
@@ -626,7 +625,7 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     RiSurface( ( RtToken ) options->backPlaneShader, RI_NULL );
     RtInt visible = 1;
     RtString transmission = "transparent";
-  
+
     RiAttribute( "visibility", ( RtToken ) "camera", &visible, ( RtToken ) "trace", &visible, ( RtToken ) "transmission", ( RtPointer ) &transmission, RI_NULL );
     static RtPoint backplane[4] = {
       { -1.0,  1.0,  2.0 },
