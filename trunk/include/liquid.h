@@ -63,6 +63,7 @@
 extern int debugMode;
 #endif
 
+#define HERE  cout<<"at line "<<__LINE__<<" in "<<__FUNCTION__<<endl;
 
 #if !defined(LINUX) && !defined(OSX)
 #  ifndef LIQDEBUGPRINTF
@@ -170,6 +171,7 @@ enum PointLightDirection {
   pNZ     = 5
 };
 
+
 enum PixelFilterType {
   pfBoxFilter            = 0,
   pfTriangleFilter       = 1,
@@ -223,7 +225,7 @@ enum TransmissionType { // shadow cast attribute
 };
 
 struct structCamera {
-  MMatrix  mat;
+  MMatrix  mat;   // camera inverse matrix
   double  neardb;
   double  fardb;
   double  hFOV;
