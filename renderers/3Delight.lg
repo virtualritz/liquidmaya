@@ -1,7 +1,6 @@
 setAttr "liquidGlobals.renderCommand" -type "string" "renderdl"
 setAttr "liquidGlobals.previewer" -type "string" "renderdl"
 setAttr "liquidGlobals.shaderInfo" -type "string" "shaderinfo"
-setAttr "liquidGlobals.shaderComp" -type "string" "shaderdl"
 setAttr "liquidGlobals.shaderExt" -type "string" "sdl"
 setAttr "liquidGlobals.makeTexture" -type "string" "tdlmake"
 setAttr "liquidGlobals.bits_hiders" -type "string" "Hidden"
