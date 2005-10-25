@@ -1,6 +1,5 @@
 setAttr "liquidGlobals.renderCommand" -type "string" "rndr"
 setAttr "liquidGlobals.previewer" -type "string" "rndr"
-setAttr "liquidGlobals.shaderComp" -type "string" "sdrc"
 setAttr "liquidGlobals.shaderInfo" -type "string" "sdrinfo"
 setAttr "liquidGlobals.shaderExt" -type "string" "sdr"
 setAttr "liquidGlobals.makeTexture" -type "string" "texmake"
