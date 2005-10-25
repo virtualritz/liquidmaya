@@ -1,0 +1,122 @@
+light "liquidspot";
+desc "Standard Maya-Like Spot Light\nPart of Liquid.";
+
+param "intensity";
+name "intensity";
+desc "";
+type "slider";
+range [ 0 1 ];
+
+param "lightcolor";
+name "lightcolor";
+desc "";
+
+param "__nondiffuse";
+name "Non Diffuse";
+desc "";
+type "bool";
+
+param "__nonspecular";
+name "Non Specular";
+desc "";
+type "bool";
+
+param "coneangle";
+name "coneangle";
+desc "";
+type "slider";
+range [ 0 1 ];
+
+param "penumbraangle";
+name "penumbraangle";
+desc "";
+type "slider";
+range [ 0 1 ];
+
+param "dropoff";
+name "dropoff";
+desc "";
+type "slider";
+
+param "decay";
+name "decay";
+desc "";
+type "selector";
+range [ None 0 Linear 1 Quadratic 2 Cubic 3 ];
+
+group "Barn Doors";
+	param "barndoors";
+	name "barndoors";
+	desc "";
+	type "bool";
+
+	param "leftbarndoor";
+	name "leftbarndoor";
+	desc "";
+	type "slider";
+	range [ 0 1 ];
+
+	param "rightbarndoor";
+	name "rightbarndoor";
+	desc "";
+	type "slider";
+	range [ 0 1 ];
+
+	param "topbarndoor";
+	name "topbarndoor";
+	desc "";
+	type "slider";
+	range [ 0 1 ];
+
+	param "bottombarndoor";
+	name "bottombarndoor";
+	desc "";
+	type "slider";
+	range [ 0 1 ];
+group "end";
+
+group "Shadow";
+	param "shadowname";
+	name "Shadow Name";
+	type "shadow";
+
+	param "shadowbias";
+	name "Shadow Bias";
+	desc "";
+	type "slider";
+	range [ 0 1 ];
+
+	param "shadowblur";
+	name "Shadow Blur";
+	desc "";
+	type "slider";
+	range [ 0 1 ];
+
+	param "shadowsamples";
+	name "Shadow Samples";
+	desc "";
+	type "selector";
+	range [ 8 8 16 16 32 32 64 64 ];
+
+	param "shadowfiltersize";
+	name "Shadow Filter Size";
+	desc "";
+	type "slider";
+	range [ 0 1 ];
+
+	param "shadowcolor";
+	name "Shadow Color";
+	desc "";
+
+	group "AOVs" "close";
+		param "__shadow";
+		name "__shadow";
+		desc "";
+
+		param "__unshadowed_Cl";
+		name "__unshadowed_Cl";
+		desc "";
+	group "end";
+
+group "end";
+

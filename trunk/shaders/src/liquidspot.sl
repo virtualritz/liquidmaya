@@ -89,11 +89,9 @@ light liquidspot(
     cosangle = ( L . vector "shader" ( 0, 0, 1) ) / distance;
 
 
-	atten = 1;
     atten = 1 / pow( distance, decay );
     atten *= pow( cosangle, dropoff );
-    if(cosinside != cosoutside)
-    	atten *= smoothstep( cosoutside, cosinside, cosangle );
+    atten *= smoothstep( cosoutside, cosinside, cosangle );
 
     if( barndoors != 0 ) {
       point Pshad = Ps / zcomp( Ps );
