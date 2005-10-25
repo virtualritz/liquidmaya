@@ -1,6 +1,8 @@
 
 global proc AEliquidInstanceFlags( string $node )
 {
+  global int $gLiqNewVisibilityStyle;
+
   editorTemplate -beginLayout "Liquid" -collapse true;
 
     editorTemplate -label "Liquid Invisible" -addDynamicControl "liqInvisible";
@@ -11,26 +13,29 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "Raster-Oriented Dicing" -addDynamicControl "liqDiceRasterOrient";
       editorTemplate -label "Color" -addDynamicControl "liqColor";
       editorTemplate -label "Opacity" -addDynamicControl "liqOpacity";
+      editorTemplate -label "Camera Hit-Mode" -addDynamicControl "liqHitModeCamera";
       editorTemplate -label "Alpha Matte" -addDynamicControl "liqMatte";
 
     editorTemplate -endLayout;
 
-	editorTemplate -beginLayout "Visibility" -collapse false;
-	
-	  editorTemplate -label "Visible To Camera" -addDynamicControl "liqVisibilityCamera";
-	  editorTemplate -label "Visible To Ray Tracer" -addDynamicControl "liqVisibilityTrace";
-	  editorTemplate -label "Transmission" -addDynamicControl "liqVisibilityTransmission";
-	  
-	editorTemplate -endLayout;
-	
     editorTemplate -beginLayout "Ray Tracing" -collapse false;
 
-      
-      editorTemplate -label "Sample Motion" -addDynamicControl "liqTraceSampleMotion";            
+      editorTemplate -label "Visible To Ray Tracer" -addDynamicControl "liqVisibilityTrace";
+      editorTemplate -label "Visible To Diffuse Rays" -addDynamicControl "liqVisibilityDiffuse";
+      editorTemplate -label "Visible To Specular Rays" -addDynamicControl "liqVisibilitySpecular";
+      editorTemplate -label "Visible To Transmission Rays" -addDynamicControl "liqVisibilityNewTransmission";
+      editorTemplate -addSeparator;
+      editorTemplate -label "Diffuse Hit-Mode" -addDynamicControl "liqHitModeDiffuse";
+      editorTemplate -label "Specular Hit-Mode" -addDynamicControl "liqHitModeSpecular";
+      editorTemplate -label "Transmission Hit-Mode" -addDynamicControl "liqHitModeTransmission";
+      editorTemplate -label "Transmission" -addDynamicControl "liqVisibilityTransmission";
+      editorTemplate -addSeparator;
+      editorTemplate -label "Sample Motion" -addDynamicControl "liqTraceSampleMotion";
       editorTemplate -label "Trace Displacements" -addDynamicControl "liqTraceDisplacements";
       editorTemplate -label "Trace Bias" -addDynamicControl "liqTraceBias";
-      editorTemplate -label "Max Specular depth" -addDynamicControl "liqMaxSpecularDepth";
-      editorTemplate -label "Max Diffuse depth" -addDynamicControl "liqMaxDiffuseDepth";
+      editorTemplate -addSeparator;
+      editorTemplate -label "Max Diffuse Depth" -addDynamicControl "liqMaxDiffuseDepth";
+      editorTemplate -label "Max Specular Depth" -addDynamicControl "liqMaxSpecularDepth";
 
     editorTemplate -endLayout;
 
@@ -39,15 +44,8 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "Shading Rate" -addDynamicControl "liqIrradianceShadingRate";
       editorTemplate -label "Samples" -addDynamicControl "liqIrradianceNSamples";
       editorTemplate -label "Maximum Error" -addDynamicControl "liqIrradianceMaxError";
+      editorTemplate -label "Maximum Pixel Distance" -addDynamicControl "liqIrradianceMaxPixelDist";
 
-    editorTemplate -endLayout;
-    
-    editorTemplate -beginLayout "Photon" -collapse false;
-    
-      editorTemplate -label "Global Map" -addDynamicControl "liqPhotonGlobalMap";
-      editorTemplate -label "Caustic Map" -addDynamicControl "liqPhotonCausticMap";
-      editorTemplate -label "Photon Estimator" -addDynamicControl "liqPhotonEstimator";
-    
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Motion Blur" -collapse false;
@@ -65,6 +63,7 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "RIB Generator" -addDynamicControl "liqRIBGenerator";
       editorTemplate -label "Read Archive" -addDynamicControl "liqRIBReadArchive";
       editorTemplate -label "Delayed Read Archive" -addDynamicControl "liqRIBDelayedReadArchive";
+      editorTemplate -label "DRA Bounds Expansion %" -addDynamicControl "liqRIBDelayedReadArchiveBBoxExpansion";
 
     editorTemplate -endLayout;
 
@@ -76,16 +75,17 @@ global proc AEliquidInstanceFlags( string $node )
 
     editorTemplate -beginLayout "3Delight" -collapse true;
       editorTemplate -beginLayout "Sub Surface Scattering" -collapse false;
-      
+
         editorTemplate -label "Shading Rate" -addDynamicControl "liqDelightSSShadingRate";
         editorTemplate -label "Group Name" -addDynamicControl "liqDelightSSGroupName";
         editorTemplate -label "Scattering" -addDynamicControl "liqDelightSSScattering";
         editorTemplate -label "Absorption" -addDynamicControl "liqDelightSSAbsorption";
         editorTemplate -label "Refraction Index" -addDynamicControl "liqDelightSSRefraction";
-        editorTemplate -label "Scale (mm)" -addDynamicControl "liqDelightSSScale";        
-    
+        editorTemplate -label "Scale (mm)" -addDynamicControl "liqDelightSSScale";
+
       editorTemplate -endLayout;
     editorTemplate -endLayout;
 
   editorTemplate -endLayout;
 }
+

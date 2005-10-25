@@ -40,8 +40,8 @@ global proc AEdagNodeInclude ( string $nodeName )
 
 	// Liquid instance flags
 	if (`objectType $nodeName` == "transform" ) {
-		// AEmentalrayInstanceFlags $nodeName;
-		AEliquidInstanceFlags $nodeName;
+     AEmentalrayInstanceFlags $nodeName;
+     AEliquidInstanceFlags $nodeName;
 	}
 
 	AEdependNodeTemplate $nodeName;

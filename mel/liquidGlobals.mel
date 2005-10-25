@@ -41,7 +41,6 @@ global string $liqHidersList[];
 global string $liqFeaturesList[];
 global string $liqRequiredList[];
 global string $liqRendererOptions[];
-
 liquidInitGlobalVals();
 
 // the code to initialise the globals needs to be within a function, otherwise
@@ -50,185 +49,191 @@ global proc liquidInitGlobalVals()
 {
   global string $liquidGlobalsVals[];
   $liquidGlobalsVals = {
-     "launchRender", "bool", true
-    ,"renderCamera", "string", ""
-    ,"dd1imageName", "string", ""
-    ,"dd1imageType", "string", "framebuffer"
-    ,"dd1imageMode", "string", "rgba"
-    ,"dd1paramType", "string", ""
-    ,"dd1enable", "bool", true
-    ,"numDD", "long", 1
-    ,"numDD1Param", "long", 0
-    ,"createOutputDirectories", "bool", true
-    ,"expandShaderArrays", "bool", false
-    
-    ,"shaderPath", "string", ""
-    ,"texturePath", "string", ""
-    ,"archivePath", "string", ""
-    ,"proceduralPath", "string", ""    
-    
-    ,"ribName", "string", ""
-    
-    ,"pictureDirectory", "string", ""
-    ,"textureDirectory", "string", ""
-    ,"ribDirectory", "string", ""
-    ,"shaderDirectory", "string", "liqshaders"
-    ,"tempDirectory", "string", ""
-    
-    ,"deferredGen", "bool", false
-    ,"deferredBlock", "long", 1
-    ,"preframeMel", "string", ""
-    ,"postframeMel", "string", ""
-    ,"useRenderScript", "bool", false
-    ,"remoteRender", "bool", false
-    ,"netRManRender", "bool", false
-    ,"minCPU", "long", 1
-    ,"maxCPU", "long", 1
-    ,"ignoreShadows", "bool", false
-    ,"fullShadowRibs", "bool", false
-    ,"binaryOutput", "bool", false
-    ,"compressedOutput", "bool", false
-    ,"renderAllCurves", "bool", false
-    ,"outputMeshUVs", "bool", false
-    ,"ignoreSurfaces", "bool", false
-    ,"ignoreDisplacements", "bool", false
-    ,"ignoreLights", "bool", false
-    ,"ignoreVolumes", "bool", false
-    ,"outputShadersInShadows", "bool", false
-    ,"outputShadersInDeepShadows", "bool", false
+     "launchRender",                "bool",   true
 
-    ,"outputLightsInDeepShadows", "bool", false
-    ,"outputShadowPass", "bool", false
-    ,"outputHeroPass", "bool", true
-    ,"outputComments", "bool", false
-    ,"shaderDebug", "bool", false
-    ,"showProgress", "bool", false
-    ,"doAnimation", "bool", false
-    ,"startFrame", "long", 1
-    ,"endFrame", "long", "100"
-    ,"frameStep", "long", 1
-    ,"doPadding", "bool", false
-    ,"padding", "long", 0
-    ,"numProcs", "long", 0
-    ,"gain", "float", 1.0
-    ,"gamma", "float", 1.0
-    ,"xResolution", "long", 640
-    ,"yResolution", "long", 480
-    ,"pixelAspectRatio", "float", 1.0
-    ,"imageDriver", "string", ""
+    ,"renderCamera",                "string", ""
+    ,"rotateCamera",                "bool",   false
+    ,"dd1imageName",                "string", ""
+    ,"dd1imageType",                "string", "framebuffer"
+    ,"dd1imageMode",                "string", "rgba"
+    ,"dd1paramType",                "string", ""
+    ,"dd1enable",                   "bool",   true
+    ,"numDD",                       "long",   1
+    ,"numDD1Param",                 "long",   0
 
-    ,"cameraBlur", "bool", false
-    ,"transformationBlur", "bool", false
-    ,"deformationBlur", "bool", false
-    ,"shutterConfig", "long", 0
-    ,"motionBlurSamples", "long", 2
-    ,"motionFactor", "float", 2.0
-    ,"depthOfField", "bool", false
+    ,"createOutputDirectories",     "bool",   true
+    ,"expandShaderArrays",          "bool",   false
 
-    ,"pixelSamples", "long", 3
-    ,"shadingRate", "float", 1.0
+    ,"shaderPath",                  "string", ""
+    ,"texturePath",                 "string", ""
+    ,"archivePath",                 "string", ""
+    ,"proceduralPath",              "string", ""
 
-    ,"limitsOThreshold", "float", 0.996
-    ,"limitsZThreshold", "float", 1.0
-    ,"limitsBucketXSize", "long", 16
-    ,"limitsBucketYSize", "long", 16
-    ,"limitsGridSize", "long", 256
-    ,"limitsTextureMemory", "long", 65536
-    ,"limitsEyeSplits", "long", 10
-    ,"limitsGPrimSplits", "long", 4
+    ,"ribName",                     "string", ""
 
-    ,"imageDepth", "long", 8
-    ,"pixelFilter", "long", 2
-    ,"pixelFilterX", "float", 3.0
-    ,"pixelFilterY", "float", 3.0
-    ,"cleanRib", "bool", false
-    ,"cleanTex", "bool", false
-    ,"cleanShad", "bool", false
-    ,"cleanRenderScript", "bool", false
-    ,"justRib", "bool", false
-    ,"alfredTags", "string", "prman"
-    ,"alfredServices", "string", "pixarRender"
-    ,"renderCommand", "string", "renderdl"
-    ,"ribgenCommand", "string", ""
+    ,"pictureDirectory",            "string", ""
+    ,"textureDirectory",            "string", ""
+    ,"ribDirectory",                "string", ""
+    ,"shaderDirectory",             "string", "liqshaders"
+    ,"tempDirectory",               "string", ""
 
-    ,"previewer", "string", "renderdl"
-    ,"preCommand", "string", ""
-    ,"postFrameCommand", "string", ""
-    ,"preFrameCommand", "string", ""
-    ,"preJobCommand", "string", ""
-    ,"postJobCommand", "string", ""
-    ,"key", "string", "maya"
-    ,"service", "string", "liquid"
-    ,"lastRenderScript", "string", ""
-    ,"lastRibFile", "string", ""
-    ,"simpleGlobalsWindow", "bool", true
-    ,"lazyCompute", "bool", false
-    ,"cropX1", "float", 0.0
-    ,"cropX2", "float", 1.0
-    ,"cropY1", "float", 0.0
-    ,"cropY2", "float", 1.0
-    ,"exportReadArchive", "bool", false
-    ,"renderJobName", "string", ""
-    ,"shortShaderNames", "bool", false
+    ,"deferredGen",                 "bool",   false
+    ,"deferredBlock",               "long",   1
+    ,"preframeMel",                 "string", ""
+    ,"postframeMel",                "string", ""
+    ,"useRenderScript",             "bool",   false
+    ,"remoteRender",                "bool",   false
+    ,"netRManRender",               "bool",   false
+    ,"minCPU",                      "long",   1
+    ,"maxCPU",                      "long",   1
+    ,"ignoreShadows",               "bool",   false
+    ,"fullShadowRibs",              "bool",   false
+    ,"binaryOutput",                "bool",   false
+    ,"compressedOutput",            "bool",   false
+    ,"renderAllCurves",             "bool",   false
+    ,"outputMeshUVs",               "bool",   false
+    ,"ignoreSurfaces",              "bool",   false
+    ,"ignoreDisplacements",         "bool",   false
+    ,"ignoreLights",                "bool",   false
+    ,"ignoreVolumes",               "bool",   false
+    ,"outputShadersInShadows",      "bool",   false
+    ,"outputShadersInDeepShadows",  "bool",   false
 
-    ,"relativeFileNames", "bool", false
+    ,"outputLightsInDeepShadows",   "bool",   false
+    ,"outputShadowPass",            "bool",   false
+    ,"outputHeroPass",              "bool",   true
+    ,"outputComments",              "bool",   false
+    ,"shaderDebug",                 "bool",   false
+    ,"showProgress",                "bool",   false
+    ,"doAnimation",                 "bool",   false
+    ,"startFrame",                  "long",   1
+    ,"endFrame",                    "long",   "100"
+    ,"frameStep",                   "long",   1
+    ,"doPadding",                   "bool",   false
+    ,"padding",                     "long",   0
+    ,"numProcs",                    "long",   0
+    ,"gain",                        "float",  1.0
+    ,"gamma",                       "float",  1.0
+    ,"xResolution",                 "long",   640
+    ,"yResolution",                 "long",   480
+    ,"pixelAspectRatio",            "float",  1.0
+    ,"imageDriver",                 "string", ""
 
-    ,"expandAlfred", "bool", false
+    ,"cameraBlur",                  "bool",   false
+    ,"transformationBlur",          "bool",   false
+    ,"deformationBlur",             "bool",   false
+    ,"shutterConfig",               "long",   0
+    ,"motionBlurSamples",           "long",   2
+    ,"motionFactor",                "float",  2.0
+    ,"depthOfField",                "bool",   false
 
-    ,"preWorld",  "string", ""
-    ,"postWorld", "string", ""
+    ,"pixelSamples",                "long",   3
+    ,"shadingRate",                 "float",  1.0
 
-    ,"preGeom", "string", ""
-    ,"renderScriptFormat", "long", 2
-    ,"renderScriptCommand", "string", "%LIQUIDHOME%/scripts/dojob.py"
+    ,"limitsOThreshold",            "float",  0.996
+    ,"limitsZThreshold",            "float",  1.0
+    ,"limitsBucketXSize",           "long",   16
+    ,"limitsBucketYSize",           "long",   16
+    ,"limitsGridSize",              "long",   256
+    ,"limitsTextureMemory",         "long",   65536
+    ,"limitsEyeSplits",             "long",   10
+    ,"limitsGPrimSplits",           "long",   4
+
+    ,"imageDepth",                  "long",   8
+    ,"pixelFilter",                 "long",   2
+    ,"pixelFilterX",                "float",  3.0
+    ,"pixelFilterY",                "float",  3.0
+    ,"cleanRib",                    "bool",   false
+    ,"cleanTex",                    "bool",   false
+    ,"cleanShad",                   "bool",   false
+    ,"cleanRenderScript",           "bool",   false
+    ,"justRib",                     "bool",   false
+    ,"alfredTags",                  "string", "prman"
+    ,"alfredServices",              "string", "pixarRender"
+    ,"renderCommand",               "string", "renderdl"
+    ,"ribgenCommand",               "string", ""
+
+    ,"previewer",                   "string", "renderdl"
+    ,"preCommand",                  "string", ""
+    ,"postFrameCommand",            "string", ""
+    ,"preFrameCommand",             "string", ""
+    ,"preJobCommand",               "string", ""
+    ,"postJobCommand",              "string", ""
+    ,"key",                         "string", "maya"
+    ,"service",                     "string", "liquid"
+    ,"lastRenderScript",            "string", ""
+    ,"lastRibFile",                 "string", ""
+    ,"simpleGlobalsWindow",         "bool",   true
+    ,"lazyCompute",                 "bool",   false
+    ,"cropX1",                      "float",  0.0
+    ,"cropX2",                      "float",  1.0
+    ,"cropY1",                      "float",  0.0
+    ,"cropY2",                      "float",  1.0
+    ,"exportReadArchive",           "bool",   false
+    ,"renderJobName",               "string", ""
+    ,"shortShaderNames",            "bool",   false
+
+    ,"relativeFileNames",           "bool",   false
+
+    ,"expandAlfred",                "bool",   false
+
+    ,"preWorld",                    "string", ""
+    ,"postWorld",                   "string", ""
+
+    ,"preGeom",                     "string", ""
+    ,"renderScriptFormat",          "long",   2
+    ,"renderScriptCommand",         "string", "%LIQUIDHOME%/scripts/dojob.py"
 
     ,"fluidShaderBrowserDefaultPath", "string", ""
-    
-    ,"previewRenderer", "string", ""
-    ,"previewSize", "long", 128
-    ,"previewPrimitive", "long", 0
-    ,"previewDisplayDriver", "string", "idisplay"
-    ,"previewConnectionType", "long", 0
 
-    ,"useRayTracing", "bool", false
-    ,"traceBreadthFactor", "float", 1.0
-    ,"traceDepthFactor", "float", 1.0
-    ,"traceMaxDepth", "long", 10
-    ,"traceSpecularThreshold", "long", 10
-    ,"traceDisplacements", "bool", false
-    ,"traceBias", "float", 0.05
-    ,"traceSampleMotion", "bool", false
-    ,"traceMaxSpecularDepth", "long", 2
-    ,"traceMaxDiffuseDepth", "long", 2
+    ,"previewType",                 "long",   0
+    ,"previewRenderer",             "string", ""
+    ,"previewSize",                 "long",   128
+    ,"previewPrimitive",            "long",   0
+    ,"previewDisplayDriver",        "string", "idisplay"
+    ,"previewConnectionType",       "long",   0
 
-    ,"irradianceMaxError", "float", -1.0
-    ,"irradianceMaxPixelDist", "float", -1.0
-    ,"irradianceHandle", "string", ""
-    ,"irradianceFileMode", "long", 0
+    ,"useRayTracing",               "bool",   false
+    ,"traceBreadthFactor",          "float",  1.0
+    ,"traceDepthFactor",            "float",  1.0
+    ,"traceMaxDepth",               "long",   10
+    ,"traceSpecularThreshold",      "float",  10
+    ,"traceRayContinuation",        "bool",   true
+    ,"traceCacheMemory",            "long",   30720
+    ,"traceDisplacements",          "bool",   false
+    ,"traceBias",                   "float",  0.05
+    ,"traceSampleMotion",           "bool",   false
+    ,"traceMaxSpecularDepth",       "long",   2
+    ,"traceMaxDiffuseDepth",        "long",   2
 
-    ,"useMtorSubdiv", "bool", "false"
-    ,"hider", "long", "0"
-    ,"jitter","long", "1"
-    ,"renderCmdFlags","string", ""           // Render Command line flags e.g. -radio 5 for BMRT
+    ,"irradianceMaxError",          "float",  -1.0
+    ,"irradianceMaxPixelDist",      "float",  -1.0
+    ,"irradianceHandle",            "string", ""
+    ,"irradianceFileMode",          "long",   0
 
-    ,"shaderInfo",    "string", "shaderinfo" // shader info utility
-    ,"shaderComp",    "string", "shader"     // shader compiler
-    ,"shaderExt",     "string", "sdl"        // shader extension
-    ,"makeTexture",   "string", "tdlmake"    // texture make utilite
-    ,"bits_hiders",   "string", "Hidden"     // -Photon -ZBuffer -Raytrace -OpenGL
+    ,"useMtorSubdiv",               "bool",   "false"
+    ,"hider",                       "long",   "0"
+    ,"jitter",                      "long",   "1"
+    ,"renderCmdFlags",              "string", ""            // Render Command line flags e.g. -radio 5 for BMRT
+
+    ,"shaderInfo",                  "string", "shaderinfo"  // shader info utility
+    ,"shaderComp",                  "string", "shader"      // shader compiler
+    ,"shaderExt",                   "string", "sdl"         // shader extension
+    ,"makeTexture",                 "string", "tdlmake"     // texture make utilite
+    ,"bits_hiders",                 "string", "Hidden"      // -Photon -ZBuffer -Raytrace -OpenGL
 
     // This is the list of filters supported by the renderer
-    ,"bits_filters",  "string", "Box Triangle CatmullRom Bessel Gaussian Sinc BlackmanHarris Mitchell" // -SeparableCatmullRom -Lanczos -Disk
-    ,"bits_features", "string", "Blobbies Points Eyesplits Raytrace DepthOfField"
-    ,"bits_required", "string", "Swap_UV __Pref " // -MakeShadow
-    ,"dshDisplayName","string", "dsm"    // Deep Shadow Display name
-    ,"dshImageMode",  "string", "rgbaz"  // Deep Shadow Display image mode
+    ,"bits_filters",                "string", "Box Triangle CatmullRom Bessel Gaussian Sinc BlackmanHarris Mitchell" // -SeparableCatmullRom -Lanczos -Disk
+    ,"bits_features",               "string", "Blobbies Points Eyesplits Raytrace DepthOfField AdvancedVisibility"
+    ,"bits_required",               "string", "Swap_UV __Pref "   // -MakeShadow
+    ,"dshDisplayName",              "string", "dsm"               // Deep Shadow Display name
+    ,"dshImageMode",                "string", "rgbaz"             // Deep Shadow Display image mode
   };
 
 
   // This is the list of filters as it shows up in the UI
-  global string $liqFiltersList[11];
-  $liqFiltersList = {
+  global string $liqPixelFiltersList[11];
+  $liqPixelFiltersList = {
     "Box",
     "Triangle",
     "Catmull-Rom",
@@ -251,13 +256,14 @@ global proc liquidInitGlobalVals()
     "ZBuffer"
   };
 
-  global string $liqFeaturesList[5];
+  global string $liqFeaturesList[6];
   $liqFeaturesList = {
     "Blobbies",
     "Points",
     "Eyesplits",
     "Raytrace",
-    "Depth Of Field"
+    "DepthOfField",
+    "AdvancedVisibility"
   };
 
   global string $liqRequiredList[5];
@@ -287,10 +293,10 @@ global proc liquidInitGlobalVals()
 
 
 global proc validatePixelFilterMenu() {
-global string $liqFiltersList[];
+  global string $liqPixelFiltersList[];
   string $f, $supported_filters[], $supported_filters_str = `getAttr liquidGlobals.bits_filters`;
   tokenize( $supported_filters_str, $supported_filters );
-  for ( $f in $liqFiltersList )  {
+  for ( $f in $liqPixelFiltersList )  {
     string $comp = `liquidSubstituteAll "[^a-zA-Z]" $f ""`;
     int $is_enabled = ( stringArrayCount( $comp, $supported_filters ) ) ? true : false;
     menuItem -e -en $is_enabled ( "pixelFilter_" + $comp );
@@ -298,7 +304,7 @@ global string $liqFiltersList[];
 }
 
 global proc validateHidersMenu() {
-global string $liqHidersList[];
+  global string $liqHidersList[];
   string $f, $supported_hiders[], $supported_hiders_str = `getAttr liquidGlobals.bits_hiders`;
   tokenize( $supported_hiders_str, $supported_hiders );
   for ( $f in $liqHidersList )  {
@@ -306,6 +312,40 @@ global string $liqHidersList[];
     menuItem -e -en $is_enabled ( "hider_" + $f );
   }
 }
+
+
+/**
+ *  Updates the $liqFeaturesList array with all the current features
+ */
+global proc liquidGlobalsUpdateFeatures()
+{
+  global string $liqFeaturesList[];
+  if ( liquidGlobalsExists() )
+    $liqFeaturesList = stringToStringArray( (`getAttr "liquidGlobals.bits_features"`), " ");
+}
+
+
+
+/**
+ *  Checks the visibility style
+ *  Returns 1 for prman 12.5+ style, 0 otherwise.
+ */
+global proc int liquidGlobalVisibilityStyle()
+{
+  global string $liqFeaturesList[];
+
+  if ( liquidGlobalsExists() ) {
+    string $f;
+    for ( $f in $liqFeaturesList ) {
+      if ( $f == "AdvancedVisibility" ) return 1;
+    }
+    return 0;
+  }
+
+  return -1;
+}
+
+
 
 // WETA SPECIFIC: Start
 global proc liquidAddNimbusLightParam()
@@ -351,8 +391,8 @@ global proc liquidChangeTextAttr ( string $selectedObj, string $argName, string 
 
 global proc liquidChangeScrollAttr ( string $selectedObj, string $argName, string $fieldName )
 {
-  string $fieldValue = `scrollField -q -text $fieldName`;
-  setAttr ( $selectedObj + "." + $argName ) -type "string" $fieldValue;
+    string $fieldValue = `scrollField -q -text $fieldName`;
+    setAttr ( $selectedObj + "." + $argName ) -type "string" $fieldValue;
 }
 
 global proc int liquidGlobalsExists()
@@ -361,6 +401,7 @@ global proc int liquidGlobalsExists()
   $returnVal = `objExists liquidGlobals`;
   return $returnVal;
 }
+
 
 // Create the Liquid Render Globals node
 global proc liquidCreateGlobals()
@@ -377,7 +418,9 @@ global proc liquidCreateGlobals()
   }
   liquidAddGlobals;
   liquidLoadGlobals( "default", "global" );
+  select -cl;
 }
+
 
 // Check and add the default render globals attributes to the Liquid Render Globals node
 global proc liquidAddGlobals()
@@ -499,25 +542,46 @@ global proc int liquidSaveGlobals( string $name, string $presetType ) {
   return $ret;
 }
 
+/**
+ * loads a preset file
+ * if there is an environment variable called LIQUID_GLOBALS_OVERRIDE, it will use it,
+ * otherwise it will look for the user's home directory.
+ */
 global proc liquidLoadGlobals( string $name, string $presetType ) {
+
   global string $liquidGlobalsVals[];
-  string $liquidDirectory = liquidGetUserHomeDir();    
+
+  string $liquidDirectory = getenv( "LIQUID_GLOBALS_OVERRIDE" );
+  if ( $liquidDirectory == "" ) $liquidDirectory = liquidGetUserHomeDir();
+
   if ( $presetType == "renderer") {
     $liquidDirectory = liquidGetHome();
     $liquidDirectory += "/renderers";
   }
-  string $globalName = ( $liquidDirectory + "/" + $name + ".lg" );
+
+  // allow the user to pass a qualified path
+  string $globalName = (`filetest -r $name`)? $name : ( $liquidDirectory + "/" + $name + ".lg" );
+
   if  ( `filetest -r $globalName` ) {
+
     $fileId = `fopen $globalName "r"`;
+
     while ( !`feof $fileId` ) {
       $line = `fgetline $fileId`;
       catch( `eval ( $line )` );
     }
+
     fclose $fileId;
+    liquidGlobalsUpdateFeatures();
+
   } else
     warning ("Preset file " + $name + " not found!");
+
 }
 
+/**
+ * loads a preset file and rebuilds the render global window
+ */
 global proc liquidLoadPreset(string $preset, string $presetType ) {
   deleteUI liquidGlobalsWindow;
   liquidLoadGlobals $preset $presetType;
@@ -577,6 +641,11 @@ global proc liquidSavePreset() {
 
 global proc liquidShowBoolGlobal( string $name, string $label )
 {
+  liquidShowBoolGlobalPlus( $name, $label, "" );
+}
+
+global proc liquidShowBoolGlobalPlus( string $name, string $label, string $info )
+{
   string $onCommand  = ("setAttr liquidGlobals." + $name + " true; ");
   string $offCommand = ("setAttr liquidGlobals." + $name + " false; ");
   if ( $name == "netRManRender" ) {
@@ -586,9 +655,9 @@ global proc liquidShowBoolGlobal( string $name, string $label )
   if ( `attributeQuery -node liquidGlobals -ex $name` ) {
     // Only use an empty secondary label if not on Windows (looks nicer there w/o)
     if ( `about -win` == true ) {
-      checkBoxGrp -label $label -value1 `getAttr ("liquidGlobals." + $name)` -on1 $onCommand -of1 $offCommand ( "liquidGlobals" + $name + "Check" );
+      checkBoxGrp -label $label -ann $info -value1 `getAttr ("liquidGlobals." + $name)` -on1 $onCommand -of1 $offCommand ( "liquidGlobals" + $name + "Check" );
     } else {
-      checkBoxGrp -label $label -l1 " " -value1 `getAttr ("liquidGlobals." + $name)` -on1 $onCommand -of1 $offCommand ( "liquidGlobals" + $name + "Check" );
+      checkBoxGrp -label $label -ann $info -l1 " " -value1 `getAttr ("liquidGlobals." + $name)` -on1 $onCommand -of1 $offCommand ( "liquidGlobals" + $name + "Check" );
     }
   } else {
     warning ( "global attribute " + $name + " does not exist\n" );
@@ -606,6 +675,7 @@ global proc liquidShowBitFieldGlobal( string $name, string $labels[], string $va
     $chk_group[$idx++] = `checkBoxGrp -label $s -v1 ( (stringArrayCount( $comp, $bitFields ))? true : false ) -cc ( "liquidCheckBitField " + $name + " " + $comp + " #1;" + $validateProc )`;
   }
 }
+
 
 
 global proc liquidCheckBitField( string $name, string $field, int $value )
@@ -661,14 +731,19 @@ global proc string liquidShowScrollGlobal( string $name, int $hi )
   return $ret;
 }
 
-global proc liquidShowIntGlobal( string $name, string $label )
+global proc liquidShowIntGlobalPlus( string $name, string $label, string $info )
 {
   if ( `attributeQuery -node liquidGlobals -ex $name` ) {
     $spacedlabel = $label + " ";
-    attrFieldSliderGrp -label $spacedlabel -attribute ( "liquidGlobals." + $name ) ( "liquidGlobals" + $name + "Field" );
+    attrFieldSliderGrp -label $spacedlabel -ann $info -attribute ( "liquidGlobals." + $name ) ( "liquidGlobals" + $name + "Field" );
   } else {
     warning( "global attribute " + $name + " does not exist\n" );
   }
+}
+
+global proc liquidShowIntGlobal( string $name, string $label )
+{
+  liquidShowIntGlobalPlus( $name, $label, "" );
 }
 
 global proc liquidShowFloatGlobal( string $name, string $label )
@@ -699,6 +774,7 @@ global proc liquidShowIntGlobalMenu( string $name, string $label, string $items[
     warning ( "global attribute " + $name + " does not exist\n" );
   }
 }
+
 
 
 global proc liquidDrawDisplayDrivers()
@@ -828,7 +904,7 @@ global proc liquidGlobalsDeleteDD()
 global proc liquidGlobalsForm() {
   global string $defTextViewerName;
   global string $liqHidersList[];
-  global string $liqFiltersList[];
+  global string $liqPixelFiltersList[];
   global string $liqFeaturesList[];
   global string $liqRequiredList[];
 
@@ -842,7 +918,7 @@ global proc liquidGlobalsForm() {
             liquidShowBoolGlobal "outputShadowPass" "Shadow";
           setParent ..;
         setParent ..;
-        
+
         frameLayout -bs "etchedIn" -l "Camera" -cll true;
           columnLayout -adj true;
             if ( `attributeQuery -node liquidGlobals -ex renderCamera` ) {
@@ -850,7 +926,7 @@ global proc liquidGlobalsForm() {
               string $ccurrentVal;
               $ccmd = ( "liquidChangeTextAttr liquidGlobals renderCamera liquidGlobalsCameraSelect" );
               $ccurrentVal = `getAttr liquidGlobals.renderCamera`;
-              textFieldGrp -label "Render Camera" -text ( $ccurrentVal ) -cc $ccmd liquidGlobalsCameraSelect;
+              textFieldGrp -label "Render Camera" -text ( $ccurrentVal ) -ann "right-click to get access\nto the camera list." -cc $ccmd liquidGlobalsCameraSelect;
               popupMenu -button 3 cameraListMenu;
               string $cameraList[] = `ls -cameras`;
               string $camera;
@@ -858,6 +934,9 @@ global proc liquidGlobalsForm() {
                 menuItem -l $camera -c ( "textFieldGrp -e -tx " + $camera + " liquidGlobalsCameraSelect; liquidChangeTextAttr liquidGlobals renderCamera liquidGlobalsCameraSelect" ) ( $camera + "Selection" );
               }
               setParent -menu ..;
+            }
+            if ( objExists( "liquidGlobals.rotateCamera" ) ) {
+              liquidShowBoolGlobalPlus "rotateCamera" "Rotate Camera" "This will rotate your final render by 90 degrees.";
             }
           setParent ..;
         setParent ..;
@@ -869,7 +948,7 @@ global proc liquidGlobalsForm() {
             liquidShowFloatGlobal "pixelAspectRatio" "Pixel Aspect Ratio";
           setParent ..;
         setParent ..;
-        
+
         frameLayout -bs "etchedIn" -l "Animation" -cll true;
           columnLayout -adj true;
             liquidShowBoolGlobal "doAnimation" "Animation";
@@ -882,13 +961,13 @@ global proc liquidGlobalsForm() {
         frameLayout -bs "etchedIn" -l "Motion Blur & Depth of Field" -cll true;
           columnLayout -adj true;
             liquidShowBoolGlobal "transformationBlur" "Transformation Blur";
-            liquidShowBoolGlobal "deformationBlur"    "Deformation Blur";            
+            liquidShowBoolGlobal "deformationBlur"    "Deformation Blur";
             liquidShowIntGlobal  "motionBlurSamples"  "Motion Samples";
-            liquidShowIntGlobal  "motionFactor"       "Motion Factor";            
+            liquidShowIntGlobal  "motionFactor"       "Motion Factor";
             separator;
-            liquidShowBoolGlobal "cameraBlur"         "Camera Blur";
+            liquidShowBoolGlobalPlus "cameraBlur"     "Camera Blur" "This is a potentially expensive switch...";
             liquidShowIntGlobalMenu "shutterConfig"   "Shutter Configuration" {"Open on Frame","Center on Frame","Center Between Frames","Close on Next Frame"};
-            separator;            
+            separator;
             liquidShowBoolGlobal "depthOfField"       "Depth of Field";
           setParent ..;
         setParent ..;
@@ -918,7 +997,7 @@ global proc liquidGlobalsForm() {
         setParent ..;
 
         frameLayout -bs "etchedIn" -l "Search Paths" -cll true;
-          columnLayout -adj true;        
+          columnLayout -adj true;
             liquidShowStringGlobal "shaderPath"       "Shaders";
             liquidShowStringGlobal "texturePath"      "Textures";
             liquidShowStringGlobal "archivePath"      "Archives";
@@ -956,7 +1035,7 @@ global proc liquidGlobalsForm() {
         frameLayout -bs "etchedIn" -l "Filtering" -cll true;
           columnLayout -adj true;
 
-            liquidShowIntGlobalMenu "pixelFilter" "Pixel Filter" $liqFiltersList;
+            liquidShowIntGlobalMenu "pixelFilter" "Pixel Filter" $liqPixelFiltersList;
 
             validatePixelFilterMenu();
             liquidShowIntGlobal     "pixelFilterX" "Filter Width";
@@ -1003,8 +1082,12 @@ global proc liquidGlobalsForm() {
             separator;
             liquidShowFloatGlobal "traceBreadthFactor"     "Trace Breadth Factor";
             liquidShowFloatGlobal "traceDepthFactor"       "Trace Depth Factor";
+            separator;
             liquidShowIntGlobal   "traceMaxDepth"          "Max. Ray Depth";
-            liquidShowIntGlobal   "traceSpecularThreshold" "Specular Threshold";
+            liquidShowFloatGlobal "traceSpecularThreshold" "Specular Threshold";
+            separator;
+            liquidShowBoolGlobal  "traceRayContinuation"   "Ray Continuation";
+            liquidShowIntGlobal   "traceCacheMemory"       "Geo Cache Size";
           setParent ..;
         setParent ..;
         frameLayout -bs "etchedIn" -l "General" -cll true;
@@ -1188,13 +1271,13 @@ global proc liquidGlobalsForm() {
           columnLayout -adj true;
             liquidShowStringGlobal "renderCommand" "Renderer";
             liquidShowStringGlobal "renderCmdFlags" "Flags";
-            
+
             separator;
             liquidShowStringGlobal "previewer" "Previewer";
             liquidShowStringGlobal "shaderInfo" "Shader Info";
             liquidShowStringGlobal "shaderComp" "Shader Compiler";
             liquidShowStringGlobal "makeTexture" "Make Texture";
-            
+
             separator;
             liquidShowStringGlobal "shaderExt" "Shader Extension";
           setParent..;
@@ -1202,27 +1285,23 @@ global proc liquidGlobalsForm() {
 
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Hiders" -cll true -cl true;
           columnLayout -adj true;
-            //liquidShowStringGlobal "bits_hiders" "hiders";
             liquidShowBitFieldGlobal( "bits_hiders", $liqHidersList, "validateHidersMenu" );
           setParent..;
         setParent..;
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Pixel Filters" -cll true -cl true;
           columnLayout -adj true;
-            //liquidShowStringGlobal "bits_filters" "filters";
-            liquidShowBitFieldGlobal( "bits_filters", $liqFiltersList, "validatePixelFilterMenu" );
+            liquidShowBitFieldGlobal( "bits_filters", $liqPixelFiltersList, "validatePixelFilterMenu" );
           setParent..;
         setParent..;
 
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Features" -cll true -cl true;
           columnLayout -adj true;
-            //liquidShowStringGlobal "bits_features" "filters";
             liquidShowBitFieldGlobal( "bits_features", $liqFeaturesList, "" );
           setParent..;
         setParent..;
 
         frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Requirements" -cll true -cl true;
           columnLayout -adj true;
-            //liquidShowStringGlobal "bits_required" "required";
             liquidShowBitFieldGlobal( "bits_required", $liqRequiredList, "" );
           setParent..;
         setParent..;
@@ -1238,17 +1317,21 @@ global proc liquidGlobalsForm() {
       columnLayout -adj true liquidGlobalsFluidSet;
         frameLayout -bs "etchedIn" -l "Shader Preview" -cll true;
           columnLayout -adj true;
-            liquidShowIntGlobal     "previewSize"           "Size";
-            liquidShowIntGlobalMenu "previewPrimitive"      "Primitive" {"Sphere", "Cube", "Cylinder", "Torus", "Plane", "Teapot"};
-            liquidShowStringGlobal  "previewDisplayDriver"  "Display Driver";
-            liquidShowIntGlobalMenu "previewConnectionType" "Connection Type" {"RIB", "Pipe"};
+            liquidShowIntGlobalMenu "previewType" "Preview Type" {"Fluid Window", "External Window"};
             separator;
-            liquidShowStringGlobal "previewRenderer" "Render Command";
+            columnLayout -adj true liquidGlobalsFluidPreviewSet;
+              liquidShowIntGlobal     "previewSize"           "Size";
+              liquidShowIntGlobalMenu "previewPrimitive"      "Primitive" {"Sphere", "Cube", "Cylinder", "Torus", "Plane", "Teapot"};
+              liquidShowStringGlobal  "previewDisplayDriver"  "Display Driver";
+              liquidShowIntGlobalMenu "previewConnectionType" "Connection Type" {"RIB", "Pipe"};
+              separator;
+              liquidShowStringGlobal "previewRenderer" "Render Command";
+            setParent ..;
           setParent ..;
         setParent ..;
         frameLayout -bs "etchedIn" -l "Shader Browser" -cll true;
           columnLayout -adj true;
-            liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path";
+	    liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path";
           setParent ..;
         setParent ..;
       setParent ..;
@@ -1268,7 +1351,7 @@ global proc liquidGlobalsForm() {
     setParent ..;
 
     button -label "Close" -h 26 -command "window -e -vis false liquidGlobalsWindow" liquidGlobalscloseButton;
-    
+
     formLayout -edit
       -attachForm liquidGlobalscloseButton "bottom" 0
       -attachForm liquidGlobalscloseButton "left"   0
@@ -1301,7 +1384,7 @@ global proc liquidGlobalsWindow()
   }
   if ( !`window -exists liquidGlobalsWindow` ) {
     liquidAddGlobals;
-    window -wh 530 600 -mb true -title "Liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
+    window -mb true -title "Liquid Render Globals" -iconName "liquidGlobals" -rtf true liquidGlobalsWindow;
     menu -label "Presets" -p liquidGlobalsWindow liquidGlobalsPresetMenu;
       menuItem -label "Save..." -c liquidSavePreset -p liquidGlobalsPresetMenu liquidGlobalsPresetMenuSave;
       menuItem -label "Save as Default" -enable false;

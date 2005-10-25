@@ -19,7 +19,6 @@
 // The RenderMan (R) Interface Procedures and Protocol are:
 // Copyright 1988, 1989, Pixar All Rights Reserved
 // RenderMan (R) is a registered trademark of Pixar
-
 //
 //  Creation Date:    21.05.2003 22:08
 //
@@ -42,7 +41,6 @@
 //	- creases and corners hardness are keyable
 //	- UI window remains active in component mode also
 //	- menu item for adding creases, corners, holes, stitches
-
 
 
 global string $liq_inspectorWin = "liqSubdivInspectorWin";
@@ -71,7 +69,7 @@ proc dispSelectedName( string $curSelection) {
 
   if ( !`formLayout -exists liq_sbd_insp_SelectedNameForm`) {
 
-    formLayout  -numberOfDivisions 100 -h 32 liq_sbd_insp_SelectedNameForm;
+    formLayout  -numberOfDivisions 100  liq_sbd_insp_SelectedNameForm;
       nameField  liq_sbd_insp_nameObject;
       symbolButton -i "inArrow.xpm" -ann "pick Up node" -w 20 -h 18 -c ("pickWalk -d up") liq_sbd_insp_btnUpNode;
       symbolButton -i "outArrow.xpm" -ann "pick Down node" -w 20 -h 18 -c ("pickWalk -d down") liq_sbd_insp_btnDnNode;
@@ -137,13 +135,9 @@ global proc liq_sbd_insp_dispAttributes( string $shape ) {
     string $liqUVinterpModes[];
 
     $liqUVinterpModes = {
-
       "True Facevarying",
-
       "PRMan Facevarying",
-
       "Facevertex"
-
     };
 
     string $menu = `optionMenuGrp -cal 1 "right" -label "UV Intepolation"`;
@@ -195,7 +189,7 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
     $i=0;
     for ( $inSetNode in $creases ) {
       $attr = $inSetNode + ".liqSubdivCrease";
-          attrFieldSliderGrp -width 300 -cw 2 $cw2 -label $inSetNode -at $attr -pre 2 -min 0 -max 10 -fs 0.1 -ss 0.1;
+          attrFieldSliderGrp -width 300 -adj 3 -cw4 100 50 1 1 -ct4 "both" "both" "both" "both" -label $inSetNode -at $attr -pre 2 -min 0 -max 10 -fs 0.1 -ss 0.1;
           string $appCmdPop = `popupMenu`;
       menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
       menuItem -divider true;
@@ -218,7 +212,7 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
     $i=0;
     for ( $inSetNode in $corners ) {
       $attr = $inSetNode + ".liqSubdivCorner";
-          attrFieldSliderGrp -width 300 -cw 2 $cw2 -label $inSetNode -at $attr -pre 2 -min 0 -max 10 -fs 0.1 -ss 0.1;
+          attrFieldSliderGrp -width 300 -adj 3 -cw4 100 50 1 1 -ct4 "both" "both" "both" "both" -label $inSetNode -at $attr -pre 2 -min 0 -max 10 -fs 0.1 -ss 0.1;
           string $appCmdPop = `popupMenu`;
       menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
       menuItem -divider true;
@@ -233,7 +227,7 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
     string $appCmdPop = `popupMenu`;
     menuItem -label $label_add -c "liquidSubdivCornerUI";
   }
-  setParent liq_sbd_insp_tagsList;  
+  setParent liq_sbd_insp_tagsList;
   frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Holes" -cll true -cl false frm_holes;
   columnLayout -adj true col_holes;
   if ( size( $holes ) ) {
