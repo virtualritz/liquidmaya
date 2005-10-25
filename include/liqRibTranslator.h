@@ -61,7 +61,7 @@ private: // Methods
   MStatus scanScene(float, int );
 
   void portFieldOfView( int width, int height, double& horizontal, double& vertical, MFnCamera& fnCamera );
-  void computeViewingFrustum (	double window_aspect, double& left, double& right, double& bottom, double& top, MFnCamera& cam );
+  void computeViewingFrustum(	double window_aspect, double& left, double& right, double& bottom, double& top, MFnCamera& cam );
   void getCameraInfo( MFnCamera &cam );
 
   // rib output functions
@@ -137,6 +137,7 @@ private: // Data
   bool cleanRib;           // clean the rib files up
   bool doDof;              // do camera depth of field
   bool doCameraMotion;     // Motion blur for moving cameras
+  bool liqglo_rotateCamera;       // rotates the camera for sideways renderings
   enum shutterConfig {
     OPEN_ON_FRAME         = 0,
     CENTER_ON_FRAME       = 1,

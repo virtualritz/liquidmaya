@@ -50,7 +50,7 @@ public:
     std::vector<liqTokenPointer> tokenPointerArray;
     MDagPath	objDagPath;
 private:
-    void parseVectorAttributes( MFnDependencyNode &nodeFn, MStringArray & strArray, ParameterType pType, unsigned faceVaryingCount );
+    void parseVectorAttributes( MFnDependencyNode &nodeFn, MStringArray & strArray, ParameterType pType );
 };
 
 #endif

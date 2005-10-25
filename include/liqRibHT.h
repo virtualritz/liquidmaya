@@ -38,10 +38,6 @@
 
 #include <liqRibNode.h>
 
-//#ifdef OSX
-//	#include <Maya/flib.h>
-//#endif
-
 #ifdef OSX
 	#ifndef ulong
 		typedef unsigned long ulong;
@@ -49,9 +45,12 @@
 #endif
 
 #include <map>
+#include <vector>
+
 
 typedef std::multimap<ulong, liqRibNode*> RNMAP;
-//typedef std::map<ulong, liqRibNode*> RNMAP;
+typedef std::vector<MString> str_Vector;
+
 
 class liqRibHT {
     
@@ -60,16 +59,17 @@ public:
 	~liqRibHT();
 			   
     int            insert( MDagPath &, double, int,
-                           ObjectType objType,
+                           ObjectType objType,int CountID,
                            MMatrix *matrix = NULL,
                            const MString instanceStr = "",
                            int particleId = -1 );
 	/*RibNode*	    find( const MObject &, ObjectType objType );*/
-	liqRibNode*    find( MString nodeName, MDagPath  path, ObjectType objType );
+	liqRibNode*    find( MString nodeName, MDagPath  path, ObjectType objType);
 	
 private:
+	str_Vector RibHashVec;
 	RNMAP	RibNodeMap;
-	ulong	hash(const char *);
+	ulong	hash(const char *,int ID);
 	friend class liqRibTranslator;
 };
 

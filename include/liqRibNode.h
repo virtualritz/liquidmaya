@@ -50,7 +50,7 @@
 class liqRibNode {
   public:
 
-  
+
     liqRibNode( liqRibNode * instanceOfNode = NULL,
                 const MString instanceOfNodeStr = "" );
     ~liqRibNode();
@@ -92,12 +92,6 @@ class liqRibNode {
     bool     getMatteMode( MObject& shader );
     bool     hasRibGen();
     void     doRibGen();
-    MString  ribBoxString;
-    bool     isRibBox;
-    MString  archiveString;
-    bool     isArchive;
-    MString  delayedArchiveString;
-    bool     isDelayedArchive;
     RtBound  bound;
     bool     doDef;    /* Used for per-object deformation blur */
     bool     doMotion;  /* Used for per-object transformation blur */
@@ -124,9 +118,9 @@ class liqRibNode {
       bool      displacements;
       float     bias;
 
-      int       maxDiffuseDepth;
+      int     maxDiffuseDepth;
 
-      int       maxSpecularDepth;
+      int     maxSpecularDepth;
     } trace;
 
 
@@ -134,7 +128,11 @@ class liqRibNode {
     struct visibility {
       bool      camera;
       bool      trace;
+      bool      diffuse;
+      bool      specular;
       bool      photon;
+      bool      midpoint;
+      bool      newtransmission;
       enum {
         TRANSMISSION_TRANSPARENT = 0,
         TRANSMISSION_OPAQUE      = 1,
@@ -143,14 +141,31 @@ class liqRibNode {
       } transmission;
     } visibility;
 
+    struct hitmode {
+      enum {
+        CAMERA_HITMODE_PRIMITIVE  = 0,
+        CAMERA_HITMODE_SHADER     = 1
+      } camera;
+      enum {
+        DIFFUSE_HITMODE_PRIMITIVE  = 0,
+        DIFFUSE_HITMODE_SHADER     = 1
+      } diffuse;
+      enum {
+        SPECULAR_HITMODE_PRIMITIVE  = 0,
+        SPECULAR_HITMODE_SHADER     = 1
+      } specular;
+      enum {
+        TRANSMISSION_HITMODE_PRIMITIVE  = 0,
+        TRANSMISSION_HITMODE_SHADER     = 1
+      } transmission;
+    } hitmode;
 
     struct irradiance {
       float     shadingRate;
       int       nSamples;
       float     maxError;
-
+      float     maxPixelDist;
       MString   handle;
-
       enum {
         FILEMODE_NONE = 0,
         FILEMODE_READ = 1,
@@ -158,7 +173,6 @@ class liqRibNode {
         FILEMODE_READ_WRITE = 3
       } fileMode;
     } irradiance;
-
 
     struct photon {
       MString   globalMap;
@@ -171,33 +185,25 @@ class liqRibNode {
         SHADINGMODEL_TRANSPARENT = 4
       } shadingModel;
       int estimator;
-    } photon;    
-
-    
+    } photon;
 
     struct motion {
       bool    transformationBlur;
       bool    deformationBlur;
       int     samples;
       float   factor;
-
     } motion;
-
 
     struct rib {
       MString box;
       MString generator;
       MString readArchive;
       MString delayedReadArchive;
-
     } rib;
-
-    
 
     struct grouping {
       MString membership;
     } grouping;
-
 
     struct delight {
       struct {
@@ -210,27 +216,19 @@ class liqRibNode {
       } subSurface;
     } delight;
 
-
     struct subdivMesh {
       bool  render;
       bool  interpBounday;
-
       bool  edgeCreasing;
-
     } subdivMesh;
-
 
     struct curve {
       bool  render;
       float constantwidth;
-
     } curve;
 
-
     bool    instanceInheritPPColor;
-
     bool    invisible;
-
 
 private:
 
