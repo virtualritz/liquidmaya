@@ -732,7 +732,7 @@ global proc liquidContainerWin_iconToggle( string $canvas, string $shader )
 
   // simulate double click to edit swatch
   if ( $shader == $gLiquidContainerSwatchLastSelection ) {
-    if ( `timerX -st $gLiquidContainerSwatchTime` < 0.6 ) {
+    if ( `timerX -st $gLiquidContainerSwatchTime` < 0.9 ) {
       liquidFluidEditNodeCMD ( {$shader} );
     } else {
       //print "clic! RESET\n";
@@ -811,7 +811,7 @@ global proc liquidContainerWin_IconRefresh( string $shader, string $shortContain
   string $swatch = ("liquidContainerNode"+$shortContainerName+$shader+"_swatch");
   string $previewDir = liquidFluidGetPreviewDir();
   string $image = ( $previewDir+"/"+$shortContainerName+"/"+$shader+".tif" );
-
+ 
   if ( `getAttr ($shader+".typeId")` == 303126794 ) $image = (liquidGetHome()+"/icons/ribbox.jpg");
   else if ( `getAttr ($shader+".typeId")` == 303126792 ) $image = (liquidGetHome()+"/icons/light.jpg");
   else {
@@ -896,26 +896,50 @@ global proc liquidContainerWin_iconNew( string $shader, string $shortContainerNa
     string $bg = `canvas -rgbValue 0.85 0.85 0.85 ("liquidContainerNode"+$shortContainerName+$shader+"_bg")`;
     string $lb = `text -h 12 -al "center" -label $shader -font "smallPlainLabelFont" -dpc liquidContainer_nodeDropCB -dgc liquidContainer_nodeDragCB ("liquidContainerNode"+$shortContainerName+$shader+"_label")`;
     string $sw = `swatchDisplayPort -shadingNode ($shader+"_liqContPreview")
-                                    -widthHeight 60 60 -renderSize 60
+                                    -widthHeight 64 64 -renderSize 64
                                     -dpc liquidContainer_nodeDropCB -dgc liquidContainer_nodeDragCB
                                     ("liquidContainerNode"+$shortContainerName+$shader+"_swatch")`;
-    liquidContainerWin_iconMenu( $shader, $shortContainerName );
-
-    swatchDisplayPort -e -pressCommand ("liquidContainerWin_iconToggle "+$bg+" "+$shader) $sw;
-
-    formLayout  -e
-                -af $bg "top"     0
-                -af $bg "left"    0
-                -af $bg "right"   0
-                -af $bg "bottom"  0
+	liquidContainerWin_iconMenu( $shader, $shortContainerName );
+	
+	swatchDisplayPort -e -pressCommand ("liquidContainerWin_iconToggle  "+$bg+" "+$shader) $sw;
+	
+	if ( `about -mac` ){
+		// OSX version has 'issues' with overlapping controls
+		
+    	formLayout  -e
+    			-af $bg "top"	  68
+    			-af $bg "left"	  0
+    			-af $bg "right"	  0
+    			-af $bg "bottom"  0
+    			
                 -af $sw "top"     4
                 -af $sw "left"    4
                 -af $sw "right"   4
-                -af $lb "top"     64
+                -an $sw "bottom"
+                
+                -af $lb "top"     68
                 -af $lb "bottom"  4
                 -af $lb "left"    4
                 -af $lb "right"   4
                 ("liquidContainerNode"+$shortContainerName+$shader);
+     } else {
+     	formLayout  -e
+    			-af $bg "top"	  0
+    			-af $bg "left"	  0
+    			-af $bg "right"	  0
+    			-af $bg "bottom"  0
+    			
+                -af $sw "top"     4
+                -af $sw "left"    4
+                -af $sw "right"   4
+                -an $sw "bottom"
+                
+                -af $lb "top"     68
+                -af $lb "bottom"  4
+                -af $lb "left"    4
+                -af $lb "right"   4
+                ("liquidContainerNode"+$shortContainerName+$shader);
+     }
 }
 
 global proc liquidContainerWin_refresh( string $shortContainerName, string $selectedObj, int $force )
@@ -977,7 +1001,7 @@ global proc liquidContainerWindow( string $selectedObj, string $nodeType )
     string $grid = `gridLayout  -autoGrow true
                                 -columnsResizable true
                                 -numberOfRowsColumns 4 6
-                                -cellWidthHeight 68 80
+                                -cellWidthHeight 72 84
                                 -dpc liquidContainer_nodeDropCB
                                 -dgc liquidContainer_nodeDragCB
                                 ("containerLayoutGrid"+$shortContainerName+$selectedObj)`;

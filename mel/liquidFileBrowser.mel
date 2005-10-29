@@ -170,8 +170,8 @@ global proc string[] liquidFileBrowserIn( string $fileMatch, string $doubleClick
   string $liquidFileMainWin;
   string $returnValue[];
   $liquidFileForm = `formLayout -w 400 -nd 100`;
-    $liquidFileDescText = `textFieldGrp -w 400 -tx $liquidFileMatch -l "File Spec" -adj 2 liquidFileBrowserInFileSpecWidget`;
-    $liquidCurDirText = `textFieldGrp -w 400 -tx $liquidCFD -l "Current Dir" -adj 2 liquidFileBrowserInDirTextWidget`;
+    $liquidFileDescText = `textFieldGrp -w 400 -tx $liquidFileMatch -l "File Spec" liquidFileBrowserInFileSpecWidget`;
+    $liquidCurDirText = `textFieldGrp -w 400 -tx $liquidCFD -l "Current Dir" liquidFileBrowserInDirTextWidget`;
     $liquidFileListPane = `paneLayout -configuration "vertical2"`;
       $liquidDirList = `textScrollList -w 200 liquidFileBrowserInDirListWidget`;
       $liquidFileList = `textScrollList -allowMultiSelection true -w 200 liquidFileBrowserInFileListWidget`;
