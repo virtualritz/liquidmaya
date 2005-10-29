@@ -825,8 +825,8 @@ global proc string liquidShaderBrowser()
 {
   global string $liquidShaderSpec;
   $liquidShaderForm = `formLayout`;
-    string $listSpec = `textFieldGrp -tx $liquidShaderSpec -l "Shader Spec" -adj 2`;
-    string $nameField = `textFieldGrp -tx "" -l "Name" -adj 2`;
+    string $listSpec = `textFieldGrp -tx $liquidShaderSpec -l "Shader Spec"`;
+    string $nameField = `textFieldGrp -tx "" -l "Name"`;
     textScrollList -sc ( "liquidSelectShader " + $nameField ) -allowMultiSelection true -dcc liquidFluidEditCMD -dkc liquidFluidRemoveCMD liquidFluidShaderList;
     setParent ..;
 
