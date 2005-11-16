@@ -1,3 +1,58 @@
+1.7rc1 (pleprince)
+* Largely rewrote Fluid. It's an order of magnitude faster now.
+  o New shader and lif file parsing 10-100x faster.
+  o New shader editing window code : much faster too.
+  o Improved error checking in shader and lif parsing.
+  o Shader parameters can be arbitrarily re-ordered in the editing window.
+  o Better support for arrays in shaders.
+    + Supported :
+      # Float arrays
+      # Color arrays
+      # Vector / Normal / Point arrays
+      # String arrays
+    + Unsupported
+      # Matrices arrays.
+      # no dynamic arrays support yet.
+* Container Nodes
+  o Bringing shader organisation functionalities to liquid
+  o You can create as many containers as you want to organise your shaders.
+  o containers are only internal for the time being.
+  o read/write lcf (liquid container file) files describing their content.
+  o added a rib box node
+* Automatic dutch (rotated) camera generation
+  o Crop Window settings are still consistent after the camera has been rotated
+* feat  : Delayed read archives : if no bbox supplied, a bbox will be computed based on the current primitive.
+* feat  : Delayed read archives : added an attribute to grow/shrink the bounding box.
+* feat  : graphic render crop GUI in RenderGlobals. the crop window is visible through the camera.
+* feat  : added raytracing control options output.
+* feat  : added new visibility/ray-tracing attributes support in prman 12.5+.
+* feat  : added raytracing hit-modes support in prman 12.5+.
+* feat  : added matte support.
+* feat  : added irradiance attributes support.
+* feat  : added a template for shader nodes.
+* feat  : corrected an global initialization problem in mel startup.
+* feat  : added coordsys browser
+* feat  : added a texture viewer field in the globals. right-click in a fluid tex field allows you to display the texture with the utility of your choice.
+* feat  : you can pass a qualified path to liquidLoadGlobals
+* fixed :  RiCurves export.
+* fixed : liqMaxDiffuseDepth and liqMaxSpecularDepth were defined as float, although they should be ints.
+* fixed : rib attributes are now correctly exported.
+* fixed : substitution is working again
+  o feat  : added $OBJ and $OBJPATH to substitution
+  o feat  : added $SHOT and $VER to substitution
+o fixed : the ribbox node is not connected correctly
+o fixed : the name field of the param window does not display the real shader name.
+o feat  : make the camera name in the beauty rib file optional
+o feat  : add liqIgnoreShapes boolean attribute per node. when on, only the transform is exported.
+o feat  : string array support
+o fixed : search paths work correctly with relatives paths on.
+o fixed : search paths can be overriden on the command line.
+o feat  : explicit message to stderr if we get a bad path
+o feat  : command line help : all the flags are now displayed
+o feat  : added a shotName and shotVersion string attr to the globals. they are only there to be substituted in pipeliny stuff.
+o fixed : container swatch refresh
+
+
 1.6.7 (on sourceforge again!)
 
 - Fixed shader preview for Linux platform (untested on OS X!)
