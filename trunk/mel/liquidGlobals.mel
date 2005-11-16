@@ -70,6 +70,7 @@ global proc liquidInitGlobalVals()
     ,"proceduralPath",              "string", ""
 
     ,"ribName",                     "string", ""
+    ,"beautyRibHasCameraName",       "bool",   true
 
     ,"pictureDirectory",            "string", ""
     ,"textureDirectory",            "string", ""
@@ -220,6 +221,7 @@ global proc liquidInitGlobalVals()
     ,"shaderComp",                  "string", "shader"      // shader compiler
     ,"shaderExt",                   "string", "sdl"         // shader extension
     ,"makeTexture",                 "string", "tdlmake"     // texture make utilite
+    ,"viewTexture",                 "string", "i-display"    // texture viewer utilite
     ,"bits_hiders",                 "string", "Hidden"      // -Photon -ZBuffer -Raytrace -OpenGL
 
     // This is the list of filters supported by the renderer
@@ -228,6 +230,9 @@ global proc liquidInitGlobalVals()
     ,"bits_required",               "string", "Swap_UV __Pref "   // -MakeShadow
     ,"dshDisplayName",              "string", "dsm"               // Deep Shadow Display name
     ,"dshImageMode",                "string", "rgbaz"             // Deep Shadow Display image mode
+
+    ,"shotName",                    "string", ""
+    ,"shotVersion",                 "string", ""
   };
 
 
@@ -281,6 +286,7 @@ global proc liquidInitGlobalVals()
     "shaderComp",
     "shaderExt",
     "makeTexture",
+    "viewTexture",
     "bits_hiders",
     "bits_filters",
     "bits_features",
@@ -406,6 +412,7 @@ global proc int liquidGlobalsExists()
 // Create the Liquid Render Globals node
 global proc liquidCreateGlobals()
 {
+  eval "liquidRegistration();";
   if ( `liquidGlobalsExists` ) {
     delete liquidGlobals;
   }
@@ -452,16 +459,17 @@ global proc liquidAddGlobals()
       }
       if ( $type == "float" ) {
         eval ( "addAttr -ln " + $name + " -at \"float\" -dv " + $val + " liquidGlobals" );
+        if ( gmatch( $name, "crop??") ) {
+          addAttr -e -min 0 -max 1 ("liquidGlobals."+$name);
+        }
       }
     }
   }
 
-  // liquidLoadGlobals("default");
 }
 
-global proc liquidAddPresets() {
-  //string $liquidDirectory = liquidGetUserHomeDir() + "/";
-  // if ( !liquidCreateUserHomeDir() ) return;
+global proc liquidAddPresets()
+{
   string $liquidDirectory = liquidGetHome() + "/";
 
   string $liquidRenderersDir = $liquidDirectory + "renderers/";
@@ -481,9 +489,20 @@ global proc liquidAddPresets() {
     string $preset = substring( $currentPreset, 1, size( $currentPreset ) - 3 );
     menuItem -label $preset -c ( "liquidLoadPreset \"" + $preset + "\"" + " \"global\"" ) -p liquidGlobalsPresetMenu ( "liquidGlobalsPresetMenu" + $preset );
   }
+
+  // add home dir presets
+  menuItem -divider true;
+
+  $liquidDirectory = ( liquidGetUserHomeDir() + "/" );
+  $presetsList = `getFileList -fld $liquidDirectory -fs "*.lg"`;
+  for ( $currentPreset in $presetsList ) {
+    string $preset = substring( $currentPreset, 1, size( $currentPreset ) - 3 );
+    menuItem -label $preset -c ( "liquidLoadPreset \"" + $preset + "\"" + " \"global\"" ) -p liquidGlobalsPresetMenu ( "liquidGlobalsPresetMenu" + $preset );
+  }
 }
 
-global proc int liquidSaveGlobals( string $name, string $presetType ) {
+global proc int liquidSaveGlobals( string $name, string $presetType )
+{
   global string $liquidGlobalsVals[];
   global string $liqRendererOptions[];
   int $ret = false;
@@ -550,6 +569,7 @@ global proc int liquidSaveGlobals( string $name, string $presetType ) {
 global proc liquidLoadGlobals( string $name, string $presetType ) {
 
   global string $liquidGlobalsVals[];
+  global int $useLocalSettings;
 
   string $liquidDirectory = getenv( "LIQUID_GLOBALS_OVERRIDE" );
   if ( $liquidDirectory == "" ) $liquidDirectory = liquidGetUserHomeDir();
@@ -574,9 +594,25 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
     fclose $fileId;
     liquidGlobalsUpdateFeatures();
 
-  } else
-    warning ("Preset file " + $name + " not found!");
+  } else {
+    // check it is not in the user's home dir
 
+    $globalName = ( liquidGetUserHomeDir() + "/" + $name + ".lg" );
+
+    if  ( `filetest -r $globalName` ) {
+
+      $fileId = `fopen $globalName "r"`;
+
+      while ( !`feof $fileId` ) {
+        $line = `fgetline $fileId`;
+        catch( `eval ( $line )` );
+      }
+
+      fclose $fileId;
+      liquidGlobalsUpdateFeatures();
+    } else
+      warning ("Preset file " + $name + " not found!");
+  }
 }
 
 /**
@@ -701,6 +737,11 @@ global proc liquidCheckBitField( string $name, string $field, int $value )
 
 global proc liquidShowStringGlobal( string $name, string $label )
 {
+  liquidShowStringGlobalPlus( $name, $label, "" );
+}
+
+global proc liquidShowStringGlobalPlus( string $name, string $label, string $info )
+{
   if ( `attributeQuery -node liquidGlobals -ex $name` ) {
     string $cmd;
     string $currentVal;
@@ -708,7 +749,7 @@ global proc liquidShowStringGlobal( string $name, string $label )
     $currentVal = `getAttr ( "liquidGlobals." + $name )`;
 
     $spacedlabel = $label;
-    textFieldGrp -label $spacedlabel -text ( $currentVal ) -cc $cmd ( "liquidGlobals" + $name + "Field" );
+    textFieldGrp -label $spacedlabel -text ( $currentVal ) -ann $info -cc $cmd ( "liquidGlobals" + $name + "Field" );
   } else {
     print ( "Warning : global attribute " + $name + " does not exist\n" );
   }
@@ -775,6 +816,14 @@ global proc liquidShowIntGlobalMenu( string $name, string $label, string $items[
   }
 }
 
+global proc liquidShowCropWindowViewer()
+{
+  string $cb = `checkBoxGrp -ncb 1
+                            -cw2 140 100
+                            -l "View Crop Window"
+                            -cc1 ("liquidCropWindowViewer();")`;
+  if ( objExists( "liqCropWindowViewer" ) ) checkBoxGrp -e -v1 1 $cb;
+}
 
 
 global proc liquidDrawDisplayDrivers()
@@ -901,6 +950,489 @@ global proc liquidGlobalsDeleteDD()
 }
 
 
+global proc liquidGlobalsFrameTab()
+{
+  setUITemplate -pushTemplate attributeEditorTemplate;
+
+  columnLayout -adj true liquidGlobalsFrameSet;
+    frameLayout -bs "etchedIn" -l "Output Passes" -cll true -cl false;
+      columnLayout -adj true ;
+        liquidShowBoolGlobal "outputHeroPass" "Hero";
+        liquidShowBoolGlobal "outputShadowPass" "Shadow";
+      setParent ..;
+    setParent ..;
+
+    frameLayout -bs "etchedIn" -l "Camera" -cll true -cl false;
+      columnLayout -adj true ;
+        if ( `attributeQuery -node liquidGlobals -ex renderCamera` ) {
+          string $ccmd;
+          string $ccurrentVal;
+          $ccmd = ( "liquidChangeTextAttr liquidGlobals renderCamera liquidGlobalsCameraSelect" );
+          $ccurrentVal = `getAttr liquidGlobals.renderCamera`;
+          textFieldGrp -label "Render Camera" -text ( $ccurrentVal ) -ann "right-click to get access\nto the camera list." -cc $ccmd liquidGlobalsCameraSelect;
+          popupMenu -button 3 cameraListMenu;
+          string $cameraList[] = `ls -cameras`;
+          string $camera;
+          for ( $camera in $cameraList ) {
+            menuItem -l $camera -c ( "textFieldGrp -e -tx " + $camera + " liquidGlobalsCameraSelect; liquidChangeTextAttr liquidGlobals renderCamera liquidGlobalsCameraSelect" ) ( $camera + "Selection" );
+          }
+          setParent -menu ..;
+        }
+        if ( objExists( "liquidGlobals.rotateCamera" ) ) {
+          liquidShowBoolGlobalPlus "rotateCamera" "Rotate Camera" "This will rotate your final render by 90 degrees.";
+        }
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "Resolution" -cll true -cl false;
+      columnLayout -adj true ;
+        liquidShowIntGlobal "xResolution" "Width";
+        liquidShowIntGlobal "yResolution" "Height";
+        separator;
+        liquidShowFloatGlobal "pixelAspectRatio" "Pixel Aspect Ratio";
+      setParent ..;
+    setParent ..;
+
+    frameLayout -bs "etchedIn" -l "Animation" -cll true -cl false;
+      columnLayout -adj true ;
+        liquidShowBoolGlobal "doAnimation" "Animation";
+        liquidShowIntGlobal  "startFrame"  "Start Frame";
+        liquidShowIntGlobal  "endFrame"    "End Frame";
+        liquidShowIntGlobal  "frameStep"   "Frame Step";
+      setParent ..;
+    setParent ..;
+
+    frameLayout -bs "etchedIn" -l "Motion Blur & Depth of Field" -cll true -cl false;
+      columnLayout -adj true ;
+        liquidShowBoolGlobal "transformationBlur" "Transformation Blur";
+        liquidShowBoolGlobal "deformationBlur"    "Deformation Blur";
+        liquidShowIntGlobal  "motionBlurSamples"  "Motion Samples";
+        liquidShowIntGlobal  "motionFactor"       "Motion Factor";
+        separator;
+        liquidShowBoolGlobalPlus "cameraBlur"     "Camera Blur" "This is a potentially expensive switch...";
+        liquidShowIntGlobalMenu "shutterConfig"   "Shutter Configuration" {"Open on Frame","Center on Frame","Center Between Frames","Close on Next Frame"};
+        separator;
+        liquidShowBoolGlobal "depthOfField"       "Depth of Field";
+      setParent ..;
+    setParent ..;
+  setParent ..;
+
+  setUITemplate -popTemplate;
+}
+
+global proc liquidGlobalsFileTab()
+{
+  columnLayout -adj true liquidGlobalsFileSet;
+
+  frameLayout -bs "etchedIn" -l "RIB Name" -cll true -cl false;
+    columnLayout -adj true;
+      liquidShowStringGlobal "ribName"   "RIB Basename";
+      liquidShowBoolGlobal   "beautyRibHasCameraName" "Camera in Beauty RIB name";
+      separator;
+      liquidShowBoolGlobal   "doPadding" "RIB Extension Padding";
+      liquidShowIntGlobal    "padding"   "Padding";
+    setParent ..;
+  setParent ..;
+
+  frameLayout -bs "etchedIn" -l "Shot Infos" -cll true -cl false;
+    columnLayout -adj true;
+      liquidShowStringGlobal "shotName"     "Shot Name";
+      liquidShowStringGlobal "shotVersion"  "Shot Version";
+    setParent ..;
+  setParent ..;
+
+  frameLayout -bs "etchedIn" -l "Directories" -cll true -cl false;
+    columnLayout -adj true;
+      liquidShowStringGlobal "pictureDirectory" "Rendered Pictures";
+      liquidShowStringGlobal "textureDirectory" "Textures/Generated Maps";
+      liquidShowStringGlobal "ribDirectory"     "RIBs";
+      liquidShowStringGlobal "shaderDirectory"  "Generated Shaders";
+      liquidShowStringGlobal "tempDirectory"    "Temporary Files";
+
+      liquidShowBoolGlobal   "createOutputDirectories" "Create Missing Directories";
+
+    setParent ..;
+  setParent ..;
+
+  frameLayout -bs "etchedIn" -l "Search Paths" -cll true -cl false;
+    columnLayout -adj true;
+      string $pathInfo = ("When this field is empty, it will be inited to 'sensible' defaults.\n"+
+                          "If you fill it, it will replace the defaults.\n"+
+                          "If your replacement end with ':', it will be added before the defaults.\n"+
+                          "If your replacement starts with ':', it will be added after the defaults.");
+      liquidShowStringGlobalPlus "shaderPath"       "Shaders"     $pathInfo;
+      liquidShowStringGlobalPlus "texturePath"      "Textures"    $pathInfo;
+      liquidShowStringGlobalPlus "archivePath"      "Archives"    $pathInfo;
+      liquidShowStringGlobalPlus "proceduralPath"   "Procedurals" $pathInfo;
+    setParent ..;
+  setParent ..;
+  frameLayout -bs "etchedIn" -l "Before & After" -cll true -cl false;
+    columnLayout -adj true;
+      liquidShowStringGlobal "preframeMel"  "Pre Frame MEL";
+      liquidShowStringGlobal "postframeMel" "Post Frame MEL";
+    setParent ..;
+  setParent ..;
+  setParent ..;
+}
+
+global proc liquidGlobalsImageTab()
+{
+  global string $liqHidersList[];
+  global string $liqPixelFiltersList[];
+
+  columnLayout -adj true liquidGlobalsQualitySet;
+    frameLayout -bs "etchedIn" -l "Sampling & Shading" -cll true -cl false;
+      columnLayout -adj true;
+
+        liquidShowFloatGlobal   "shadingRate"  "Shading Rate";
+        liquidShowIntGlobal     "pixelSamples" "Pixel Samples";
+
+        separator;
+
+        liquidShowIntGlobalMenu "hider"        "Hider" $liqHidersList;
+        liquidShowBoolGlobal    "jitter"       "Jitter";
+
+        validateHidersMenu();
+      setParent ..;
+    setParent ..;
+
+    frameLayout -bs "etchedIn" -l "Filtering" -cll true -cl false;
+      columnLayout -adj true;
+
+        liquidShowIntGlobalMenu "pixelFilter" "Pixel Filter" $liqPixelFiltersList;
+
+        validatePixelFilterMenu();
+        liquidShowIntGlobal     "pixelFilterX" "Filter Width";
+        liquidShowIntGlobal     "pixelFilterY" "Filter Height";
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "Reyes" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowIntGlobal   "limitsEyeSplits"     "Eye Splits";
+        liquidShowIntGlobal   "limitsGPrimSplits"   "Geometry Splits";
+        separator;
+        liquidShowIntGlobal   "limitsBucketXSize"   "Bucket Width";
+        liquidShowIntGlobal   "limitsBucketYSize"   "Bucket Height";
+        liquidShowIntGlobal   "limitsGridSize"      "Grid Size";
+        liquidShowIntGlobal   "limitsTextureMemory" "Texture Memory (Kb)";
+        separator;
+        liquidShowFloatGlobal "limitsOThreshold"    "Opacity Threshold";
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "Image" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowIntGlobal   "imageDepth" "Bit Depth";
+
+        separator;
+        liquidShowFloatGlobal "gain" "Gain";
+        liquidShowFloatGlobal "gamma" "Gamma";
+
+        frameLayout -bs "etchedIn" -l "Crop Window" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowCropWindowViewer();
+            liquidShowFloatGlobal "cropX1" "Left";
+            liquidShowFloatGlobal "cropY1" "Top";
+            liquidShowFloatGlobal "cropX2" "Right";
+            liquidShowFloatGlobal "cropY2" "Bottom";
+
+          setParent ..;
+        setParent ..;
+      setParent ..;
+    setParent ..;
+  setParent ..;
+}
+
+global proc liquidGlobalsDisplaysTab()
+{
+  columnLayout -adj true liquidGlobalsDDSet;
+    // Build Display Driver List
+    liquidDrawDisplayDrivers;
+  setParent ..;
+}
+
+global proc liquidGlobalsRaysTab()
+{
+  columnLayout -adj true liquidGlobalsRaysSet;
+    frameLayout -bs "etchedIn" -l "Ray Tracing" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal "useRayTracing" "Enable";
+        separator;
+        liquidShowFloatGlobal "traceBreadthFactor"     "Trace Breadth Factor";
+        liquidShowFloatGlobal "traceDepthFactor"       "Trace Depth Factor";
+        separator;
+        liquidShowIntGlobal   "traceMaxDepth"          "Max. Ray Depth";
+        liquidShowFloatGlobal "traceSpecularThreshold" "Specular Threshold";
+        separator;
+        liquidShowBoolGlobal  "traceRayContinuation"   "Ray Continuation";
+        liquidShowIntGlobal   "traceCacheMemory"       "Geo Cache Size";
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "General" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal  "traceDisplacements"   "Trace Displacements";
+        liquidShowBoolGlobal  "traceSampleMotion"    "Sample Motion";
+        separator;
+        liquidShowFloatGlobal "traceBias"            "Trace Bias";
+        separator;
+        liquidShowIntGlobal   "traceMaxSpecularDepth" "Max. Specular Depth";
+        liquidShowIntGlobal   "traceMaxDiffuseDepth"  "Max. Diffuse Depth";
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "Global Illumination" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowFloatGlobal  "irradianceMaxError"     "Max. Error";
+        liquidShowFloatGlobal  "irradianceMaxPixelDist" "Max. Pixel Distance";
+        separator;
+        frameLayout -bs "etchedIn" -l "Irradiance Cache" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowStringGlobal  "irradianceHandle"   "File";
+            liquidShowIntGlobalMenu "irradianceFileMode" "Mode" {"Ignore", "Read", "Write"};
+          setParent ..;
+        setParent ..;
+      setParent ..;
+    setParent ..;
+  setParent ..;
+}
+
+global proc liquidGlobalsOptionsTab()
+{
+  columnLayout -adj true liquidGlobalsOptionSet;
+    frameLayout -bs "etchedIn" -l "Shadow Maps" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal  "ignoreShadows"  "Omit Shadow RIBs";
+        separator;
+        liquidShowBoolGlobal  "fullShadowRibs" "Write Full Shadow RIBs";
+        liquidShowBoolGlobal  "lazyCompute"    "Lazy Compute";
+        frameLayout -bs "etchedIn" -l "Depth Shadows" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowFloatGlobal "limitsZThreshold"       "Opacity Threshold";
+            separator;
+            liquidShowBoolGlobal  "outputShadersInShadows" "Output All Shaders";
+          setParent ..;
+        setParent ..;
+        frameLayout -bs "etchedIn" -l "Deep Shadows" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowBoolGlobal "outputShadersInDeepShadows" "Output All Shaders";
+            liquidShowBoolGlobal "outputLightsInDeepShadows"  "Output Lightsources";
+          setParent ..;
+        setParent ..;
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "RIB" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal "exportReadArchive" "Read Archivable RIB";
+        liquidShowBoolGlobal "renderAllCurves"   "Render All NURB Curves";
+        liquidShowBoolGlobal "outputMeshUVs"     "Output Mesh UVs";
+        frameLayout -bs "etchedIn" -l "Omit Shaders" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowBoolGlobal "ignoreSurfaces"      "No Surfaces";
+            liquidShowBoolGlobal "ignoreDisplacements" "No Displacements";
+            liquidShowBoolGlobal "ignoreLights"        "No Lightsources";
+            liquidShowBoolGlobal "ignoreVolumes"       "No Volumes";
+          setParent ..;
+        setParent ..;
+        frameLayout -bs "etchedIn" -l "Resource Paths" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowBoolGlobal "relativeFileNames" "Project Relative Paths";
+            liquidShowBoolGlobalPlus "shortShaderNames"  "No Shader Paths" "Don't output path names with shaders";
+          setParent ..;
+        setParent ..;
+        frameLayout -bs "etchedIn" -l "Shaders" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowBoolGlobal "expandShaderArrays" "Expand Shader Arrays";
+          setParent ..;
+        setParent ..;
+        frameLayout -bs "etchedIn" -l "Before & After RIB Requests" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowStringGlobal "preWorld"  "Before WorldBegin";
+            separator;
+            liquidShowStringGlobal "postWorld" "After WorldBegin";
+            liquidShowStringGlobal "preGeom"   "Before Primitives";
+          setParent ..;
+        setParent ..;
+        frameLayout -bs "etchedIn" -l "RIB Format" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowBoolGlobal "binaryOutput"     "Binary";
+            liquidShowBoolGlobal "compressedOutput" "GZip Compressed";
+          setParent ..;
+        setParent ..;
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "Clean Up" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal "cleanRib"  "Clean RIBs";
+        liquidShowBoolGlobal "cleanTex"  "Clean Texture Maps";
+        liquidShowBoolGlobal "cleanShad" "Clean Shadow Maps";
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "Feedback" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal "showProgress"   "Show Progress";
+        liquidShowBoolGlobal "outputComments" "Output Detailed Comments";
+        separator;
+        liquidShowBoolGlobal "shaderDebug" "Shader Debugging";
+      setParent ..;
+    setParent ..;
+  setParent ..;
+}
+
+global proc liquidGlobalsJobTab()
+{
+  columnLayout -adj true liquidGlobalsJobSet;
+    frameLayout -bs "etchedIn" -l "Global" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal    "launchRender" "Launch Render";
+        liquidShowBoolGlobal    "justRib" "Only Generate RIBs";
+        separator;
+        liquidShowBoolGlobal    "useRenderScript" "Use Render Job Script";
+        liquidShowIntGlobalMenu "renderScriptFormat" "Job Script Format" {"None","Alfred","XML"};
+      setParent ..;
+    setParent ..;
+
+    frameLayout -bs "etchedIn" -l "Job Script Options" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowStringGlobal "renderJobName" "Job Name";
+
+        separator;
+        liquidShowBoolGlobal   "deferredGen"   "Deferred RIB Generation";
+        liquidShowIntGlobal    "deferredBlock" "Deferred Block Size";
+        liquidShowBoolGlobal   "remoteRender"  "Remote Render";
+        liquidShowBoolGlobal   "netRManRender" "Net RenderMan";
+
+        separator;
+        liquidShowIntGlobal    "minCPU" "Min CPU";
+        liquidShowIntGlobal    "maxCPU" "Max CPU";
+
+        frameLayout -bs "etchedIn" -l "Commands" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowStringGlobal "renderScriptCommand" "Job Script Interpreter";
+            liquidShowStringGlobal "ribgenCommand"       "RIB Generator";
+          setParent ..;
+        setParent ..;
+
+        frameLayout -bs "etchedIn" -l "Before" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowStringGlobal "preCommand"      "Pre Command";
+            liquidShowStringGlobal "preJobCommand"   "Pre Job Command";
+            liquidShowStringGlobal "preFrameCommand" "Pre Frame Command";
+          setParent ..;
+        setParent ..;
+
+        frameLayout -bs "etchedIn" -l "After" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowStringGlobal "postFrameCommand" "Post Frame Command";
+            liquidShowStringGlobal "postJobCommand"   "Post Job Command";
+          setParent ..;
+        setParent ..;
+
+        frameLayout -bs "etchedIn" -l "Deferred" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowStringGlobal "key"     "Deferred Tag";
+            liquidShowStringGlobal "service" "Deferred Service";
+          setParent ..;
+        setParent ..;
+
+        frameLayout -bs "etchedIn" -l "Clean Up" -cll true -cl false;
+          columnLayout -adj true;
+            liquidShowBoolGlobal "cleanRenderScript" "Clean Job Script";
+          setParent ..;
+        setParent ..;
+      setParent ..;
+    setParent ..;
+
+      frameLayout -bs "etchedIn" -label "Alfred Specific" -cll true -cl false;
+        columnLayout -adj true;
+          liquidShowStringGlobal "alfredTags"     "Alfred Tags";
+          liquidShowStringGlobal "alfredServices" "Alfred Services";
+          liquidShowBoolGlobal   "expandAlfred"   "Alfred Expand Support";
+        setParent ..;
+      setParent ..;
+
+  setParent ..;
+}
+
+global proc liquidGlobalsRendererTab()
+{
+  global string $liqHidersList[];
+  global string $liqPixelFiltersList[];
+  global string $liqFeaturesList[];
+  global string $liqRequiredList[];
+
+  columnLayout -cat left 0 -adj true liquidGlobalsRendererSet;
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Commands" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowStringGlobal "renderCommand" "Renderer";
+        liquidShowStringGlobal "renderCmdFlags" "Flags";
+
+        separator;
+        liquidShowStringGlobal "previewer" "Previewer";
+        liquidShowStringGlobal "shaderInfo" "Shader Info";
+        liquidShowStringGlobal "shaderComp" "Shader Compiler";
+        liquidShowStringGlobal "makeTexture" "Make Texture";
+        liquidShowStringGlobal "viewTexture" "Texture Viewer";
+
+        separator;
+        liquidShowStringGlobal "shaderExt" "Shader Extension";
+      setParent..;
+    setParent..;
+
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Hiders" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBitFieldGlobal( "bits_hiders", $liqHidersList, "validateHidersMenu" );
+      setParent..;
+    setParent..;
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Pixel Filters" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBitFieldGlobal( "bits_filters", $liqPixelFiltersList, "validatePixelFilterMenu" );
+      setParent..;
+    setParent..;
+
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Features" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBitFieldGlobal( "bits_features", $liqFeaturesList, "" );
+      setParent..;
+    setParent..;
+
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Requirements" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBitFieldGlobal( "bits_required", $liqRequiredList, "" );
+      setParent..;
+    setParent..;
+
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Deep Shadow Display Driver" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowStringGlobal "dshDisplayName" "Display Name";
+        liquidShowStringGlobal "dshImageMode" "Image Mode";
+      setParent..;
+    setParent..;
+  setParent..;
+}
+
+global proc liquidGlobalsFluidTab()
+{
+  columnLayout -adj true liquidGlobalsFluidSet;
+    frameLayout -bs "etchedIn" -l "Shader Preview" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowIntGlobalMenu "previewType" "Preview Type" {"Fluid Window", "External Window"};
+        separator;
+        columnLayout -adj true liquidGlobalsFluidPreviewSet;
+          liquidShowIntGlobal     "previewSize"           "Size";
+          liquidShowIntGlobalMenu "previewPrimitive"      "Primitive" {"Sphere", "Cube", "Cylinder", "Torus", "Plane", "Teapot"};
+          liquidShowStringGlobal  "previewDisplayDriver"  "Display Driver";
+          liquidShowIntGlobalMenu "previewConnectionType" "Connection Type" {"RIB", "Pipe"};
+          separator;
+          liquidShowStringGlobal "previewRenderer" "Render Command";
+        setParent ..;
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "Shader Browser" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path";
+      setParent ..;
+    setParent ..;
+  setParent ..;
+
+}
+
 global proc liquidGlobalsForm() {
   global string $defTextViewerName;
   global string $liqHidersList[];
@@ -908,433 +1440,19 @@ global proc liquidGlobalsForm() {
   global string $liqFeaturesList[];
   global string $liqRequiredList[];
 
-  setParent liquidGlobalsWindow;
+  if ( !`renderer -q -ex liquid` ) setParent liquidGlobalsWindow;
+
   formLayout -numberOfDivisions 5 liquidGlobalsForm;
     tabLayout -scr true -cr true liquidGlobalsTab;
-      columnLayout -adj true liquidGlobalsFrameSet;
-        frameLayout -bs "etchedIn" -l "Output Passes" -cll true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal "outputHeroPass" "Hero";
-            liquidShowBoolGlobal "outputShadowPass" "Shadow";
-          setParent ..;
-        setParent ..;
-
-        frameLayout -bs "etchedIn" -l "Camera" -cll true;
-          columnLayout -adj true;
-            if ( `attributeQuery -node liquidGlobals -ex renderCamera` ) {
-              string $ccmd;
-              string $ccurrentVal;
-              $ccmd = ( "liquidChangeTextAttr liquidGlobals renderCamera liquidGlobalsCameraSelect" );
-              $ccurrentVal = `getAttr liquidGlobals.renderCamera`;
-              textFieldGrp -label "Render Camera" -text ( $ccurrentVal ) -ann "right-click to get access\nto the camera list." -cc $ccmd liquidGlobalsCameraSelect;
-              popupMenu -button 3 cameraListMenu;
-              string $cameraList[] = `ls -cameras`;
-              string $camera;
-              for ( $camera in $cameraList ) {
-                menuItem -l $camera -c ( "textFieldGrp -e -tx " + $camera + " liquidGlobalsCameraSelect; liquidChangeTextAttr liquidGlobals renderCamera liquidGlobalsCameraSelect" ) ( $camera + "Selection" );
-              }
-              setParent -menu ..;
-            }
-            if ( objExists( "liquidGlobals.rotateCamera" ) ) {
-              liquidShowBoolGlobalPlus "rotateCamera" "Rotate Camera" "This will rotate your final render by 90 degrees.";
-            }
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Resolution" -cll true;
-          columnLayout -adj true;
-            liquidShowIntGlobal "xResolution" "Width";
-            liquidShowIntGlobal "yResolution" "Height";
-            separator;
-            liquidShowFloatGlobal "pixelAspectRatio" "Pixel Aspect Ratio";
-          setParent ..;
-        setParent ..;
-
-        frameLayout -bs "etchedIn" -l "Animation" -cll true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal "doAnimation" "Animation";
-            liquidShowIntGlobal  "startFrame"  "Start Frame";
-            liquidShowIntGlobal  "endFrame"    "End Frame";
-            liquidShowIntGlobal  "frameStep"   "Frame Step";
-          setParent ..;
-        setParent ..;
-
-        frameLayout -bs "etchedIn" -l "Motion Blur & Depth of Field" -cll true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal "transformationBlur" "Transformation Blur";
-            liquidShowBoolGlobal "deformationBlur"    "Deformation Blur";
-            liquidShowIntGlobal  "motionBlurSamples"  "Motion Samples";
-            liquidShowIntGlobal  "motionFactor"       "Motion Factor";
-            separator;
-            liquidShowBoolGlobalPlus "cameraBlur"     "Camera Blur" "This is a potentially expensive switch...";
-            liquidShowIntGlobalMenu "shutterConfig"   "Shutter Configuration" {"Open on Frame","Center on Frame","Center Between Frames","Close on Next Frame"};
-            separator;
-            liquidShowBoolGlobal "depthOfField"       "Depth of Field";
-          setParent ..;
-        setParent ..;
-      setParent ..;
-      columnLayout -adj true liquidGlobalsFileSet;
-
-        frameLayout -bs "etchedIn" -l "RIB Name" -cll true;
-          columnLayout -adj true;
-            liquidShowStringGlobal "ribName"   "RIB Basename";
-
-            separator;
-            liquidShowBoolGlobal   "doPadding" "RIB Extension Padding";
-            liquidShowIntGlobal    "padding"   "Padding";
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Directories" -cll true;
-          columnLayout -adj true;
-            liquidShowStringGlobal "pictureDirectory" "Rendered Pictures";
-            liquidShowStringGlobal "textureDirectory" "Textures/Generated Maps";
-            liquidShowStringGlobal "ribDirectory"     "RIBs";
-            liquidShowStringGlobal "shaderDirectory"  "Generated Shaders";
-            liquidShowStringGlobal "tempDirectory"    "Temporary Files";
-
-            liquidShowBoolGlobal   "createOutputDirectories" "Create Missing Directories";
-
-          setParent ..;
-        setParent ..;
-
-        frameLayout -bs "etchedIn" -l "Search Paths" -cll true;
-          columnLayout -adj true;
-            liquidShowStringGlobal "shaderPath"       "Shaders";
-            liquidShowStringGlobal "texturePath"      "Textures";
-            liquidShowStringGlobal "archivePath"      "Archives";
-            liquidShowStringGlobal "proceduralPath"   "Procedurals";
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Before & After" -cll true;
-          columnLayout -adj true;
-            liquidShowStringGlobal "preframeMel"  "Pre Frame MEL";
-            liquidShowStringGlobal "postframeMel" "Post Frame MEL";
-          setParent ..;
-        setParent ..;
-      setParent ..;
-      columnLayout -adj true liquidGlobalsDDSet;
-
-        // Build Display Driver List
-        liquidDrawDisplayDrivers;
-      setParent ..;
-      columnLayout -adj true liquidGlobalsQualitySet;
-        frameLayout -bs "etchedIn" -l "Sampling & Shading" -cll true;
-          columnLayout -adj true;
-
-            liquidShowFloatGlobal   "shadingRate"  "Shading Rate";
-            liquidShowIntGlobal     "pixelSamples" "Pixel Samples";
-
-            separator;
-
-            liquidShowIntGlobalMenu "hider"        "Hider" $liqHidersList;
-            liquidShowBoolGlobal    "jitter"       "Jitter";
-
-            validateHidersMenu();
-          setParent ..;
-        setParent ..;
-
-        frameLayout -bs "etchedIn" -l "Filtering" -cll true;
-          columnLayout -adj true;
-
-            liquidShowIntGlobalMenu "pixelFilter" "Pixel Filter" $liqPixelFiltersList;
-
-            validatePixelFilterMenu();
-            liquidShowIntGlobal     "pixelFilterX" "Filter Width";
-            liquidShowIntGlobal     "pixelFilterY" "Filter Height";
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Reyes" -cll true;
-          columnLayout -adj true;
-            liquidShowIntGlobal   "limitsEyeSplits"     "Eye Splits";
-            liquidShowIntGlobal   "limitsGPrimSplits"   "Geometry Splits";
-            separator;
-            liquidShowIntGlobal   "limitsBucketXSize"   "Bucket Width";
-            liquidShowIntGlobal   "limitsBucketYSize"   "Bucket Height";
-            liquidShowIntGlobal   "limitsGridSize"      "Grid Size";
-            liquidShowIntGlobal   "limitsTextureMemory" "Texture Memory (Kb)";
-            separator;
-            liquidShowFloatGlobal "limitsOThreshold"    "Opacity Threshold";
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Image" -cll true;
-          columnLayout -adj true;
-            liquidShowIntGlobal   "imageDepth" "Bit Depth";
-
-            separator;
-            liquidShowFloatGlobal "gain" "Gain";
-            liquidShowFloatGlobal "gamma" "Gamma";
-
-            frameLayout -bs "etchedIn" -l "Crop Window" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowFloatGlobal "cropX1" "Left";
-                liquidShowFloatGlobal "cropY1" "Top";
-                liquidShowFloatGlobal "cropX2" "Right";
-                liquidShowFloatGlobal "cropY2" "Bottom";
-
-              setParent ..;
-            setParent ..;
-          setParent ..;
-        setParent ..;
-      setParent ..;
-      columnLayout -adj true liquidGlobalsRaysSet;
-        frameLayout -bs "etchedIn" -l "Ray Tracing" -cll true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal "useRayTracing" "Enable";
-            separator;
-            liquidShowFloatGlobal "traceBreadthFactor"     "Trace Breadth Factor";
-            liquidShowFloatGlobal "traceDepthFactor"       "Trace Depth Factor";
-            separator;
-            liquidShowIntGlobal   "traceMaxDepth"          "Max. Ray Depth";
-            liquidShowFloatGlobal "traceSpecularThreshold" "Specular Threshold";
-            separator;
-            liquidShowBoolGlobal  "traceRayContinuation"   "Ray Continuation";
-            liquidShowIntGlobal   "traceCacheMemory"       "Geo Cache Size";
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "General" -cll true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal  "traceDisplacements"   "Trace Displacements";
-            liquidShowBoolGlobal  "traceSampleMotion"    "Sample Motion";
-            separator;
-            liquidShowFloatGlobal "traceBias"            "Trace Bias";
-            separator;
-            liquidShowIntGlobal   "traceMaxSpecularDepth" "Max. Specular Depth";
-            liquidShowIntGlobal   "traceMaxDiffuseDepth"  "Max. Diffuse Depth";
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Global Illumination" -cll true;
-          columnLayout -adj true;
-            liquidShowFloatGlobal  "irradianceMaxError"     "Max. Error";
-            liquidShowFloatGlobal  "irradianceMaxPixelDist" "Max. Pixel Distance";
-            separator;
-            frameLayout -bs "etchedIn" -l "Irradiance Cache" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowStringGlobal  "irradianceHandle"   "File";
-                liquidShowIntGlobalMenu "irradianceFileMode" "Mode" {"Ignore", "Read", "Write"};
-              setParent ..;
-            setParent ..;
-          setParent ..;
-        setParent ..;
-      setParent ..;
-      columnLayout -adj true liquidGlobalsOptionSet;
-        frameLayout -bs "etchedIn" -l "Shadow Maps" -cll true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal  "ignoreShadows"  "Omit Shadow RIBs";
-            separator;
-            liquidShowBoolGlobal  "fullShadowRibs" "Write Full Shadow RIBs";
-            liquidShowBoolGlobal  "lazyCompute"    "Lazy Compute";
-            frameLayout -bs "etchedIn" -l "Depth Shadows" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowFloatGlobal "limitsZThreshold"       "Opacity Threshold";
-                separator;
-                liquidShowBoolGlobal  "outputShadersInShadows" "Output All Shaders";
-              setParent ..;
-            setParent ..;
-            frameLayout -bs "etchedIn" -l "Deep Shadows" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowBoolGlobal "outputShadersInDeepShadows" "Output All Shaders";
-                liquidShowBoolGlobal "outputLightsInDeepShadows"  "Output Lightsources";
-              setParent ..;
-            setParent ..;
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "RIB" -cll true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal "exportReadArchive" "Read Archivable RIB";
-            liquidShowBoolGlobal "renderAllCurves"   "Render All NURB Curves";
-            liquidShowBoolGlobal "outputMeshUVs"     "Output Mesh UVs";
-            frameLayout -bs "etchedIn" -l "Omit Shaders" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowBoolGlobal "ignoreSurfaces"      "No Surfaces";
-                liquidShowBoolGlobal "ignoreDisplacements" "No Displacements";
-                liquidShowBoolGlobal "ignoreLights"        "No Lightsources";
-                liquidShowBoolGlobal "ignoreVolumes"       "No Volumes";
-              setParent ..;
-            setParent ..;
-            frameLayout -bs "etchedIn" -l "Resource Paths" -cll true;
-              columnLayout -adj true;
-                liquidShowBoolGlobal "relativeFileNames" "Project Relative Paths";
-                liquidShowBoolGlobal "shortShaderNames"  "No Shader Paths";
-              setParent ..;
-            setParent ..;
-            frameLayout -bs "etchedIn" -l "Shaders" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowBoolGlobal "expandShaderArrays" "Expand Shader Arrays";
-              setParent ..;
-            setParent ..;
-            frameLayout -bs "etchedIn" -l "Before & After RIB Requests" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowStringGlobal "preWorld"  "Before WorldBegin";
-                separator;
-                liquidShowStringGlobal "postWorld" "After WorldBegin";
-                liquidShowStringGlobal "preGeom"   "Before Primitives";
-              setParent ..;
-            setParent ..;
-            frameLayout -bs "etchedIn" -l "RIB Format" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowBoolGlobal "binaryOutput"     "Binary";
-                liquidShowBoolGlobal "compressedOutput" "GZip Compressed";
-              setParent ..;
-            setParent ..;
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Clean Up" -cll true -cl true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal "cleanRib"  "Clean RIBs";
-            liquidShowBoolGlobal "cleanTex"  "Clean Texture Maps";
-            liquidShowBoolGlobal "cleanShad" "Clean Shadow Maps";
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Feedback" -cll true -cl true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal "showProgress"   "Show Progress";
-            liquidShowBoolGlobal "outputComments" "Output Detailed Comments";
-            separator;
-            liquidShowBoolGlobal "shaderDebug" "Shader Debugging";
-          setParent ..;
-        setParent ..;
-      setParent ..;
-
-      columnLayout -adj true liquidGlobalsJobSet;
-        frameLayout -bs "etchedIn" -l "Global" -cll true;
-          columnLayout -adj true;
-            liquidShowBoolGlobal    "launchRender" "Launch Render";
-            liquidShowBoolGlobal    "justRib" "Only Generate RIBs";
-            separator;
-            liquidShowBoolGlobal    "useRenderScript" "Use Render Job Script";
-            liquidShowIntGlobalMenu "renderScriptFormat" "Job Script Format" {"None","Alfred","XML"};
-          setParent ..;
-        setParent ..;
-
-        frameLayout -bs "etchedIn" -l "Job Script Options" -cll true;
-          columnLayout -adj true;
-            liquidShowStringGlobal "renderJobName" "Job Name";
-
-            separator;
-            liquidShowBoolGlobal   "deferredGen"   "Deferred RIB Generation";
-            liquidShowIntGlobal    "deferredBlock" "Deferred Block Size";
-            liquidShowBoolGlobal   "remoteRender"  "Remote Render";
-            liquidShowBoolGlobal   "netRManRender" "Net RenderMan";
-
-            separator;
-            liquidShowIntGlobal    "minCPU" "Min CPU";
-            liquidShowIntGlobal    "maxCPU" "Max CPU";
-
-            frameLayout -bs "etchedIn" -l "Commands" -cll true;
-              columnLayout -adj true;
-                liquidShowStringGlobal "renderScriptCommand" "Job Script Interpreter";
-                liquidShowStringGlobal "ribgenCommand"       "RIB Generator";
-              setParent ..;
-            setParent ..;
-
-            frameLayout -bs "etchedIn" -l "Before" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowStringGlobal "preCommand"      "Pre Command";
-                liquidShowStringGlobal "preJobCommand"   "Pre Job Command";
-                liquidShowStringGlobal "preFrameCommand" "Pre Frame Command";
-              setParent ..;
-            setParent ..;
-
-            frameLayout -bs "etchedIn" -l "After" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowStringGlobal "postFrameCommand" "Post Frame Command";
-                liquidShowStringGlobal "postJobCommand"   "Post Job Command";
-              setParent ..;
-            setParent ..;
-
-            frameLayout -bs "etchedIn" -l "Deferred" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowStringGlobal "key"     "Deferred Tag";
-                liquidShowStringGlobal "service" "Deferred Service";
-              setParent ..;
-            setParent ..;
-
-            frameLayout -bs "etchedIn" -l "Clean Up" -cll true -cl true;
-              columnLayout -adj true;
-                liquidShowBoolGlobal "cleanRenderScript" "Clean Job Script";
-              setParent ..;
-            setParent ..;
-          setParent ..;
-        setParent ..;
-
-          frameLayout -bs "etchedIn" -label "Alfred Specific" -cll true -cl true;
-            columnLayout -adj true;
-              liquidShowStringGlobal "alfredTags"     "Alfred Tags";
-              liquidShowStringGlobal "alfredServices" "Alfred Services";
-              liquidShowBoolGlobal   "expandAlfred"   "Alfred Expand Support";
-            setParent ..;
-          setParent ..;
-
-      setParent ..;
-
-      columnLayout -cat left 0 -adj true liquidGlobalsRendererSet;
-        frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Commands" -cll true;
-          columnLayout -adj true;
-            liquidShowStringGlobal "renderCommand" "Renderer";
-            liquidShowStringGlobal "renderCmdFlags" "Flags";
-
-            separator;
-            liquidShowStringGlobal "previewer" "Previewer";
-            liquidShowStringGlobal "shaderInfo" "Shader Info";
-            liquidShowStringGlobal "shaderComp" "Shader Compiler";
-            liquidShowStringGlobal "makeTexture" "Make Texture";
-
-            separator;
-            liquidShowStringGlobal "shaderExt" "Shader Extension";
-          setParent..;
-        setParent..;
-
-        frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Hiders" -cll true -cl true;
-          columnLayout -adj true;
-            liquidShowBitFieldGlobal( "bits_hiders", $liqHidersList, "validateHidersMenu" );
-          setParent..;
-        setParent..;
-        frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Pixel Filters" -cll true -cl true;
-          columnLayout -adj true;
-            liquidShowBitFieldGlobal( "bits_filters", $liqPixelFiltersList, "validatePixelFilterMenu" );
-          setParent..;
-        setParent..;
-
-        frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Features" -cll true -cl true;
-          columnLayout -adj true;
-            liquidShowBitFieldGlobal( "bits_features", $liqFeaturesList, "" );
-          setParent..;
-        setParent..;
-
-        frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Requirements" -cll true -cl true;
-          columnLayout -adj true;
-            liquidShowBitFieldGlobal( "bits_required", $liqRequiredList, "" );
-          setParent..;
-        setParent..;
-
-        frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Deep Shadow Display Driver" -cll true -cl true;
-          columnLayout -adj true;
-            liquidShowStringGlobal "dshDisplayName" "Display Name";
-            liquidShowStringGlobal "dshImageMode" "Image Mode";
-          setParent..;
-        setParent..;
-
-      setParent..;
-      columnLayout -adj true liquidGlobalsFluidSet;
-        frameLayout -bs "etchedIn" -l "Shader Preview" -cll true;
-          columnLayout -adj true;
-            liquidShowIntGlobalMenu "previewType" "Preview Type" {"Fluid Window", "External Window"};
-            separator;
-            columnLayout -adj true liquidGlobalsFluidPreviewSet;
-              liquidShowIntGlobal     "previewSize"           "Size";
-              liquidShowIntGlobalMenu "previewPrimitive"      "Primitive" {"Sphere", "Cube", "Cylinder", "Torus", "Plane", "Teapot"};
-              liquidShowStringGlobal  "previewDisplayDriver"  "Display Driver";
-              liquidShowIntGlobalMenu "previewConnectionType" "Connection Type" {"RIB", "Pipe"};
-              separator;
-              liquidShowStringGlobal "previewRenderer" "Render Command";
-            setParent ..;
-          setParent ..;
-        setParent ..;
-        frameLayout -bs "etchedIn" -l "Shader Browser" -cll true;
-          columnLayout -adj true;
-	    liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path";
-          setParent ..;
-        setParent ..;
-      setParent ..;
+      liquidGlobalsFrameTab();
+      liquidGlobalsFileTab();
+      liquidGlobalsDisplaysTab();
+      liquidGlobalsImageTab();
+      liquidGlobalsRaysTab();
+      liquidGlobalsOptionsTab();
+      liquidGlobalsJobTab();
+      liquidGlobalsRendererTab();
+      liquidGlobalsFluidTab();
 
       tabLayout -e
         -tabLabel "liquidGlobalsFileSet"     "File"
@@ -1361,11 +1479,12 @@ global proc liquidGlobalsForm() {
       -attachForm liquidGlobalsTab "right" 0
       -attachForm liquidGlobalsTab "top"   0
       -attachControl liquidGlobalsTab "bottom" 0 liquidGlobalscloseButton
-    liquidGlobalsForm;
+      liquidGlobalsForm;
 }
 
 global proc liquidGlobalsWindow()
 {
+
   string $layoutType = "tab";
   string $layoutCommand;
   string $layoutOptions;
@@ -1396,3 +1515,4 @@ global proc liquidGlobalsWindow()
   }
   showWindow liquidGlobalsWindow;
 }
+
