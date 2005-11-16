@@ -144,6 +144,7 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
   rib.delayedReadArchive    = "";
 
   invisible = false;
+  ignoreShapes = false;
 }
 
 /**
@@ -480,7 +481,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       }
 
       // Motion blur group ---------------------------------------------------------
-      // DOES NOT OVERRIDE GLOBALS
+      // DOES NOT SEEM TO OVERRIDE GLOBALS
       if ( motion.transformationBlur == true ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqTransformationBlur" ), &status );
@@ -572,37 +573,44 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           } else {
             // retrieve current bouding box of the transform
             MBoundingBox bounding = nodePeeker.boundingBox();
-            MPoint bMin = bounding.min();
-            MPoint bMax = bounding.max();
             // retrieve the bounding box expansion attribute
-            Dstatus.clear();
-            float extraX = 0;
-            float extraY = 0;
-            float extraZ = 0;
-            MPlug expandBBoxPlug = nodePeeker.findPlug( MString( "liqRIBDelayedReadArchiveBBoxExpansion" ), &Dstatus );
+            MPlug expandBBoxPlug = nodePeeker.findPlug( MString( "liqRIBDelayedReadArchiveBBoxScale" ), &Dstatus );
             if ( Dstatus == MS::kSuccess ) {
-              float expansionPercentage;
-              expandBBoxPlug.getValue( expansionPercentage );
-              if ( expansionPercentage != 0.0f ) {
-                expansionPercentage *= 0.005;
-                double bSizeX = bounding.width();
-                double bSizeY = bounding.height();
-                double bSizeZ = bounding.depth();
-                extraX = bSizeX * expansionPercentage;
-                extraY = bSizeY * expansionPercentage;
-                extraZ = bSizeZ * expansionPercentage;
+              double expansion;
+              expandBBoxPlug.getValue( expansion );
+              if ( expansion != 1.0 ) {
+                MTransformationMatrix bboxScale;
+                double exp[3];
+                exp[0] = exp[1] = exp[2] = expansion;
+                bboxScale.setScale( exp, MSpace::kTransform );
+                bboxScale.setScalePivot( bounding.center(), MSpace::kTransform, true );
+                bounding.transformUsing( bboxScale.asMatrix() );
               }
             }
-            bound[0] = bMin.x - extraX;
-            bound[1] = bMin.y - extraY;
-            bound[2] = bMin.z - extraZ;
-            bound[3] = bMax.x + extraX;
-            bound[4] = bMax.y + extraY;
-            bound[5] = bMax.z + extraZ;
+            MMatrix currentMatrix;
+            currentMatrix = nodePeeker.transformationMatrix();
+            // transform it to account for flattened transforms
+            bounding.transformUsing( currentMatrix.inverse() );
+            MPoint bMin = bounding.min();
+            MPoint bMax = bounding.max();
+            bound[0] = bMin.x;
+            bound[1] = bMin.y;
+            bound[2] = bMin.z;
+            bound[3] = bMax.x;
+            bound[4] = bMax.y;
+            bound[5] = bMax.z;
           }
         }
         rib.delayedReadArchive = ( delayedArchiveString == "" )? "-" : delayedArchiveString ;
       }
+
+      if ( ignoreShapes == false ) {
+        status.clear();
+        nPlug = nodePeeker.findPlug( MString( "liqIgnoreShapes" ), &status );
+        if ( status == MS::kSuccess )
+          nPlug.getValue( ignoreShapes );
+      }
+
 
       /*MFnDependencyNode nodeFn( nodePeeker );
       MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
@@ -657,7 +665,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if ( ( surfaceShader == MObject::kNullObj ) || !getOpacity( surfaceShader, opacity ) ) {
         // This is how we specify that the opacity was not found.
         //
-	    opacity.r = -1.0;
+      opacity.r = -1.0;
       }
       matteMode = getMatteMode( surfaceShader );
     } else {
@@ -1070,12 +1078,12 @@ bool liqRibNode::getColor( MObject& shader, MColor& color )
     MFnDependencyNode fnNode( shader );
     MPlug colorPlug = fnNode.findPlug( "outColor" );
     MPlug tmpPlug;
-	tmpPlug = colorPlug.child(0,&stat);
-	if(stat == MS::kSuccess) tmpPlug.getValue( color.r );
-	tmpPlug = colorPlug.child(1,&stat);
-	if(stat == MS::kSuccess) tmpPlug.getValue( color.g );
-	tmpPlug = colorPlug.child(2,&stat);
-	if(stat == MS::kSuccess) tmpPlug.getValue( color.b );
+  tmpPlug = colorPlug.child(0,&stat);
+  if(stat == MS::kSuccess) tmpPlug.getValue( color.r );
+  tmpPlug = colorPlug.child(1,&stat);
+  if(stat == MS::kSuccess) tmpPlug.getValue( color.g );
+  tmpPlug = colorPlug.child(2,&stat);
+  if(stat == MS::kSuccess) tmpPlug.getValue( color.b );
     return false;
   }
   }
@@ -1120,12 +1128,12 @@ bool liqRibNode::getOpacity( MObject& shader, MColor& opacity )
     MFnDependencyNode fnNode( shader );
     MPlug colorPlug = fnNode.findPlug( "outTransparency" );
     MPlug tmpPlug;
-	tmpPlug = colorPlug.child(0,&stat);
-	if(stat == MS::kSuccess) tmpPlug.getValue( opacity.r );
-	tmpPlug = colorPlug.child(1,&stat);
-	if(stat == MS::kSuccess) tmpPlug.getValue( opacity.g );
-	tmpPlug = colorPlug.child(2,&stat);
-	if(stat == MS::kSuccess) tmpPlug.getValue( opacity.b );
+  tmpPlug = colorPlug.child(0,&stat);
+  if(stat == MS::kSuccess) tmpPlug.getValue( opacity.r );
+  tmpPlug = colorPlug.child(1,&stat);
+  if(stat == MS::kSuccess) tmpPlug.getValue( opacity.g );
+  tmpPlug = colorPlug.child(2,&stat);
+  if(stat == MS::kSuccess) tmpPlug.getValue( opacity.b );
     opacity.r = 1.0-opacity.r;
     opacity.g = 1.0-opacity.g;
     opacity.b = 1.0-opacity.b;
