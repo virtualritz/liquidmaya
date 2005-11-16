@@ -79,4 +79,9 @@ global proc liquidReAttachParams ( string $currentNodeName, string $oldShader )
   }
 
   liquidAttachShaderParams( $currentNodeName, $shaderFileName );
+
+  // if connection is broken, fix it.
+  if ( !size( `connectionInfo -sfd ( $currentNodeName + ".liquidShaderManager" )` ) ) {
+    connectAttr -f ("liquidGlobals.liquid"+(capitalizeString($oldShader))+"Shaders") ( $currentNodeName + ".liquidShaderManager" );
+  }
 }
