@@ -151,11 +151,16 @@ MString	liqExpression::CalcValue( )
         value += ".tex";
       }
       break;
-      
+
     case exp_EnvMap:
+      cout <<"Liquid -> EnvMap is not implemented yet"<<endl;
+      break;
     case exp_CubeEnvMap:
+      cout <<"Liquid -> CubeEnvMap is not implemented yet"<<endl;
+      break;
     case exp_None:
     default:
+      cout <<"Liquid -> non valid expression token"<<endl;
       break;
   }
   return value;
