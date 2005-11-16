@@ -117,28 +117,29 @@ int  debugMode;
 FILE        *liqglo_ribFP;
 long         liqglo_lframe;
 structJob    liqglo_currentJob;
-bool         liqglo_doMotion;               // Motion blur for transformations
-bool         liqglo_doDef;                  // Motion blur for deforming objects
-bool         liqglo_doCompression;          // output compressed ribs
-bool         liqglo_doBinary;               // output binary ribs
+bool         liqglo_doMotion;                         // Motion blur for transformations
+bool         liqglo_doDef;                            // Motion blur for deforming objects
+bool         liqglo_doCompression;                    // output compressed ribs
+bool         liqglo_doBinary;                         // output binary ribs
 RtFloat      liqglo_sampleTimes[LIQMAXMOTIONSAMPLES]; // current sample times
-liquidlong   liqglo_motionSamples;          // used to assign more than two motion blur samples!
+liquidlong   liqglo_motionSamples;                    // used to assign more than two motion blur samples!
 float        liqglo_shutterTime;
-bool         liqglo_doShadows;              // Kept global for liquidRigLightData
+bool         liqglo_doShadows;                        // Kept global for liquidRigLightData
 MString      liqglo_sceneName;
-bool         liqglo_isShadowPass;           // true if we are rendering a shadow pass
+bool         liqglo_beautyRibHasCameraName;           // if true, usual behaviour, otherwise, no camera name in beauty rib
+bool         liqglo_isShadowPass;                     // true if we are rendering a shadow pass
 bool         liqglo_expandShaderArrays;
-bool         liqglo_shortShaderNames;       // true if we don't want to output path names with shaders
-bool         liqglo_relativeFileNames;      // true if we only want to output project relative names
+bool         liqglo_shortShaderNames;                 // true if we don't want to output path names with shaders
+bool         liqglo_relativeFileNames;                // true if we only want to output project relative names
 MStringArray liqglo_DDimageName;
-double       liqglo_FPS;                    // Frame-rate (for particle streak length)
-bool         liqglo_outputMeshUVs;          // true if we are writing uvs for subdivs/polys (in addition to "st")
+double       liqglo_FPS;                              // Frame-rate (for particle streak length)
+bool         liqglo_outputMeshUVs;                    // true if we are writing uvs for subdivs/polys (in addition to "st")
 
 // Kept global for liquidGlobalHelper
 MString      liqglo_projectDir;
 MString      liqglo_ribDir;
 MString      liqglo_textureDir;
-MString      liqglo_shaderPath;             // Shader searchpath
+MString      liqglo_shaderPath;               // Shader searchpath
 MString      liqglo_texturePath;             // Texture searchpath
 MString      liqglo_archivePath;
 MString      liqglo_proceduralPath;
@@ -152,7 +153,7 @@ MStringArray liqglo_preRibBoxShadow;
 bool         liqglo_useMtorSubdiv;  // use mtor subdiv attributes
 HiderType    liqglo_hider;
 RtInt        liqglo_jitter;
-MString      liqglo_makeTexture; // MakeTexture utilite name
+MString      liqglo_makeTexture;    // MakeTexture utilite name
 
 // Kept global for raytracing
 bool         rt_useRayTracing;
@@ -167,6 +168,10 @@ bool         rt_traceSampleMotion;
 RtFloat      rt_traceBias;
 liquidlong   rt_traceMaxDiffuseDepth;
 liquidlong   rt_traceMaxSpecularDepth;
+
+// Additionnal globals for organized people
+MString      liqglo_shotName;
+MString      liqglo_shotVersion;
 
 #if 0
 #ifdef _WIN32
@@ -248,12 +253,12 @@ void liqRibTranslator::processExpression( liqTokenPointer *token, liqRibLightDat
           LIQDEBUGPRINTF( expr.GetValue().asChar() );
 
           LIQDEBUGPRINTF( "\n" );
-          token->setTokenString( expr.GetValue().asChar(), expr.GetValue().length() );
+          token->setTokenString( 0, expr.GetValue().asChar(), expr.GetValue().length() );
           break;
 
         case exp_MakeTexture:
           {
-            token->setTokenString( expr.GetValue().asChar(), expr.GetValue().length() );
+            token->setTokenString( 0, expr.GetValue().asChar(), expr.GetValue().length() );
             if ( !expr.destExists || !expr.destIsNewer ) {
               LIQDEBUGPRINTF( "-> Making Texture: " );
 
@@ -290,14 +295,14 @@ void liqRibTranslator::processExpression( liqTokenPointer *token, liqRibLightDat
           LIQDEBUGPRINTF( expr.GetValue().asChar() );
 
           LIQDEBUGPRINTF( "\n" );
-          token->setTokenString( expr.GetValue().asChar(), expr.GetValue().length() );
+          token->setTokenString( 0, expr.GetValue().asChar(), expr.GetValue().length() );
           break;
 
         case exp_Shadow:
         case exp_PointShadow:
           {
             MString shadowName = liqglo_textureDir + light->autoShadowName();
-            token->setTokenString( shadowName.asChar(), shadowName.length() );
+            token->setTokenString( 0, shadowName.asChar(), shadowName.length() );
           }
           break;
 
@@ -538,6 +543,8 @@ liqRibTranslator::liqRibTranslator()
   rt_traceBias = 0.05;
   rt_traceMaxDiffuseDepth = 2;
   rt_traceMaxSpecularDepth = 2;
+  liqglo_shotName.clear();
+  liqglo_shotVersion.clear();
 #ifdef AIR
   m_renderCommand = "air";
 #elif defined( AQSIS )
@@ -643,7 +650,7 @@ MSyntax liqRibTranslator::syntax()
   MSyntax syntax;
 
   syntax.addFlag("lr",  "launchRender");
-  syntax.addFlag("nlr", "noLaunchRender");
+  syntax.addFlag("nolr", "noLaunchRender");
   syntax.addFlag("GL",  "useGlobals");
   syntax.addFlag("sel", "selected");
   syntax.addFlag("ra",  "readArchive");
@@ -738,6 +745,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
 
   LIQDEBUGPRINTF( "\n" );
 
+
   // get the current scene name
   liqglo_sceneName = liquidTransGetSceneName();
 
@@ -747,11 +755,14 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
   frameBy    = 1;
 
   // check to see if the correct project directory was found
-  if ( !fileExists( liqglo_projectDir ) )
+  if ( !fileExists( liqglo_projectDir ) ) {
     liqglo_projectDir = m_systemTempDirectory;
+    cout <<"Liquid -> trying to set project dir to system tmp :"<<liqglo_projectDir<<endl;
+  }
   LIQ_ADD_SLASH_IF_NEEDED( liqglo_projectDir );
   if ( !fileExists( liqglo_projectDir ) ) {
     MGlobal::displayWarning ( "Liquid -> Cannot find Project Directory, " + liqglo_projectDir + ", defaulting to system temp directory!\n" );
+    cout <<"Liquid -> Cannot find Project Directory, "<<liqglo_projectDir<<", defaulting to system temp directory!"<<endl;
     liqglo_projectDir = m_systemTempDirectory;
   }
 
@@ -1014,6 +1025,8 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     m_tmpDir          = liqglo_projectDir + "rmantmp";
   }
 
+  setSearchPaths();
+
   return MS::kSuccess;
 }
 
@@ -1129,13 +1142,25 @@ void liqRibTranslator::liquidReadGlobals()
   // Hmmmmmmmmm duplicated code : bad
   {
     MString varVal;
-    gPlug = rGlobalNode.findPlug( "shaderPath", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    gStatus.clear();
-    if ( varVal != "" ) {
-      liqglo_shaderPath += ":" + parseString( varVal );
+    gPlug = rGlobalNode.findPlug( "shotName", &gStatus );
+    if ( gStatus == MS::kSuccess ) {
+      gPlug.getValue( varVal );
+      // no substitution here
+      liqglo_shotName = varVal;
     }
+    gStatus.clear();
   }
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "shotVersion", &gStatus );
+    if ( gStatus == MS::kSuccess ) {
+      gPlug.getValue( varVal );
+      // no substitution here
+      liqglo_shotVersion = varVal;
+    }
+    gStatus.clear();
+  }
+  setSearchPaths();
   {
     MString varVal;
     gPlug = rGlobalNode.findPlug( "ribgenCommand", &gStatus );
@@ -1279,6 +1304,9 @@ void liqRibTranslator::liquidReadGlobals()
       liqglo_sceneName = parseString( varVal );
     }
   }
+  gPlug = rGlobalNode.findPlug( "beautyRibHasCameraName", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_beautyRibHasCameraName );
+  gStatus.clear();
   {
     MString varVal;
     gPlug = rGlobalNode.findPlug( "pictureDirectory", &gStatus );
@@ -1738,61 +1766,73 @@ bool liqRibTranslator::verifyOutputDirectories()
 #endif
 
   #define DIR_CREATION_WARNING(type, path) \
-    MGlobal::displayWarning( "Liquid -> Had trouble creating " + MString( type ) + " Directory, " + path + ". Defaulting to system temp directory!\n" )
+    MGlobal::displayWarning( "Liquid -> Had trouble creating " + MString( type ) + " Directory, " + path + ". Defaulting to system temp directory!\n" ); \
+    cout <<"WARNING: Liquid -> Had trouble creating "<<type<<" Directory, "<<path<<". Defaulting to system temp directory!"<<endl<<flush
 
   #define DIR_MISSING_WARNING(type, path) \
-    MGlobal::displayWarning( "Liquid -> " + MString( type ) + " Directory, " + path + ", does not exist. Defaulting to system temp directory!\n" )
+    MGlobal::displayWarning( "Liquid -> " + MString( type ) + " Directory, " + path + ", does not exist. Defaulting to system temp directory!\n" ); \
+    cout <<"WARNING: Liquid -> "<<type<<" Directory, "<<path<<", does not exist. Defaulting to system temp directory!"<<endl<<flush
 
   bool problem = false;
-  if ( ( access( liqglo_ribDir.asChar(), 0 )) == -1 ) {
-    if ( createOutputDirectories ) {
-      if ( MKDIR( liqglo_ribDir.asChar(), dirMode ) != 0 ) {
 
-        DIR_CREATION_WARNING( "RIB", liqglo_ribDir );
+  MString tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_ribDir, liqglo_projectDir );
+  if ( ( access( tmp_path.asChar(), 0 )) == -1 ) {
+    if ( createOutputDirectories ) {
+      if ( MKDIR( tmp_path.asChar(), dirMode ) != 0 ) {
+
+        DIR_CREATION_WARNING( "RIB", tmp_path );
         liqglo_ribDir = m_systemTempDirectory;
         problem = true;
       }
     } else {
-      DIR_MISSING_WARNING( "RIB", liqglo_ribDir );
+      DIR_MISSING_WARNING( "RIB", tmp_path );
       liqglo_ribDir = m_systemTempDirectory;
       problem = true;
     }
   }
-  if ( ( access( liqglo_textureDir.asChar(), 0 ) ) == -1 ) {
+
+  tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_textureDir, liqglo_projectDir );
+  if ( ( access( tmp_path.asChar(), 0 ) ) == -1 ) {
     if ( createOutputDirectories ) {
-      if ( MKDIR( liqglo_textureDir.asChar(), dirMode ) != 0 ) {
-        DIR_CREATION_WARNING( "Texture", liqglo_textureDir );
+      if ( MKDIR( tmp_path.asChar(), dirMode ) != 0 ) {
+        DIR_CREATION_WARNING( "Texture", tmp_path );
         liqglo_textureDir = m_systemTempDirectory;
         problem = true;
       }
     } else {
-      DIR_MISSING_WARNING( "Texture", liqglo_textureDir );
+      DIR_MISSING_WARNING( "Texture", tmp_path );
       liqglo_textureDir = m_systemTempDirectory;
       problem = true;
     }
   }
-  if ( (access( m_pixDir.asChar(), 0 )) == -1 ) {
+
+  if ( m_pixDir.index( '/' ) == 0 ) {
+    tmp_path = m_pixDir;
+  } else tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, m_pixDir, liqglo_projectDir );
+  if ( (access( tmp_path.asChar(), 0 )) == -1 ) {
     if ( createOutputDirectories ) {
-      if ( MKDIR( m_pixDir.asChar(), dirMode ) != 0 ) {
-        DIR_CREATION_WARNING( "Picture", m_pixDir );
+      if ( MKDIR( tmp_path.asChar(), dirMode ) != 0 ) {
+        DIR_CREATION_WARNING( "Picture", tmp_path );
         m_pixDir = m_systemTempDirectory;
         problem = true;
       }
     } else {
-      DIR_MISSING_WARNING( "Picture", m_pixDir );
+      DIR_MISSING_WARNING( "Picture", tmp_path );
       m_pixDir = m_systemTempDirectory;
       problem = true;
     }
   }
-  if ( (access( m_tmpDir.asChar(), 0 )) == -1 ) {
+
+  tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, m_tmpDir, liqglo_projectDir );
+  if ( (access( tmp_path.asChar(), 0 )) == -1 ) {
     if ( createOutputDirectories ) {
-      if ( MKDIR( m_tmpDir.asChar(), dirMode ) != 0 ) {
-        DIR_CREATION_WARNING( "Temp Files", m_tmpDir );
+      if ( MKDIR( tmp_path.asChar(), dirMode ) != 0 ) {
+        DIR_CREATION_WARNING( "Temp Files", tmp_path );
         m_tmpDir = m_systemTempDirectory;
         problem = true;
       }
     } else {
-      DIR_MISSING_WARNING( "Temp Files", m_tmpDir );
+      DIR_MISSING_WARNING( "Temp Files", tmp_path );
       m_tmpDir = m_systemTempDirectory;
       problem = true;
     }
@@ -1958,10 +1998,10 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     verifyOutputDirectories();
 
     if ( ( m_preFrameMel  != "" ) && !fileExists( m_preFrameMel  ) ) {
-      cout << "Liquid -> Cannot find pre frame mel script! Assuming local.\n" << flush;
+      cout << "Liquid -> Cannot find pre frame mel script file! Assuming local.\n" << flush;
     }
     if ( ( m_postFrameMel != "" ) && !fileExists( m_postFrameMel ) ) {
-      cout << "Liquid -> Cannot find post frame mel script! Assuming local.\n" << flush;
+      cout << "Liquid -> Cannot find post frame mel script file! Assuming local.\n" << flush;
     }
 
     // build temp file names
@@ -2145,7 +2185,6 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           liqglo_currentJob = *iter;
           activeCamera = liqglo_currentJob.path;
           if ( liqglo_currentJob.isShadowPass ) {
-            m_ignoreSurfaces = true;
             liqglo_isShadowPass = true;
           } else {
             liqglo_isShadowPass = false;
@@ -2261,7 +2300,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
       // set the rib file for the 'view last rib' menu command
       // NOTE: this may be overridden later on in certain code paths
       if ( !m_deferredGen ) {
-        lastRibName = liqglo_currentJob.ribFileName.asChar();
+        lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_currentJob.ribFileName.asChar(), liqglo_projectDir );
       }
 
       // now we re-iterate through the job list to write out the alfred file if we are using it
@@ -2542,9 +2581,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           frameScriptJob.chaserCommand = (std::string( "sho \"" ) + shadowPassJob->imageName.asChar() + "\"" );
         }
         if ( m_outputShadowPass && !m_outputHeroPass ) {
-          lastRibName = shadowPassJob->ribFileName.asChar();
+          lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, shadowPassJob->ribFileName.asChar(), liqglo_projectDir );
         } else {
-          lastRibName = frameJob->ribFileName.asChar();
+          lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, frameJob->ribFileName.asChar(), liqglo_projectDir );
         }
       }
 
@@ -3150,15 +3189,17 @@ MStatus liqRibTranslator::buildJobs()
     LIQ_CHECK_CANCEL_REQUEST;
 
     MString baseFileName;
-    /* if ( ( liqglo_DDimageName[0] == "" ) ) {
-      baseFileName = liqglo_sceneName;
-    } else {
-      int pointIndex = liqglo_DDimageName[0].index( '.' );
-      baseFileName = liqglo_DDimageName[0].substring(0, pointIndex-1).asChar();
-    } */
     baseFileName = liqglo_sceneName;
-    baseFileName += "_";
-    baseFileName += iter->name;
+
+    MString passname = iter->name;
+    int s = passname.length();
+    MString pass = iter->name.substring( s-10, s-1 );
+
+    if ( liqglo_beautyRibHasCameraName || iter->isShadow || pass == "SHADOWPASS" ) {
+      baseFileName += "_";
+      baseFileName += iter->name;
+    }
+
     if ( iter->isShadow ) {
       baseFileName += "SHD";
       if ( iter->isPoint ) {
@@ -3177,6 +3218,7 @@ MStatus liqRibTranslator::buildJobs()
     fileNameFmtString += baseFileName;
     fileNameFmtString += LIQ_ANIM_EXT;
     fileNameFmtString += extension;
+
 
     // TODO - this little block of code below (up to sprintf) is almost identical
     // in a few places just within this file. should be rationalised into a
@@ -3304,7 +3346,7 @@ MStatus liqRibTranslator::ribPrologue()
 
 
     list = const_cast< char* > ( liqglo_proceduralPath.asChar() );
-    RiOption( "searchpath", "shader", &list, RI_NULL );
+    RiOption( "searchpath", "procedural", &list, RI_NULL );
 
     RiOrientation( RI_RH ); // Right-hand coordinates
     if ( liqglo_currentJob.pass == rpShadowMap ) {
@@ -3325,22 +3367,22 @@ MStatus liqRibTranslator::ribPrologue()
       RtString hiderName;
       switch( liqglo_hider ) {
         case htHidden:
-	  hiderName = "hidden";
-	  break;
+    hiderName = "hidden";
+    break;
         case htPhoton:
           hiderName = "photon";
-	  break;
+    break;
         case htRaytrace:
-	  hiderName = "raytrace";
-	  break;
+    hiderName = "raytrace";
+    break;
         case htOpenGL:
-	  hiderName = "OpenGL";
-	  break;
+    hiderName = "OpenGL";
+    break;
         case htZbuffer:
-	  hiderName = "zbuffer";
-	  break;
-	default:
-	  hiderName = "hidden";
+    hiderName = "zbuffer";
+    break;
+  default:
+    hiderName = "hidden";
       }
       RiHider( hiderName, "jitter", &liqglo_jitter, RI_NULL );
 
@@ -3432,7 +3474,17 @@ int count =0;
   MTime   mt((double)lframe, MTime::uiUnit());
   if ( MGlobal::viewFrame(mt) == MS::kSuccess) {
 
-    if ( m_preFrameMel != "" ) MGlobal::sourceFile( m_preFrameMel );
+    // execute pre-frame command
+    if ( m_preFrameMel != "" ) {
+      if ( fileExists( m_preFrameMel  ) ) MGlobal::sourceFile( m_preFrameMel );
+      else {
+        if ( MS::kSuccess == MGlobal::executeCommand( m_preFrameMel, false, false ) ) {
+          cout <<"Liquid -> pre-frame script executed successfully."<<endl<<flush;
+        } else {
+          cout <<"Liquid -> ERROR :pre-frame script failed."<<endl<<flush;
+        }
+      }
+    }
 
     MStatus returnStatus;
     // Scan the scene for lights
@@ -3868,7 +3920,17 @@ int count =0;
       ++iter;
     }
 
-    if ( m_postFrameMel != "" ) MGlobal::sourceFile( m_postFrameMel );
+    // post-frame script execution
+    if ( m_postFrameMel != "" ) {
+      if ( fileExists( m_postFrameMel  ) ) MGlobal::sourceFile( m_postFrameMel );
+      else {
+        if ( MS::kSuccess == MGlobal::executeCommand( m_postFrameMel, false, false ) ) {
+          cout <<"Liquid -> post-frame script executed successfully."<<endl<<flush;
+        } else {
+          cout <<"Liquid -> ERROR :post-frame script failed."<<endl<<flush;
+        }
+      }
+    }
 
     return MS::kSuccess;
   }
@@ -3996,6 +4058,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     LIQDEBUGPRINTF( "-> Setting Display Options\n" );
 
     if ( liqglo_currentJob.isShadow ) {
+      MString relativeShadowName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_currentJob.imageName, liqglo_projectDir );
       if ( !liqglo_currentJob.isMinMaxShadow ) {
         if ( liqglo_currentJob.deepShadows )
         {
@@ -4004,7 +4067,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
           RtString viDiscrete   = "discrete";
 
 #ifdef DELIGHT
-          RiDisplay( const_cast<char *>( liqglo_currentJob.imageName.asChar()),
+          RiDisplay( const_cast<char *>( relativeShadowName.asChar()),
                      const_cast<char *>( liqglo_currentJob.format.asChar() ),
                      (RtToken)liqglo_currentJob.imageMode.asChar(),
                      "volumeinterpretation",
@@ -4016,7 +4079,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
           // shadows as a secondary output.
           //
           RiDisplay( "null", "null", "z", RI_NULL );
-          MString deepFileImageName = "+" + liqglo_currentJob.imageName;
+          MString deepFileImageName = "+" + relativeShadowName;
           RiDisplay( const_cast<char *>( deepFileImageName.asChar() ),
                      const_cast<char *>( liqglo_currentJob.format.asChar() ),
                      (RtToken)liqglo_currentJob.imageMode.asChar(),
@@ -4027,7 +4090,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
         }
         else
         {
-          RiDisplay( const_cast<char *>( liqglo_currentJob.imageName.asChar() ),
+          RiDisplay( const_cast<char *>( relativeShadowName.asChar() ),
                      const_cast<char *>( liqglo_currentJob.format.asChar() ),
                      (RtToken)liqglo_currentJob.imageMode.asChar(),
                      RI_NULL );
@@ -4035,7 +4098,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       } else {
         RiArchiveRecord( RI_COMMENT, "Display Driver:" );
         RtInt minmax = 1;
-        RiDisplay( const_cast<char *>( liqglo_currentJob.imageName.asChar() ),
+        RiDisplay( const_cast<char *>( relativeShadowName.asChar() ),
                    const_cast<char *>(liqglo_currentJob.format.asChar()),
                    (RtToken)liqglo_currentJob.imageMode.asChar(),
                    "minmax",
@@ -4122,6 +4185,8 @@ MStatus liqRibTranslator::framePrologue(long lframe)
         if ( k > 0 ) {
           imageName = "+" + imageName;
         }
+        // handle relative paths
+        imageName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, imageName, liqglo_projectDir );
         // output the display call
         RiArchiveRecord( RI_COMMENT, "Display Driver %d:", k );
         RiArchiveRecord( RI_VERBATIM, "Display \"%s\" \"%s\" \"%s\" %s\n", const_cast<char *>( imageName.asChar() ), formatType.asChar(), imageMode.asChar(), parameterString.asChar() );
@@ -4293,8 +4358,8 @@ MStatus liqRibTranslator::objectBlock()
     }
 
     // If this is a matte object, then turn that on if it isn't currently set
-		if ( ribNode->shading.matte == -1){
-			// Respect the maya shading node setting
+    if ( ribNode->shading.matte == -1){
+      // Respect the maya shading node setting
     if ( ribNode->matteMode ) {
       if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
       m_currentMatteMode = true;
@@ -4302,16 +4367,16 @@ MStatus liqRibTranslator::objectBlock()
       if ( m_currentMatteMode ) RiMatte( RI_FALSE );
       m_currentMatteMode = false;
     }
-		} else {
-			// The dag had a liqMatte property, use that (overriding the maya shader)
-			if ( ribNode->shading.matte > 0 ) {	// Slightly nasty test to verify we've actually got a value here
-				if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
-				m_currentMatteMode = true;
-			} else {
-				if ( m_currentMatteMode ) RiMatte( RI_FALSE );
-				m_currentMatteMode = false;
-			}
-		}
+    } else {
+      // The dag had a liqMatte property, use that (overriding the maya shader)
+      if ( ribNode->shading.matte > 0 ) {	// Slightly nasty test to verify we've actually got a value here
+        if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
+        m_currentMatteMode = true;
+      } else {
+        if ( m_currentMatteMode ) RiMatte( RI_FALSE );
+        m_currentMatteMode = false;
+      }
+    }
     // If this is a single sided object, then turn that on (RMan default is Sides 2)
     if ( !ribNode->doubleSided ) {
       RiSides( 1 );
@@ -4328,7 +4393,7 @@ MStatus liqRibTranslator::objectBlock()
     // Moritz: only write out light linking if we're not in a shadow pass
     if ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows && m_outputLightsInDeepShadows && !m_ignoreLights ) {
       MObjectArray ignoredLights;
-  //  ribNode->getIgnoredLights( ribNode->assignedShadingGroup.object(), ignoredLights );
+    //ribNode->getIgnoredLights( ribNode->assignedShadingGroup.object(), ignoredLights );
       ribNode->getIgnoredLights( ignoredLights );
 
       for ( unsigned i=0; i<ignoredLights.length(); i++ )
@@ -4707,24 +4772,24 @@ MStatus liqRibTranslator::objectBlock()
         // Output color overrides or color
 
         if (ribNode->shading.color.r != -1.0) {
-        	RtColor rColor;
-        	rColor[0] = ribNode->shading.color[0];
-			rColor[1] = ribNode->shading.color[1];
-			rColor[2] = ribNode->shading.color[2];
-        	RiColor( rColor );
+          RtColor rColor;
+          rColor[0] = ribNode->shading.color[0];
+          rColor[1] = ribNode->shading.color[1];
+          rColor[2] = ribNode->shading.color[2];
+          RiColor( rColor );
         } else {
-        	RiColor( currentShader.rmColor );
+          RiColor( currentShader.rmColor );
         }
 
         if (ribNode->shading.opacity.r != -1.0) {
-        	RtColor rOpacity;
-        	rOpacity[0] = ribNode->shading.opacity[0];
-			rOpacity[1] = ribNode->shading.opacity[1];
-			rOpacity[2] = ribNode->shading.opacity[2];
-	        RiOpacity( rOpacity );
-	    } else {
-	    	RiOpacity( currentShader.rmOpacity );
-	    }
+          RtColor rOpacity;
+          rOpacity[0] = ribNode->shading.opacity[0];
+          rOpacity[1] = ribNode->shading.opacity[1];
+          rOpacity[2] = ribNode->shading.opacity[2];
+          RiOpacity( rOpacity );
+      } else {
+        RiOpacity( currentShader.rmOpacity );
+      }
         char *shaderFileName;
         LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
         RiSurfaceV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
@@ -4740,11 +4805,11 @@ MStatus liqRibTranslator::objectBlock()
           rOpacity[1] = 1;
           RiOpacity( rOpacity );
         } else {
-        	if (ribNode->shading.color.r != -1.0) {
-        	  rColor[0] = ribNode->shading.color[0];
-			  rColor[1] = ribNode->shading.color[1];
-			  rColor[2] = ribNode->shading.color[2];
-        	  RiColor( rColor );
+          if (ribNode->shading.color.r != -1.0) {
+            rColor[0] = ribNode->shading.color[0];
+            rColor[1] = ribNode->shading.color[1];
+            rColor[2] = ribNode->shading.color[2];
+            RiColor( rColor );
         } else if ( ( ribNode->color.r != -1.0 ) ) {
           rColor[0] = ribNode->color[0];
           rColor[1] = ribNode->color[1];
@@ -4752,17 +4817,17 @@ MStatus liqRibTranslator::objectBlock()
           RiColor( rColor );
         }
 
-			if (ribNode->shading.opacity.r != -1.0) {
-        	  rOpacity[0] = ribNode->shading.opacity[0];
-			  rOpacity[1] = ribNode->shading.opacity[1];
-			  rOpacity[2] = ribNode->shading.opacity[2];
-	          RiOpacity( rOpacity );
-			} else if ( ( ribNode->opacity.r != -1.0 ) ) {
-			  rOpacity[0] = ribNode->opacity[0];
-			  rOpacity[1] = ribNode->opacity[1];
-			  rOpacity[2] = ribNode->opacity[2];
-			  RiOpacity( rOpacity );
-			}
+      if (ribNode->shading.opacity.r != -1.0) {
+        rOpacity[0] = ribNode->shading.opacity[0];
+        rOpacity[1] = ribNode->shading.opacity[1];
+        rOpacity[2] = ribNode->shading.opacity[2];
+        RiOpacity( rOpacity );
+      } else if ( ( ribNode->opacity.r != -1.0 ) ) {
+        rOpacity[0] = ribNode->opacity[0];
+        rOpacity[1] = ribNode->opacity[1];
+        rOpacity[2] = ribNode->opacity[2];
+        RiOpacity( rOpacity );
+      }
         }
 
         if ( !m_ignoreSurfaces ) {
@@ -4807,28 +4872,32 @@ MStatus liqRibTranslator::objectBlock()
       RiArchiveRecord( RI_COMMENT, " Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode->rib.delayedReadArchive.asChar(), ribNode->bound[0],ribNode->bound[3],ribNode->bound[1],ribNode->bound[4],ribNode->bound[2],ribNode->bound[5] );
     }
 
-    // check to see if we are writing a curve to set the proper basis
-    if ( ribNode->object(0)->type == MRT_NuCurve ) {
-      RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
-    }
+    if ( !ribNode->ignoreShapes ) {
 
-    if( liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
-        && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
-      // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
-      RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
-    }
-
-    ribNode->object(0)->writeObject();
-    if ( liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
-         && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
-      LIQDEBUGPRINTF( "-> writing deformation blur data\n" );
-      int msampleOn = 1;
-      while ( msampleOn < liqglo_motionSamples ) {
-        ribNode->object(msampleOn)->writeObject();
-        ++msampleOn;
+      // check to see if we are writing a curve to set the proper basis
+      if ( ribNode->object(0)->type == MRT_NuCurve ) {
+        RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
       }
-      RiMotionEnd();
-    }
+
+      if( liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
+          && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
+        // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
+        RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
+      }
+
+      ribNode->object(0)->writeObject();
+      if ( liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
+           && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
+        LIQDEBUGPRINTF( "-> writing deformation blur data\n" );
+        int msampleOn = 1;
+        while ( msampleOn < liqglo_motionSamples ) {
+          ribNode->object(msampleOn)->writeObject();
+          ++msampleOn;
+        }
+        RiMotionEnd();
+      }
+
+    } else RiArchiveRecord( RI_COMMENT, " Shapes Ignored !!" );
 
     RiAttributeEnd();
   }
@@ -5012,4 +5081,82 @@ MStatus liqRibTranslator::lightBlock()
   }
 
   return returnStatus;
+}
+
+void liqRibTranslator::setSearchPaths()
+{
+  liqglo_shaderPath = "&:@:.:~:rmanshader";
+  liqglo_texturePath = "&:@:.:~:rmantex";
+  liqglo_archivePath = "&:@:.:~:rib";
+  liqglo_proceduralPath = "&:@:.:~";
+
+  MString tmphome( getenv( "LIQUIDHOME" ) );
+
+  if( tmphome != "" ) {
+    liqglo_shaderPath += ":" + liquidSanitizePath( tmphome ) + "/shaders";
+    liqglo_texturePath += ":" + liquidSanitizePath( tmphome ) + "/rmantex";
+    liqglo_archivePath += ":" + liquidSanitizePath( tmphome ) + "/rib";
+  }
+
+  MStatus gStatus;
+  MPlug gPlug;
+  MFnDependencyNode rGlobalNode( rGlobalObj );
+
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "shaderPath", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      tmphome = liquidSanitizePath( tmphome ) + "/shaders";
+      if ( varVal.index( ':' ) == 0 )
+        liqglo_shaderPath += ":" + removeEscapes( parseString( varVal ) );
+      else if ( varVal.rindex( ':' ) == 0 )
+        liqglo_shaderPath = removeEscapes( parseString( varVal ) ) + liqglo_shaderPath;
+      else
+        liqglo_shaderPath = removeEscapes( parseString( varVal ) ) + ":" + tmphome;
+    }
+  }
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "texturePath", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      if ( varVal.index( ':' ) == 0 )
+        liqglo_texturePath += ":" + removeEscapes( parseString( varVal ) );
+      else if ( varVal.rindex( ':' ) == 0 )
+        liqglo_texturePath = removeEscapes( parseString( varVal ) ) + liqglo_texturePath;
+      else
+        liqglo_texturePath = removeEscapes( parseString( varVal ) );
+    }
+  }
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "archivePath", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      if ( varVal.index( ':' ) == 0 )
+        liqglo_archivePath += ":" + removeEscapes( parseString( varVal ) );
+      else if ( varVal.rindex( ':' ) == 0 )
+        liqglo_archivePath = removeEscapes( parseString( varVal ) ) + liqglo_archivePath;
+      else
+        liqglo_archivePath = removeEscapes( parseString( varVal ) );
+    }
+  }
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "proceduralPath", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      if ( varVal.index( ':' ) == 0 )
+        liqglo_proceduralPath += ":" + removeEscapes( parseString( varVal ) );
+      else if ( varVal.rindex( ':' ) == 0 )
+        liqglo_proceduralPath = removeEscapes( parseString( varVal ) ) + liqglo_proceduralPath;
+      else
+        liqglo_proceduralPath = removeEscapes( parseString( varVal ) );
+    }
+  }
 }
