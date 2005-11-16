@@ -229,6 +229,7 @@ class liqRibNode {
 
     bool    instanceInheritPPColor;
     bool    invisible;
+    bool    ignoreShapes;
 
 private:
 
