@@ -1,3 +1,37 @@
+//
+//
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+// "License"); you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at http://www.mozilla.org/MPL/
+//
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+// language governing rights and limitations under the License.
+//
+// The Original Code is the Liquid Rendering Toolkit.
+//
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+//
+// Contributor(s): Berj Bannayan.
+//
+//
+// The RenderMan (R) Interface Procedures and Protocol are:
+// Copyright 1988, 1989, Pixar
+// All Rights Reserved
+//
+//
+// RenderMan (R) is a registered trademark of Pixar
+//
+//  Creation Date:
+//
+//  Procedure Name:
+//
+//
+//  Description:  startup sequence
+//
+//
+
 
 global proc string liquidGetHome()
 {
@@ -71,13 +105,17 @@ global proc liquidLoadScripts()
     /*"liquidStartup.mel",*/
     "liquidSubdiv.mel",
     "liquidSubdivInspector.mel",
-    "liquidConvertShadingNetworkToRSL.mel"
+    "liquidConvertShadingNetworkToRSL.mel",
+    "liquidWriteRSL_materials.mel",
+    "liquidWriteRSL_textures.mel",
+    "liquidWriteRSL_utilities.mel"
+    //"liquidRegistration.mel"
   };
 
   string $liquidHome = liquidGetHome();
   int $i;
   for ( $i = 0; $i < size($mel_files); $i++) {
-  	eval( "source \"" + $liquidHome + "/mel/" + $mel_files[$i]  + "\"" );
+    eval( "source \"" + $liquidHome + "/mel/" + $mel_files[$i]  + "\"" );
   }
 }
 
@@ -218,6 +256,9 @@ global proc liquidCreateMenus()
         menuItem -d true;
         menuItem -label "Add Liquid Invisible" -command liquidCreateLiquidInvisibleAttribute -ann "Add Liquid Invisible control to selected node";
         menuItem -label "Delete Liquid Invisible" -command liquidDeleteLiquidInvisibleAttribute -ann "Remove Liquid Invisible control to selected node";
+        menuItem -d true;
+        menuItem -label "Add Liquid Ignore Shapes" -command liquidCreateIgnoreShapesAttribute -ann "Add Liquid Ignore Shapes control to selected node";
+        menuItem -label "Delete Liquid Ignore Shapes" -command liquidDeleteIgnoreShapesAttribute -ann "Remove Liquid Ignore Shapes control to selected node";
       setParent -menu ..;
       menuItem -label "Light Attributes" -subMenu true -tearOff true;
         menuItem -label "Create Ray Tracing Group" -command liquidCreateLightRayTracingAttributes -ann "Add Ray Tracing attributes to selected Light Transform node(s)";
@@ -402,6 +443,7 @@ global proc liquidCreateScriptNode()
                                                         -name           liquidCleanUpNode;
 }
 
+
 /**
  * Initializes the Liquid User Interface.
  */
@@ -410,6 +452,7 @@ global proc liquidStartup()
   liquidLoadScripts();
   liquidCreateMenus();
   liquidCreateScriptNode();
+
   evalDeferred -lp "liquidAETemplateOverwrite";
 }
 
