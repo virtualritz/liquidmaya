@@ -39,26 +39,26 @@ global string $liquidShadersLastDirectory = "";
 
 global proc string[] liquidGetShaderList(string $type)
 {
-	string $out_shaderlist[];
-	if($type == "all")
-	{
-		string $types[] = {"Surface","Light","Displacement","Volume","Ribbox","Container"};
-		for($shader_type in $types)
-		{
-			if(`attributeExists ("liquid"+$shader_type+"Shaders") liquidGlobals`)
-			{
-				$out_shaderlist = stringArrayCatenate($out_shaderlist, `listConnections ("liquidGlobals.liquid"+$shader_type+"Shaders")`);
-			}
-		}
-	}
-	else
-	{
-		if(`attributeExists ("liquid"+$type+"Shaders") liquidGlobals`)
-		{
-			$out_shaderlist = `listConnections ("liquidGlobals.liquid"+$type+"Shaders")`;
-		}
-	}
-	return $out_shaderlist;
+  string $out_shaderlist[];
+  if($type == "all")
+  {
+    string $types[] = {"Surface","Light","Displacement","Volume","Ribbox","Container"};
+    for($shader_type in $types)
+    {
+      if(`attributeExists ("liquid"+$shader_type+"Shaders") liquidGlobals`)
+      {
+        $out_shaderlist = stringArrayCatenate($out_shaderlist, `listConnections ("liquidGlobals.liquid"+$shader_type+"Shaders")`);
+      }
+    }
+  }
+  else
+  {
+    if(`attributeExists ("liquid"+$type+"Shaders") liquidGlobals`)
+    {
+      $out_shaderlist = `listConnections ("liquidGlobals.liquid"+$type+"Shaders")`;
+    }
+  }
+  return $out_shaderlist;
 }
 
 global proc string liquidGetShaderNodeType( string $node )
@@ -106,55 +106,55 @@ global proc liquidAssignShaderNode( string $node, string $shaderNode )
     string $transform = liquidGetTransform( $node );
     liquidCreateRIBBoxAttribute();
 
-	  if(`attributeExists liqRIBBox $transform`) {
-	  	string $connection = `connectionInfo -sfd ($transform+".liqRIBBox")`;
+    if(`attributeExists liqRIBBox $transform`) {
+      string $connection = `connectionInfo -sfd ($transform+".liqRIBBox")`;
       if ( size( $connection ) ) disconnectAttr $connection ($transform+".liqRIBBox");
-	  }
-	  connectAttr -f ( $shaderNode + ".ribbox" ) ( $transform + ".liqRIBBox" );
+    }
+    connectAttr -f ( $shaderNode + ".ribbox" ) ( $transform + ".liqRIBBox" );
   }
   constructionHistory -tgl $ch;
 }
 
 global proc string liquidNewRibboxNode( string $nodename )
 {
-	if($nodename == "")
-	{
-		$nodename = "ribbox";
-	}
-	string $shadername = $nodename;
-	string $shaderType = "ribbox";
-	string $newNodeName = "" ;
-	$newNodeName = $shadername;
-	if ( `objExists( $newNodeName )` )
-	{
-		string $testNodeName = $newNodeName;
-		for( $i = 1;; $i++ )
-		{
-			string $cNum = $i;
-			$testNodeName = ( $newNodeName + $cNum );
-			string $testList[] = `ls $testNodeName`;
-			if ( !`objExists( $testNodeName )` ) break;
-		}
-		$newNodeName = $testNodeName;
-	}
-	createNode "oldBlindDataBase" -n $newNodeName;
-	setAttr ( $newNodeName + ".typeId" ) 303126794;
-	addAttr -ln "rmanShaderLong" -dt "string" $newNodeName;
-	addAttr -ln "rmanShader" -dt "string" $newNodeName;
-	addAttr -ln "liquidShaderManager" -at message $newNodeName;
-	setAttr ( $newNodeName + ".rmanShader" ) -type "string" $newNodeName;
-	setAttr ( $newNodeName + ".rmanShaderLong" ) -type "string" $shaderType;
-	addAttr -ln "ribbox" -dt "string" $newNodeName;
+  if($nodename == "")
+  {
+    $nodename = "ribbox";
+  }
+  string $shadername = $nodename;
+  string $shaderType = "ribbox";
+  string $newNodeName = "" ;
+  $newNodeName = $shadername;
+  if ( `objExists( $newNodeName )` )
+  {
+    string $testNodeName = $newNodeName;
+    for( $i = 1;; $i++ )
+    {
+      string $cNum = $i;
+      $testNodeName = ( $newNodeName + $cNum );
+      string $testList[] = `ls $testNodeName`;
+      if ( !`objExists( $testNodeName )` ) break;
+    }
+    $newNodeName = $testNodeName;
+  }
+  createNode "oldBlindDataBase" -n $newNodeName;
+  setAttr ( $newNodeName + ".typeId" ) 303126794;
+  addAttr -ln "rmanShaderLong" -dt "string" $newNodeName;
+  addAttr -ln "rmanShader" -dt "string" $newNodeName;
+  addAttr -ln "liquidShaderManager" -at message $newNodeName;
+  setAttr ( $newNodeName + ".rmanShader" ) -type "string" $newNodeName;
+  setAttr ( $newNodeName + ".rmanShaderLong" ) -type "string" $shaderType;
+  addAttr -ln "ribbox" -dt "string" $newNodeName;
 
-	string $returnValue = $newNodeName;
+  string $returnValue = $newNodeName;
 
-	if ( !`attributeExists "liquidRibboxShaders" "liquidGlobals"`)
-	{
-		addAttr -ln "liquidRibboxShaders" -at message liquidGlobals;
-	}
-    	connectAttr -f "liquidGlobals.liquidRibboxShaders" ( $newNodeName + ".liquidShaderManager" );
-	evalDeferred("liquidFluidUpdateList");
-	return $returnValue;
+  if ( !`attributeExists "liquidRibboxShaders" "liquidGlobals"`)
+  {
+    addAttr -ln "liquidRibboxShaders" -at message liquidGlobals;
+  }
+      connectAttr -f "liquidGlobals.liquidRibboxShaders" ( $newNodeName + ".liquidShaderManager" );
+  evalDeferred("liquidFluidUpdateList");
+  return $returnValue;
 }
 
 global proc string liquidNewShaderNode( string $filename )
@@ -251,12 +251,12 @@ global proc string liquidDuplicateShaderNode( string $nodename )
   string $currentNodeName;
   if($nodeType == "Ribbox")
   {
-  	$currentNodeName = `liquidNewRibboxNode $shaderFileName`;
+    $currentNodeName = `liquidNewRibboxNode $shaderFileName`;
     setAttr -type "string" ($currentNodeName+".ribbox") (`getAttr ($nodename+".ribbox")`);
   }
   else
   {
-  	$currentNodeName = `liquidNewShaderNode $shaderFileName`;
+    $currentNodeName = `liquidNewShaderNode $shaderFileName`;
   }
 
   string $newNodeName = ( $nodename + "Duplicate" );

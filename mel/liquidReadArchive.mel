@@ -39,19 +39,19 @@
 global proc liquidReadArchive ()
 {
   string $nodes[] = `ls -dag -sl`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		addAttr -ln "liqRIBDelayedReadArchive" -dt "string" $currentNode;
-	}
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    addAttr -ln "liqRIBDelayedReadArchive" -dt "string" $currentNode;
+  }
 }
 
 global proc liquidDeleteReadArchive ()
 {
   string $nodes[] = `ls -dag -sl`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		if ( `attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchive"` ) {
-			deleteAttr ( $currentNode + ".liqRIBDelayedReadArchive" );
-		}
-	}
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( `attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchive"` ) {
+      deleteAttr ( $currentNode + ".liqRIBDelayedReadArchive" );
+    }
+  }
 }

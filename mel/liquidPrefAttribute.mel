@@ -43,21 +43,21 @@ global proc liquidAddPrefAttribute ()
   liquidDeletePrefAttribute;
 
   string $nodes[] = `ls -dag -sl -type nurbsSurface -type mesh`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		liquidAttachPrefAttribute $currentNode;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    liquidAttachPrefAttribute $currentNode;
     addAttr -at "float" -ln rmanFhasPref -dv 1 -k false $currentNode;
-	}
+  }
 }
 
 global proc liquidDeletePrefAttribute ()
 {
   string $nodes[] = `ls -dag -sl -type nurbsSurface -type mesh`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		if ( `attributeQuery -node $currentNode -ex "rmanP__Pref"` ) {
-			deleteAttr ( $currentNode + ".rmanP__Pref" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( `attributeQuery -node $currentNode -ex "rmanP__Pref"` ) {
+      deleteAttr ( $currentNode + ".rmanP__Pref" );
       if ( objExists( ( $currentNode + ".rmanFhasPref" ) ) ) deleteAttr ( $currentNode + ".rmanFhasPref" );
-		}
-	}
+    }
+  }
 }

@@ -1,21 +1,21 @@
 //
 //
-// The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-// "License"); you may not use this file except in compliance with the License. You may 
-// obtain a copy of the License at http://www.mozilla.org/MPL/ 
-// 
-// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-// WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-// language governing rights and limitations under the License. 
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+// "License"); you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at http://www.mozilla.org/MPL/
 //
-// The Original Code is the Liquid Rendering Toolkit. 
-// 
-// The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-// Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-// 
-// Contributor(s): Berj Bannayan. 
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+// language governing rights and limitations under the License.
 //
-// 
+// The Original Code is the Liquid Rendering Toolkit.
+//
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+//
+// Contributor(s): Berj Bannayan.
+//
+//
 // The RenderMan (R) Interface Procedures and Protocol are:
 // Copyright 1988, 1989, Pixar
 // All Rights Reserved
@@ -49,8 +49,7 @@
 // Local helper procedures
 //
 
-proc string
-getShaderType( int $fid )
+proc string getShaderType( int $fid )
 {
     string $type = "";
 
@@ -71,8 +70,7 @@ getShaderType( int $fid )
     return $type;
 }
 
-proc string
-getParamName( string $line )
+proc string getParamName( string $line )
 {
     string $strip = `substitute "^[^\"]*\"" $line ""`;
     if ( $strip == $line ) return "";
@@ -83,8 +81,7 @@ getParamName( string $line )
     return $name;
 }
 
-proc string
-getParamType( string $line )
+proc string getParamType( string $line )
 {
     string $prefix = "\"[^\"]*[uniformvaryg]+ *";
 
@@ -99,8 +96,7 @@ getParamType( string $line )
     return "";
 }
 
-proc int
-getParamArraySize( string $line )
+proc int getParamArraySize( string $line )
 {
     string $strip = `substitute "^.*[a-z]\\[" $line ""`;
     if ( $strip == $line ) return 0;
@@ -112,8 +108,7 @@ getParamArraySize( string $line )
     return $sizeInt;
 }
 
-proc string
-getParamDefaultF( int $fid, int $arraySize )
+proc string getParamDefaultF( int $fid, int $arraySize )
 {
     string $default = "0.0";
     string $line = strip( `fgetline $fid` );
@@ -137,8 +132,7 @@ getParamDefaultF( int $fid, int $arraySize )
     return $default;
 }
 
-proc string
-getParamDefaultS( int $fid, int $arraySize )
+proc string getParamDefaultS( int $fid, int $arraySize )
 {
     string $default = "";
 
@@ -158,8 +152,7 @@ getParamDefaultS( int $fid, int $arraySize )
     return $default;
 }
 
-proc string
-getParamDefaultM( int $fid, int $arraySize )
+proc string getParamDefaultM( int $fid, int $arraySize )
 {
     // Array matrices not supported yet,
     if ( $arraySize > 0 ) return "";
@@ -189,8 +182,7 @@ getParamDefaultM( int $fid, int $arraySize )
     return $default;
 }
 
-proc string
-getParamDefaultV( int $fid, int $arraySize )
+proc string getParamDefaultV( int $fid, int $arraySize )
 {
     string $default = "";
     string $line = `fgetline $fid`;
@@ -252,8 +244,7 @@ getParamDefaultV( int $fid, int $arraySize )
     return $default;
 }
 
-proc string
-getParamDefault( int $fid, string $paramType, int $arraySize )
+proc string getParamDefault( int $fid, string $paramType, int $arraySize )
 {
     string $default = "";
 
@@ -278,7 +269,7 @@ getParamDefault( int $fid, string $paramType, int $arraySize )
         // This should never be reached
         error( "unknown parameter type \"" + $paramType + "\"" );
     }
-    
+
     return $default;
 }
 
@@ -288,8 +279,7 @@ getParamDefault( int $fid, string $paramType, int $arraySize )
 // Primary global procedure for parsing a 3delight .sdl shader file
 //
 
-global proc
-liquidSlParseSdl( string $sdlFile )
+global proc liquidSlParseSdl( string $sdlFile )
 {
     if ( ! `filetest -r $sdlFile` )
     {

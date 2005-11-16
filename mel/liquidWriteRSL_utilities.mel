@@ -10,9 +10,7 @@ global proc string[] validConnections_condition ()
              "colorIfFalse", "outColor" };
 }
 
-global proc writeRSL_condition (
-    string $node
-)
+global proc writeRSL_condition ( string $node )
 {
     beginRSL $node;
 
@@ -235,7 +233,7 @@ global proc writeRSL_samplerInfo (
 )
 {
     beginRSL $node;
-    
+
     addToRSL "extern point P;";
     if( convertibleConnection( $node + ".pointCamera" ) )
     {
@@ -578,8 +576,8 @@ global proc writeRSL_rgbToHsv (
 
 global proc string[] validConnections_clamp ()
 {
-    return { "input", "inputR", "inputG", "inputB", "min", "minR", "minG", 
-             "minB", "max", "maxR", "maxG", "maxB", "output", "outputR", 
+    return { "input", "inputR", "inputG", "inputB", "min", "minR", "minG",
+             "minB", "max", "maxR", "maxG", "maxB", "output", "outputR",
              "outputG", "outputB" };
 }
 

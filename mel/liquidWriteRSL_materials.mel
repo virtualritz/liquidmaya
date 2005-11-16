@@ -12,9 +12,7 @@ global proc string[] validConnections_blinn ()
              "outColor" };
 }
 
-global proc writeRSL_blinn (
-    string $node
-)
+global proc writeRSL_blinn ( string $node )
 {
     beginRSL $node;
 
@@ -80,7 +78,7 @@ global proc writeRSL_layeredShader (
 )
 {
     beginRSL $node;
-    
+
     addRSLVariable "vector" "outColor" "outColor" $node;
     addRSLVariable "vector" "outTransparency" "outTransparency" $node;
 
