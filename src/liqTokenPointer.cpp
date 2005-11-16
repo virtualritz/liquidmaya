@@ -77,18 +77,18 @@ liqTokenPointer::liqTokenPointer( const liqTokenPointer &src )
   LIQDEBUGPRINTF(src.m_tokenName);
   LIQDEBUGPRINTF("\n" );
 
-  m_tokenFloats = NULL;
-  m_tokenString = NULL;
-  m_isArray     = false;
-  m_isUArray    = false;
-  m_isNurbs     = false;
-  m_isString    = false;
-  m_isFull      = false;
-  m_arraySize   = 0;
-  m_uArraySize  = 0;
-  m_eltSize     = 0;
-  m_tokenSize   = 0;
-  m_stringSize  = 0;
+  m_tokenFloats   = NULL;
+  m_tokenString   = NULL;
+  m_isArray       = false;
+  m_isUArray      = false;
+  m_isNurbs       = false;
+  m_isString      = false;
+  m_isFull        = false;
+  m_arraySize     = 0;
+  m_uArraySize    = 0;
+  m_eltSize       = 0;
+  m_tokenSize     = 0;
+  m_stringSize    = 0;
 
   if( src.m_isUArray )
     // Moritz: this is the baddy: src.m_arraySize wasn't divided by m_uArraySize!
@@ -99,11 +99,18 @@ liqTokenPointer::liqTokenPointer( const liqTokenPointer &src )
   else
     set( src.m_tokenName, src.m_pType, src.m_isNurbs, src.m_arraySize );
   m_dType = src.m_dType;
+
   if( m_pType != rString ) {
     setTokenFloats( src.m_tokenFloats );
   } else {
     if( src.m_tokenString ) {
-      setTokenString( src.m_tokenString, strlen( src.m_tokenString) );
+      if ( m_arraySize ) {
+        for ( unsigned int i=0; i<m_arraySize; i++) {
+          setTokenString( i, src.m_tokenString[i], strlen( src.m_tokenString[i]) );
+        }
+      } else {
+        setTokenString( 0, src.m_tokenString[0], strlen( src.m_tokenString[0]) );
+      }
     }
   }
 
@@ -128,7 +135,13 @@ liqTokenPointer & liqTokenPointer::operator=( const liqTokenPointer &src)
     setTokenFloats( src.m_tokenFloats );
   } else {
     if( src.m_tokenString ) {
-      setTokenString( src.m_tokenString, strlen( src.m_tokenString) );
+      if ( m_arraySize ) {
+        for ( unsigned int i=0; i<m_arraySize; i++) {
+          setTokenString( i, src.m_tokenString[i], strlen( src.m_tokenString[i]) );
+        }
+      } else {
+        setTokenString( 0, src.m_tokenString[0], strlen( src.m_tokenString[0]) );
+      }
     }
   }
 
@@ -146,13 +159,16 @@ liqTokenPointer::~liqTokenPointer()
   LIQDEBUGPRINTF("\n" );
 
   if( m_tokenFloats ) { lfree( m_tokenFloats ); m_tokenFloats = NULL; }
-  if( m_tokenString ) { lfree( m_tokenString ); m_tokenString = NULL; }
+  resetTokenString();
+
 };
 
 void liqTokenPointer::reset()
 {
   if( m_tokenFloats ) { lfree( m_tokenFloats ); m_tokenFloats = NULL; }
-  if( m_tokenString ) { lfree( m_tokenString ); m_tokenString = NULL; }
+  if( m_tokenString ) {
+    resetTokenString();
+  }
   m_isArray      = false;
   m_isUArray     = false;
   m_isNurbs      = false;
@@ -180,6 +196,7 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
 int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, bool asArray, bool asUArray, unsigned int arraySize )
 {
   // philippe : passing arraySize when asUArray is true fixed the float array export problem
+  // TO DO : replace occurences of this function with non-obsolete ones
   //return set( name, ptype, asNurbs, arraySize, asUArray ? 2 : 0 );
 
   return set( name, ptype, asNurbs, asArray? arraySize : 1, asUArray ? arraySize : 0  );
@@ -191,10 +208,8 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
   m_pType = ptype;
   m_isNurbs = asNurbs;
   if( m_pType != rString ) {
-    if( m_tokenString ) {
-      lfree( m_tokenString );
-    }
-    m_tokenString = NULL;
+
+    resetTokenString();
 
     // define element size based on parameter type
     switch( m_pType ) {
@@ -264,15 +279,33 @@ int liqTokenPointer::set( const char * name, ParameterType ptype, bool asNurbs, 
 
     LIQDEBUGPRINTF( "Needed %ld got %ld\n", neededSize, m_tokenSize );
   } else {
-    // Space will be allocated when string will be set
-    m_isArray     = false;  // Do not handle array of strings
-    m_isUArray    = false;
-    m_arraySize   = 0;
+    // STRINGS ARE A SPECIAL CASE
+    // Space is now allocated upfront
+
+    // free mem
     if( m_tokenFloats ) {
       lfree( m_tokenFloats );
+      m_tokenFloats = NULL;
     }
-    m_tokenFloats = NULL;
-    m_tokenSize   = 0;
+    resetTokenString();
+
+    m_isUArray    = false;
+    m_isArray = arraySize != 0;
+
+    if ( m_isArray ) {
+
+      // init array size
+      m_arraySize = arraySize;
+      m_tokenSize   = 0;
+      // init pointer array
+      m_tokenString = ( char ** ) lcalloc( m_arraySize , sizeof( char * ) );
+
+    } else {
+
+      m_arraySize   = 0; // useless
+      m_tokenSize   = 0;
+      m_tokenString = ( char ** ) lcalloc( 1, sizeof( char * ) );
+    }
   }
   return 1;
 }
@@ -340,7 +373,6 @@ void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFl
   m_tokenFloats[3 * i + 2] = z;
 }
 
-
 void liqTokenPointer::setTokenFloats( const RtFloat * vals )
 {
   if( m_isArray || m_isUArray ) {
@@ -349,7 +381,6 @@ void liqTokenPointer::setTokenFloats( const RtFloat * vals )
     memcpy( m_tokenFloats, vals, m_eltSize * sizeof( RtFloat) );
   }
 }
-
 
 const RtFloat * liqTokenPointer::getTokenFloatArray( )
 {
@@ -364,21 +395,30 @@ void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFl
   m_tokenFloats[4 * i + 3] = w;
 }
 
+
 char * liqTokenPointer::getTokenString( void )
 {
-  return m_tokenString;
+  return m_tokenString[0];
 }
 
-void liqTokenPointer::setTokenString( const char *str, unsigned int length )
+void liqTokenPointer::setTokenString( unsigned int i, const char *str, unsigned int length )
 {
-  if( m_tokenString ) lfree( m_tokenString );
-  m_tokenString = NULL;
-  m_stringSize  = 0;
+  m_tokenString[i] = ( char * ) lmalloc( ( length + 1 ) * sizeof( char ) );
+  if( m_tokenString[i] ) {
+    strcpy( m_tokenString[i], str );
+    m_stringSize += length + 1;
+  }
+}
 
-  m_tokenString = ( char * ) lmalloc( ( length + 1 ) * sizeof( char ) ); // Need space for '\0'
-  if( m_tokenString ) {
-    strcpy( m_tokenString, str );
-    m_stringSize = length + 1;
+void liqTokenPointer::resetTokenString( void )
+{
+  if ( m_tokenString ) {
+    unsigned int tokensize = (m_arraySize > 0)? m_arraySize:1;
+    for ( unsigned int ii = 0; ii<tokensize; ii++ ) {
+      if ( m_tokenString[ii] ) lfree( m_tokenString[ii] );
+    }
+    lfree( m_tokenString );
+    m_tokenString = NULL;
   }
 }
 
@@ -417,7 +457,7 @@ char * liqTokenPointer::getDetailedTokenName( void )
 RtPointer liqTokenPointer::getRtPointer( void )
 {
   if( m_pType == rString ) {
-    return ( RtPointer ) &m_tokenString;
+    return ( RtPointer ) m_tokenString;
   } else {
     return ( RtPointer ) m_tokenFloats;
   }
@@ -428,7 +468,11 @@ void liqTokenPointer::getRiDeclare( char *declare  )
 
   switch ( m_pType ) {
   case rString:
-    sprintf( declare, "%s string", StringDetailType[m_dType]  );
+    if ( m_isArray ) {
+      sprintf( declare, "%s string[%d]", StringDetailType[m_dType], m_arraySize );
+    } else {
+      sprintf( declare, "%s string", StringDetailType[m_dType]  );
+    }
     break;
   case rMatrix:
     sprintf( declare, "%s matrix", StringDetailType[m_dType]  );
