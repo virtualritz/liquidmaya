@@ -236,7 +236,7 @@ global proc liquidDeleteVisibilityAttributes()
   string $currentNode;
   for ( $currentNode in $nodes ) {
 
-  	if ( `attributeQuery -node $currentNode -ex "liqVisibilityCamera"` ) {
+    if ( `attributeQuery -node $currentNode -ex "liqVisibilityCamera"` ) {
       deleteAttr ( $currentNode + ".liqVisibilityCamera" );
     }
     if ( `attributeQuery -node $currentNode -ex "liqVisibilityTrace"` ) {
@@ -542,8 +542,8 @@ global proc liquidCreateRIBAttributes()
     if ( !`attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchive"` ) {
       addAttr -ln "liqRIBDelayedReadArchive" -dt "string" $currentNode;
     }
-    if ( !`attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchiveBBoxExpansion"` ) {
-      addAttr -ln "liqRIBDelayedReadArchiveBBoxExpansion" -at "float" -dv 0 -smn 0 -smx 100 $currentNode;
+    if ( !`attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchiveBBoxScale"` ) {
+      addAttr -ln "liqRIBDelayedReadArchiveBBoxScale" -at "double" -dv 1.0 -smn 0.0 -smx 2.0 $currentNode;
     }
   }
 }
@@ -553,7 +553,7 @@ global proc liquidDeleteRIBAttributes()
 {
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
-  string $attr[]=  {"liqRIBBox", "liqRIBGenerator", "liqRIBReadArchive", "liqRIBDelayedReadArchive"};
+  string $attr[]=  {"liqRIBBox", "liqRIBGenerator", "liqRIBReadArchive", "liqRIBDelayedReadArchive", "liqRIBDelayedReadArchiveBBoxScale"};
   for ( $currentNode in $nodes ) {
     for ( $a in $attr ) {
       if ( `attributeQuery -node $currentNode -ex $a` ) {
@@ -607,8 +607,8 @@ global proc liquidCreateDelayedReadArchiveAttribute()
     if ( !`attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchive"` ) {
       addAttr -ln "liqRIBDelayedReadArchive" -dt "string" $currentNode;
     }
-    if ( !`attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchiveBBoxExpansion"` ) {
-      addAttr -ln "liqRIBDelayedReadArchiveBBoxExpansion" -at "long" -dv 100 $currentNode;
+    if ( !`attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchiveBBoxScale"` ) {
+      addAttr -ln "liqRIBDelayedReadArchiveBBoxScale" -at "double" -dv 1.0 -smn 0.0 -smx 2.0 $currentNode;
     }
   }
 }
@@ -1019,5 +1019,26 @@ global proc liquidCreateHitModeTransmissionAttribute()
 }
 
 
+global proc liquidCreateIgnoreShapesAttribute()
+{
+  string $nodes[] = `ls -tr -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !objExists( ($currentNode+".liqIgnoreShapes") ) ) {
+      addAttr -ln "liqIgnoreShapes" -at bool -dv 0 $currentNode;
+    }
+  }
+}
+
+global proc liquidDeleteIgnoreShapesAttribute()
+{
+  string $nodes[] = `ls -tr -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( objExists( ($currentNode+".liqIgnoreShapes") ) ) {
+      deleteAttr ( $currentNode+".liqIgnoreShapes" ) $currentNode;
+    }
+  }
+}
 
 
