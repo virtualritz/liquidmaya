@@ -43,10 +43,15 @@ global proc string liquidFluidGetPreviewDir()
 
   // check the existence of the preview directory
   string $previewTopDir = ($projectPath+"liquidPreviews");
-  if ( !`filetest -d $previewTopDir` ) sysFile -makeDir $previewTopDir;
+  if ( !`filetest -d $previewTopDir` ) {
+    string $current = `pwd`;
+    chdir $projectPath;
+    sysFile -makeDir liquidPreviews;
+    chdir $current;
+  }
 
   // check the existence of the scene directory
-  string $scene = `file -q -sceneName`;
+  string $scene = basenameEx(`file -q -sceneName`);
   if ( !size( $scene ) ) $scene = "Untitled";
   string $previewSceneDir = ($previewTopDir+"/"+$scene);
   if ( !`filetest -d $previewSceneDir` ) sysFile -makeDir $previewSceneDir;
@@ -56,112 +61,112 @@ global proc string liquidFluidGetPreviewDir()
 
 global proc liquidSLEditor()
 {
-	if(`window -exists liquidSLEditorWindow`)
-	{
-		deleteUI liquidSLEditorWindow;
-	}
-	window -t "Fluid SL Search/Replace" -wh 300 100 liquidSLEditorWindow;
+  if(`window -exists liquidSLEditorWindow`)
+  {
+    deleteUI liquidSLEditorWindow;
+  }
+  window -t "Fluid SL Search/Replace" -wh 300 100 liquidSLEditorWindow;
 
-	columnLayout -adj 1 liquidSLEColumn;
+  columnLayout -adj 1 liquidSLEColumn;
 
-	checkBoxGrp -l "Use Regex" liquidSLRegexCheck;
-	checkBoxGrp -l "Keep Dialog" liquidSLDialogCheck;
+  checkBoxGrp -l "Use Regex" liquidSLRegexCheck;
+  checkBoxGrp -l "Keep Dialog" liquidSLDialogCheck;
 
-	checkBoxGrp -ncb 2 -l "Search In:" -la2 "slo Paths" "Shader Names" liquidSLSearchCheck;
+  checkBoxGrp -ncb 2 -l "Search In:" -la2 "slo Paths" "Shader Names" liquidSLSearchCheck;
 
-	textFieldGrp -l "Search String" -ad2 2 liquidSLSearchString;
-	textFieldGrp -l "Replace String" -ad2 2 liquidSLReplaceString;
+  textFieldGrp -l "Search String" -ad2 2 liquidSLSearchString;
+  textFieldGrp -l "Replace String" -ad2 2 liquidSLReplaceString;
 
-	checkBoxGrp -l "Replace in Selection" -en 0 liquidSLSelectionCheck;
-	button -l "Replace" -h 30 -c ("liquidSLReplace") liquidSLReplaceButton;
-	button -l "Cancel" -h 30 -c "deleteUI liquidSLEditorWindow" liquidSLCancelButton;
+  checkBoxGrp -l "Replace in Selection" -en 0 liquidSLSelectionCheck;
+  button -l "Replace" -h 30 -c ("liquidSLReplace") liquidSLReplaceButton;
+  button -l "Cancel" -h 30 -c "deleteUI liquidSLEditorWindow" liquidSLCancelButton;
 
-	showWindow liquidSLEditorWindow;
+  showWindow liquidSLEditorWindow;
 }
 
 global proc liquidSLReplace()
 {
-	string $shaderlist[];
-	if(`checkBoxGrp -q -v1 liquidSLSelectionCheck`)
-	{
-		$shaderlist = `ls -sl`;
-	}
-	else
-	{
-		//get a list of all shaders
-		$shaderlist = liquidGetShaderList("all");
-	}
+  string $shaderlist[];
+  if(`checkBoxGrp -q -v1 liquidSLSelectionCheck`)
+  {
+    $shaderlist = `ls -sl`;
+  }
+  else
+  {
+    //get a list of all shaders
+    $shaderlist = liquidGetShaderList("all");
+  }
 
-	string $searchstring = `textFieldGrp -q -tx liquidSLSearchString`;
-	if(!`checkBoxGrp -q -v1 liquidSLRegexCheck`)
-	{
-		if(`gmatch $searchstring "*.*"`)
-		{
-			string $tmp = `substitute "\\." $searchstring "\\\\."`;
-			$searchstring = $tmp;
-		}
-	}
-	string $replacestring = `textFieldGrp -q -tx liquidSLReplaceString`;
+  string $searchstring = `textFieldGrp -q -tx liquidSLSearchString`;
+  if(!`checkBoxGrp -q -v1 liquidSLRegexCheck`)
+  {
+    if(`gmatch $searchstring "*.*"`)
+    {
+      string $tmp = `substitute "\\." $searchstring "\\\\."`;
+      $searchstring = $tmp;
+    }
+  }
+  string $replacestring = `textFieldGrp -q -tx liquidSLReplaceString`;
 
-	int $do_slo = `checkBoxGrp -q -v1 liquidSLSearchCheck`;
-	int $do_names = `checkBoxGrp -q -v2 liquidSLSearchCheck`;
-	if($do_slo == 0 && $do_names == 0)
-	{
-		return;
-	}
-	//searching in slo paths
-	if($do_slo)
-	{
-		for($sh in $shaderlist)
-		{
-			string $sname = `getAttr ($sh+".rmanShaderLong")`;
-			string $newname = `substitute $searchstring $sname $replacestring`;
-			setAttr ($sh+".rmanShaderLong") -type "string" $newname;
-		}
-	}
-	//searching in names
-	if($do_names)
-	{
-		for($sh in $shaderlist)
-		{
-			string $sname = `getAttr ($sh+".rmanShader")`;
-			string $newname = `substitute $searchstring $sname $replacestring`;
-			setAttr ($sh+".rmanShader") -type "string" $newname;
-			rename $sh $newname;
-		}
-	}
+  int $do_slo = `checkBoxGrp -q -v1 liquidSLSearchCheck`;
+  int $do_names = `checkBoxGrp -q -v2 liquidSLSearchCheck`;
+  if($do_slo == 0 && $do_names == 0)
+  {
+    return;
+  }
+  //searching in slo paths
+  if($do_slo)
+  {
+    for($sh in $shaderlist)
+    {
+      string $sname = `getAttr ($sh+".rmanShaderLong")`;
+      string $newname = `substitute $searchstring $sname $replacestring`;
+      setAttr ($sh+".rmanShaderLong") -type "string" $newname;
+    }
+  }
+  //searching in names
+  if($do_names)
+  {
+    for($sh in $shaderlist)
+    {
+      string $sname = `getAttr ($sh+".rmanShader")`;
+      string $newname = `substitute $searchstring $sname $replacestring`;
+      setAttr ($sh+".rmanShader") -type "string" $newname;
+      rename $sh $newname;
+    }
+  }
 
-	liquidFluidUpdateList;
+  liquidFluidUpdateList;
 
-	if(!`checkBoxGrp -q -v1 liquidSLDialogCheck`)
-	{
-		evalDeferred("deleteUI liquidSLEditorWindow");
-	}
+  if(!`checkBoxGrp -q -v1 liquidSLDialogCheck`)
+  {
+    evalDeferred("deleteUI liquidSLEditorWindow");
+  }
 }
 
 global proc liquidReloadFluidShader(string $shadername)
 {
-	string $shader_name = `getAttr ( $shadername + ".rmanShaderLong" ) `;
+  string $shader_name = `getAttr ( $shadername + ".rmanShaderLong" ) `;
   liquidSlSetShader( $shader_name );
-	string $type = liquidSlShaderType();
-	if ( $type == "surface" ) liquidReAttachParams $shadername "surface";
-	if ( $type == "light" ) liquidReAttachParams $shadername "light";
-	if ( $type == "displacement" ) liquidReAttachParams $shadername "disp";
+  string $type = liquidSlShaderType();
+  if ( $type == "surface" ) liquidReAttachParams $shadername "surface";
+  if ( $type == "light" ) liquidReAttachParams $shadername "light";
+  if ( $type == "displacement" ) liquidReAttachParams $shadername "disp";
 }
 
 global proc liquidChangeShader(string $shadername, string $new_shaderpath, string $nodeType)
 {
-	if(`filetest -r $new_shaderpath`)
-	{
-		setAttr -type "string" ($shadername+".rmanShaderLong") $new_shaderpath;
-		liquidReloadFluidShader($shadername);
-		//liquidParamDialogWindow($shadername, $nodeType);
-	}
-	else
-	{
-		confirmDialog -t "Fluid message" -m (" \n"+$new_shaderpath+" couldn't be read. Please check the path and try again\n");
-		print ($new_shaderpath+" couldn't be read. Please check the path and try again\n");
-	}
+  if(`filetest -r $new_shaderpath`)
+  {
+    setAttr -type "string" ($shadername+".rmanShaderLong") $new_shaderpath;
+    liquidReloadFluidShader($shadername);
+    //liquidParamDialogWindow($shadername, $nodeType);
+  }
+  else
+  {
+    confirmDialog -t "Fluid message" -m (" \n"+$new_shaderpath+" couldn't be read. Please check the path and try again\n");
+    print ($new_shaderpath+" couldn't be read. Please check the path and try again\n");
+  }
 }
 
 global proc string[] liquidGetMultiListerSelection() {
@@ -293,7 +298,7 @@ global proc liquidFluidEditCMD ()
     print "Fluid -> No Shader Selected...\n";
   } else {
     string $nodeType = `liquidGetShaderNodeType $selectedNode[0]`;
-    if ( $nodeType == "Container" ) liquidContainerWindow $selectedNode[0] $nodeType;
+    if ( $nodeType == "Container" ) liquidContainerWindow( $selectedNode[0] );
     else liquidParamDialogWindow $selectedNode[0] $nodeType;
   }
 }
@@ -437,7 +442,8 @@ global proc liquidFluidPickObjectsCMD()
 
 global proc liquidFluidPickObjects( string $selectedNode )
 {
-  string $assignedObjects[] = `listConnections -sh on ( $selectedNode + ".assignedObjects" )`;
+  string $assignedObjects[];
+  if ( objExists( ( $selectedNode + ".assignedObjects" ) ) ) $assignedObjects = `listConnections -sh on ( $selectedNode + ".assignedObjects" )`;
   if ( size($assignedObjects) != 0 ) {
     string $selectionList[];
     string $currentObject;
@@ -571,37 +577,35 @@ global proc liquidFluidReloadPreviewSwatch( string $shaderNode )
 {
   string $realShader = `getAttr ($shaderNode+".rmanShader")`;
   string $previewDir = liquidFluidGetPreviewDir();
-  string $imageCtl = ( "shaderPreview" + $realShader + $shaderNode);
+  string $imageCtl   = ( "shaderPreview" + $realShader + $shaderNode);
+  string $image      = ($previewDir+"/"+$shaderNode+".tif");
 
-  if ( `control -q -ex $imageCtl` ) {
 
-    string $image = ($previewDir+"/liqPreview_"+$shaderNode+".tif");
+  // the preview command outputs a file finishing with ".done"
+  // when the render is over. so you know when you can load the image.
 
-    // the preview command outputs a file finishing with ".done"
-    // when the render is over. so you know when you can load the image.
-    int $i = 0;
-    while( !`filetest -r ($image+".done")` ) {
-      pause -sec 1;
-      if ( $i == 30 ) break;
-      else $i++;
-    }
-    if ( `filetest -w ($image+".done")` ) sysFile -del ($image+".done");
-
-    // refresh the preview image
-    image -e -image $image $imageCtl;
-
-    // refresh the palette swatch -----  TO DO -----
-    //string $containerSwatch = ($previewDir+"/"+$shaderNode+".tif");
-    //sysFile -rename $containerSwatch $image;
-    //
-    //string $fileNodes[] =`ls -type file "*_liqContPreview"`;
-    //for ( $node in $fileNodes ) {
-    //  if ( `getAttr ($node+".fileTextureName")` == $containerSwatch ) {
-    //    setAttr -type "string" ($node+".fileTextureName") $containerSwatch;
-    //  }
-    //}
-
+  // wait 30 sec max to exit
+  float $timeout = `timerX`;
+  while ( !`filetest -r ($image+".done")` &&  `timerX -st $timeout` < 30.0 ) {
+    // wait 30 seconds max before giving up
   }
+  if ( `timerX -st $timeout` < 31.0 ) fprint 2 ("render took "+(`timerX -st $timeout`)+" seconds\n");
+  else warning ("preview of \""+$shaderNode+"\" took more than 30 seconds !");
+
+  if ( `filetest -w ($image+".done")` ) sysFile -del ($image+".done");
+
+  // refresh the preview image
+  if ( `control -q -ex $imageCtl` ) {
+    image -e -image $image $imageCtl;
+  }
+
+  // refresh the palette swatch
+  string $containerPreviewNode = liquidContainer_getPreviewNodeName( $shaderNode );
+  if ( $containerPreviewNode != "" ) {
+    fprint 2 ("refresh "+$containerPreviewNode+" with "+$image+"\n");
+    eval `setAttr -type "string" ($containerPreviewNode+".fileTextureName") $image`;
+  }
+
 }
 
 global proc liquidFluidPreviewShader( string $shaderNode )
@@ -628,7 +632,7 @@ global proc liquidFluidPreviewShader( string $shaderNode )
     liquidCreateGlobals;
   }
   string $previewDir = liquidFluidGetPreviewDir();
-  $image = ($previewDir+"/liqPreview_"+$shaderNode+".tif");
+  $image = ($previewDir+"/"+$shaderNode+".tif");
 
   // if a a previous .done file exists remove it.
   if ( `filetest -r ($image+".done")` ) sysFile -del ($image+".done");
@@ -725,6 +729,9 @@ global proc liquidRenameShader( string $nameField )
   setAttr ($newName+".rmanShader") -type "string" $newName;
   liquidFluidUpdateList();
   textScrollList -e -si $newName liquidFluidShaderList;
+
+  // Containers too !
+  liquidContainerWin_iconRename( $selectedNode[0], $newName );
 }
 
 global proc liquidShaderBrowserShaderMenu()
@@ -767,7 +774,7 @@ global proc liquidShaderBrowserShaderMenu()
   string $items[] = `menu -q -ia liquidFluidToContainer`;
   if ( size( $items ) ) deleteUI $items;
   for ( $c in $containers ) {
-    menuItem -parent liquidFluidToContainer -label $c -command ("liquidContainer_assignToContainer(\""+$c+"\");") ("liquidFluidContainer"+$c);
+    menuItem -parent liquidFluidToContainer -label $c -command ("liquidContainer_fluidAssignToContainer(\""+$c+"\");") ("liquidFluidContainer"+$c);
   }
 
 }
@@ -888,19 +895,19 @@ global proc liquidFluidAddBookmark()
   if ( $liquidCFD == "" ) warning ("nothing to Bookmark !");
 
   string $bookmarkName;
- 	string $result = `promptDialog  -title "Name your Bookmark"
+  string $result = `promptDialog  -title "Name your Bookmark"
                                   -message "Enter Name:"
                                   -button "OK" -button "Cancel"
                                   -defaultButton "OK" -cancelButton "Cancel"
                                   -dismissString "Cancel"`;
 
- 	if ($result == "OK") {
- 		$bookmarkName = strip( promptDialog( "-query", "-text" ) );
+  if ($result == "OK") {
+    $bookmarkName = strip( promptDialog( "-query", "-text" ) );
     $bookmarkName = substituteAllString( $bookmarkName, "|", "_");
     $bookmarkName = ($bookmarkName+"|"+$liquidCFD);
     optionVar -stringValueAppend "liquidFluidBookmarks" $bookmarkName;
     liquidFluidBuildBookmarkMenu();
- 	}
+  }
 
 }
 
