@@ -88,6 +88,11 @@ global proc formAttachButtons( string $form, string $buttons[], string $valign, 
 	}
 }
 
+/**
+ *  Returns the transform of a shape node
+ *  \param $shape a shape node
+ *  \todo more error checking
+ */
 global proc string liquidGetTransform( string $shape )
 {
   if ( !objExists( $shape ) ) error ("liquidGetTransform : \""+$shape+"\" does not exists !");
@@ -100,6 +105,10 @@ global proc string liquidGetTransform( string $shape )
   return $parents[0];
 }
 
+/**
+ *  Returns the state of modifier keys.
+ *  \note it handles all combinations, but you may have to parse the output string
+ */
 global proc string liquidGetModifiersState()
 {
 	int $mods = `getModifiers`;
