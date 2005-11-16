@@ -6,6 +6,7 @@ global proc AEliquidInstanceFlags( string $node )
   editorTemplate -beginLayout "Liquid" -collapse true;
 
     editorTemplate -label "Liquid Invisible" -addDynamicControl "liqInvisible";
+    editorTemplate -label "Ignore Shapes" -addDynamicControl "liqIgnoreShapes";
 
     editorTemplate -beginLayout "Shading" -collapse false;
 
@@ -63,7 +64,8 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "RIB Generator" -addDynamicControl "liqRIBGenerator";
       editorTemplate -label "Read Archive" -addDynamicControl "liqRIBReadArchive";
       editorTemplate -label "Delayed Read Archive" -addDynamicControl "liqRIBDelayedReadArchive";
-      editorTemplate -label "DRA Bounds Expansion %" -addDynamicControl "liqRIBDelayedReadArchiveBBoxExpansion";
+      editorTemplate -label "DRA Bounding Box" -addDynamicControl "ribDelayedArchiveBBox";
+      editorTemplate -label "DRA Bounds Scaling" -addDynamicControl "liqRIBDelayedReadArchiveBBoxScale";
 
     editorTemplate -endLayout;
 
