@@ -197,56 +197,81 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
             break;
           }
           }
+
+
           switch (currentArgType) {
+
           case SHADER_TYPE_STRING: {
             MPlug stringPlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
             if ( status == MS::kSuccess ) {
-              MString stringPlugVal;
-              stringPlug.getValue( stringPlugVal );
-              MString stringDefault( shaderInfo.getArgStringDefault( i, 0 ) );
-              if ( stringPlugVal != "" && stringPlugVal != stringDefault ) {
-                MString parsingString = stringPlugVal;
-                stringPlugVal = parseString( parsingString );
-                parsingString = stringPlugVal;
-                parsingString.toLowerCase();
-/*
-                if ( parsingString.substring(0, 9) == "autoshadow" ) {
-                  MString suffix = "";
-                  if ( stringPlugVal.length() > 10 )
-                  {
-                    suffix = stringPlugVal.substring( 10, stringPlugVal.length() - 1 );
-                  }
-                  if ( liqglo_doShadows ) {
-                    shadowName = liqglo_textureDir;
-                    if ( userShadowName == MString( "" ) )
-                    {
-                      shadowName += autoShadowName( suffix );
-                    } else {
-                      shadowName += userShadowName;
+              MString blah = shaderInfo.getArgName( i ).asChar();
+              if ( shaderInfo.getArgArraySize( i ) > 0 ) {
+                bool isArrayAttr = stringPlug.isArray( &status );
+                if ( isArrayAttr ) {
+                  MPlug plugObj;
+                  unsigned int arraySize = shaderInfo.getArgArraySize( i );
+                  tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, arraySize, 0 );
+                  for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+                    plugObj = stringPlug.elementByLogicalIndex( kk, &status );
+                    if ( status == MS::kSuccess ) {
+                      MString stringPlugVal;
+                      plugObj.getValue(stringPlugVal);
+                      MString parsingString = stringPlugVal;
+                      stringPlugVal = parseString( parsingString );
+                      tokenPointerPair.setTokenString( kk, stringPlugVal.asChar(), stringPlugVal.length() );
                     }
-                    usingShadow = true;
-                    tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
-                    tokenPointerPair.setTokenString( shadowName.asChar(), shadowName.length() );
-                    tokenPointerArray.push_back( tokenPointerPair );
                   }
-                } else {
+                  tokenPointerArray.push_back( tokenPointerPair );
+                }
+              } else {
+                MString stringPlugVal;
+                stringPlug.getValue( stringPlugVal );
+                MString stringDefault( shaderInfo.getArgStringDefault( i, 0 ) );
+                if ( stringPlugVal != "" && stringPlugVal != stringDefault ) {
+                  MString parsingString = stringPlugVal;
+                  stringPlugVal = parseString( parsingString );
+                  parsingString = stringPlugVal;
+                  parsingString.toLowerCase();
+                  /*
+                                            //if ( parsingString.substring(0, 9) == "autoshadow" ) {
+                                            //  MString suffix = "";
+                                            //  if ( stringPlugVal.length() > 10 )
+                                            //  {
+                                            //    suffix = stringPlugVal.substring( 10, stringPlugVal.length() - 1 );
+                                            //  }
+                                            //  if ( liqglo_doShadows ) {
+                                            //    shadowName = liqglo_textureDir;
+                                            //    if ( userShadowName == MString( "" ) )
+                                            //    {
+                                            //      shadowName += autoShadowName( suffix );
+                                            //    } else {
+                                            //      shadowName += userShadowName;
+                                            //    }
+                                            //    usingShadow = true;
+                                            //    tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
+                                            //    tokenPointerPair.setTokenString( shadowName.asChar(), shadowName.length() );
+                                            //    tokenPointerArray.push_back( tokenPointerPair );
+                                            //  }
+                                            //} else {
+                                            //
+                                            //  // Hmmmmmmm looks like a potential bug here ...
+                                            //  #if 0
+                                            //  if ( stringPlugVal != MString( "" ) ){
+                                            //    tokenPointerPair.tokenString = (char *)lmalloc(stringPlugVal.length() + 10);
+                                            //  } else {
+                                            //    tokenPointerPair.tokenString = RI_NULL;
+                                            //  }
+                                            //  #endif
+                                            //  */
 
-                  // Hmmmmmmm looks like a potential bug here ...
-#if 0
-                  if ( stringPlugVal != MString( "" ) ){
-                    tokenPointerPair.tokenString = (char *)lmalloc(stringPlugVal.length() + 10);
-                  } else {
-                    tokenPointerPair.tokenString = RI_NULL;
-                  }
-#endif
-                  */
-
-                tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
-                tokenPointerPair.setTokenString( stringPlugVal.asChar(), stringPlugVal.length() );
-                tokenPointerArray.push_back( tokenPointerPair );
+                  tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, 0, 0 );
+                  tokenPointerPair.setTokenString( 0, stringPlugVal.asChar(), stringPlugVal.length() );
+                  tokenPointerArray.push_back( tokenPointerPair );
+                }
               }
             }
             break; }
+
           case SHADER_TYPE_SCALAR: {
             MPlug floatPlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
             if ( status == MS::kSuccess ) {
@@ -304,6 +329,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
               }
             }
             break; }
+
           case SHADER_TYPE_COLOR: {
             MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
             unsigned int arraySize = shaderInfo.getArgArraySize( i );
@@ -335,6 +361,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
               }
             }
             break; }
+
           case SHADER_TYPE_POINT: {
             MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
             unsigned int arraySize = shaderInfo.getArgArraySize( i );
@@ -366,6 +393,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
               }
             }
             break; }
+
           case SHADER_TYPE_VECTOR: {
             MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
             unsigned int arraySize = shaderInfo.getArgArraySize( i );
@@ -398,6 +426,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
               }
             }
             break; }
+
           case SHADER_TYPE_NORMAL: {
             MPlug triplePlug = lightDepNode.findPlug( shaderInfo.getArgName( i ), &status );
             unsigned int arraySize = shaderInfo.getArgArraySize( i );
@@ -482,7 +511,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   if ( rmanLight ) {
     lightType  = MRLT_Rman;
   } else {
-  
+
     if ( light.hasFn( MFn::kAmbientLight ) ) {
       lightType      = MRLT_Ambient;
 
@@ -721,7 +750,6 @@ void liqRibLightData::write()
         }
 
         RtString shaderName = const_cast<char*>(assignedRManShader.asChar());
-
         handle = RiLightSourceV( shaderName, tokenPointerArray.size(), tokenArray, pointerArray );
         break;
       }
@@ -802,6 +830,7 @@ MString liqRibLightData::autoShadowName( int PointLightDir ) const
     int pointIndex = liqglo_DDimageName[0].index( '.' );
     shadowName += liqglo_DDimageName[0].substring(0, pointIndex-1).asChar();
   }
+  shadowName = parseString( shadowName );
   shadowName += "_";
   shadowName += lightName;
   shadowName += ( shadowType == stDeep )? "DSH": "SHD";

@@ -165,14 +165,33 @@ liqShader::liqShader( MObject shaderObj )
       case SHADER_TYPE_STRING: {
         MPlug stringPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
         if ( status == MS::kSuccess ) {
-          MString stringPlugVal;
-          stringPlug.getValue( stringPlugVal );
-          MString stringDefault = shaderInfo.getArgStringDefault( i, 0 );
-          if ( stringPlugVal != stringDefault ) {
-            MString stringVal = parseString( stringPlugVal );
-            tokenPointerArray[ numTPV ].set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
-            tokenPointerArray[ numTPV ].setTokenString( stringVal.asChar(), stringVal.length() );
-            numTPV++;
+          unsigned int arraySize = shaderInfo.getArgArraySize( i );
+          if ( arraySize > 0 ) {
+            bool isArrayAttr = stringPlug.isArray( &status );
+            if ( isArrayAttr ) {
+              MPlug plugObj;
+              tokenPointerArray[ numTPV ].set( shaderInfo.getArgName( i ).asChar(), rString, false, arraySize, 0 );
+              for( unsigned int kk = 0; kk < arraySize; kk++ ) {
+                plugObj = stringPlug.elementByLogicalIndex( kk, &status );
+                if ( status == MS::kSuccess ) {
+                  MString stringPlugVal;
+                  plugObj.getValue( stringPlugVal );
+                  MString stringVal = parseString( stringPlugVal );
+                  tokenPointerArray[ numTPV ].setTokenString( kk, stringVal.asChar(), stringVal.length() );
+                }
+              }
+              numTPV++;
+            }
+          } else {
+            MString stringPlugVal;
+            stringPlug.getValue( stringPlugVal );
+            MString stringDefault = shaderInfo.getArgStringDefault( i, 0 );
+            if ( stringPlugVal != stringDefault ) {
+              MString stringVal = parseString( stringPlugVal );
+              tokenPointerArray[ numTPV ].set( shaderInfo.getArgName( i ).asChar(), rString, false, 0, 0 );
+              tokenPointerArray[ numTPV ].setTokenString( 0, stringVal.asChar(), stringVal.length() );
+              numTPV++;
+            }
           }
         }
         break;
@@ -184,24 +203,18 @@ liqShader::liqShader( MObject shaderObj )
           if ( arraySize > 0 ) {
 
             bool isArrayAttr = floatPlug.isArray( &status );
-
             if ( isArrayAttr ) {
 
               // philippe : new way to store float arrays as multi attr
-
               MPlug plugObj;
               tokenPointerArray[ numTPV ].set( shaderInfo.getArgName( i ).asChar(), rFloat, false, false, true, arraySize );
-
               for( unsigned int kk = 0; kk < arraySize; kk++ ) {
-
                 plugObj = floatPlug.elementByLogicalIndex( kk, &status );
-
                 if ( status == MS::kSuccess ) {
                   float x;
                   plugObj.getValue(x);
                   tokenPointerArray[numTPV].setTokenFloat( kk, x  );
                 }
-
               }
 
             } else {
