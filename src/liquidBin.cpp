@@ -1,21 +1,21 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
-** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+** "License"); you may not use this file except in compliance with the License. You may
+** obtain a copy of the License at http://www.mozilla.org/MPL/
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+** WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+** language governing rights and limitations under the License.
 **
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
+** The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+** Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+**
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -25,7 +25,7 @@
 */
 
 /* ______________________________________________________________________
-** 
+**
 ** Liquid Executable
 ** ______________________________________________________________________
 */
@@ -53,7 +53,7 @@ extern "C" {
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
-static const char * LIQUIDVERSION = 
+static const char * LIQUIDVERSION =
 #include "liquid.version"
 ;
 #define DEFINED_LIQUIDVERSION
@@ -62,8 +62,67 @@ static const char * LIQUIDVERSION =
 
 extern  bool liquidBin;
 
-static const char* usage = 
+static const char* usage =
 "Usage: liquid [options] filename\n\
+\n\
+\t-lr     launch render\n\
+\t-nolr   no launch render\n\
+\t-GL     use globals\n\
+\t-sel    selected\n\
+\t-ra     readArchives\n\
+\t-acv    render all curves\n\
+\t-tif    tiff\n\
+\t-dof    dofOn\n\
+\t-bin    doBinary\n\
+\t-sh     shadows\n\
+\t-nsh    noShadows\n\
+\t-zip    doCompression\n\
+\t-cln    cleanRib\n\
+\t-pro    progress\n\
+\t-mb     motionBlur\n\
+\t-db     deformationBlur\n\
+\t-d      debug\n\
+\t-net    netRender\n\
+\t-fsr    fullShadowRib\n\
+\t-rem    remote\n\
+\t-rs     renderScript\n\
+\t-nrs    noRenderScript\n\
+\t-err    errHandler\n\
+\t-sdb    shaderDebug\n\
+\t-n      sequence <start> <stop> <step>\n\
+\t-m      mbSamples <n>\n\
+\t-dbs    defBlock\n\
+\t-cam    camera <name>\n\
+\t-rcam   rotateCamera\n\
+\t-s      samples <n>\n\
+\t-rnm    ribName <name>\n\
+\t-pd     projectDir <path>\n\
+\t-prm    preFrameMel <string>\n\
+\t-pom    postFrameMel <string>\n\
+\t-rid    ribdir <path>\n\
+\t-txd    texdir <path>\n\
+\t-tmd    tmpdir <path>\n\
+\t-pid    picdir <path>\n\
+\t-pec    preCommand <string>\n\
+\t-poc    postJobCommand <string>\n\
+\t-pof    postFrameCommand <string>\n\
+\t-prf    preFrameCommand <string>\n\
+\t-rec    renderCommand <string>\n\
+\t-rgc    ribgenCommand <string> \n\
+\t-blt    blurTime <n>\n\
+\t-sr     shadingRate <n>\n\
+\t-bs     bucketSize <x> <y>\n\
+\t-pf     pixelFilter <n> <n> <n>\n\
+\t-gs     gridSize <n>\n\
+\t-txm    texmem <n>\n\
+\t-es     eyeSplits <n>\n\
+\t-ar     aspect <n>\n\
+\t-x      width <n>\n\
+\t-y      height <n>\n\
+\t-ndf    noDef\n\
+\t-pad    padding <n>\n\
+\t-rgo    ribGenOnly\n\
+\n\
 Please see the Liquid Wiki for command line options.\n\
 The options match the liquid MEL command parameters.\n";
 
@@ -80,8 +139,8 @@ void signalHandler(int sig)
 static bool isHelpArg(const char *arg) {
   return (
     !strcmp(arg, "-h")     ||
-    !strcmp(arg, "-help")  || 
-    !strcmp(arg, "--help") 
+    !strcmp(arg, "-help")  ||
+    !strcmp(arg, "--help")
   );
 }
 
@@ -99,7 +158,7 @@ int main(int argc, char **argv)
 
   liquidBin = true;
   printf( "Liquid v%s\n", LIQUIDVERSION );
-  
+
   // initialize the maya library
   status = MLibrary::initialize (argv[0], true );
   if (!status) {
@@ -126,7 +185,7 @@ int main(int argc, char **argv)
     cerr << usage;
     return 1;
   }
-  
+
   // now we grab the last argument as the Maya scene filename
   // and all the rest in the middle we gather to pass straight
   // through to the liquid Maya command
@@ -136,7 +195,7 @@ int main(int argc, char **argv)
     myArgs.addArg( newArg );
   }
 
-  // check that the filename has been specified and exists	
+  // check that the filename has been specified and exists
   if ( fileName == "" ) {
     status.perror("Liquid -> no filename specified!\n" );
     printf( "ALF_EXIT_STATUS 1\n" );
@@ -149,7 +208,7 @@ int main(int argc, char **argv)
     MLibrary::cleanup( 1 );
     return ( 1 );
   }
-  
+
   // load the file into liquid's virtual maya
   status = MFileIO::open( fileName );
   if ( !status ) {
@@ -172,13 +231,13 @@ int main(int argc, char **argv)
 #endif
 
   status = liquidTrans.doIt( myArgs );
-  
+
   if (status) {
     printf( "ALF_EXIT_STATUS 0\n" );
   } else {
     printf( "ALF_EXIT_STATUS 1\n" );
   }
-  
+
   MLibrary::cleanup( 0 );
   return (0);
 }
