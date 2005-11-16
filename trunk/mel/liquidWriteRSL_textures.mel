@@ -26,9 +26,7 @@ global proc string[] validConnections_checker ()
     };
 }
 
-global proc writeRSL_checker (
-    string $node
-)
+global proc writeRSL_checker ( string $node )
 {
     beginRSL $node;
 
@@ -41,7 +39,7 @@ global proc writeRSL_checker (
         addRSLVariable "float" "color1R" "color1R" $node;
         addRSLVariable "float" "color1G" "color1G" $node;
         addRSLVariable "float" "color1B" "color1B" $node;
-        addToRSL( "vector color1 = vector ( color1R, color1G, " + 
+        addToRSL( "vector color1 = vector ( color1R, color1G, " +
                   "color1B );" );
     }
 
@@ -54,7 +52,7 @@ global proc writeRSL_checker (
         addRSLVariable "float" "color2R" "color2R" $node;
         addRSLVariable "float" "color2G" "color2G" $node;
         addRSLVariable "float" "color2B" "color2B" $node;
-        addToRSL( "vector color2 = vector ( color2R, color2G, " + 
+        addToRSL( "vector color2 = vector ( color2R, color2G, " +
                   "color2B );" );
     }
 
@@ -79,7 +77,7 @@ global proc writeRSL_checker (
         addRSLVariable "float" "outColorR" "outColorR" $node;
         addRSLVariable "float" "outColorG" "outColorG" $node;
         addRSLVariable "float" "outColorB" "outColorB" $node;
-        addToRSL( "vector outColor = vector ( outColorR, " + 
+        addToRSL( "vector outColor = vector ( outColorR, " +
                   "outColorG, outColorB );" );
     }
 
@@ -134,7 +132,7 @@ global proc writeRSL_cloth (
     addRSLVariable "float" "vWidth" "vWidth" $node;
     addRSLVariable "float2" "uvCoord" "uvCoord" $node;
     addRSLVariable "vector" "outColor" "outColor" $node;
-    
+
     addToRSL "float ss = uvCoord[ 0 ], tt = uvCoord[ 1 ];";
 
     addToRSL "float sCell = floor( ss * 2 );";
@@ -405,9 +403,9 @@ global proc writeRSL_solidFractal (
 
 global proc string[] validConnections_grid ()
 {
-    return { "lineColor", "lineColorR", "lineColorG", "lineColorB", 
-             "fillerColor", "fillerColorR", "fillerColorG", "fillerColorB",  
-             "uWidth", "vWidth", "contrast", "uvCoord", "outColor", 
+    return { "lineColor", "lineColorR", "lineColorG", "lineColorB",
+             "fillerColor", "fillerColorR", "fillerColorG", "fillerColorB",
+             "uWidth", "vWidth", "contrast", "uvCoord", "outColor",
              "outColorR", "outColorG", "outColorB" };
 }
 

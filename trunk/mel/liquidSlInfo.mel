@@ -51,8 +51,7 @@
 //
 
 
-global proc
-liquidSlSetShader( string $shaderFile )
+global proc liquidSlSetShader( string $shaderFile )
 {
     global string $gLiquidSlShaderFile;
 
@@ -85,8 +84,7 @@ liquidSlSetShader( string $shaderFile )
     liquidSlParseLif( $shaderFile );
 }
 
-global proc
-liquidSlInfoReset()
+global proc liquidSlInfoReset()
 {
   global string $gLiquidSlShaderFile;
   global string $gLiquidSlShaderType;
@@ -118,8 +116,7 @@ liquidSlInfoReset()
 }
 
 
-global proc string
-liquidSlShaderType()
+global proc string liquidSlShaderType()
 {
     global string $gLiquidSlShaderType;
     if ( $gLiquidSlShaderType == "" )
@@ -128,8 +125,7 @@ liquidSlShaderType()
 }
 
 
-global proc int
-liquidSlNumParams()
+global proc int liquidSlNumParams()
 {
     global int $gLiquidSlNumParams;
     if ( $gLiquidSlNumParams == -1 )
@@ -138,8 +134,7 @@ liquidSlNumParams()
 }
 
 
-global proc string
-liquidSlParamName( int $index )
+global proc string liquidSlParamName( int $index )
 {
     global int $gLiquidSlNumParams;
 
@@ -155,8 +150,7 @@ liquidSlParamName( int $index )
 }
 
 
-global proc  string
-liquidSlParamType( int $index )
+global proc  string liquidSlParamType( int $index )
 {
     global int $gLiquidSlNumParams;
 
@@ -172,8 +166,7 @@ liquidSlParamType( int $index )
 }
 
 
-global proc int
-liquidSlParamArraySize( int $index )
+global proc int liquidSlParamArraySize( int $index )
 {
     global int $gLiquidSlNumParams;
 
@@ -189,8 +182,7 @@ liquidSlParamArraySize( int $index )
 }
 
 
-global proc string
-liquidSlParamDefault( int $index )
+global proc string liquidSlParamDefault( int $index )
 {
     global int $gLiquidSlNumParams;
 
@@ -211,8 +203,7 @@ liquidSlParamDefault( int $index )
 // by liquidSlParamDefault() into a native mel type
 //
 
-global proc string
-liquidSlDefaultToString( string $default )
+global proc string liquidSlDefaultToString( string $default )
 {
     // this gets rid of surrounding quotes
     string $val = eval( "string $foo_S = " + $default );
@@ -220,48 +211,42 @@ liquidSlDefaultToString( string $default )
 }
 
 
-global proc string[]
-liquidSlDefaultToStringArray( string $default )
+global proc string[] liquidSlDefaultToStringArray( string $default )
 {
     string $val[] = eval( "string $foo_Sarray[] = " + $default );
     return $val;
 }
 
 
-global proc float
-liquidSlDefaultToFloat( string $default )
+global proc float liquidSlDefaultToFloat( string $default )
 {
     float $val = $default;
     return $val;
 }
 
 
-global proc float[]
-liquidSlDefaultToFloatArray( string $default )
+global proc float[] liquidSlDefaultToFloatArray( string $default )
 {
     float $val[] = eval( "float $foo_Farray[] = " + $default );
     return $val;
 }
 
 
-global proc vector
-liquidSlDefaultToVector( string $default )
+global proc vector liquidSlDefaultToVector( string $default )
 {
     vector $val = $default;
     return $val;
 }
 
 
-global proc vector[]
-liquidSlDefaultToVectorArray( string $default )
+global proc vector[] liquidSlDefaultToVectorArray( string $default )
 {
   vector $val[] = eval("vector $foo_Varray[] =" + $default );
   return $val;
 }
 
 
-global proc matrix
-liquidSlDefaultToMatrix( string $default )
+global proc matrix liquidSlDefaultToMatrix( string $default )
 {
     // Hack since the assign-eval trick
     // doesn't work for matrices
@@ -271,8 +256,7 @@ liquidSlDefaultToMatrix( string $default )
     return $_tmpMatrix;
 }
 
-global proc float[]
-liquidSlDefaultToMatrixArray( string $default )
+global proc float[] liquidSlDefaultToMatrixArray( string $default )
 {
     // There is no matrix-array mel type, so
     // we just return a single float array with
@@ -291,8 +275,7 @@ liquidSlDefaultToMatrixArray( string $default )
 // how to use the other procedures in this file.
 //
 
-global proc
-liquidSlInfo( string $shaderFile )
+global proc liquidSlInfo( string $shaderFile )
 {
     liquidSlSetShader( $shaderFile );
     string $shaderType = liquidSlShaderType();

@@ -28,6 +28,8 @@
 //  Procedure Name:
 //      liquidLifParse
 //
+//  $Revision$
+//
 //  Description:
 //      Procedure called by liquidSlSetShader() to parse
 //      a prman .slo shader file.  All parsed information
@@ -52,12 +54,12 @@
 //
 
 
-proc string
-getNextLine( int $filehandle )
+/**
+ *  \return the next line in the currently open file.
+ *  \note lines MUST end with a semi-colon ( ; ).
+ */
+proc string getNextLine( int $filehandle )
 {
-  // returns the next line
-  // line MUST end with a semi-colon ( ; )
-
   string $line = "";
   while ( ! gmatch( $line, "*;") && ! `feof $filehandle` ) {
     string $buf = ( strip( fgetline( $filehandle ) ) );
@@ -68,18 +70,21 @@ getNextLine( int $filehandle )
 }
 
 
-
-proc int
-lineIsBlank( string $line )
+/**
+ *  simple boolean test.
+ *  \note blank lines are either "" or starting with #
+ */
+proc int lineIsBlank( string $line )
 {
   if ( $line == "" || gmatch( $line, "#*") ) return 1;
   return 0;
 }
 
 
-
-proc int
-getParamIndex( string $line )
+/**
+ *  \return the index of the lif param in the shader param list.
+ */
+proc int getParamIndex( string $line )
 {
   global int    $gLiquidSlNumParams;
   global string $gLiquidSlParamNames[];
@@ -106,9 +111,11 @@ getParamIndex( string $line )
 }
 
 
-
-global proc string[]
-getKeyData( string $line )
+/**
+ *  \return the lif keyword in the line.
+ *  \note some error checking to avoid malformed lif files.
+ */
+global proc string[] getKeyData( string $line )
 {
   string $tmp = $line;
   string $result[];
@@ -152,9 +159,11 @@ getKeyData( string $line )
 }
 
 
-
-proc string
-getRange( string $line )
+/**
+ *  \return the lif range in the line.
+ *  \todo make more efficient using maya7 regexps
+ */
+proc string getRange( string $line )
 {
   // get everything between square brackets
   string $tmp = match("\\[.+\\]", $line);
@@ -194,6 +203,10 @@ getRange( string $line )
 // global proc
 //
 
+/**
+ *  the main proc to parse the LIF file.
+ *  \todo more documentation
+ */
 global proc liquidSlParseLif( string $shaderFile )
 {
   // init globals
@@ -330,15 +343,24 @@ global proc liquidSlParseLif( string $shaderFile )
 
 
 
-
+//
 // wrappers
+//
 
+
+/**
+ *  boolean test to know if a lif file has been loaded the current shader.
+ */
 global proc int liquidLifIsAvailable()
 {
   global int    $gLiquidSlLifExists;
   return $gLiquidSlLifExists;
 }
 
+/**
+ *
+ *  \return the value of $gLiquidSlLifGuiSize
+ */
 global proc int liquidLifGuiSize()
 {
   global int    $gLiquidSlLifGuiSize;
@@ -348,7 +370,8 @@ global proc int liquidLifGuiSize()
 
 
 /**
- *  returns the match shader array index for a given GUI index
+ *
+ *  \return the match shader array index for a given GUI index
  */
 global proc int liquidLifGetGuiOrder( int $i )
 {
@@ -366,13 +389,11 @@ global proc string liquidLifShaderDescription()
 
 
 /**
- *  returns the parameter name for a given index
- *  \return the name string.
+ *
+ *  \return the parameter's name string for a given index.
  */
 global proc string liquidLifParamName( int $i )
 {
-
-
   if ( liquidLifIsAvailable() ) {
 
     int $guiOrder = liquidLifGetGuiOrder($i);
@@ -387,12 +408,11 @@ global proc string liquidLifParamName( int $i )
 
 
 /**
- *  returns the parameter type for a given index
- *  \return the type string.
+ *
+ *  \return the parameter's type string for a given index.
  */
 global proc string liquidLifParamType( int $i )
 {
-
   if ( liquidLifIsAvailable() ) {
 
     int $guiOrder = liquidLifGetGuiOrder($i);
@@ -407,8 +427,8 @@ global proc string liquidLifParamType( int $i )
 
 
 /**
- *  returns the parameter label for a given index
- *  \return the label string when a LIF is available, otherwise an empty string.
+ *
+ *  \return the label string for a given index when a LIF is available, otherwise an empty string.
  */
 global proc string liquidLifParamLabel( int $i )
 {
@@ -428,8 +448,8 @@ global proc string liquidLifParamLabel( int $i )
 
 
 /**
- *  returns the parameter description for a given index
- *  \return the description string when a LIF is available, otherwise an empty string.
+ *
+ *  \return the description string for a given index when a LIF is available, otherwise an empty string.
  */
 global proc string liquidLifParamDescription( int $i )
 {
@@ -450,7 +470,8 @@ global proc string liquidLifParamDescription( int $i )
 
 
 /**
- *  returns the parameter gui type for a given index
+ *
+ *  \return the parameter gui type for a given index
  *  \note as $gLiquidSlParamTypes is copied in $gLiquidSlParamGuiType at the begining, it returns a basic sl type if nothing was specified
  */
 global proc string liquidLifParamGuiType( int $i )
@@ -471,8 +492,8 @@ global proc string liquidLifParamGuiType( int $i )
 
 
 /**
- *  returns the parameter description for a given index
- *  \return the description string when a LIF is available, otherwise an empty string.
+ *
+ *  \return the parameter range for a given index when a LIF is available, otherwise an empty string.
  */
 global proc string[] liquidLifParamGuiRange( int $i )
 {
@@ -490,7 +511,10 @@ global proc string[] liquidLifParamGuiRange( int $i )
   return $range;
 }
 
-
+/**
+ *
+ *  \return the parameter array size for a given index when a LIF is available.
+ */
 global proc int liquidLifParamArraySize( int $i )
 {
   if ( liquidLifIsAvailable() ) {
@@ -508,7 +532,11 @@ global proc int liquidLifParamArraySize( int $i )
 
 //
 // debuging utility
+//
 
+/**
+ *  used by gdump to format the debug output file
+ */
 proc string format( string $str, int $len )
 {
   string $out;
@@ -524,6 +552,9 @@ proc string format( string $str, int $len )
   return $str;
 }
 
+/**
+ *  outputs a dump of the globals to disk for inspection.
+ */
 global proc gdump()
 {
   if ( `filetest -w "/tmp/gdump.txt"` ) sysFile -delete "/tmp/gdump.txt";

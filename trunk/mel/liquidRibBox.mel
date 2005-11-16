@@ -39,45 +39,45 @@
 global proc liquidAddRibBox ()
 {
   string $nodes[] = `ls -dag -sl`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		if ( !`attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
-			addAttr -ln "liqRIBBox" -dt "string" $currentNode;
-		}
-	}
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
+      addAttr -ln "liqRIBBox" -dt "string" $currentNode;
+    }
+  }
 }
 
 global proc liquidDeleteRibBox ()
 {
   string $nodes[] = `ls -dag -sl`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		if ( `attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
-			deleteAttr ( $currentNode + ".liqRIBBox" );
-		}
-	}
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( `attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
+      deleteAttr ( $currentNode + ".liqRIBBox" );
+    }
+  }
 }
 
 // This is very bad! It overrides existing attached ribbox info!!!
 global proc liquidMakeMatteObjects ()
 {
   string $nodes[] = `ls -dag -sl`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		if ( !`attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
-			addAttr -ln "liqRIBBox" -dt "string" $currentNode;
-		}
-		setAttr -type "string" ( $currentNode + ".liqRIBBox" ) "Matte 1";
-	}
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
+      addAttr -ln "liqRIBBox" -dt "string" $currentNode;
+    }
+    setAttr -type "string" ( $currentNode + ".liqRIBBox" ) "Matte 1";
+  }
 }
 
 global proc liquidUnMakeMatteObjects ()
 {
   string $nodes[] = `ls -dag -sl`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		if ( `attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
-			deleteAttr ( $currentNode + ".liqRIBBox" );
-		}
-	}
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( `attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
+      deleteAttr ( $currentNode + ".liqRIBBox" );
+    }
+  }
 }
