@@ -85,6 +85,8 @@ extern MStringArray liqglo_DDimageName;
 
 extern MString liqglo_currentNodeName;
 extern MString liqglo_currentNodeShortName;
+extern MString liqglo_shotName;
+extern MString liqglo_shotVersion;
 
 void liquidInfo( MString info )
 //
@@ -481,6 +483,14 @@ MString parseString( const MString & inputString )
         constructedString += liqglo_currentNodeName;
         inToken = false;
         tokenString.clear();
+      } else if ( tokenString == "SHOT" ) {
+        constructedString += liqglo_shotName;
+        inToken = false;
+        tokenString.clear();
+      } else if ( tokenString == "VER" ) {
+        constructedString += liqglo_shotVersion;
+        inToken = false;
+        tokenString.clear();
       }
     } else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
       constructedString += (int)liqglo_lframe;
@@ -501,8 +511,8 @@ MString parseString( const MString & inputString )
       sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
       constructedString += paddedFrame;
     } else if ( inputString.substring(i, i) == "%" && inputString.substring(i - 1, i - 1) != "\\" ) {
-      MString	envString;
-      char*	envVal = NULL;
+      MString envString;
+      char* envVal = NULL;
 
       i++;
 
@@ -539,7 +549,7 @@ MString parseString( const MString & inputString )
   return constructedString;
 }
 
-// Moritz: added below code for simple MEL parameter expression scriptig support
+// Moritz: added below code for simple MEL parameter expression scripting support
 // syntax: [mel commands]
 MString parseCommandString( const MString & inputString )
 {
@@ -685,7 +695,10 @@ MString liquidTransGetSceneName()
 {
   MString fullName;
   MString fileName;
-  MGlobal::executeCommand( "file -q -a", fullName );
+  // philippe: the line commented below was using an obsolete flag for file
+  //MGlobal::executeCommand( "file -q -a", fullName );
+  MGlobal::executeCommand( "file -q -sn -shn", fullName );
+  fullName = (fullName != "")? fullName:"untitled.mb";
 
   // move backwards across the string until we hit a dirctory / and
   // take the info from there on
@@ -776,3 +789,22 @@ MString liquidSanitizePath( MString & inputString )
   return constructedString;
 }
 
+
+MString removeEscapes( const MString & inputString )
+{
+  MString constructedString;
+  MString tokenString;
+  int sLength = inputString.length();
+  int i;
+
+  for ( i = 0; i < sLength; i++ ) {
+    if ( inputString.substring(i, i+1) == "\\@" ) {
+      constructedString += "@";
+      i++;
+    } else if ( inputString.substring(i, i+1) == "\\#" ) {
+      constructedString += "#";
+      i++;
+    } else constructedString += inputString.substring(i, i);
+  }
+  return constructedString;
+}
