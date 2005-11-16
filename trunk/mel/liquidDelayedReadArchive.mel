@@ -34,52 +34,53 @@
 // create the liquid menu interface
 global proc liquidDelayedReadArchive ()
 {
-	string $nodes[] = `ls -dag -s -sl`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		string $currentNodeParent[] = `listRelatives -p $currentNode`;
-		if ( !`attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchive"` ) {
-			addAttr -ln "liqRIBDelayedReadArchive" -dt "string" $currentNode;
-		}
-		if ( !`attributeQuery -node $currentNode -ex "ribDelayedArchiveBBox"` ) {
-			addAttr -ln "ribDelayedArchiveBBox" -at message $currentNode;
-		}
-		string $bboxC[] = `polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -tx 1 -ch 1`;
-		string $bbox = `rename $bboxC[0] ( $currentNode + "delayedBBOX" )`;
-		setAttr ( $bbox + ".tx" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxCenterX" )` );
-		setAttr ( $bbox + ".ty" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxCenterY" )` );
-		setAttr ( $bbox + ".tz" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxCenterZ" )` );
-		setAttr ( $bbox + ".sx" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxSizeX" )` );
-		setAttr ( $bbox + ".sy" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxSizeY" )` );
-		setAttr ( $bbox + ".sz" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxSizeZ" )` );
-		setAttr ( $bbox + ".overrideEnabled" ) 1;
-		setAttr ( $bbox + ".overrideDisplayType" ) 1;
-		setAttr ( $bbox + ".primaryVisibility" ) 0;
-		setAttr ( $bbox + ".castsShadows" ) 0;
-		setAttr ( $bbox + ".motionBlur" ) 0;
-		if ( !`attributeQuery -node $bbox -ex "ribDelayedArchiveBBoxIn"` ) {
-			addAttr -ln "ribDelayedArchiveBBoxIn" -at message $bbox;
-		}
-		connectAttr ( $currentNode + ".ribDelayedArchiveBBox" ) ( $bbox + ".ribDelayedArchiveBBoxIn" );
-		parent $bbox $currentNodeParent[0];
-	}
+  string $nodes[] = `ls -dag -s -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    string $currentNodeParent[] = `listRelatives -p $currentNode`;
+    if ( !`attributeQuery -node $currentNodeParent[0] -ex "liqRIBDelayedReadArchive"` ) {
+      addAttr -ln "liqRIBDelayedReadArchive" -dt "string" $currentNodeParent[0];
+    }
+    if ( !`attributeQuery -node $currentNodeParent[0] -ex "ribDelayedArchiveBBox"` ) {
+      addAttr -ln "ribDelayedArchiveBBox" -at message $currentNodeParent[0];
+    }
+    string $bboxC[] = `polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -tx 1 -ch 1`;
+    string $bbox = `rename $bboxC[0] ( $currentNode + "delayedBBOX" )`;
+    setAttr ( $bbox + ".tx" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxCenterX" )` );
+    setAttr ( $bbox + ".ty" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxCenterY" )` );
+    setAttr ( $bbox + ".tz" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxCenterZ" )` );
+    setAttr ( $bbox + ".sx" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxSizeX" )` );
+    setAttr ( $bbox + ".sy" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxSizeY" )` );
+    setAttr ( $bbox + ".sz" ) ( `getAttr ( $currentNodeParent[0] +".boundingBoxSizeZ" )` );
+    setAttr ( $bbox + ".overrideEnabled" ) 1;
+    setAttr ( $bbox + ".overrideDisplayType" ) 1;
+    setAttr ( $bbox + ".primaryVisibility" ) 0;
+    setAttr ( $bbox + ".castsShadows" ) 0;
+    setAttr ( $bbox + ".motionBlur" ) 0;
+    if ( !`attributeQuery -node $bbox -ex "ribDelayedArchiveBBoxIn"` ) {
+      addAttr -ln "ribDelayedArchiveBBoxIn" -at message $bbox;
+    }
+    connectAttr ( $currentNodeParent[0] + ".ribDelayedArchiveBBox" ) ( $bbox + ".ribDelayedArchiveBBoxIn" );
+    parent $bbox $currentNodeParent[0];
+  }
 }
 
 global proc liquidDeleteDelayedReadArchive ()
 {
-	string $nodes[] = `ls -dag -s -sl`;
-	string $currentNode;
-	for ( $currentNode in $nodes ) {
-		if ( `attributeQuery -node $currentNode -ex "liqRIBDelayedReadArchive"` ) {
-			deleteAttr ( $currentNode + ".liqRIBDelayedReadArchive" );
-		}
-		if ( `attributeQuery -node $currentNode -ex "ribDelayedArchiveBBox"` ) {
-			string $connected[] = `listConnections ( $currentNode + ".ribDelayedArchiveBBox" )`;
-			string $curCon;
-			for ( $curCon in $connected ) {
-				delete $curCon;
-			}
-			deleteAttr ( $currentNode + ".ribDelayedArchiveBBox" );
-		}
-	}
+  string $nodes[] = `ls -dag -s -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    string $currentNodeParent[] = `listRelatives -p $currentNode`;
+    if ( `attributeQuery -node $currentNodeParent[0] -ex "liqRIBDelayedReadArchive"` ) {
+      deleteAttr ( $currentNode + ".liqRIBDelayedReadArchive" );
+    }
+    if ( `attributeQuery -node $currentNodeParent[0] -ex "ribDelayedArchiveBBox"` ) {
+      string $connected[] = `listConnections ( $currentNodeParent[0] + ".ribDelayedArchiveBBox" )`;
+      string $curCon;
+      for ( $curCon in $connected ) {
+        delete $curCon;
+      }
+      deleteAttr ( $currentNodeParent[0] + ".ribDelayedArchiveBBox" );
+    }
+  }
 }
