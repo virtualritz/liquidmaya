@@ -156,9 +156,9 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
 #ifdef _WIN32
 
     stdext::hash_map<int, int> soParticles;
-    stdext::hash_map<int, int> scParticles;    
+    stdext::hash_map<int, int> scParticles;
 
-#else    
+#else
     hash_map<int, int> soParticles;
     hash_map<int, int> scParticles;
 
@@ -478,13 +478,13 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
   case MPTSpheres:
   {
 
-#ifdef DELIGHT      
+#ifdef DELIGHT
 
     liqTokenPointer typeParameter;
 
     typeParameter.set( "type", rString, false );
 
-    typeParameter.setTokenString( "sphere", 6 );
+    typeParameter.setTokenString( 0, "sphere", 6 );
 
     tokenPointerArray.push_back( typeParameter );
 
@@ -524,10 +524,10 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
     tokenPointerArray.push_back(radiusParameter);
 
 
-#endif // #ifdef DELIGHT  
+#endif // #ifdef DELIGHT
 
   }
-  break;  
+  break;
 
 
 
@@ -734,7 +734,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
 
   case MPTSprites: {
 
-    
+
     liqTokenPointer Pparameter;
     liqTokenPointer spriteNumParameter;
     liqTokenPointer spriteTwistParameter;
@@ -1089,7 +1089,7 @@ void liqRibParticleData::write()
 
     for ( int i = 0; i < tokenPointerArray.size(); i++ )
     {
-		  char *tokenName = tokenPointerArray[i].getTokenName();
+      char *tokenName = tokenPointerArray[i].getTokenName();
       if ( strcmp(tokenName, "P") == 0 )
       {
         posAttr = i;
@@ -1131,10 +1131,10 @@ void liqRibParticleData::write()
   break;
 #endif // #ifndef DELIGHT
 
-  
+
   case MPTSprites: {
 
-    
+
 
     int posAttr   = -1,
         numAttr    = -1,
@@ -1148,7 +1148,7 @@ void liqRibParticleData::write()
 
     for ( int i = 0; i < tokenPointerArray.size(); i++ )
     {
-		  char *tokenName = tokenPointerArray[i].getTokenName();
+      char *tokenName = tokenPointerArray[i].getTokenName();
       if ( strcmp( tokenName, "P") == 0 )
       {
         posAttr = i;

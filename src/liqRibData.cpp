@@ -1,21 +1,21 @@
 /*
 **
-** The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
-** "License"); you may not use this file except in compliance with the License. You may 
-** obtain a copy of the License at http://www.mozilla.org/MPL/ 
-** 
-** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
-** WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
-** language governing rights and limitations under the License. 
+** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+** "License"); you may not use this file except in compliance with the License. You may
+** obtain a copy of the License at http://www.mozilla.org/MPL/
 **
-** The Original Code is the Liquid Rendering Toolkit. 
-** 
-** The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
-** Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
-** 
-** Contributor(s): Berj Bannayan. 
+** Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+** WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+** language governing rights and limitations under the License.
 **
-** 
+** The Original Code is the Liquid Rendering Toolkit.
+**
+** The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+** Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+**
+** Contributor(s): Berj Bannayan.
+**
+**
 ** The RenderMan (R) Interface Procedures and Protocol are:
 ** Copyright 1988, 1989, Pixar
 ** All Rights Reserved
@@ -25,7 +25,7 @@
 */
 
 /* ______________________________________________________________________
-** 
+**
 ** Liquid RibData Source File
 ** ______________________________________________________________________
 */
@@ -52,14 +52,14 @@ extern "C" {
 extern int debugMode;
 
 
-liqRibData::~liqRibData() 
+liqRibData::~liqRibData()
 {
   // clean up and additional data
   LIQDEBUGPRINTF("-> freeing additional ribdata: " );
   LIQDEBUGPRINTF(objDagPath.fullPathName().asChar());
   LIQDEBUGPRINTF("\n" );
   // Class destructor should be called
-#if 0	
+#if 0
   std::vector<rTokenPointer>::iterator iter = tokenPointerArray.begin();
   while ( iter != tokenPointerArray.end() ) {
     LIQDEBUGPRINTF( "-> freeing addition ribdata: %s\n", iter->tokenName );
@@ -95,8 +95,8 @@ void liqRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringArray
         MFnVectorArrayData  fnVectorArrayData( plugObj );
         MVectorArray vectorArrayData = fnVectorArrayData.array( &status );
         tokenPointerPair.set(
-          cutString.asChar(), 
-          pType, 
+          cutString.asChar(),
+          pType,
           ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
           true,
           false,
@@ -110,8 +110,8 @@ void liqRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringArray
         // Hmmmm float ? double ?
         float x, y, z;
         tokenPointerPair.set(
-          cutString.asChar(), 
-          pType, 
+          cutString.asChar(),
+          pType,
           ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
           false,
           false,
@@ -164,8 +164,8 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
         MFnDoubleArrayData  fnDoubleArrayData( plugObj );
         MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
         tokenPointerPair.set(
-          cutString.asChar(), 
-          rFloat, 
+          cutString.asChar(),
+          rFloat,
           ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
           true,
           false,
@@ -183,8 +183,8 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
       } else {
         float floatValue;
         tokenPointerPair.set(
-          cutString.asChar(), 
-          rFloat, 
+          cutString.asChar(),
+          rFloat,
           ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
           false,
           false,
@@ -196,7 +196,7 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
       tokenPointerArray.push_back( tokenPointerPair );
     }
   }
-  
+
   if ( pointAttributesFound.length() > 0 ) {
     for ( i = 0; i < pointAttributesFound.length(); i++ ) {
       liqTokenPointer tokenPointerPair;
@@ -208,8 +208,8 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
         MFnPointArrayData  fnPointArrayData( plugObj );
         MPointArray pointArrayData = fnPointArrayData.array( &status );
         tokenPointerPair.set(
-          cutString.asChar(), 
-          rPoint, 
+          cutString.asChar(),
+          rPoint,
           ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
           true,
           false,
@@ -228,8 +228,8 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
         // Hmmmm float ? double ?
         float x, y, z;
         tokenPointerPair.set(
-          cutString.asChar(), 
-          rPoint, 
+          cutString.asChar(),
+          rPoint,
           ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
           false,
           false,
@@ -256,15 +256,15 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
       MObject plugObj;
       status = sPlug.getValue( plugObj );
       tokenPointerPair.set(
-        cutString.asChar(), 
-        rString, 
+        cutString.asChar(),
+        rString,
         ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
         false,
         false,
         0 );
       MString stringVal;
       sPlug.getValue( stringVal );
-      tokenPointerPair.setTokenString( stringVal.asChar(), stringVal.length() );
+      tokenPointerPair.setTokenString( 0, stringVal.asChar(), stringVal.length() );
       tokenPointerPair.setDetailType( rConstant );
       tokenPointerArray.push_back( tokenPointerPair );
     }
