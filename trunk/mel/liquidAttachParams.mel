@@ -105,9 +105,25 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
 
         case "string":
 
-          $argDefaultS[0] = liquidSlDefaultToString( $paramDefault );
-          addAttr -longName $argName -dt "string" $currentNodeName;
-          setAttr ( $currentNodeName + "." + $argName ) -type "string" $argDefaultS[0];
+          if ( $argArrayLen > 0 ) {
+
+            // string array
+            $argDefaultS = liquidSlDefaultToStringArray( $paramDefault );
+
+            addAttr -longName $argName -dt "string" -multi $currentNodeName;
+            for ( $k = 0; $k < $argArrayLen; $k++ ) {
+              setAttr -type "string" ($currentNodeName+"."+$argName+"["+$k+"]") $argDefaultS[$k];
+            }
+
+          } else {
+
+            // simple string
+            $argDefaultS[0] = liquidSlDefaultToString( $paramDefault );
+
+            addAttr -longName $argName -dt "string" $currentNodeName;
+            setAttr ( $currentNodeName + "." + $argName ) -type "string" $argDefaultS[0];
+
+          }
 
           break;
 
