@@ -214,4 +214,105 @@ global proc string liquidSubstituteAll( string $pattern, string $source, string 
   return $result;
 };
 
+global proc liquidCropWindowViewer()
+{
+  string $cameraShape = `getAttr liquidGlobals.renderCamera`;
+  string $cameraTransform = liquidGetTransform( $cameraShape );
 
+  if ( objExists( "liqCropWindowViewer" ) ) {
+    disconnectAttr "liquidGlobals.cropX1"  "liqCropWindowViewer.left"   ;
+    disconnectAttr "liquidGlobals.cropY1"  "liqCropWindowViewer.top"    ;
+    disconnectAttr "liquidGlobals.cropX2"  "liqCropWindowViewer.right"  ;
+    disconnectAttr "liquidGlobals.cropY2"  "liqCropWindowViewer.bottom" ;
+    delete liqCropWindowViewer;
+  } else {
+
+    string $cropWindow[] = `polyPlane -w 1 -h 1 -sx 1 -sy 1 -ax 0 0 1 -tx 1 -ch 0 -n liqCropWindowViewer`;
+    setAttr ($cropWindow[0]+".s") -type double3 0 0 0;
+    makeIdentity -apply true -t 1 -r 1 -s 1 $cropWindow[0];
+    polyQuad  -a 33 -kgb 1 -ktb 1 -khe 0 -ws 1 -ch 0 $cropWindow[0];
+    delete -ch $cropWindow[0];
+
+    string $top = firstParentOf( $cameraTransform );
+    if ( $top != "" ) parent $cropWindow[0] $top;
+    connectAttr ($cameraTransform+".t") ( $cropWindow[0]+".t");
+    connectAttr ($cameraTransform+".r") ( $cropWindow[0]+".r");
+    connectAttr ($cameraTransform+".s") ( $cropWindow[0]+".s");
+
+    // make non-renderable
+    string $shape[] = `listRelatives -shapes $cropWindow[0]`;
+    setAttr( $shape[0]+".castsShadows")         0;
+    setAttr( $shape[0]+".receiveShadows")       0;
+    setAttr( $shape[0]+".motionBlur")           0;
+    setAttr( $shape[0]+".primaryVisibility")    0;
+    setAttr( $shape[0]+".smoothShading")        0;
+    setAttr( $shape[0]+".visibleInReflections") 0;
+    setAttr( $shape[0]+".visibleInRefractions") 0;
+    setAttr( $shape[0]+".doubleSided")          1;
+    setAttr( $shape[0]+".overrideEnabled")      1;
+    setAttr( $shape[0]+".overrideColor")        4;
+    setAttr( $shape[0]+".overrideShading")      0;
+
+
+    // add crop window attr
+    if ( !objExists( ($cropWindow[0]+".left") ) )   addAttr -at double -ln left   -k true -dv 0 -min 0 -max 1 $cropWindow[0];
+    if ( !objExists( ($cropWindow[0]+".top") ) )    addAttr -at double -ln top    -k true -dv 0 -min 0 -max 1 $cropWindow[0];
+    if ( !objExists( ($cropWindow[0]+".right") ) )  addAttr -at double -ln right  -k true -dv 1 -min 0 -max 1 $cropWindow[0];
+    if ( !objExists( ($cropWindow[0]+".bottom") ) ) addAttr -at double -ln bottom -k true -dv 1 -min 0 -max 1 $cropWindow[0];
+
+    // connect to globals
+    connectAttr "liquidGlobals.cropX1"  ( $cropWindow[0]+".left" )   ;
+    connectAttr "liquidGlobals.cropY1"  ( $cropWindow[0]+".top" )    ;
+    connectAttr "liquidGlobals.cropX2"  ( $cropWindow[0]+".right" )  ;
+    connectAttr "liquidGlobals.cropY2"  ( $cropWindow[0]+".bottom" ) ;
+
+    // add attributes to store FOVs
+    if ( !objExists( ($cropWindow[0]+".hfov") ) ) addAttr -at double -ln horizontalFieldOfView  -sn hfov $cropWindow[0];
+    if ( !objExists( ($cropWindow[0]+".vfov") ) ) addAttr -at double -ln verticalFieldOfView    -sn vfov $cropWindow[0];
+
+
+    // create crop expression
+    expression -n ($cropWindow[0]+"_liquidCrop") -alwaysEvaluate false -unitConversion false -s (
+      $cropWindow[0]+".hfov         =  ( "+$cameraShape+".horizontalFilmAperture * 0.5 ) / ( "+$cameraShape+".focalLength * 0.03937 ) * "+$cameraShape+".lsr ;\n" +
+      $cropWindow[0]+".vfov         =  ( "+$cameraShape+".verticalFilmAperture * 0.5 ) / ( "+$cameraShape+".focalLength * 0.03937 );\n" +
+      $cropWindow[0]+".pnts[0].pntz = "+$cropWindow[0]+".pnts[1].pntz = "+$cropWindow[0]+".pnts[2].pntz = "+$cropWindow[0]+".pnts[3].pntz = - ( "+$cameraShape+".nearClipPlane + 0.1 ) ;\n" +
+      $cropWindow[0]+".pnts[0].pntx =  ( "+$cropWindow[0]+".pnts[0].pntz * "+$cropWindow[0]+".hfov ) * ( 1 - "+$cropWindow[0]+".left * 2 );\n" +
+      $cropWindow[0]+".pnts[0].pnty =  ( "+$cropWindow[0]+".pnts[0].pntz * "+$cropWindow[0]+".vfov ) * ( "+$cropWindow[0]+".bottom * 2 - 1 );\n" +
+      $cropWindow[0]+".pnts[1].pntx = -( "+$cropWindow[0]+".pnts[0].pntz * "+$cropWindow[0]+".hfov ) * ( "+$cropWindow[0]+".right * 2 - 1 );\n" +
+      $cropWindow[0]+".pnts[1].pnty =  ( "+$cropWindow[0]+".pnts[0].pntz * "+$cropWindow[0]+".vfov ) * ( "+$cropWindow[0]+".bottom * 2 - 1 );\n" +
+      $cropWindow[0]+".pnts[2].pntx =  ( "+$cropWindow[0]+".pnts[0].pntz * "+$cropWindow[0]+".hfov ) * ( 1 - "+$cropWindow[0]+".left * 2 );\n" +
+      $cropWindow[0]+".pnts[2].pnty = -( "+$cropWindow[0]+".pnts[0].pntz * "+$cropWindow[0]+".vfov ) * ( 1 - "+$cropWindow[0]+".top * 2 );\n" +
+      $cropWindow[0]+".pnts[3].pntx = -( "+$cropWindow[0]+".pnts[0].pntz * "+$cropWindow[0]+".hfov ) * ( "+$cropWindow[0]+".right * 2 - 1 );\n" +
+      $cropWindow[0]+".pnts[3].pnty = -( "+$cropWindow[0]+".pnts[0].pntz * "+$cropWindow[0]+".vfov ) * ( 1 - "+$cropWindow[0]+".top * 2 );\n"
+      );
+
+    select -cl;
+  }
+}
+
+global proc liquidTextureViewer( string $file )
+{
+  if ( !`filetest -r $file` ) {
+    warning ("liquidTextureViewer: could not open \""+$file+"\".");
+    return;
+  }
+
+  string $viewer = `getAttr liquidGlobals.viewTexture`;
+  if ( $viewer == "" ) {
+    warning ("liquidTextureViewer: the texture viewer is undefined.");
+    return;
+  }
+
+  string $os = `about -os`;
+
+  switch( $os ) {
+
+    case "linux":
+      string $cmd = ($viewer+" "+$file+" &");
+      system $cmd;
+      break;
+
+    default:
+      break;
+  }
+}
