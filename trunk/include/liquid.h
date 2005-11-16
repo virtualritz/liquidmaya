@@ -63,7 +63,7 @@
 extern int debugMode;
 #endif
 
-#define HERE  cout<<"at line "<<__LINE__<<" in "<<__FUNCTION__<<endl;
+#define HERE  cout<<"at line "<<__LINE__<<" in "<<__FUNCTION__<<endl<<flush;
 
 #if !defined(LINUX) && !defined(OSX)
 #  ifndef LIQDEBUGPRINTF
