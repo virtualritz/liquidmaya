@@ -59,7 +59,7 @@ class liqTokenPointer
     ~liqTokenPointer();
     void           setTokenName( const char * name );
     char          *getTokenName( void );
-    char          *getDetailedTokenName( void );  
+    char          *getDetailedTokenName( void );
     int            set( const char * name, ParameterType ptype, bool asNurbs );
     int            set( const char * name, ParameterType ptype, bool asNurbs, unsigned int arraySize );
     int            set( const char * name, ParameterType ptype, bool asNurbs, unsigned int arraySize, unsigned int uArraySize );
@@ -75,16 +75,17 @@ class liqTokenPointer
     void           setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFloat z, RtFloat w );
     void           setTokenFloats( const RtFloat * floatVals );
     const RtFloat* getTokenFloatArray();
-    void           setTokenString( const char *str, unsigned int length );
+    void           setTokenString( unsigned int i, const char *str, unsigned int length );
     char*          getTokenString( void );
-    ParameterType  getParameterType( void );    
+    void           resetTokenString( void );
+    ParameterType  getParameterType( void );
     RtPointer      getRtPointer( void );
     void           getRiDeclare( char * declare );
     bool           isBasicST( void );
     void           reset( void );
   private:
     RtFloat *m_tokenFloats;
-    char *m_tokenString;
+    char **m_tokenString;
     ParameterType m_pType;
     DetailType m_dType;
     char m_tokenName[256];
