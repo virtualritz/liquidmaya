@@ -412,7 +412,7 @@ global proc int liquidGlobalsExists()
 // Create the Liquid Render Globals node
 global proc liquidCreateGlobals()
 {
-  eval "liquidRegistration();";
+//  eval "liquidRegistration();";
   if ( `liquidGlobalsExists` ) {
     delete liquidGlobals;
   }
