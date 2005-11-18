@@ -1249,7 +1249,7 @@ global proc liquidGlobalsOptionsTab()
             liquidShowStringGlobal "preGeom"   "Before Primitives";
           setParent ..;
         setParent ..;
-        frameLayout -bs "etchedIn" -l "RIB Format" -cll true -cl false;
+        frameLayout -bs "etchedIn" -l "RIB Format" -cll true -cl true;
           columnLayout -adj true;
             liquidShowBoolGlobal "binaryOutput"     "Binary";
             liquidShowBoolGlobal "compressedOutput" "GZip Compressed";
@@ -1257,14 +1257,14 @@ global proc liquidGlobalsOptionsTab()
         setParent ..;
       setParent ..;
     setParent ..;
-    frameLayout -bs "etchedIn" -l "Clean Up" -cll true -cl false;
+    frameLayout -bs "etchedIn" -l "Clean Up" -cll true -cl true;
       columnLayout -adj true;
         liquidShowBoolGlobal "cleanRib"  "Clean RIBs";
         liquidShowBoolGlobal "cleanTex"  "Clean Texture Maps";
         liquidShowBoolGlobal "cleanShad" "Clean Shadow Maps";
       setParent ..;
     setParent ..;
-    frameLayout -bs "etchedIn" -l "Feedback" -cll true -cl false;
+    frameLayout -bs "etchedIn" -l "Feedback" -cll true -cl true;
       columnLayout -adj true;
         liquidShowBoolGlobal "showProgress"   "Show Progress";
         liquidShowBoolGlobal "outputComments" "Output Detailed Comments";
@@ -1375,30 +1375,30 @@ global proc liquidGlobalsRendererTab()
       setParent..;
     setParent..;
 
-    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Hiders" -cll true -cl false;
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Hiders" -cll true -cl true;
       columnLayout -adj true;
         liquidShowBitFieldGlobal( "bits_hiders", $liqHidersList, "validateHidersMenu" );
       setParent..;
     setParent..;
-    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Pixel Filters" -cll true -cl false;
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Pixel Filters" -cll true -cl true;
       columnLayout -adj true;
         liquidShowBitFieldGlobal( "bits_filters", $liqPixelFiltersList, "validatePixelFilterMenu" );
       setParent..;
     setParent..;
 
-    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Features" -cll true -cl false;
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Features" -cll true -cl true;
       columnLayout -adj true;
         liquidShowBitFieldGlobal( "bits_features", $liqFeaturesList, "" );
       setParent..;
     setParent..;
 
-    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Requirements" -cll true -cl false;
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Requirements" -cll true -cl true;
       columnLayout -adj true;
         liquidShowBitFieldGlobal( "bits_required", $liqRequiredList, "" );
       setParent..;
     setParent..;
 
-    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Deep Shadow Display Driver" -cll true -cl false;
+    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Deep Shadow Display Driver" -cll true -cl true;
       columnLayout -adj true;
         liquidShowStringGlobal "dshDisplayName" "Display Name";
         liquidShowStringGlobal "dshImageMode" "Image Mode";
