@@ -295,6 +295,8 @@ global proc liquidCreateGlobalIlluminationAttributes()
   liquidCreateIrradianceSamplesAttribute;
   liquidCreateIrradianceMaxErrorAttribute;
   liquidCreateIrradianceMaxPixelDistAttribute;
+  liquidCreateIrradianceHandleAttribute;
+  liquidCreateIrradianceFilemodeAttribute;
 }
 
 
@@ -302,7 +304,7 @@ global proc liquidDeleteGlobalIlluminationAttributes()
 {
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
-  string $attr[] = {"liqIrradianceShadingRate", "liqIrradianceNSamples", "liqIrradianceMaxError", "liqIrradianceMaxPixelDist"};
+  string $attr[] = {"liqIrradianceShadingRate", "liqIrradianceNSamples", "liqIrradianceMaxError", "liqIrradianceMaxPixelDist","liqIrradianceHandle","liqIrradianceFileMode"};
   for ( $currentNode in $nodes ) {
     for ( $a in $attr ) {
       if ( `attributeQuery -node $currentNode -ex $a` ) {
@@ -358,6 +360,28 @@ global proc liquidCreateIrradianceMaxPixelDistAttribute()
   }
 }
 
+global proc liquidCreateIrradianceHandleAttribute()
+{
+  string $nodes[] = `ls -tr -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqIrradianceHandle"` ) {
+      addAttr -ln "liqIrradianceHandle" -dt "string" $currentNode;
+    }
+  }
+}
+
+global proc liquidCreateIrradianceFilemodeAttribute()
+{
+  string $nodes[] = `ls -tr -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqIrradianceFileMode"` ) {
+      addAttr -ln "liqIrradianceFileMode" -at "enum" -enumName "None=0:Read=1:Write=2:ReadWrite=3:ReadOnly=4" -dv 0 $currentNode;
+    }
+  }
+}
+
 // Photon group -----------------------------------------------
 
 global proc liquidCreatePhotonAttributes()
@@ -384,6 +408,10 @@ global proc liquidDeletePhotonAttributes()
 
     if ( `attributeQuery -node $currentNode -ex "liqPhotonEstimator"` ) {
       deleteAttr ( $currentNode + ".liqPhotonEstimator" );
+    }
+    
+    if ( `attributeQuery -node $currentNode -ex "liqPhotonShadingModel"` ) {
+      deleteAttr ( $currentNode + ".liqPhotonShadingModel" );
     }
   }
 }
@@ -429,7 +457,7 @@ global proc liquidCreatePhotonShadingModelAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqPhotonShadingModel"` ) {
-      addAttr -ln "liqPhotonShadingModel" -dt "string" $currentNode;
+      addAttr -ln "liqPhotonShadingModel" -at "enum" -enumName "Matte=0:Glass=1:Water=2:Chrome=3:Transparent=4" -dv 0;
     }
   }
 }

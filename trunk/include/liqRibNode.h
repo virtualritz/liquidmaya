@@ -170,7 +170,8 @@ class liqRibNode {
         FILEMODE_NONE = 0,
         FILEMODE_READ = 1,
         FILEMODE_WRITE = 2,
-        FILEMODE_READ_WRITE = 3
+        FILEMODE_READ_WRITE = 3,
+        FILEMODE_READONLY = 4
       } fileMode;
     } irradiance;
 
