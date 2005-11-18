@@ -73,9 +73,9 @@ extern "C" {
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
-/*static const char *LIQUIDVERSION =
+static const char *LIQUIDVERSION =
 #include "liquid.version"
-;*/
+;
 #define DEFINED_LIQUIDVERSION
 #endif
 
@@ -4712,8 +4712,13 @@ MStatus liqRibTranslator::objectBlock()
             mode = "w";
             break;
           case liqRibNode::irradiance::FILEMODE_READ_WRITE:
-          default:
             mode = "rw";
+            break;
+          case liqRibNode::irradiance::FILEMODE_READONLY:
+          	mode = "R";
+          	break;
+          default:
+          	mode = "";
         }
         RiAttribute( "irradiance", (RtToken) "filemode", &mode, RI_NULL );
       }

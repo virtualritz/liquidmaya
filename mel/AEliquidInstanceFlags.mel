@@ -46,6 +46,8 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "Samples" -addDynamicControl "liqIrradianceNSamples";
       editorTemplate -label "Maximum Error" -addDynamicControl "liqIrradianceMaxError";
       editorTemplate -label "Maximum Pixel Distance" -addDynamicControl "liqIrradianceMaxPixelDist";
+      editorTemplate -label "File Handle" -addDynamicControl "liqIrradianceHandle";
+      editorTemplate -label "File Mode" -addDynamicControl "liqIrradianceFileMode";
 
     editorTemplate -endLayout;
 
@@ -74,7 +76,16 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "Inherit Particle Color" -addDynamicControl "liqInheritPPColor";
 
     editorTemplate -endLayout;
+	
+	editorTemplate -beginLayout "Photons" -collapse true;
 
+	  editorTemplate -label "Photon Map" -addDynamicControl "liqPhotonGlobalMap";
+	  editorTemplate -label "Caustic Map" -addDynamicControl "liqPhotonCausticMap";
+	  editorTemplate -label "Photon estimator" -addDynamicControl "liqPhotonEstimator";
+	  editorTemplate -label "Photon model" -addDynamicControl "liqPhotonShadingModel";
+
+    editorTemplate -endLayout;
+    
     editorTemplate -beginLayout "3Delight" -collapse true;
       editorTemplate -beginLayout "Sub Surface Scattering" -collapse false;
 
