@@ -232,38 +232,28 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                   stringPlugVal = parseString( parsingString );
                   parsingString = stringPlugVal;
                   parsingString.toLowerCase();
-                  /*
-                                            //if ( parsingString.substring(0, 9) == "autoshadow" ) {
-                                            //  MString suffix = "";
-                                            //  if ( stringPlugVal.length() > 10 )
-                                            //  {
-                                            //    suffix = stringPlugVal.substring( 10, stringPlugVal.length() - 1 );
-                                            //  }
-                                            //  if ( liqglo_doShadows ) {
-                                            //    shadowName = liqglo_textureDir;
-                                            //    if ( userShadowName == MString( "" ) )
-                                            //    {
-                                            //      shadowName += autoShadowName( suffix );
-                                            //    } else {
-                                            //      shadowName += userShadowName;
-                                            //    }
-                                            //    usingShadow = true;
-                                            //    tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, false, false, 0 );
-                                            //    tokenPointerPair.setTokenString( shadowName.asChar(), shadowName.length() );
-                                            //    tokenPointerArray.push_back( tokenPointerPair );
-                                            //  }
-                                            //} else {
-                                            //
-                                            //  // Hmmmmmmm looks like a potential bug here ...
-                                            //  #if 0
-                                            //  if ( stringPlugVal != MString( "" ) ){
-                                            //    tokenPointerPair.tokenString = (char *)lmalloc(stringPlugVal.length() + 10);
-                                            //  } else {
-                                            //    tokenPointerPair.tokenString = RI_NULL;
-                                            //  }
-                                            //  #endif
-                                            //  */
-
+                  MString curStrArgName = shaderInfo.getArgName(i);
+                  if ( curStrArgName == "shadowname") {
+                    if ( (parsingString.substring(0, 9) == "autoshadow") || (parsingString == "") ) {
+                      MString suffix = "";
+                      if ( stringPlugVal.length() > 10 )
+                      {
+                        suffix = stringPlugVal.substring( 10, stringPlugVal.length() - 1 );
+                      }
+                      if ( liqglo_doShadows ) {
+                        shadowName = liqglo_textureDir;
+                        if ( userShadowName == MString( "" ) )
+                        {
+                          shadowName += autoShadowName( -1 ) + suffix;
+                        } else {
+                          shadowName += userShadowName;
+                        }
+                        usingShadow = true;
+                        stringPlugVal = shadowName;
+                      }
+                    }
+                  }
+					
                   tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, 0, 0 );
                   tokenPointerPair.setTokenString( 0, stringPlugVal.asChar(), stringPlugVal.length() );
                   tokenPointerArray.push_back( tokenPointerPair );
@@ -469,11 +459,11 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       }
       shaderInfo.resetIt();
     }
-  } else {
+  }// else {
     if( !rayTraced ) {
       fnLight.findPlug( "useDepthMapShadows" ).getValue( usingShadow );
-    }
-  }
+		}
+  //}
 #else
   rmanLight = false;
 #endif
