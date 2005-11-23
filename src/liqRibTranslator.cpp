@@ -4182,11 +4182,11 @@ MStatus liqRibTranslator::framePrologue(long lframe)
         } else {
           imageName += parseString( liqglo_DDimageName[k] );
         }
+		  // handle relative paths
+        imageName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, imageName, liqglo_projectDir );
         if ( k > 0 ) {
           imageName = "+" + imageName;
         }
-        // handle relative paths
-        imageName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, imageName, liqglo_projectDir );
         // output the display call
         RiArchiveRecord( RI_COMMENT, "Display Driver %d:", k );
         RiArchiveRecord( RI_VERBATIM, "Display \"%s\" \"%s\" \"%s\" %s\n", const_cast<char *>( imageName.asChar() ), formatType.asChar(), imageMode.asChar(), parameterString.asChar() );
