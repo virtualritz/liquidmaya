@@ -411,19 +411,18 @@ bool liqRibTranslator::liquidInitGlobals()
  */
 liqRibTranslator::liqRibTranslator()
 {
-  m_systemTempDirectory = getenv("TMP");
-  if( m_systemTempDirectory.length() == 0 ) {
-    m_systemTempDirectory = getenv("TEMP");
-    if( m_systemTempDirectory.length() == 0 ) {
-      m_systemTempDirectory = getenv( "TEMPDIR");
-      if( m_systemTempDirectory.length() == 0 ) {
+  char *envTmp;
+  if( ( envTmp = getenv( "TMP" ) ) ||
+      ( envTmp = getenv( "TEMP" ) ) ||
+      ( envTmp = getenv( "TEMPDIR" ) ) ) {
+    m_systemTempDirectory = envTmp;
+  }
+  else {
 #ifndef _WIN32
         m_systemTempDirectory = "/tmp";
 #else
         m_systemTempDirectory = "%SystemRoot%/Temp";
 #endif
-      }
-    }
   }
 
   m_rFilterX = 1;
