@@ -114,11 +114,12 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
 
   // setup all of the base liquid interface
   MString sourceLine("source ");
-  MString tmphome(getenv( "LIQUIDHOME" ));
-  if( tmphome != "" ) {
-  	sourceLine += "\"" + liquidSanitizePath( tmphome ) + "/mel/" + "liquidStartup.mel\"";
+  char *tmphomeChar;
+  if( ( tmphomeChar = getenv( "LIQUIDHOME" ) ) ) {
+    MString tmphome( tmphomeChar );
+    sourceLine += "\"" + liquidSanitizePath( tmphome ) + "/mel/" + "liquidStartup.mel\"";
   } else {
-	  sourceLine += "liquidStartup.mel";
+    sourceLine += "\"liquidStartup.mel\"";
   }
   
   status = MGlobal::executeCommand(sourceLine);
