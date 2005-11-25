@@ -1,0 +1,164 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Colin Doncaster">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; IRIX64 6.5 IP30) [Netscape]">
+   <title>Liquid: Render Globals</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<p><b><u><font size=+3>Liquid Render Globals</font></u></b> </p>
+<p><b><font color="#666666"><font size=+1>Introduction</font></font></b> <br>
+  <font color="#000000">All of Liquids Render Globals are store on a common Maya 
+  node and easily accessable using common maya commands like setAttr or getAttr.&nbsp; 
+  Here is a list of the available attributes, their type and the default setting.</font><font color="#000000"></font> 
+<p> When rendering Liquid accesses the Render Globals to control how you want 
+  the scene to be written. The globals let you specify frame ranges, motion blur, 
+  network options and much more. The globals are broken down into sub groups, 
+  seperated by tabs, they are Frame, File, Display Driver, Image, Network, Options 
+  and BMRT.</p>
+<p><b><u><font size="+1">Frame</font></u></b></p>
+<p>The Frame tab lets you set parameters that deal with the camera and motion. 
+</p>
+<p align="left"><img src="images/globals-frame.png" width="410" height="523" align="left"></p>
+<p><b>Output Passes</b> - the output pass option lets you control whether liquid 
+  writes out a Hero pass and/or a Shadow pass. A Hero pass is the default option 
+  and is generally always on. A Shadow pass is a render which set's all the surfaces 
+  to black when they are outside of a shadow and white when they are inside of 
+  a shadow, this is useful for various compositing tricks.
+<p><b>Render Camera</b> - by right clicking on the entry box a list of renderable 
+  cameras will appear, selecting one will tell Liquid to use that camera as it's 
+  output view. By leaving this option blank Liquid will use the currently selected 
+  view. NOTE: You must specify a camera before doing a deferred rib generation.
+<p><b>Width & Height</b> - leaving these values at 0 will cause Liquid to 
+  take the current views width and height as the output images width and height, 
+  anything else will set the desired width and height. NOTE: You must specify 
+  a width and height before doing a deferred rib generation.
+<p><b>Pixel Aspect Ratio</b> - this will set the desired pixel aspect ratio that 
+  get's passed through to renderman for the render, the default is 1.0. 
+<p><b>Transformation/Deformation Blur</b> - Liquid can write out motion blur data 
+  to renderman in two different ways, either just Transformation Blur, or both 
+  Transformation and Deformation Blur. By turning just Transformation Blur on 
+  you are limiting yourself to full object transformations, for example, a ball 
+  flying through the air or an axe swinging. Turning Deformation Blur on allows 
+  per vertex motion blur, for example, a ball squashing and stretching or a creature 
+  holding the axe. When using deforming characters with skeletal systems and lattices 
+  it's advisable to use both. The amount of motion blur is controlled by the camera's 
+  shutter angle, this can be set on the camera node in Maya. NOTE: Transformation 
+  Blur *must* be on for Deformation Blur to work correctly. 
+<p><b>Motion Blur Samples</b> - the renderman spec allows defining multiple sample 
+  point for the motion blur effects. By default this is 2 - and in the past most 
+  Renderman renderers have only supported 2. Recently this has changed, by setting 
+  this to a higher value motion time samples will be written into the rib files, 
+  doing so will increase the rib size but will also increase the visual appeal 
+  of the motion blur, especially for objects that are arching and spinning. 
+<p><b>Depth of Field</b> - turning this on passes the depth of field information 
+  on the Maya camaera to Renderman.   
+<p><b>Animation</b> - by toggling this buttong on or off Liquid will either write 
+  out a single frame ( the current ) or the sequence specified.
+<p><b>Start and End Frame/Frame Step</b> - these values control the start and 
+  end frames of the animation, this is the range used when animation output has 
+  been turned on. Setting the Frame Step will control the step size between each 
+  frame.
+<p><b><u><font size="+1">Image</font></u></b>
+<p>The file tab lets you specify file related options such as output directories, 
+  padding and additional mel scripts.
+<p><img src="images/globals-file.png" width="410" height="418" align="left">
+<p>&nbsp;
+<p><font color="#000000">"previewMode", "bool", "true"</font>
+<br><font color="#000000">"renderCamera", "string", ""</font>
+<br><font color="#000000">"dd1imageName", "string", ""</font>
+<br><font color="#000000">"dd1imageType", "string", "it"</font>
+<br><font color="#000000">"dd1imageMode", "string", "rgba"</font>
+<br><font color="#000000">"dd1paramType", "string", ""</font>
+<br><font color="#000000">"numDD", "long", "1"</font>
+<br><font color="#000000">"createOutputDirectories", "bool", "true"</font>
+<br><font color="#000000">"expandShaderArrays", "bool", "false"</font>
+<br><font color="#000000">"shaderPath", "string", ""</font>
+<br><font color="#000000">"ribName", "string", ""</font>
+<br><font color="#000000">"pictureDirectory", "string", ""</font>
+<br><font color="#000000">"textureDirectory", "string", ""</font>
+<br><font color="#000000">"ribDirectory", "string", ""</font>
+<br><font color="#000000">"tempDirectory", "string", ""</font>
+<br><font color="#000000">"deferredGen", "bool", "false"</font>
+<br><font color="#000000">"deferredBlock", "long", "1"</font>
+<br><font color="#000000">"preframeMel", "string", ""</font>
+<br><font color="#000000">"postframeMel", "string", ""</font>
+<br><font color="#000000">"ignoreAlfred", "bool", "false"</font>
+<br><font color="#000000">"remoteRender", "bool", "false"</font>
+<br><font color="#000000">"netRManRender", "bool", "false"</font>
+<br><font color="#000000">"minCPU", "long", "1"</font>
+<br><font color="#000000">"maxCPU", "long", "1"</font>
+<br><font color="#000000">"ignoreShadows", "bool", "false"</font>
+<br><font color="#000000">"fullShadowRibs", "bool", "false"</font>
+<br><font color="#000000">"binaryOutput", "bool", "false"</font>
+<br><font color="#000000">"compressedOutput", "bool", "false"</font>
+<br><font color="#000000">"renderAllCurves", "bool", "false"</font>
+<br><font color="#000000">"ignoreSurfaces", "bool", "false"</font>
+<br><font color="#000000">"ignoreDisplacements", "bool", "false"</font>
+<br><font color="#000000">"ignoreLights", "bool", "false"</font>
+<br><font color="#000000">"ignoreVolumes", "bool", "false"</font>
+<br><font color="#000000">"outputShadowPass", "bool", "false"</font>
+<br><font color="#000000">"outputHeroPass", "bool", "true"</font>
+<br><font color="#000000">"outputComments", "bool", "false"</font>
+<br><font color="#000000">"shaderDebug", "bool", "false"</font>
+<br><font color="#000000">"showProgress", "bool", "false"</font>
+<br><font color="#000000">"doAnimation", "bool", "false"</font>
+<br><font color="#000000">"startFrame", "long", "1"</font>
+<br><font color="#000000">"endFrame", "long", "100"</font>
+<br><font color="#000000">"frameStep", "long", "1"</font>
+<br><font color="#000000">"doPadding", "bool", "false"</font>
+<br><font color="#000000">"padding", "long", "0"</font>
+<br><font color="#000000">"numProcs", "long", "0"</font>
+<br><font color="#000000">"gain", "float", "1.0"</font>
+<br><font color="#000000">"gamma", "float", "1.0"</font>
+<br><font color="#000000">"xResolution", "long", "0"</font>
+<br><font color="#000000">"yResolution", "long", "0"</font>
+<br><font color="#000000">"pixelAspectRatio", "float", "1.0"</font>
+<br><font color="#000000">"imageDriver", "string", ""</font>
+<br><font color="#000000">"transformationBlur", "bool", "false"</font>
+<br><font color="#000000">"deformationBlur", "bool", "false"</font>
+<br><font color="#000000">"motionBlurSamples", "long", "2"</font>
+<br><font color="#000000">"depthOfField", "bool", "false"</font>
+<br><font color="#000000">"pixelSamples", "long", "3"</font>
+<br><font color="#000000">"shadingRate", "float", "1.0"</font>
+<br><font color="#000000">"bucketXSize", "long", "16"</font>
+<br><font color="#000000">"bucketYSize", "long", "16"</font>
+<br><font color="#000000">"gridSize", "long", "256"</font>
+<br><font color="#000000">"textureMemory", "long", "256"</font>
+<br><font color="#000000">"eyeSplits", "long", "10"</font>
+<br><font color="#000000">"imageDepth", "long", "8"</font>
+<br><font color="#000000">"PixelFilter", "long", "2"</font>
+<br><font color="#000000">"PixelFilterX", "float", "3.0"</font>
+<br><font color="#000000">"PixelFilterY", "float", "3.0"</font>
+<br><font color="#000000">"cleanRib", "bool", "false"</font>
+<br><font color="#000000">"cleanTex", "bool", "false"</font>
+<br><font color="#000000">"cleanShad", "bool", "false"</font>
+<br><font color="#000000">"cleanAlfred", "bool", "false"</font>
+<br><font color="#000000">"alfredTags", "string", "prman"</font>
+<br><font color="#000000">"alfredServices", "string", "pixarRender"</font>
+<br><font color="#000000">"renderCommand", "string", ""</font>
+<br><font color="#000000">"key", "string", "maya3.0"</font>
+<br><font color="#000000">"service", "string", "liquid"</font>
+<br><font color="#000000">"cleanAlf", "bool", "false"</font>
+<br><font color="#000000">"lastAlfredScript", "string", ""</font>
+<br><font color="#000000">"lastRibFile", "string", ""</font>
+<br><font color="#000000">"BMRTAttrs", "bool", "false"</font>
+<br><font color="#000000">"BMRTDStep", "long", "0"</font>
+<br><font color="#000000">"BMRTusePrmanDisp", "bool", "true"</font>
+<br><font color="#000000">"BMRTusePrmanSpec", "bool", "false"</font>
+<br><font color="#000000">"RadSteps", "long", "0"</font>
+<br><font color="#000000">"RadMinPatchSamples", "long", "1"</font>
+<br><font color="#000000">"simpleGlobalsWindow", "bool", "true"</font>
+<br><font color="#000000">"lazyCompute", "bool", "false"</font>
+<br><font color="#000000">"cropX1", "float", "0.0"</font>
+<br><font color="#000000">"cropX2", "float", "1.0"</font>
+<br><font color="#000000">"cropY1", "float", "0.0"</font>
+<br><font color="#000000">"cropY2", "float", "1.0"</font>
+<br><font color="#000000">"exportReadArchive", "bool", "false"</font>
+<br><font color="#000000">"alfredJobName", "string", ""</font>
+<br><font color="#000000">"shortShaderNames", "bool", "false"</font>
+<br><font color="#000000"></font>&nbsp;
+<br><a href="bugReportOutline.html"></a>&nbsp;
+</body>
+</html>

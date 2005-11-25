@@ -1,0 +1,1079 @@
+//
+//
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+// "License"); you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at http://www.mozilla.org/MPL/
+//
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+// language governing rights and limitations under the License.
+//
+// The Original Code is the Liquid Rendering Toolkit.
+//
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+//
+// Contributor(s): Berj Bannayan.
+//
+//
+// The RenderMan (R) Interface Procedures and Protocol are:
+// Copyright 1988, 1989, Pixar
+// All Rights Reserved
+//
+//
+// RenderMan (R) is a registered trademark of Pixar
+//
+//  Creation Date:    May 11, 2000
+//
+//  Procedure Name:
+//  liquidParamDialogWindow
+//
+//  Description:
+//  creates a pretty window for editing the rman shader parameters
+//
+
+
+
+
+global proc liquidCreateLIFInfoIcon( string $desc )
+{
+  int     $descEnabled  = size( $desc );
+  string  $icon         = ($descEnabled)? (liquidGetHome()+"/icons/liquidInfo.xpm"):(liquidGetHome()+"/icons/liquidInfo0.xpm");
+  eval ("iconTextStaticLabel -style \"iconOnly\" -mw 2 -mh 2 -w 16 -h 16 -image \""+$icon+"\" -ann \""+$desc+"\" lifInfo");
+}
+
+
+
+/**
+ *  compatible with arrays
+ */
+
+proc liquidCreateLIFColor( string $selectedObj, int $index )
+{
+  string $paramName   = liquidLifParamName($index);
+  int    $arraySize  = liquidLifParamArraySize( $index );
+  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
+
+  string $label       = liquidLifParamLabel($index);
+  string $description = liquidLifParamDescription( $index );
+  int    $arraySize   = liquidLifParamArraySize( $index );
+
+  int $i;
+  int $nValues = ($arraySize)? $arraySize : 1;
+
+  if ( $arraySize ) {
+    frameLayout -label ($paramName+"["+$arraySize+"]")
+                -collapse false -collapsable true
+                -borderVisible false
+                -labelIndent 0
+                -font "smallPlainLabelFont";
+    columnLayout -co "left" 10 -adj 1;
+  }
+
+  for ( $i=0; $i<$nValues; $i++ ) {
+
+    string $pname       = ( $arraySize )? ($paramName + "[" + $i + "]") : $paramName;
+    string $plabel      = ( $arraySize )? ($label + "[" + $i + "]") : $label;
+
+    string $attr        = ( $selectedObj + "." + $pname );
+
+    string $form = `formLayout`;
+
+      liquidCreateLIFInfoIcon( $description );
+      string $cCtl = `attrColorSliderGrp  -cw4 120 60 150 1
+                                          -co4 1 1 1 0 -ct4 "left" "both" "both" "both"
+                                          -cl4 "left" "left" "left" "left"
+                                          -adj 3
+                                          -label $plabel
+                                          -at $attr
+                                          -sb false`;
+    setParent ..;
+
+    formLayout -e -af "lifInfo" "left" 2
+                  -af "lifInfo" "top" 5
+                  -ac $cCtl "left" 2 "lifInfo"
+                  -af $cCtl "right" 0
+                  $form;
+  }
+
+  if ( $arraySize ) {
+    setParent ..;setParent ..;
+  }
+
+}
+
+
+/**
+ *  compatible with arrays
+ */
+proc liquidCreateLIFVector( string $selectedObj, int $index )
+{
+  string $paramName  = liquidLifParamName($index);
+  int    $arraySize  = liquidLifParamArraySize( $index );
+
+  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
+
+  string $label       = liquidLifParamLabel($index);
+  string $description = liquidLifParamDescription( $index );
+  int    $arraySize   = liquidLifParamArraySize( $index );
+
+  int $i;
+  int $nValues = ($arraySize)? $arraySize : 1;
+
+  if ( $arraySize ) {
+
+    frameLayout -label ( $paramName + "[" + $arraySize + "]" )
+                -collapse false -collapsable true
+                -borderVisible false
+                -labelIndent 0
+                -font "smallPlainLabelFont";
+    columnLayout -co "left" 10 -adj true;
+
+  }
+
+
+  for ( $i=0; $i<$nValues; $i++ ) {
+
+    string $pname   = ( $arraySize )? ( $selectedObj + "." + $paramName + "[" + $i + "]" ) : ( $selectedObj + "." + $paramName );
+    string $plabel  = ( $arraySize )? ( $label + "[" + $i + "]" ) : $label;
+
+    string $form = `formLayout`;
+
+      liquidCreateLIFInfoIcon( $description );
+      string $ctl = `attrFieldGrp -cw4 120 70 70 70
+                                  -ct4 "left" "both" "both" "both"
+                                  -cl4 "left" "left" "left" "left"
+                                  -label $plabel
+                                  -cc ( "liquidParamAU " + $selectedObj )
+                                  -attribute $pname`;
+    setParent ..;
+
+    formLayout -e -af "lifInfo" "left"  2
+                  -af "lifInfo" "top"   4
+                  -ac $ctl      "left"  2 "lifInfo"
+                  $form;
+  }
+
+
+  if ( $arraySize ) {
+
+    setParent ..;
+    setParent ..;
+
+  }
+}
+
+
+
+
+
+/**
+ *  STRINGS  --  COMPATIBLE with arrays
+ */
+
+proc liquidAddTextureViewerMenu( string $textFieldGrp )
+{
+  string $viewer = `getAttr liquidGlobals.viewTexture`;
+  if ( $viewer != "" ) {
+    popupMenu -button 3;
+      menuItem  -l ("View in "+$viewer)
+                -c ("{\n"+
+                    "  string $file = `textFieldGrp -q -tx "+$textFieldGrp+"`;"+
+                    "  liquidTextureViewer( $file );"+
+                    "}");
+  }
+}
+
+proc liquidCreateLIFString( string $selectedObj, int $index, string $subtype )
+{
+  string $paramName = liquidLifParamName($index);
+  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
+
+  int    $arraySize     = liquidLifParamArraySize( $index );
+  string $label         = liquidLifParamLabel( $index );
+  string $range[]       = liquidLifParamGuiRange( $index );
+  string $description   = liquidLifParamDescription( $index );
+
+
+  if ( $arraySize > 0 ) {
+    frameLayout -label ($paramName+"["+$arraySize+"]") -collapsable true -collapse false -borderVisible false -labelIndent 0 -font "smallPlainLabelFont";
+      columnLayout -co "left" 10 -adj true;
+  }
+
+  int $j;
+  int $size = ( $arraySize > 0 )? $arraySize:1;
+  for ( $j=0; $j<$size; $j++ ) {
+
+    string $attr          = ($arraySize)? ($paramName+"["+$j+"]"):$paramName;
+    string $theLabel      = ($arraySize)? ($label+"["+$j+"]"):$label;
+    string $currentValue  = `getAttr ( $selectedObj + "." + $attr )`;
+    string $ctlName       = ( $paramName + "_"+$j+"_" + $selectedObj + "WindowParam" );
+    string $form          = `formLayout`;
+
+      liquidCreateLIFInfoIcon( $description );
+
+      switch( $subtype ) {
+        case "texture":
+          string $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + $attr + " " + $ctlName ) ;
+          string $myFileCommand = ( "liquidChangeTextFileAttr " + $selectedObj + " " + $attr + " " + $ctlName );
+          string $fullCtlPath = `textFieldGrp -cw2 120 200 -ct2 "left" "both" -cl2 "left" "left"
+                                              -label $theLabel -adj 2 -text $currentValue -cc $myCommand $ctlName`;
+          liquidAddTextureViewerMenu( $fullCtlPath );
+          string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_tex.xpm" -c $myFileCommand`;
+          setParent ..;
+
+          formLayout -e -af "lifInfo" "left"  2
+                        -af "lifInfo" "top"   5
+                        -ac $ctlName  "left"  2   "lifInfo"
+                        -ac $ctlName  "right" 2   $button
+                        -af $button   "top"   1
+                        -af $button   "right" 0
+                        $form;
+          break;
+        case "shadow":
+          string $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + $attr + " " + $ctlName ) ;
+          string $myFileCommand = ( "liquidChangeTextFileAttr " + $selectedObj + " " + $attr + " " + $paramName + $selectedObj + "WindowParam" );
+          textFieldGrp  -cw2 120 200 -ct2 "left" "both" -cl2 "left" "left"
+                        -label $theLabel -adj 2 -text $currentValue -cc $myCommand $ctlName;
+          liquidAddTextureViewerMenu( $ctlName );
+          string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand`;
+          setParent ..;
+
+          formLayout -e -af "lifInfo" "left"  2
+                        -af "lifInfo" "top"   5
+                        -ac $ctlName  "left"  2   "lifInfo"
+                        -ac $ctlName  "right" 2   $button
+                        -af $button   "top"   1
+                        -af $button   "right" 0
+                        $form;
+          break;
+        case "coordsys":
+          string $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + $attr + " " + $ctlName ) ;
+          string $myFileCommand = ( "liquidLifCoordSysBrowser " + $selectedObj + " " + $attr + " " + $paramName + $selectedObj + "WindowParam" );
+          textFieldGrp  -cw2 120 200 -ct2 "left" "both" -cl2 "left" "left"
+                        -label $theLabel -adj 2 -text $currentValue -cc $myCommand $ctlName;
+          string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_cs.xpm" -c $myFileCommand`;
+          setParent ..;
+
+          formLayout -e -af lifInfo   "left"  2
+                        -af lifInfo   "top"   5
+                        -ac $ctlName  "left"  2   "lifInfo"
+                        -ac $ctlName  "right" 2   $button
+                        -af $button   "top"   1
+                        -af $button   "right" 0
+                        $form;
+          break;
+        default:
+          string $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + $attr + " " + $ctlName ) ;
+
+          textFieldGrp  -cw2 120 200 -ct2 "left" "both" -cl2 "left" "left"
+                        -label $theLabel -adj 2 -text $currentValue -cc $myCommand $ctlName;
+
+          setParent ..;
+
+          formLayout -e -af lifInfo   "left"  2
+                        -af lifInfo   "top"   5
+                        -ac $ctlName  "left"  2   lifInfo
+                        -af $ctlName  "right" 0
+                        $form;
+          break;
+      }
+  }
+
+  if ( $arraySize > 0 ) {
+    setParent ..;
+    setParent ..;
+  }
+}
+
+
+
+/**
+ *  FLOATS  --  COMPATIBLE with arrays
+ */
+
+
+proc liquidCreateLIFFloat_slider( string $selectedObj, string $paramName, int $index, string $label, string $range[], string  $description )
+{
+  string $theParam  = ( $index < 0 )? $paramName : ( $paramName + "[" + $index + "]" );
+  string $theLabel  = ( $index < 0 )? $label : ( $label + "[" + $index + "]" );
+
+  float $min    = $range[0];
+  float $max    = $range[1];
+  float $slmin  = $range[0];
+  float $slmax  = $range[1];
+
+  if ( $min == 0 && $max == 0 ) {
+    $min    = -1e10;
+    $max    = 1e10;
+    $slmin  = 0;
+    $slmax  = 1;
+  }
+
+
+  string $ctlName = ( $theParam + $selectedObj + "WindowParam" );
+
+  string $form = `formLayout`;
+
+  liquidCreateLIFInfoIcon( $description );
+
+  // simple float
+  $ctlName = `attrFieldSliderGrp  -adj 3
+                                  -label $theLabel
+                                  -cw4 120 60 160 1
+                                  -ct4 "left" "both" "both" "right"
+                                  -cl4 "left" "left" "left" "left"
+                                  -minValue $min          -maxValue $max
+                                  -sliderMinValue $slmin  -sliderMaxValue $slmax
+                                  -fieldMinValue $min      -fieldMaxValue $max
+                                  -at ( $selectedObj + "." + $theParam )
+                                  -cc ( "liquidParamAU " + $selectedObj)
+                                  $ctlName`;
+
+  setParent ..;
+  formLayout  -e
+              -af "lifInfo" "left" 2
+              -af "lifInfo" "top" 4
+              -ac $ctlName "left" 2 "lifInfo"
+              -af $ctlName "right" 0
+              $form;
+}
+
+proc liquidCreateLIFFloat_selector( string $selectedObj, string $paramName, string $label, string $range[], string  $description )
+{
+  string $ctlName = ( $paramName + $selectedObj + "WindowParam" );
+
+  string $form = `formLayout`;
+    liquidCreateLIFInfoIcon( $description );
+
+    optionMenuGrp -label $label -cl2 "left" "left" -cw2 120 150 -ad2 2 $ctlName;
+
+    int $numSize = size( $range );
+    for ( $k = 0; $k < $numSize; $k = $k + 2 ) {
+      menuItem -l $range[ $k ] -ann $range[ $k+1 ];
+    }
+  setParent ..;
+
+  formLayout -e -af "lifInfo" "left" 2
+                -af "lifInfo" "top" 7
+                -ac $ctlName "left" 2 "lifInfo"
+                $form;
+
+  float $currentSelection = `optionMenuGrp -q -select $ctlName`;
+  float $currentVal = `getAttr ( $selectedObj + "." + $paramName )`;
+
+  string $items[] = `optionMenuGrp -q -ill $ctlName`;
+  for ( $i=0; $i<size( $items ); $i++ ) {
+    if ( $currentVal == `menuItem -q -ann $items[$i]` ) {
+      optionMenuGrp -e -select ($i+1) $ctlName;
+      break;
+    }
+  }
+
+  optionMenuGrp -e
+                -cc ("liquidChangeSelectorAttr "+$selectedObj+" "+$paramName+" "+$ctlName+";")
+                $ctlName;
+}
+
+proc liquidCreateLIFFloat_bool( string $selectedObj, string $paramName, string $label, string $range[], string  $description )
+{
+  string $ctlName = ( $paramName + $selectedObj + "WindowParam" );
+
+  string $form = `formLayout`;
+    liquidCreateLIFInfoIcon( $description );
+
+    float $currentVal = `getAttr ( $selectedObj + "." + $paramName )`;
+    string $myCommand = ( "liquidChangeCheckBoxAttr " + $selectedObj + " " + $paramName + " " + $paramName + $selectedObj + "WindowParam" ) ;
+
+    // Only use an empty secondary label if not on Windows (looks nicer there w/o)
+    if ( `about -win` == true ) {
+      checkBoxGrp -label $label -value1 $currentVal -on1 $myCommand -of1 $myCommand $ctlName;
+    } else {
+      checkBoxGrp -cw2 120 100 -ct2 "left" "left" -cl2 "left" "left" -label $label -l1 " " -value1 $currentVal -on1 $myCommand -of1 $myCommand $ctlName;
+    }
+
+  setParent ..;
+
+  formLayout -e -af lifInfo   "left"  2
+                -af lifInfo   "top"   3
+                -ac $ctlName  "left"  2   lifInfo
+                $form;
+}
+
+global proc liquidCreateLIFFloat( string $selectedObj, int $index, string $subtype )
+{
+  //print ("liquidCreateLIFFloat( "+$selectedObj+", "+$index+", "+$subtype+" )...");
+
+  string $paramName  = liquidLifParamName($index);
+  int    $arraySize  = liquidLifParamArraySize( $index );
+
+  // error checking : if the param does not exist, we might have a bad lif
+  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
+
+  string $label       = liquidLifParamLabel( $index );
+  string $range[]     = liquidLifParamGuiRange( $index );
+  string $ctlName     = ( $paramName + $selectedObj + "WindowParam" );
+
+  string $description = liquidLifParamDescription( $index );
+
+  switch( $subtype ) {
+
+
+    case "slider":
+      if ( $arraySize ) {
+
+        frameLayout -label ($paramName+"["+$arraySize+"]") -collapse false -collapsable true -borderVisible false -labelIndent 0 -font "smallPlainLabelFont";
+          columnLayout -co "left" 10 -adj true;
+
+          int $j;
+          for ( $j=0; $j<$arraySize; $j++ ) {
+
+            liquidCreateLIFFloat_slider( $selectedObj, $paramName, $j, $label, $range, $description );
+
+          }
+
+          setParent ..;
+        setParent ..;
+
+      } else liquidCreateLIFFloat_slider( $selectedObj, $paramName, -1, $label, $range, $description );
+
+      break;
+
+    case "selector":
+      if ( $arraySize ) {
+
+      } else liquidCreateLIFFloat_selector( $selectedObj, $paramName, $label, $range, $description );
+      break;
+
+
+    case "bool":
+      if ( $arraySize ) {
+
+      } else liquidCreateLIFFloat_bool( $selectedObj, $paramName, $label, $range, $description );
+      break;
+
+
+    default:
+      if ( $arraySize > 0 ) {
+
+        frameLayout -label ($paramName+"["+$arraySize+"]") -collapsable true -collapse false -borderVisible false -labelIndent 0 -font "smallPlainLabelFont";
+          columnLayout -co "left" 10 -adj true;
+
+          int $j;
+          for ( $j=0; $j<$arraySize; $j++ ) {
+
+            liquidCreateLIFFloat_slider( $selectedObj, $paramName, $j, $label, $range, $description );
+
+          }
+
+          setParent ..;
+        setParent ..;
+
+      } else {
+        liquidCreateLIFFloat_slider( $selectedObj, $paramName, -1, $label, $range, $description );
+      }
+      break;
+  }
+
+  //print "Done\n";
+}
+
+proc liquidCreateLIFGrp( string $selectedObj, int $index )
+{
+  string $label = liquidLifParamLabel( $index );
+  //print ("Grp : "+$label+"\n");
+
+  int $state = ( gmatch( $label, "*+") )? 0:1;
+
+  $label = substring($label, 1, size( $label ) - 1 );
+
+  switch( $label ) {
+    case "end":
+      setParent ..;
+      setParent ..;
+      break;
+    default:
+      frameLayout -l $label -cll true -cl $state;
+      columnLayout -adj 1 -cat "both" 2;
+      break;
+  }
+
+}
+
+
+
+global proc liquidChangeSelectorAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  int $selected = `optionMenuGrp -q -select $fieldName`;
+  string $items[] = `optionMenuGrp -q -ill $fieldName`;
+  string $value = `menuItem -q -ann $items[$selected-1]`;
+
+  if ( catchQuiet( `setAttr ( $selectedObj + "." + $argName ) (float($value))` ) ) setAttr -type "string" ( $selectedObj + "." + $argName ) $value;
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidChangeRadioButtonAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  int $value = `radioButtonGrp -q -sl $fieldName`;
+  setAttr ( $selectedObj + "." + $argName ) $value;
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidChangeIntAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  int $value = `intFieldGrp -q -v1 $fieldName`;
+  setAttr ( $selectedObj + "." + $argName ) $value;
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidChangeCheckBoxAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  int $value = `checkBoxGrp -q -v1 $fieldName`;
+  setAttr ( $selectedObj + "." + $argName ) $value;
+  liquidParamAU $selectedObj;
+}
+
+// philippe : not used ?
+global proc liquidChangeColAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  float $value[] = `attrColorSliderGrp -q -rgbValue $fieldName`;
+  setAttr ( $selectedObj + "." + $argName ) -type "double3" $value[0] $value[1] $value[2];
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidChangeTextAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  string $fieldValue = `textFieldGrp -q -text $fieldName`;
+  setAttr ( $selectedObj + "." + $argName ) -type "string" $fieldValue;
+  liquidParamAU $selectedObj;
+}
+
+/**
+ *  pops up a file picker and updates the corresponding attribute
+ *  If the control was shift-clicked, it will open at the current path location, otherwise at the textureDirectory.
+ */
+global proc liquidChangeTextFileAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  string $pathSpecs="";
+  string $currentAttrValue = `getAttr ($selectedObj+"."+$argName)`;
+
+  string $MapDir = ($currentAttrValue != "" && liquidGetModifiersState() == "Shift" )? (dirname($currentAttrValue)) : (`getAttr liquidGlobals.textureDirectory`);
+
+  if( $MapDir != "" ) {
+    if ( `filetest -d $MapDir` ) {
+      if ( `match "[^\/]$" $MapDir` != "" ) $MapDir += "/";
+      $pathSpecs = $MapDir;
+    }
+  }
+
+  if ( `about -os` == "linux" ) $pathSpecs += "*.tex";
+  else $pathSpecs += "*.tex;*.tif;*.dsts";
+
+  string $fieldValue = `fileDialog -dm $pathSpecs`;
+  if ( $fieldValue != "" ) {
+
+    // fix bloody Windows backslashes
+    if (`about -win`) {
+      while( `match "[\\]" $fieldValue` != "" ) {
+        $fieldValue = `substitute "[\\]" $fieldValue "/"`;
+      }
+    }
+
+    textFieldGrp -e -text $fieldValue $fieldName;
+    setAttr ( $selectedObj + "." + $argName ) -type "string" $fieldValue;
+    liquidParamAU $selectedObj;
+  }
+}
+
+global proc liquidLifCoordSysBrowserFilter()
+{
+  string $list[] = `ls -type place3dTexture`;
+  string $filter = `textField -q -tx liquidLifCoordSysBrowserTF`;
+  if ( !size( $filter ) ) $filter = "*";
+
+  textScrollList -e -removeAll liquidLifCoordSysBrowserTSL;
+  for ( $l in $list ) {
+    if ( gmatch( $l, $filter ) ) textScrollList -e -append $l liquidLifCoordSysBrowserTSL;
+  }
+}
+
+global proc liquidLifCoordSysBrowser( string $selectedObj, string $argName, string $fieldName )
+{
+  string $coordSys[] = `ls -type place3dTexture`;
+
+  // use curly braces in cmd to avoid alloacting stuff in global space
+  string $selectCmd = (   "{\n"
+                        + "string $sel[] = `textScrollList -q -si liquidLifCoordSysBrowserTSL`;"
+                        + "textFieldGrp -e -text $sel[0] "+$fieldName+";"
+                        + "setAttr "+$selectedObj+"."+$argName+" -type \"string\" $sel[0];"
+                        + "deleteUI liquidLifCoordSysBrowserW;"
+                        + "liquidParamAU "+$selectedObj+";"
+                        + "}\n");
+  string $filterCmd = "liquidLifCoordSysBrowserFilter();";
+
+  if ( `window -q -ex liquidLifCoordSysBrowserW` ) deleteUI liquidLifCoordSysBrowserW;
+  window -title "CoordSys" -w 100 -h 200 liquidLifCoordSysBrowserW;
+    formLayout -w 100 -h 200 liquidLifCoordSysBrowserFL;
+      textField -tx "*" -cc $filterCmd -ec $filterCmd liquidLifCoordSysBrowserTF;
+      textScrollList -numberOfRows 8 -allowMultiSelection false liquidLifCoordSysBrowserTSL;
+      button -l "Select" -w 100 -c $selectCmd liquidLifCoordSysBrowserSB;
+      button -l "Cancel" -w 70 -c ("deleteUI liquidLifCoordSysBrowserW") liquidLifCoordSysBrowserCB;
+    setParent ..;
+    formLayout  -e
+                -af liquidLifCoordSysBrowserTF    "top"     2
+                -af liquidLifCoordSysBrowserTF    "left"    2
+                -af liquidLifCoordSysBrowserTF    "right"   2
+                -ac liquidLifCoordSysBrowserTSL   "top"     2   liquidLifCoordSysBrowserTF
+                -af liquidLifCoordSysBrowserTSL   "left"    2
+                -af liquidLifCoordSysBrowserTSL   "right"   2
+                -af liquidLifCoordSysBrowserTSL   "bottom"  30
+                -af liquidLifCoordSysBrowserSB    "bottom"  0
+                -af liquidLifCoordSysBrowserSB    "left"    0
+                -af liquidLifCoordSysBrowserCB    "bottom"  0
+                -af liquidLifCoordSysBrowserCB    "right"   0
+                -ac liquidLifCoordSysBrowserSB    "right"   0   liquidLifCoordSysBrowserCB
+                liquidLifCoordSysBrowserFL;
+
+  for ( $c in $coordSys ) {
+    textScrollList -e -append $c liquidLifCoordSysBrowserTSL;
+  }
+  showWindow liquidLifCoordSysBrowserW;
+}
+
+
+/**
+ * updates the attribute attached to a double fluid attr
+ * obsolete : kept for compatibility
+ */
+global proc liquidChangeTextDoubleAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  string $fieldValue = `textFieldGrp -q -text $fieldName`;
+  string $tokenized[];
+  tokenize $fieldValue " " $tokenized;
+  int $size = size($tokenized);
+  eval setAttr ( $selectedObj + "." + $argName ) -type doubleArray $size $fieldValue;
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidAssignTextDoubleAttr ( string $selectedObj, string $argName, string $fieldName )
+{
+  string $fieldValue;
+  float $doubleVals[] = `liquidGetAttr -node $selectedObj -attr $argName`;
+  int $size = size($doubleVals);
+  int $i;
+  for ( $i = 0; $i < $size; $i ++ )
+  {
+    $fieldValue = $fieldValue + $doubleVals[$i] + " ";
+  }
+  textFieldGrp -e -text $fieldValue $fieldName;
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidParamAU( string $selectedObj )
+{
+  if ( `checkBox -exists ( "auButton" + $selectedObj )` ) {
+    if ( `checkBox -q -v ( "auButton" + $selectedObj )` ) {
+      liquidFluidPreviewShader $selectedObj;
+    }
+  }
+  if ( `menuItem -exists ( "auButton" + $selectedObj )` ) {
+    if ( `menuItem -q -cb ( "auButton" + $selectedObj )` ) {
+      liquidFluidPreviewShader $selectedObj;
+    }
+  }
+
+}
+
+
+global proc deepShadowsOnOffCB ( string $selectedObj,
+                                 string $dsCtrl,
+                                 string $viCtrl,
+                                 string $psCtrl )
+{
+  int $onOff = `checkBoxGrp -q -v1 $dsCtrl`;
+  radioButtonGrp -e -enable $onOff $viCtrl;
+  intFieldGrp -e -enable $onOff $psCtrl;
+  liquidChangeCheckBoxAttr $selectedObj deepShadows $dsCtrl;
+}
+
+global proc liquidFluidBuildLifFile( string $longShaderName )
+{
+  string $longLifName = substitute( "\\..+$", $longShaderName, ".lif" );
+  string $shortShaderName = basenameEx( $longShaderName );
+
+  if ( !`filetest -d (dirname($longLifName))` ) error ("Directory \""+(dirname($longLifName))+"\" does not exist !");
+
+  string $desc = "desc \"\";\n";
+
+  int $fileHdl = `fopen $longLifName "w"`;
+
+  string $shadertype = `liquidGetShaderNodeType $shortShaderName`;
+  string $lower_stype = `tolower $shadertype`;
+
+  fprint $fileHdl ($lower_stype+" \""+$shortShaderName+"\";\n");
+  fprint $fileHdl $desc;
+  fprint $fileHdl ("\n");
+
+  int $numShaderArgs = liquidSlNumParams();
+  for ( $i=0; $i<$numShaderArgs; $i++ ) {
+    string $argName = liquidSlParamName($i);
+    fprint $fileHdl ("param \""+$argName+"\";\n");
+    fprint $fileHdl ("name \""+$argName+"\";\n");
+    fprint $fileHdl $desc;
+
+    string $argType =liquidSlParamType($i);
+    if ( $argType == "float" ) {
+      fprint $fileHdl ("type \"slider\";\n");
+      fprint $fileHdl ("range [ 0 1 ];\n");
+    }
+
+    fprint $fileHdl ("\n");
+  }
+
+  fclose $fileHdl;
+}
+
+global proc liquidFluidEditLifFile( string $selectedObj )
+{
+  string $longShaderName = `getAttr ( $selectedObj + ".rmanShaderLong" )`;
+  string $longLifName = substitute( "\\..+$", $longShaderName, ".lif" );
+  string $shortShaderName = basenameEx( $longShaderName );
+
+  if ( !`filetest -r $longLifName` ) {
+    string $answer = `confirmDialog -title "No Matching LIF File" -message ("Could not find a lif file for "+$shortShaderName+".\nDo you want to create one ?")
+                                    -button "Yes" -button "No" -defaultButton "Yes"
+                                    -cancelButton "No" -dismissString "No"`;
+    if ( $answer == "Yes" ) liquidFluidBuildLifFile( $longShaderName );
+    else return;
+  }
+
+  string $os = `about -os`;
+
+  switch( $os ) {
+    case "linux":
+    case "irix":
+      string $editor =  getenv( "EDITOR" );
+      if ( $editor == "" ) $editor = "nedit";
+      system( ($editor+" "+$longLifName+" &") );
+      break;
+    case "mac":
+      system( ("open "+$longLifName+" &") );
+      break;
+    default:
+      system( ("start notepad "+$longLifName) );
+      break;
+  }
+
+}
+
+global proc liquidFluidChangeNameField( string $shortShaderName, string $selectedObj, string $nodeType )
+{
+  select -r $selectedObj;
+  string $newname = `textFieldGrp -q -tx ("shaderShortName"+$shortShaderName+$selectedObj)`;
+  setAttr -type "string" ( $selectedObj+".rmanShader" ) $newname;
+  rename $selectedObj $newname;
+
+  liquidContainerWin_iconRename( $selectedObj, $newname );
+
+  liquidFluidUpdateList();
+  liquidParamDialogWindow $newname $newname;
+  evalDeferred("deleteUI ParamWindow"+$shortShaderName+$selectedObj);
+}
+
+proc createParamWindowMenu( string $shortShaderName, string $selectedObj, string $nodeType )
+{
+  menu -label "File" -tearOff 0 -aob 0 ("paramMenuFile"+$shortShaderName+$selectedObj);
+    menuItem -label "Reload" -c ( "liquidReloadFluidShader \""+$shortShaderName+"\";"+
+                                  "liquidSlInfoReset();"+
+                                  "evalDeferred\(\"deleteUI ParamWindow"+$shortShaderName+$selectedObj+";liquidParamDialogWindow "+$shortShaderName+" "+$nodeType+"\"\)");
+    menuItem -label "Refresh" -c ("liquidSlInfoReset();evalDeferred\(\"deleteUI ParamWindow"+$shortShaderName+$selectedObj+";liquidParamDialogWindow "+$shortShaderName+" "+$nodeType+"\"\)");
+    menuItem -divider 1;
+    menuItem -label "Render Globals..." -c "liquidGlobalsWindow;evalDeferred\(\"tabLayout -e -st \\\"liquidGlobalsFluidSet\\\" liquidGlobalsTab\"\)";
+    menuItem -divider 1;
+    menuItem -label "Close" -c ("deleteUI ParamWindow"+$shortShaderName+$selectedObj);
+  menu -label "Edit" -tearOff 0 -aob 0 ("paramMenuEdit"+$shortShaderName+$selectedObj);
+    menuItem -label "Edit LIF..." -c ("liquidFluidEditLifFile "+$selectedObj);
+    menuItem -label "Update LIF" -c ("liquidFluidUpdateLifFile "+$selectedObj);
+  menu -label "Primitive" -tearOff 0 -aob 0 ("paramMenuPrimitive"+$selectedObj);
+    radioMenuItemCollection -parent ("paramMenuPrimitive"+$selectedObj) ("paramMenuPrimitiveCollection"+$selectedObj);
+    string $primMenuItem[];
+    $primMenuItem[0] = `menuItem -label "Sphere"   -rb true  -cl ("paramMenuPrimitiveCollection"+$selectedObj) -command ("liquidParamAU "+$selectedObj)`;
+    $primMenuItem[1] = `menuItem -label "Cube"     -rb false -cl ("paramMenuPrimitiveCollection"+$selectedObj) -command ("liquidParamAU "+$selectedObj)`;
+    $primMenuItem[2] = `menuItem -label "Cylinder" -rb false -cl ("paramMenuPrimitiveCollection"+$selectedObj) -command ("liquidParamAU "+$selectedObj)`;
+    $primMenuItem[3] = `menuItem -label "Torus"    -rb false -cl ("paramMenuPrimitiveCollection"+$selectedObj) -command ("liquidParamAU "+$selectedObj)`;
+    $primMenuItem[4] = `menuItem -label "Plane"    -rb false -cl ("paramMenuPrimitiveCollection"+$selectedObj) -command ("liquidParamAU "+$selectedObj)`;
+    $primMenuItem[5] = `menuItem -label "Teapot"   -rb false -cl ("paramMenuPrimitiveCollection"+$selectedObj) -command ("liquidParamAU "+$selectedObj)`;
+  menu -label "Preview" -tearOff 0 -aob 0 ("paramMenuPreview"+$shortShaderName+$selectedObj);
+    menuItem -label "Preview Shader" -command ( "liquidFluidPreviewShader " + $selectedObj ) ( "previewButton" + $shortShaderName + $selectedObj );
+    menuItem -label "Auto-update" -cb false ( "auButton" + $selectedObj );
+
+  int $primitive = `getAttr liquidGlobals.previewPrimitive`;
+  menuItem -e -rb true $primMenuItem[$primitive];
+}
+
+proc createSurfaceAttributes( string $selectedObj )
+{
+  float $cV[] = `getAttr ( $selectedObj + ".color" )`;
+
+  attrColorSliderGrp -cal 1 "right" -adj 3 -label "Color (Cs)"
+    -rgbValue $cV[0] $cV[1] $cV[2]
+    -at ( $selectedObj + ".color" )
+    -sb false;
+
+  if ( `getAttr -type ( $selectedObj + ".opacity" )` == "float" ) {
+    float $tmpVal = `getAttr ( $selectedObj + ".opacity" )`;
+    deleteAttr ( $selectedObj + ".opacity" );
+    addAttr -longName "opacity" -usedAsColor -at float3 $selectedObj;
+    addAttr -longName "redO" -at "float" -parent "opacity" $selectedObj;
+    addAttr -longName "greenO" -at "float" -parent "opacity" $selectedObj;
+    addAttr -longName "blueO" -at "float" -parent "opacity" $selectedObj;
+    setAttr ( $selectedObj + ".opacity" ) -type float3 $tmpVal $tmpVal $tmpVal;
+  }
+  $cV = `getAttr ( $selectedObj + ".opacity" )`;
+  attrColorSliderGrp -cal 1 "right" -adj 3 -label "Opacity (Os)"
+    -rgbValue $cV[0] $cV[1] $cV[2]
+    -at ( $selectedObj + ".opacity" )
+    -sb false;
+}
+
+proc createLightAttributes( string $selectedObj )
+{
+  string $currentValue;
+  string $myCommand;
+  int $currentIntValue;
+
+  string $dsCtrl = ( "deepShadows" + $selectedObj + "WindowParam" );
+  string $viCtrl = ( "volumeInterpretation" + $selectedObj + "WindowParam" );
+  string $psCtrl = ( "pixelSamples" + $selectedObj + "WindowParam" );
+
+  $currentIntValue = `getAttr ( $selectedObj + ".deepShadows" )`;
+  $myCommand = ( "liquidChangeCheckBoxAttr " + $selectedObj + " deepShadows " + $dsCtrl) ;
+  // Only use an empty secondary label if not on Windows (looks nicer there w/o)
+  if ( `about -win` == true ) {
+    checkBoxGrp -label "Deep Shadows" -v1 $currentIntValue -changeCommand $myCommand $dsCtrl;
+  } else {
+    checkBoxGrp -label "Deep Shadows" -l1 " " -v1 $currentIntValue -changeCommand $myCommand $dsCtrl;
+  }
+  $currentIntValue = `getAttr ( $selectedObj + ".volumeInterpretation" )`;
+  $myCommand = ( "liquidChangeRadioButtonAttr " + $selectedObj + " volumeInterpretation " + $viCtrl) ;
+  radioButtonGrp -numberOfRadioButtons 2
+    -label "Volume Interpretation"
+    -labelArray2 "Discrete" "Continuous"
+    -sl $currentIntValue
+    -enable `checkBoxGrp -q -v1 $dsCtrl`
+    -changeCommand $myCommand
+    $viCtrl;
+
+  $currentIntValue = `getAttr ( $selectedObj + ".pixelSamples" )`;
+  $myCommand = ( "liquidChangeIntAttr " + $selectedObj + " pixelSamples " + $psCtrl) ;
+  intFieldGrp -label "Pixel Samples"
+    -v1 $currentIntValue
+    -changeCommand $myCommand
+    -enable `checkBoxGrp -q -v1 $dsCtrl`
+    $psCtrl;
+
+  string $dsCC = "deepShadowsOnOffCB " + $selectedObj +
+    " " + $dsCtrl + " " + $viCtrl + " " + $psCtrl;
+  checkBoxGrp -e -cc $dsCC $dsCtrl;
+
+  $currentValue = `getAttr ( $selectedObj + ".shadowCamera" )`;
+  $myCommand = ( "liquidChangeTextAttr " + $selectedObj + " " + "shadowCamera" + " " + "shadowCamera" + $selectedObj + "WindowParam" ) ;
+  textFieldGrp -adj 2
+    -label "Shadow Camera"
+    -text  $currentValue
+    -changeCommand $myCommand
+    ( "shadowCamera" + $selectedObj + "WindowParam" );
+  popupMenu -button 3 cameraListMenu;
+  string $cameraList[] = `ls -cameras`;
+  string $camera;
+  for ( $camera in $cameraList ) {
+    menuItem -l $camera -c ( "textFieldGrp -e -tx " + $camera + " shadowCamera" + $selectedObj + "WindowParam; liquidChangeTextAttr " + $selectedObj + " " + "shadowCamera" + " " + "shadowCamera" + $selectedObj + "WindowParam" )
+      ( $camera + $selectedObj +"Selection" );
+  }
+  setParent -menu ..;
+
+}
+
+proc createDispAttributes( string $selectedObj )
+{
+  if ( `attributeQuery -node $selectedObj -ex "displacementBound"` ) {
+    attrFieldSliderGrp  -adj 3 -label "Displacement Bound" -cc ( "liquidParamAU " + $selectedObj)
+                        -minValue -1000.0 -maxValue 1000.0
+                        -sliderMinValue 0.0 -sliderMaxValue 5.0
+                        -fieldMinValue -1000.0 -fieldMaxValue 1000.0
+                        -at ( $selectedObj + ".displacementBound" )
+                        ( "displacementBound" + $selectedObj + "WindowParam" );
+  }
+}
+
+/**
+ *  Build sthe parameter window
+ *
+ */
+global proc liquidParamDialogWindow ( string $selectedObj, string $nodeType )
+{
+  //print ("liquidParamDialogWindow ( "+$selectedObj+", "+$nodeType+" )\n");
+
+  int $i;
+  string $longShaderName = `getAttr ( $selectedObj + ".rmanShaderLong" )`;
+  string $shortShaderName = `getAttr ( $selectedObj + ".rmanShader" )`;
+  string $ribboxCmd = "";
+
+  // parse the shader and its LIF file
+  if ( $nodeType != "Ribbox" ) liquidSlSetShader( $longShaderName );
+  else liquidSlInfoReset();
+
+  string $tabs;
+  // non-tabbed gui
+  if ( `window -q -exists ( "ParamWindow" + $shortShaderName + $selectedObj )` )
+  {
+    deleteUI ( "ParamWindow" + $shortShaderName + $selectedObj );
+  }
+
+  window  -mb 1 -title ( $selectedObj + " Parameters" )
+          -sizeable true
+          -widthHeight 400 400
+          -iconName $shortShaderName
+          ( "ParamWindow" + $shortShaderName + $selectedObj );
+
+  createParamWindowMenu( $shortShaderName, $selectedObj, $nodeType );
+
+  if ( $shortShaderName != "" ) {
+    int $numShaderArgs;
+
+    if($longShaderName == "ribbox")
+    {
+      $numShaderArgs = 0;
+    }
+    else
+    {
+       $numShaderArgs = liquidSlNumParams();
+    }
+
+    formLayout -numberOfDivisions 5 ( "paramForm" + $shortShaderName + $selectedObj );
+
+      string $defaultPreviewImage = (`getAttr ($selectedObj+".typeId")` == 303126794)? (liquidGetHome()+"/icons/ribbox.jpg"):(liquidContainer_getPreviewNodeTex($selectedObj));
+      image -w 128 -h 128 -image $defaultPreviewImage ( "shaderPreview" + $shortShaderName + $selectedObj );
+
+        scrollLayout -cr true ( "paramScroll" + $shortShaderName + $selectedObj );
+          columnLayout -adjustableColumn true -cat "both" 5 ( "paramScroll" + $shortShaderName + $selectedObj );;
+
+          if ( $nodeType != "Ribbox" ) {
+            frameLayout -label ($nodeType+" Attributes") -collapsable true -labelAlign "center" ;
+              columnLayout -adj true;
+
+                // surface : color, opacity
+                if ( $nodeType == "Surface" ) createSurfaceAttributes( $selectedObj );
+
+                // Light : deepShadows, volumeInterpretation, pixelSamples
+                if ( $nodeType == "Light" ) createLightAttributes( $selectedObj );
+
+                // Displacement / surface : displacement Bounds
+                if ( $nodeType == "Disp" || $nodeType == "Surface" ) createDispAttributes( $selectedObj );
+
+              setParent ..;
+            setParent ..;
+          }
+
+          // RIB Box
+          if ($nodeType == "Ribbox") {
+            if ( objExists( ($selectedObj+".ribbox") ) ) {
+              string $rbtext = `getAttr ($selectedObj+".ribbox")`;
+              $ribboxCmd = ("setAttr "+$selectedObj+".ribbox -type \"string\" (`scrollField -q -tx ribboxValue"+$selectedObj+$shortShaderName+"`)");
+              scrollField -h 400 -wordWrap 1 -text $rbtext -ec $ribboxCmd ("ribboxValue"+$selectedObj+$shortShaderName);
+            }
+          } else {
+            separator -style "none" -h 20;
+          }
+
+          int $i = 0;
+          int $guiSize = ( liquidLifGuiSize() )? liquidLifGuiSize() : liquidSlNumParams();
+
+          while ( $i < $guiSize ) {
+
+            string $argType     = liquidLifParamType($i);
+            string $argSubType  = liquidLifParamGuiType($i);
+            int    $argArrayLen = liquidLifParamArraySize($i);
+
+            switch( $argType ) {
+
+              case "group":
+                liquidCreateLIFGrp( $selectedObj, $i );
+                break;
+
+              case "float":
+                liquidCreateLIFFloat( $selectedObj, $i, $argSubType );
+                break;
+
+              case "string":
+                liquidCreateLIFString( $selectedObj, $i, $argSubType );
+                break;
+
+              case "color":
+                liquidCreateLIFColor( $selectedObj, $i );
+                break;
+
+              case "point":
+              case "vector":
+              case "normal":
+                liquidCreateLIFVector( $selectedObj, $i );
+                break;
+
+              default:
+                print ("    > \""+$argType+"\" not handled yet !\n");
+                break;
+            }
+
+            $i++;
+          }
+
+      setParent ( "paramForm" + $shortShaderName + $selectedObj );
+      textFieldGrp -l "Shader Name:" -text $selectedObj -ad2 2 -cc ("liquidFluidChangeNameField "+$shortShaderName+" "+$selectedObj+" "+$nodeType) ("shaderShortName"+$shortShaderName+$selectedObj);
+      scrollField -h 75 -editable false -wordWrap true -font "smallPlainLabelFont" -text (liquidLifShaderDescription()) ( "shaderDesc" + $shortShaderName + $selectedObj );
+      button -label "Preview Shader" -w 110 -h 30 -command ( "liquidFluidPreviewShader " + $selectedObj+";" ) ( "previewButton" + $shortShaderName + $selectedObj );
+      textFieldGrp -l "Shader Location:" -text $longShaderName -ad2 2 -cc ("liquidChangeShader \""+$shortShaderName+"\" \"#1\" \""+$nodeType+"\";evalDeferred\(\"liquidParamDialogWindow \\\""+$shortShaderName+"\\\" "+$nodeType+"\"\)") ("shaderLongName"+$shortShaderName+$selectedObj);
+
+      if ($nodeType == "Ribbox") {
+        button -label "Close" -command ( $ribboxCmd+";deleteUI ParamWindow" + $shortShaderName + $selectedObj ) ( "paramButton" + $shortShaderName + $selectedObj );
+      } else {
+        string $closeCmd = ( "deleteUI ParamWindow" + $shortShaderName + $selectedObj );
+        button -label "Close" -command $closeCmd ( "paramButton" + $shortShaderName + $selectedObj );
+      }
+
+      formLayout  -edit
+                  -attachForm     ( "shaderPreview" + $shortShaderName + $selectedObj ) "top"   2
+                  -attachForm     ( "shaderPreview" + $shortShaderName + $selectedObj ) "left"  2
+
+                  -attachForm     ("shaderShortName"+$shortShaderName+$selectedObj) "top"   2
+                  -attachControl  ("shaderShortName"+$shortShaderName+$selectedObj) "left"  0   ("shaderPreview" + $shortShaderName + $selectedObj )
+                  -attachForm     ("shaderShortName"+$shortShaderName+$selectedObj) "right" 25
+
+                  -attachControl  ( "shaderDesc" + $shortShaderName + $selectedObj ) "top"    2   ("shaderShortName"+$shortShaderName+$selectedObj)
+                  -attachControl  ( "shaderDesc" + $shortShaderName + $selectedObj ) "left"   15  ("shaderPreview" + $shortShaderName + $selectedObj )
+                  -attachForm     ( "shaderDesc" + $shortShaderName + $selectedObj ) "right"  25
+
+                  -attachControl  ( "previewButton" + $shortShaderName + $selectedObj ) "top"     2   ( "shaderDesc" + $shortShaderName + $selectedObj )
+                  -attachControl  ( "previewButton" + $shortShaderName + $selectedObj ) "left"    15  ( "shaderPreview" + $shortShaderName + $selectedObj )
+                  -attachForm     ( "previewButton" + $shortShaderName + $selectedObj ) "right"   25
+
+                  -attachControl  ("shaderLongName"+$shortShaderName+$selectedObj) "top"    5   ("shaderPreview" + $shortShaderName + $selectedObj )
+                  -attachForm     ("shaderLongName"+$shortShaderName+$selectedObj) "left"   2
+                  -attachForm     ("shaderLongName"+$shortShaderName+$selectedObj) "right"  25
+
+                  -attachForm     ( "paramButton" + $shortShaderName + $selectedObj ) "bottom"  0
+                  -attachForm     ( "paramButton" + $shortShaderName + $selectedObj ) "left"    0
+                  -attachForm     ( "paramButton" + $shortShaderName + $selectedObj ) "right"   0
+
+                  -attachControl  ( "paramScroll" + $shortShaderName + $selectedObj ) "top"     0   ( "shaderLongName" + $shortShaderName + $selectedObj )
+                  -attachForm     ( "paramScroll" + $shortShaderName + $selectedObj ) "left"    0
+                  -attachForm     ( "paramScroll" + $shortShaderName + $selectedObj ) "right"   0
+                  -attachControl  ( "paramScroll" + $shortShaderName + $selectedObj ) "bottom"  0   ( "paramButton" + $shortShaderName + $selectedObj )
+
+                  ( "paramForm" + $shortShaderName + $selectedObj );
+
+
+
+    showWindow ( "ParamWindow" + $shortShaderName + $selectedObj );
+  }
+}
+
