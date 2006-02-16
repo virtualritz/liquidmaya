@@ -30,6 +30,7 @@
 #include <maya/MColor.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MDagPath.h>
+#include <maya/MString.h>
 
 #include <liqTokenPointer.h>
 #include <liqGetSloInfo.h>
@@ -54,14 +55,16 @@ public :
     liqTokenPointer	tokenPointerArray[MR_SURFPARAMSIZE];
     std::string name;
     std::string file;
-    RtColor rmColor;
-    RtColor rmOpacity;
-    bool hasShadingRate;
-    RtFloat shadingRate;
-    bool hasDisplacementBound;
-    RtFloat displacementBound;
-    bool hasErrors;
+    RtColor     rmColor;
+    RtColor     rmOpacity;
+    bool        hasShadingRate;
+    RtFloat     shadingRate;
+    bool        hasDisplacementBound;
+    RtFloat     displacementBound;
+    bool        outputInShadow;
+    bool        hasErrors;
     SHADER_TYPE shader_type;
+    MString     shaderSpace;
 };
 
 

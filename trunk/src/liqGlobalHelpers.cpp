@@ -68,6 +68,7 @@ extern "C" {
 #include <maya/MStatus.h>
 #include <maya/MFnDoubleArrayData.h>
 #include <maya/MCommandResult.h>
+#include <maya/MFnRenderLayer.h>
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
@@ -139,6 +140,24 @@ bool isObjectTwoSided( const MDagPath & path )
   return  doubleSided;
 }
 
+bool isObjectReversed( const MDagPath & path )
+//
+//  Description:
+//      Check if the given object is reversed : that is if the opposite attribute is on
+//
+{
+  MStatus status;
+  MFnDagNode fnDN( path );
+  MPlug dPlug = fnDN.findPlug( "opposite", &status );
+  MString type = fnDN.typeName( &status );
+  //cout <<"type is "<<type.asChar()<<endl;
+  bool reversed = false;
+  if ( status == MS::kSuccess ) {
+    dPlug.getValue( reversed );
+  }
+  if ( type == "nurbsSurface" ) reversed = !reversed;
+  return  reversed;
+}
 
 bool isObjectVisible( const MDagPath & path )
 //
@@ -184,7 +203,7 @@ bool isObjectVisible( const MDagPath & path )
   status.clear();
   LIQDEBUGPRINTF( "-> done checking intermediate object\n" );
 
-  return  visible && !liquidInvisible && !intermediate;
+  return visible && !liquidInvisible && !intermediate;
 }
 
 bool isObjectPrimaryVisible( const MDagPath & path )
@@ -321,18 +340,26 @@ bool areObjectAndParentsVisible( const MDagPath & path )
   bool result = true;
   LIQDEBUGPRINTF( "-> getting searchpath\n" );
   MDagPath searchPath( path );
+  MStatus status;
+
+  // Philippe:
+  // Check if the path belongs to the current render layers
+  MFnRenderLayer renderLayer;
 
   LIQDEBUGPRINTF( "-> stepping through search path\n" );
   bool searching = true;
+  bool isInCurrentRenderLayer = true;
   while ( searching ) {
     LIQDEBUGPRINTF( "-> checking visibility\n" );
-    if ( !isObjectVisible( searchPath ) ) {
+    isInCurrentRenderLayer = renderLayer.inCurrentRenderLayer( path, &status );
+    if ( !isInCurrentRenderLayer || !isObjectVisible( searchPath ) ) {
       result = false;
       searching = false;
     }
     if ( searchPath.length() == 1 ) searching = false;
     searchPath.pop();
   }
+
   return result;
 }
 
@@ -808,3 +835,26 @@ MString removeEscapes( const MString & inputString )
   }
   return constructedString;
 }
+
+MObject getNodeByName( MString name, MStatus *returnStatus )
+{
+  MObject node;
+  MSelectionList list;
+
+  *returnStatus = MGlobal::getSelectionListByName( name, list );
+
+  if ( MS::kSuccess != *returnStatus ){
+    MGlobal::displayError("Cound't get node :"+ name +". There might be multiple nodes called "+name);
+    return node;
+  }
+
+  *returnStatus=list.getDependNode(0,node);
+
+  if ( MS::kSuccess != *returnStatus ) {
+    MGlobal::displayError("Cound't get node :"+ name +". There might be multiple nodes called "+name);
+    return MObject::kNullObj;
+  }
+
+  return node;
+}
+

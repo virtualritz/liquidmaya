@@ -36,7 +36,7 @@ lib newversion clean debug release :
 		[pP][rR][mM]an12_5) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lrib -lsloargs -llkm -ltarget -lzip -lprmutil" LIQWINRMANLIBS="rib.lib sloargs.lib" USEDVAR=RMANTREE;; \
 		[pP]ixie) LIQRMANPATH=$${PIXIEHOME:=/usr/local/Pixie} LIQRMANFLAGS=-DPIXIE LIQRMANLIBS="-lri -lsdr" LIQWINRMANLIBS="ri.lib sdr.lib" USEDVAR=PIXIEHOME;; \
 		3[dD]elight) LIQRMANPATH=$${DELIGHT:=/usr/local/3delight} LIQRMANFLAGS=-DDELIGHT LIQRMANLIBS="-l3delight -lc -ldl -lm" LIQWINRMANLIBS="3delight.lib" USEDVAR=DELIGHT;; \
-		*) echo "Do not know how to handle" $${LIQRMAN}". Set LIQRMAN to either aqsis, entropy, prman, prman11, pixie or 3delight"; exit 1;; \
+		*) echo "Do not know how to handle" $${LIQRMAN}". Set LIQRMAN to either aqsis, entropy, prman, prman12_5, pixie or 3delight"; exit 1;; \
 	esac; \
 	if( test ! -d  $${LIQRMANPATH} ); then \
 		echo $${LIQRMANPATH} " does not seem to exist. Check your" $${USEDVAR} "env var."; exit 1; \

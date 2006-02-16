@@ -1,0 +1,51 @@
+global proc liquidRibBoxEditorNew( string $nodeName, string $msg )
+{
+  setUITemplate -pst attributeEditorTemplate;
+  scrollField -wordWrap false -font smallFixedWidthFont -h 250 liquidRibboxEditorCtl;
+  setUITemplate -ppt;
+
+  liquidRibBoxEditorReplace( $nodeName, $msg );
+}
+
+global proc liquidRibBoxEditorReplace( string $nodeName, string $msg )
+{
+  print ($msg+" -----\n");
+  scrollField -e -tx (`getAttr $msg`) liquidRibboxEditorCtl;
+}
+
+global proc liquidRibBoxToolbarNew( string $nodeName, string $msg )
+{
+  setUITemplate -pst attributeEditorTemplate;
+  button -label " Save " -width 100 liquidRibBoxToolbarSaveCtl;
+  setUITemplate -ppt;
+  liquidRibBoxToolbarReplace( $nodeName, $msg );
+}
+
+global proc liquidRibBoxToolbarReplace( string $nodeName, string $msg )
+{
+  string $cmd = ("setAttr -type \"string\" "+$msg+" (`scrollField -q -tx liquidRibboxEditorCtl`);");
+  button -e -c $cmd liquidRibBoxToolbarSaveCtl;
+}
+
+
+
+global proc AEliquidRibBoxTemplate( string $nodeName )
+{
+  AEswatchDisplay $nodeName;
+
+  editorTemplate -beginScrollLayout;
+
+    editorTemplate -beginLayout "Shader";
+      editorTemplate -addControl "rmanShader";
+      editorTemplate -addControl "rmanShaderLong";
+    editorTemplate -endLayout;
+
+    editorTemplate -ccu ("liquidRibBoxToolbarNew "+$nodeName)  ("liquidRibBoxToolbarReplace "+$nodeName) "ribbox";
+    editorTemplate -ccu ("liquidRibBoxEditorNew "+$nodeName)  ("liquidRibBoxEditorReplace "+$nodeName) "ribbox";
+    editorTemplate -suppress "ribbox";
+
+    editorTemplate -addExtraControls;
+
+  editorTemplate -endScrollLayout;
+}
+

@@ -58,15 +58,17 @@ extern "C" {
 
 extern int debugMode;
 
-extern long liqglo_lframe;
-extern MString liqglo_sceneName;
-extern MString liqglo_textureDir;
-extern bool liqglo_isShadowPass;
-extern bool liqglo_expandShaderArrays;
-extern bool liqglo_useBMRT;
-extern bool liqglo_doShadows;
-extern bool liqglo_shortShaderNames;
+extern long         liqglo_lframe;
+extern MString      liqglo_sceneName;
+extern MString      liqglo_textureDir;
+extern bool         liqglo_isShadowPass;
+extern bool         liqglo_expandShaderArrays;
+extern bool         liqglo_useBMRT;
+extern bool         liqglo_doShadows;
+extern bool         liqglo_shortShaderNames;
 extern MStringArray liqglo_DDimageName;
+extern bool         liqglo_doExtensionPadding;
+extern liquidlong   liqglo_outPadding;
 
 liqRibLightData::liqRibLightData( const MDagPath & light )
 //
@@ -75,12 +77,19 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 //
   : handle( NULL )
 {
-  usingShadow     = false;
-  shadowType      = stStandart;
-  shadowHiderType = shMin;
-  rayTraced       = false;
-  raySamples      = 16;
-  excludeFromRib  = false;
+  usingShadow         = false;
+  shadowType          = stStandart;
+  shadowHiderType     = shMin;
+  rayTraced           = false;
+  raySamples          = 16;
+  shadowRadius        = 0;
+  excludeFromRib      = false;
+  //outputLightInShadow = false;
+
+  everyFrame          = true;
+  renderAtFrame       = 0;
+  geometrySet         = "";
+
   MStatus status;
   LIQDEBUGPRINTF( "-> creating light\n" );
   rmanLight = false;
@@ -88,11 +97,20 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   MFnDependencyNode lightMainDepNode( light.node() );
   MFnLight fnLight( light );
 
+  // philippe : why this liquidExcludeFromRib attr ? Shouldn't LiqInvisible do the trick ?
+  // not in the mel gui either.
   status.clear();
   MPlug excludeFromRibPlug = fnLight.findPlug( "liquidExcludeFromRib", &status );
   if ( status == MS::kSuccess ) {
     excludeFromRibPlug.getValue( excludeFromRib );
   }
+
+  // check if the light should be in the shadow pass - deep shadows only.
+  //status.clear();
+  //MPlug outputInShadowPlug = fnLight.findPlug( "outputInShadow", &status );
+  //if ( status == MS::kSuccess ) {
+  //  outputInShadowPlug.getValue( outputLightInShadow );
+  //}
 
   status.clear();
   MPlug userShadowNamePlug = fnLight.findPlug( "liquidShadowName", &status );
@@ -112,6 +130,8 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
     raySamples = raysamples;
   }
 #endif
+
+
 
   lightName = fnLight.name();
 
@@ -135,6 +155,22 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       MPlug deepShadowsPlug = lightDepNode.findPlug( "deepShadows", &status );
       if ( status == MS::kSuccess ) {
         deepShadowsPlug.getValue( deepShadows );
+        if ( deepShadows ) shadowType = stDeep;
+      }
+
+      MPlug paramPlug = lightDepNode.findPlug( "everyFrame", &status );
+      if ( status == MS::kSuccess ) {
+        paramPlug.getValue( everyFrame );
+      }
+      paramPlug = lightDepNode.findPlug( "renderAtFrame", &status );
+      if ( status == MS::kSuccess ) {
+        float tmp;
+        paramPlug.getValue( tmp );
+        renderAtFrame = (int) tmp;
+      }
+      paramPlug = lightDepNode.findPlug( "geometrySet", &status );
+      if ( status == MS::kSuccess ) {
+        paramPlug.getValue( geometrySet );
       }
 
       liqGetSloInfo shaderInfo;
@@ -206,6 +242,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
             if ( status == MS::kSuccess ) {
               MString blah = shaderInfo.getArgName( i ).asChar();
               if ( shaderInfo.getArgArraySize( i ) > 0 ) {
+                // string array
                 bool isArrayAttr = stringPlug.isArray( &status );
                 if ( isArrayAttr ) {
                   MPlug plugObj;
@@ -217,43 +254,34 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                       MString stringPlugVal;
                       plugObj.getValue(stringPlugVal);
                       MString parsingString = stringPlugVal;
-                      stringPlugVal = parseString( parsingString );
+                      if ( parsingString.substring( 0, 9 ) == "autoshadow" ) {
+                        if ( parsingString.length() > 10 && parsingString.substring( 10, parsingString.length()-1 ).isInt() ) {
+                          int extraShadowSlot = parsingString.substring( 10, parsingString.length()-1 ).asInt();
+                          //cout <<"this is an extra shadow call for slot "<<extraShadowSlot<" !!"<<endl;
+                          stringPlugVal = extraShadowName( lightDepNode, extraShadowSlot );
+                        } else stringPlugVal = autoShadowName();
+                      } else stringPlugVal = parseString( parsingString );
                       tokenPointerPair.setTokenString( kk, stringPlugVal.asChar(), stringPlugVal.length() );
                     }
                   }
                   tokenPointerArray.push_back( tokenPointerPair );
                 }
               } else {
+                // simple string
                 MString stringPlugVal;
                 stringPlug.getValue( stringPlugVal );
                 MString stringDefault( shaderInfo.getArgStringDefault( i, 0 ) );
                 if ( stringPlugVal != "" && stringPlugVal != stringDefault ) {
                   MString parsingString = stringPlugVal;
-                  stringPlugVal = parseString( parsingString );
+                  if ( parsingString.substring( 0, 9 ) == "autoshadow" ) {
+                    if ( parsingString.length() > 10 && parsingString.substring( 10, parsingString.length()-1 ).isInt() ) {
+                      int extraShadowSlot = parsingString.substring( 10, parsingString.length()-1 ).asInt();
+                      //cout <<"this is an extra shadow call for slot "<<extraShadowSlot<" !!"<<endl;
+                      stringPlugVal = extraShadowName( lightDepNode, extraShadowSlot );
+                    } else stringPlugVal = autoShadowName();
+                  } else stringPlugVal = parseString( parsingString );
                   parsingString = stringPlugVal;
                   parsingString.toLowerCase();
-                  MString curStrArgName = shaderInfo.getArgName(i);
-                  if ( curStrArgName == "shadowname") {
-                    if ( (parsingString.substring(0, 9) == "autoshadow") || (parsingString == "") ) {
-                      MString suffix = "";
-                      if ( stringPlugVal.length() > 10 )
-                      {
-                        suffix = stringPlugVal.substring( 10, stringPlugVal.length() - 1 );
-                      }
-                      if ( liqglo_doShadows ) {
-                        shadowName = liqglo_textureDir;
-                        if ( userShadowName == MString( "" ) )
-                        {
-                          shadowName += autoShadowName( -1 ) + suffix;
-                        } else {
-                          shadowName += userShadowName;
-                        }
-                        usingShadow = true;
-                        stringPlugVal = shadowName;
-                      }
-                    }
-                  }
-					
                   tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString, false, 0, 0 );
                   tokenPointerPair.setTokenString( 0, stringPlugVal.asChar(), stringPlugVal.length() );
                   tokenPointerArray.push_back( tokenPointerPair );
@@ -459,11 +487,11 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       }
       shaderInfo.resetIt();
     }
-  }// else {
+  } else {
     if( !rayTraced ) {
       fnLight.findPlug( "useDepthMapShadows" ).getValue( usingShadow );
-		}
-  //}
+    }
+  }
 #else
   rmanLight = false;
 #endif
@@ -509,13 +537,20 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       MFnNonExtendedLight fnDistantLight( light );
       lightType      = MRLT_Distant;
 
-      if ( liqglo_doShadows && usingShadow && !rayTraced ) {
-        if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" )) {
-          shadowName       = liqglo_textureDir + autoShadowName();
+      if ( liqglo_doShadows && usingShadow ) {
+        if ( !rayTraced ) {
+          if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" )) {
+            shadowName       = liqglo_textureDir + autoShadowName();
+          }
+        } else {
+          shadowName = "raytrace";
         }
+
         shadowFilterSize = fnDistantLight.depthMapFilterSize( &status );
         shadowBias       = fnDistantLight.depthMapBias( &status );
-        shadowSamples    = raySamples;
+        shadowSamples    = fnDistantLight.numShadowSamples( &status );
+        // Philippe : on a distant light, it seems that shadow radius always returns 0.
+        shadowRadius     = fnDistantLight.shadowRadius( &status );
       }
 
     } else if ( light.hasFn( MFn::kPointLight ) ) {
@@ -527,7 +562,8 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       if ( liqglo_doShadows && usingShadow ) {
         shadowFilterSize = fnPointLight.depthMapFilterSize( &status );
         shadowBias       = fnPointLight.depthMapBias( &status );
-        shadowSamples    = raySamples;
+        shadowSamples    = fnPointLight.numShadowSamples( &status );
+        shadowRadius     = fnPointLight.shadowRadius( &status );
       }
 
     } else if ( light.hasFn( MFn::kSpotLight ) ) {
@@ -535,7 +571,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       lightType      = MRLT_Spot;
       decay          = fnSpotLight.decayRate();
       coneAngle      = fnSpotLight.coneAngle() / 2.0;
-      penumbraAngle  = fnSpotLight.penumbraAngle() / 2.0;
+      penumbraAngle  = fnSpotLight.penumbraAngle();
       dropOff        = fnSpotLight.dropOff();
       barnDoors      = fnSpotLight.barnDoors();
       leftBarnDoor   = fnSpotLight.barnDoorAngle( MFnSpotLight::kLeft );
@@ -543,14 +579,18 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       topBarnDoor    = fnSpotLight.barnDoorAngle( MFnSpotLight::kTop );
       bottomBarnDoor = fnSpotLight.barnDoorAngle( MFnSpotLight::kBottom );
 
-      if ( liqglo_doShadows && usingShadow && !rayTraced ) {
-        if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" ) ) {
-          shadowName       = liqglo_textureDir + autoShadowName();
-
+      if ( liqglo_doShadows && usingShadow ) {
+        if ( !rayTraced ) {
+          if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" ) ) {
+            shadowName       = liqglo_textureDir + autoShadowName();
+          }
+        } else {
+          shadowName = "raytrace";
         }
         shadowFilterSize = fnSpotLight.depthMapFilterSize( &status );
         shadowBias       = fnSpotLight.depthMapBias( &status );
-        shadowSamples    = raySamples;
+        shadowSamples    = fnSpotLight.numShadowSamples( &status );
+        shadowRadius     = fnSpotLight.shadowRadius( &status );
       }
     }
   }
@@ -613,20 +653,18 @@ void liqRibLightData::write()
         break;
       case MRLT_Distant:
         if ( liqglo_doShadows && usingShadow ) {
-          /*if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" )) {
-            shadowName = liqglo_texDir + autoShadowName();
-          }*/
+
           RtString shadowname = const_cast< char* >( shadowName.asChar() );
           handle = RiLightSource( "liquiddistant",
-                                  "intensity",            &intensity,
-                                  "lightcolor",           color,
-                                  "string shadowname",    &shadowname,
-                                  "float shadowfiltersize", &shadowFilterSize,
-                                  "float shadowbias",     &shadowBias,
-                                  "float shadowsamples",  &shadowSamples,
-                                  "color shadowcolor",    &shadowColor,
-                                  "float __nondiffuse",   &nonDiffuse,
-                                  "float __nonspecular",  &nonSpecular,
+                                  "intensity",              &intensity,
+                                  "lightcolor",             color,
+                                  "string shadowname",      &shadowname,
+                                  "float shadowfiltersize", rayTraced ? &shadowRadius : &shadowFilterSize,
+                                  "float shadowbias",       &shadowBias,
+                                  "float shadowsamples",    &shadowSamples,
+                                  "color shadowcolor",      &shadowColor,
+                                  "float __nondiffuse",     &nonDiffuse,
+                                  "float __nonspecular",    &nonSpecular,
                                   RI_NULL );
         } else {
           handle = RiLightSource( "liquiddistant",
@@ -639,10 +677,8 @@ void liqRibLightData::write()
         break;
       case MRLT_Point:
         if ( liqglo_doShadows && usingShadow ) {
-          /*if (( shadowName == "" ) || ( shadowName.substring(0, 9) == "autoshadow" )) {
-            shadowName = liqglo_texDir + autoShadowName();
-          }*/
-          MString	px = liqglo_textureDir + autoShadowName( pPX );
+
+          MString	px = rayTraced ? "raytrace" : liqglo_textureDir + autoShadowName( pPX );
           MString	nx = liqglo_textureDir + autoShadowName( pNX );
           MString	py = liqglo_textureDir + autoShadowName( pPY );
           MString	ny = liqglo_textureDir + autoShadowName( pNY );
@@ -656,21 +692,21 @@ void liqRibLightData::write()
           RtString sfnz = const_cast<char*>( nz.asChar() );
 
           handle = RiLightSource( "liquidpoint",
-                                  "intensity",            &intensity,
-                                  "lightcolor",           color,
-                                  "float decay",          &decay,
-                                  "string shadownamepx",         &sfpx,
-                                  "shadownamenx",         &sfnx,
-                                  "shadownamepy",         &sfpy,
-                                  "shadownameny",         &sfny,
-                                  "shadownamepz",         &sfpz,
-                                  "shadownamenz",         &sfnz,
-                                  "float shadowfiltersize", &shadowFilterSize,
-                                  "float shadowbias",     &shadowBias,
-                                  "float shadowsamples",  &shadowSamples,
-                                  "color shadowcolor",    &shadowColor,
-                                  "float __nondiffuse",   &nonDiffuse,
-                                  "float __nonspecular",  &nonSpecular,
+                                  "intensity",                  &intensity,
+                                  "lightcolor",                 color,
+                                  "float decay",                &decay,
+                                  "string shadownamepx",        &sfpx,
+                                  "string shadownamenx",        &sfnx,
+                                  "string shadownamepy",        &sfpy,
+                                  "string shadownameny",        &sfny,
+                                  "string shadownamepz",        &sfpz,
+                                  "string shadownamenz",        &sfnz,
+                                  "float shadowfiltersize",     rayTraced ? &shadowRadius : &shadowFilterSize,
+                                  "float shadowbias",           &shadowBias,
+                                  "float shadowsamples",        &shadowSamples,
+                                  "color shadowcolor",          &shadowColor,
+                                  "float __nondiffuse",         &nonDiffuse,
+                                  "float __nonspecular",        &nonSpecular,
                                   RI_NULL );
         } else {
           handle = RiLightSource( "liquidpoint",
@@ -689,24 +725,24 @@ void liqRibLightData::write()
           } */
           RtString shadowname = const_cast< char* >( shadowName.asChar() );
           handle = RiLightSource( "liquidspot",
-                                  "intensity",            &intensity,
-                                  "lightcolor",           color,
-                                  "float coneangle",      &coneAngle,
-                                  "float penumbraangle",  &penumbraAngle,
-                                  "float dropoff",        &dropOff,
-                                  "float decay",          &decay,
-                                  "float barndoors",      &barnDoors,
-                                  "float leftbarndoor",   &leftBarnDoor,
-                                  "float rightbarndoor",  &rightBarnDoor,
-                                  "float topbarndoor",    &topBarnDoor,
-                                  "float bottombarndoor", &bottomBarnDoor,
-                                  "string shadowname",    &shadowname,
-                                  "float shadowfiltersize", &shadowFilterSize,
-                                  "float shadowbias",     &shadowBias,
-                                  "float shadowsamples",  &shadowSamples,
-                                  "color shadowcolor",    &shadowColor,
-                                  "float __nondiffuse",   &nonDiffuse,
-                                  "float __nonspecular",  &nonSpecular,
+                                  "intensity",              &intensity,
+                                  "lightcolor",             color,
+                                  "float coneangle",        &coneAngle,
+                                  "float penumbraangle",    &penumbraAngle,
+                                  "float dropoff",          &dropOff,
+                                  "float decay",            &decay,
+                                  "float barndoors",        &barnDoors,
+                                  "float leftbarndoor",     &leftBarnDoor,
+                                  "float rightbarndoor",    &rightBarnDoor,
+                                  "float topbarndoor",      &topBarnDoor,
+                                  "float bottombarndoor",   &bottomBarnDoor,
+                                  "string shadowname",      &shadowname,
+                                  "float shadowfiltersize", rayTraced ? &shadowRadius : &shadowFilterSize,
+                                  "float shadowbias",       &shadowBias,
+                                  "float shadowsamples",    &shadowSamples,
+                                  "color shadowcolor",      &shadowColor,
+                                  "float __nondiffuse",     &nonDiffuse,
+                                  "float __nonspecular",    &nonSpecular,
                                   RI_NULL );
           } else {
           RtString shadowname = const_cast< char* >( shadowName.asChar() );
@@ -781,48 +817,16 @@ RtLightHandle liqRibLightData::lightHandle() const
 }
 
 
-/*
-MString liqRibLightData::autoShadowName( MString suffix ) const
-{
-  MString shadowName;
-  shadowName += liqglo_sceneName;
-  shadowName += "_";
-  shadowName += lightName;
-  shadowName += "SHD";
-  if ( suffix != "" )
-  {
-    shadowName += ( "_" + suffix );
-  }
-  shadowName += ".";
-  shadowName += ( int )liqglo_lframe;
-
-  // Deepshadows need ".shd", and regular need ".tex"
-  //
-  if ( deepShadows )
-  {
-    shadowName += ".shd";
-  }
-  else
-  {
-    shadowName += ".tex";
-  }
-
-  return shadowName;
-}*/
-
-
 MString liqRibLightData::autoShadowName( int PointLightDir ) const
 {
+  MString frame;
   MString shadowName;
-  if ( ( liqglo_DDimageName[0] == "" ) ) {
-    shadowName += liqglo_sceneName;
-  } else {
-    int pointIndex = liqglo_DDimageName[0].index( '.' );
-    shadowName += liqglo_DDimageName[0].substring(0, pointIndex-1).asChar();
-  }
-  shadowName = parseString( shadowName );
+
+  shadowName += liqglo_sceneName;
+  shadowName =  parseString( shadowName );
   shadowName += "_";
   shadowName += lightName;
+
   shadowName += ( shadowType == stDeep )? "DSH": "SHD";
 
   if ( PointLightDir != -1 ) {
@@ -848,8 +852,101 @@ MString liqRibLightData::autoShadowName( int PointLightDir ) const
     }
   }
   shadowName += ".";
-  shadowName += (int)liqglo_lframe;
+
+
+  if ( geometrySet != "" ) {
+    shadowName += geometrySet + ".";
+  }
+
+  if ( everyFrame ) frame += (int) liqglo_lframe;
+  else frame += (int) renderAtFrame;
+
+
+  if ( liqglo_doExtensionPadding ) {
+    while( frame.length() < liqglo_outPadding ) frame = "0" + frame;
+  }
+  shadowName += frame;
   shadowName += ".tex";
+
+  //cout <<"liqRibLightData::autoShadowName : "<<shadowName.asChar()<<"  ( "<<liqglo_sceneName.asChar()<<" )"<<endl;
+
   return shadowName;
 }
+
+
+MString liqRibLightData::extraShadowName( const MFnDependencyNode & lightShaderNode, const int & index ) const
+{
+  MString frame;
+  MString shadowName        = "";
+  MStatus status;
+
+  MString shdCamName        = "";
+  bool shdCamDeepShadows    = false;
+  bool shdCamEveryFrame     = true;
+  int shdCamRenderAtFrame   = 0;
+  MString shdCamGeometrySet = "";
+
+  status.clear();
+  MPlug shadowCamerasPlug = lightShaderNode.findPlug( "shadowCameras", &status );
+  if ( status == MS::kSuccess ) {
+    MPlug theShadowCamPlug = shadowCamerasPlug.elementByPhysicalIndex( index, &status );
+    MPlugArray shadowCamPlugArray;
+    if ( status == MS::kSuccess && theShadowCamPlug.connectedTo( shadowCamPlugArray, true, false ) ) {
+      MFnDependencyNode shadowCamDepNode = shadowCamPlugArray[0].node();
+      shdCamName = shadowCamDepNode.name();
+      MPlug shadowCamParamPlug = shadowCamDepNode.findPlug( "liqDeepShadows", &status );
+      if ( status == MS::kSuccess ) shadowCamParamPlug.getValue( shdCamDeepShadows );
+      status.clear();
+      shadowCamParamPlug = shadowCamDepNode.findPlug( "liqEveryFrame", &status );
+      if ( status == MS::kSuccess ) shadowCamParamPlug.getValue( shdCamEveryFrame );
+      status.clear();
+      shadowCamParamPlug = shadowCamDepNode.findPlug( "liqRenderAtFrame", &status );
+      if ( status == MS::kSuccess ) shadowCamParamPlug.getValue( shdCamRenderAtFrame );
+      status.clear();
+      shadowCamParamPlug = shadowCamDepNode.findPlug( "liqGeometrySet", &status );
+      if ( status == MS::kSuccess ) shadowCamParamPlug.getValue( shdCamGeometrySet );
+
+      shadowName += liqglo_sceneName;
+      shadowName =  parseString( shadowName );
+      shadowName += "_";
+      shadowName += shdCamName;
+      shadowName += ( shdCamDeepShadows )? "DSH": "SHD";
+      shadowName += ".";
+      if ( shdCamGeometrySet != "" ) {
+        shadowName += shdCamGeometrySet + ".";
+      }
+      if ( shdCamEveryFrame ) frame += (int) liqglo_lframe;
+      else frame += (int) shdCamRenderAtFrame;
+      if ( liqglo_doExtensionPadding ) {
+        while( frame.length() < liqglo_outPadding ) frame = "0" + frame;
+      }
+      shadowName += frame;
+      shadowName += ".tex";
+
+    } else {
+
+      //error message here !!
+
+      MString err = "Liquid : could not evaluate shadow camera connected to ";
+      err += lightShaderNode.name();
+      err += " !";
+      status.perror( err );
+
+    }
+  } else {
+    //error message here !!
+    MString err = "Liquid : could not find a shadowCameras attribute on ";
+    err += lightShaderNode.name();
+    err += " !";
+    status.perror( err );
+  }
+
+
+
+  //cout <<"liqRibLightData::extraShadowName : "<<shadowName.asChar()<<"  ( "<<liqglo_sceneName.asChar()<<" )"<<endl;
+
+  return shadowName;
+}
+
+
 

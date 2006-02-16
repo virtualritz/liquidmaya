@@ -62,6 +62,7 @@ char * basename( const char *filename );
 
 MStringArray findAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
 bool isObjectTwoSided( const MDagPath & path );
+bool isObjectReversed( const MDagPath & path );
 bool isObjectVisible( const MDagPath & path );
 bool isObjectPrimaryVisible( const MDagPath & path );
 bool isObjectTemplated( const MDagPath & path );
@@ -85,5 +86,6 @@ void liquidGetGlobal( MString globalName, double &value, MStatus &returnStatus )
 liquidlong liquidHash( const char *str );
 MString liquidSanitizePath( MString & inputString );
 MString removeEscapes( const MString & inputString );
+MObject getNodeByName( MString name, MStatus *returnStatus );
 
 #endif

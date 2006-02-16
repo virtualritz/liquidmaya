@@ -1,0 +1,44 @@
+
+global proc AEliquidVolumeTemplate( string $nodeName )
+{
+  layout -e -m false "AEcontrolFormLayout";
+
+  editorTemplate -callCustom ("liquidPreviewSwatchNew "+$nodeName) ("liquidPreviewSwatchReplace "+$nodeName) "message";
+
+  editorTemplate -beginScrollLayout;
+
+    editorTemplate -ccu ("liquidShaderPickerNew "+$nodeName) ("liquidShaderPickerReplace "+$nodeName) "rmanShaderLong";
+
+    editorTemplate -beginLayout "Preview";
+      editorTemplate -addControl "previewPrimitive";
+      editorTemplate -addControl "previewObjectSize";
+      editorTemplate -addControl "previewShadingRate";
+      editorTemplate -addControl "previewBackplane";
+    editorTemplate -endLayout;
+
+    editorTemplate -beginLayout "RIB";
+      editorTemplate -addControl "displacementBound";
+      editorTemplate -addControl "shaderSpace";
+      editorTemplate -addControl "outputInShadow";
+    editorTemplate -endLayout;
+
+    editorTemplate -beginLayout "Parameters" -collapse 0;
+
+      editorTemplate -ccu ("liquidShaderNodesParamsNew "+$nodeName)  ("liquidShaderNodesParamsReplace "+$nodeName) "rmanShaderLong";
+
+    editorTemplate -endLayout;
+
+    liquidHideAEShaderParams( "" );
+    liquidHideAEShaderParams( $nodeName );
+    editorTemplate -suppress rmanShader;
+    editorTemplate -suppress rmanShaderLong;
+    editorTemplate -suppress rmanShaderLif;
+    editorTemplate -suppress rmanParams;
+
+    editorTemplate -addExtraControls;
+
+  editorTemplate -endScrollLayout;
+
+  layout -e -m true "AEcontrolFormLayout";
+}
+

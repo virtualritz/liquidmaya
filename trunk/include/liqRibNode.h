@@ -73,6 +73,7 @@ class liqRibNode {
     MColor             opacity;
     bool               matteMode;
     bool               doubleSided;
+    bool               reversedNormals;
     MString            shaderName;
     MString            dispName;
     MString            volumeName;
@@ -109,7 +110,6 @@ class liqRibNode {
       MColor   color;
       MColor   opacity;
       int      matte;
-
     } shading;
 
 
@@ -117,10 +117,8 @@ class liqRibNode {
       bool      sampleMotion;
       bool      displacements;
       float     bias;
-
-      int     maxDiffuseDepth;
-
-      int     maxSpecularDepth;
+      int       maxDiffuseDepth;
+      int       maxSpecularDepth;
     } trace;
 
 
@@ -170,8 +168,7 @@ class liqRibNode {
         FILEMODE_NONE = 0,
         FILEMODE_READ = 1,
         FILEMODE_WRITE = 2,
-        FILEMODE_READ_WRITE = 3,
-        FILEMODE_READONLY = 4
+        FILEMODE_READ_WRITE = 3
       } fileMode;
     } irradiance;
 

@@ -39,5 +39,6 @@
 global proc liquidShutdown()
 {
     if ( `menu -exists liquidMainWindowMenu` ) deleteUI liquidMainWindowMenu;
+    unregisterLiquidRenderer();
 }
 

@@ -35,14 +35,16 @@
 
 global proc AEdagNodeInclude ( string $nodeName )
 {
-	// include/call base class/node attributes
-	editorTemplate -suppress "renderInfo";
+  // include/call base class/node attributes
+  editorTemplate -suppress "renderInfo";
 
-	// Liquid instance flags
-	if (`objectType $nodeName` == "transform" ) {
+  // Liquid instance flags
+  if (`objectType $nodeName` == "transform" ) {
      AEmentalrayInstanceFlags $nodeName;
      AEliquidInstanceFlags $nodeName;
-	}
+  }
 
-	AEdependNodeTemplate $nodeName;
+  if (`objectType $nodeName` == "camera" ) AEliquidCamera $nodeName;
+
+  AEdependNodeTemplate $nodeName;
 }

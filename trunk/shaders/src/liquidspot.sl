@@ -55,17 +55,17 @@ light liquidspot(
     uniform float topbarndoor    = 10;
     uniform float bottombarndoor = 10;
 
-    uniform string shadowname    = "";
-    uniform float  shadowbias    = 0.01;
-    uniform float  shadowblur    = 0.01;
-    uniform float  shadowsamples = 16;
+    uniform string shadowname       = "";
+    uniform float  shadowbias       = 0.01;
+    uniform float  shadowblur       = 0.01;
+    uniform float  shadowsamples    = 32;
     uniform float  shadowfiltersize = 1;
-    uniform color  shadowcolor   = 0;
+    uniform color  shadowcolor      = 0;
 
-    output varying color __shadow = 0;
-    output varying color __unshadowed_Cl = 0;
-    output float __nondiffuse    = 0;
-    output float __nonspecular   = 0;
+    output varying color __shadow         = 0;
+    output varying color __unshadowed_Cl  = 0;
+    output float         __nondiffuse     = 0;
+    output float         __nonspecular    = 0;
 )
 {
   float atten, cosangle;
@@ -103,13 +103,13 @@ light liquidspot(
 
 
     if( shadowname != "" )
-      __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "blur", shadowblur, "bias", shadowbias, "width", shadowfiltersize );
+      __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "bias", shadowbias, "blur", shadowfiltersize*0.001 );
     else
       __shadow = 0;
 
     Cl = intensity * atten;
     __unshadowed_Cl = Cl * lightcolor;
-#ifdef DELIGHT
+#ifdef DELIGHT || PRMAN
     Cl *= mix( lightcolor, shadowcolor, __shadow );
 #else
     Cl *= mix( lightcolor, shadowcolor, ( comp( __shadow, 0 ) + comp( __shadow, 1 ) + comp( __shadow, 2 ) ) / 3 );

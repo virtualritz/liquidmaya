@@ -34,9 +34,60 @@
 //	BASED ON CURRENT PALETTE
 //
 
+global proc liquidCopyShaderValues( string $slimApp, string $shaderNode )
+{
+  if ( !objExists( $shaderNode ) ) return;
+  
+  string $params[] = stringToStringArray( `slimcmd $slimApp GetProperties`, " ");
+  for ( $parm in $params ) {
+    
+    if ( gmatch( $parm, "attr*") ) continue;
+    if ( gmatch( $parm, "coll*") ) continue;
+    
+    string $name  = `slimcmd $parm GetName`;
+    string $type  = `slimcmd $parm GetType`;
+    string $value = `slimcmd $parm GetValue`;
+    //print ( $slimApp+"::"+$parm+" : "+$name+" ( "+$type+" ) -> "+$value+"\n" );
+    
+    switch( $type ) {
+      case "string":
+        if ( !objExists( ($shaderNode+"."+$name) ) ) break;
+        
+        if ( `attributeQuery -n $shaderNode -multi $name` ) {
+          string $index = `slimcmd $parm GetArrayIndex`;
+          if ( objExists( ($shaderNode+"."+$name+"["+$index+"]") ) ) eval ("setAttr -type \"string\" "+$shaderNode+"."+$name+"["+$index+"] \""+$value+"\"");
+        } else eval ("setAttr -type \"string\" "+$shaderNode+"."+$name+" \""+$value+"\"");
+        break;
+      case "vector":
+      case "point":
+      case "normal":
+      case "color":
+        if ( !objExists( ($shaderNode+"."+$name) ) ) break;
+        
+        string $tmp[] = stringToStringArray( $value, " ");
+        if ( `attributeQuery -n $shaderNode -multi $name` ) {
+          string $index = `slimcmd $parm GetArrayIndex`;
+          if ( objExists( ($shaderNode+"."+$name+"["+$index+"]") ) ) eval ("setAttr "+$shaderNode+"."+$name+"["+$index+"] "+float($tmp[0])+" "+float($tmp[1])+" "+float($tmp[2]));
+        } else eval ("setAttr "+$shaderNode+"."+$name+" "+float($tmp[0])+" "+float($tmp[1])+" "+float($tmp[2]));
+        break;
+        
+      default:
+        if ( !objExists( ($shaderNode+"."+$name) ) ) break;
+        
+        if ( `attributeQuery -n $shaderNode -multi $name` ) {
+          string $index = `slimcmd $parm GetArrayIndex`;
+          if ( objExists( ($shaderNode+"."+$name+"["+$index+"]") ) ) eval ("setAttr "+$shaderNode+"."+$name+"["+$index+"] "+$value);
+        } else eval ("setAttr "+$shaderNode+"."+$name+" "+$value);
+        break;
+    }
+    
+  }
+}
+
+
 global proc liquidConvertMtor () {
- string $yesno;
- $yesno = `confirmDialog -title "Confirm" -message ( "Your about to convert MTOR assignments to Liquid assignments, this takes some time - continue?" )
+  string $yesno;
+  $yesno = `confirmDialog -title "Confirm" -message ( "Your about to convert MTOR assignments to Liquid assignments, this takes some time - continue?" )
               -button "Yes" -button "No" -defaultButton "Yes"
               -cancelButton "No" -dismissString "No"`;
   if ( $yesno == "Yes" ) {
@@ -55,7 +106,7 @@ global proc liquidConvertMtor () {
       string $master = `slimcmd $app GetMaster 1`;
       string $id = `slimcmd $app GetID`;
 
-      print ( ">> " + $appType + ": " + $label + "(" + $app + ") : master = " + $master + "\n");
+      print ( "\n>> " + $appType + ": " + $label + "(" + $app + ") : master = " + $master + "\n");
 
       mtor control pickobjects $id;
       string $pName, $shapes[] = `ls -dag -shapes -lights -mat -sets -sl`;
@@ -65,17 +116,18 @@ global proc liquidConvertMtor () {
         case "surface":
         case "shadingmodel":
           if ( `slimcmd $app GetProperties -name "Controller"` != "" ) { // skip adaptor...
-            warning "light, surface adaptors can't be resolved...";
+            warning "light, surface adaptors can't be resolved...\nonly importing shaders...";
             break;
           }
         case "displacement":
         case "volume":
-          slimcmd $app BuildShader -force;
-          liquidAssignSlimShader( $shapes, $master );
+          if ( gmatch( $app, "func*") ) slimcmd $app BuildShader -force;
+          liquidAssignSlimShader( $shapes, $master, $label );
+          if ( !gmatch( $app, "func*") ) liquidCopyShaderValues( $app, $label );
           break;
         case "ensemble": {
 
-          if ( `slimcmd $app GetProperties -name "Controller"` != "" ) { // skip ensemle adaptor...
+          if ( `slimcmd $app GetProperties -name "Controller"` != "" ) { // skip ensemble adaptor...
             warning "ensemble adaptors can't be resolved...";
             break;
           }
@@ -88,8 +140,9 @@ global proc liquidConvertMtor () {
               string $connecteLabel = `slimcmd $connectedApp GetLabel`;
               string $connectedMaster = `slimcmd $connectedApp GetMaster 1`;
               print ( "  connected to : " + $connecteLabel + "(" + $connectedApp + ") : master = " + $connectedMaster + "\n");
-              slimcmd $connectedApp BuildShader -force;
-              liquidAssignSlimShader( $shapes, $connectedMaster );
+              if ( gmatch( $connectedApp, "func*") ) slimcmd $connectedApp BuildShader -force;
+              liquidAssignSlimShader( $shapes, $connectedMaster, $label );
+              if ( !gmatch( $connectedApp, "func*") ) liquidCopyShaderValues( $app, $label );
             }
           }
         } break;
@@ -99,17 +152,31 @@ global proc liquidConvertMtor () {
         case "tclbox":
         case "dso":
         default:
-          warning "this slim node can't be assigned...";
+          warning ("this slim node can't be assigned...");
+          print "\n";
           break;
       }
     }
+    
     select -r $slimSaveSelection;
   }
 }
 
-global proc liquidAssignSlimShader( string $shapes[], string $shaderName ) {
+global proc liquidAssignSlimShader( string $shapes[], string $shaderName, string $label )
+{
   string $shape, $dataNode = "";
-  $shaderName = `workspace -q -rootDirectory` + $shaderName + ".slo";
+  
+  if ( !gmatch( $shaderName, "/*") ) $shaderName = `workspace -q -rootDirectory` + $shaderName + ".slo";
+  else $shaderName = $shaderName + ".slo";
+  
+  int $ns = size( $shapes );
+  print ("liquidAssignSlimShader -> "+$shaderName+" ( "+$ns+" shapes) \n");
+  
+  if ( $ns == 0 && !objExists( $label ) ) {
+    $dataNode = `liquidNewShaderNode $shaderName`;
+    rename $dataNode $label;
+  }
+  
   for ( $shape in $shapes ) {
     print ( ":: " +  $shape + "\n" );
     string $type;
@@ -131,18 +198,24 @@ global proc liquidAssignSlimShader( string $shapes[], string $shaderName ) {
         }
       }
     }
-    if ( $sameMaster )
-      continue;
 
-    if ( $dataNode == "" ) {
+    print ("$sameMaster = "+$sameMaster+"\n");
+    if ( $sameMaster ) continue;
+    
+    if ( !objExists( $label ) ) {
       $dataNode = `liquidNewShaderNode $shaderName`;
+      rename $dataNode $label;
     }
+    $dataNode = $label;
+    
+    if ( $sameMaster ) continue;
+    
     liquidAssignShaderNode $shape $dataNode;
   }
 }
 
 //
-// depreciated piece of code...
+// deprecated piece of code...
 //
 global proc liquidConvertMtorGlimpse () {
 // GLIMPSE

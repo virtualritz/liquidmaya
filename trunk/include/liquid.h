@@ -55,6 +55,7 @@
 #include <maya/MString.h>
 #include <maya/MMatrix.h>
 #include <maya/MDagPath.h>
+#include <maya/MDagPathArray.h>
 
 ////////////////////////
 // Macros and Defines //
@@ -88,6 +89,7 @@ extern int debugMode;
 #define LIQ_CHECK_CANCEL_REQUEST    if ( m_escHandler.isInterruptRequested() ) throw( LIQ_CANCEL_FEEDBACK_MESSAGE )
 #define LIQ_ADD_SLASH_IF_NEEDED(a) if ( a.asChar()[a.length() - 1] != '/' ) a += "/"
 #define LIQ_ANIM_EXT MString( ".%0*d");
+#define LIQ_SET_EXT MString( ".%0*s");
 
 /* between Maya 3.0 /4.0/Linux/Other Platforms some functions changed their input type from long to int so
 a stand-in type called liquidlong was created to get around the problem */
@@ -137,7 +139,8 @@ enum ObjectType {
   MRT_Coord           = 10,
   MRT_Subdivision     = 11,
   MRT_MayaSubdivision = 12,
-  MRT_Custom          = 13
+  MRT_Custom          = 13,
+  MRT_ClipPlane       = 14
 };
 
 enum LightType {
@@ -224,6 +227,14 @@ enum TransmissionType { // shadow cast attribute
   trShader      = 4
 };
 
+enum fileGenMode {
+  fgm_shadow_tex,
+  fgm_shadow_rib,
+  fgm_beauty_rib,
+  fgm_image
+};
+
+
 struct structCamera {
   MMatrix  mat;   // camera inverse matrix
   double  neardb;
@@ -242,7 +253,7 @@ struct structCamera {
 
 enum RenderPass {
   rpHeroPass    = 0,
-  rpShadowPass  = 1, // specilal shadow pass for compositing purpose
+  rpShadowPass  = 1, // special shadow pass for compositing purpose
   rpShadowMap   = 2,
   rpReflectMap  = 3,
   rpEnvMap      = 4,
@@ -263,7 +274,8 @@ struct structJob {
   bool     isMidPointShadow;
 
   short   samples;
-  short   shadingRate;
+  float   shadingRate;
+  float   shadingRateFactor;
 
   RenderPass  pass;
 
@@ -273,18 +285,22 @@ struct structJob {
   VolumeInterpretation  volume;
   MString               deepShadowOption; // deep shadows display driver option
 
-  bool     hasShadowCam;
-  bool     isShadowPass;
-  int      shadowPixelSamples;
-  int      shadowVolumeInterpretation;
-  bool     isPoint;
-  PointLightDirection pointDir;
-  structCamera camera[ LIQMAXMOTIONSAMPLES ];
-  MDagPath path;
-  MDagPath shadowCamPath;
-  MString  jobOptions;
-  bool     gotJobOptions;
-  bool     deepShadows;
+  bool                  hasShadowCam;
+  bool                  isShadowPass;
+  int                   shadowPixelSamples;
+  int                   shadowVolumeInterpretation;
+  bool                  isPoint;
+  PointLightDirection   pointDir;
+  structCamera          camera[ LIQMAXMOTIONSAMPLES ];
+  MDagPath              path;
+  MDagPath              shadowCamPath;
+  MString               jobOptions;
+  bool                  gotJobOptions;
+  bool                  deepShadows;
+  bool                  everyFrame;
+  int                   renderFrame;
+  MString               shadowObjectSet;
+  bool                  shadowArchiveRibDone;
 };
 
 typedef enum {
@@ -294,5 +310,16 @@ typedef enum {
   TAG_BOUNDARY,
   TAG_STITCH
 } SBD_EXTRA_TAG;
+
+// optional capabilities as retrieved from the globals
+struct rFeatures {
+    bool blobbies;
+    bool points;
+    bool eyesplits;
+    bool raytracing;
+    bool depthoffield;
+    bool advancedvisibility;
+    bool displaychannels;
+  };
 
 #endif

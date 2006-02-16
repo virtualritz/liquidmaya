@@ -259,7 +259,7 @@ global proc liquidSlParseSdr( string $sdrFile )
 
     // Build and run the aqsltell command
     // TODO: probably won't work under NT
-   	string $cmd = "sdrinfo \"" + $sdrFile + "\"";
+    string $cmd = "/Applications/Graphics/Pixie/bin/sdrinfo " + $sdrFile;
     int $fid = `popen $cmd "r"`;
 
 

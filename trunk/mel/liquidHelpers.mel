@@ -161,9 +161,15 @@ global proc string liquidINIGet(string $component, string $var )
 }
 
 global proc string liquidAddCoordSystem() {
-  string $name = `shadingNode -asUtility place3dTexture`;
-  return `rename $name "liquidCoordSys"`;
+  return `createNode liquidCoordSys -n liquidCoordSysShape`;
 }
+
+global proc string liquidAddClipPlane() {
+  string $name = `createNode liquidCoordSys -n liquidClipPlaneShape`;
+  setAttr ($name+".type") 5;
+  return $name;
+}
+
 
 global proc liquidAddReflectionUI() {
   liquidAddReflection();
@@ -212,7 +218,62 @@ global proc string liquidSubstituteAll( string $pattern, string $source, string 
   } while( ! ( $oldResult == $result ) );
 
   return $result;
-};
+}
+
+global proc string liquidToUI( string $source )
+{
+  $result = $source;
+  //global int $ncall;
+  //global float $totalTime;
+  //float $st = `timerX`;
+  if ( 0 ) {
+
+    //print ("maya 7.0 code\n");
+    int $size = 0;
+    string $tmp;
+    while ( size( $result ) > $size ) {
+      $size   = size( $result );
+      $tmp    = substitute($result, "s/([a-z])([A-Z])|[a-z])([0-9]+)/$1 $2/" );
+      $result = ($tmp != "")? $tmp:$result;
+      $tmp    = substitute($result, "s/([a-z])([0-9])/$1 $2/" );
+      $result = ($tmp != "")? $tmp:$result;
+      $tmp    = substitute($result, "s/([0-9])([A-Z])/$1 $2/" );
+      $result = ($tmp != "")? $tmp:$result;
+    }
+    $tmp      = substitute($result, "s/_/-/g" );
+    $result = ($tmp != "")? $tmp:$result;
+    $result   = ( toupper(substring($result, 1, 1)) + substring($result, 2, size( $result )) );
+
+  } else {
+
+    string $match = match("[a-z][A-Z]", $result);
+    while( $match != "" ) {
+      $result = substitute("[a-z][A-Z]", $result, (substring($match, 1, 1)+" "+substring($match, 2, 2)) );
+      $match = match("[a-z][A-Z]", $result);
+    }
+    $match = match("[a-z][0-9]+", $result);
+    while( $match != "" ) {
+      int $size = size( $match );
+      $result = substitute("[a-z][0-9]+", $result, (substring($match, 1, 1)+" "+substring($match, 2, $size)));
+      $match = match("[a-z][0-9]+", $result);
+    }
+    $match = match("[0-9]+[A-Za-z]", $result);
+    while( $match != "" ) {
+      int $size = size( $match );
+      $result = substitute("[0-9]+[A-Za-z]", $result, (substring($match, 1, $size-1)+" "+substring($match, $size, $size)) );
+      $match = match("[0-9]+[A-Za-z]", $result);
+    }
+    $match = match("^[a-z]", $result);
+    $result = substitute("^[a-z]", $result, (toupper($match)) );
+    $result = substituteAllString( $result, "_", "-");
+  }
+  //float $stop = `timerX -st $st`;
+  //$ncall++;
+  //$totalTime += $stop;
+  //string $avg = float($totalTime / $ncall);
+  //print ($avg+" sec.\n");
+  return $result;
+}
 
 global proc liquidCropWindowViewer()
 {
@@ -250,7 +311,7 @@ global proc liquidCropWindowViewer()
     setAttr( $shape[0]+".visibleInRefractions") 0;
     setAttr( $shape[0]+".doubleSided")          1;
     setAttr( $shape[0]+".overrideEnabled")      1;
-    setAttr( $shape[0]+".overrideColor")        4;
+    setAttr( $shape[0]+".overrideColor")        13;
     setAttr( $shape[0]+".overrideShading")      0;
 
 
@@ -315,4 +376,36 @@ global proc liquidTextureViewer( string $file )
     default:
       break;
   }
+}
+
+global proc string liquidVarSubstitute( string $str )
+{
+  string $result = $str;
+
+  string $pdir = `workspace -q -rd`;
+
+  string $rdir = ( $pdir + `getAttr liquidGlobals.ribDirectory` );
+
+  string $shot = `getAttr liquidGlobals.shotName`;
+  if ( $shot == "" ) $shot = " ! NOT_SET ! ";
+
+  string $ver = `getAttr liquidGlobals.shotVersion`;
+  if ( $ver == "" ) $ver = " ! NOT_SET ! ";
+
+  string $scn = `file -q -sn -shn`;
+  if ( $scn == "" ) $scn = "untitled";
+  string $frame = "0";
+  string $padded = "0";
+  int $padding = (`getAttr liquidGlobals.doPadding`)? (`getAttr liquidGlobals.padding`):1;
+  while ( size( $padded ) != $padding ) $padded += "0";
+
+  while (gmatch( $result, "*$PDIR*"))   $result = substitute("\$PDIR", $result, $pdir );
+  while (gmatch( $result, "*$RDIR*"))   $result = substitute("\$RDIR", $result, $rdir );
+  while (gmatch( $result, "*$SHOT*"))   $result = substitute("\$SHOT", $result, $shot );
+  while (gmatch( $result, "*$VER*"))    $result = substitute("\$VER", $result, $ver );
+  while (gmatch( $result, "*$SCN*"))    $result = substitute("\$SCN", $result, $scn );
+  while (gmatch( $result, "*$F*"))      $result = substitute("\$F", $result, $frame );
+  while (gmatch( $result, "*#*"))       $result = substitute("#", $result, $padded );
+
+  return $result;
 }

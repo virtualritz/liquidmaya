@@ -841,6 +841,7 @@ global proc liquidContainerWin_iconRename( string $shader, string $newShaderName
   // rename texture preview node
   string $previewNode = liquidContainer_getPreviewNodeName( $shader );
   string $newPreviewNode = substitute( $shader, $previewNode, $newShaderName);
+  if ( !objExists( $previewNode ) ) return;
   rename $previewNode $newPreviewNode;
 
   // rename the preview file

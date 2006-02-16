@@ -3,8 +3,6 @@
 
 global proc liquidCreateShadingAttributes()
 {
-  liquidGlobalsUpdateFeatures();
-
   liquidCreateShadingRateAttribute();
   liquidCreateRasterOrientedDicingAttribute();
   liquidCreateColorAttribute();
@@ -42,7 +40,7 @@ global proc liquidCreateShadingRateAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqShadingRate"` ) {
-      addAttr -ln "liqShadingRate" -at "float" -dv 1.0 -min 0.001 $currentNode;
+      addAttr -k true -ln "liqShadingRate" -at "float" -dv 1.0 -min 0.001 $currentNode;
     }
   }
 }
@@ -54,7 +52,7 @@ global proc liquidCreateRasterOrientedDicingAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqDiceRasterOrient"` ) {
-      addAttr -ln "liqDiceRasterOrient" -at bool -dv 1  $currentNode;
+      addAttr -k true -ln "liqDiceRasterOrient" -at bool -dv 1  $currentNode;
     }
   }
 }
@@ -96,7 +94,7 @@ global proc liquidCreateMatteAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqMatte"` ) {
-      addAttr -ln "liqMatte" -at bool $currentNode;
+      addAttr -k true -ln "liqMatte" -at bool $currentNode;
     }
   }
 }
@@ -105,8 +103,6 @@ global proc liquidCreateMatteAttribute()
 
 global proc liquidCreateObjectRayTracingAttributes()
 {
-  liquidGlobalsUpdateFeatures();
-
   liquidCreateVisibilityTraceAttribute();
   liquidCreateSampleMotionAttribute;
   liquidCreateTraceDisplacementsAttribute;
@@ -122,8 +118,6 @@ global proc liquidCreateObjectRayTracingAttributes()
 
 global proc liquidCreateLightRayTracingAttributes()
 {
-  liquidGlobalsUpdateFeatures();
-
   liquidCreateSampleMotionAttribute;
   liquidCreateTraceDisplacementsAttribute;
   liquidCreateTraceBiasAttribute;
@@ -209,7 +203,7 @@ global proc liquidCreateMaxSpecularDepthAttribute()
 
 global proc liquidCreateTransmisionAttribute()
 {
-  int $newStyle = liquidGlobalVisibilityStyle();
+  int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );
   if ( $newStyle ) return;
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
@@ -254,14 +248,14 @@ global proc liquidCreateVisibilityCameraAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqVisibilityCamera"` ) {
-      addAttr -ln "liqVisibilityCamera" -at bool $currentNode;
+      addAttr -ln "liqVisibilityCamera" -at bool -dv 1 $currentNode;
     }
   }
 }
 
 global proc liquidCreateVisibilityTraceAttribute()
 {
-  int $newStyle = liquidGlobalVisibilityStyle();
+  int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );;
 
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
@@ -295,8 +289,6 @@ global proc liquidCreateGlobalIlluminationAttributes()
   liquidCreateIrradianceSamplesAttribute;
   liquidCreateIrradianceMaxErrorAttribute;
   liquidCreateIrradianceMaxPixelDistAttribute;
-  liquidCreateIrradianceHandleAttribute;
-  liquidCreateIrradianceFilemodeAttribute;
 }
 
 
@@ -304,7 +296,7 @@ global proc liquidDeleteGlobalIlluminationAttributes()
 {
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
-  string $attr[] = {"liqIrradianceShadingRate", "liqIrradianceNSamples", "liqIrradianceMaxError", "liqIrradianceMaxPixelDist","liqIrradianceHandle","liqIrradianceFileMode"};
+  string $attr[] = {"liqIrradianceShadingRate", "liqIrradianceNSamples", "liqIrradianceMaxError", "liqIrradianceMaxPixelDist"};
   for ( $currentNode in $nodes ) {
     for ( $a in $attr ) {
       if ( `attributeQuery -node $currentNode -ex $a` ) {
@@ -360,28 +352,6 @@ global proc liquidCreateIrradianceMaxPixelDistAttribute()
   }
 }
 
-global proc liquidCreateIrradianceHandleAttribute()
-{
-  string $nodes[] = `ls -tr -sl`;
-  string $currentNode;
-  for ( $currentNode in $nodes ) {
-    if ( !`attributeQuery -node $currentNode -ex "liqIrradianceHandle"` ) {
-      addAttr -ln "liqIrradianceHandle" -dt "string" $currentNode;
-    }
-  }
-}
-
-global proc liquidCreateIrradianceFilemodeAttribute()
-{
-  string $nodes[] = `ls -tr -sl`;
-  string $currentNode;
-  for ( $currentNode in $nodes ) {
-    if ( !`attributeQuery -node $currentNode -ex "liqIrradianceFileMode"` ) {
-      addAttr -ln "liqIrradianceFileMode" -at "enum" -enumName "None=0:Read=1:Write=2:ReadWrite=3:ReadOnly=4" -dv 0 $currentNode;
-    }
-  }
-}
-
 // Photon group -----------------------------------------------
 
 global proc liquidCreatePhotonAttributes()
@@ -408,10 +378,6 @@ global proc liquidDeletePhotonAttributes()
 
     if ( `attributeQuery -node $currentNode -ex "liqPhotonEstimator"` ) {
       deleteAttr ( $currentNode + ".liqPhotonEstimator" );
-    }
-    
-    if ( `attributeQuery -node $currentNode -ex "liqPhotonShadingModel"` ) {
-      deleteAttr ( $currentNode + ".liqPhotonShadingModel" );
     }
   }
 }
@@ -457,7 +423,7 @@ global proc liquidCreatePhotonShadingModelAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqPhotonShadingModel"` ) {
-      addAttr -ln "liqPhotonShadingModel" -at "enum" -enumName "Matte=0:Glass=1:Water=2:Chrome=3:Transparent=4" -dv 0;
+      addAttr -ln "liqPhotonShadingModel" -dt "string" $currentNode;
     }
   }
 }
@@ -984,7 +950,7 @@ global proc liquidRemoveLiquidInvisible() {
 
 global proc liquidCreateCameraHitModeAttribute()
 {
-  int $newStyle = liquidGlobalVisibilityStyle();
+  int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );;
 
   if ( !$newStyle ) {
     warning ("camera hit-mode is not supported by your renderer !");
@@ -1004,7 +970,7 @@ global proc liquidCreateCameraHitModeAttribute()
 
 global proc liquidCreateHitModeDiffuseAttribute()
 {
-  int $newStyle = liquidGlobalVisibilityStyle();
+  int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );;
   if ( !$newStyle ) return;
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
@@ -1019,7 +985,7 @@ global proc liquidCreateHitModeDiffuseAttribute()
 
 global proc liquidCreateHitModeSpecularAttribute()
 {
-  int $newStyle = liquidGlobalVisibilityStyle();
+  int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );;
   if ( !$newStyle ) return;
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
@@ -1034,7 +1000,7 @@ global proc liquidCreateHitModeSpecularAttribute()
 
 global proc liquidCreateHitModeTransmissionAttribute()
 {
-  int $newStyle = liquidGlobalVisibilityStyle();
+  int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );;
   if ( !$newStyle ) return;
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
@@ -1064,7 +1030,7 @@ global proc liquidDeleteIgnoreShapesAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( objExists( ($currentNode+".liqIgnoreShapes") ) ) {
-      deleteAttr ( $currentNode+".liqIgnoreShapes" ) $currentNode;
+      deleteAttr ( $currentNode+".liqIgnoreShapes" );
     }
   }
 }
