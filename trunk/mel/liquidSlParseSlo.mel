@@ -122,8 +122,11 @@ proc string getParamDefaultF( int $fid )
     if ( $strip != $line )
         $default = $strip;
 
-	 // Check we don't have a 1e20 value
-	 $default = float($default);
+    // Check we don't have a 1e20 value
+    $default = float($default);
+
+    // Make sure we have somethings that looks like a float
+    if ( !gmatch( $default, "*.*") ) $default += ".0";
 
     return $default;
 }
