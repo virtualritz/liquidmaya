@@ -35,6 +35,7 @@
 ** ______________________________________________________________________
 */
 
+#include <liquid.h>
 #include <liqRibHT.h>
 #include <liqShader.h>
 #include <liqRenderScript.h>
@@ -45,6 +46,8 @@
 #include <maya/MDagPathArray.h>
 #include <maya/MFnCamera.h>
 #include <maya/MArgList.h>
+#include <maya/MFloatArray.h>
+
 
 class liqRibTranslator : public MPxCommand {
 public:
@@ -86,6 +89,9 @@ private: // Methods
 
   MString generateRenderScriptName()  const;
   MString generateTempMayaSceneName() const;
+  MString generateFileName( fileGenMode mode, const structJob& job );
+  MString generateShadowArchiveName( bool renderAllFrames, long renderAtframe, MString geometrySet );
+  static bool renderFrameSort( const structJob& a, const structJob& b );
 
 private: // Data
   enum MRibStatus {
@@ -136,6 +142,7 @@ private: // Data
   bool fullShadowRib;
   bool remoteRender;
   bool cleanRib;              // clean the rib files up
+
   bool doDof;                 // do camera depth of field
   bool doCameraMotion;        // Motion blur for moving cameras
   bool liqglo_rotateCamera;   // rotates the camera for sideways renderings
@@ -145,9 +152,9 @@ private: // Data
     CENTER_BETWEEN_FRAMES = 2,
     CLOSE_ON_NEXT_FRAME   = 3
   } shutterConfig;
+
   bool cleanShadows;
   bool cleanTextures;
-  bool doExtensionPadding;
   liquidlong pixelSamples;
   float shadingRate;
   liquidlong bucketSize[2];
@@ -201,7 +208,6 @@ private :
   bool m_useFrameExt;
   bool m_shadowRibGen;
   double m_blurTime;
-  liquidlong m_outPadding;
   MComputation m_escHandler;
   float m_rgain, m_rgamma;
   bool m_justRib;
@@ -322,22 +328,56 @@ private :
 
   // Display Driver Variables
   typedef struct structDDParam {
-    liquidlong num;
-    MStringArray names;
-    MStringArray data;
-    MIntArray type;
+    liquidlong    num;
+    MStringArray  names;
+    MStringArray  data;
+    MIntArray     type;
   } structDDParam;
 
-  std::vector<structDDParam> m_DDParams;
+  bool          m_ignoreAOVDisplays;
 
-  liquidlong   m_numDisplayDrivers;
-  MStringArray m_DDimageType;
-  MStringArray m_DDimageMode;
-  MStringArray m_DDparamType;
-  MIntArray    m_DDenabled;
+  typedef struct structDisplay {
+    MString         name;
+    MString         type;
+    MString         mode;
+    bool            enabled;
+    bool            doQuantize;
+    int             bitDepth;
+    float           dither;
+    bool            doFilter;
+    MString         filter;
+    float           filterX;
+    float           filterY;
+    structDDParam   xtraParams;
+  } structDisplay;
+  std::vector<structDisplay> m_displays;
 
-  liquidlong m_rFilter;
-  float m_rFilterX, m_rFilterY;
+  typedef struct structChannel {
+    MString     name;
+    int         type;
+    bool        quantize;
+    int         bitDepth;
+    float       dither;
+    bool        filter;
+    int         pixelFilter;
+    float       pixelFilterX;
+    float       pixelFilterY;
+  } structChannel;
+  std::vector<structChannel> m_channels;
+
+  MStringArray  m_pixelFilterNames;
+  liquidlong    m_rFilter;
+  float         m_rFilterX, m_rFilterY;
+
+  bool          m_renderView;
+  bool          m_renderViewCrop;
+  bool          m_renderViewLocal;
+  liquidlong    m_renderViewPort;
+  liquidlong    m_renderViewTimeOut;
+
+  int           m_statistics;
+
+  rFeatures     m_availableFeatures;
 
   std::vector<liqShader> m_shaders;
 

@@ -25,13 +25,11 @@ param "coneangle";
 name "coneangle";
 desc "";
 type "slider";
-range [ 0 1 ];
 
 param "penumbraangle";
 name "penumbraangle";
 desc "";
 type "slider";
-range [ 0 1 ];
 
 param "dropoff";
 name "dropoff";

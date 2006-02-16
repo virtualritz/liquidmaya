@@ -52,6 +52,7 @@ public:
   MString       assignedRManShader;
 
   MString       autoShadowName( int PointLightDir = -1 ) const;
+  MString       extraShadowName( const MFnDependencyNode & lightShaderNode, const int & index ) const;
 
 private:
   LightType     lightType;
@@ -75,12 +76,18 @@ private:
   bool          deepShadows;
   bool          rayTraced;
   RtInt         raySamples;
+  RtFloat       shadowRadius;
   bool          excludeFromRib;
+  //bool          outputLightInShadow;
   MString       userShadowName;
   MString       lightName;
 
-  ShadowType       shadowType; 
+  ShadowType       shadowType;
   ShadowHiderType  shadowHiderType;
+
+  bool          everyFrame;
+  long          renderAtFrame;
+  MString       geometrySet;
 
   MString       shadowName;
   MString       shadowNamePx;

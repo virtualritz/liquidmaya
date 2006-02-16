@@ -48,7 +48,7 @@ global proc liquidCreateLIFInfoIcon( string $desc )
  *  compatible with arrays
  */
 
-proc liquidCreateLIFColor( string $selectedObj, int $index )
+global proc liquidCreateLIFColor( string $selectedObj, int $index )
 {
   string $paramName   = liquidLifParamName($index);
   int    $arraySize  = liquidLifParamArraySize( $index );
@@ -106,7 +106,7 @@ proc liquidCreateLIFColor( string $selectedObj, int $index )
 /**
  *  compatible with arrays
  */
-proc liquidCreateLIFVector( string $selectedObj, int $index )
+global proc liquidCreateLIFVector( string $selectedObj, int $index )
 {
   string $paramName  = liquidLifParamName($index);
   int    $arraySize  = liquidLifParamArraySize( $index );
@@ -171,7 +171,7 @@ proc liquidCreateLIFVector( string $selectedObj, int $index )
  *  STRINGS  --  COMPATIBLE with arrays
  */
 
-proc liquidAddTextureViewerMenu( string $textFieldGrp )
+global proc liquidAddTextureViewerMenu( string $textFieldGrp )
 {
   string $viewer = `getAttr liquidGlobals.viewTexture`;
   if ( $viewer != "" ) {
@@ -184,7 +184,7 @@ proc liquidAddTextureViewerMenu( string $textFieldGrp )
   }
 }
 
-proc liquidCreateLIFString( string $selectedObj, int $index, string $subtype )
+global proc liquidCreateLIFString( string $selectedObj, int $index, string $subtype )
 {
   string $paramName = liquidLifParamName($index);
   if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
@@ -293,7 +293,7 @@ proc liquidCreateLIFString( string $selectedObj, int $index, string $subtype )
  */
 
 
-proc liquidCreateLIFFloat_slider( string $selectedObj, string $paramName, int $index, string $label, string $range[], string  $description )
+global proc liquidCreateLIFFloat_slider( string $selectedObj, string $paramName, int $index, string $label, string $range[], string  $description )
 {
   string $theParam  = ( $index < 0 )? $paramName : ( $paramName + "[" + $index + "]" );
   string $theLabel  = ( $index < 0 )? $label : ( $label + "[" + $index + "]" );
@@ -328,6 +328,7 @@ proc liquidCreateLIFFloat_slider( string $selectedObj, string $paramName, int $i
                                   -fieldMinValue $min      -fieldMaxValue $max
                                   -at ( $selectedObj + "." + $theParam )
                                   -cc ( "liquidParamAU " + $selectedObj)
+                                  -hideMapButton true
                                   $ctlName`;
 
   setParent ..;
@@ -339,7 +340,7 @@ proc liquidCreateLIFFloat_slider( string $selectedObj, string $paramName, int $i
               $form;
 }
 
-proc liquidCreateLIFFloat_selector( string $selectedObj, string $paramName, string $label, string $range[], string  $description )
+global proc liquidCreateLIFFloat_selector( string $selectedObj, string $paramName, string $label, string $range[], string  $description )
 {
   string $ctlName = ( $paramName + $selectedObj + "WindowParam" );
 
@@ -375,7 +376,7 @@ proc liquidCreateLIFFloat_selector( string $selectedObj, string $paramName, stri
                 $ctlName;
 }
 
-proc liquidCreateLIFFloat_bool( string $selectedObj, string $paramName, string $label, string $range[], string  $description )
+global proc liquidCreateLIFFloat_bool( string $selectedObj, string $paramName, string $label, string $range[], string  $description )
 {
   string $ctlName = ( $paramName + $selectedObj + "WindowParam" );
 
@@ -478,7 +479,7 @@ global proc liquidCreateLIFFloat( string $selectedObj, int $index, string $subty
   //print "Done\n";
 }
 
-proc liquidCreateLIFGrp( string $selectedObj, int $index )
+global proc liquidCreateLIFGrp( string $selectedObj, int $index )
 {
   string $label = liquidLifParamLabel( $index );
   //print ("Grp : "+$label+"\n");
@@ -554,22 +555,30 @@ global proc liquidChangeTextAttr ( string $selectedObj, string $argName, string 
  */
 global proc liquidChangeTextFileAttr ( string $selectedObj, string $argName, string $fieldName )
 {
-  string $pathSpecs="";
+  string $currentAttrValue = `getAttr ($selectedObj+"."+$argName)`;
+  string $defaultPath = (`getAttr liquidGlobals.textureDirectory`);
+
+  string $fileSpec;
+  if ( `about -os` == "linux" ) $fileSpec += "*.tex";
+  else $fileSpec += "*.tex;*.tif;*.dsts";
+
+  liquidChangeTextFileAttrPlus ( $selectedObj, $argName, $fieldName, $defaultPath, $fileSpec );
+  liquidParamAU $selectedObj;
+}
+
+global proc liquidChangeTextFileAttrPlus ( string $selectedObj, string $argName, string $fieldName, string $defaultPath, string $fileSpec )
+{
   string $currentAttrValue = `getAttr ($selectedObj+"."+$argName)`;
 
-  string $MapDir = ($currentAttrValue != "" && liquidGetModifiersState() == "Shift" )? (dirname($currentAttrValue)) : (`getAttr liquidGlobals.textureDirectory`);
+  string $MapDir = ($currentAttrValue == "" || liquidGetModifiersState() == "Shift" )? $defaultPath : (dirname($currentAttrValue));
 
   if( $MapDir != "" ) {
     if ( `filetest -d $MapDir` ) {
       if ( `match "[^\/]$" $MapDir` != "" ) $MapDir += "/";
-      $pathSpecs = $MapDir;
     }
   }
 
-  if ( `about -os` == "linux" ) $pathSpecs += "*.tex";
-  else $pathSpecs += "*.tex;*.tif;*.dsts";
-
-  string $fieldValue = `fileDialog -dm $pathSpecs`;
+  string $fieldValue = `fileDialog -dm ($MapDir+$fileSpec)`;
   if ( $fieldValue != "" ) {
 
     // fix bloody Windows backslashes
@@ -579,11 +588,12 @@ global proc liquidChangeTextFileAttr ( string $selectedObj, string $argName, str
       }
     }
 
-    textFieldGrp -e -text $fieldValue $fieldName;
+    if ( `textFieldGrp -q -ex $fieldName` ) textFieldGrp -e -text $fieldValue $fieldName;
     setAttr ( $selectedObj + "." + $argName ) -type "string" $fieldValue;
-    liquidParamAU $selectedObj;
   }
 }
+
+
 
 global proc liquidLifCoordSysBrowserFilter()
 {
@@ -707,8 +717,9 @@ global proc liquidFluidBuildLifFile( string $longShaderName )
 
   int $fileHdl = `fopen $longLifName "w"`;
 
-  string $shadertype = `liquidGetShaderNodeType $shortShaderName`;
+  string $shadertype = liquidSlShaderType();//`liquidGetShaderNodeType $shortShaderName`;
   string $lower_stype = `tolower $shadertype`;
+  $lower_stype = ($lower_stype == "disp")? "displacement":$lower_stype;
 
   fprint $fileHdl ($lower_stype+" \""+$shortShaderName+"\";\n");
   fprint $fileHdl $desc;
@@ -718,7 +729,7 @@ global proc liquidFluidBuildLifFile( string $longShaderName )
   for ( $i=0; $i<$numShaderArgs; $i++ ) {
     string $argName = liquidSlParamName($i);
     fprint $fileHdl ("param \""+$argName+"\";\n");
-    fprint $fileHdl ("name \""+$argName+"\";\n");
+    fprint $fileHdl ("name \""+liquidToUI($argName)+"\";\n");
     fprint $fileHdl $desc;
 
     string $argType =liquidSlParamType($i);
@@ -757,7 +768,7 @@ global proc liquidFluidEditLifFile( string $selectedObj )
       system( ($editor+" "+$longLifName+" &") );
       break;
     case "mac":
-      system( ("open "+$longLifName+" &") );
+      system( ("open -e "+$longLifName+" &") );
       break;
     default:
       system( ("start notepad "+$longLifName) );
@@ -970,6 +981,12 @@ global proc liquidParamDialogWindow ( string $selectedObj, string $nodeType )
 
                 // Displacement / surface : displacement Bounds
                 if ( $nodeType == "Disp" || $nodeType == "Surface" ) createDispAttributes( $selectedObj );
+
+                if ( $nodeType != "Light" && !objExists( ($selectedObj+".outputInShadow") ) ) {
+                  addAttr -ln outputInShadow -at "bool" -dv 0 $selectedObj;
+                  if ( $nodeType == "Disp" ) setAttr ($selectedObj+".outputInShadow") 1;
+                }
+                if ( objExists( ($selectedObj+".outputInShadow") ) ) attrControlGrp -label "output In Shadow" -attribute ($selectedObj+".outputInShadow");
 
               setParent ..;
             setParent ..;

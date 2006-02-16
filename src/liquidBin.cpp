@@ -63,65 +63,84 @@ static const char * LIQUIDVERSION =
 extern  bool liquidBin;
 
 static const char* usage =
-"Usage: liquid [options] filename\n\
+"\nUsage: liquid [options] filename\n\
 \n\
-\t-lr     launch render\n\
-\t-nolr   no launch render\n\
-\t-GL     use globals\n\
-\t-sel    selected\n\
-\t-ra     readArchives\n\
-\t-acv    render all curves\n\
-\t-tif    tiff\n\
-\t-dof    dofOn\n\
-\t-bin    doBinary\n\
-\t-sh     shadows\n\
-\t-nsh    noShadows\n\
-\t-zip    doCompression\n\
-\t-cln    cleanRib\n\
-\t-pro    progress\n\
-\t-mb     motionBlur\n\
-\t-db     deformationBlur\n\
-\t-d      debug\n\
-\t-net    netRender\n\
-\t-fsr    fullShadowRib\n\
-\t-rem    remote\n\
-\t-rs     renderScript\n\
-\t-nrs    noRenderScript\n\
-\t-err    errHandler\n\
-\t-sdb    shaderDebug\n\
-\t-n      sequence <start> <stop> <step>\n\
-\t-m      mbSamples <n>\n\
-\t-dbs    defBlock\n\
-\t-cam    camera <name>\n\
-\t-rcam   rotateCamera\n\
-\t-s      samples <n>\n\
-\t-rnm    ribName <name>\n\
-\t-pd     projectDir <path>\n\
-\t-prm    preFrameMel <string>\n\
-\t-pom    postFrameMel <string>\n\
-\t-rid    ribdir <path>\n\
-\t-txd    texdir <path>\n\
-\t-tmd    tmpdir <path>\n\
-\t-pid    picdir <path>\n\
-\t-pec    preCommand <string>\n\
-\t-poc    postJobCommand <string>\n\
-\t-pof    postFrameCommand <string>\n\
-\t-prf    preFrameCommand <string>\n\
-\t-rec    renderCommand <string>\n\
-\t-rgc    ribgenCommand <string> \n\
-\t-blt    blurTime <n>\n\
-\t-sr     shadingRate <n>\n\
-\t-bs     bucketSize <x> <y>\n\
-\t-pf     pixelFilter <n> <n> <n>\n\
-\t-gs     gridSize <n>\n\
-\t-txm    texmem <n>\n\
-\t-es     eyeSplits <n>\n\
-\t-ar     aspect <n>\n\
-\t-x      width <n>\n\
-\t-y      height <n>\n\
-\t-ndf    noDef\n\
-\t-pad    padding <n>\n\
-\t-rgo    ribGenOnly\n\
+\t-GL     -useGlobals                       should always be the first flag\n\
+\t-sel    -selected\n\
+\n\
+Frame\n\
+\t-cam    -camera <name>\n\
+\t-rcam   -rotateCamera\n\
+\t-x      -width <n>\n\
+\t-y      -height <n>\n\
+\t-ar     -aspect <n>\n\
+\t-n      -sequence <start> <stop> <step>\n\
+\t-mb     -motionBlur\n\
+\t-db     -deformationBlur\n\
+\t-m      -mbSamples <n>\n\
+\t-blt    -blurTime <n>\n\
+\t-dof    -dofOn\n\
+\n\
+Files\n\
+\t-rnm    -ribName <name>\n\
+\t-pad    -padding <n>\n\
+\t-pid    -picdir <path>\n\
+\t-txd    -texdir <path>\n\
+\t-rid    -ribdir <path>\n\
+\t-tmd    -tmpdir <path>\n\
+\t-pd     -projectDir <path>\n\
+\t-prm    -preFrameMel <string>\n\
+\t-pom    -postFrameMel <string>\n\
+\t-shn    -shotName <string>\n\
+\t-shv    -shotVersion <string>\n\
+\n\
+Image\n\
+\t-bs     -bucketSize <x> <y>\n\
+\t-cw     -cropWindow <x1> <x2> <y1> <y2>\n\
+\t-es     -eyeSplits <n>\n\
+\t-gs     -gridSize <n>\n\
+\t-pf     -pixelFilter <n> <n> <n>\n\
+\t-s      -samples <n>\n\
+\t-sr     -shadingRate <n>\n\
+\t-txm    -texmem <n>\n\
+\n\
+Options\n\
+\t-acv    -allCurves\n\
+\t-bin    -doBinary\n\
+\t-cln    -cleanRib\n\
+\t-d      -debug\n\
+\t-err    -errHandler\n\
+\t-fsr    -fullShadowRib\n\
+\t-nsh    -noShadows\n\
+\t-pro    -progress\n\
+\t-ra     -readArchive\n\
+\t-sh     -shadows\n\
+\t-ssfs   -skipSingleFrameShadows\n\
+\t-sdb    -shaderDebug\n\
+\t-tif    -tiff\n\
+\t-zip    -doCompression\n\
+\n\
+Job\n\
+\t-dbs    -defBlock\n\
+\t-lr     -launchRender\n\
+\t-net    -netRender\n\
+\t-ndf    -noDef\n\
+\t-nolr   -noLaunchRender\n\
+\t-nrs    -noRenderScript\n\
+\t-pec    -preCommand <string>\n\
+\t-poc    -postJobCommand <string>\n\
+\t-pof    -postFrameCommand <string>\n\
+\t-prf    -preFrameCommand <string>\n\
+\t-rem    -remote\n\
+\t-rec    -renderCommand <string>\n\
+\t-rgc    -ribgenCommand <string> \n\
+\t-rgo    -ribGenOnly\n\
+\t-rs     -renderScript\n\
+\n\
+RenderView\n\
+\t-rv     -renderView\n\
+\t-rvl    -renderViewLocal\n\
+\t-rvp    -renderViewPort <n>\n\
 \n\
 Please see the Liquid Wiki for command line options.\n\
 The options match the liquid MEL command parameters.\n";

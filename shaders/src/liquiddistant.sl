@@ -15,16 +15,17 @@ light liquiddistant(
    output float __nonspecular = 0; /* set to 1 to exclude from highlights */
 )
 {
+  float factor = (shadowname == "raytrace")? 0.2:0.001;
   solar( vector "shader" ( 0, 0, 1 ), 0 ) {
 
     if( shadowname != "" )
-      __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "blur", shadowblur, "bias", shadowbias, "width", shadowfiltersize );
+      __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "blur", shadowfiltersize*factor, "bias", shadowbias, "width", 1 );
     else
       __shadow = 0;
 
     Cl = intensity;
     __unshadowed_Cl = Cl * lightcolor;
-#ifdef DELIGHT
+#ifdef DELIGHT || PRMAN
     Cl *= mix( lightcolor, shadowcolor, __shadow );
 #else
     Cl *= mix( lightcolor, shadowcolor, ( comp( __shadow, 0 ) + comp( __shadow, 1 ) + comp( __shadow, 2 ) ) / 3 );

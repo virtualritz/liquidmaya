@@ -70,9 +70,9 @@ extern MStringArray liqglo_preReadArchive;
 extern MStringArray liqglo_preRibBox;
 extern MStringArray liqglo_preReadArchiveShadow;
 extern MStringArray liqglo_preRibBoxShadow;
+extern MString      liqglo_currentNodeName;
+extern MString      liqglo_currentNodeShortName;
 
-MString liqglo_currentNodeName;
-MString liqglo_currentNodeShortName;
 
 /**
  * Class constructor.
@@ -571,28 +571,42 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
             bound[4] = bMax.y;
             bound[5] = bMax.z;
           } else {
-            // retrieve current bouding box of the transform
-            MBoundingBox bounding = nodePeeker.boundingBox();
+            // here, we are going to calculate the bounding box of the gprim
+            //
+
+            // get the dagPath
+            MDagPath fullPath( nodePeeker.dagPath() );
+            fullPath.extendToShape();
+            /* cout <<"  + "<<fullPath.fullPathName()<<endl; */
+
+            // get the full transform
+            MMatrix currentMatrix( fullPath.inclusiveMatrixInverse() );
+            /* cout <<"  + got matrix "<<currentMatrix<<endl; */
+
+            // get the bounding box
+            MFnDagNode shapeNode( fullPath );
+            MBoundingBox bounding = shapeNode.boundingBox();
+            /* cout <<"  + got bbox "<<endl; */
+
             // retrieve the bounding box expansion attribute
             MPlug expandBBoxPlug = nodePeeker.findPlug( MString( "liqRIBDelayedReadArchiveBBoxScale" ), &Dstatus );
             if ( Dstatus == MS::kSuccess ) {
+              /* cout <<"  + found scale attr"<<endl; */
               double expansion;
               expandBBoxPlug.getValue( expansion );
               if ( expansion != 1.0 ) {
+                /* cout <<"  + expansion = "<<expansion<<endl; */
                 MTransformationMatrix bboxScale;
-                double exp[3];
-                exp[0] = exp[1] = exp[2] = expansion;
+                double exp[3] = {expansion, expansion, expansion};
                 bboxScale.setScale( exp, MSpace::kTransform );
-                bboxScale.setScalePivot( bounding.center(), MSpace::kTransform, true );
                 bounding.transformUsing( bboxScale.asMatrix() );
               }
             }
-            MMatrix currentMatrix;
-            currentMatrix = nodePeeker.transformationMatrix();
+
             // transform it to account for flattened transforms
-            bounding.transformUsing( currentMatrix.inverse() );
-            MPoint bMin = bounding.min();
-            MPoint bMax = bounding.max();
+            //bounding.transformUsing( currentMatrix );
+            MPoint bMin = bounding.min() ;
+            MPoint bMax = bounding.max() ;
             bound[0] = bMin.x;
             bound[1] = bMin.y;
             bound[2] = bMin.z;
@@ -645,7 +659,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
     }
 
     status.clear();
-    grouping.membership = path.fullPathName( &status ) + grouping.membership;
+    //grouping.membership = path.fullPathName( &status ) + grouping.membership;
   }
 
 
@@ -673,6 +687,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       opacity.r = -1.0;
     }
     doubleSided = isObjectTwoSided( path );
+    reversedNormals = isObjectReversed( path );
   }
 
   // Check to see if the object should have its color overridden

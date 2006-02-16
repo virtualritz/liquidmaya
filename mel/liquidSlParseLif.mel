@@ -194,8 +194,17 @@ proc string getRange( string $line )
 }
 
 
+proc int getBoolean( string $line )
+{
+  int $result = -1;
 
+  if ( size( match("\"*[Tt]rue\"*", $line) ) ) return 1;
+  if ( size( match("\"*[Ff]alse\"*", $line) ) ) return 0;
+  if ( size( match("\"*[Oo]n\"*", $line) ) ) return 1;
+  if ( size( match("\"*[Oo]ff\"*", $line) ) ) return 0;
 
+  return $result;
+}
 
 
 
@@ -222,6 +231,7 @@ global proc liquidSlParseLif( string $shaderFile )
   global string $gLiquidSlParamGuiDescription[];
   global string $gLiquidSlParamGuiType[];
   global string $gLiquidSlParamGuiRange[];
+  global int    $gLiquidSlParamGuiChannelBox[];
   global string $gLiquidSlLifShaderDescription;
   global int    $gLiquidSlLifGuiSize;
   global int    $gLiquidSlLifExists;
@@ -231,6 +241,7 @@ global proc liquidSlParseLif( string $shaderFile )
   clear $gLiquidSlParamGuiDescription;
   clear $gLiquidSlParamGuiType;
   clear $gLiquidSlParamGuiRange;
+  clear $gLiquidSlParamGuiChannelBox;
 
   $gLiquidSlLifExists = 0;
   $gLiquidSlLifGuiSize = 0;
@@ -281,6 +292,7 @@ global proc liquidSlParseLif( string $shaderFile )
         $i++;
         $paramNum = getParamIndex( $line );
         $gLiquidSlParamGuiOrder[ $i ] = $paramNum;
+        $gLiquidSlParamGuiChannelBox[ $paramNum ] = -1;
         $shaderDescription = 0;
         break;
 
@@ -302,6 +314,10 @@ global proc liquidSlParseLif( string $shaderFile )
 
       case "range":
         $gLiquidSlParamGuiRange[ $paramNum ] = getRange( $line );
+        break;
+
+      case "channelbox":
+        $gLiquidSlParamGuiChannelBox[ $paramNum ] = getBoolean( $line );
         break;
 
       case "group":
@@ -527,6 +543,22 @@ global proc int liquidLifParamArraySize( int $i )
   }
 
   return liquidSlParamArraySize( $i );
+}
+
+global proc int liquidLifChannelBoxState( int $i )
+{
+  int $result = 1;
+
+  if ( liquidLifIsAvailable() ) {
+
+    int $guiOrder = liquidLifGetGuiOrder($i);
+    if ( $guiOrder >= liquidSlNumParams() ) return 0;
+
+    global int    $gLiquidSlParamGuiChannelBox[];
+    $result = abs( $gLiquidSlParamGuiChannelBox[ $guiOrder ] );
+  }
+
+  return $result;
 }
 
 

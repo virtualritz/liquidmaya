@@ -3,7 +3,7 @@ VPATH		= ../bin/$(VBIN)/$(MAYA_VERSION)/$(BIN_VERSION)/$(LIQRMAN)
 CPPFLAGS	= $(LOCFLAGS) $(LIQRMANFLAGS) $(WARNFLAGS) $(EXTRAFLAGS) $(NO_TRANS_LINK) -DREQUIRE_IOSTREAM
 INCLUDES	= -I. -I.. -I$(MAYA_LOCATION)/include -I$(LIQRMANPATH)/include -I../include
 LDFLAGS		= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib
-MAYALIBS	= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lxpcom
+MAYALIBS	= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lxpcom -lGL -lGLU
 LIBS		= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
 # -lefence
 #-llkm -lzip -ltarget
@@ -46,6 +46,7 @@ LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqRibNuCurveData.$(OBJEXT) \
 					liqRibMeshData.$(OBJEXT) \
 					liqRibLocatorData.$(OBJEXT) \
+					liqRibClipPlaneData.$(OBJEXT) \
 					liqRibCoordData.$(OBJEXT) \
 					liqRibLightData.$(OBJEXT) \
 					liqRibHT.$(OBJEXT) \
@@ -57,7 +58,20 @@ LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqMemory.$(OBJEXT) \
 					liqProcessLauncher.$(OBJEXT) \
 					liqRenderer.$(OBJEXT) \
-					liqExpression.$(OBJEXT)
+					liqExpression.$(OBJEXT) \
+					liqNodeSwatch.$(OBJEXT) \
+					liqSurfaceNode.$(OBJEXT)	\
+					liqDisplacementNode.$(OBJEXT)	\
+					liqVolumeNode.$(OBJEXT)  \
+					liqRibboxNode.$(OBJEXT)  \
+					liqLightNode.$(OBJEXT)  \
+					liqLightNodeBehavior.$(OBJEXT)\
+					liqCoordSysNode.$(OBJEXT)\
+					liqGlobalsNode.$(OBJEXT)\
+					liqBucket.$(OBJEXT)\
+					liqMayaRenderView.$(OBJEXT)\
+					liqMayaDisplayDriver.$(OBJEXT)
+
 
 
 LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
@@ -75,6 +89,7 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
 					$(VPATH)/liqRibNuCurveData.$(OBJEXT) \
 					$(VPATH)/liqRibMeshData.$(OBJEXT) \
 					$(VPATH)/liqRibLocatorData.$(OBJEXT) \
+					$(VPATH)/liqRibClipPlaneData.$(OBJEXT) \
 					$(VPATH)/liqRibCoordData.$(OBJEXT) \
 					$(VPATH)/liqRibLightData.$(OBJEXT) \
 					$(VPATH)/liqRibHT.$(OBJEXT) \
@@ -86,21 +101,34 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
 					$(VPATH)/liqMemory.$(OBJEXT) \
 					$(VPATH)/liqProcessLauncher.$(OBJEXT) \
 					$(VPATH)/liqRenderer.$(OBJEXT) \
-					$(VPATH)/liqExpression.$(OBJEXT)
+					$(VPATH)/liqExpression.$(OBJEXT)  \
+					$(VPATH)/liqNodeSwatch.$(OBJEXT)  \
+					$(VPATH)/liqSurfaceNode.$(OBJEXT) \
+					$(VPATH)/liqDisplacementNode.$(OBJEXT)	\
+					$(VPATH)/liqVolumeNode.$(OBJEXT)  \
+					$(VPATH)/liqRibboxNode.$(OBJEXT)  \
+					$(VPATH)/liqLightNode.$(OBJEXT)  \
+					$(VPATH)/liqLightNodeBehavior.$(OBJEXT)\
+					$(VPATH)/liqCoordSysNode.$(OBJEXT)\
+					$(VPATH)/liqGlobalsNode.$(OBJEXT)\
+					$(VPATH)/liqBucket.$(OBJEXT)\
+					$(VPATH)/liqMayaRenderView.$(OBJEXT)\
+					$(VPATH)/liqMayaDisplayDriver.$(OBJEXT)
 
 .SUFFIXES: .cpp .$(OBJEXT) .$(PLUGSUF) .c
 
 LIQUIDPLUG = liquid.$(PLUGSUF)
 LIQUIDBIN  = liquid
 LIQUIDLIB  = libliquid.a
+LIQUIDDPY  = d_liqmaya.so
 
-default: $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN) lib
+default: $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN) lib $(LIQUIDDPY)
 
-debug : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
+debug : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN) $(LIQUIDDPY)
 
-newversion : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
+newversion : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN) $(LIQUIDDPY)
 
-release : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN)
+release : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN) $(LIQUIDDPY)
 
 lib : $(LIQUIDLIB)
 
@@ -124,6 +152,11 @@ $(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDLIB)
 
 $(LIQUIDLIB) : $(LIQUIDMAINOBJS)
 	@$(AR) $(VPATH)/$(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
+
+$(LIQUIDDPY) : liqMayaDisplayDriver.o
+	@echo $@
+	@$(CPP) -shared $(VPATH)/$^ -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
+
 
 $(LIQUIDMAINOBJS) : ../include/liquid.h
 liqRibTranslator.o: ../include/liqRenderScript.h

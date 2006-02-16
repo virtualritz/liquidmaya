@@ -152,12 +152,15 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
   }
 
   if (debug) { cout << "liquidWriteArchive: writing object: " << objDagPath.fullPathName().asChar() << endl; }
-  if (objDagPath.node().hasFn(MFn::kShape) || objDagPath.node().hasFn(MFn::kPlace3dTexture)) {
+  if (objDagPath.node().hasFn(MFn::kShape) || MFnDagNode( objDagPath ).typeName() == "liquidCoorSys") {
     // we're looking at a shape node, so write out the geometry to the RIB
     outputObjectName(objDagPath);
 
     liqRibNode ribNode;
     ribNode.set(objDagPath, 0, MRT_Unknown);
+
+    // don't write out clipping planes
+    if ( ribNode.object(0)->type == MRT_ClipPlane ) return;
 
     if ( ribNode.rib.box != "" && ribNode.rib.box != "-" ) {
       RiArchiveRecord( RI_COMMENT, "Additional RIB:\n%s", ribNode.rib.box.asChar() );
@@ -174,7 +177,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
       RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
     }
 
-    if (!ribNode.object(0)->ignore) {
+    if ( !ribNode.object(0)->ignore ) {
       ribNode.object(0)->writeObject();
     }
   } else {

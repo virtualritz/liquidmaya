@@ -441,7 +441,7 @@ char * liqTokenPointer::getDetailedTokenName( void )
   // Philippe : in PRMAN, declaring P as a vertex point is not necessary and it make riCurves generation fail.
   // so when the token is P, we just skip the type declaration.
   if ( strcmp(m_tokenName, "P\0") == 0 ) {
-    sprintf( m_detailedTokenName, "" );
+    m_detailedTokenName[0] = '\0';
   } else {
     getRiDeclare( m_detailedTokenName );
     strcat( m_detailedTokenName, " " );

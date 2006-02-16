@@ -51,6 +51,7 @@ liqRibCoordData::liqRibCoordData( MObject coord )
   if ( debugMode ) { printf("-> creating coord\n"); }
   MFnDependencyNode fnNode( coord );
   this->name = fnNode.name();
+  //cout <<"created coord "<<this->name.asChar()<<endl;
 }
 
 /**
@@ -89,3 +90,4 @@ ObjectType liqRibCoordData::type() const
   if ( debugMode ) { printf("-> returning coord type\n"); }
   return MRT_Coord;
 }
+

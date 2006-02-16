@@ -99,6 +99,7 @@ liqPreviewShader::~liqPreviewShader()
 {
 }
 
+
 typedef struct liqPreviewShoptions
 {
   const char *shaderNodeName;
@@ -109,6 +110,8 @@ typedef struct liqPreviewShoptions
   bool shortShaderName, backPlane, usePipe;
   int displaySize;
   int primitiveType;
+  double objectScale;
+  double shadingRate;
 } liqPreviewShoptions;
 
 int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *options );
@@ -178,6 +181,8 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.backPlane = true;
   preview.displaySize = 128;
   preview.primitiveType = SPHERE;
+  preview.objectScale = 1.0;
+  preview.shadingRate = 1.0;
 
   MString displayDriver( "framebuffer" );
   MString displayName( "liqPreviewShader" );
@@ -188,20 +193,20 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
     MString arg = args.asString( i, &status );
 
     if ( arg == "-teapot" )  {
-    preview.primitiveType = TEAPOT;
+      preview.primitiveType = TEAPOT;
     } else if ( ( arg == "-cube" ) || ( arg == "-box" ) ) {
-    preview.primitiveType = CUBE;
+      preview.primitiveType = CUBE;
     } else if ( arg == "-plane" )  {
-    preview.primitiveType = PLANE;
+      preview.primitiveType = PLANE;
     } else if ( arg == "-torus" )  {
-    preview.primitiveType = TORUS;
+      preview.primitiveType = TORUS;
     } else if ( arg == "-cylinder" ) {
-    preview.primitiveType = CYLINDER;
-    } else if ( arg == "-dodecahdron" )  {
-    preview.primitiveType = DODECAHEDRON;
+      preview.primitiveType = CYLINDER;
+    } else if ( arg == "-dodecahedron" )  {
+      preview.primitiveType = DODECAHEDRON;
     } else if ( ( arg == "-s" ) || ( arg == "-shader" ) ) {
       i++;
-    shaderNodeName = args.asString( i, &status );
+      shaderNodeName = args.asString( i, &status );
     } else if ( ( arg == "-r" ) || ( arg == "-renderer" ) ) {
       i++;
       renderCommand = args.asString( i, &status );
@@ -211,16 +216,24 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
     } else if ( ( arg == "-dn" ) || ( arg == "-displayName" ) ) {
       i++;
       displayName = args.asString( i, &status );
-  } else if ( ( arg == "-ds" ) || ( arg == "-displaySize" ) ) {
+    } else if ( ( arg == "-ds" ) || ( arg == "-displaySize" ) ) {
       i++;
-    MString argValue = args.asString( i, &status );
-    preview.displaySize = argValue.asInt();
+      MString argValue = args.asString( i, &status );
+      preview.displaySize = argValue.asInt();
     } else if ( ( arg == "-sshn" ) || ( arg == "-shortShaderNames" ) ) {
       preview.shortShaderName = true;
     } else if ( ( arg == "-p" ) || ( arg == "-pipe" ) ) {
       preview.usePipe = true;
     } else if ( ( arg == "-nbp" ) || ( arg == "-noBackPlane" ) ) {
       preview.backPlane = false;
+    } else if ( ( arg == "-os" ) || ( arg == "-objectSize" ) ) {
+      i++;
+      MString argValue = args.asString( i, &status );
+      preview.objectScale = argValue.asDouble();
+    } else if ( ( arg == "-sr" ) || ( arg == "-shadingRate" ) ) {
+      i++;
+      MString argValue = args.asString( i, &status );
+      preview.shadingRate = argValue.asDouble();
     }
   }
   // Check values
@@ -316,7 +329,7 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   else
     RiBegin( NULL );
   RiFrameBegin( 1 );
-  RiShadingRate( 0.75 );
+  RiShadingRate( ( options->shadingRate ) );
   RiPixelSamples( 3, 3 );
   RiPixelFilter( RiCatmullRomFilter, 3.0, 3.0 );
   RiFormat( (RtInt) options->displaySize, (RtInt) options->displaySize, 1 );
@@ -329,6 +342,10 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   RiTranslate( 0, 0, 2.75 );
   RiWorldBegin();
   RiReverseOrientation();
+  RiTransformBegin();
+  RiRotate( -90.0, 1.0, 0.0, 0.0 );
+  RiCoordinateSystem( "_environment" );
+  RiTransformEnd();
   RtLightHandle ambientLightH, directionalLightH;
   RtFloat intensity;
   intensity = 0.05f;
@@ -378,10 +395,20 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   char *shaderFileName;
   LIQ_GET_SHADER_FILE_NAME(shaderFileName, options->shortShaderName, currentShader );
 
+  MString shadingSpace;
+  tmpPlug = assignedShader.findPlug( "shaderSpace", &status );
+  if ( status == MS::kSuccess ) tmpPlug.getValue( shadingSpace );
+  if ( shadingSpace != "" ) {
+    RiTransformBegin();
+    RiCoordSysTransform( (char*) shadingSpace.asChar() );
+  }
+
   RiTransformBegin();
   // Rotate shader space to make the preview more interesting
   RiRotate( 60.0, 1.0, 0.0, 0.0 );
   RiRotate( 60.0, 0.0, 1.0, 0.0 );
+  RtFloat scale = 1 / options->objectScale;
+  RiScale( scale, scale, scale );
 
   if ( currentShader.shader_type == SHADER_TYPE_SURFACE ) {
     RiColor( currentShader.rmColor );
@@ -392,10 +419,12 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   }
 
   RiTransformEnd();
+  if ( shadingSpace != "" ) RiTransformEnd();
 
   switch( options->primitiveType ) {
 
     case CYLINDER: {
+      RiReverseOrientation();
       RiScale( 0.95, 0.95, 0.95 );
       RiRotate( 60.0, 1.0, 0.0, 0.0 );
       RiTranslate( 0.0, 0.0, -0.05 );
@@ -412,11 +441,13 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     case TORUS: {
       RiRotate( 45.0, 1.0, 0.0, 0.0 );
       RiTranslate( 0.0, 0.0, -0.05 );
+      RiReverseOrientation();
       RiTorus( 0.3, 0.2, 0.0, 360.0, 360.0, RI_NULL );
       break;
     }
     case PLANE: {
       RiScale( 0.5, 0.5, 0.5 );
+      RiReverseOrientation();
       static RtPoint plane[4] = {
         { -1.0,  1.0,  0.0 },
         {  1.0,  1.0,  0.0 },
@@ -441,6 +472,8 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
       RiRotate( 60.0, 0.0, 0.0, 1.0 );
 
       RiTranslate( 0.11, 0.0, -0.08 );
+
+      RiReverseOrientation();
 
       static RtPoint top[ 4 ] = { { -0.95, 0.95, -1.0 }, { 0.95, 0.95, -1.0 }, { -0.95, -0.95, -1.0 },  { 0.95, -0.95, -1.0 } };
       RiPatch( RI_BILINEAR, RI_P, ( RtPointer ) top, RI_NULL );
@@ -609,6 +642,7 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     case SPHERE:
     default: {
       RiRotate( 60.0, 1.0, 0.0, 0.0 );
+      RiReverseOrientation();
       RiSphere( 0.5, -0.5, 0.5, 360.0, RI_NULL );
       break;
     }

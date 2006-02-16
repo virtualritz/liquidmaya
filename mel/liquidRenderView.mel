@@ -1,0 +1,190 @@
+//
+//
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the
+// "License"); you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at http://www.mozilla.org/MPL/
+//
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific
+// language governing rights and limitations under the License.
+//
+// The Original Code is the Liquid Rendering Toolkit.
+//
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
+//
+// Contributor(s): Berj Bannayan.
+//
+//
+// The RenderMan (R) Interface Procedures and Protocol are:
+// Copyright 1988, 1989, Pixar
+// All Rights Reserved
+//
+//
+// RenderMan (R) is a registered trademark of Pixar
+//
+//  Creation Date:  June 7th, 2000
+//
+//
+//  Description:
+//      Liquids Render View Code
+//
+//  Input Arguments:
+//
+//  Returns:
+//
+
+
+global proc string liqGetRVPanel()
+{
+  string $thePanel;
+  string $renderPanels[] = `getPanel -scriptType "renderWindowPanel"`;
+  if ( !size( $renderPanels ) ) {
+    $thePanel = `scriptedPanel -type "renderWindowPanel" -unParent`;
+    scriptedPanel -e -label `interToUI $thePanel` $thePanel;
+  } else $thePanel = $renderPanels[0];
+  return $thePanel;
+}
+
+proc liqShowRV()
+{
+  string $editor = `liqGetRVPanel`;
+
+  {
+    // window already exists ? open it.
+    string $wins[] = `lsUI -windows`;
+    for ( $w in $wins ) {
+      if ($w == "renderViewWindow") {
+        showWindow $w;
+        return;
+      }
+    }
+  }
+
+  {
+    // maybe it is in a docked panel ?
+    string $panels[] = `getPanel -vis`;
+    for ( $p in $panels ) {
+      if ($p == $editor) return;
+    }
+  }
+
+  // let's tear it off, then !
+  scriptedPanel -edit -tearOff $editor;
+
+}
+
+global proc liqRVExposure( float $val )
+{
+  global int $gLiqLastRenderIsRenderRegion;
+  if ( $gLiqLastRenderIsRenderRegion ) {
+    warning "Liquid cannot change the exposure of render regions. make a full render first.";
+    return;
+  }
+  global string $gLiqLastExposed;
+  global float $gLiqLastExposure;
+  string $cam = `getAttr liquidGlobals.renderCamera`;
+
+  string $lastRenders[] = `liquidRenderView -lr`;
+  string $last = $lastRenders[ size( $lastRenders ) - 1 ];
+  if ( $gLiqLastExposed != $last || $val == 0 ) $gLiqLastExposure = 0;
+
+  float $newExp = $gLiqLastExposure + $val;
+  float $exposure = exp( $newExp ) * 255;
+  //print ("$exposure = "+$exposure+"\n");
+
+  if ( $exposure > 1 ) {
+    if ( `filetest -r $last` ) liquidRenderView -camera $cam -renderFromFile 1 -bucketFile $last -quantize 0 $exposure 0 255 -timeout 10;
+    $gLiqLastExposed = $last;
+    $gLiqLastExposure = $newExp;
+  }
+
+}
+
+global proc liquidRVOptions()
+{
+  // coming soon
+}
+
+global proc liqRenderViewMenu( string $editor)
+{
+  if ( !`menu -q -ex ($editor + "LiquidRVMenu")` ) {
+
+    nameCommand -default true -ann "exposure +0.25 f-stop" -c "liqRVExposure 0.25"  liqExposureUpCmd;
+    nameCommand -default true -ann "exposure -0.25 f-stop" -c "liqRVExposure -0.25" liqExposureDownCmd;
+    nameCommand -default true -ann "exposure reset"        -c "liqRVExposure 0"     liqExposureResetCmd;
+
+    menu  -label              "Liquid"
+          -tearOff            true
+          -allowOptionBoxes   true
+          ($editor + "LiquidRVMenu");
+
+    menuItem  -label    "+ 0.5 f-stop"
+              -command  "liqRVExposure 0.25"
+              ($editor + "RVexposureUp");
+    menuItem  -label    "- 0.5 f-stop"
+              -command  "liqRVExposure -0.25"
+              ($editor + "RVexposureDown");
+    menuItem  -label    "original exposure"
+              -command  "liqRVExposure 0"
+              ($editor + "RVexposureReset");
+    menuItem  -divider true;
+    menuItem  -label    "Lazy Compute"
+              -checkBox (`getAttr liquidGlobals.lazyCompute`)
+              -postMenuCommand  ("if ( `getAttr liquidGlobals.lazyCompute` ) ) menuItem -e -cb true "+$editor+"RVLazyCompute;"+
+                                 "else menuItem -e -cb false "+$editor+"RVLazyCompute;")
+              -command  ("if ( `menuItem -q -cb "+$editor+"RVLazyCompute` && objExists( \"liquidGlobals\" ) ) setAttr liquidGlobals.lazyCompute 1;"+
+                         "else setAttr liquidGlobals.lazyCompute 0;")
+              ($editor + "RVLazyCompute");
+    //menuItem  -label    "RenderView Options..."
+    //          -command  "liquidRVOptions"
+    //          ($editor + "RVoptions");
+
+  }
+
+  if ( `hotkeyCheck -keyString "+" -ctl` == "" ) hotkey -k "+" -ctl -name liqExposureUpCmd;
+  if ( `hotkeyCheck -keyString "-" -ctl` == "" ) hotkey -k "-" -ctl -name liqExposureDownCmd;
+  if ( `hotkeyCheck -keyString "0" -ctl` == "" ) hotkey -k "0" -ctl -name liqExposureResetCmd;
+
+}
+
+global proc string liquidmayaRender(int $resolution0, int $resolution1, int $doShadows, int $doGlowPass, string $camera, string $option)
+{
+  global int $gLiqLastRenderIsRenderRegion;
+  if ( !`liquidGlobalsExists` ) {
+    string $sel[] = `ls -sl`;
+    eval("liquidCreateGlobals();");
+    select $sel;
+  }
+
+  liqShowRV();
+
+  string $editor = `liqGetRVPanel`;
+  liqRenderViewMenu( $editor );
+  renderWindowEditor -e -dbf $editor;
+  string $renderCamera = `getAttr liquidGlobals.renderCamera`;
+  renderWindowEditor -e -currentCamera $renderCamera $editor;
+  liquidPreview();
+  $gLiqLastRenderIsRenderRegion = 0;
+  return "";
+}
+
+global proc liquidmayaRenderRegion( string $editor )
+{
+  global int $gLiqLastRenderIsRenderRegion;
+  liquidCropPreview();
+  $gLiqLastRenderIsRenderRegion = 1;
+}
+
+global proc liquidSaveRenderViewImage()
+{
+  string $editor = `liqGetRVPanel`;
+
+  int $currentImage = `renderWindowEditor -q -displayImage $editor`;
+  if ($currentImage < 0)
+  {
+    renderWindowEditor -edit -saveImage $editor;
+    renderWindowRefreshMenu("file", $editor);
+    renderWindowRefreshLayout($editor);
+  }
+}

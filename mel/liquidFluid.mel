@@ -363,8 +363,9 @@ global proc liquidFluidAssign( string $shaderList[] )
   string $currentSelected;
   for ( $currentSelected in $shaderList ) {
     string $type = `liquidGetShaderNodeType $currentSelected`;
+
     if( $type == "Surface" || $type == "Disp" || $type == "Volume" || $type == "Ribbox") {
-      string $selectedNode[] = `ls -dag -shapes -mat -sl`;
+      string $selectedNode[] = `ls -dag -long -shapes -mat -sl`;
       string $currentNode;
       for ( $currentNode in $selectedNode ) {
         liquidAssignShaderNode $currentNode $currentSelected;
@@ -374,13 +375,15 @@ global proc liquidFluidAssign( string $shaderList[] )
         liquidAssignShaderNode $currentNode $currentSelected;
       }
     }
+
     if( $type == "Light" ) {
-      string $selectedNode[] = `ls -dag -lights -sl`;
+      string $selectedNode[] = `ls -dag -long -lights -sl`;
       string $currentNode;
       for ( $currentNode in $selectedNode ) {
         liquidAssignShaderNode $currentNode $currentSelected;
       }
     }
+
   }
 }
 

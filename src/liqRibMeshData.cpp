@@ -100,6 +100,12 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   const unsigned numSTs = fnMesh.numUVs();
   numFaces = fnMesh.numPolygons();
   const unsigned numFaceVertices = fnMesh.numFaceVertices();
+
+  if ( numPoints < 1 ) {
+    cerr <<"Liquid : Could not export degenerate mesh -> "<<fnMesh.fullPathName( &astatus ).asChar()<<endl<<flush;
+    return;
+  }
+
   unsigned face = 0;
   unsigned faceVertex = 0;
   unsigned count;
@@ -113,6 +119,13 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   liqTokenPointer* pVertexSTPointerPair = NULL;
   liqTokenPointer* pFaceVertexSPointer = NULL;
   liqTokenPointer* pFaceVertexTPointer = NULL;
+
+  //cout <<"   + vertices : "<<numPoints<<endl;
+  //cout <<"   + normals  : "<<numNormals<<endl;
+  //cout <<"   + UV sets  : "<<numSTs<<endl;
+  //cout <<"   + polygons : "<<numFaces<<endl;
+  //cout <<"   + polygons : "<<numFaces<<endl;
+  //cout <<"   + faceVert : "<<numFaceVertices<<endl;
 
   // Allocate memory and tokens
   numFaces = numFaces;
@@ -134,7 +147,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
     pVertexSTPointerPair = new liqTokenPointer;
     pVertexSTPointerPair->set( "st", rFloat, false, numFaceVertices, 2 );
     pVertexSTPointerPair->setDetailType( rFaceVarying );
-	
+
 	if( liqglo_outputMeshUVs ) {
       pFaceVertexSPointer = new liqTokenPointer;
       pFaceVertexSPointer->set( "u", rFloat, false, true, false, numFaceVertices );
@@ -175,7 +188,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
 
         pVertexSTPointerPair->setTokenFloat( faceVertex, 0, S );
         pVertexSTPointerPair->setTokenFloat( faceVertex, 1, 1 - T );
-        
+
       if( liqglo_outputMeshUVs ) {
           pFaceVertexSPointer->setTokenFloat( faceVertex, S );
           pFaceVertexTPointer->setTokenFloat( faceVertex, 1 - T );
@@ -210,6 +223,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   addAdditionalSurfaceParameters( mesh );
 }
 
+
 liqRibMeshData::~liqRibMeshData()
 //
 //  Description:
@@ -217,6 +231,7 @@ liqRibMeshData::~liqRibMeshData()
 //
 {
   LIQDEBUGPRINTF( "-> killing mesh\n" );
+  //cerr <<"-> killing mesh"<<endl<<flush;
   lfree( nverts ); nverts = NULL;
   lfree( verts );  verts = NULL;
 }
@@ -227,37 +242,38 @@ void liqRibMeshData::write()
 //      Write the RIB for this mesh
 //
 {
-  LIQDEBUGPRINTF( "-> writing mesh\n" );
-  RtLightHandle handle = NULL;
-  if ( areaLight ) {
-    LIQDEBUGPRINTF( "-> mesh is area light\n" );
-    //	RiAttributeBegin();
-    RtString ribname = const_cast< char* >( name.asChar() );
-    RiAttribute( "identifier", "name", &ribname, RI_NULL );
-    RiTransform( transformationMatrix );
+  if ( numPoints > 1 ) {
+    LIQDEBUGPRINTF( "-> writing mesh\n" );
+    RtLightHandle handle = NULL;
+    if ( areaLight ) {
+      LIQDEBUGPRINTF( "-> mesh is area light\n" );
+      //	RiAttributeBegin();
+      RtString ribname = const_cast< char* >( name.asChar() );
+      RiAttribute( "identifier", "name", &ribname, RI_NULL );
+      RiTransform( transformationMatrix );
 
-    handle = RiAreaLightSource( "arealight", "intensity", &areaIntensity, RI_NULL );
-  }
+      handle = RiAreaLightSource( "arealight", "intensity", &areaIntensity, RI_NULL );
+    }
 
-  // Each loop has one polygon, so we just want an array of 1's of
-  // the correct size
-  RtInt * nloops = (RtInt*)alloca( sizeof( RtInt ) * numFaces );
-  for ( unsigned i = 0; i < numFaces; ++i ) {
-    nloops[i] = 1;
-  }
+    // Each loop has one polygon, so we just want an array of 1's of
+    // the correct size
+    RtInt * nloops = (RtInt*)alloca( sizeof( RtInt ) * numFaces );
+    for ( unsigned i = 0; i < numFaces; ++i ) {
+      nloops[i] = 1;
+    }
 
-  unsigned numTokens = tokenPointerArray.size();
-  RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * numTokens );
-  RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * numTokens );
+    unsigned numTokens = tokenPointerArray.size();
+    RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * numTokens );
+    RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * numTokens );
 
-  assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
+    assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
+    RiPointsGeneralPolygonsV( numFaces, nloops, nverts, verts, numTokens, tokenArray, pointerArray );
 
-  RiPointsGeneralPolygonsV( numFaces, nloops, nverts, verts, numTokens, tokenArray, pointerArray );
-
-  if ( areaLight ) {
-    // RiAttributeEnd();
-    RiIlluminate( handle, 1 );
-  }
+    if ( areaLight ) {
+      // RiAttributeEnd();
+      RiIlluminate( handle, 1 );
+    }
+  } else cerr <<"Liquid : skipping degenerate mesh output..."<<endl<<flush;
 }
 
 bool liqRibMeshData::compare( const liqRibData & otherObj ) const

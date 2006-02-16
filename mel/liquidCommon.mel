@@ -54,6 +54,16 @@ global proc int liquidCreateUserHomeDir() {
 	return $ret;
 }
 
+global proc string liquidGetUserMayaHomeDir() {
+  string $homeVarName = ( `about -os` == "nt" )? "USERPROFILE" : "HOME" ;
+  string $homeGetEnv =  `getenv $homeVarName`;
+  string $homeDirectory = $homeGetEnv;
+  string $mayaVersion = `about -f`;
+  string $mayaDirectory = ( $homeDirectory + "/maya/" + $mayaVersion );
+  return $mayaDirectory;
+}
+
+
 global proc formAttachButtons( string $form, string $buttons[], string $valign, int $dist ) {
 
 	int $i, $num = size( $buttons );
@@ -98,7 +108,7 @@ global proc string liquidGetTransform( string $shape )
   if ( !objExists( $shape ) ) error ("liquidGetTransform : \""+$shape+"\" does not exists !");
   if ( nodeType( $shape ) == "transform" ) return $shape;
 
-  string $parents[] = `listRelatives -parent -type "transform" $shape`;
+  string $parents[] = `listRelatives -path -parent -type "transform" $shape`;
 
   if ( !size($parents) ) error ("liquidGetTransform : could not find a transform for \""+$shape+"\"");
 
@@ -121,3 +131,11 @@ global proc string liquidGetModifiersState()
 	return $result;
 }
 
+global proc string liquidGetVersion()
+{
+  global string $gLiquidVersion;
+  if ( $gLiquidVersion == "" ) {
+    $gLiquidVersion = match("[0-9\\.]+", string( pluginInfo( "-q", "-v", "liquid" ) ) );
+  }
+  return $gLiquidVersion;
+}

@@ -44,8 +44,10 @@ liqShader::liqShader()
   shadingRate = 1.0;
   hasDisplacementBound = false;
   displacementBound = 0.0;
+  outputInShadow = false;
   hasErrors = false;
   shader_type = SHADER_TYPE_UNKNOWN;
+  shaderSpace = "";
 }
 
 liqShader::liqShader( const liqShader & src )
@@ -66,8 +68,10 @@ liqShader::liqShader( const liqShader & src )
   shadingRate          = src.shadingRate;
   hasDisplacementBound = src.hasDisplacementBound;
   displacementBound    = src.displacementBound;
+  outputInShadow       = src.outputInShadow;
   hasErrors            = src.hasErrors;
   shader_type          = src.shader_type;
+  shaderSpace          = src.shaderSpace;
 }
 
 
@@ -86,6 +90,7 @@ liqShader::liqShader( MObject shaderObj )
   numTPV = 0;
   hasShadingRate = false;
   hasDisplacementBound = false;
+  outputInShadow = false;
   hasErrors = false;
 
   // if this shader instance isn't currently used already then load it into the
@@ -111,26 +116,36 @@ liqShader::liqShader( MObject shaderObj )
     node specific shading rate. */
 
     shader_type = shaderInfo.getType();
+
     // Set RiColor and RiOpacity
+    status.clear();
     MPlug colorPlug = shaderNode.findPlug( "color" );
+    if ( status == MS::kSuccess ) {
+      colorPlug.child(0).getValue( rmColor[0] );
+      colorPlug.child(1).getValue( rmColor[1] );
+      colorPlug.child(2).getValue( rmColor[2] );
+    }
 
-    colorPlug.child(0).getValue( rmColor[0] );
-    colorPlug.child(1).getValue( rmColor[1] );
-    colorPlug.child(2).getValue( rmColor[2] );
-
+    status.clear();
     MPlug opacityPlug = shaderNode.findPlug( "opacity" );
-
     // Moritz: changed opacity from float to color in MEL
-    opacityPlug.child(0).getValue( rmOpacity[0] );
-    opacityPlug.child(1).getValue( rmOpacity[1] );
-    opacityPlug.child(2).getValue( rmOpacity[2] );
+    if ( status == MS::kSuccess ) {
+      opacityPlug.child(0).getValue( rmOpacity[0] );
+      opacityPlug.child(1).getValue( rmOpacity[1] );
+      opacityPlug.child(2).getValue( rmOpacity[2] );
+    }
 
-    // Moritz: below code is obsolete as opacity is a color now
-    //double opacityVal;
-    //opacityPlug.getValue( opacityVal );
-    //rmOpacity[0] = RtFloat( opacityVal );
-    //rmOpacity[1] = RtFloat( opacityVal );
-    //rmOpacity[2] = RtFloat( opacityVal );
+    status.clear();
+    MPlug shaderSpacePlug = shaderNode.findPlug( "shaderSpace" );
+    if ( status == MS::kSuccess ) {
+      shaderSpacePlug.getValue( shaderSpace );
+    }
+
+    status.clear();
+    MPlug outputInShadowPlug = shaderNode.findPlug( "outputInShadow" );
+    if ( status == MS::kSuccess ) {
+      outputInShadowPlug.getValue( outputInShadow );
+    }
 
     // find the parameter details and declare them in the rib stream
     numArgs = shaderInfo.getNumParam();
@@ -349,18 +364,19 @@ liqShader & liqShader::operator=( const liqShader & src )
   }
   name = src.name;
   file = src.file;
-  rmColor[0] = src.rmColor[0];
-  rmColor[1] = src.rmColor[1];
-  rmColor[2] = src.rmColor[2];
-  rmOpacity[0] = src.rmOpacity[0];
-  rmOpacity[1] = src.rmOpacity[1];
-  rmOpacity[2] = src.rmOpacity[2];
-  hasShadingRate = src.hasShadingRate;
-  shadingRate = src.shadingRate;
-  hasDisplacementBound = src.hasDisplacementBound;
-  displacementBound = src.displacementBound;
-  hasErrors = src.hasErrors;
-  shader_type = shader_type;
+  rmColor[0]            = src.rmColor[0];
+  rmColor[1]            = src.rmColor[1];
+  rmColor[2]            = src.rmColor[2];
+  rmOpacity[0]          = src.rmOpacity[0];
+  rmOpacity[1]          = src.rmOpacity[1];
+  rmOpacity[2]          = src.rmOpacity[2];
+  hasShadingRate        = src.hasShadingRate;
+  shadingRate           = src.shadingRate;
+  hasDisplacementBound  = src.hasDisplacementBound;
+  displacementBound     = src.displacementBound;
+  outputInShadow        = src.outputInShadow;
+  hasErrors             = src.hasErrors;
+  shader_type           = shader_type;
   return *this;
 }
 
