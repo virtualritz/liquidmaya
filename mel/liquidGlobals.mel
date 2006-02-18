@@ -733,7 +733,7 @@ global proc int liquidSaveGlobals( string $name, string $presetType )
 
   int $ret = false;
   string $liquidDirectory = liquidGetUserHomeDir();
-  string $mayaPresetsDirectory = liquidGetUserMayaHomeDir();
+  string $mayaPresetsDirectory = `internalVar -userPresetsDir`;
 
   switch ( $presetType ) {
     case "":
@@ -773,7 +773,7 @@ global proc int liquidSaveGlobals( string $name, string $presetType )
                   -save liquidGlobals $name;
     } else nodePreset -save liquidGlobals $name;
 
-    string $presetFile = ( $mayaPresetsDirectory + "/presets/liquidGlobalsPreset_" + $name + ".mel");
+    string $presetFile = ( $mayaPresetsDirectory + "/liquidGlobalsPreset_" + $name + ".mel");
 
     if ( `filetest -w $presetFile` ) {
       sysFile -rename $globalName $presetFile;
@@ -854,6 +854,8 @@ global proc liquidSavePresetOk()
 }
 
 global proc liquidSavePreset() {
+  if (`window -ex liquidSavePresetWin`) deleteUI liquidSavePresetWin;
+  
   window -widthHeight 100 30 -rtf true -title "Save Preset" liquidSavePresetWin;
     string $form = `formLayout -numberOfDivisions 100`;
       string $column = `columnLayout -adjustableColumn true`;
