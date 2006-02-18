@@ -1254,9 +1254,9 @@ global proc liquidDrawDisplayDrivers()
 
       int $i;
       formLayout LG_DDlistButtonsLayout;
-        string $tmp1 = `button -label " + "         -rs true -c liquidGlobalsAddDD`;
-        string $tmp2 = `button -label " - "         -rs true -c "liquidGlobalsDeleteDD(-1)"`;
-        string $tmp3 = `button -label " Duplicate " -rs true -c liquidGlobalsDuplicateDD`;
+        string $tmp1 = `button -label " + "         -rs false -c liquidGlobalsAddDD`;
+        string $tmp2 = `button -label " - "         -rs false -c "liquidGlobalsDeleteDD(-1)"`;
+        string $tmp3 = `button -label " Duplicate " -rs false -c liquidGlobalsDuplicateDD`;
         string $tmp4 = `checkBoxGrp -ncb 1 -label "variables substitution" -v1 false -cc liquidDisplayDriverGuiUpdateList liquidGlobalsSubstituteDD`;
         formLayout -e
                    -af $tmp1 left 0
@@ -1732,6 +1732,7 @@ global proc liquidDrawDisplayChannels()
   setParent liquidGlobalsDisplaysSetChannels;
   int $i;
   formLayout LG_DDlistButtonsLayout;
+  	// Some OSX layout issues with -rs true
     string $tmp1 = `button -label " + "         -rs false -c liquidGlobalsAddDC`;
     string $tmp2 = `button -label " - "         -rs false -c "eval \"liquidGlobalsDeleteDC(-1)\""`;
     string $tmp3 = `button -label " Duplicate " -rs false -c liquidGlobalsDuplicateDC`;
