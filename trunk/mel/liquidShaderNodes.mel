@@ -556,12 +556,11 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
 
   string $shaderDir  = getAttr("liquidGlobals.fluidShaderBrowserDefaultPath");
   if ( !gmatch( $shaderDir, "/*") ) $shaderDir = (`workspace -q -rd` + $shaderDir);
-  string $shaderExt  = getAttr("liquidGlobals.shaderExt");
 
   string $myFileCommand = ( "{\n"
-                            + "string $v = `getAttr "+$msg+"`;"
-                            + "liquidChangeTextFileAttrPlus " + $node[0] + " " + $node[1] + " " + $ctlName + " \"" + $shaderDir + "\" \"*." + $shaderExt + "\";"
-                            + "if ( `getAttr "+$msg+"` != $v ) evalDeferred(\"liquidShaderNodes_initParams " + $node[0] + "\");"
+                            + "string $v = `getAttr "+$msg+"`+\"\";"
+                            + "liquidChangeTextFileAttrPlus " + $node[0] + " " + $node[1] + " " + $ctlName + " \"" + $shaderDir + "\" (\"*.\"+" + "`getAttr(\"liquidGlobals.shaderExt\")`" + ");"
+                            + "if ( `getAttr "+$msg+"`+\"\" != $v ) evalDeferred(\"liquidShaderNodes_initParams " + $node[0] + "\");"
                             + "}");
   string $form          = `formLayout`;
 
@@ -590,12 +589,11 @@ global proc liquidShaderPickerReplace( string $nodeName, string $msg )
 
   string $shaderDir  = getAttr("liquidGlobals.fluidShaderBrowserDefaultPath");
   if ( !gmatch( $shaderDir, "/*") ) $shaderDir = (`workspace -q -rd` + $shaderDir);
-  string $shaderExt  = getAttr("liquidGlobals.shaderExt");
 
   string $myFileCommand = (   "{\n"
-                            + "string $v = `getAttr "+$msg+"`;"
-                            + "liquidChangeTextFileAttrPlus " + $node[0] + " " + $node[1] + " " + $ctlName + " \"" + $shaderDir + "\" \"*." + $shaderExt + "\";"
-                            + "if ( `getAttr "+$msg+"` != $v ) evalDeferred(\"liquidShaderNodes_initParams " + $node[0] + "\");"
+                            + "string $v = `getAttr "+$msg+"`+\"\";"
+                            + "liquidChangeTextFileAttrPlus " + $node[0] + " " + $node[1] + " " + $ctlName + " \"" + $shaderDir + "\" (\"*.\"+" + "`getAttr(\"liquidGlobals.shaderExt\")`" + ");"
+                            + "if ( `getAttr "+$msg+"`+\"\" != $v ) evalDeferred(\"liquidShaderNodes_initParams " + $node[0] + "\");"
                             + "}");
   connectControl -index 2 $ctlName $msg;
   iconTextButton -e -c $myFileCommand ($ctlName+"_button");
