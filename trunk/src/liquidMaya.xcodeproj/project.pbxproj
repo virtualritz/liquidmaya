@@ -270,7 +270,7 @@
 		1F4D55120985842E00787F2E /* liquidPlug.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liquidPlug.cpp; sourceTree = "<group>"; };
 		1F4D55130985842E00787F2E /* liqVolumeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqVolumeNode.cpp; sourceTree = "<group>"; };
 		1F4D55140985842E00787F2E /* liqWriteArchive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqWriteArchive.cpp; sourceTree = "<group>"; };
-		1F5E729C07E632E0006FAA8F /* liquidbin-pixie */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F5E729C07E632E0006FAA8F /* liquidbin-pixie */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FAC5DDB07BE25410083A3E5 /* liquid_3delight.lib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liquid_3delight.lib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FAC5DDF07BE25F80083A3E5 /* lib3delight.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = lib3delight.dylib; path = "/Applications/Graphics/3Delight-4.0.1/lib/lib3delight.dylib"; sourceTree = "<absolute>"; };
 		1FADF82007721B95007DC910 /* libri.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libri.a; path = /Applications/Graphics/Pixie/lib/libri.a; sourceTree = "<absolute>"; };
