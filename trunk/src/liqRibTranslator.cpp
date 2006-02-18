@@ -3293,6 +3293,17 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 #else
         liqProcessLauncher::execute( m_renderScriptCommand, renderScriptName, liqglo_projectDir, false );
 #endif
+		if ( m_renderView ) {
+            MString local = (m_renderViewLocal)? "1":"0";
+            char tmp[20];
+            sprintf( tmp, "%d", m_renderViewTimeOut);
+            MString timeout = (char*) tmp;
+            MString displayCmd = "liquidRenderView -c " + renderCamera + " -l " + local + " -port " + m_renderViewPort + " -timeout " + timeout ;
+            if ( m_renderViewCrop ) displayCmd = displayCmd + " -doRegion";
+            displayCmd = displayCmd + ";liquidSaveRenderViewImage();";
+            //cout <<displayCmd.asChar()<<endl;
+            MGlobal::executeCommand( displayCmd );
+          }
       } else {
         // launch renders
         MGlobal::displayInfo( "\n" );
