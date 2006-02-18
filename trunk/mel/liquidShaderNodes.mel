@@ -558,7 +558,7 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
   if ( !gmatch( $shaderDir, "/*") ) $shaderDir = (`workspace -q -rd` + $shaderDir);
   string $shaderExt  = getAttr("liquidGlobals.shaderExt");
 
-  string $myFileCommand = (   "{\n"
+  string $myFileCommand = ( "{\n"
                             + "string $v = `getAttr "+$msg+"`;"
                             + "liquidChangeTextFileAttrPlus " + $node[0] + " " + $node[1] + " " + $ctlName + " \"" + $shaderDir + "\" \"*." + $shaderExt + "\";"
                             + "if ( `getAttr "+$msg+"` != $v ) evalDeferred(\"liquidShaderNodes_initParams " + $node[0] + "\");"
@@ -576,7 +576,7 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
               -af $ctlName  left    0
               -af $ctlName  right   31
               -af $button   top     2
-              -ac $button   left    -40 $ctlName
+              -af $button   right   5
               $form;
   setUITemplate -ppt;
 }
@@ -812,8 +812,9 @@ global proc liquidAE_LifString( string $selectedObj, int $index, string $subtype
                         -af $ctlName  left    0
                         -af $ctlName  right   31
                         -af $button   top     2
-                        -ac $button   left    -35 $ctlName
+                        -af $button   right   5
                         $form;
+                        
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp -e -ann $description $ctlName;
@@ -835,7 +836,7 @@ global proc liquidAE_LifString( string $selectedObj, int $index, string $subtype
                         -af $ctlName  left    0
                         -af $ctlName  right   31
                         -af $button   top     2
-                        -ac $button   left    -35 $ctlName
+                        -af $button   right   5
                         $form;
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
@@ -856,7 +857,7 @@ global proc liquidAE_LifString( string $selectedObj, int $index, string $subtype
                         -af $ctlName  left    0
                         -af $ctlName  right   31
                         -af $button   top     2
-                        -ac $button   left    -35 $ctlName
+                        -af $button   right   5
                         $form;
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
