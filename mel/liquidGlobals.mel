@@ -805,6 +805,9 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
   // allow the user to pass a qualified path
   string $globalName = (`filetest -r $name`)? $name : ( $liquidDirectory + "/" + $name + ".lg" );
 
+  // get the globals selected before applying the presets (setAttr .attr will fail otherwise)
+  select "liquidGlobals";
+  
   if  ( `filetest -r $globalName` ) eval ("source \""+$globalName+"\"");
   else {
     // check it is not in the user's home dir
