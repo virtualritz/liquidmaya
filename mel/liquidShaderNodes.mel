@@ -1070,12 +1070,11 @@ global proc liquidAssignLightShaderToSelected( string $node )
   trace ("selected : "+stringArrayToString( $selected, " "));
 
   for ( $sel in $selected ) {
-    if ( nodeType($node) == "transform" ) {
-      string $shapes[] = `listRelatives -c -type light $node`;
+    if ( nodeType($sel) == "transform" ) {
+      string $shapes[] = `listRelatives -c -type light $sel`;
       if ( size( $shapes ) ) $sel = $shapes[0];
       else continue;
     }
-
     if ( !objExists( ($sel+".liquidLightShaderNode") ) ) {
       addAttr -ln liquidLightShaderNode -at message $sel;
     }
