@@ -25,7 +25,7 @@ light liquiddistant(
 
     Cl = intensity;
     __unshadowed_Cl = Cl * lightcolor;
-#ifdef DELIGHT || PRMAN
+#if defined ( DELIGHT ) || defined ( PRMAN )
     Cl *= mix( lightcolor, shadowcolor, __shadow );
 #else
     Cl *= mix( lightcolor, shadowcolor, ( comp( __shadow, 0 ) + comp( __shadow, 1 ) + comp( __shadow, 2 ) ) / 3 );

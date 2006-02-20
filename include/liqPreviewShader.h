@@ -34,9 +34,11 @@
 ** ______________________________________________________________________
 */
 
+#include <maya/MPxCommand.h>
 #include <maya/MString.h>
 #include <maya/MStringArray.h>
 #include <maya/MIntArray.h>
+#include <maya/MSyntax.h>
 
 enum PrimitiveType {
   SPHERE       = 0,
@@ -54,6 +56,7 @@ public:
   virtual ~liqPreviewShader();
   static void* creator();
 
+  static MSyntax syntax();
   MStatus doIt( const MArgList& args );
 private:
   void	resetIt();
