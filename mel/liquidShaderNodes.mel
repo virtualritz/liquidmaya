@@ -157,6 +157,9 @@ global proc liquidShaderNodePreview( string $node )
   int $primitive;
   if ( objExists( ($node+".previewPrimitive") ) ) {
     $primitive = `getAttr ($node+".previewPrimitive")`;
+    if ( $primitive == "(globals)" ) {
+    	$primitive = `getAttr liquidGlobals.previewPrimitive`;
+    }
   } else {
     $primitive = `getAttr liquidGlobals.previewPrimitive`;
   }
