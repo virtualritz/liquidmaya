@@ -3683,6 +3683,7 @@ MStatus liqRibTranslator::buildJobs()
 
         if ( lightPath.hasFn(MFn::kSpotLight) || lightPath.hasFn(MFn::kDirectionalLight) ) {
 
+          bool computeShadow = true;
           thisJob.hasShadowCam = false;
           MPlug liquidLightShaderNodeConnection;
           MStatus liquidLightShaderStatus;
@@ -3694,6 +3695,13 @@ MStatus liqRibTranslator::buildJobs()
             MPlugArray liquidLightShaderNodePlugArray;
             liquidLightShaderNodeConnection.connectedTo( liquidLightShaderNodePlugArray, true, true );
             MFnDependencyNode fnLightShaderNode( liquidLightShaderNodePlugArray[0].node() );
+
+            // has the main shadow been disabled ?
+            status.clear();
+            MPlug generateMainShadowPlug = fnLightShaderNode.findPlug( "generateMainShadow", &status );
+            if ( status == MS::kSuccess ) {
+              generateMainShadowPlug.getValue( computeShadow );
+            }
 
             // look for shadow cameras...
             MStatus stat;
@@ -3749,14 +3757,6 @@ MStatus liqRibTranslator::buildJobs()
             liquidMidPointShadow.getValue( thisJob.isMidPointShadow );
           }
 
-          bool computeShadow = true;
-
-          // has the main shadow been disabled ?
-          status.clear();
-          MPlug generateMainShadowPlug = fnLightNode.findPlug( "generateMainShadow", &status );
-          if ( status == MS::kSuccess ) {
-            generateMainShadowPlug.getValue( computeShadow );
-          }
 
           // in lazy compute mode, we check if the map is already on disk first.
           if ( m_lazyCompute && computeShadow ) {
@@ -3786,6 +3786,8 @@ MStatus liqRibTranslator::buildJobs()
             thisJob.isPoint = true;
             thisJob.pointDir = (PointLightDirection) dirOn;
 
+            bool computeShadow = true;
+
             MPlug liquidLightShaderNodeConnection;
             MStatus liquidLightShaderStatus;
             liquidLightShaderNodeConnection = fnLightNode.findPlug( "liquidLightShaderNode", &liquidLightShaderStatus );
@@ -3796,6 +3798,13 @@ MStatus liqRibTranslator::buildJobs()
               MPlugArray liquidLightShaderNodePlugArray;
               liquidLightShaderNodeConnection.connectedTo( liquidLightShaderNodePlugArray, true, true );
               MFnDependencyNode fnLightShaderNode( liquidLightShaderNodePlugArray[0].node() );
+
+              // has the main shadow been disabled ?
+              status.clear();
+              MPlug generateMainShadowPlug = fnLightShaderNode.findPlug( "generateMainShadow", &status );
+              if ( status == MS::kSuccess ) {
+                generateMainShadowPlug.getValue( computeShadow );
+              }
 
               // look for shadow cameras...
               MStatus stat;
@@ -3830,7 +3839,7 @@ MStatus liqRibTranslator::buildJobs()
               }
             }
 
-            bool computeShadow = true;
+
             MString fileName;
             fileName = generateFileName( (fileGenMode) fgm_shadow_tex, thisJob );
             if ( m_lazyCompute ) {
