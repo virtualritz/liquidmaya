@@ -155,7 +155,7 @@ $(LIQUIDLIB) : $(LIQUIDMAINOBJS)
 
 $(LIQUIDDPY) : liqMayaDisplayDriver.o
 	@echo $@
-	@$(CPP) -shared $(VPATH)/$^ -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
+	@$(CPP) -shared $(VPATH)/liqMayaDisplayDriver.o -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
 
 
 $(LIQUIDMAINOBJS) : ../include/liquid.h
