@@ -15,7 +15,7 @@ light liquiddistant(
    output float __nonspecular = 0; /* set to 1 to exclude from highlights */
 )
 {
-  float factor = (shadowname == "raytrace")? 0.2:0.001;
+  uniform float factor = (shadowname == "raytrace")? 0.2:0.001;
   solar( vector "shader" ( 0, 0, 1 ), 0 ) {
 
     if( shadowname != "" )
