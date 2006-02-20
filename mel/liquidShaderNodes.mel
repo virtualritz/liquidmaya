@@ -570,13 +570,23 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
   string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_button")`;
   setParent ..;
 
-  formLayout  -e
-              -af $ctlName  top     0
-              -af $ctlName  left    0
-              -af $ctlName  right   31
-              -af $button   top     2
-              -af $button   right   5
-              $form;
+  if (`about -mac`) {
+     formLayout  -e
+                -af $ctlName  top     0
+                -af $ctlName  left    0
+                -af $ctlName  right   31
+                -af $button   top     2
+                -af $button   right   5
+                $form;
+  } else {
+    formLayout  -e
+                -af $ctlName  top     0
+                -af $ctlName  left    0
+                -af $ctlName  right   31
+                -af $button   top     2
+                -ac $button   left    -40 $ctlName
+                $form;
+  }
   setUITemplate -ppt;
 }
 
@@ -805,14 +815,23 @@ global proc liquidAE_LifString( string $selectedObj, int $index, string $subtype
             string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_tex.xpm" ($ctlName+"_BUT")`;
             setParent ..;
 
-            formLayout  -e
-                        -af $ctlName  top     0
-                        -af $ctlName  left    0
-                        -af $ctlName  right   31
-                        -af $button   top     2
-                        -af $button   right   5
-                        $form;
-                        
+            if (`about -mac`) {
+              formLayout  -e
+                          -af $ctlName  top     0
+                          -af $ctlName  left    0
+                          -af $ctlName  right   31
+                          -af $button   top     2
+                          -af $button   right   5
+                          $form;
+            } else {
+              formLayout  -e
+                          -af $ctlName  top     0
+                          -af $ctlName  left    0
+                          -af $ctlName  right   31
+                          -af $button   top     2
+                          -ac $button   left    0 $ctlName
+                          $form;
+            }          
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp -e -ann $description $ctlName;
@@ -829,13 +848,23 @@ global proc liquidAE_LifString( string $selectedObj, int $index, string $subtype
             string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
             setParent ..;
 
-            formLayout  -e
-                        -af $ctlName  top     0
-                        -af $ctlName  left    0
-                        -af $ctlName  right   31
-                        -af $button   top     2
-                        -af $button   right   5
-                        $form;
+            if (`about -mac`) {
+              formLayout  -e
+                          -af $ctlName  top     0
+                          -af $ctlName  left    0
+                          -af $ctlName  right   31
+                          -af $button   top     2
+                          -af $button   right   5
+                          $form;
+            } else {
+              formLayout  -e
+                          -af $ctlName  top     0
+                          -af $ctlName  left    0
+                          -af $ctlName  right   31
+                          -af $button   top     2
+                          -ac $button   left    0 $ctlName
+                          $form;
+            }
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp -e -ann $description $ctlName;
@@ -850,13 +879,23 @@ global proc liquidAE_LifString( string $selectedObj, int $index, string $subtype
             string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_cs.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
             setParent ..;
 
-            formLayout  -e
-                        -af $ctlName  top     0
-                        -af $ctlName  left    0
-                        -af $ctlName  right   31
-                        -af $button   top     2
-                        -af $button   right   5
-                        $form;
+            if (`about -mac`) {
+              formLayout  -e
+                          -af $ctlName  top     0
+                          -af $ctlName  left    0
+                          -af $ctlName  right   31
+                          -af $button   top     2
+                          -af $button   right   5
+                          $form;
+            } else {
+              formLayout  -e
+                          -af $ctlName  top     0
+                          -af $ctlName  left    0
+                          -af $ctlName  right   31
+                          -af $button   top     2
+                          -ac $button   left    0 $ctlName
+                          $form;
+            }
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp  -e -ann $description $ctlName;
@@ -1075,6 +1114,7 @@ global proc liquidAssignLightShaderToSelected( string $node )
       if ( size( $shapes ) ) $sel = $shapes[0];
       else continue;
     }
+
     if ( !objExists( ($sel+".liquidLightShaderNode") ) ) {
       addAttr -ln liquidLightShaderNode -at message $sel;
     }
