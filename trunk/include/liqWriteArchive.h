@@ -60,6 +60,7 @@ private:
   MString outputFilename;
   bool outputRootTransform;
   bool outputChildTransforms;
+  bool binaryRib;
   bool debug;
 };
 

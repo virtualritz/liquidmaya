@@ -804,7 +804,8 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
 
   // allow the user to pass a qualified path
   string $globalName = (`filetest -r $name`)? $name : ( $liquidDirectory + "/" + $name + ".lg" );
-
+ 
+  string $oldSel[] = `ls -sl`;
   // get the globals selected before applying the presets (setAttr .attr will fail otherwise)
   select "liquidGlobals";
   
@@ -819,6 +820,7 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
     else if  ( `filetest -r $homeDirRendererPath` ) eval ("source \""+$homeDirRendererPath+"\"");
     else warning ("Preset file " + $name + " not found!");
   }
+  select $oldSel;
 }
 
 /**
@@ -1737,7 +1739,6 @@ global proc liquidDrawDisplayChannels()
   setParent liquidGlobalsDisplaysSetChannels;
   int $i;
   formLayout LG_DDlistButtonsLayout;
-  	// Some OSX layout issues with -rs true
     string $tmp1 = `button -label " + "         -rs false -c liquidGlobalsAddDC`;
     string $tmp2 = `button -label " - "         -rs false -c "eval \"liquidGlobalsDeleteDC(-1)\""`;
     string $tmp3 = `button -label " Duplicate " -rs false -c liquidGlobalsDuplicateDC`;

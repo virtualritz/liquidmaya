@@ -62,6 +62,7 @@ MSyntax liqWriteArchive::syntax()
 
   syn.addFlag("rt", "rootTransform");
   syn.addFlag("ct", "childTransforms");
+  syn.addFlag("b",  "binary");
   syn.addFlag("d",  "debug");
 
   return syn;
@@ -105,6 +106,12 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
     debug = true;
   }
 
+  binaryRib = false;
+  flagIndex = args.flagIndex("b", "binary");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    binaryRib = true;
+  }
+
   return redoIt();
 }
 
@@ -130,6 +137,11 @@ MStatus liqWriteArchive::redoIt()
       return MS::kFailure;
     }
     fclose(f);
+
+    // binary or ascii
+    RtString format = "ascii";
+    if ( binaryRib ) format = "binary";
+    RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
 
     // write the RIB file
     RiBegin(const_cast<char*>(outputFilename.asChar()));
