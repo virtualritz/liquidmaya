@@ -104,11 +104,11 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   LIQCHECKSTATUS( status, "Can't register liquid translator command" );
 
   // register the liquidAttachPrefAttribute command
-  status = plugin.registerCommand( "liquidAttachPrefAttribute", liqAttachPrefAttribute::creator );
+  status = plugin.registerCommand( "liquidAttachPrefAttribute", liqAttachPrefAttribute::creator, liqAttachPrefAttribute::syntax );
   LIQCHECKSTATUS( status, "Can't register liquidAttachPrefAttribute command" );
 
   // register the liquidPreviewShader command
-  status = plugin.registerCommand( "liquidPreviewShader", liqPreviewShader::creator );
+  status = plugin.registerCommand( "liquidPreviewShader", liqPreviewShader::creator, liqPreviewShader::syntax );
   LIQCHECKSTATUS( status, "Can't register liqPreviewShader command" );
 
   // register the liqGetSloInfo command

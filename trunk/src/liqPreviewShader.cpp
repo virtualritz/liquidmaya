@@ -48,6 +48,7 @@ extern "C" {
 #include <maya/MCommandResult.h>
 #include <maya/MStringArray.h>
 #include <maya/MArgList.h>
+#include <maya/MSyntax.h>
 #include <maya/MSelectionList.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnDoubleArrayData.h>
@@ -90,6 +91,32 @@ void* liqPreviewShader::creator()
 {
     return new liqPreviewShader();
 }
+
+MSyntax liqPreviewShader::syntax()
+{
+  MSyntax syn;
+
+  syn.addFlag("s","shader");
+  syn.addFlag("r","renderer");
+  syn.addFlag("dd","displayDriver");
+  syn.addFlag("dn","displayName");
+  syn.addFlag("ds","displaySize");
+  syn.addFlag("sshn", "shortShaderNames");
+  syn.addFlag("nbp","noBackPlane");
+  syn.addFlag("os","objectSize");
+  syn.addFlag("sr","shadingRate");
+  syn.addFlag("p","pipe");
+
+  syn.addFlag("sph", "sphere");
+  syn.addFlag("tor", "torus");
+  syn.addFlag("cyl", "cylinder");
+  syn.addFlag("cub", "cube");
+  syn.addFlag("pla", "plane");
+  syn.addFlag("tea", "teapot");
+
+  return syn;
+}
+
 
 /**
  *  Class destructor.
@@ -170,6 +197,7 @@ void liquidNewPreview( liqPreviewShoptions *options )
 }
 #endif // ifndef _WIN32
 
+
 MStatus	liqPreviewShader::doIt( const MArgList& args )
 {
 #if defined( PRMAN ) || defined( ENTROPY ) || defined( AQSIS ) || defined( DELIGHT ) || defined( PIXIE )
@@ -192,7 +220,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   for ( i = 0; i < args.length(); i++ ) {
     MString arg = args.asString( i, &status );
 
-    if ( arg == "-teapot" )  {
+    if ( ( arg == "-tea" ) || ( arg == "-teapot" ) )  {
       preview.primitiveType = TEAPOT;
     } else if ( ( arg == "-cube" ) || ( arg == "-box" ) ) {
       preview.primitiveType = CUBE;

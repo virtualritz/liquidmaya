@@ -62,6 +62,8 @@ extern "C" {
 #include <maya/MSelectionList.h>
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MArgList.h>
+#include <maya/MArgParser.h>
+#include <maya/MSyntax.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MPlug.h>
 #include <maya/MPoint.h>
@@ -90,14 +92,50 @@ void* liqAttachPrefAttribute::creator()
   return new liqAttachPrefAttribute;
 }
 
-MStatus	liqAttachPrefAttribute::doIt( const MArgList& args )
+MSyntax liqAttachPrefAttribute::syntax()
+{
+  MSyntax syn;
+
+  syn.setObjectType( MSyntax::kStringObjects, 1 ); // object name
+  syn.useSelectionAsDefault( true );
+
+  syn.addFlag("ws", "worldSpace");
+
+  return syn;
+}
+
+MStatus liqAttachPrefAttribute::doIt(const MArgList& args)
+{
+  MStatus status;
+  MArgParser argParser(syntax(), args);
+
+  MString tempStr;
+  status = argParser.getObjects(objectNames);
+  if (!status) {
+    MGlobal::displayError("error parsing object list");
+    return MS::kFailure;
+  }
+
+  worldSpace = false;
+  int flagIndex = args.flagIndex("ws", "worldSpace");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    worldSpace = true;
+  }
+
+  cout <<">> got "<<objectNames.length()<<" objects to PREF !"<<endl;
+
+  return redoIt();
+}
+
+
+MStatus	liqAttachPrefAttribute::redoIt()
 {
   MFnTypedAttribute tAttr;
   MStatus status;
 
-  for ( unsigned i = 0; i < args.length(); i++ ) {
+  for ( unsigned i = 0; i < objectNames.length(); i++ ) {
     MSelectionList		nodeList;
-    nodeList.add( args.asString( i, &status ) );
+    nodeList.add( objectNames[i] );
     MObject depNodeObj;
     nodeList.getDependNode( 0, depNodeObj );
     MFnDependencyNode depNode( depNodeObj );
@@ -118,7 +156,7 @@ MStatus	liqAttachPrefAttribute::doIt( const MArgList& args )
 
       while( !cvs.isDone() ) {
         while( !cvs.isRowDone() ) {
-          MPoint pt = cvs.position( MSpace::kObject );
+          MPoint pt = (worldSpace)? cvs.position( MSpace::kWorld ) : cvs.position( MSpace::kObject );
           nodePArray.append( pt );
           cvs.next();
         }
@@ -157,7 +195,7 @@ MStatus	liqAttachPrefAttribute::doIt( const MArgList& args )
         while ( count > 0 ) {
           --count;
           unsigned	vertexIndex = polyIt.vertexIndex( count );
-          MPoint nodePoint = polyIt.point( count );
+          MPoint nodePoint = (worldSpace)? polyIt.point( count, MSpace::kWorld ) : polyIt.point( count, MSpace::kObject );
           // Moritz: this returns MS::kFailure but seems to work?!
           nodePArray.set( nodePoint, vertexIndex );
         }
@@ -167,7 +205,7 @@ MStatus	liqAttachPrefAttribute::doIt( const MArgList& args )
       MObject prefDefault = pArrayData.create( nodePArray );
       MPlug nodePlug( depNodeObj, prefAttr );
       nodePlug.setValue( prefDefault );
-    }
+    } else cerr << "Neither a Nurbs nor a Mesh !!" << endl;
   }
 
   return MS::kSuccess;
