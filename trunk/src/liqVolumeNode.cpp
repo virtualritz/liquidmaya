@@ -142,13 +142,14 @@ MStatus liqVolumeNode::initialize()
 	aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
 	MAKE_INPUT(tAttr);
 
-  aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 5, &status );
+  aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 6, &status );
   eAttr.addField( "Sphere",   0 );
   eAttr.addField( "Cube",     1 );
   eAttr.addField( "Cylinder", 2 );
   eAttr.addField( "Torus",    3 );
   eAttr.addField( "Plane",    4 );
   eAttr.addField( "Teapot",   5 );
+  eAttr.addField( "(globals)",6 );
   MAKE_NONKEYABLE_INPUT(eAttr);
   CHECK_MSTATUS(eAttr.setConnectable(false));
 
