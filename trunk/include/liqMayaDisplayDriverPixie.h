@@ -38,7 +38,7 @@
 
 
 
-#include <ndspy.h>
+#include <dsply.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -47,6 +47,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
@@ -62,6 +63,8 @@
 
 #include <bzlib.h>
 using namespace std;
+
+int			readSockData(int s,char *data,int n);
 
 std::deque<string> liqMayaRenderCmd::m_lastBucketFiles;
 
@@ -209,13 +212,22 @@ MStatus liqMayaRenderCmd::redoIt()
 			close(s);
 			return MS::kFailure;
 		}
+		
+		
+		int val = 1;
+		setsockopt(slaveSocket,IPPROTO_TCP,TCP_NODELAY,(const char *) &val,sizeof(int));
+		#ifdef SO_NOSIGPIPE
+			setsockopt(slaveSocket,SOL_SOCKET,SO_NOSIGPIPE,(const char *) &val,sizeof(int));
+		#endif
+						
 		//get image name
 		char imagename[128];
 		memset(imagename,'\0',128*sizeof(char));
 		//get width/height/num channels
 		// imageInfo imgInfo;
 		imageInfo imgInfo;
-		status = read(slaveSocket, &imgInfo, sizeof(imageInfo));
+		sleep(2);
+		status = readSockData(slaveSocket, (char*)&imgInfo, sizeof(imageInfo));
 		if (-1 == status) {
 			perror("read()");
 			close(s);
@@ -302,11 +314,13 @@ MStatus liqMayaRenderCmd::getBucket(const int socket,const unsigned int numChann
 	//get bucket info + data size
 	int bucketInfo[5];
 
-	stat = read(socket, bucketInfo, 5*sizeof(int));
-	if (-1 == stat ) {
-		perror("[liqMayaRenderView] recv(slaveSocket)");
-		return MS::kFailure;
-	}
+	//stat = read(socket, bucketInfo, 5*sizeof(int));
+stat = readSockData(socket, (char*)bucketInfo, 5*sizeof(int));
+	
+//	if (stat < 0) {
+//		perror("[liqMayaRenderView] recv(slaveSocket)");
+//		return MS::kFailure;
+//	}
 	if(!stat){
 		perror("[liqMayaRenderView] read(slaveSocket, bucketInfo)");
 		theEnd = true;
@@ -319,9 +333,8 @@ MStatus liqMayaRenderCmd::getBucket(const int socket,const unsigned int numChann
 	info.top		= bucketInfo[3];
 	info.channels = bucketInfo[4];
 
-	const unsigned int size = (info.right-info.left)*(info.top-info.bottom)*numChannels*sizeof(BUCKETDATATYPE);
+	const unsigned int size = (info.right-info.left)*labs(info.bottom-info.top)*numChannels*sizeof(BUCKETDATATYPE);
 	if(!size){
-
 		theEnd = true;
 		return MS::kFailure;
 	}
@@ -331,9 +344,10 @@ MStatus liqMayaRenderCmd::getBucket(const int socket,const unsigned int numChann
 		ERROR("[liqMayaRenderView] cannot allocate memory for data");
 		return MS::kInsufficientMemory;
 	}
-	stat = read(socket, data,  size);
+	stat = readSockData(socket,(char*) data,  size);
 
-	if (-1 == stat) {
+	//if (stat <= 0) {
+	if(!stat){
 		perror("[liqMayaRenderView] read()");
 		return MS::kFailure;
 	}
@@ -464,8 +478,8 @@ int liqMayaRenderCmd::createSocket(const char *hostname,const unsigned int port)
 
 	status = setsockopt(serverSocket, SOL_SOCKET, 	SO_REUSEADDR,(const char *) &on, sizeof(on));
 	if (-1 == status) perror("[liqMayaRenderCmd] setsockopt(...,SO_REUSEADDR,...)");
-	status = fcntl(serverSocket,F_SETFL, O_NONBLOCK);
-	if (-1 == status) perror("[liqMayaRenderCmd] fcntl(serverSocket, O_NONBLOCK)");
+//	status = fcntl(serverSocket,F_SETFL, O_NONBLOCK);
+//	if (-1 == status) perror("[liqMayaRenderCmd] fcntl(serverSocket, O_NONBLOCK)");
 
 
 	linger lng;
@@ -485,7 +499,6 @@ int liqMayaRenderCmd::createSocket(const char *hostname,const unsigned int port)
 		}
 	}
 
-
 	(void)memset(&serverName, 0,sizeof(serverName));
 	(void)memcpy(&serverName.sin_addr, hostPtr->h_addr,hostPtr->h_length);
 
@@ -498,6 +511,7 @@ int liqMayaRenderCmd::createSocket(const char *hostname,const unsigned int port)
 		perror("[liqMayaRenderCmd] bind()");
 		return -1;
 	}
+
 	status = listen(serverSocket, backlog);
 	if (-1 == status) {
 		perror("[liqMayaRenderCmd] listen()");
@@ -652,3 +666,39 @@ int waitSocket(const int fd,const int seconds, const bool check_readable)
 
     return FD_ISSET(fd,&fds) ? 1 : 0;
 }
+
+
+int			readSockData(int s,char *data,int n) {
+	int	i,j;
+
+	j	= n;
+	#ifdef MSG_NOSIGNAL
+		i	= recv(s,data,j,MSG_NOSIGNAL);
+	#else
+		i	= recv(s,data,j,0);
+	#endif
+
+	if (i <= 0) {
+		perror("[liqMayaRenderCmd] Connection broken");
+		return false;
+	}
+
+	while(i < j) {
+		data	+=	i;
+		j		-=	i;
+
+		#ifdef MSG_NOSIGNAL
+			i		=	recv(s,data,j,MSG_NOSIGNAL);
+		#else
+			i		=	recv(s,data,j,0);
+		#endif
+			
+	
+		if (i <= 0) {
+			perror("[liqMayaRenderCmd] Connection broken");
+			return false;
+		}
+	}
+	return true;
+}
+

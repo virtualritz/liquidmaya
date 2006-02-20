@@ -46,6 +46,9 @@ using namespace std;
 int timeout = 30;
 static int recoverFlag=0;
 static int socketId = -1;
+
+int sendSockData(int s,char * data,int n);
+
 PtDspyError
 DspyImageOpen(PtDspyImageHandle *pvImage,
               const char *drivername,
@@ -118,7 +121,7 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 		cerr<<"[d_liqmaya] Error: timeout"<<endl;
 		return PkDspyErrorNoResource;
 	}
-	status = write(socketId,imgSpecs,sizeof(imageInfo));
+	status = sendSockData(socketId,(char*)imgSpecs,sizeof(imageInfo));
 	if(status == -1){
 		perror("[d_liqmaya] Error: write(socketId,wh,2*sizeof(int))");
 		return PkDspyErrorNoResource;
@@ -214,7 +217,10 @@ PtDspyError DspyImageData(PtDspyImageHandle pvImage,
 
 
 PtDspyError DspyImageClose(PtDspyImageHandle pvImage) {
-	write(socketId, NULL,0);
+	bucket::bucketInfo binfo;
+    bzero(&binfo,sizeof(bucket::bucketInfo));
+    sendSockData(socketId, (char*) &binfo,sizeof(bucket::bucketInfo));
+
 	close(socketId);
 	return PkDspyErrorNone;
 }
@@ -242,7 +248,7 @@ PtDspyError sendData(const int socket,
 		return PkDspyErrorUndefined;
 	}
 
-	status = write(socket, &binfo,sizeof(bucket::bucketInfo));
+	status = sendSockData(socket, (char*)&binfo,sizeof(bucket::bucketInfo));
 	if(status == -1){
 		perror("[d_liqmaya] Error: write(socket,bucketInfo)");
 		return PkDspyErrorNoResource;
@@ -251,7 +257,7 @@ PtDspyError sendData(const int socket,
 		cerr<<"[d_liqmaya] Error: timeout reached, data cannot be sent"<<endl;
 		return PkDspyErrorUndefined;
 	}
-	status = write(socket, data,size);
+	status = sendSockData(socket, (char*)data,size);
 	if(status == -1){
 		perror("[d_liqmaya] Error: write(socket,data)");
 		return PkDspyErrorNoResource;
@@ -288,6 +294,13 @@ int openSocket(const char *host, const int port)
 	errno =0;
 	int status = connect(clientSocket,(struct sockaddr*) &serverName,sizeof(serverName));
 
+	int val = 1;
+	setsockopt(clientSocket,IPPROTO_TCP,TCP_NODELAY,(const char *) &val,sizeof(int));
+	#ifdef SO_NOSIGPIPE
+		setsockopt(clientSocket,SOL_SOCKET,SO_NOSIGPIPE,(const char *) &val,sizeof(int));
+	#endif
+
+	
     if (-1 == status)
     {
         perror("[d_liqmaya] Error: connect()");
@@ -297,3 +310,28 @@ int openSocket(const char *host, const int port)
 
 }
 
+int sendSockData(int s,char * data,int n){
+	int i,j;
+	
+	j	= n;
+	i	= send(s,data,j,0);
+
+	if (i <= 0) {
+		perror("[d_liqmaya] Connection broken");
+		return false;
+	}
+
+	// If we could not send the entire data, send the rest
+	while(i < j) {
+		data	+=	i;
+		j		-=	i;
+
+		i		= send(s,data,j,0);
+		
+		if (i <= 0) {
+			perror("[d_liqmaya] Connection broken");
+			return false;
+		}
+	}
+	return true;
+}
