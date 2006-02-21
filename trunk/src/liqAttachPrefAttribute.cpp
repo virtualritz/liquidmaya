@@ -74,6 +74,7 @@ extern "C" {
 #include <maya/MFnMesh.h>
 #include <maya/MFnNurbsSurface.h>
 #include <maya/MPxCommand.h>
+#include <maya/MDagPath.h>
 
 #include <liqAttachPrefAttribute.h>
 #include <liqRenderer.h>
@@ -138,6 +139,8 @@ MStatus	liqAttachPrefAttribute::redoIt()
     nodeList.add( objectNames[i] );
     MObject depNodeObj;
     nodeList.getDependNode( 0, depNodeObj );
+    MDagPath dagNode;
+    nodeList.getDagPath( 0, dagNode );
     MFnDependencyNode depNode( depNodeObj );
     MObject prefAttr;
 
@@ -152,7 +155,7 @@ MStatus	liqAttachPrefAttribute::redoIt()
 
       MPointArray nodePArray;
 
-      MItSurfaceCV cvs( depNodeObj, liquidRenderer.requires_SWAPPED_UVS == false );
+      MItSurfaceCV cvs( dagNode, MObject::kNullObj, liquidRenderer.requires_SWAPPED_UVS == false, &status );
 
       while( !cvs.isDone() ) {
         while( !cvs.isRowDone() ) {
@@ -183,7 +186,7 @@ MStatus	liqAttachPrefAttribute::redoIt()
       // TODO: do we need to account for the altMeshExport algo that's
       // used in liquidRibMeshData?
       // Moritz: no, it's basically the same as the algo below
-      for ( MItMeshPolygon polyIt( depNodeObj ); !polyIt.isDone(); polyIt.next()) {
+      for ( MItMeshPolygon polyIt( dagNode, MObject::kNullObj ); !polyIt.isDone(); polyIt.next()) {
         count = polyIt.polygonVertexCount();
 
         {
