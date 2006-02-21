@@ -15,12 +15,23 @@ light liquiddistant(
    output float __nonspecular = 0; /* set to 1 to exclude from highlights */
 )
 {
-  uniform float factor = (shadowname == "raytrace")? 0.2:0.001;
+  uniform float factor;
+  if( shadowname != "" ) {
+    if ( shadowname == "raytrace" ) factor = 0.2;
+    else {
+      uniform float shadowsize[2];
+      textureinfo( shadowname, "resolution", shadowsize );
+      factor = 1/shadowsize[0];
+    }
+  }
+
   solar( vector "shader" ( 0, 0, 1 ), 0 ) {
 
-    if( shadowname != "" )
+    if( shadowname != "" ) {
+      uniform float shadowsize[2];
+      textureinfo( shadowname, "resolution", shadowsize );
       __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "blur", shadowfiltersize*factor, "bias", shadowbias, "width", 1 );
-    else
+    } else
       __shadow = 0;
 
     Cl = intensity;
