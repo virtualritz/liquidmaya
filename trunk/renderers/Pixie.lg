@@ -73,7 +73,7 @@ proc setAttribute12() {
 }
 
 proc setAttribute13() {
-	setAttr ".dshImageMode" -type "string" "mode";
+	setAttr ".dshImageMode" -type "string" "z";
 }
 
 // The following code will be executed by sourcing this file
