@@ -4665,8 +4665,8 @@ int count =0;
         iter->imageMode.clear();
         if ( iter->deepShadows )
         {
-          iter->imageMode += "deepopacity";
-          iter->format = "deepshad";
+          iter->imageMode	+= liquidRenderer.dshImageMode;		//"deepopacity";
+          iter->format		=  liquidRenderer.dshDisplayName;	//"deepshad";
         }
         else
         {
@@ -4837,7 +4837,9 @@ MStatus liqRibTranslator::framePrologue(long lframe)
           // We need to create a null output zfile first, and use the deep
           // shadows as a secondary output.
           //
+          #ifndef PIXIE
           RiDisplay( "null", "null", "z", RI_NULL );
+          #endif
           MString deepFileImageName = "+" + relativeShadowName;
           RiDisplay( const_cast<char *>( deepFileImageName.asChar() ),
                      const_cast<char *>( liqglo_currentJob.format.asChar() ),
