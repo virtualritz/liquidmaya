@@ -100,7 +100,6 @@ group "Shadow";
 	name "Shadow Filter Size";
 	desc "";
 	type "slider";
-	range [ 0 1 ];
 
 	param "shadowcolor";
 	name "Shadow Color";
