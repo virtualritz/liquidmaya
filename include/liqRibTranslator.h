@@ -201,7 +201,6 @@ private :
   MString m_pixDir;
   MString m_tmpDir;
   MString m_ribDirG;
-  MString m_pixDirG;
   MString m_texDirG;
   MString m_tmpDirG;
   bool m_animation;
