@@ -122,7 +122,7 @@ global proc connectExistingShadowCamera( string $nodeDotAttr, string $flag, stri
 global proc disconnecShadowCamera( string $nodeDotAttr )
 {
   // nothing yet
-  trace ("disconnecShadowCamera "+$nodeDotAttr);
+  //trace ("disconnecShadowCamera "+$nodeDotAttr);
 }
 
 global proc deleteShadowCamera( string $nodeDotAttr )
@@ -133,13 +133,13 @@ global proc deleteShadowCamera( string $nodeDotAttr )
 global proc ignoreShadowCamera( string $nodeDotAttr )
 {
   // nothing yet
-  trace ("ignoreShadowCamera "+$nodeDotAttr);
+  //trace ("ignoreShadowCamera "+$nodeDotAttr);
 }
 
 global proc unIgnoreShadowCamera( string $nodeDotAttr )
 {
   // nothing yet
-  trace ("unIgnoreShadowCamera "+$nodeDotAttr);
+  //trace ("unIgnoreShadowCamera "+$nodeDotAttr);
 }
 
 
