@@ -534,7 +534,6 @@ liqRibTranslator::liqRibTranslator()
   m_tmpDir = "rmantmp/";
   m_ribDirG.clear();
   m_texDirG.clear();
-  m_pixDirG.clear();
   m_tmpDirG.clear();
   liqglo_preReadArchive.clear();
   liqglo_preRibBox.clear();
@@ -1080,21 +1079,14 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       LIQCHECKSTATUS(status, "error in -skipSingleFrameShadows parameter");
       liqglo_skipSingleFrameShadows = true;
     } else if ((arg == "-shn") || (arg == "-shotName")) {
-      LIQCHECKSTATUS(status, "error in -shotName parameter");
+      LIQCHECKSTATUS(status, "error in -shotName parameter");   i++;
       liqglo_shotName = args.asString( i, &status );
     } else if ((arg == "-shv") || (arg == "-shotVersion")) {
-      LIQCHECKSTATUS(status, "error in -shotVersion parameter");
+      LIQCHECKSTATUS(status, "error in -shotVersion parameter");  i++;
       liqglo_shotVersion = args.asString( i, &status );
     }
   }
 
-  if ( !liqglo_relativeFileNames )
-  {
-    liqglo_ribDir     = liqglo_projectDir + "rib";
-    liqglo_textureDir = liqglo_projectDir + "rmantex";
-    m_pixDir          = liqglo_projectDir + "rmanpix";
-    m_tmpDir          = liqglo_projectDir + "rmantmp";
-  }
 
   setSearchPaths();
 
@@ -1720,7 +1712,7 @@ void liqRibTranslator::liquidReadGlobals()
     if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
     gStatus.clear();
     if ( varVal != "" ) {
-      m_pixDirG = parseString( varVal );
+      m_pixDir = parseString( varVal );
     }
   }
   {
@@ -2489,11 +2481,8 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     }
   }
 
-  // if directories were set in the globals then set the global variables
-  if ( m_ribDirG.length() > 0 ) liqglo_ribDir = m_ribDirG;
-  if ( m_texDirG.length() > 0 ) liqglo_textureDir = m_texDirG;
-  if ( m_pixDirG.length() > 0 ) m_pixDir = m_pixDirG;
-  if ( m_tmpDirG.length() > 0 ) m_tmpDir = m_tmpDirG;
+  // check to see if all the directories we are working with actually exist.
+  verifyOutputDirectories();
 
   // make sure the directories end with a slash
   LIQ_ADD_SLASH_IF_NEEDED( liqglo_ribDir );
@@ -2541,9 +2530,6 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   // to avoid crashing
   try {
     m_escHandler.beginComputation();
-
-    // check to see if all the directories we are working with actually exist.
-    verifyOutputDirectories();
 
     if ( ( m_preFrameMel  != "" ) && !fileExists( m_preFrameMel  ) ) {
       cout << "Liquid -> Cannot find pre frame mel script file! Assuming local.\n" << flush;
@@ -5000,7 +4986,8 @@ MStatus liqRibTranslator::framePrologue(long lframe)
           imageName = (*m_displays_iterator).name;
           if ( imageName == "" ) imageName = liqglo_sceneName + ".#." + outExt;
           imageName = m_pixDir + parseString( imageName );
-          imageName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, imageName, liqglo_projectDir );
+          // we test for an absolute path before converting from rel to abs path in case the picture dir was overriden through the command line.
+          if ( m_pixDir.index( '/' ) != 0 ) imageName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, imageName, liqglo_projectDir );
           if ( m_displays_iterator > m_displays.begin() ) imageName = "+" + imageName;
 
           // get display type ( tiff, openexr, etc )

@@ -572,7 +572,8 @@ MString parseString( const MString & inputString )
   }
 
   // Moritz: now parse for MEL command sequences
-  //return parseCommandString( constructedString );
+  constructedString = parseCommandString( constructedString );
+
   return constructedString;
 }
 
