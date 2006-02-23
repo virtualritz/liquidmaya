@@ -592,7 +592,7 @@ global proc liquidFluidReloadPreviewSwatch( string $shaderNode )
   while ( !`filetest -r ($image+".done")` &&  `timerX -st $timeout` < 30.0 ) {
     // wait 30 seconds max before giving up
   }
-  if ( `timerX -st $timeout` < 31.0 ) fprint 2 ("render took "+(`timerX -st $timeout`)+" seconds\n");
+  if ( `timerX -st $timeout` < 31.0 ) trace ("render took "+(`timerX -st $timeout`)+" seconds");
   else warning ("preview of \""+$shaderNode+"\" took more than 30 seconds !");
 
   if ( `filetest -w ($image+".done")` ) sysFile -del ($image+".done");
@@ -605,7 +605,7 @@ global proc liquidFluidReloadPreviewSwatch( string $shaderNode )
   // refresh the palette swatch
   string $containerPreviewNode = liquidContainer_getPreviewNodeName( $shaderNode );
   if ( $containerPreviewNode != "" ) {
-    fprint 2 ("refresh "+$containerPreviewNode+" with "+$image+"\n");
+    trace ("refresh "+$containerPreviewNode+" with "+$image);
     eval `setAttr -type "string" ($containerPreviewNode+".fileTextureName") $image`;
   }
 

@@ -255,7 +255,7 @@ global proc liquidSlParseLif( string $shaderFile )
   // check its existence
   // and mark the existence of the lif file
   if ( ! `filetest -r $lifFile` ) {
-    fprint 2 ( "no lif file for shader: " + $shaderFile + "\n" );
+    //trace ( "no lif file for shader: " + $shaderFile );
     return;
   } else {
     $gLiquidSlLifExists = 1;
