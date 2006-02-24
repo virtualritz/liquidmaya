@@ -180,7 +180,7 @@ MStatus liqDisplacementNode::initialize()
   CHECK_MSTATUS(nAttr.setHidden(true));
 
 	// Create output attributes
-  aDisplacement = nAttr.create("displacement", "d", MFnNumericData::kDouble, 0.0, &status);
+  aDisplacement = nAttr.create("displacement", "d", MFnNumericData::kFloat, 0.0, &status);
 	MAKE_OUTPUT(nAttr);
   aOutColor = nAttr.createColor("outColor", "oc");
 	MAKE_OUTPUT(nAttr);
@@ -206,16 +206,19 @@ MStatus liqDisplacementNode::initialize()
   return MS::kSuccess;
 }
 
-//MStatus liqDisplacementNode::compute( const MPlug& plug, MDataBlock& block )
-//{
-//  //cout <<"compute !"<<endl;
-//
-//	// outColor or individual R, G, B channel
-//  if((plug != aDisplacement) && (plug.parent() != aDisplacement))
-//  return MS::kUnknownParameter;
-//
-//  return MS::kSuccess;
-//}
+MStatus liqDisplacementNode::compute( const MPlug& plug, MDataBlock& block )
+{
+
+  if( (plug == aDisplacement) || (plug.parent() == aDisplacement) ) {
+
+    MDataHandle outDispHandle = block.outputValue( aDisplacement );
+    outDispHandle.set( 0.0f );
+    outDispHandle.setClean();
+
+  } else return MS::kUnknownParameter;
+
+  return MS::kSuccess;
+}
 
 
 

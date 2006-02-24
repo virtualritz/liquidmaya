@@ -74,6 +74,27 @@ proc rmanParams_update( string $node, string $attr )
   eval $cmd;
 }
 
+global proc lifGradient_unifyInterpolation( string $ctl )
+{
+  global string	$gAEFocusNode;
+
+  print (">> "+$ctl+"\n");
+
+  string $currentParent = `setParent -q`;
+  string $optionMenuCtl = `setParent $ctl`;
+  int $selected = `optionMenu -q -sl ($optionMenuCtl+"|optionMenu")` - 1;
+
+  string $attr = substitute("Si$", $ctl, "");
+  string $nodeAttr = ($gAEFocusNode+"."+$attr);
+  print (">> + "+$nodeAttr+" > "+$selected+"\n");
+  int $size = `getAttr -s $nodeAttr`;
+  for ( $i=0; $i<$size; $i++ ) {
+    print (">>   + "+$nodeAttr+"["+$i+"]."+$attr+"_Interp > "+$selected+"\n");
+    setAttr ($nodeAttr+"["+$i+"]."+$attr+"_Interp") $selected;
+  }
+  setParent $currentParent;
+}
+
 global proc lifGradient_connect( string $nodeAttr )
 {
   string $buffer[];
@@ -95,10 +116,12 @@ global proc lifGradient_create( string $nodeAttr, int $bound, int $indent, int $
   tokenize($nodeAttr, ".", $buffer);
   string $attr = $buffer[1];
 
+  string $topParent = `setParent -q`;
+
   string $rampName = $attr + "Ramp";
-  string $scName = $attr +"Scc";
-  string $spName = $attr +"Sp";
-  string $siName = $attr +"Si";
+  string $scName   = $attr + "Scc";
+  string $spName   = $attr + "Sp";
+  string $siName   = $attr + "Si";
 
   string $colEntryName =  ($nodeAttr + "[0]." + $attr + "_ColorR");
   int $isColor = `objExists ($colEntryName)`;
@@ -218,13 +241,19 @@ global proc lifGradient_create( string $nodeAttr, int $bound, int $indent, int $
   gradientControl -e -sic $interp $widgetName;
   setUITemplate -ppt;
 
+  // add command to unify interpolation
+  string $optionMenuCtl = ($interp+"|optionMenu");
+  if ( `optionMenu -q -ex $optionMenuCtl` ) optionMenu -e -cc ("lifGradient_unifyInterpolation "+$siName) $optionMenuCtl;
+
+  setParent $topParent;
 }
 
 
 proc lifGradientAttr_connect( string $node, string $valueAttr, string $positionAttr, string $interpAttr )
 {
-  int $isColor = ( `getAttr -type ($node+"."+$valueAttr+"[0]")` == "float3" )? 1:0 ;
-  int $arraySize = `getAttr -size ($node+"."+$valueAttr)`;
+  int $isColor     = ( `getAttr -type ($node+"."+$valueAttr+"[0]")` == "float3" )? 1:0 ;
+  int $arraySize   =   `getAttr -size ($node+"."+$valueAttr)`;
+  int $multiInterp = ( `getAttr -size ($node+"."+$interpAttr)` )? 1:0;
 
   string $gradAttr = ($valueAttr+"Lif");
 
@@ -235,20 +264,28 @@ proc lifGradientAttr_connect( string $node, string $valueAttr, string $positionA
     if ( $isColor ) connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Color")   ($node+"."+$valueAttr+"["+$i+"]");
     else connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_FloatValue")   ($node+"."+$valueAttr+"["+$i+"]");
 
-    if ( objExists( ($node+"."+$positionAttr) ) ) connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position") ($node+"."+$positionAttr+"["+$i+"]");
-    else setAttr -lock on ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position");
+    if ( objExists( ($node+"."+$positionAttr) ) ) {
+      setAttr -lock off ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position");
+      connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position") ($node+"."+$positionAttr+"["+$i+"]");
+    } else setAttr -lock on ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position");
 
-    if ( objExists( ($node+"."+$interpAttr) ) )   connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp")   ($node+"."+$interpAttr+"["+$i+"]");
-    else setAttr -lock on ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp");
+    if ( objExists( ($node+"."+$interpAttr) ) ) {
+      setAttr -lock off ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp");
+      if ( objExists( ($node+"."+$interpAttr+"["+$i+"]") ) ) {
+        connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp")   ($node+"."+$interpAttr+"["+$i+"]");
+      } else {
+        if ( $i>0 ) continue;
+        connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp")   ($node+"."+$interpAttr);
+      }
+    } else setAttr -lock on ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp");
   }
 }
 
 proc lifGradientAttr_init( string $node, string $valueAttr, string $positionAttr, string $interpAttr )
 {
-  int $isColor = ( `getAttr -type ($node+"."+$valueAttr+"[0]")` == "float3" )? 1:0 ;
-
-  int $arraySize = `getAttr -size ($node+"."+$valueAttr)`;
-
+  int $isColor     = ( `getAttr -type ($node+"."+$valueAttr+"[0]")` == "float3" )? 1:0 ;
+  int $arraySize   =   `getAttr -size ($node+"."+$valueAttr)`;
+  int $multiInterp = ( `getAttr -size ($node+"."+$interpAttr)` )? 1:0;
 
   string $gradAttr = ($valueAttr+"Lif");
 
@@ -257,7 +294,11 @@ proc lifGradientAttr_init( string $node, string $valueAttr, string $positionAttr
     //trace ("  lifGradientAttr_init "+$node+" "+$valueAttr+"["+$i+"]");
 
     float $pos    = ( objExists( ($node+"."+$positionAttr+"["+$i+"]") ) )? (`getAttr ($node+"."+$positionAttr+"["+$i+"]")`) : ($i*(1/($arraySize-1)));
-    float $interp = ( objExists( ($node+"."+$interpAttr+"["+$i+"]") ) )?   (`getAttr ($node+"."+$interpAttr+"["+$i+"]")`) : 3;
+    float $interp = 3;
+    if ( $interpAttr != "" ) {
+      if ( objExists( ($node+"."+$interpAttr+"["+$i+"]") ) )   $interp = `getAttr ($node+"."+$interpAttr+"["+$i+"]")`;
+      else $interp = `getAttr ($node+"."+$interpAttr)`;
+    }
 
     setAttr ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position") $pos;
     if ( $isColor ) {

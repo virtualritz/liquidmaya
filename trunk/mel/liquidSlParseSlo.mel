@@ -126,7 +126,7 @@ proc string getParamDefaultF( int $fid )
     $default = float($default);
 
     // Make sure we have somethings that looks like a float
-    if ( !gmatch( $default, "*.*") ) $default += ".0";
+    if ( match( "[e\.]", $default) == "" ) $default += ".0";
 
     return $default;
 }
