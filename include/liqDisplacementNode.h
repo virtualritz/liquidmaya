@@ -63,7 +63,7 @@ class liqDisplacementNode : public MPxNode
                       liqDisplacementNode();
     virtual          ~liqDisplacementNode();
 
-    //virtual MStatus   compute( const MPlug&, MDataBlock& );
+    virtual MStatus   compute( const MPlug&, MDataBlock& );
     virtual void      postConstructor();
 
     static  void *    creator();
