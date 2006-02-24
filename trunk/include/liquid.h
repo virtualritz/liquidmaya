@@ -194,9 +194,9 @@ enum PixelFilterType {
 enum HiderType {
   htHidden   = 0,
   htPhoton   = 1,
-  htRaytrace = 2,
-  htOpenGL   = 3,
-  htZbuffer  = 4
+  htZbuffer  = 2,
+  htRaytrace = 3,
+  htOpenGL   = 4
 };
 
 enum ShadowType {
