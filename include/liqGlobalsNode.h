@@ -182,10 +182,10 @@ class liqGlobalsNode : public MPxNode
     static MObject aLimitsEyeSplits;
     static MObject aLimitsGPrimSplits;
 
-    static MObject aImageDepth;
-    static MObject aPixelFilter;
-    static MObject aPixelFilterX;
-    static MObject aPixelFilterY;
+//    static MObject aImageDepth;
+//    static MObject aPixelFilter;
+//    static MObject aPixelFilterX;
+//    static MObject aPixelFilterY;
 
     static MObject aCleanRib;
     static MObject aCleanTex;

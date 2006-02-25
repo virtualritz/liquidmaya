@@ -174,10 +174,10 @@ MObject liqGlobalsNode::aLimitsTextureMemory;
 MObject liqGlobalsNode::aLimitsEyeSplits;
 MObject liqGlobalsNode::aLimitsGPrimSplits;
 
-MObject liqGlobalsNode::aImageDepth;
-MObject liqGlobalsNode::aPixelFilter;
-MObject liqGlobalsNode::aPixelFilterX;
-MObject liqGlobalsNode::aPixelFilterY;
+//MObject liqGlobalsNode::aImageDepth;
+//MObject liqGlobalsNode::aPixelFilter;
+//MObject liqGlobalsNode::aPixelFilterX;
+//MObject liqGlobalsNode::aPixelFilterY;
 
 MObject liqGlobalsNode::aCleanRib;
 MObject liqGlobalsNode::aCleanTex;
@@ -561,10 +561,10 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aLimitsEyeSplits,            "limitsEyeSplits",              "les",    10    );
            CREATE_INT( nAttr,  aLimitsGPrimSplits,          "limitsGPrimSplits",            "lges",   4    );
 
-           CREATE_INT( nAttr,  aImageDepth,                 "imageDepth",                   "idp",    8    );
-           CREATE_INT( nAttr,  aPixelFilter,                "pixelFilter",                  "ipf",    2    );
-         CREATE_FLOAT( nAttr,  aPixelFilterX,               "pixelFilterX",                 "ipfx",   3.0   );
-         CREATE_FLOAT( nAttr,  aPixelFilterY,               "pixelFilterY",                 "ipfy",   3.0   );
+//           CREATE_INT( nAttr,  aImageDepth,                 "imageDepth",                   "idp",    8    );
+//           CREATE_INT( nAttr,  aPixelFilter,                "pixelFilter",                  "ipf",    2    );
+//         CREATE_FLOAT( nAttr,  aPixelFilterX,               "pixelFilterX",                 "ipfx",   3.0   );
+//         CREATE_FLOAT( nAttr,  aPixelFilterY,               "pixelFilterY",                 "ipfy",   3.0   );
 
           CREATE_BOOL( nAttr,  aCleanRib,                   "cleanRib",                     "clr",    0     );
           CREATE_BOOL( nAttr,  aCleanTex,                   "cleanTex",                     "clt",    0     );

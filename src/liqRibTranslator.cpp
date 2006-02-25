@@ -1444,6 +1444,10 @@ void liqRibTranslator::liquidReadGlobals()
           elementPlug.getValue( val );
           theDisplay.filter = m_pixelFilterNames[val];
           //cout <<"  DD : filter["<<i<<"] = "<<theDisplay.filter<<endl;
+		  
+		  if (i==0) {
+			m_rFilter  = val;
+		  }
         }
       }
 
@@ -1523,6 +1527,11 @@ void liqRibTranslator::liquidReadGlobals()
         }
       }
 
+	  if (i==0) {	// copy filter params from display 0
+		m_rFilterX = theDisplay.filterX;
+		m_rFilterY = theDisplay.filterY;
+		quantValue = theDisplay.bitDepth;
+	  }
 
       structDDParam xtraDDParams;
 
@@ -1796,19 +1805,7 @@ void liqRibTranslator::liquidReadGlobals()
       m_postFrameMel = parseString( varVal );
     }
   }
-
-  // PIXELFILTER OPTIONS: BEGIN
-  gPlug = rGlobalNode.findPlug( "pixelFilter", &gStatus );
-  if ( gStatus == MS::kSuccess ) gPlug.getValue( m_rFilter );
-  gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "pixelFilterX", &gStatus );
-  if ( gStatus == MS::kSuccess ) gPlug.getValue( m_rFilterX );
-  gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "pixelFilterY", &gStatus );
-  if ( gStatus == MS::kSuccess ) gPlug.getValue( m_rFilterY );
-  gStatus.clear();
-  // PIXELFILTER OPTIONS: END
-
+  
   // RENDER OPTIONS:BEGIN
   { int var;
     gPlug = rGlobalNode.findPlug( "hider", &gStatus );
@@ -2085,10 +2082,7 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "justRib", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( m_justRib );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "imageDepth", &gStatus );
-  if ( gStatus == MS::kSuccess ) gPlug.getValue( quantValue );
-  gStatus.clear();
-
+  
   gPlug = rGlobalNode.findPlug( "gain", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( m_rgain );
   gStatus.clear();
