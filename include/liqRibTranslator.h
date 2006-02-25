@@ -67,6 +67,7 @@ private: // Methods
   void computeViewingFrustum( double window_aspect, double& left, double& right, double& bottom, double& top, MFnCamera& cam );
   void getCameraInfo( MFnCamera &cam );
   void setSearchPaths();
+  void setOutDirs();
 
   // rib output functions
   MStatus liquidDoArgs( MArgList args );

@@ -1087,7 +1087,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     }
   }
 
-
+  setOutDirs();
   setSearchPaths();
 
   return MS::kSuccess;
@@ -1568,6 +1568,7 @@ void liqRibTranslator::liquidReadGlobals()
     }
     gStatus.clear();
   }
+  setOutDirs();
   setSearchPaths();
   {
     MString varVal;
@@ -2169,9 +2170,11 @@ bool liqRibTranslator::verifyOutputDirectories()
 {
 #ifdef _WIN32
   int dirMode = 0; // dummy arg
+  int mkdirMode = 0;
 #else
-  mode_t dirMode;
-  dirMode = S_IRWXU|S_IRWXG|S_IRWXO;
+  mode_t dirMode,mkdirMode;
+  dirMode = R_OK|W_OK|X_OK|F_OK;
+  mkdirMode = S_IRWXU|S_IRWXG|S_IRWXO;
 #endif
 
   #define DIR_CREATION_WARNING(type, path) \
@@ -2185,9 +2188,9 @@ bool liqRibTranslator::verifyOutputDirectories()
   bool problem = false;
 
   MString tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_ribDir, liqglo_projectDir );
-  if ( ( access( tmp_path.asChar(), 0 )) == -1 ) {
+  if ( ( access( tmp_path.asChar(), dirMode )) == -1 ) {
     if ( createOutputDirectories ) {
-      if ( MKDIR( tmp_path.asChar(), dirMode ) != 0 ) {
+      if ( MKDIR( tmp_path.asChar(), mkdirMode ) != 0 ) {
 
         DIR_CREATION_WARNING( "RIB", tmp_path );
         liqglo_ribDir = m_systemTempDirectory;
@@ -2200,10 +2203,12 @@ bool liqRibTranslator::verifyOutputDirectories()
     }
   }
 
-  tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_textureDir, liqglo_projectDir );
-  if ( ( access( tmp_path.asChar(), 0 ) ) == -1 ) {
+  if ( liqglo_textureDir.index( '/' ) == 0 ) {
+    tmp_path = m_pixDir;
+  } else tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_textureDir, liqglo_projectDir );
+  if ( ( access( tmp_path.asChar(), dirMode ) ) == -1 ) {
     if ( createOutputDirectories ) {
-      if ( MKDIR( tmp_path.asChar(), dirMode ) != 0 ) {
+      if ( MKDIR( tmp_path.asChar(), mkdirMode ) != 0 ) {
         DIR_CREATION_WARNING( "Texture", tmp_path );
         liqglo_textureDir = m_systemTempDirectory;
         problem = true;
@@ -2218,9 +2223,9 @@ bool liqRibTranslator::verifyOutputDirectories()
   if ( m_pixDir.index( '/' ) == 0 ) {
     tmp_path = m_pixDir;
   } else tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, m_pixDir, liqglo_projectDir );
-  if ( (access( tmp_path.asChar(), 0 )) == -1 ) {
+  if ( (access( tmp_path.asChar(), dirMode )) == -1 ) {
     if ( createOutputDirectories ) {
-      if ( MKDIR( tmp_path.asChar(), dirMode ) != 0 ) {
+      if ( MKDIR( tmp_path.asChar(), mkdirMode ) != 0 ) {
         DIR_CREATION_WARNING( "Picture", tmp_path );
         m_pixDir = m_systemTempDirectory;
         problem = true;
@@ -2233,9 +2238,9 @@ bool liqRibTranslator::verifyOutputDirectories()
   }
 
   tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, m_tmpDir, liqglo_projectDir );
-  if ( (access( tmp_path.asChar(), 0 )) == -1 ) {
+  if ( (access( tmp_path.asChar(), dirMode )) == -1 ) {
     if ( createOutputDirectories ) {
-      if ( MKDIR( tmp_path.asChar(), dirMode ) != 0 ) {
+      if ( MKDIR( tmp_path.asChar(), mkdirMode ) != 0 ) {
         DIR_CREATION_WARNING( "Temp Files", tmp_path );
         m_tmpDir = m_systemTempDirectory;
         problem = true;
@@ -6161,6 +6166,43 @@ MStatus liqRibTranslator::lightBlock()
 
   return returnStatus;
 }
+
+void liqRibTranslator::setOutDirs()
+{
+  MStatus gStatus;
+  MPlug gPlug;
+  MFnDependencyNode rGlobalNode( rGlobalObj );
+
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "ribDirectory", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      liqglo_ribDir = removeEscapes( parseString( varVal ) );
+    }
+  }
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "textureDirectory", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      liqglo_textureDir = removeEscapes( parseString( varVal ) );
+    }
+  }
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "pictureDirectory", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      m_pixDir = removeEscapes( parseString( varVal ) );
+    }
+  }
+  
+}
+
 
 void liqRibTranslator::setSearchPaths()
 {
