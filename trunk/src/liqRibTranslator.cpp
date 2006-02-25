@@ -706,6 +706,7 @@ MSyntax liqRibTranslator::syntax()
   syntax.addFlag("s",     "samples",          MSyntax::kLong);
   syntax.addFlag("rnm",   "ribName",          MSyntax::kString);
   syntax.addFlag("pd",    "projectDir",       MSyntax::kString);
+  syntax.addFlag("rel",   "relativeDirs");
   syntax.addFlag("prm",   "preFrameMel",      MSyntax::kString);
   syntax.addFlag("pom",   "postFrameMel",     MSyntax::kString);
   syntax.addFlag("rid",   "ribdir",           MSyntax::kString);
@@ -922,6 +923,8 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
         liqglo_projectDir = m_systemTempDirectory;
       }
       LIQCHECKSTATUS(status, "error in -projectDir parameter");
+    } else if ((arg == "-rel") || (arg == "-relativeDirs")) {
+      liqglo_relativeFileNames = true;
     } else if ((arg == "-prm") || (arg == "-preFrameMel")) {
       LIQCHECKSTATUS(status, "error in -preFrameMel parameter");  i++;
       MString parsingString = args.asString( i, &status );
@@ -1087,7 +1090,6 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     }
   }
 
-  setOutDirs();
   setSearchPaths();
 
   return MS::kSuccess;
@@ -1568,8 +1570,13 @@ void liqRibTranslator::liquidReadGlobals()
     }
     gStatus.clear();
   }
+  gPlug = rGlobalNode.findPlug( "relativeFileNames", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_relativeFileNames );
+  gStatus.clear();
+  
   setOutDirs();
   setSearchPaths();
+  
   {
     MString varVal;
     gPlug = rGlobalNode.findPlug( "ribgenCommand", &gStatus );
@@ -1718,42 +1725,6 @@ void liqRibTranslator::liquidReadGlobals()
   gStatus.clear();
   {
     MString varVal;
-    gPlug = rGlobalNode.findPlug( "pictureDirectory", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    gStatus.clear();
-    if ( varVal != "" ) {
-      m_pixDir = parseString( varVal );
-    }
-  }
-  {
-    MString varVal;
-    gPlug = rGlobalNode.findPlug( "textureDirectory", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    gStatus.clear();
-    if ( varVal != "" ) {
-      m_texDirG = parseString( varVal );
-    }
-  }
-  {
-    MString varVal;
-    gPlug = rGlobalNode.findPlug( "tempDirectory", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    gStatus.clear();
-    if ( varVal != "" ) {
-      m_tmpDirG = parseString( varVal );
-    }
-  }
-  {
-    MString varVal;
-    gPlug = rGlobalNode.findPlug( "ribDirectory", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    gStatus.clear();
-    if ( varVal != "" ) {
-      m_ribDirG = parseString( varVal );
-    }
-  }
-  {
-    MString varVal;
     gPlug = rGlobalNode.findPlug( "alfredTags", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
     gStatus.clear();
@@ -1884,9 +1855,6 @@ void liqRibTranslator::liquidReadGlobals()
   gStatus.clear();
   gPlug = rGlobalNode.findPlug( "shortShaderNames", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_shortShaderNames );
-  gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "relativeFileNames", &gStatus );
-  if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_relativeFileNames );
   gStatus.clear();
   gPlug = rGlobalNode.findPlug( "expandAlfred", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( m_alfredExpand );
@@ -2168,6 +2136,7 @@ void liqRibTranslator::liquidReadGlobals()
 
 bool liqRibTranslator::verifyOutputDirectories()
 {
+  char oldPath[MAXPATHLEN];
 #ifdef _WIN32
   int dirMode = 0; // dummy arg
   int mkdirMode = 0;
@@ -2185,8 +2154,11 @@ bool liqRibTranslator::verifyOutputDirectories()
     MGlobal::displayWarning( "Liquid -> " + MString( type ) + " Directory, " + path + ", does not exist. Defaulting to system temp directory!\n" ); \
     cout <<"WARNING: Liquid -> "<<type<<" Directory, "<<path<<", does not exist. Defaulting to system temp directory!"<<endl<<flush
 
+  // first render, we're not cd'd to the right place
+  getcwd(oldPath,MAXPATHLEN);
+  chdir(liqglo_projectDir.asChar());
+  
   bool problem = false;
-
   MString tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_ribDir, liqglo_projectDir );
   if ( ( access( tmp_path.asChar(), dirMode )) == -1 ) {
     if ( createOutputDirectories ) {
@@ -2251,6 +2223,9 @@ bool liqRibTranslator::verifyOutputDirectories()
       problem = true;
     }
   }
+  
+  chdir(oldPath);
+  
   return problem;
 }
 
