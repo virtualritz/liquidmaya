@@ -2136,7 +2136,6 @@ void liqRibTranslator::liquidReadGlobals()
 
 bool liqRibTranslator::verifyOutputDirectories()
 {
-  char oldPath[MAXPATHLEN];
 #ifdef _WIN32
   int dirMode = 0; // dummy arg
   int mkdirMode = 0;
@@ -2154,9 +2153,16 @@ bool liqRibTranslator::verifyOutputDirectories()
     MGlobal::displayWarning( "Liquid -> " + MString( type ) + " Directory, " + path + ", does not exist. Defaulting to system temp directory!\n" ); \
     cout <<"WARNING: Liquid -> "<<type<<" Directory, "<<path<<", does not exist. Defaulting to system temp directory!"<<endl<<flush
 
-  // first render, we're not cd'd to the right place
-  getcwd(oldPath,MAXPATHLEN);
-  chdir(liqglo_projectDir.asChar());
+  #ifdef OSX
+      char oldPath[MAXPATHLEN];
+	  
+	  // first render, we're not cd'd to the right place
+	  // we do not cd back.  Maya does this later
+	  getcwd(oldPath,MAXPATHLEN);
+	  if (strcmp(oldPath,"/") == 0) {
+		chdir(liqglo_projectDir.asChar());
+	  }
+  #endif
   
   bool problem = false;
   MString tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_ribDir, liqglo_projectDir );
@@ -2223,9 +2229,7 @@ bool liqRibTranslator::verifyOutputDirectories()
       problem = true;
     }
   }
-  
-  chdir(oldPath);
-  
+    
   return problem;
 }
 
