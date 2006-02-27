@@ -52,6 +52,7 @@ extern "C" {
 #ifdef _WIN32
 #include <process.h>
 #include <malloc.h>
+#include <liqIOStream.h>
 #else
 #include <unistd.h>
 #include <stdlib.h>

@@ -51,6 +51,32 @@ static int socketId = -1;
 
 int sendSockData(int s,char * data,int n);
 
+
+#ifdef _WIN32
+// DLL initialization and clean-up.
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
+{
+   switch(fdwReason) {
+
+      case DLL_PROCESS_ATTACH:
+		WSADATA wsaData;
+		// Init the winsock
+		if (WSAStartup(0x202,&wsaData) == SOCKET_ERROR) 
+		{
+			WSACleanup();
+			return FALSE;
+		}
+         break;
+
+      case DLL_PROCESS_DETACH:
+		   WSACleanup();
+         break;
+
+   }
+   return TRUE;
+}
+#endif
+
 void	*displayStart(const char *name,int width,int height,int numSamples,const char *samples,TDisplayParameterFunction findParameter) {
 	int i,origin[2],originalSize[2],rc;
 
@@ -163,8 +189,12 @@ int sendSockData(int s,char * data,int n){
 
 void	displayFinish(void *im) {
 	bucket::bucketInfo binfo;
+#ifdef _WIN32
+	memset(&binfo,0,sizeof(bucket::bucketInfo));
+#else
 	bzero(&binfo,sizeof(bucket::bucketInfo));
-	write(socketId, &binfo,sizeof(bucket::bucketInfo));
+#endif
+	sendSockData(socketId, (char*) &binfo,sizeof(bucket::bucketInfo));
 	close(socketId);
 }
 
@@ -191,7 +221,7 @@ PtDspyError sendData(const int socket,
 		return false;
 	}
 
-	status = write(socket, &binfo,sizeof(bucket::bucketInfo));
+	status = sendSockData(socket, (char*)&binfo,sizeof(bucket::bucketInfo));
 	if(status < 0){
 		perror("[d_liqmaya] Error: write(socket,bucketInfo)");
 		return false;
@@ -201,7 +231,7 @@ PtDspyError sendData(const int socket,
 		cerr<<"[d_liqmaya] Error: timeout reached, data cannot be sent"<<endl;
 		return false;
 	}
-	status = write(socket, data,size);
+	status = sendSockData(socket, (char*)data,size);
 	if(status < 0){
 		perror("[d_liqmaya] Error: write(socket,data)");
 		return false;

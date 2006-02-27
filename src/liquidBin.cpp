@@ -51,7 +51,7 @@ extern "C" {
 #include <liqGlobalHelpers.h>
 
 
-#if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
+#if defined(_WIN32)/* && !defined(DEFINED_LIQUIDVERSION)*/
 // unix build gets this from the Makefile
 static const char * LIQUIDVERSION =
 #include "liquid.version"

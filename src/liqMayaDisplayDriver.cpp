@@ -49,6 +49,33 @@ static int socketId = -1;
 
 int sendSockData(int s,char * data,int n);
 
+
+#ifdef _WIN32
+// DLL initialization and clean-up.
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
+{
+   switch(fdwReason) {
+
+      case DLL_PROCESS_ATTACH:
+		WSADATA wsaData;
+		// Init the winsock
+		if (WSAStartup(0x202,&wsaData) == SOCKET_ERROR) 
+		{
+			WSACleanup();
+			return FALSE;
+		}
+         break;
+
+      case DLL_PROCESS_DETACH:
+		   WSACleanup();
+         break;
+
+   }
+   return TRUE;
+}
+#endif
+
+
 PtDspyError
 DspyImageOpen(PtDspyImageHandle *pvImage,
               const char *drivername,
@@ -218,7 +245,11 @@ PtDspyError DspyImageData(PtDspyImageHandle pvImage,
 
 PtDspyError DspyImageClose(PtDspyImageHandle pvImage) {
 	bucket::bucketInfo binfo;
-    bzero(&binfo,sizeof(bucket::bucketInfo));
+#ifdef _WIN32
+	memset(&binfo,0,sizeof(bucket::bucketInfo));
+#else
+	bzero(&binfo,sizeof(bucket::bucketInfo));
+#endif
     sendSockData(socketId, (char*) &binfo,sizeof(bucket::bucketInfo));
 
 	close(socketId);

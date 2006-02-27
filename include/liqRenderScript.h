@@ -37,10 +37,8 @@
 #include <liqIOStream.h>
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
+extern const char * LIQUIDVERSION ;
 // unix build gets this from the Makefile
-//static const char *LIQUIDVERSION = 
-//#include "liquid.version"
-//;
 #define DEFINED_LIQUIDVERSION
 #endif
 
