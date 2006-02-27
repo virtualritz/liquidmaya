@@ -13,7 +13,7 @@
 // The Initial Developer of the Original Code is Colin Doncaster. Portions created by
 // Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 //
-// Contributor(s): Berj Bannayan.
+// Contributor(s): philippe leprince.
 //
 //
 // The RenderMan (R) Interface Procedures and Protocol are:
@@ -61,6 +61,12 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
 
       editorTemplate -ccu ("liquidShaderNodesParamsNew "+$nodeName)  ("liquidShaderNodesParamsReplace "+$nodeName) "rmanShaderLong";
 
+    editorTemplate -endLayout;
+
+    editorTemplate -beginLayout "Maya Renderer" -collapse 1;
+      editorTemplate -addControl "mayaIgnoreLights";
+      editorTemplate -addControl "mayaKa";
+      editorTemplate -addControl "mayaKd";
     editorTemplate -endLayout;
 
     liquidHideAEShaderParams( "" );

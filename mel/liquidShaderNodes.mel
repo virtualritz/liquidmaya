@@ -74,26 +74,25 @@ proc rmanParams_update( string $node, string $attr )
   eval $cmd;
 }
 
+
 global proc lifGradient_unifyInterpolation( string $ctl )
 {
   global string	$gAEFocusNode;
-
-  print (">> "+$ctl+"\n");
 
   string $currentParent = `setParent -q`;
   string $optionMenuCtl = `setParent $ctl`;
   int $selected = `optionMenu -q -sl ($optionMenuCtl+"|optionMenu")` - 1;
 
   string $attr = substitute("Si$", $ctl, "");
+  $attr = substitute("[A-Za-z0-9_]+__", $attr, "");
   string $nodeAttr = ($gAEFocusNode+"."+$attr);
-  print (">> + "+$nodeAttr+" > "+$selected+"\n");
   int $size = `getAttr -s $nodeAttr`;
   for ( $i=0; $i<$size; $i++ ) {
-    print (">>   + "+$nodeAttr+"["+$i+"]."+$attr+"_Interp > "+$selected+"\n");
     setAttr ($nodeAttr+"["+$i+"]."+$attr+"_Interp") $selected;
   }
   setParent $currentParent;
 }
+
 
 global proc lifGradient_connect( string $nodeAttr )
 {
@@ -101,9 +100,10 @@ global proc lifGradient_connect( string $nodeAttr )
   tokenize($nodeAttr, ".", $buffer);
   string $attr = $buffer[1];
 
-  string $rampName = $attr + "Ramp";
+  string $shader = `getAttr ($buffer[0]+".rmanShaderLong")`;
+  $shader = basenameEx( $shader );
 
-  //trace ("lifGradient_connect "+$nodeAttr);
+  string $rampName = ( $shader + "__" + $attr + "Ramp" );
 
   gradientControl -e -at $nodeAttr $rampName;
 
@@ -118,10 +118,13 @@ global proc lifGradient_create( string $nodeAttr, int $bound, int $indent, int $
 
   string $topParent = `setParent -q`;
 
-  string $rampName = $attr + "Ramp";
-  string $scName   = $attr + "Scc";
-  string $spName   = $attr + "Sp";
-  string $siName   = $attr + "Si";
+  string $shader = `getAttr ($buffer[0]+".rmanShaderLong")`;
+  $shader = basenameEx( $shader );
+
+  string $rampName = ( $shader + "__" + $attr + "Ramp" );
+  string $scName   = ( $shader + "__" + $attr + "Scc" );
+  string $spName   = ( $shader + "__" + $attr + "Sp" );
+  string $siName   = ( $shader + "__" + $attr + "Si" );
 
   string $colEntryName =  ($nodeAttr + "[0]." + $attr + "_ColorR");
   int $isColor = `objExists ($colEntryName)`;
@@ -868,7 +871,7 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
   string $form          = `formLayout`;
 
   setUITemplate -pst attributeEditorTemplate;
-  string $fullCtlPath   = `textFieldGrp -label "Shader" $ctlName`;
+  string $fullCtlPath   = `textFieldGrp -label "Shader" -adj 2 $ctlName`;
   connectControl -index 2 $fullCtlPath $msg;
   string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_button")`;
   setParent ..;
@@ -887,7 +890,7 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
                 -af $ctlName  left    0
                 -af $ctlName  right   31
                 -af $button   top     2
-                -ac $button   left    -40 $ctlName
+                -ac $button   left    0 $ctlName
                 $form;
   }
 
@@ -1004,16 +1007,13 @@ global proc liquidAE_LifFloat_spline( string $selectedObj, string $paramName, st
   string $interpAttr   = $attributes[3];
 
   string $compound    = lifGradientAttr_create( $selectedObj, $valueAttr, $positionAttr, $interpAttr );
-  string $lifCtlName  = ( $compound + "Ramp" );
+  string $shader = basenameEx( `getAttr ($selectedObj+".rmanShaderLong")` );
+  string $lifCtlName  = ( $shader + "__" + $compound + "Ramp" );
 
   if ( !`gradientControl -q -ex $lifCtlName` ) {
     // create the control
     int $staticPositions = 1 - min( 1.0, float(size( $positionAttr )) );
     lifGradient_create( ($selectedObj+"."+$compound), 0, 0, 1, $staticPositions, 0 );
-    //rmanParams_update( $selectedObj,  $compound );
-    //rmanParams_update( $selectedObj, ($compound+"_Position") );
-    //rmanParams_update( $selectedObj, ($compound+"_FloatValue") );
-    //rmanParams_update( $selectedObj, ($compound+"_Interp") );
   } else {
     // connect the control
     lifGradient_connect( ($selectedObj+"."+$compound) );
@@ -1288,10 +1288,8 @@ global proc liquidAE_LifColor_spline( string $selectedObj, int $index, string $s
   int    $channelBox  = liquidLifChannelBoxState( $index );
 
   string $compound    = lifGradientAttr_create( $selectedObj, $colorAttr, $positionAttr, $interpAttr );
-  string $lifCtlName  = ( $compound + "Ramp" );
-  string $scName      = ( $compound +"Scc" );
-  string $spName      = ( $compound +"Sp" );
-  string $siName      = ( $compound +"Si" );
+  string $shader = basenameEx( `getAttr ($selectedObj+".rmanShaderLong")` );
+  string $lifCtlName  = ( $shader + "__" + $compound + "Ramp" );
 
   if ( !`gradientControl -q -ex $lifCtlName` ) {
     // create the control

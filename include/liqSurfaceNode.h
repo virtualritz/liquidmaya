@@ -91,6 +91,29 @@ class liqSurfaceNode : public MPxNode
     static MObject aResolution;
     static MObject aRefreshPreview;
 
+    static MObject aMayaIgnoreLights;
+    static MObject aMayaKa;
+    static MObject aMayaKd;
+    static MObject aNormalCameraX;
+    static MObject aNormalCameraY;
+    static MObject aNormalCameraZ;
+    static MObject aNormalCamera;
+    static MObject aLightDirectionX;
+    static MObject aLightDirectionY;
+    static MObject aLightDirectionZ;
+    static MObject aLightDirection;
+    static MObject aLightIntensityR;
+    static MObject aLightIntensityG;
+    static MObject aLightIntensityB;
+    static MObject aLightIntensity;
+    static MObject aLightAmbient;
+    static MObject aLightDiffuse;
+    static MObject aLightSpecular;
+    static MObject aLightShadowFraction;
+    static MObject aPreShadowIntensity;
+    static MObject aLightBlindData;
+    static MObject aLightData;
+
     // Output attributes
     static MObject aOutColor;
     static MObject aOutTransparency;

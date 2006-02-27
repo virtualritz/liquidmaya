@@ -102,7 +102,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   const unsigned numFaceVertices = fnMesh.numFaceVertices();
 
   if ( numPoints < 1 ) {
-    cerr <<"Liquid : Could not export degenerate mesh -> "<<fnMesh.fullPathName( &astatus ).asChar()<<endl<<flush;
+    //cerr <<"Liquid : Could not export degenerate mesh -> "<<fnMesh.fullPathName( &astatus ).asChar()<<endl<<flush;
     return;
   }
 
