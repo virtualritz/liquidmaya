@@ -1090,6 +1090,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     }
   }
 
+
   setSearchPaths();
 
   return MS::kSuccess;
