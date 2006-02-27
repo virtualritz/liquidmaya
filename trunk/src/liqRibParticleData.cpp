@@ -37,6 +37,7 @@ extern "C" {
 
 #ifdef _WIN32
 #  include <hash_map>
+#  include <algorithm>
 #else
 #  include <hash_map.h>
 #endif

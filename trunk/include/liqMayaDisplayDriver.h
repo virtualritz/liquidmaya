@@ -42,9 +42,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef _WIN32
 #include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <sys/utsname.h>
 #include <sys/types.h>
@@ -52,8 +51,15 @@
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <unistd.h>
 #include <sys/select.h>
+#else
+#include <winsock.h>
+#include <io.h>
+#endif
+#include <stdlib.h>
+#include <string.h>
+
+
 #include "liqBucket.h"
 
 int openSocket(const char *host, const int port) ;

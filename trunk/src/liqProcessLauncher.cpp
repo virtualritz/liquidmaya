@@ -67,7 +67,7 @@ bool liqProcessLauncher::execute( const MString &command, const MString &argumen
 ** ______________________________________________________________________
 */
 #if defined(_WIN32)
-
+#include <stdio.h>
 #include <windows.h>
 
 bool liqProcessLauncher::execute( const MString &command, const MString &arguments, const MString &path, const bool wait )

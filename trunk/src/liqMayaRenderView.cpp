@@ -33,7 +33,6 @@
 */
 
 
-#include "liqMayaRenderView.h"
 #include <maya/MArgDatabase.h>
 #include <maya/MGlobal.h>
 #include <maya/MGlobal.h>
@@ -43,7 +42,9 @@
 #include <maya/M3dView.h>
 #include <stdio.h>
 #include <errno.h>
+#include "liqMayaRenderView.h"
 
+#ifndef _WIN32
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -52,16 +53,23 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <fcntl.h>
-
-#include <vector>
-
-#include <string>
 #include <iostream.h>
+#include <bzlib.h>
+#else
+#include <winsock.h>
+#include <io.h>
+typedef int socklen_t;
+
+#endif
+
+#include <vector>
+
+#include <string>
+#include <iostream>
 
 #include <vector>
 #include <string>
 
-#include <bzlib.h>
 using namespace std;
 
 int			readSockData(int s,char *data,int n);
@@ -84,12 +92,22 @@ liqMayaRenderCmd::liqMayaRenderCmd()
 	m_quantize[3] = 255.0;
 	m_timeout = 30;
 	m_bGetRenderRegion = false;
-
-
+#ifdef _WIN32
+	WSADATA wsaData;
+	// Init the winsock
+	if (WSAStartup(0x202,&wsaData) == SOCKET_ERROR)
+	{
+		WSACleanup();
+		ERROR("Winsock init error\n");
+	}
+#endif
 }
 
 liqMayaRenderCmd::~liqMayaRenderCmd()
 {
+#ifdef _WIN32
+	WSACleanup();
+#endif
 }
 
 
@@ -164,7 +182,7 @@ MStatus liqMayaRenderCmd::redoIt()
 		unsigned int i;
 		imageInfo imgInfo;
 		retStatus = readBuckets(m_bucketFile.asChar(),buckets,imgInfo);
-		CHECKERR(retStatus,"readBuckets "<<m_bucketFile);
+		CHECKERR(retStatus,"readBuckets "<<m_bucketFile.asChar());
 		MRenderView::startRender ( imgInfo.width, imgInfo.height, false, false );
 		for(i =0; i< buckets.size();i++)
 			renderBucket(buckets[i],imgInfo);
@@ -226,7 +244,11 @@ MStatus liqMayaRenderCmd::redoIt()
 		//get width/height/num channels
 		// imageInfo imgInfo;
 		imageInfo imgInfo;
+#ifndef _WIN32
 		sleep(2);
+#else
+		Sleep(2000);
+#endif
 		status = readSockData(slaveSocket, (char*)&imgInfo, sizeof(imageInfo));
 		if (-1 == status) {
 			perror("read()");

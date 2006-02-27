@@ -81,8 +81,10 @@ private:
 
 MObject getNode(MString name,MStatus *returnStatus);
 
-
+#undef ERROR
 #define ERROR(MSG) MGlobal::displayError(MString("")+MSG);
+
+
 #define INFO(EXPR,ENDL) {cout<<#EXPR<<" "<<EXPR<<" ";if(ENDL)cout<<endl;}
 #define CHECKERR(STAT,MSG)       \
     if ( MS::kSuccess != STAT ) {   \

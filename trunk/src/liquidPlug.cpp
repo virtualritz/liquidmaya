@@ -75,7 +75,7 @@ extern "C" {
 
 #define LIQVENDOR "http://liquidmaya.sourceforge.net/"
 
-#if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
+#if defined(_WIN32) /*&& !defined(DEFINED_LIQUIDVERSION)*/
 // unix build gets this from the Makefile
 static const char * LIQUIDVERSION =
 #include "liquid.version"
@@ -183,8 +183,17 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   MString sourceLine("source ");
   char *tmphomeChar;
   if( ( tmphomeChar = getenv( "LIQUIDHOME" ) ) ) {
+
+#ifndef WIN32 
+
     MString tmphome( tmphomeChar );
     sourceLine += "\"" + liquidSanitizePath( tmphome ) + "/mel/" + "liquidStartup.mel\"";
+#else
+	for (int k=0;k<strlen(tmphomeChar);k++)if (tmphomeChar[k]=='\\') tmphomeChar[k]='/';
+
+	MString tmphome( tmphomeChar );
+	sourceLine += "\"" + tmphome + "/mel/" + "liquidStartup.mel\"";
+#endif
   } else {
     sourceLine += "\"liquidStartup.mel\"";
   }

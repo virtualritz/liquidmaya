@@ -42,6 +42,7 @@
 #include <GL/glu.h>
 #endif
 
+#include <liqIOStream.h>
 
 MTypeId liqCoordSysNode::id( 0x00103517 );
 MObject liqCoordSysNode::aType;
