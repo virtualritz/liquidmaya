@@ -53,6 +53,7 @@
 #include <maya/MSwatchRenderRegister.h>
 #include <maya/MImage.h>
 #include <maya/MFnDependencyNode.h>
+#include <maya/MFnLightDataAttribute.h>
 
 
 #include <liqIOStream.h>
@@ -75,6 +76,29 @@ MObject liqSurfaceNode::aRefreshPreview;
 MObject liqSurfaceNode::aPreviewObjectSize;
 MObject liqSurfaceNode::aPreviewShadingRate;
 MObject liqSurfaceNode::aPreviewBackplane;
+
+MObject liqSurfaceNode::aMayaIgnoreLights;
+MObject liqSurfaceNode::aMayaKa;
+MObject liqSurfaceNode::aMayaKd;
+MObject liqSurfaceNode::aNormalCameraX;
+MObject liqSurfaceNode::aNormalCameraY;
+MObject liqSurfaceNode::aNormalCameraZ;
+MObject liqSurfaceNode::aNormalCamera;
+MObject liqSurfaceNode::aLightDirectionX;
+MObject liqSurfaceNode::aLightDirectionY;
+MObject liqSurfaceNode::aLightDirectionZ;
+MObject liqSurfaceNode::aLightDirection;
+MObject liqSurfaceNode::aLightIntensityR;
+MObject liqSurfaceNode::aLightIntensityG;
+MObject liqSurfaceNode::aLightIntensityB;
+MObject liqSurfaceNode::aLightIntensity;
+MObject liqSurfaceNode::aLightAmbient;
+MObject liqSurfaceNode::aLightDiffuse;
+MObject liqSurfaceNode::aLightSpecular;
+MObject liqSurfaceNode::aLightShadowFraction;
+MObject liqSurfaceNode::aPreShadowIntensity;
+MObject liqSurfaceNode::aLightBlindData;
+MObject liqSurfaceNode::aLightData;
 
 MObject liqSurfaceNode::aOutColor;
 MObject liqSurfaceNode::aOutTransparency;
@@ -132,6 +156,7 @@ MStatus liqSurfaceNode::initialize()
   MFnTypedAttribute   tAttr;
   MFnNumericAttribute nAttr;
   MFnEnumAttribute    eAttr;
+  MFnLightDataAttribute lAttr;
   MStatus status;
 
   // Create input attributes
@@ -182,7 +207,7 @@ MStatus liqSurfaceNode::initialize()
   MAKE_NONKEYABLE_INPUT(nAttr);
 
   // resolution attribute for maya's hardware renderer
-  aResolution = nAttr.create("resolution", "res",  MFnNumericData::kInt, 16, &status);
+  aResolution = nAttr.create("resolution", "res",  MFnNumericData::kInt, 32, &status);
   CHECK_MSTATUS(nAttr.setStorable( true ));
   CHECK_MSTATUS(nAttr.setReadable( true ));
   CHECK_MSTATUS(nAttr.setWritable( true ));
@@ -194,7 +219,135 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(nAttr.setHidden(true));
 
 
-	// Create output attributes
+  // create attributes for maya renderer
+
+  // lambertian control
+  aMayaIgnoreLights = nAttr.create("mayaIgnoreLights", "mil",  MFnNumericData::kBoolean, 0.0, &status);
+  MAKE_INPUT(nAttr);
+  aMayaKa = nAttr.create("mayaKa", "mka", MFnNumericData::kFloat, 0.2, &status);
+  MAKE_INPUT(nAttr);
+  aMayaKd = nAttr.create("mayaKd", "mkd", MFnNumericData::kFloat, 0.8, &status);
+  MAKE_INPUT(nAttr);
+
+  // Camera Normals
+  aNormalCameraX = nAttr.create( "normalCameraX", "nx", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aNormalCameraY = nAttr.create( "normalCameraY", "ny", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aNormalCameraZ = nAttr.create( "normalCameraZ", "nz", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aNormalCamera = nAttr.create( "normalCamera","n", aNormalCameraX, aNormalCameraY, aNormalCameraZ, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f, 1.0f, 1.0f ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+
+  // Light Direction
+  aLightDirectionX = nAttr.create( "lightDirectionX", "ldx", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aLightDirectionY = nAttr.create( "lightDirectionY", "ldy", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aLightDirectionZ = nAttr.create( "lightDirectionZ", "ldz", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aLightDirection = nAttr.create( "lightDirection", "ld", aLightDirectionX, aLightDirectionY, aLightDirectionZ, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f, 1.0f, 1.0f ) );
+
+  // Light Intensity
+  aLightIntensityR = nAttr.create( "lightIntensityR", "lir", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aLightIntensityG = nAttr.create( "lightIntensityG", "lig", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aLightIntensityB = nAttr.create( "lightIntensityB", "lib", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aLightIntensity = nAttr.create( "lightIntensity", "li", aLightIntensityR, aLightIntensityG, aLightIntensityB, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f, 1.0f, 1.0f ) );
+
+	// Light
+  aLightAmbient = nAttr.create( "lightAmbient", "la", MFnNumericData::kBoolean, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( true ) );
+  aLightDiffuse = nAttr.create( "lightDiffuse", "ldf", MFnNumericData::kBoolean, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( true ) );
+  aLightSpecular = nAttr.create( "lightSpecular", "ls", MFnNumericData::kBoolean, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( false ) );
+  aLightShadowFraction = nAttr.create( "lightShadowFraction", "lsf", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setReadable( true ) );
+  CHECK_MSTATUS( nAttr.setWritable( true ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aPreShadowIntensity = nAttr.create( "preShadowIntensity", "psi", MFnNumericData::kFloat, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  aLightBlindData = nAttr.create( "lightBlindData", "lbld", MFnNumericData::kLong, 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( 0 ) );
+  aLightData = lAttr.create( "lightDataArray", "ltd", aLightDirection,
+                              aLightIntensity, aLightAmbient, aLightDiffuse, aLightSpecular,
+                              aLightShadowFraction, aPreShadowIntensity, aLightBlindData,
+                              &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( lAttr.setArray( true ) );
+  CHECK_MSTATUS( lAttr.setStorable( false ) );
+  CHECK_MSTATUS( lAttr.setHidden( true ) );
+  CHECK_MSTATUS( lAttr.setDefault( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, true, true, false, 1.0f, 1.0f, 0 ) );
+
+  // Create output attributes
   aOutColor = nAttr.createColor("outColor", "oc");
 	MAKE_OUTPUT(nAttr);
   aOutTransparency = nAttr.createColor("outTransparency", "ot");
@@ -214,11 +367,38 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(addAttribute(aOutputInShadow));
   CHECK_MSTATUS(addAttribute(aResolution));
   CHECK_MSTATUS(addAttribute(aRefreshPreview));
+  CHECK_MSTATUS(addAttribute(aMayaIgnoreLights));
+  CHECK_MSTATUS(addAttribute(aMayaKa));
+  CHECK_MSTATUS(addAttribute(aMayaKd));
+  CHECK_MSTATUS(addAttribute(aNormalCamera));
+  CHECK_MSTATUS(addAttribute(aLightData));
   CHECK_MSTATUS(addAttribute(aOutColor));
   CHECK_MSTATUS(addAttribute(aOutTransparency));
 
-  CHECK_MSTATUS(attributeAffects( aColor,          aOutColor ));
-  CHECK_MSTATUS(attributeAffects( aOpacity,        aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aColor,               aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aOpacity,             aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aMayaIgnoreLights,    aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aMayaKa,              aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aMayaKd,              aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightIntensityR,     aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightIntensityB,     aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightIntensityG,     aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightIntensity,      aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aNormalCameraX,       aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aNormalCameraY,       aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aNormalCameraZ,       aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aNormalCamera,        aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightDirectionX,     aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightDirectionY,     aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightDirectionZ,     aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightDirection,      aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightAmbient,        aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightSpecular,       aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightDiffuse,        aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightShadowFraction, aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aPreShadowIntensity,  aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightBlindData,      aOutColor ));
+	CHECK_MSTATUS(attributeAffects( aLightData,           aOutColor ));
 
   return MS::kSuccess;
 }
@@ -226,31 +406,97 @@ MStatus liqSurfaceNode::initialize()
 MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
 {
 	// outColor or individual R, G, B channel
-  if((plug != aOutColor) && (plug.parent() != aOutColor))
-  return MS::kUnknownParameter;
+  if( (plug == aOutColor) || (plug.parent() == aOutColor) ) {
 
-  // init shader
-  MStatus status;
-  MFloatVector& cColor  = block.inputValue(aColor).asFloatVector();
-  MFloatVector& cTrans  = block.inputValue(aOpacity).asFloatVector();
+    //cout <<"compute... "<<endl;
 
-  MFloatVector resultColor( cColor );
-  MFloatVector resultTrans( cTrans );
-  resultTrans[0] = ( 1 - resultTrans[0] );
-  resultTrans[1] = ( 1 - resultTrans[1] );
-  resultTrans[2] = ( 1 - resultTrans[2] );
-  cout <<resultTrans[0]<<endl;
+    // init shader
+    MStatus status;
+    MFloatVector& cColor  = block.inputValue(aColor).asFloatVector();
+    MFloatVector& cTrans  = block.inputValue(aOpacity).asFloatVector();
+    MFloatVector resultColor( 0.0, 0.0, 0.0 );
+    MFloatVector resultTrans( cTrans );
 
-  // set ouput color attribute
-	MDataHandle outColorHandle = block.outputValue( aOutColor );
-	MFloatVector& outColor = outColorHandle.asFloatVector();
-	outColor = resultColor;
-	outColorHandle.setClean();
 
-  MDataHandle outTransHandle = block.outputValue( aOutTransparency );
-	MFloatVector& outTrans = outTransHandle.asFloatVector();
-	outTrans = resultTrans;
-	outTransHandle.setClean();
+
+    // lambert calc -------------------
+    bool&  ignoreLights = block.inputValue( aMayaIgnoreLights, &status ).asBool();
+    float& Ka = block.inputValue( aMayaKa, &status ).asFloat();
+    float& Kd = block.inputValue( aMayaKd, &status ).asFloat();
+
+    // get surface normal
+    MFloatVector& surfaceNormal = block.inputValue( aNormalCamera, &status ).asFloatVector();
+    CHECK_MSTATUS( status );
+
+    if ( ignoreLights ) {
+
+      MFloatVector cam( 0.0, 0.0, 1.0 );
+      float cosln = cam * surfaceNormal;
+      if ( cosln > 0.0f ) {
+        float diff = cosln * cosln * Kd + Ka;
+        resultColor = diff * cColor;
+      }
+
+    } else {
+
+      // Get light list
+      MArrayDataHandle lightData = block.inputArrayValue( aLightData, &status );
+      CHECK_MSTATUS( status );
+      int numLights = lightData.elementCount( &status );
+      CHECK_MSTATUS( status );
+
+      // Iterate through light list and get ambient/diffuse values
+      for( int count=1; count <= numLights; count++ )
+      {
+        // Get the current light out of the array
+        MDataHandle currentLight = lightData.inputValue( &status );
+        CHECK_MSTATUS( status );
+
+        // Get the intensity of that light
+        MFloatVector& lightIntensity = currentLight.child( aLightIntensity ).asFloatVector();
+
+        // Find ambient component
+        if ( currentLight.child( aLightAmbient ).asBool() ) {
+          resultColor += lightIntensity;
+        }
+
+        // Find diffuse component
+        if ( currentLight.child( aLightDiffuse ).asBool() ) {
+          MFloatVector& lightDirection = currentLight.child( aLightDirection ).asFloatVector();
+          float cosln = lightDirection * surfaceNormal;
+          if ( cosln > 0.0f )  resultColor += lightIntensity * cosln * Kd ;
+        }
+
+        // Advance to the next light.
+        if ( count < numLights ) {
+          status = lightData.next();
+          CHECK_MSTATUS( status );
+        }
+      }
+
+      resultColor[0] *= cColor[0];
+      resultColor[1] *= cColor[1];
+      resultColor[2] *= cColor[2];
+
+    }
+
+    resultTrans[0] = ( 1 - resultTrans[0] );
+    resultTrans[1] = ( 1 - resultTrans[1] );
+    resultTrans[2] = ( 1 - resultTrans[2] );
+
+
+    // set ouput color attribute
+    MDataHandle outColorHandle = block.outputValue( aOutColor );
+    MFloatVector& outColor = outColorHandle.asFloatVector();
+    outColor = resultColor;
+    outColorHandle.setClean();
+
+    MDataHandle outTransHandle = block.outputValue( aOutTransparency );
+    MFloatVector& outTrans = outTransHandle.asFloatVector();
+    outTrans = resultTrans;
+    outTransHandle.setClean();
+
+  } else return MS::kUnknownParameter;
 
 
   return MS::kSuccess;

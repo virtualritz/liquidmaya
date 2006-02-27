@@ -585,6 +585,7 @@ MString parseCommandString( const MString & inputString )
   MString tokenString;
   unsigned sLength = inputString.length();
 
+
   for ( unsigned i = 0; i < sLength; i++ ) {
     if ( inputString.substring(i, i) == "[" && inputString.substring(i - 1, i - 1) != "\\" ) {
       MString	melCmdString;
@@ -716,6 +717,8 @@ MString parseCommandString( const MString & inputString )
     }
   }
 
+  constructedString = removeEscapes( constructedString );
+
   return constructedString;
 }
 
@@ -831,6 +834,12 @@ MString removeEscapes( const MString & inputString )
       i++;
     } else if ( inputString.substring(i, i+1) == "\\#" ) {
       constructedString += "#";
+      i++;
+    } else if ( inputString.substring(i, i+1) == "\\[" ) {
+      constructedString += "[";
+      i++;
+    } else if ( inputString.substring(i, i+1) == "\\]" ) {
+      constructedString += "]";
       i++;
     } else constructedString += inputString.substring(i, i);
   }
