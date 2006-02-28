@@ -43,6 +43,7 @@ extern "C" {
 
 // Maya's Headers
 #include <maya/MFn.h>
+#include <maya/MObject.h>
 #include <maya/MString.h>
 #include <maya/MPxCommand.h>
 #include <maya/MCommandResult.h>
@@ -57,6 +58,7 @@ extern "C" {
 #include <maya/MGlobal.h>
 
 #include <liquid.h>
+#include <liqRenderer.h>
 #include <liqShader.h>
 #include <liqPreviewShader.h>
 #include <liqMemory.h>
@@ -64,27 +66,11 @@ extern "C" {
 #include <liqIOStream.h>
 
 extern int debugMode;
-
-
-  // Set default values
-#if defined(PRMAN)
-  const char * liqPreviewShader::m_default_previewer = "prman";
-#elif defined(AQSIS)
-  const char * liqPreviewShader::m_default_previewer = "aqsis";
-#elif defined(ENTROPY)
-  const char * liqPreviewShader::m_default_previewer = "entropy";
-#elif defined(PIXIE)
-  const char * liqPreviewShader::m_default_previewer = "rndr";
-#elif defined(DELIGHT)
-  const char * liqPreviewShader::m_default_previewer = "renderdl";
-#else
-  // Force error at compile time
-  error - unknown renderer
-#endif
+extern liqRenderer liquidRenderer;
 
 
 /**
- *  Creates a new instance of the comman plug-in.
+ *  Creates a new instance of the command plug-in.
  *
  */
 void* liqPreviewShader::creator()
@@ -215,7 +201,9 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   MString displayDriver( "framebuffer" );
   MString displayName( "liqPreviewShader" );
   MString shaderNodeName;
-  MString renderCommand( liqPreviewShader::m_default_previewer );
+
+  liquidRenderer.setRenderer();
+  MString renderCommand( liquidRenderer.renderPreview );
 
   for ( i = 0; i < args.length(); i++ ) {
     MString arg = args.asString( i, &status );
@@ -708,4 +696,7 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
 
   return 1;
 }
+
+
+
 

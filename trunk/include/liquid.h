@@ -311,15 +311,5 @@ typedef enum {
   TAG_STITCH
 } SBD_EXTRA_TAG;
 
-// optional capabilities as retrieved from the globals
-struct rFeatures {
-    bool blobbies;
-    bool points;
-    bool eyesplits;
-    bool raytracing;
-    bool depthoffield;
-    bool advancedvisibility;
-    bool displaychannels;
-  };
 
 #endif

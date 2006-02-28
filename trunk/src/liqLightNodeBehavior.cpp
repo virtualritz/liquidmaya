@@ -110,7 +110,7 @@ MStatus liqLightNodeBehavior::connectNodeToNode( MObject &sourceNode, MObject &d
 
       if(!srcPlug.isNull() && !destPlug.isNull())
       {
-        //MString boolean = (force)? "true":"false";
+        MString boolean = (force)? "true":"false";
         MString cmd = "connectAttr ";
         //cmd += "-force " + boolean + " ";
         cmd += srcPlug.name() + " ";

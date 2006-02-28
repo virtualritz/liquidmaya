@@ -58,9 +58,10 @@ public:
 
   static MSyntax syntax();
   MStatus doIt( const MArgList& args );
+
 private:
   void	resetIt();
-  static const char * m_default_previewer;
+
 };
 
 #endif

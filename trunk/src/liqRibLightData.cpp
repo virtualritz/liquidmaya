@@ -121,7 +121,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   }
 
   // check to see if the light is using raytraced shadows
-#if defined DELIGHT || PRMAN
+#if defined ( DELIGHT ) || defined ( PRMAN )
   lightDepNode.findPlug( MString( "useRayTraceShadows" ) ).getValue( rayTraced );
   if( rayTraced ) {
     usingShadow = true;

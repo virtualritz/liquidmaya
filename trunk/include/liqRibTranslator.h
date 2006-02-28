@@ -36,6 +36,7 @@
 */
 
 #include <liquid.h>
+#include <liqRenderer.h>
 #include <liqRibHT.h>
 #include <liqShader.h>
 #include <liqRenderScript.h>
@@ -193,8 +194,6 @@ private: // Data
   int attributeDepth;
 
 private :
-  // which renderer are we using
-  RendererType m_renderer;
 
   // Old global values
   int m_errorMode;
@@ -376,8 +375,6 @@ private :
   liquidlong    m_renderViewTimeOut;
 
   int           m_statistics;
-
-  rFeatures     m_availableFeatures;
 
   std::vector<liqShader> m_shaders;
 
