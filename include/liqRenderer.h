@@ -30,59 +30,61 @@
 #define liqRenderer_H
 
 #include <maya/MString.h>
+#include <maya/MStringArray.h>
+#include <maya/MObject.h>
 
 
 class liqRenderer {
 
 public:
-  /*enum e_renderer   { REN_PRMAN, REN_ENTROPY, REN_AQSIS, REN_DELIGHT };
-  enum e_capability { BLOBBIES, POINTS, EYESPLITS };
 
-  enum e_requirement	{
-    SWAPPED_UVS,  // transpose u & v direction on NURBS
-    __PREF        // use __Pref instead of Pref
-  };*/
+  liqRenderer();
+  virtual ~liqRenderer();
 
-  liqRenderer()
-  : renderName( "PRMan" ),
-#ifdef _WIN32
-    renderCommand( "prman" ),
-    renderPreview( "prman" ),
-#else
-    renderCommand( "render" ),
-    renderPreview( "render" ),
-#endif
-  renderCmdFlags( "" ),
+  void    setRenderer();
+  MObject initGlobals();
 
-  supports_BLOBBIES( true ),
-  supports_POINTS( true ),
-  supports_EYESPLITS( true ),
-  supports_RAYTRACE( true ),
-  supports_DOF( true ),
-
-  requires_SWAPPED_UVS( true ),
-  requires__PREF( true ),
-  requires_MAKESHADOW( false ),
-
-  dshDisplayName( "deepshad" ), // PRman default
-  dshImageMode( "deepopacity" )
-  {}
-
-  virtual ~liqRenderer()
-  {
-    // nothing else needed
-  }
-
+  // renderer and related utilities
   MString renderName;
   MString renderCommand;
   MString renderPreview;
   MString renderCmdFlags;
+  MString shaderExtension;
+  MString shaderInfo;
+  MString shaderCompiler;
+  MString textureMaker;
+  MString textureViewer;
 
+  // optional capabilities
   bool supports_BLOBBIES;
   bool supports_POINTS;
   bool supports_EYESPLITS;
   bool supports_RAYTRACE;
   bool supports_DOF;
+  bool supports_ADVANCED_VISIBILITY;
+  bool supports_DISPLAY_CHANNELS;
+
+  // pixel filters
+  bool pixelfilter_BOX;
+  bool pixelfilter_TRIANGLE;
+  bool pixelfilter_CATMULLROM;
+  bool pixelfilter_GAUSSIAN;
+  bool pixelfilter_SINC;
+  bool pixelfilter_BLACKMANHARRIS;
+  bool pixelfilter_MITCHELL;
+  bool pixelfilter_SEPCATMULLROM;
+  bool pixelfilter_LANCZOS;
+  bool pixelfilter_BESSEL;
+  bool pixelfilter_DISK;
+
+  MStringArray pixelFilterNames;
+
+  // hiders
+  bool hider_HIDDEN;
+  bool hider_PHOTON;
+  bool hider_ZBUFFER;
+  bool hider_RAYTRACE;
+  bool hider_OPENGL;
 
   // renderer requirement
   bool requires_SWAPPED_UVS; // transpose u & v direction on NURBS
@@ -93,11 +95,6 @@ public:
   MString dshDisplayName;
   MString dshImageMode;
 };
-
-// Singleton copy of liqRenderer object
-// const liqRenderer & liquidRenderer();
-
-extern liqRenderer liquidRenderer;
 
 
 #endif

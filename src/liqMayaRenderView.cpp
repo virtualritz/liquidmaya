@@ -230,14 +230,14 @@ MStatus liqMayaRenderCmd::redoIt()
 			close(s);
 			return MS::kFailure;
 		}
-		
-		
+
+
 		int val = 1;
 		setsockopt(slaveSocket,IPPROTO_TCP,TCP_NODELAY,(const char *) &val,sizeof(int));
 		#ifdef SO_NOSIGPIPE
 			setsockopt(slaveSocket,SOL_SOCKET,SO_NOSIGPIPE,(const char *) &val,sizeof(int));
 		#endif
-						
+
 		//get image name
 		char imagename[128];
 		memset(imagename,'\0',128*sizeof(char));
@@ -338,7 +338,7 @@ MStatus liqMayaRenderCmd::getBucket(const int socket,const unsigned int numChann
 
 	//stat = read(socket, bucketInfo, 5*sizeof(int));
 stat = readSockData(socket, (char*)bucketInfo, 5*sizeof(int));
-	
+
 //	if (stat < 0) {
 //		perror("[liqMayaRenderView] recv(slaveSocket)");
 //		return MS::kFailure;
@@ -714,8 +714,8 @@ int			readSockData(int s,char *data,int n) {
 		#else
 			i		=	recv(s,data,j,0);
 		#endif
-			
-	
+
+
 		if (i <= 0) {
 			perror("[liqMayaRenderCmd] Connection broken");
 			return false;

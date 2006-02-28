@@ -57,7 +57,7 @@ extern "C" {
 #include <liqRenderer.h>
 
 extern int debugMode;
-
+extern liqRenderer liquidRenderer;
 
 liqRibSurfaceData::liqRibSurfaceData( MObject surface )
 //  Description:

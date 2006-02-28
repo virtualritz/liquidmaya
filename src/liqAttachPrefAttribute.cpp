@@ -83,6 +83,8 @@ extern "C" {
 
 #include <maya/MGlobal.h>
 
+extern liqRenderer liquidRenderer;
+
 
 liqAttachPrefAttribute::~liqAttachPrefAttribute()
 {

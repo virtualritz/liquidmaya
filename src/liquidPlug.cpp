@@ -184,7 +184,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   char *tmphomeChar;
   if( ( tmphomeChar = getenv( "LIQUIDHOME" ) ) ) {
 
-#ifndef WIN32 
+#ifndef WIN32
 
     MString tmphome( tmphomeChar );
     sourceLine += "\"" + liquidSanitizePath( tmphome ) + "/mel/" + "liquidStartup.mel\"";

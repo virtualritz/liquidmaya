@@ -110,6 +110,7 @@ static const char *LIQUIDVERSION =
 
 // Liquid headers
 #include <liquid.h>
+#include <liqRenderer.h>
 #include <liqRibTranslator.h>
 #include <liqGlobalHelpers.h>
 #include <liqProcessLauncher.h>
@@ -165,7 +166,6 @@ MString      liqglo_currentNodeShortName;
 bool         liqglo_useMtorSubdiv;  // use mtor subdiv attributes
 HiderType    liqglo_hider;
 RtInt        liqglo_jitter;
-MString      liqglo_makeTexture;    // MakeTexture utilite name
 
 // Kept global for raytracing
 bool         rt_useRayTracing;
@@ -186,6 +186,9 @@ MString      liqglo_shotName;
 MString      liqglo_shotVersion;
 bool         liqglo_doExtensionPadding;
 liquidlong   liqglo_outPadding;
+
+// renderer properties
+liqRenderer liquidRenderer;
 
 #if 0
 #ifdef _WIN32
@@ -276,7 +279,7 @@ void liqRibTranslator::processExpression( liqTokenPointer *token, liqRibLightDat
             if ( !expr.destExists || !expr.destIsNewer ) {
               LIQDEBUGPRINTF( "-> Making Texture: " );
 
-              LIQDEBUGPRINTF( liqglo_makeTexture.asChar() );
+              LIQDEBUGPRINTF( liquidRenderer.textureMaker.asChar() );
 
               LIQDEBUGPRINTF( "\n" );
               LIQDEBUGPRINTF( "-> MakeTexture Command: " );
@@ -287,7 +290,7 @@ void liqRibTranslator::processExpression( liqTokenPointer *token, liqRibLightDat
 
               structJob thisJob;
               thisJob.pass = rpMakeTexture;
-              thisJob.renderName = liqglo_makeTexture;
+              thisJob.renderName = liquidRenderer.textureMaker;
               thisJob.ribFileName = expr.GetCmd();
               thisJob.imageName = expr.GetValue(); // destination file name
 
@@ -439,14 +442,6 @@ liqRibTranslator::liqRibTranslator()
 #endif
   }
 
-  m_availableFeatures.blobbies            = false;
-  m_availableFeatures.points              = false;
-  m_availableFeatures.eyesplits           = false;
-  m_availableFeatures.raytracing          = false;
-  m_availableFeatures.depthoffield        = false;
-  m_availableFeatures.advancedvisibility  = false;
-  m_availableFeatures.displaychannels     = false;
-
   m_rFilterX = 1;
   m_rFilterY = 1;
   m_rFilter = pfBoxFilter;
@@ -498,7 +493,6 @@ liqRibTranslator::liqRibTranslator()
   m_useFrameExt = true;  // Use frame extensions
   outExt = "tif";
   riboutput = "liquid.rib";
-  m_renderer = PRMan;
   liqglo_motionSamples = 2;
   liqglo_FPS = 24.0;
   width = 360;
@@ -660,7 +654,7 @@ liqRibTranslator::~liqRibTranslator()
  * Error handling function.
  * This gets called when the RIB library detects an error.
  */
-#if defined DELIGHT || ENTROPY || PIXIE || PRMAN
+#if defined ( DELIGHT ) || ( ENTROPY ) || ( PIXIE ) || ( PRMAN )
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
 #else
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
@@ -1106,59 +1100,11 @@ void liqRibTranslator::liquidReadGlobals()
   MPlug gPlug;
   MFnDependencyNode rGlobalNode( rGlobalObj );
 
-  // PixelFilter list
-  // in the future, they should be retrieved from the liquidGlobals node
-  m_pixelFilterNames.clear();
-  m_pixelFilterNames.append("box");
-  m_pixelFilterNames.append("triangle");
-  m_pixelFilterNames.append("catmull-rom");
-  m_pixelFilterNames.append("gaussian");
-  m_pixelFilterNames.append("sinc");
-  m_pixelFilterNames.append("blackman-harris");
-  m_pixelFilterNames.append("mitchell");
-  m_pixelFilterNames.append("separable-catmull-rom");
-  m_pixelFilterNames.append("lanczos");
-  m_pixelFilterNames.append("bessel");
-  m_pixelFilterNames.append("disk");
-
-  // get enabled features from the globals.
-  // the bits_features attribute is a compound attribute with boolean children attributes.
-  // retrieving the list of children gives you the name of the feature.
-  // retrieving the children's value tells you if the feature is supported.
-  {
-    gStatus.clear();
-    gPlug = rGlobalNode.findPlug( "bits_features", &gStatus );
-    if ( gStatus == MS::kSuccess ) {
-      unsigned int nFeatures = gPlug.numChildren( &gStatus );
-      for ( unsigned int i=0; i<nFeatures; i++ ) {
-        MPlug featurePlug;
-        featurePlug = gPlug.child( i, &gStatus );
-        if ( gStatus == MS::kSuccess ) {
-          MString feature;
-          bool enabled =  false;
-          feature = featurePlug.partialName( false, false, false, false, false, &gStatus );
-          featurePlug.getValue( enabled );
-          feature = feature.toLowerCase();
-
-          if ( enabled ) {
-            if ( feature == "blobbies" )            m_availableFeatures.blobbies            = true;
-            if ( feature == "points" )              m_availableFeatures.points              = true;
-            if ( feature == "eyesplits" )           m_availableFeatures.eyesplits           = true;
-            if ( feature == "raytracing" )          m_availableFeatures.raytracing          = true;
-            if ( feature == "depthoffield" )        m_availableFeatures.depthoffield        = true;
-            if ( feature == "advancedvisibility" )  m_availableFeatures.advancedvisibility  = true;
-            if ( feature == "displaychannels" )     m_availableFeatures.displaychannels     = true;
-            LIQDEBUGPRINTF( MString("-> feature : "+feature+" : ON\n").asChar());
-          } else LIQDEBUGPRINTF( MString("-> feature : "+feature+" : off").asChar() );
-        }
-      }
-    }
-  }
 
   // Display Channels - Read and store 'em !
   // philippe : channels are stored as structures in a vector
   {
-    if ( m_availableFeatures.displaychannels ) {
+    if ( liquidRenderer.supports_DISPLAY_CHANNELS ) {
 
       unsigned int nChannels;
       gStatus.clear();
@@ -1448,7 +1394,7 @@ void liqRibTranslator::liquidReadGlobals()
           elementPlug.getValue( val );
           theDisplay.filter = m_pixelFilterNames[val];
           //cout <<"  DD : filter["<<i<<"] = "<<theDisplay.filter<<endl;
-		  
+
 		  if (i==0) {
 			m_rFilter  = val;
 		  }
@@ -1575,10 +1521,10 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "relativeFileNames", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_relativeFileNames );
   gStatus.clear();
-  
+
   setOutDirs();
   setSearchPaths();
-  
+
   {
     MString varVal;
     gPlug = rGlobalNode.findPlug( "ribgenCommand", &gStatus );
@@ -1586,79 +1532,7 @@ void liqRibTranslator::liquidReadGlobals()
     if ( varVal != MString("") ) m_ribgenCommand = varVal;
     gStatus.clear();
   }
-  {
-    MString varVal;
-    gPlug = rGlobalNode.findPlug( "renderCommand", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    if ( varVal != MString("") ) liquidRenderer.renderCommand = varVal;
-    gStatus.clear();
-  }
-{
-    MString varVal;
-    liquidRenderer.renderCmdFlags.clear();
-    gPlug = rGlobalNode.findPlug( "renderCmdFlags", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    if ( varVal != MString("") ) liquidRenderer.renderCmdFlags = varVal;
-    gStatus.clear();
-  }
-  {
-    MString varVal;
-    gPlug = rGlobalNode.findPlug( "makeTexture", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    if ( varVal != MString("") ) liqglo_makeTexture = varVal;
-    gStatus.clear();
-  }
-  { MString varVal;
-    int i;
-    gPlug = rGlobalNode.findPlug( "bits_features", &gStatus );
-    if ( gStatus == MS::kSuccess ) {
-      gPlug.getValue( varVal );
-      MStringArray tokens;
-      varVal.split( ' ', tokens );
-      liquidRenderer.supports_BLOBBIES = false;
-      liquidRenderer.supports_DOF = false;
-      liquidRenderer.supports_EYESPLITS = false;
-      liquidRenderer.supports_POINTS = false;
-      liquidRenderer.supports_RAYTRACE = false;
-      for( i = 0; i<tokens.length() ; i++ ) {
-        if ( tokens[i] == "Blobbies") { liquidRenderer.supports_BLOBBIES = true; continue; }
-        if ( tokens[i] == "DepthOfField") { liquidRenderer.supports_DOF = true; continue; }
-        if ( tokens[i] == "Eyesplits") { liquidRenderer.supports_EYESPLITS = true; continue; }
-        if ( tokens[i] == "Points") { liquidRenderer.supports_POINTS = true; continue; }
-        if ( tokens[i] == "Raytrace") { liquidRenderer.supports_RAYTRACE = true; continue; }
-      }
-    }
-    gPlug = rGlobalNode.findPlug( "bits_required", &gStatus );
-    if ( gStatus == MS::kSuccess ) {
-      gPlug.getValue( varVal );
-      MStringArray tokens;
-      varVal.split( ' ', tokens );
-      liquidRenderer.requires__PREF = false;
-      liquidRenderer.requires_SWAPPED_UVS = false;
-      liquidRenderer.requires_MAKESHADOW = false;
 
-      for( i = 0; i<tokens.length() ; i++ ) {
-        if ( tokens[i] == "__Pref") { liquidRenderer.requires__PREF = true; continue; }
-        if ( tokens[i] == "Swap_UV") { liquidRenderer.requires_SWAPPED_UVS = true; continue; }
-        if ( tokens[i] == "MakeShadow") { liquidRenderer.requires_MAKESHADOW = true; continue; }
-      }
-    }
-  }
-  // Deep Shadow Display options
-  {
-    MString varVal;
-    gPlug = rGlobalNode.findPlug( "dshDisplayName", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    if ( varVal != MString("") ) liquidRenderer.dshDisplayName = varVal;
-    gStatus.clear();
-  }
-  {
-    MString varVal;
-    gPlug = rGlobalNode.findPlug( "dshImageMode", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
-    if ( varVal != MString("") ) liquidRenderer.dshImageMode = varVal;
-    gStatus.clear();
-  }
   {
     MString varVal;
     gPlug = rGlobalNode.findPlug( "renderScriptFileName", &gStatus );
@@ -1779,7 +1653,7 @@ void liqRibTranslator::liquidReadGlobals()
       m_postFrameMel = parseString( varVal );
     }
   }
-  
+
   // RENDER OPTIONS:BEGIN
   { int var;
     gPlug = rGlobalNode.findPlug( "hider", &gStatus );
@@ -2053,7 +1927,7 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "justRib", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( m_justRib );
   gStatus.clear();
-  
+
   gPlug = rGlobalNode.findPlug( "gain", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( m_rgain );
   gStatus.clear();
@@ -2157,7 +2031,7 @@ bool liqRibTranslator::verifyOutputDirectories()
 
   #ifdef OSX
       char oldPath[MAXPATHLEN];
-	  
+
 	  // first render, we're not cd'd to the right place
 	  // we do not cd back.  Maya does this later
 	  getcwd(oldPath,MAXPATHLEN);
@@ -2165,7 +2039,7 @@ bool liqRibTranslator::verifyOutputDirectories()
 		chdir(liqglo_projectDir.asChar());
 	  }
   #endif
-  
+
   bool problem = false;
   MString tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_ribDir, liqglo_projectDir );
   if ( ( access( tmp_path.asChar(), dirMode )) == -1 ) {
@@ -2231,7 +2105,7 @@ bool liqRibTranslator::verifyOutputDirectories()
       problem = true;
     }
   }
-    
+
   return problem;
 }
 
@@ -2422,6 +2296,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 {
   MStatus status;
   MString lastRibName;
+
+  liquidRenderer.setRenderer();
+  m_renderCommand = liquidRenderer.renderCommand;
 
   status = liquidDoArgs( args );
   if (!status) {
@@ -2765,7 +2642,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           LIQDEBUGPRINTF( "-> setting RiOptions\n" );
 
           // Rib client file creation options MUST be set before RiBegin
-#if defined PRMAN || DELIGHT
+#if defined ( PRMAN ) || ( DELIGHT )
           LIQDEBUGPRINTF( "-> setting binary option\n" );
           if ( liqglo_doBinary )
           {
@@ -4099,7 +3976,7 @@ MStatus liqRibTranslator::ribPrologue()
         case pfSincFilter:
           RiPixelFilter( RiSincFilter, m_rFilterX, m_rFilterY );
           break;
-#if defined DELIGHT || PRMAN
+#if defined ( DELIGHT ) || ( PRMAN )
         case pfBlackmanHarrisFilter:
           RiArchiveRecord( RI_VERBATIM, "PixelFilter \"blackman-harris\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
@@ -4129,8 +4006,8 @@ MStatus liqRibTranslator::ribPrologue()
     }
 
     // RAYTRACING OPTIONS
-#if defined DELIGHT || PRMAN
-  if ( rt_useRayTracing ) {
+#if defined ( DELIGHT ) || ( PRMAN )
+  if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing ) {
     RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
     RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,          RI_NULL );
     RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
@@ -4139,7 +4016,8 @@ MStatus liqRibTranslator::ribPrologue()
     RiOption( "user",    "float traceBreadthFactor",    ( RtPointer ) &rt_traceBreadthFactor,     RI_NULL );
     RiOption( "user",    "float traceDepthFactor",      ( RtPointer ) &rt_traceDepthFactor,       RI_NULL );
   } else {
-    RiArchiveRecord( RI_COMMENT, "Ray Tracing : OFF" );
+    if ( !liquidRenderer.supports_RAYTRACE ) RiArchiveRecord( RI_COMMENT, "Ray Tracing : NOT SUPPORTED" );
+    else RiArchiveRecord( RI_COMMENT, "Ray Tracing : OFF" );
   }
 #endif
 
@@ -4849,7 +4727,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       };
 
       // display channels
-      if ( m_availableFeatures.displaychannels ) {
+      if ( liquidRenderer.supports_DISPLAY_CHANNELS ) {
 
         RiArchiveRecord( RI_COMMENT, "Display Channels" );
 
@@ -4890,7 +4768,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
 
           if ( (*m_channels_iterator).filter ) {
 
-            MString tmp = m_pixelFilterNames[ (*m_channels_iterator).pixelFilter ];
+            MString tmp = liquidRenderer.pixelFilterNames[ (*m_channels_iterator).pixelFilter ];
             filter = (char *) tmp.asChar();
             tokens[ numTokens ] = "string filter";
             values[ numTokens ] = (RtPointer)&filter;
@@ -5430,29 +5308,33 @@ MStatus liqRibTranslator::objectBlock()
         RiAttribute( "dice", (RtToken) "rasterorient", &off, RI_NULL );
       }
 
-      if( ribNode->trace.sampleMotion ) {
-        RtInt on = 1;
-        RiAttribute( "trace", (RtToken) "samplemotion", &on, RI_NULL );
-      }
+      if ( liquidRenderer.supports_RAYTRACE ) {
 
-      if( ribNode->trace.displacements ) {
-        RtInt on = 1;
-        RiAttribute( "trace", (RtToken) "displacements", &on, RI_NULL );
-      }
+        if( ribNode->trace.sampleMotion ) {
+          RtInt on = 1;
+          RiAttribute( "trace", (RtToken) "samplemotion", &on, RI_NULL );
+        }
 
-      if( ribNode->trace.bias != 0.01f ) {
-        RtFloat bias = ribNode->trace.bias;
-        RiAttribute( "trace", (RtToken) "bias", &bias, RI_NULL );
-      }
+        if( ribNode->trace.displacements ) {
+          RtInt on = 1;
+          RiAttribute( "trace", (RtToken) "displacements", &on, RI_NULL );
+        }
 
-      if( ribNode->trace.maxDiffuseDepth != 1 ) {
-        RtInt mddepth = ribNode->trace.maxDiffuseDepth;
-        RiAttribute( "trace", (RtToken) "maxdiffusedepth", &mddepth, RI_NULL );
-      }
+        if( ribNode->trace.bias != 0.01f ) {
+          RtFloat bias = ribNode->trace.bias;
+          RiAttribute( "trace", (RtToken) "bias", &bias, RI_NULL );
+        }
 
-      if( ribNode->trace.maxSpecularDepth != 2 ) {
-        RtInt msdepth = ribNode->trace.maxSpecularDepth;
-        RiAttribute( "trace", (RtToken) "maxspeculardepth", &msdepth, RI_NULL );
+        if( ribNode->trace.maxDiffuseDepth != 1 ) {
+          RtInt mddepth = ribNode->trace.maxDiffuseDepth;
+          RiAttribute( "trace", (RtToken) "maxdiffusedepth", &mddepth, RI_NULL );
+        }
+
+        if( ribNode->trace.maxSpecularDepth != 2 ) {
+          RtInt msdepth = ribNode->trace.maxSpecularDepth;
+          RiAttribute( "trace", (RtToken) "maxspeculardepth", &msdepth, RI_NULL );
+        }
+
       }
 
       if( !ribNode->visibility.camera ) {
@@ -5463,178 +5345,190 @@ MStatus liqRibTranslator::objectBlock()
       // old-style raytracing visibility support
       // philippe: if raytracing is off in the globals, trace visibility is turned off for all objects, transmission is set to TRANSPARENT for all objects
 
-      if( rt_useRayTracing && ribNode->visibility.trace ) {
-        RtInt on = 1;
-        RiAttribute( "visibility", (RtToken) "trace", &on, RI_NULL );
-      }
+      if ( liquidRenderer.supports_RAYTRACE && !liquidRenderer.supports_ADVANCED_VISIBILITY ) {
 
-      if( rt_useRayTracing && ribNode->visibility.transmission != liqRibNode::visibility::TRANSMISSION_TRANSPARENT ) {
-        RtString trans;
-        switch( ribNode->visibility.transmission ) {
-          case liqRibNode::visibility::TRANSMISSION_OPAQUE:
-            trans = "opaque";
-            break;
-          case liqRibNode::visibility::TRANSMISSION_OS:
-            trans = "Os";
-            break;
-          case liqRibNode::visibility::TRANSMISSION_SHADER:
-          default:
-            trans = "shader";
+        if( rt_useRayTracing && ribNode->visibility.trace ) {
+          RtInt on = 1;
+          RiAttribute( "visibility", (RtToken) "trace", &on, RI_NULL );
         }
-        RiAttribute( "visibility", (RtToken) "string transmission", &trans, RI_NULL );
+
+        if( rt_useRayTracing && ribNode->visibility.transmission != liqRibNode::visibility::TRANSMISSION_TRANSPARENT ) {
+          RtString trans;
+          switch( ribNode->visibility.transmission ) {
+            case liqRibNode::visibility::TRANSMISSION_OPAQUE:
+              trans = "opaque";
+              break;
+            case liqRibNode::visibility::TRANSMISSION_OS:
+              trans = "Os";
+              break;
+            case liqRibNode::visibility::TRANSMISSION_SHADER:
+            default:
+              trans = "shader";
+          }
+          RiAttribute( "visibility", (RtToken) "string transmission", &trans, RI_NULL );
+        }
+
       }
 
       // philippe : prman 12.5 visibility support
 
-      if( rt_useRayTracing && ribNode->visibility.diffuse ) {
-        RtInt on = 1;
-        RiAttribute( "visibility", (RtToken) "int diffuse", &on, RI_NULL );
-      }
+      if ( liquidRenderer.supports_RAYTRACE && liquidRenderer.supports_ADVANCED_VISIBILITY ) {
 
-      if( rt_useRayTracing && ribNode->visibility.specular ) {
-        RtInt on = 1;
-        RiAttribute( "visibility", (RtToken) "int specular", &on, RI_NULL );
-      }
-
-      if( rt_useRayTracing && ribNode->visibility.newtransmission ) {
-        RtInt on = 1;
-        RiAttribute( "visibility", (RtToken) "int transmission", &on, RI_NULL );
-      }
-
-      if( rt_useRayTracing && ribNode->visibility.camera ) {
-        RtInt on = 1;
-        RiAttribute( "visibility", (RtToken) "int camera", &on, RI_NULL );
-      }
-
-      if( rt_useRayTracing && ribNode->hitmode.diffuse != liqRibNode::hitmode::DIFFUSE_HITMODE_PRIMITIVE ) {
-        RtString mode;
-        switch( ribNode->hitmode.diffuse ) {
-          case liqRibNode::hitmode::DIFFUSE_HITMODE_SHADER:
-            mode = "shader";
-            break;
-          case liqRibNode::hitmode::DIFFUSE_HITMODE_PRIMITIVE:
-          default:
-            mode = "primitive";
+        if( rt_useRayTracing && ribNode->visibility.diffuse ) {
+          RtInt on = 1;
+          RiAttribute( "visibility", (RtToken) "int diffuse", &on, RI_NULL );
         }
-        RiAttribute( "shade", (RtToken) "string diffusehitmode", &mode, RI_NULL );
-      }
 
-      if( rt_useRayTracing && ribNode->hitmode.specular != liqRibNode::hitmode::SPECULAR_HITMODE_SHADER ) {
-        RtString mode;
-        switch( ribNode->hitmode.specular ) {
-          case liqRibNode::hitmode::SPECULAR_HITMODE_PRIMITIVE:
-            mode = "primitive";
-            break;
-          case liqRibNode::hitmode::SPECULAR_HITMODE_SHADER:
-          default:
-            mode = "shader";
+        if( rt_useRayTracing && ribNode->visibility.specular ) {
+          RtInt on = 1;
+          RiAttribute( "visibility", (RtToken) "int specular", &on, RI_NULL );
         }
-        RiAttribute( "shade", (RtToken) "string specularhitmode", &mode, RI_NULL );
-      }
 
-      if( rt_useRayTracing && ribNode->hitmode.transmission != liqRibNode::hitmode::TRANSMISSION_HITMODE_SHADER ) {
-        RtString mode;
-        switch( ribNode->hitmode.transmission ) {
-          case liqRibNode::hitmode::TRANSMISSION_HITMODE_PRIMITIVE:
-            mode = "primitive";
-            break;
-          case liqRibNode::hitmode::TRANSMISSION_HITMODE_SHADER:
-          default:
-            mode = "shader";
+        if( rt_useRayTracing && ribNode->visibility.newtransmission ) {
+          RtInt on = 1;
+          RiAttribute( "visibility", (RtToken) "int transmission", &on, RI_NULL );
         }
-        RiAttribute( "shade", (RtToken) "string transmissionhitmode", &mode, RI_NULL );
-      }
 
-      if( ribNode->hitmode.camera != liqRibNode::hitmode::CAMERA_HITMODE_SHADER ) {
-        RtString mode;
-        switch( ribNode->hitmode.camera ) {
-          case liqRibNode::hitmode::CAMERA_HITMODE_PRIMITIVE:
-            mode = "primitive";
-            break;
-          case liqRibNode::hitmode::CAMERA_HITMODE_SHADER:
-          default:
-            mode = "shader";
+        if( rt_useRayTracing && ribNode->visibility.camera ) {
+          RtInt on = 1;
+          RiAttribute( "visibility", (RtToken) "int camera", &on, RI_NULL );
         }
-        RiAttribute( "shade", (RtToken) "string camerahitmode", &mode, RI_NULL );
-      }
 
 
-      if( ribNode->irradiance.shadingRate != 1.0f ) {
-        RtFloat rate = ribNode->irradiance.shadingRate;
-        RiAttribute( "irradiance", (RtToken) "shadingrate", &rate, RI_NULL );
-      }
-
-      if( ribNode->irradiance.nSamples != 64 ) {
-        RtInt samples = ribNode->irradiance.nSamples;
-        RiAttribute( "irradiance", (RtToken) "nsamples", &samples, RI_NULL );
-      }
-
-      if( ribNode->irradiance.maxError != 0.5f ) {
-        RtFloat merror = ribNode->irradiance.maxError;
-        RiAttribute( "irradiance", (RtToken) "float maxerror", &merror, RI_NULL );
-      }
-
-      if( ribNode->irradiance.maxPixelDist != 30.0f ) {
-        RtFloat mpd = ribNode->irradiance.maxPixelDist;
-        RiAttribute( "irradiance", (RtToken) "float maxpixeldist", &mpd, RI_NULL );
-      }
-
-      if( ribNode->irradiance.handle != "" ) {
-        RtString handle = const_cast< char* >( ribNode->irradiance.handle.asChar() );
-        RiAttribute( "irradiance", (RtToken) "handle", &handle, RI_NULL );
-      }
-
-      if( ribNode->irradiance.fileMode != liqRibNode::irradiance::FILEMODE_NONE ) {
-        RtString mode;
-        switch( ribNode->irradiance.fileMode ) {
-          case liqRibNode::irradiance::FILEMODE_READ:
-            mode = "r";
-            break;
-          case liqRibNode::irradiance::FILEMODE_WRITE:
-            mode = "w";
-            break;
-          case liqRibNode::irradiance::FILEMODE_READ_WRITE:
-          default:
-            mode = "rw";
+        if( rt_useRayTracing && ribNode->hitmode.diffuse != liqRibNode::hitmode::DIFFUSE_HITMODE_PRIMITIVE ) {
+          RtString mode;
+          switch( ribNode->hitmode.diffuse ) {
+            case liqRibNode::hitmode::DIFFUSE_HITMODE_SHADER:
+              mode = "shader";
+              break;
+            case liqRibNode::hitmode::DIFFUSE_HITMODE_PRIMITIVE:
+            default:
+              mode = "primitive";
+          }
+          RiAttribute( "shade", (RtToken) "string diffusehitmode", &mode, RI_NULL );
         }
-        RiAttribute( "irradiance", (RtToken) "filemode", &mode, RI_NULL );
-      }
 
-      if( ribNode->photon.globalMap != "" ) {
-        RtString map = const_cast< char* >( ribNode->photon.globalMap.asChar() );
-        RiAttribute( "photon", (RtToken) "globalmap", &map, RI_NULL );
-      }
-
-      if( ribNode->photon.causticMap != "" ) {
-        RtString map = const_cast< char* >( ribNode->photon.causticMap.asChar() );
-        RiAttribute( "photon", (RtToken) "causticmap", &map, RI_NULL );
-      }
-
-      if( ribNode->photon.shadingModel != liqRibNode::photon::SHADINGMODEL_MATTE ) {
-        RtString model;
-        switch( ribNode->photon.shadingModel  ) {
-          case liqRibNode::photon::SHADINGMODEL_GLASS:
-            model = "glass";
-            break;
-          case liqRibNode::photon::SHADINGMODEL_WATER:
-            model = "water";
-            break;
-          case liqRibNode::photon::SHADINGMODEL_CHROME:
-            model = "chrome";
-            break;
-          case liqRibNode::photon::SHADINGMODEL_TRANSPARENT:
-            model = "chrome";
-            break;
-          case liqRibNode::photon::SHADINGMODEL_MATTE:
-          default:
-            model = "matte";
+        if( rt_useRayTracing && ribNode->hitmode.specular != liqRibNode::hitmode::SPECULAR_HITMODE_SHADER ) {
+          RtString mode;
+          switch( ribNode->hitmode.specular ) {
+            case liqRibNode::hitmode::SPECULAR_HITMODE_PRIMITIVE:
+              mode = "primitive";
+              break;
+            case liqRibNode::hitmode::SPECULAR_HITMODE_SHADER:
+            default:
+              mode = "shader";
+          }
+          RiAttribute( "shade", (RtToken) "string specularhitmode", &mode, RI_NULL );
         }
-        RiAttribute( "photon", (RtToken) "shadingmodel", &model, RI_NULL );
+
+        if( rt_useRayTracing && ribNode->hitmode.transmission != liqRibNode::hitmode::TRANSMISSION_HITMODE_SHADER ) {
+          RtString mode;
+          switch( ribNode->hitmode.transmission ) {
+            case liqRibNode::hitmode::TRANSMISSION_HITMODE_PRIMITIVE:
+              mode = "primitive";
+              break;
+            case liqRibNode::hitmode::TRANSMISSION_HITMODE_SHADER:
+            default:
+              mode = "shader";
+          }
+          RiAttribute( "shade", (RtToken) "string transmissionhitmode", &mode, RI_NULL );
+        }
+
+        if( ribNode->hitmode.camera != liqRibNode::hitmode::CAMERA_HITMODE_SHADER ) {
+          RtString mode;
+          switch( ribNode->hitmode.camera ) {
+            case liqRibNode::hitmode::CAMERA_HITMODE_PRIMITIVE:
+              mode = "primitive";
+              break;
+            case liqRibNode::hitmode::CAMERA_HITMODE_SHADER:
+            default:
+              mode = "shader";
+          }
+          RiAttribute( "shade", (RtToken) "string camerahitmode", &mode, RI_NULL );
+        }
+
       }
 
-      if( ribNode->photon.estimator != 100 ) {
-        RtInt estimator = ribNode->photon.estimator;
-        RiAttribute( "photon", (RtToken) "estimator", &estimator, RI_NULL );
+      if ( liquidRenderer.supports_RAYTRACE ) {
+
+        if( ribNode->irradiance.shadingRate != 1.0f ) {
+          RtFloat rate = ribNode->irradiance.shadingRate;
+          RiAttribute( "irradiance", (RtToken) "shadingrate", &rate, RI_NULL );
+        }
+
+        if( ribNode->irradiance.nSamples != 64 ) {
+          RtInt samples = ribNode->irradiance.nSamples;
+          RiAttribute( "irradiance", (RtToken) "nsamples", &samples, RI_NULL );
+        }
+
+        if( ribNode->irradiance.maxError != 0.5f ) {
+          RtFloat merror = ribNode->irradiance.maxError;
+          RiAttribute( "irradiance", (RtToken) "float maxerror", &merror, RI_NULL );
+        }
+
+        if( ribNode->irradiance.maxPixelDist != 30.0f ) {
+          RtFloat mpd = ribNode->irradiance.maxPixelDist;
+          RiAttribute( "irradiance", (RtToken) "float maxpixeldist", &mpd, RI_NULL );
+        }
+
+        if( ribNode->irradiance.handle != "" ) {
+          RtString handle = const_cast< char* >( ribNode->irradiance.handle.asChar() );
+          RiAttribute( "irradiance", (RtToken) "handle", &handle, RI_NULL );
+        }
+
+        if( ribNode->irradiance.fileMode != liqRibNode::irradiance::FILEMODE_NONE ) {
+          RtString mode;
+          switch( ribNode->irradiance.fileMode ) {
+            case liqRibNode::irradiance::FILEMODE_READ:
+              mode = "r";
+              break;
+            case liqRibNode::irradiance::FILEMODE_WRITE:
+              mode = "w";
+              break;
+            case liqRibNode::irradiance::FILEMODE_READ_WRITE:
+            default:
+              mode = "rw";
+          }
+          RiAttribute( "irradiance", (RtToken) "filemode", &mode, RI_NULL );
+        }
+
+        if( ribNode->photon.globalMap != "" ) {
+          RtString map = const_cast< char* >( ribNode->photon.globalMap.asChar() );
+          RiAttribute( "photon", (RtToken) "globalmap", &map, RI_NULL );
+        }
+
+        if( ribNode->photon.causticMap != "" ) {
+          RtString map = const_cast< char* >( ribNode->photon.causticMap.asChar() );
+          RiAttribute( "photon", (RtToken) "causticmap", &map, RI_NULL );
+        }
+
+        if( ribNode->photon.shadingModel != liqRibNode::photon::SHADINGMODEL_MATTE ) {
+          RtString model;
+          switch( ribNode->photon.shadingModel  ) {
+            case liqRibNode::photon::SHADINGMODEL_GLASS:
+              model = "glass";
+              break;
+            case liqRibNode::photon::SHADINGMODEL_WATER:
+              model = "water";
+              break;
+            case liqRibNode::photon::SHADINGMODEL_CHROME:
+              model = "chrome";
+              break;
+            case liqRibNode::photon::SHADINGMODEL_TRANSPARENT:
+              model = "chrome";
+              break;
+            case liqRibNode::photon::SHADINGMODEL_MATTE:
+            default:
+              model = "matte";
+          }
+          RiAttribute( "photon", (RtToken) "shadingmodel", &model, RI_NULL );
+        }
+
+        if( ribNode->photon.estimator != 100 ) {
+          RtInt estimator = ribNode->photon.estimator;
+          RiAttribute( "photon", (RtToken) "estimator", &estimator, RI_NULL );
+        }
+
       }
 
       if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur &&
@@ -6187,7 +6081,7 @@ void liqRibTranslator::setOutDirs()
       m_pixDir = removeEscapes( parseString( varVal ) );
     }
   }
-  
+
 }
 
 
