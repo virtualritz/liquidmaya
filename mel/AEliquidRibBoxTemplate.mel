@@ -1,7 +1,15 @@
+global proc liquidRibBoxEditorUpdateMenu( string $msg )
+{
+  int $en = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
+  menuItem -e -c ("editRenderLayerAdjustment "+$msg) -en $en liquidRibboxEditorOverrideMenuItem;
+}
+
 global proc liquidRibBoxEditorNew( string $nodeName, string $msg )
 {
   setUITemplate -pst attributeEditorTemplate;
   scrollField -wordWrap false -font smallFixedWidthFont -h 250 liquidRibboxEditorCtl;
+  popupMenu liquidRibboxEditorOverrideMenu;
+  menuItem -l "Create Layer Override" liquidRibboxEditorOverrideMenuItem;
   setUITemplate -ppt;
 
   liquidRibBoxEditorReplace( $nodeName, $msg );
@@ -9,23 +17,15 @@ global proc liquidRibBoxEditorNew( string $nodeName, string $msg )
 
 global proc liquidRibBoxEditorReplace( string $nodeName, string $msg )
 {
-  print ($msg+" -----\n");
-  scrollField -e -tx (`getAttr $msg`) liquidRibboxEditorCtl;
+  scrollField -e
+              -tx (`getAttr $msg`)
+              -cc ("{string $s = `scrollField -q -tx liquidRibboxEditorCtl`;setAttr -type \"string\" "+$msg+" $s;}")
+              -ec ("{string $s = `scrollField -q -tx liquidRibboxEditorCtl`;setAttr -type \"string\" "+$msg+" $s;}")
+              liquidRibboxEditorCtl;
+
+  popupMenu -e -pmc ("liquidRibBoxEditorUpdateMenu "+$msg) liquidRibboxEditorOverrideMenu;
 }
 
-global proc liquidRibBoxToolbarNew( string $nodeName, string $msg )
-{
-  setUITemplate -pst attributeEditorTemplate;
-  button -label " Save " -width 100 liquidRibBoxToolbarSaveCtl;
-  setUITemplate -ppt;
-  liquidRibBoxToolbarReplace( $nodeName, $msg );
-}
-
-global proc liquidRibBoxToolbarReplace( string $nodeName, string $msg )
-{
-  string $cmd = ("setAttr -type \"string\" "+$msg+" (`scrollField -q -tx liquidRibboxEditorCtl`);");
-  button -e -c $cmd liquidRibBoxToolbarSaveCtl;
-}
 
 
 
@@ -35,14 +35,10 @@ global proc AEliquidRibBoxTemplate( string $nodeName )
 
   editorTemplate -beginScrollLayout;
 
-    editorTemplate -beginLayout "Shader";
-      editorTemplate -addControl "rmanShader";
-      editorTemplate -addControl "rmanShaderLong";
-    editorTemplate -endLayout;
+    editorTemplate -suppress "rmanShader";
+    editorTemplate -suppress "rmanShaderLong";
 
-    editorTemplate -ccu ("liquidRibBoxToolbarNew "+$nodeName)  ("liquidRibBoxToolbarReplace "+$nodeName) "ribbox";
     editorTemplate -ccu ("liquidRibBoxEditorNew "+$nodeName)  ("liquidRibBoxEditorReplace "+$nodeName) "ribbox";
-    editorTemplate -suppress "ribbox";
 
     editorTemplate -addExtraControls;
 
