@@ -5109,34 +5109,19 @@ MStatus liqRibTranslator::objectBlock()
     RtString name = const_cast< char* >( ribNode->name.asChar() );
     RiAttribute( "identifier", "name", &name, RI_NULL );
 
-    RtString shortname = const_cast< char* >( ribNode->name.substring( ( ribNode->name.rindex('|') + 1 ), ribNode->name.length() ).asChar() );
-    RiAttribute( "user", "uniform string shortname", &shortname, RI_NULL );
-
     if( ribNode->grouping.membership != "" ) {
       RtString members = const_cast< char* >( ribNode->grouping.membership.asChar() );
       RiAttribute( "grouping", "membership", &members, RI_NULL );
     }
 
-    // If this is a matte object, then turn that on if it isn't currently set
-    if ( ribNode->shading.matte == -1){
+    if ( ribNode->shading.matte == -1) {
       // Respect the maya shading node setting
-      if ( ribNode->matteMode ) {
-        if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
-        m_currentMatteMode = true;
-      } else {
-        if ( m_currentMatteMode ) RiMatte( RI_FALSE );
-        m_currentMatteMode = false;
-      }
+      if ( ribNode->mayaMatteMode ) RiMatte( RI_TRUE );
     } else {
-      // The dag had a liqMatte property, use that (overriding the maya shader)
-      if ( ribNode->shading.matte > 0 ) {	// Slightly nasty test to verify we've actually got a value here
-        if ( !m_currentMatteMode ) RiMatte( RI_TRUE );
-        m_currentMatteMode = true;
-      } else {
-        if ( m_currentMatteMode ) RiMatte( RI_FALSE );
-        m_currentMatteMode = false;
-      }
+      if ( ribNode->shading.matte ) RiMatte( RI_TRUE );
     }
+
+
     // If this is a single sided object, then turn that on (RMan default is Sides 2)
     if ( !ribNode->doubleSided ) {
       RiSides( 1 );
