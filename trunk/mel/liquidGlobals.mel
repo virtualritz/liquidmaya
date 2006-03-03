@@ -35,7 +35,37 @@
 //
 
 
-// Local procs ----------------------------------------------------------------
+
+global proc liquidGlobalsUpdateBitsMenus( string $theAttr )
+{
+  string $menus[];
+  if ( $theAttr == "bits_filters" ) $menus = { "ddPixelFilter_0__LRG_optionMenu", "LG_DDpixelfilterCtl", "LG_DCpixelfilterCtl" };
+  else if ( $theAttr == "bits_hiders" ) $menus = { "hider_LRG_optionMenu" };
+
+  for ( $m in $menus ) {
+
+    // update main display filter menu
+    if ( `optionMenuGrp -q -ex $m` ) {
+      string $menuItems[] = `optionMenuGrp -q -ill $m`;
+
+      for ( $mi in $menuItems ) {
+        string $label = `menuItem -q -l $mi`;
+        string $attr = $label;
+
+        while( size( match(" *-*", $attr) ) ) {
+          $attr = substitute( " ", $label, "" );
+          $attr = substitute( "-", $attr, "_" );
+        }
+
+        string $fullAttr = ("liquidGlobals."+$theAttr+"."+$attr);
+        if ( objExists( $fullAttr ) ) menuItem -e -en (`getAttr $fullAttr`) $mi;
+
+      }
+    }
+
+  }
+
+}
 
 
 /* Widget creation ----------------------------------------------------------*/
@@ -2422,12 +2452,26 @@ global proc liquidGlobalsRendererTab_buildIt()
         liquidShowStringGlobal "dshImageMode" "Image Mode";
       setParent..;
     setParent..;
+  string $parent = `setParent -q`;
   setParent..;
 
   setUITemplate -ppt;
   setUITemplate -ppt;
 
+
+
   if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+
+  // set off scriptJob to update pixelfilter menu
+  int $num = `scriptJob -parent $parent
+                        -allChildren
+                        -attributeChange "liquidGlobals.bits_filters" "liquidGlobalsUpdateBitsMenus bits_filters"`;
+
+  // set off scriptJob to update hider menu
+  int $num = `scriptJob -parent $parent
+                        -allChildren
+                        -attributeChange "liquidGlobals.bits_hiders" "liquidGlobalsUpdateBitsMenus bits_hiders"`;
+
 }
 
 global proc liquidGlobalsFluidTab()

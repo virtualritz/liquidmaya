@@ -113,10 +113,10 @@ global proc liquidLoadScripts()
     /*"liquidStartup.mel",*/
     "liquidSubdiv.mel",
     "liquidSubdivInspector.mel",
-    "liquidConvertShadingNetworkToRSL.mel",
     "liquidWriteRSL_materials.mel",
     "liquidWriteRSL_textures.mel",
     "liquidWriteRSL_utilities.mel",
+    "liquidConvertShadingNetworkToRSL.mel",
     "liquidShaderNodes.mel",
     "registerLiquidRenderer.mel",
     //"liquidCreateCommonGlobalsTab.mel",
