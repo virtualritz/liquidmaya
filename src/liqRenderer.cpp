@@ -34,6 +34,7 @@
 #include <maya/MSelectionList.h>
 
 #include <liquid.h>
+#include <liqGlobalHelpers.h>
 #include <liqRenderer.h>
 
 
@@ -81,6 +82,7 @@ void liqRenderer::setRenderer()
   status.clear();
   gPlug = globalsNode.findPlug( "renderCmdFlags", &status );
   if ( status == MS::kSuccess ) gPlug.getValue( renderCmdFlags );
+  renderCmdFlags = parseString( renderCmdFlags );
 
   status.clear();
   gPlug = globalsNode.findPlug( "shaderExt", &status );
@@ -248,6 +250,43 @@ void liqRenderer::setRenderer()
     else if ( tmp == "air" )       renderName = "Air";
 
   }
+
+  /* cout <<"\nrenderName : "<<renderName<<endl;
+  cout <<"  renderCommand   : "<<renderCommand<<endl;
+  cout <<"  renderPreview   : "<<renderPreview<<endl;
+  cout <<"  renderCmdFlags  : "<<renderCmdFlags<<endl;
+  cout <<"  shaderExtension : "<<shaderExtension<<endl;
+  cout <<"  shaderInfo      : "<<shaderInfo<<endl;
+  cout <<"  shaderCompiler  : "<<shaderCompiler<<endl;
+  cout <<"  supports_BLOBBIES            : "<<supports_BLOBBIES<<endl;
+  cout <<"  supports_POINTS              : "<<supports_POINTS<<endl;
+  cout <<"  supports_EYESPLITS           : "<<supports_EYESPLITS<<endl;
+  cout <<"  supports_RAYTRACE            : "<<supports_RAYTRACE<<endl;
+  cout <<"  supports_DOF                 : "<<supports_DOF<<endl;
+  cout <<"  supports_ADVANCED_VISIBILITY : "<<supports_ADVANCED_VISIBILITY<<endl;
+  cout <<"  supports_DISPLAY_CHANNELS    : "<<supports_DISPLAY_CHANNELS<<endl;
+  cout <<"  pixelfilter_BOX            : "<<pixelfilter_BOX<<endl;
+  cout <<"  pixelfilter_TRIANGLE       : "<<pixelfilter_TRIANGLE<<endl;
+  cout <<"  pixelfilter_CATMULLROM     : "<<pixelfilter_CATMULLROM<<endl;
+  cout <<"  pixelfilter_GAUSSIAN       : "<<pixelfilter_GAUSSIAN<<endl;
+  cout <<"  pixelfilter_SINC           : "<<pixelfilter_SINC<<endl;
+  cout <<"  pixelfilter_BLACKMANHARRIS : "<<pixelfilter_BLACKMANHARRIS<<endl;
+  cout <<"  pixelfilter_MITCHELL       : "<<pixelfilter_MITCHELL<<endl;
+  cout <<"  pixelfilter_SEPCATMULLROM  : "<<pixelfilter_SEPCATMULLROM<<endl;
+  cout <<"  pixelfilter_LANCZOS        : "<<pixelfilter_LANCZOS<<endl;
+  cout <<"  pixelfilter_BESSEL         : "<<pixelfilter_BESSEL<<endl;
+  cout <<"  pixelfilter_DISK           : "<<pixelfilter_DISK<<endl;
+  cout <<"  hider_HIDDEN   : "<<hider_HIDDEN<<endl;
+  cout <<"  hider_PHOTON   : "<<hider_PHOTON<<endl;
+  cout <<"  hider_ZBUFFER  : "<<hider_ZBUFFER<<endl;
+  cout <<"  hider_RAYTRACE : "<<hider_RAYTRACE<<endl;
+  cout <<"  hider_OPENGL   : "<<hider_OPENGL<<endl;
+  cout <<"  requires_SWAPPED_UVS : "<<requires_SWAPPED_UVS<<endl;
+  cout <<"  requires__PREF       : "<<requires__PREF<<endl;
+  cout <<"  requires_MAKESHADOW  : "<<requires_MAKESHADOW<<endl;
+  cout <<"  dshDisplayName : "<<dshDisplayName<<endl;
+  cout <<"  dshImageMode   : "<<dshImageMode<<endl; */
+
 
 }
 

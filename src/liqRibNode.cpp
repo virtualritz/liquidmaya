@@ -91,7 +91,7 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
     objects[ i ] = NULL;
 
   name.clear();
-  matteMode                 = false;
+  mayaMatteMode             = false;
 
   shading.shadingRate       = 1.0f;
   shading.diceRasterOrient  = true;
@@ -284,7 +284,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         nPlug = nodePeeker.findPlug( MString( "liqMatte" ), &status );
         if ( status == MS::kSuccess) {
           nPlug.getValue( shading.matte );
-      }
+        }
       }
 
       // trace group ----------------------------------------------------------
@@ -679,9 +679,9 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if ( ( surfaceShader == MObject::kNullObj ) || !getOpacity( surfaceShader, opacity ) ) {
         // This is how we specify that the opacity was not found.
         //
-      opacity.r = -1.0;
+        opacity.r = -1.0;
       }
-      matteMode = getMatteMode( surfaceShader );
+      mayaMatteMode = getMatteMode( surfaceShader );
     } else {
       color.r = -1.0;
       opacity.r = -1.0;
@@ -1161,6 +1161,8 @@ bool liqRibNode::getOpacity( MObject& shader, MColor& opacity )
 
 /**
  * Check to see if this is a matte object.
+ * if a regular maya shader with a matteOpacityMode attribute is attached,
+ * and the value of the attribute is 0 ( Black Hole ) then we return true.
  */
 bool liqRibNode::getMatteMode( MObject& shader )
 {
