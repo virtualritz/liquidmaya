@@ -41,6 +41,13 @@
 /* Widget creation ----------------------------------------------------------*/
 // all these procs should be local !!
 
+global proc liquidGlobalsRenderLayerOverrideUpdateMenu( string $attr )
+{
+  int $en = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
+  string $ctl = (gmatch( $attr, "*[*]*"))? substitute( $attr, "s/\\[*\\]*/_/g" ) : $attr;
+  menuItem -e -c ("editRenderLayerAdjustment liquidGlobals."+$attr) -en $en ("liquidGlobalsOverride_"+$ctl);
+}
+
 proc liquidShowBoolGlobalPlus( string $name, string $label, string $info )
 {
   string $onCommand  = ("setAttr liquidGlobals." + $name + " true; ");
@@ -85,6 +92,8 @@ global proc liquidShowStringGlobalPlus( string $name, string $label, string $inf
   if ( `objExists ("liquidGlobals."+$name)` ) {
     string $ctl = `textFieldGrp -label $label -ann $info`;
     connectControl -index 2 $ctl ("liquidGlobals."+$name);
+    popupMenu -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu "+$name);
+    menuItem -l "Create Layer Override" ("liquidGlobalsOverride_"+$name);
   } else {
     print ( "Warning : global attribute " + $name + " does not exist\n" );
   }
@@ -94,6 +103,31 @@ proc liquidShowStringGlobal( string $name, string $label )
 {
   liquidShowStringGlobalPlus( $name, $label, "" );
 }
+
+global proc liquidShowLargeStringGlobalPlus( string $name, string $label, string $info )
+{
+  string $nodeDotAttr = ("liquidGlobals."+$name);
+  if ( `objExists $nodeDotAttr` ) {
+    string $layout = `rowLayout -nc 2 -cw 2 240`;
+    string $labelCtl = `text -l $label`;
+    string $val = `getAttr $nodeDotAttr`;
+    string $ctl = `scrollField  -wordWrap false
+                                -font smallFixedWidthFont
+                                -w 300
+                                -h 100
+                                -ann $info
+                                -tx $val`;
+     scrollField -e -cc ("{string $s = `scrollField -q -tx "+$ctl+"`;setAttr -type \"string\" "+$nodeDotAttr+" $s;}")
+                    -ec ("{string $s = `scrollField -q -tx "+$ctl+"`;setAttr -type \"string\" "+$nodeDotAttr+" $s;}")
+                    $ctl;
+    setParent ..;
+    popupMenu -parent $ctl -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu "+$name);
+    menuItem -l "Create Layer Override" ("liquidGlobalsOverride_"+$name);
+  } else {
+    print ( "Warning : global attribute " + $name + " does not exist\n" );
+  }
+}
+
 
 proc liquidShowIntGlobalPlus( string $name, string $label, string $info, string $cmd )
 {
@@ -143,6 +177,8 @@ proc liquidShowIntGlobalMenu( string $name, string $label, string $items[] )
       menuItem -data $i -label $items[ $i ] ( $name + "_" + `liquidSubstituteAll "[^a-zA-Z]" $items[ $i ] ""` );
     }
     connectControl -index 2 $menu ("liquidGlobals." + $name);
+    popupMenu -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu "+$name);
+    menuItem -l "Create Layer Override" ("liquidGlobalsOverride_"+$name);
     //setUITemplate -ppt;
   } else {
     warning ( "global attribute " + $name + " does not exist\n" );
@@ -191,6 +227,8 @@ proc liquidShowBitsIntGlobalMenu( string $name, string $label, string $attr )
       menuItem -data $i -label (liquidToUI($children[ $i ])) -en $enabled ( $name + "_" + `liquidSubstituteAll "[^a-zA-Z]" $children[ $i ] ""` );
     }
     connectControl -index 2 $menu ("liquidGlobals." + $name);
+    popupMenu -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu "+$name);
+    menuItem -l "Create Layer Override" ("liquidGlobalsOverride_"+$name);
     //setUITemplate -ppt;
   } else {
     warning ( "global attribute " + $name + " does not exist\n" );
@@ -804,11 +842,11 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
 
   // allow the user to pass a qualified path
   string $globalName = (`filetest -r $name`)? $name : ( $liquidDirectory + "/" + $name + ".lg" );
- 
+
   string $oldSel[] = `ls -sl`;
   // get the globals selected before applying the presets (setAttr .attr will fail otherwise)
   select "liquidGlobals";
-  
+
   if  ( `filetest -r $globalName` ) eval ("source \""+$globalName+"\"");
   else {
     // check it is not in the user's home dir
@@ -860,7 +898,7 @@ global proc liquidSavePresetOk()
 
 global proc liquidSavePreset() {
   if (`window -ex liquidSavePresetWin`) deleteUI liquidSavePresetWin;
-  
+
   window -widthHeight 100 30 -rtf true -title "Save Preset" liquidSavePresetWin;
     string $form = `formLayout -numberOfDivisions 100`;
       string $column = `columnLayout -adjustableColumn true`;
@@ -1923,8 +1961,8 @@ global proc liquidGlobalsFileTab_buildIt()
   setParent ..;
   frameLayout -bs "etchedIn" -l "Before & After" -cll true -cl false;
     columnLayout -adj true;
-      liquidShowStringGlobal "preframeMel"  "Pre Frame MEL";
-      liquidShowStringGlobal "postframeMel" "Post Frame MEL";
+      liquidShowLargeStringGlobalPlus "preframeMel"  "Pre Frame MEL" "# and @ must be escaped.\n[...] bounds an executable mel string.";
+      liquidShowLargeStringGlobalPlus "postframeMel" "Post Frame MEL" "# and @ must be escaped.\n[...] bounds an executable mel string.";
     setParent ..;
   setParent ..;
   setParent ..;
@@ -2198,10 +2236,10 @@ global proc liquidGlobalsOptionsTab_buildIt()
         setParent ..;
         frameLayout -bs "etchedIn" -l "Before & After RIB Requests" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowStringGlobal "preWorld"  "Before WorldBegin";
+            liquidShowLargeStringGlobalPlus "preWorld"  "Before WorldBegin" "you must escape # @ if you don't want them to be substituted ";
             separator;
-            liquidShowStringGlobal "postWorld" "After WorldBegin";
-            liquidShowStringGlobal "preGeom"   "Before Primitives";
+            liquidShowLargeStringGlobalPlus "postWorld" "After WorldBegin" "you must escape # @ if you don't want them to be substituted ";
+            liquidShowLargeStringGlobalPlus "preGeom"   "Before Primitives" "you must escape # @ if you don't want them to be substituted ";
           setParent ..;
         setParent ..;
         frameLayout -bs "etchedIn" -l "RIB Format" -cll true -cl false;
