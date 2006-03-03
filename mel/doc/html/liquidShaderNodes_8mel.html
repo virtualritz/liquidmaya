@@ -10,57 +10,77 @@
 <h1>liquidShaderNodes.mel File Reference</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a2">liquidShaderNodes_initParams</a> (string $nodeAttr)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a2">rmanParams_create</a> (string $node, int $reReadShaderParams)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a3">liquidShaderNodePreview</a> (string $node)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a3">rmanParams_update</a> (string $node, string $attr)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a4">liquidPreviewSwatchNew</a> (string $nodeName, string $msg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a4">lifGradient_unifyInterpolation</a> (string $ctl)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a5">liquidPreviewSwatchReplace</a> (string $nodeName, string $msg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a5">lifGradient_connect</a> (string $nodeAttr)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a6">liquidHideAEShaderParams</a> (string $node)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a6">lifGradient_create</a> (string $nodeAttr, int $bound, int $indent, int $staticEntries, int $staticPositions, int $adaptiveScaling)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a7">setLastAEShader</a> (string $shader, string $type)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a7">lifGradientAttr_connect</a> (string $node, string $valueAttr, string $positionAttr, string $interpAttr)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a8">getLastAEShader</a> (string $type)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a8">lifGradientAttr_init</a> (string $node, string $valueAttr, string $positionAttr, string $interpAttr)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a9">setLastAENode</a> (string $node, string $type)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">proc string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a9">lifGradientAttr_create</a> (string $node, string $valueAttr, string $positionAttr, string $interpAttr)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a10">getLastAENode</a> (string $type)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a10">liquidShaderNodes_initParams</a> (string $nodeAttr)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a11">liquidShaderNodesParamsNew</a> (string $nodeName, string $msg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a11">liquidShaderNodePreview</a> (string $node)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a12">liquidShaderNodesParamsReplace</a> (string $nodeName, string $msg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a12">liquidPreviewSwatchNew</a> (string $nodeName, string $msg)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a13">liquidShaderPickerNew</a> (string $nodeName, string $msg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a13">liquidPreviewSwatchReplace</a> (string $nodeName, string $msg)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a14">liquidShaderPickerReplace</a> (string $nodeName, string $msg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a14">liquidHideAEShaderParams</a> (string $node)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a15">liquidAE_LifFloat_slider</a> (string $selectedObj, string $paramName, int $index, string $label, string $range[], string $description)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a15">setLastAEShader</a> (string $shader, string $type)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a16">liquidAE_LifFloat_selector</a> (string $selectedObj, string $paramName, string $label, string $range[], string $description)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a16">getLastAEShader</a> (string $type)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a17">liquidAE_LifFloat_bool</a> (string $selectedObj, string $paramName, string $label, string $range[], string $description)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a17">setLastAENode</a> (string $node, string $type)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a18">liquidAE_LifFloat</a> (string $selectedObj, int $index, string $subtype)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a18">getLastAENode</a> (string $type)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a19">liquidAE_LifString</a> (string $selectedObj, int $index, string $subtype)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a19">liquidShaderNodesParamsNew</a> (string $nodeName, string $msg)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a20">liquidAE_LifColor</a> (string $selectedObj, int $index)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a20">liquidShaderNodesParamsReplace</a> (string $nodeName, string $msg)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a21">liquidAE_LifVector</a> (string $selectedObj, int $index)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a21">liquidShaderPickerNew</a> (string $nodeName, string $msg)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a22">liquidAE_LifGrp</a> (string $selectedObj, int $index)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a22">liquidShaderPickerReplace</a> (string $nodeName, string $msg)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a23">liquidAssignRibboxToSelected</a> (string $node)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a23">liquidAE_LifFloat_slider</a> (string $selectedObj, string $paramName, int $index, string $label, string $range[], string $description)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a24">liquidSelectAssignedToRibbox</a> (string $node)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a24">liquidAE_LifFloat_selector</a> (string $selectedObj, string $paramName, string $label, string $range[], string $description)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a25">liquidAssignLightShaderToSelected</a> (string $node)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a25">liquidAE_LifFloat_bool</a> (string $selectedObj, string $paramName, string $label, string $range[], string $description)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a26">liquidSelectAssignedToLightShader</a> (string $node)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a26">liquidAE_LifFloat_spline</a> (string $selectedObj, string $paramName, string $label, string $subtype, string $description)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a27">liquidShaderUpdater</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a27">liquidAE_LifFloat</a> (string $selectedObj, int $index, string $subtype)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a28">liquidAE_LifString</a> (string $selectedObj, int $index, string $subtype)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a29">liquidAE_LifColor_spline</a> (string $selectedObj, int $index, string $subtype)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a30">liquidAE_LifColor</a> (string $selectedObj, int $index, string $subtype)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a31">liquidAE_LifVector</a> (string $selectedObj, int $index)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a32">liquidAE_LifGrp</a> (string $selectedObj, int $index)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a33">liquidAssignRibboxToSelected</a> (string $node)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a34">liquidSelectAssignedToRibbox</a> (string $node)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a35">liquidAssignLightShaderToSelected</a> (string $node)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a36">liquidSelectAssignedToLightShader</a> (string $node)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">global proc&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a37">liquidShaderUpdater</a> ()</td></tr>
 
 <tr><td colspan="2"><br><h2>Variables</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">global string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="liquidShaderNodes_8mel.html#a0">$gLiquidAELastShader</a></td></tr>
@@ -69,7 +89,7 @@
 
 </table>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="a10"></a><!-- doxytag: member="liquidShaderNodes.mel::getLastAENode" ref="a10" args="(string $type)" --><p>
+<a class="anchor" name="a18"></a><!-- doxytag: member="liquidShaderNodes.mel::getLastAENode" ref="a18" args="(string $type)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -97,7 +117,7 @@
     </td>
   </tr>
 </table>
-<a class="anchor" name="a8"></a><!-- doxytag: member="liquidShaderNodes.mel::getLastAEShader" ref="a8" args="(string $type)" --><p>
+<a class="anchor" name="a16"></a><!-- doxytag: member="liquidShaderNodes.mel::getLastAEShader" ref="a16" args="(string $type)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -125,22 +145,74 @@
     </td>
   </tr>
 </table>
-<a class="anchor" name="a20"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifColor" ref="a20" args="(string $selectedObj, int $index)" --><p>
+<a class="anchor" name="a5"></a><!-- doxytag: member="liquidShaderNodes.mel::lifGradient_connect" ref="a5" args="(string $nodeAttr)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">global proc liquidAE_LifColor           </td>
+          <td class="md" nowrap valign="top">global proc lifGradient_connect           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">string $&nbsp;</td>
-          <td class="mdname" nowrap> <em>selectedObj</em>, </td>
+          <td class="mdname1" valign="top" nowrap> <em>nodeAttr</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a6"></a><!-- doxytag: member="liquidShaderNodes.mel::lifGradient_create" ref="a6" args="(string $nodeAttr, int $bound, int $indent, int $staticEntries, int $staticPositions, int $adaptiveScaling)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">global proc lifGradient_create           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>nodeAttr</em>, </td>
         </tr>
         <tr>
           <td class="md" nowrap align="right"></td>
           <td class="md"></td>
           <td class="md" nowrap>int $&nbsp;</td>
-          <td class="mdname" nowrap> <em>index</em></td>
+          <td class="mdname" nowrap> <em>bound</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>int $&nbsp;</td>
+          <td class="mdname" nowrap> <em>indent</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>int $&nbsp;</td>
+          <td class="mdname" nowrap> <em>staticEntries</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>int $&nbsp;</td>
+          <td class="mdname" nowrap> <em>staticPositions</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>int $&nbsp;</td>
+          <td class="mdname" nowrap> <em>adaptiveScaling</em></td>
         </tr>
         <tr>
           <td class="md"></td>
@@ -162,7 +234,268 @@
     </td>
   </tr>
 </table>
-<a class="anchor" name="a18"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat" ref="a18" args="(string $selectedObj, int $index, string $subtype)" --><p>
+<a class="anchor" name="a4"></a><!-- doxytag: member="liquidShaderNodes.mel::lifGradient_unifyInterpolation" ref="a4" args="(string $ctl)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">global proc lifGradient_unifyInterpolation           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>ctl</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a7"></a><!-- doxytag: member="liquidShaderNodes.mel::lifGradientAttr_connect" ref="a7" args="(string $node, string $valueAttr, string $positionAttr, string $interpAttr)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">proc lifGradientAttr_connect           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>valueAttr</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>positionAttr</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>interpAttr</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a9"></a><!-- doxytag: member="liquidShaderNodes.mel::lifGradientAttr_create" ref="a9" args="(string $node, string $valueAttr, string $positionAttr, string $interpAttr)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">proc string lifGradientAttr_create           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>valueAttr</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>positionAttr</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>interpAttr</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a8"></a><!-- doxytag: member="liquidShaderNodes.mel::lifGradientAttr_init" ref="a8" args="(string $node, string $valueAttr, string $positionAttr, string $interpAttr)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">proc lifGradientAttr_init           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>valueAttr</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>positionAttr</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>interpAttr</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a30"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifColor" ref="a30" args="(string $selectedObj, int $index, string $subtype)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">global proc liquidAE_LifColor           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>selectedObj</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>int $&nbsp;</td>
+          <td class="mdname" nowrap> <em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>subtype</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a29"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifColor_spline" ref="a29" args="(string $selectedObj, int $index, string $subtype)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">global proc liquidAE_LifColor_spline           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>selectedObj</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>int $&nbsp;</td>
+          <td class="mdname" nowrap> <em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>subtype</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a27"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat" ref="a27" args="(string $selectedObj, int $index, string $subtype)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -205,7 +538,7 @@
     </td>
   </tr>
 </table>
-<a class="anchor" name="a17"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat_bool" ref="a17" args="(string $selectedObj, string $paramName, string $label, string $range[], string $description)" --><p>
+<a class="anchor" name="a25"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat_bool" ref="a25" args="(string $selectedObj, string $paramName, string $label, string $range[], string $description)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -260,7 +593,7 @@
     </td>
   </tr>
 </table>
-<a class="anchor" name="a16"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat_selector" ref="a16" args="(string $selectedObj, string $paramName, string $label, string $range[], string $description)" --><p>
+<a class="anchor" name="a24"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat_selector" ref="a24" args="(string $selectedObj, string $paramName, string $label, string $range[], string $description)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -315,7 +648,7 @@
     </td>
   </tr>
 </table>
-<a class="anchor" name="a15"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat_slider" ref="a15" args="(string $selectedObj, string $paramName, int $index, string $label, string $range[], string $description)" --><p>
+<a class="anchor" name="a23"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat_slider" ref="a23" args="(string $selectedObj, string $paramName, int $index, string $label, string $range[], string $description)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -376,7 +709,62 @@
 modified lif procedures to create the attribute editor widgets.    </td>
   </tr>
 </table>
-<a class="anchor" name="a22"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifGrp" ref="a22" args="(string $selectedObj, int $index)" --><p>
+<a class="anchor" name="a26"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifFloat_spline" ref="a26" args="(string $selectedObj, string $paramName, string $label, string $subtype, string $description)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">global proc liquidAE_LifFloat_spline           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>selectedObj</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>paramName</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>label</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>subtype</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>description</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a32"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifGrp" ref="a32" args="(string $selectedObj, int $index)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -413,7 +801,7 @@ modified lif procedures to create the attribute editor widgets.    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a19"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifString" ref="a19" args="(string $selectedObj, int $index, string $subtype)" --><p>
+<a class="anchor" name="a28"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifString" ref="a28" args="(string $selectedObj, int $index, string $subtype)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -456,7 +844,7 @@ modified lif procedures to create the attribute editor widgets.    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a21"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifVector" ref="a21" args="(string $selectedObj, int $index)" --><p>
+<a class="anchor" name="a31"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAE_LifVector" ref="a31" args="(string $selectedObj, int $index)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -493,7 +881,7 @@ modified lif procedures to create the attribute editor widgets.    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a25"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAssignLightShaderToSelected" ref="a25" args="(string $node)" --><p>
+<a class="anchor" name="a35"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAssignLightShaderToSelected" ref="a35" args="(string $node)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -521,7 +909,7 @@ modified lif procedures to create the attribute editor widgets.    </td>
 proc to attach a ribbox node to selected objects    </td>
   </tr>
 </table>
-<a class="anchor" name="a23"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAssignRibboxToSelected" ref="a23" args="(string $node)" --><p>
+<a class="anchor" name="a33"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidAssignRibboxToSelected" ref="a33" args="(string $node)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -549,7 +937,7 @@ proc to attach a ribbox node to selected objects    </td>
 proc to attach a ribbox node to selected objects    </td>
   </tr>
 </table>
-<a class="anchor" name="a6"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidHideAEShaderParams" ref="a6" args="(string $node)" --><p>
+<a class="anchor" name="a14"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidHideAEShaderParams" ref="a14" args="(string $node)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -577,7 +965,7 @@ proc to attach a ribbox node to selected objects    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a4"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidPreviewSwatchNew" ref="a4" args="(string $nodeName, string $msg)" --><p>
+<a class="anchor" name="a12"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidPreviewSwatchNew" ref="a12" args="(string $nodeName, string $msg)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -614,7 +1002,7 @@ proc to attach a ribbox node to selected objects    </td>
 make a bigger swatch    </td>
   </tr>
 </table>
-<a class="anchor" name="a5"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidPreviewSwatchReplace" ref="a5" args="(string $nodeName, string $msg)" --><p>
+<a class="anchor" name="a13"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidPreviewSwatchReplace" ref="a13" args="(string $nodeName, string $msg)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -651,7 +1039,7 @@ make a bigger swatch    </td>
 keep a bigger swatch    </td>
   </tr>
 </table>
-<a class="anchor" name="a26"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidSelectAssignedToLightShader" ref="a26" args="(string $node)" --><p>
+<a class="anchor" name="a36"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidSelectAssignedToLightShader" ref="a36" args="(string $node)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -679,7 +1067,7 @@ keep a bigger swatch    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a24"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidSelectAssignedToRibbox" ref="a24" args="(string $node)" --><p>
+<a class="anchor" name="a34"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidSelectAssignedToRibbox" ref="a34" args="(string $node)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -707,7 +1095,7 @@ keep a bigger swatch    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a3"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderNodePreview" ref="a3" args="(string $node)" --><p>
+<a class="anchor" name="a11"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderNodePreview" ref="a11" args="(string $node)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -735,7 +1123,7 @@ keep a bigger swatch    </td>
 preview function for the shader node    </td>
   </tr>
 </table>
-<a class="anchor" name="a2"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderNodes_initParams" ref="a2" args="(string $nodeAttr)" --><p>
+<a class="anchor" name="a10"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderNodes_initParams" ref="a10" args="(string $nodeAttr)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -763,7 +1151,7 @@ preview function for the shader node    </td>
 initialize shader parameters on shading node    </td>
   </tr>
 </table>
-<a class="anchor" name="a11"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderNodesParamsNew" ref="a11" args="(string $nodeName, string $msg)" --><p>
+<a class="anchor" name="a19"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderNodesParamsNew" ref="a19" args="(string $nodeName, string $msg)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -800,7 +1188,7 @@ initialize shader parameters on shading node    </td>
 display the shader parameters $msg contains the node.rmanShaderLong    </td>
   </tr>
 </table>
-<a class="anchor" name="a12"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderNodesParamsReplace" ref="a12" args="(string $nodeName, string $msg)" --><p>
+<a class="anchor" name="a20"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderNodesParamsReplace" ref="a20" args="(string $nodeName, string $msg)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -837,7 +1225,7 @@ display the shader parameters $msg contains the node.rmanShaderLong    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a13"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderPickerNew" ref="a13" args="(string $nodeName, string $msg)" --><p>
+<a class="anchor" name="a21"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderPickerNew" ref="a21" args="(string $nodeName, string $msg)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -874,7 +1262,7 @@ display the shader parameters $msg contains the node.rmanShaderLong    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a14"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderPickerReplace" ref="a14" args="(string $nodeName, string $msg)" --><p>
+<a class="anchor" name="a22"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderPickerReplace" ref="a22" args="(string $nodeName, string $msg)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -911,7 +1299,7 @@ display the shader parameters $msg contains the node.rmanShaderLong    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a27"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderUpdater" ref="a27" args="()" --><p>
+<a class="anchor" name="a37"></a><!-- doxytag: member="liquidShaderNodes.mel::liquidShaderUpdater" ref="a37" args="()" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -938,7 +1326,81 @@ display the shader parameters $msg contains the node.rmanShaderLong    </td>
 update all nodes for the AE optimization.    </td>
   </tr>
 </table>
-<a class="anchor" name="a9"></a><!-- doxytag: member="liquidShaderNodes.mel::setLastAENode" ref="a9" args="(string $node, string $type)" --><p>
+<a class="anchor" name="a2"></a><!-- doxytag: member="liquidShaderNodes.mel::rmanParams_create" ref="a2" args="(string $node, int $reReadShaderParams)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">proc rmanParams_create           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>int $&nbsp;</td>
+          <td class="mdname" nowrap> <em>reReadShaderParams</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a3"></a><!-- doxytag: member="liquidShaderNodes.mel::rmanParams_update" ref="a3" args="(string $node, string $attr)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">proc rmanParams_update           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>string $&nbsp;</td>
+          <td class="mdname" nowrap> <em>attr</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a17"></a><!-- doxytag: member="liquidShaderNodes.mel::setLastAENode" ref="a17" args="(string $node, string $type)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -975,7 +1437,7 @@ update all nodes for the AE optimization.    </td>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a7"></a><!-- doxytag: member="liquidShaderNodes.mel::setLastAEShader" ref="a7" args="(string $shader, string $type)" --><p>
+<a class="anchor" name="a15"></a><!-- doxytag: member="liquidShaderNodes.mel::setLastAEShader" ref="a15" args="(string $shader, string $type)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1059,7 +1521,7 @@ update all nodes for the AE optimization.    </td>
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Wed Feb 15 12:48:56 2006 for Liquid_MEL by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Fri Mar 3 16:10:10 2006 for Liquid_MEL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.4 </small></address>
 </body>
