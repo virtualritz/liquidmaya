@@ -71,7 +71,7 @@ class liqRibNode {
 
     MColor             color;
     MColor             opacity;
-    bool               matteMode;
+    bool               mayaMatteMode;
     bool               doubleSided;
     bool               reversedNormals;
     MString            shaderName;
