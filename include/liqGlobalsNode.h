@@ -218,6 +218,7 @@ class liqGlobalsNode : public MPxNode
 
     static MObject aExpandAlfred;
 
+    static MObject aPreFrameBegin;
     static MObject aPreWorld;
     static MObject aPostWorld;
     static MObject aPreGeom;

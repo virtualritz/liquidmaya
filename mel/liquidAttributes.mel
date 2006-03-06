@@ -94,7 +94,7 @@ global proc liquidCreateMatteAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqMatte"` ) {
-      addAttr -k true -ln "liqMatte" -at bool $currentNode;
+      addAttr -k true -ln "liqMatte" -at bool -dv 1 $currentNode;
     }
   }
 }
@@ -107,7 +107,7 @@ global proc liquidCreateObjectRayTracingAttributes()
   liquidCreateSampleMotionAttribute;
   liquidCreateTraceDisplacementsAttribute;
   liquidCreateTraceBiasAttribute;
-  liquidCreateTransmisionAttribute();
+  liquidCreateTransmissionAttribute();
   liquidCreateMaxDiffuseDepthAttribute;
   liquidCreateMaxSpecularDepthAttribute;
   liquidCreateHitModeDiffuseAttribute();
@@ -201,7 +201,7 @@ global proc liquidCreateMaxSpecularDepthAttribute()
   }
 }
 
-global proc liquidCreateTransmisionAttribute()
+global proc liquidCreateTransmissionAttribute()
 {
   int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );
   if ( $newStyle ) return;
@@ -220,7 +220,7 @@ global proc liquidCreateVisibilityAttributes()
 {
   liquidCreateVisibilityCameraAttribute;
   liquidCreateVisibilityTraceAttribute;
-  liquidCreateTransmisionAttribute;
+  liquidCreateTransmissionAttribute;
 }
 
 
@@ -249,6 +249,46 @@ global proc liquidCreateVisibilityCameraAttribute()
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqVisibilityCamera"` ) {
       addAttr -ln "liqVisibilityCamera" -at bool -dv 1 $currentNode;
+    }
+  }
+}
+
+global proc liquidCreateVisibilityDiffuse()
+{
+  if ( !liquidGlobalsFeatureQuery( "AdvancedVisibility" ) ) return;
+
+  string $nodes[] = `ls -tr -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqVisibilityDiffuse"` ) {
+      addAttr -ln "liqVisibilityDiffuse" -at bool $currentNode;
+    }
+  }
+}
+
+global proc liquidCreateVisibilitySpecular()
+{
+  if ( !liquidGlobalsFeatureQuery( "AdvancedVisibility" ) ) return;
+
+  string $nodes[] = `ls -tr -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqVisibilitySpecular"` ) {
+      addAttr -ln "liqVisibilitySpecular" -at bool $currentNode;
+    }
+  }
+}
+
+global proc liquidCreateVisibilityTransmission()
+{
+  if ( !liquidGlobalsFeatureQuery( "AdvancedVisibility" ) ) liquidCreateTransmissionAttribute();
+  else {
+    string $nodes[] = `ls -tr -sl`;
+    string $currentNode;
+    for ( $currentNode in $nodes ) {
+      if ( !`attributeQuery -node $currentNode -ex "liqVisibilityNewTransmission"` ) {
+        addAttr -ln "liqVisibilityNewTransmission" -at bool $currentNode;
+      }
     }
   }
 }
@@ -718,7 +758,7 @@ global proc liquidCreateLiquidInvisibleAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqInvisible"` ) {
-      addAttr -ln "liqInvisible" -at bool $currentNode;
+      addAttr -ln "liqInvisible" -at bool -dv 1 $currentNode;
     }
   }
 }
@@ -970,7 +1010,7 @@ global proc liquidCreateCameraHitModeAttribute()
 
 global proc liquidCreateHitModeDiffuseAttribute()
 {
-  int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );;
+  int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );
   if ( !$newStyle ) return;
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
@@ -1019,7 +1059,7 @@ global proc liquidCreateIgnoreShapesAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !objExists( ($currentNode+".liqIgnoreShapes") ) ) {
-      addAttr -ln "liqIgnoreShapes" -at bool -dv 0 $currentNode;
+      addAttr -ln "liqIgnoreShapes" -at bool -dv 1 $currentNode;
     }
   }
 }

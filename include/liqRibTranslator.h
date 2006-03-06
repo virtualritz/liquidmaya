@@ -320,6 +320,7 @@ private :
 
   MString m_shaderPath;
 
+  MString m_preFrameRIB;
   MString m_preWorldRIB;
   MString m_postWorldRIB;
 

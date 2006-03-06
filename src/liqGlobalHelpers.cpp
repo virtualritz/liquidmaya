@@ -587,13 +587,13 @@ MString parseCommandString( const MString & inputString )
 
 
   for ( unsigned i = 0; i < sLength; i++ ) {
-    if ( inputString.substring(i, i) == "[" && inputString.substring(i - 1, i - 1) != "\\" ) {
+    if ( inputString.substring(i, i) == "`" && inputString.substring(i - 1, i - 1) != "\\" ) {
       MString	melCmdString;
       i++;
 
       // loop through the string looking for the closing %
       if ( i < sLength ) {
-        while ( i < sLength && inputString.substring(i, i) != "]" && inputString.substring(i - 1, i - 1) != "\\" ) {
+        while ( i < sLength && inputString.substring(i, i) != "`" && inputString.substring(i - 1, i - 1) != "\\" ) {
           melCmdString += inputString.substring(i, i);
           i++;
         }
@@ -811,7 +811,7 @@ MString liquidSanitizePath( MString & inputString )
     constructedString += buffer;
   }
 
-#if defined ( DELIGHT ) || defined ( PRMAN )
+#if defined ( DELIGHT ) || ( PRMAN )
   // Convert from "C:/path" into "//C/path"
   if( inputString.substring( 1, 1 ) == ":" )
     constructedString = "//" + constructedString.substring( 0, 0 ) + constructedString.substring( 2, inputString.length() - 1 );
