@@ -886,7 +886,22 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
 
     if  ( `filetest -r $globalName` ) eval ("source \""+$globalName+"\"");
     else if  ( `filetest -r $homeDirRendererPath` ) eval ("source \""+$homeDirRendererPath+"\"");
-    else warning ("Preset file " + $name + " not found!");
+    else {
+
+      // if we are in batch mode this will compromise whatever you're trying to achieve...
+      if ( `about -batch` ) error ("Liquid : Preset file " + $name + " not found!");
+
+      // everything failed, force the user to select a preset file
+      warning ("Preset file " + $name + " not found! : please pick a preset file...");
+      string $thePreset = `fileDialog -dm ($liquidDirectory+"/*.lg")`;
+
+      if ( $thePreset != "" ) {
+
+        select "liquidGlobals";
+        eval ("source \""+$thePreset+"\"");
+
+      } else warning ("Preset file " + $name + " not found! : you might not be able to render correctly...");
+    }
   }
   select $oldSel;
 }
@@ -2266,8 +2281,8 @@ global proc liquidGlobalsOptionsTab_buildIt()
         setParent ..;
         frameLayout -bs "etchedIn" -l "Before & After RIB Requests" -cll true -cl false;
           columnLayout -adj true;
+            liquidShowLargeStringGlobalPlus "preFrameBegin"  "Before FrameBegin" "you must escape # @ if you don't want them to be substituted ";
             liquidShowLargeStringGlobalPlus "preWorld"  "Before WorldBegin" "you must escape # @ if you don't want them to be substituted ";
-            separator;
             liquidShowLargeStringGlobalPlus "postWorld" "After WorldBegin" "you must escape # @ if you don't want them to be substituted ";
             liquidShowLargeStringGlobalPlus "preGeom"   "Before Primitives" "you must escape # @ if you don't want them to be substituted ";
           setParent ..;

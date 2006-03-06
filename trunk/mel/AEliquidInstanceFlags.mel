@@ -104,20 +104,29 @@ global proc liquidLargeFieldUpdateMenu( string $msg )
 global proc liquidLargeFieldReplace( string $nodeName, string $label, string $msg )
 {
   string $attr[] = stringToStringArray( $msg, ".");
-  scrollField -e
-              -tx (`getAttr $msg`)
-              -cc ("{string $s = `scrollField -q -tx liquidLargeFieldCtl"+$attr[1]+"`;setAttr -type \"string\" "+$msg+" $s;}")
-              -ec ("{string $s = `scrollField -q -tx liquidLargeFieldCtl"+$attr[1]+"`;setAttr -type \"string\" "+$msg+" $s;}")
-              ("liquidLargeFieldCtl"+$attr[1]);
+  string $layout = ("liquidLargeFieldLayout"+$attr[1]);
 
-  popupMenu -e -pmc ("liquidLargeFieldUpdateMenu "+$msg) ("liquidLargeFielOverrideMenu"+$attr[1]);
+  if ( !objExists( $msg ) ) rowLayout -e -m 0 $layout;
+  else {
+    rowLayout -e -m 1 $layout;
+
+    scrollField -e
+                -tx (`getAttr $msg`)
+                -cc ("{string $s = `scrollField -q -tx liquidLargeFieldCtl"+$attr[1]+"`;setAttr -type \"string\" "+$msg+" $s;}")
+                -ec ("{string $s = `scrollField -q -tx liquidLargeFieldCtl"+$attr[1]+"`;setAttr -type \"string\" "+$msg+" $s;}")
+                ("liquidLargeFieldCtl"+$attr[1]);
+
+    popupMenu -e -pmc ("liquidLargeFieldUpdateMenu "+$msg) ("liquidLargeFielOverrideMenu"+$attr[1]);
+
+  }
 }
+
 
 global proc liquidLargeFieldNew( string $nodeName, string $label, string $msg )
 {
   string $attr[] = stringToStringArray( $msg, ".");
   setUITemplate -pst attributeEditorTemplate;
-  string $layout = `rowLayout -nc 2 -adj 2`;
+  string $layout = `rowLayout -nc 2 -adj 2 ("liquidLargeFieldLayout"+$attr[1])`;
     string $labelCtl = `text -l $label`;
     scrollField -wordWrap false -font smallFixedWidthFont -h 100 ("liquidLargeFieldCtl"+$attr[1]);
     setParent ..;

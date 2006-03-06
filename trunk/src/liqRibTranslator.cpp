@@ -600,6 +600,7 @@ liqRibTranslator::liqRibTranslator()
   m_cropX2 = m_cropY2 = 1.0;
   liqglo_isShadowPass = false;
 
+  m_preFrameRIB.clear();
   m_preWorldRIB.clear();
   m_postWorldRIB.clear();
 
@@ -1957,6 +1958,16 @@ void liqRibTranslator::liquidReadGlobals()
     gStatus.clear();
     if ( varVal != "" ) {
       outFormat = parseString( varVal );
+    }
+  }
+
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "preFrameBegin", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      m_preFrameRIB = parseString( varVal );
     }
   }
 
@@ -4021,6 +4032,12 @@ MStatus liqRibTranslator::ribPrologue()
   }
 #endif
 
+  // CUSTOM OPTIONS
+  if (m_preFrameRIB != "") {
+    RiArchiveRecord(RI_COMMENT,  " Pre-FrameBegin RIB from liquid globals");
+    RiArchiveRecord(RI_VERBATIM, (char*) m_preFrameRIB.asChar());
+    RiArchiveRecord(RI_VERBATIM, "\n");
+  }
   }
   ribStatus = kRibBegin;
   return MS::kSuccess;
