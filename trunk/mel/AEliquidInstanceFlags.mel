@@ -8,91 +8,13 @@ proc AEliquidCreateMenu()
   if ( `menu -q -ex liquidAEMenu` ) return ;
 
   menu -label "Liquid" liquidAEMenu;
-    menuItem -label "Object Attributes" -subMenu true;
-      menuItem -label "Create Shading Group" -command liquidCreateShadingAttributes -ann "Add Shading attributes to selected Transform node(s)";
-        menuItem -label "Shading Add" -subMenu true;
-          menuItem -label "Shading Rate" -command liquidCreateShadingRateAttribute;
-          menuItem -label "Color" -command liquidCreateColorAttribute;
-          menuItem -label "Opacity" -command liquidCreateOpacityAttribute;
-          menuItem -label "Matte" -command liquidCreateMatteAttribute;
-          menuItem -label "Camera Hit-Mode" -command ("liquidCreateCameraHitModeAttribute()");
-        setParent -menu ..;
-        menuItem -label "Remove Shading Group" -command liquidDeleteShadingAttributes -ann "Remove Shading attributes from selected Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Create Visibility Group" -command liquidCreateVisibilityAttributes -ann "Add Visibility attributes to selected Transform node(s)";
-           menuItem -label "Visibility Add" -subMenu true;
-             menuItem -label "Visible To Camera" -command liquidCreateVisibilityCameraAttribute;
-             menuItem -label "Visible To Ray Tracer" -command liquidCreateVisibilityTraceAttribute;
-             menuItem -label "Transmission" -command liquidCreateTransmisionAttribute;
-        setParent -menu ..;
-        menuItem -label "Remove Visibility Group" -command liquidDeleteVisibilityAttributes -ann "Remove Visibility attributes from selected Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Create Ray Tracing Group" -command liquidCreateObjectRayTracingAttributes -ann "Add Ray Tracing attributes to selected Transform node(s)";
-        menuItem -label "Ray Tracing Add" -subMenu true;
-          menuItem -label "Sample Motion" -command liquidCreateSampleMotionAttribute;
-          menuItem -label "Trace Displacements" -command liquidCreateTraceDisplacementsAttribute;
-          menuItem -label "Trace Bias" -command liquidCreateTraceBiasAttribute;
-          menuItem -label "Max Diffuse Depth" -command liquidCreateMaxDiffuseDepthAttribute;
-          menuItem -label "Max Specular Depth" -command liquidCreateMaxSpecularDepthAttribute;
-        setParent -menu ..;
-        menuItem -label "Remove Ray Tracing Group" -command liquidDeleteRayTracingAttributes -ann "Remove Ray Tracing attributes from selected Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Create Global Illumination Group" -command  liquidCreateGlobalIlluminationAttributes -ann "Add Global Illumination attributes to selected Transform node(s)";
-        menuItem -label "Remove Global Illumination Group" -command  liquidDeleteGlobalIlluminationAttributes -ann "Remove Global Illumination attributes from selected Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Create PhotonMap Group" -command  liquidCreatePhotonAttributes -ann "Add Photon Mapping attributes to selected Transform node(s)";
-        menuItem -label "Remove PhotonMap Group" -command  liquidDeletePhotonAttributes -ann "Remove Photon Mapping attributes from selected Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Create Motion Blur Group" -command liquidCreateMotionBlurAttributes -ann "Add Motion Blur attributes to selected Transform node(s)";
-        menuItem -label "Motion Blur Add" -subMenu true;
-            menuItem -label "Transformation Blur" -command liquidCreateTransformationBlurAttribute;
-            menuItem -label "Deformation Blur" -command liquidCreateDeformationBlurAttribute;
-            menuItem -label "Motion Samples" -command liquidCreateMotionSamplesAttribute;
-            menuItem -label "Motion Factor" -command liquidCreateMotionFactorAttribute;
-        setParent -menu ..;
-        menuItem -label "Remove Motion Blur Group" -command liquidDeleteMotionBlurAttributes -ann "Remove Motion Blur attributes from selected Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Create RIB Group" -command liquidCreateRIBAttributes -ann "Add RIB attributes to selected Transform node(s)";
-        menuItem -label "RIB Add" -subMenu true;
-          menuItem -label "RIB Box" -command liquidCreateRIBBoxAttribute;
-          menuItem -label "RIB Generator" -command liquidCreateRIBGeneratorAttribute;
-          menuItem -label "Read Archive" -command liquidCreateReadArchiveAttribute;
-          menuItem -label "Delayed Read Archive" -command liquidCreateDelayedReadArchiveAttribute;
-        setParent -menu ..;
-        menuItem -label "Remove RIB Group" -command liquidDeleteRIBAttributes -ann "Remove RIB attributes from selected Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Add Instancing" -command liquidCreateInstancingAttributes -ann "Add Instancing control to selected node";
-        menuItem -label "Delete Instancing" -command liquidDeleteInstancingAttributes -ann "Remove Instancing control from selected Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Create 3Delight Sub Surface Scattering Group" -command liquidCreate3DelightSubSurfaceScatteringAttributes -ann "Add 3Delight Sub Surface Scattering control to selected node";
-        menuItem -label "Remove 3Delight Sub Surface Scattering Group" -command liquidDelete3DelightSubSurfaceScatteringAttributes -ann "Remove 3Delight Sub Surface Scattering control to selected node";
-        menuItem -d true;
-        menuItem -label "Add Liquid Invisible" -command liquidCreateLiquidInvisibleAttribute -ann "Add Liquid Invisible control to selected node";
-        menuItem -label "Delete Liquid Invisible" -command liquidDeleteLiquidInvisibleAttribute -ann "Remove Liquid Invisible control to selected node";
-        menuItem -d true;
-        menuItem -label "Add Liquid Ignore Shapes" -command liquidCreateIgnoreShapesAttribute -ann "Add Liquid Ignore Shapes control to selected node";
-        menuItem -label "Delete Liquid Ignore Shapes" -command liquidDeleteIgnoreShapesAttribute -ann "Remove Liquid Ignore Shapes control to selected node";
-      setParent -menu ..;
-      menuItem -label "Light Attributes" -subMenu true;
-        menuItem -label "Create Ray Tracing Group" -command liquidCreateLightRayTracingAttributes -ann "Add Ray Tracing attributes to selected Light Transform node(s)";
-        menuItem -label "Ray Tracing Add" -subMenu true;
-          menuItem -label "Sample Motion" -command liquidCreateSampleMotionAttribute;
-          menuItem -label "Trace Displacements" -command liquidCreateTraceDisplacementsAttribute;
-          menuItem -label "Trace Bias" -command liquidCreateTraceBiasAttribute;
-        setParent -menu ..;
-        menuItem -label "Remove Ray Tracing Group" -command liquidDeleteRayTracingAttributes -ann "Remove Ray Tracing attributes from selected Light Transform node(s)";
-        menuItem -d true;
-        menuItem -label "Add Z-Threshold" -command liquidAddZThres -ann "Add a z-threshold control to selected light(s)";
-        menuItem -label "Delete Z-Threshold" -command liquidRemoveZThres -ann "Remove a z-threshold control from selected light(s)";
-      setParent -menu ..;
+      liquidCreateObjectsAttributesMenu( "attrEd" );
+      liquidCreateLightsAttributesMenu( "attrEd" );
+      liquidCreateSetsAttributesMenu( "attrEd" );
 
   setParent $parent;
 }
 
-global proc AEliquidMenuUpdate()
-{
-
-}
 
 global proc liquidLargeFieldUpdateMenu( string $msg )
 {
@@ -100,6 +22,7 @@ global proc liquidLargeFieldUpdateMenu( string $msg )
   int $en = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
   menuItem -e -c ("editRenderLayerAdjustment "+$msg) -en $en ("liquidLargeFieldOverrideMenuItem"+$attr[1]);
 }
+
 
 global proc liquidLargeFieldReplace( string $nodeName, string $label, string $msg )
 {
@@ -157,6 +80,9 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "Visible To Camera" -addDynamicControl "liqVisibilityCamera";
       editorTemplate -label "Visible To Rays" -addDynamicControl "liqVisibilityTrace";
       editorTemplate -label "Visible To Transmission" -addDynamicControl "liqVisibilityTransmission";
+      editorTemplate -label "Visible To Diffuse Rays" -addDynamicControl "liqVisibilityDiffuse";
+      editorTemplate -label "Visible To Specular Rays" -addDynamicControl "liqVisibilitySpecular";
+      editorTemplate -label "Visible To Transmission Rays" -addDynamicControl "liqVisibilityNewTransmission";
 
     editorTemplate -endLayout;
 
@@ -173,11 +99,6 @@ global proc AEliquidInstanceFlags( string $node )
 
     editorTemplate -beginLayout "Ray Tracing" -collapse true;
 
-      editorTemplate -label "Visible To Ray Tracer" -addDynamicControl "liqVisibilityTrace";
-      editorTemplate -label "Visible To Diffuse Rays" -addDynamicControl "liqVisibilityDiffuse";
-      editorTemplate -label "Visible To Specular Rays" -addDynamicControl "liqVisibilitySpecular";
-      editorTemplate -label "Visible To Transmission Rays" -addDynamicControl "liqVisibilityNewTransmission";
-      editorTemplate -addSeparator;
       editorTemplate -label "Diffuse Hit-Mode" -addDynamicControl "liqHitModeDiffuse";
       editorTemplate -label "Specular Hit-Mode" -addDynamicControl "liqHitModeSpecular";
       editorTemplate -label "Transmission Hit-Mode" -addDynamicControl "liqHitModeTransmission";
