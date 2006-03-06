@@ -208,10 +208,11 @@ MObject liqGlobalsNode::aRelativeFileNames;
 
 MObject liqGlobalsNode::aExpandAlfred;
 
+MObject liqGlobalsNode::aPreFrameBegin;
 MObject liqGlobalsNode::aPreWorld;
 MObject liqGlobalsNode::aPostWorld;
-
 MObject liqGlobalsNode::aPreGeom;
+
 MObject liqGlobalsNode::aRenderScriptFormat;
 MObject liqGlobalsNode::aRenderScriptCommand;
 
@@ -591,6 +592,7 @@ MStatus liqGlobalsNode::initialize()
           CREATE_BOOL( nAttr,  aRelativeFileNames,          "relativeFileNames",            "rfn",    0     );
           CREATE_BOOL( nAttr,  aExpandAlfred,               "expandAlfred",                 "ea",     0     );
 
+        CREATE_STRING( tAttr,  aPreFrameBegin,              "preFrameBegin",                "prfb",   ""    );
         CREATE_STRING( tAttr,  aPreWorld,                   "preWorld",                     "prw",    ""    );
         CREATE_STRING( tAttr,  aPostWorld,                  "postWorld",                    "pow",    ""    );
         CREATE_STRING( tAttr,  aPreGeom,                    "preGeom",                      "prg",    ""    );

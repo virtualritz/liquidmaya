@@ -89,7 +89,7 @@ global proc liquidLoadScripts()
     "liquidAttrWindow.mel",
     "liquidAttributes.mel",
     "liquidCommon.mel",
-    "liquidContainers.mel",
+    //"liquidContainers.mel",
     "liquidConvMTOR.mel",
     "liquidConvertMtor.mel",
     "liquidDelayedReadArchive.mel",
