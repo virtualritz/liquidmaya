@@ -16,11 +16,11 @@ proc AEliquidCreateMenu()
 }
 
 
-global proc liquidLargeFieldUpdateMenu( string $msg )
+global proc liquidFieldUpdateMenu( string $msg )
 {
   string $attr[] = stringToStringArray( $msg, ".");
   int $en = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
-  menuItem -e -c ("editRenderLayerAdjustment "+$msg) -en $en ("liquidLargeFieldOverrideMenuItem"+$attr[1]);
+  menuItem -e -c ("editRenderLayerAdjustment "+$msg) -en $en ("liquidFieldOverrideMenuItem"+$attr[1]);
 }
 
 
@@ -39,7 +39,7 @@ global proc liquidLargeFieldReplace( string $nodeName, string $label, string $ms
                 -ec ("{string $s = `scrollField -q -tx liquidLargeFieldCtl"+$attr[1]+"`;setAttr -type \"string\" "+$msg+" $s;}")
                 ("liquidLargeFieldCtl"+$attr[1]);
 
-    popupMenu -e -pmc ("liquidLargeFieldUpdateMenu "+$msg) ("liquidLargeFielOverrideMenu"+$attr[1]);
+    popupMenu -e -pmc ("liquidFieldUpdateMenu "+$msg) ("liquidFieldOverrideMenu"+$attr[1]);
 
   }
 }
@@ -53,11 +53,39 @@ global proc liquidLargeFieldNew( string $nodeName, string $label, string $msg )
     string $labelCtl = `text -l $label`;
     scrollField -wordWrap false -font smallFixedWidthFont -h 100 ("liquidLargeFieldCtl"+$attr[1]);
     setParent ..;
-  popupMenu -parent ("liquidLargeFieldCtl"+$attr[1]) ("liquidLargeFielOverrideMenu"+$attr[1]);
-  menuItem -l "Create Layer Override" ("liquidLargeFieldOverrideMenuItem"+$attr[1]);
+  popupMenu -parent ("liquidLargeFieldCtl"+$attr[1]) ("liquidFieldOverrideMenu"+$attr[1]);
+  menuItem -l "Create Layer Override" ("liquidFieldOverrideMenuItem"+$attr[1]);
   setUITemplate -ppt;
 
   liquidLargeFieldReplace( $nodeName, $label, $msg );
+}
+
+
+global proc liquidSmallFieldReplace( string $nodeName, string $label, string $msg )
+{
+  string $attr[] = stringToStringArray( $msg, ".");
+  string $ctl = ("liquidSmallFieldCtl"+$attr[1]);
+
+  if ( !objExists( $msg ) ) textFieldGrp -e -m 0 $ctl;
+  else {
+    textFieldGrp -e -m 1 $ctl;
+    connectControl -index 2 $ctl $msg;
+    popupMenu -e -pmc ("liquidFieldUpdateMenu "+$msg) ("liquidFieldOverrideMenu"+$attr[1]);
+
+  }
+}
+
+
+global proc liquidSmallFieldNew( string $nodeName, string $label, string $msg )
+{
+  string $attr[] = stringToStringArray( $msg, ".");
+  setUITemplate -pst attributeEditorTemplate;
+  textFieldGrp -label $label -adj 2 ("liquidSmallFieldCtl"+$attr[1]);
+  popupMenu -parent ("liquidSmallFieldCtl"+$attr[1]) ("liquidFieldOverrideMenu"+$attr[1]);
+  menuItem -l "Create Layer Override" ("liquidFieldOverrideMenuItem"+$attr[1]);
+  setUITemplate -ppt;
+
+  liquidSmallFieldReplace( $nodeName, $label, $msg );
 }
 
 
@@ -134,9 +162,9 @@ global proc AEliquidInstanceFlags( string $node )
     editorTemplate -beginLayout "RIB" -collapse true;
 
       editorTemplate -ccu ("liquidLargeFieldNew "+$node+" \"RIB Box\"") ("liquidLargeFieldReplace "+$node+" \"RIB Box\"") "liqRIBBox";
-      editorTemplate -ccu ("liquidLargeFieldNew "+$node+" \"RIB Generator\"") ("liquidLargeFieldReplace "+$node+" \"RIB Box\"") "liqRIBGenerator";
-      editorTemplate -ccu ("liquidLargeFieldNew "+$node+" \"Read Archive\"") ("liquidLargeFieldReplace "+$node+" \"RIB Box\"") "liqRIBReadArchive";
-      editorTemplate -ccu ("liquidLargeFieldNew "+$node+" \"Delayed Read Archive\"") ("liquidLargeFieldReplace "+$node+" \"RIB Box\"") "liqRIBDelayedReadArchive";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"RIB Generator\"") ("liquidSmallFieldReplace "+$node+" \"RIB Box\"") "liqRIBGenerator";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"RIB Box\"") "liqRIBReadArchive";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Delayed Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"RIB Box\"") "liqRIBDelayedReadArchive";
       editorTemplate -label "DRA Bounding Box" -addDynamicControl "ribDelayedArchiveBBox";
       editorTemplate -label "DRA Bounds Scaling" -addDynamicControl "liqRIBDelayedReadArchiveBBoxScale";
 
