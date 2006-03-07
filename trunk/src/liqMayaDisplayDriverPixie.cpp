@@ -75,6 +75,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
    }
    return TRUE;
 }
+#else
+#define closesocket close
 #endif
 
 void	*displayStart(const char *name,int width,int height,int numSamples,const char *samples,TDisplayParameterFunction findParameter) {
@@ -195,7 +197,7 @@ void	displayFinish(void *im) {
 	bzero(&binfo,sizeof(bucket::bucketInfo));
 #endif
 	sendSockData(socketId, (char*) &binfo,sizeof(bucket::bucketInfo));
-	close(socketId);
+	closesocket(socketId);
 }
 
 
