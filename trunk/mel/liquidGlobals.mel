@@ -894,13 +894,9 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
       // everything failed, force the user to select a preset file
       warning ("Preset file " + $name + " not found! : please pick a preset file...");
       string $thePreset = `fileDialog -dm ($liquidDirectory+"/*.lg")`;
-
-      if ( $thePreset != "" ) {
-
-        select "liquidGlobals";
-        eval ("source \""+$thePreset+"\"");
-
-      } else warning ("Preset file " + $name + " not found! : you might not be able to render correctly...");
+	  if ( size($thePreset) ) {
+        evalDeferred -lp ("{ select \"liquidGlobals\"; source \""+$thePreset+"\"; if (`window -q -ex \"unifiedRenderGlobalsWindow\"`) { deleteUI \"unifiedRenderGlobalsWindow\"; unifiedRenderGlobalsWindow; } }");
+	  }  else warning ("Preset file not found! : you might not be able to render correctly...");
     }
   }
   select $oldSel;

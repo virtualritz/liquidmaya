@@ -811,7 +811,7 @@ MString liquidSanitizePath( MString & inputString )
     constructedString += buffer;
   }
 
-#if defined ( DELIGHT ) || ( PRMAN )
+#if defined ( DELIGHT ) || defined ( PRMAN )
   // Convert from "C:/path" into "//C/path"
   if( inputString.substring( 1, 1 ) == ":" )
     constructedString = "//" + constructedString.substring( 0, 0 ) + constructedString.substring( 2, inputString.length() - 1 );

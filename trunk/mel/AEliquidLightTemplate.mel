@@ -345,14 +345,14 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
       editorTemplate -addControl "outputInShadow";
     editorTemplate -endLayout;
 
+    liquidHideAEShaderParams( "" );
+
     editorTemplate -beginLayout "Parameters" -collapse 0;
-
-      editorTemplate -ccu ("liquidShaderNodesParamsNew "+$nodeDotAttr)  ("liquidShaderNodesParamsReplace "+$nodeDotAttr) "rmanShaderLong";
-
+      editorTemplate -ccu "liquidShaderNodesParamsNew" "liquidShaderNodesParamsReplace" "rmanShaderLong";
     editorTemplate -endLayout;
 
-    liquidHideAEShaderParams( "" );
     liquidHideAEShaderParams( $nodeDotAttr );
+
     editorTemplate -suppress rmanShader;
     editorTemplate -suppress rmanShaderLong;
     editorTemplate -suppress rmanShaderLif;
