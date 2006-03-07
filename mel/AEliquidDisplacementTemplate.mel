@@ -22,14 +22,16 @@ global proc AEliquidDisplacementTemplate( string $nodeName )
       editorTemplate -addControl "outputInShadow";
     editorTemplate -endLayout;
 
+    liquidHideAEShaderParams( "" );
+
     editorTemplate -beginLayout "Parameters" -collapse 0;
 
-      editorTemplate -ccu ("liquidShaderNodesParamsNew "+$nodeName)  ("liquidShaderNodesParamsReplace "+$nodeName) "rmanShaderLong";
+      editorTemplate -ccu "liquidShaderNodesParamsNew" "liquidShaderNodesParamsReplace" "rmanShaderLong";
 
     editorTemplate -endLayout;
 
-    liquidHideAEShaderParams( "" );
     liquidHideAEShaderParams( $nodeName );
+
     editorTemplate -suppress rmanShader;
     editorTemplate -suppress rmanShaderLong;
     editorTemplate -suppress rmanShaderLif;

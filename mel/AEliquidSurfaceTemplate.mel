@@ -56,11 +56,10 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
       editorTemplate -addControl "outputInShadow";
     editorTemplate -endLayout;
 
+    liquidHideAEShaderParams( "" );
 
     editorTemplate -beginLayout "Parameters" -collapse 0;
-
-      editorTemplate -ccu ("liquidShaderNodesParamsNew "+$nodeName)  ("liquidShaderNodesParamsReplace "+$nodeName) "rmanShaderLong";
-
+      editorTemplate -ccu "liquidShaderNodesParamsNew "  "liquidShaderNodesParamsReplace " "rmanShaderLong";
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Maya Renderer" -collapse 1;
@@ -69,8 +68,8 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
       editorTemplate -addControl "mayaKd";
     editorTemplate -endLayout;
 
-    liquidHideAEShaderParams( "" );
     liquidHideAEShaderParams( $nodeName );
+
     editorTemplate -suppress rmanShader;
     editorTemplate -suppress rmanShaderLong;
     editorTemplate -suppress rmanShaderLif;
