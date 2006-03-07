@@ -73,6 +73,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
    }
    return TRUE;
 }
+#else
+#define closesocket close
 #endif
 
 
@@ -252,7 +254,7 @@ PtDspyError DspyImageClose(PtDspyImageHandle pvImage) {
 #endif
     sendSockData(socketId, (char*) &binfo,sizeof(bucket::bucketInfo));
 
-	close(socketId);
+	closesocket(socketId);
 	return PkDspyErrorNone;
 }
 

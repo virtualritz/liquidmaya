@@ -55,6 +55,9 @@
 #include <fcntl.h>
 #include <iostream.h>
 #include <bzlib.h>
+
+#define closesocket close
+
 #else
 #include <winsock.h>
 #include <io.h>
@@ -216,7 +219,7 @@ MStatus liqMayaRenderCmd::redoIt()
 		//check if displayDriver is ready
 		if(!waitSocket(s,m_timeout,true)){
 			ERROR("[liqMayaRenderView] timeout reached, display driver didn't respond in time. Aborting");
-			close(s);
+			closesocket(s);
 			return MS::kFailure;
 		}
 
@@ -227,7 +230,7 @@ MStatus liqMayaRenderCmd::redoIt()
 		slaveSocket = accept( s,(struct sockaddr *) &clientName,(socklen_t*)(&clientLength));
 		if (-1 == slaveSocket) {
 			perror("accept()");
-			close(s);
+			closesocket(s);
 			return MS::kFailure;
 		}
 
@@ -252,7 +255,7 @@ MStatus liqMayaRenderCmd::redoIt()
 		status = readSockData(slaveSocket, (char*)&imgInfo, sizeof(imageInfo));
 		if (-1 == status) {
 			perror("read()");
-			close(s);
+			closesocket(s);
 			return MS::kFailure;
 		}
 		if ( !m_bDoRegionRender ) MRenderView::startRender (imgInfo.wo,imgInfo.ho, false, true );
@@ -288,8 +291,8 @@ MStatus liqMayaRenderCmd::redoIt()
 			}
 		}
 		renderComputation.endComputation();
-		close(slaveSocket);
-		close(s);
+		closesocket(slaveSocket);
+		closesocket(s);
 
 
 		if(m_bucketFile == ""){
