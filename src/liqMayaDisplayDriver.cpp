@@ -50,30 +50,7 @@ static int socketId = -1;
 int sendSockData(int s,char * data,int n);
 
 
-#ifdef _WIN32
-// DLL initialization and clean-up.
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
-{
-   switch(fdwReason) {
-
-      case DLL_PROCESS_ATTACH:
-		WSADATA wsaData;
-		// Init the winsock
-		if (WSAStartup(0x202,&wsaData) == SOCKET_ERROR) 
-		{
-			WSACleanup();
-			return FALSE;
-		}
-         break;
-
-      case DLL_PROCESS_DETACH:
-		   WSACleanup();
-         break;
-
-   }
-   return TRUE;
-}
-#else
+#ifndef _WIN32
 #define closesocket close
 #endif
 
@@ -102,6 +79,16 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 	//format can be rgb, rgba, rgbaz or rgbz
 	char* rgba[5] = {"r","g","b","a","z"};
 
+
+#ifdef _WIN32
+	WSADATA wsaData;
+	if (WSAStartup(0x202,&wsaData) == SOCKET_ERROR) 
+	{
+		WSACleanup();
+		return PkDspyErrorNoResource;
+	}
+#endif
+
 	PtDspyDevFormat *outformat = new PtDspyDevFormat[formatCount];
 	PtDspyDevFormat *f_ptr = outformat;
 	for(i=0;i<formatCount;i++,++f_ptr){
@@ -122,7 +109,7 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 	}
 	if(PkDspyErrorNone!=DspyFindIntsInParamList("OriginalSize",&rc,originalSize,paramCount,parameters)) {
 		originalSize[0]= width;
-		originalSize[0]= height;
+		originalSize[1]= height;
 	}
 
 	if(PkDspyErrorNone!=DspyFindIntInParamList("mayaDisplayPort",&port,paramCount,parameters)) {
@@ -144,18 +131,32 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 	*pvImage = imgSpecs;
 	socketId = openSocket(hostname, port);
 	if(socketId == -1)
+	{
+		#ifdef _WIN32
+			WSACleanup();
+		#endif
+		delete imgSpecs;
 		return PkDspyErrorNoResource;
+	}
 
-	if(!waitSocket(socketId,timeout,false))	{
+	if(!waitSocket(socketId,timeout,false))	
+	{
+		#ifdef _WIN32
+			WSACleanup();
+		#endif
 		cerr<<"[d_liqmaya] Error: timeout"<<endl;
+		delete imgSpecs;
 		return PkDspyErrorNoResource;
 	}
 	status = sendSockData(socketId,(char*)imgSpecs,sizeof(imageInfo));
 	if(status == -1){
+		#ifdef _WIN32
+			WSACleanup();
+		#endif
 		perror("[d_liqmaya] Error: write(socketId,wh,2*sizeof(int))");
+		delete imgSpecs;
 		return PkDspyErrorNoResource;
 	}
-
 	return PkDspyErrorNone;
 }
 
@@ -255,6 +256,10 @@ PtDspyError DspyImageClose(PtDspyImageHandle pvImage) {
     sendSockData(socketId, (char*) &binfo,sizeof(bucket::bucketInfo));
 
 	closesocket(socketId);
+#ifdef _WIN32
+	WSACleanup();
+#endif
+
 	return PkDspyErrorNone;
 }
 
