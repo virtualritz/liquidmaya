@@ -2240,12 +2240,12 @@ global proc liquidGlobalsOptionsTab_buildIt()
           columnLayout -adj true;
             liquidShowFloatGlobal "limitsZThreshold"       "Opacity Threshold";
             separator;
-            liquidShowBoolGlobal  "outputShadersInShadows" "Output All Shaders";
+            liquidShowBoolGlobal  "outputShadersInShadows" "Output Tagged Shaders";
           setParent ..;
         setParent ..;
         frameLayout -bs "etchedIn" -l "Deep Shadows" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowBoolGlobal "outputShadersInDeepShadows" "Output All Shaders";
+            liquidShowBoolGlobal "outputShadersInDeepShadows" "Output Tagged Shaders";
             liquidShowBoolGlobal "outputLightsInDeepShadows"  "Output Lightsources";
           setParent ..;
         setParent ..;
