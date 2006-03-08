@@ -382,7 +382,7 @@ stat = readSockData(socket, (char*)bucketInfo, 5*sizeof(int));
 			cerr<<"[liqMayaRenderView] Error b->set(info,data"<<endl;
 			status = MS::kFailure;
 		}
-		delete data;
+		delete[] data;
 	}
 
 
@@ -436,7 +436,7 @@ MStatus liqMayaRenderCmd::renderBucket(const bucket* b,const imageInfo &imgInfo)
 	MRenderView::updatePixels (Xo + left , Xo + right -1, height -Yo -top   ,height-bottom-Yo-1 , pixels);
 	MRenderView::refresh (Xo + left, Xo + right-1, height -Yo - top  ,height -Yo -bottom-1);
 
-	delete pixels;
+	delete[] pixels;
 
 	return status;
 }
