@@ -52,30 +52,7 @@ static int socketId = -1;
 int sendSockData(int s,char * data,int n);
 
 
-#ifdef _WIN32
-// DLL initialization and clean-up.
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
-{
-   switch(fdwReason) {
-
-      case DLL_PROCESS_ATTACH:
-		WSADATA wsaData;
-		// Init the winsock
-		if (WSAStartup(0x202,&wsaData) == SOCKET_ERROR) 
-		{
-			WSACleanup();
-			return FALSE;
-		}
-         break;
-
-      case DLL_PROCESS_DETACH:
-		   WSACleanup();
-         break;
-
-   }
-   return TRUE;
-}
-#else
+#ifndef _WIN32
 #define closesocket close
 #endif
 
@@ -84,6 +61,15 @@ void	*displayStart(const char *name,int width,int height,int numSamples,const ch
 
 	int status =0;
 	int port = 6667;
+	
+#ifdef _WIN32
+	WSADATA wsaData;
+	if (WSAStartup(0x202,&wsaData) == SOCKET_ERROR) 
+	{
+		WSACleanup();
+		return PkDspyErrorNoResource;
+	}
+#endif
 
 	if (0 == width)
 		width = 640;
@@ -131,11 +117,19 @@ void	*displayStart(const char *name,int width,int height,int numSamples,const ch
 
 	socketId = openSocket(hostname, port);
 	if(socketId == -1){
+		#ifdef _WIN32
+			WSACleanup();
+		#endif
+
 		delete imgSpecs;
 		return NULL;//PkDspyErrorNoResource;
 	}
 
 	if(!waitSocket(socketId,timeout,false))	{
+		#ifdef _WIN32
+			WSACleanup();
+		#endif
+
 		cerr<<"[d_liqmaya] Error: timeout"<<endl;
 		delete imgSpecs;
 		return NULL;//PkDspyErrorNoResource;
@@ -144,6 +138,10 @@ void	*displayStart(const char *name,int width,int height,int numSamples,const ch
 //	if(status == -1){
 	status = sendSockData(socketId,(char*)imgSpecs,sizeof(imageInfo));
 	if(!status){
+		#ifdef _WIN32
+			WSACleanup();
+		#endif
+
 		perror("[d_liqmaya] Error: write(socketId,wh,2*sizeof(int))");
 		delete imgSpecs;
 		return NULL;//PkDspyErrorNoResource;
@@ -157,7 +155,6 @@ int		displayData(void *im,int x,int y,int w,int h,float *data) {
 	PtDspyError status = sendData(socketId,x,x+w,y,y+h,spec->channels*sizeof(float),spec->channels,(BUCKETDATATYPE*)data);
 	if(!status){
 		displayFinish(im);
-		printf("OOOOPS!\n");
 	}
 	return status;
 
@@ -197,6 +194,10 @@ void	displayFinish(void *im) {
 	bzero(&binfo,sizeof(bucket::bucketInfo));
 #endif
 	sendSockData(socketId, (char*) &binfo,sizeof(bucket::bucketInfo));
+
+#ifdef _WIN32
+	WSACleanup();
+#endif
 	closesocket(socketId);
 }
 
