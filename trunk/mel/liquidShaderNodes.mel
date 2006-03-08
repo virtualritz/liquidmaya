@@ -752,16 +752,16 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
   layout -e -m false $gAEControlLayoutName;
 
   if ( $theNode == $lastDisplayedNode && $longShaderName == $lastDisplayedShader ) {
-    //trace "\n   same node + same shader -> doing nothing";
+    /* trace "\n   same node + same shader -> doing nothing";
+    trace ("   > "+$theNode+" == "+$lastDisplayedNode);
+    trace ("   > "+$longShaderName+" == "+$lastDisplayedShader); */
     evalDeferred ("layout -e -m true "+$gAEControlLayoutName+";");
-    //trace ("   > "+$theNode+" == "+$lastDisplayedNode);
-    //trace ("   > "+$longShaderName+" == "+$lastDisplayedShader);
   }
 
   if ( $theNode != $lastDisplayedNode && $longShaderName == $lastDisplayedShader ) {
-    //trace "\n   different node + same shader -> relinking controls";
-    //trace ("   > "+$theNode+" != "+$lastDisplayedNode);
-    //trace ("   > "+$longShaderName+" == "+$lastDisplayedShader);
+    /* trace "\n   different node + same shader -> relinking controls";
+    trace ("   > "+$theNode+" != "+$lastDisplayedNode);
+    trace ("   > "+$longShaderName+" == "+$lastDisplayedShader); */
 
     liquidSlSetShader( $longShaderName );
 
@@ -800,30 +800,30 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
 
       $i++;
     }
-    //evalDeferred ("liquidHideAEShaderParams "+$theNode+";");
+    evalDeferred ("liquidHideAEShaderParams "+$theNode+";");
     evalDeferred ("layout -e -m true "+$gAEControlLayoutName+";");
   }
 
   if ( $theNode != $lastDisplayedNode && $longShaderName != $lastDisplayedShader ) {
-    //trace "\n   different node + different shader -> rebuilding controls";
-    //trace ("   > "+$theNode+" != "+$lastDisplayedNode);
-    //trace ("   > "+$longShaderName+" != "+$lastDisplayedShader);
+    /* trace "\n   different node + different shader -> rebuilding controls";
+    trace ("   > "+$theNode+" != "+$lastDisplayedNode);
+    trace ("   > "+$longShaderName+" != "+$lastDisplayedShader); */
     evalDeferred ("if ( `layout -q -ex AttrEd"+$type+"FormLayout` ) deleteUI AttrEd"+$type+"FormLayout;");
-    //evalDeferred ("liquidHideAEShaderParams "+$lastDisplayedNode+";");
+    evalDeferred ("liquidHideAEShaderParams "+$lastDisplayedNode+";");
     evalDeferred ("liquidShaderNodesParamsNew "+$theNode+".rmanShader;");
     evalDeferred ("updateAE "+$theNode+";layout -e -m true "+$gAEControlLayoutName+";");
   }
 
   if ( $theNode == $lastDisplayedNode && $longShaderName != $lastDisplayedShader ) {
-    //trace   "\n   same node + different shader -> rebuilding controls";
-    //trace ("   > "+$theNode+" == "+$lastDisplayedNode);
-    //trace ("   > "+$longShaderName+" != "+$lastDisplayedShader);
+    /* trace   "\n   same node + different shader -> rebuilding controls";
+    trace ("   > "+$theNode+" == "+$lastDisplayedNode);
+    trace ("   > "+$longShaderName+" != "+$lastDisplayedShader); */
     evalDeferred ("layout -e -m true "+$gAEControlLayoutName+";");
   }
 
   setLastAENode( $theNode, $type );
   setLastAEShader( $longShaderName, $type );
-  //liquidHideAEShaderParams( $theNode );
+  liquidHideAEShaderParams( $theNode );
 
   global float $grst;
   $grst = `timerX`;
@@ -1031,7 +1031,7 @@ global proc liquidAE_LifFloat( string $selectedObj, string $nodeType, int $index
     case "slider":
       if ( $arraySize ) {
 
-        int $skip = `control -q -ex ($paramName+"_0_LIF")`;
+        int $skip = `control -q -ex ($nodeType+"_"+$paramName+"_0_LIF")`;
         if ( !$skip ) {
           frameLayout -label ($paramName+"["+$arraySize+"]") -borderVisible false -labelIndent 10 -font "smallPlainLabelFont";
           columnLayout;
@@ -1073,7 +1073,7 @@ global proc liquidAE_LifFloat( string $selectedObj, string $nodeType, int $index
     default:
       if ( $arraySize > 0 ) {
 
-        int $skip = `control -q -ex ($paramName+"_0_LIF")`;
+        int $skip = `control -q -ex ($nodeType+"_"+$paramName+"_0_LIF")`;
         if ( !$skip ) {
           frameLayout -label ($paramName+"["+$arraySize+"]") -borderVisible false -labelIndent 10 -font "smallPlainLabelFont";
           columnLayout ;
