@@ -52,6 +52,8 @@ extern "C" {
 #include <liqGlobalHelpers.h>
 #include <liqRibMeshData.h>
 
+#include <vector>
+
 extern int debugMode;
 extern bool liqglo_outputMeshUVs;
 
@@ -97,7 +99,25 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
 
   numPoints = fnMesh.numVertices();
   numNormals = fnMesh.numNormals();
+
+  // UV sets -------------------
+  //
   const unsigned numSTs = fnMesh.numUVs();
+  const unsigned numUVSets = fnMesh.numUVSets();
+  MString currentUVSetName;
+  MStringArray extraUVSetNames;
+  fnMesh.getCurrentUVSetName( currentUVSetName );
+
+  {
+    MStringArray UVSetNames;
+    fnMesh.getUVSetNames( UVSetNames );
+
+    for ( unsigned i=0; i<numUVSets; i++ ) {
+      if ( UVSetNames[i] != currentUVSetName ) extraUVSetNames.append( UVSetNames[i] );
+    }
+    //cout <<UVSetNames<<endl;
+  }
+
   numFaces = fnMesh.numPolygons();
   const unsigned numFaceVertices = fnMesh.numFaceVertices();
 
@@ -119,6 +139,8 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   liqTokenPointer* pVertexSTPointerPair = NULL;
   liqTokenPointer* pFaceVertexSPointer = NULL;
   liqTokenPointer* pFaceVertexTPointer = NULL;
+  liqTokenPointer* pFaceVertexUPointer = NULL;
+  liqTokenPointer* pFaceVertexVPointer = NULL;
 
   //cout <<"   + vertices : "<<numPoints<<endl;
   //cout <<"   + normals  : "<<numNormals<<endl;
@@ -143,19 +165,43 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
     normalsPointerPair.setDetailType( rFaceVarying );
   }
 
+  std::vector<liqTokenPointer> UVSetsArray;
+
   if ( numSTs > 0 ) {
+
     pVertexSTPointerPair = new liqTokenPointer;
     pVertexSTPointerPair->set( "st", rFloat, false, numFaceVertices, 2 );
     pVertexSTPointerPair->setDetailType( rFaceVarying );
 
-	if( liqglo_outputMeshUVs ) {
+    if( liqglo_outputMeshUVs ) {
+
       pFaceVertexSPointer = new liqTokenPointer;
       pFaceVertexSPointer->set( "u", rFloat, false, true, false, numFaceVertices );
       pFaceVertexSPointer->setDetailType( rFaceVarying );
+
       pFaceVertexTPointer = new liqTokenPointer;
       pFaceVertexTPointer->set( "v", rFloat, false, true, false, numFaceVertices );
       pFaceVertexTPointer->setDetailType( rFaceVarying );
+
     }
+
+    for ( unsigned j=0; j<extraUVSetNames.length(); j++) {
+
+      MString setName = "u_" + extraUVSetNames[j];
+      pFaceVertexUPointer = new liqTokenPointer;
+      pFaceVertexUPointer->set( setName.asChar(), rFloat, false, true, false, numFaceVertices );
+      pFaceVertexUPointer->setDetailType( rFaceVarying );
+
+      setName = "v_" + extraUVSetNames[j];
+      pFaceVertexVPointer = new liqTokenPointer;
+      pFaceVertexVPointer->set( setName.asChar(), rFloat, false, true, false, numFaceVertices );
+      pFaceVertexVPointer->setDetailType( rFaceVarying );
+
+      UVSetsArray.push_back( *pFaceVertexUPointer );
+      UVSetsArray.push_back( *pFaceVertexVPointer );
+
+    }
+
   }
 
   vertexParam = pointsPointerPair.getTokenFloatArray();
@@ -184,15 +230,25 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
       }
 
       if( numSTs > 0 ) {
-        fnMesh.getPolygonUV( face, count, S, T );
 
+        fnMesh.getPolygonUV( face, count, S, T );
         pVertexSTPointerPair->setTokenFloat( faceVertex, 0, S );
         pVertexSTPointerPair->setTokenFloat( faceVertex, 1, 1 - T );
 
-      if( liqglo_outputMeshUVs ) {
+        if( liqglo_outputMeshUVs ) {
           pFaceVertexSPointer->setTokenFloat( faceVertex, S );
           pFaceVertexTPointer->setTokenFloat( faceVertex, 1 - T );
         }
+
+        for ( unsigned j=0; j<extraUVSetNames.length(); j++ ) {
+
+          fnMesh.getPolygonUV( face, count, S, T, &extraUVSetNames[j] );
+
+          (&UVSetsArray[2*j])->setTokenFloat( faceVertex, S );
+          (&UVSetsArray[2*j+1])->setTokenFloat( faceVertex, 1 - T );
+
+        }
+
       }
 
       ++faceVertex;
@@ -219,6 +275,17 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
     tokenPointerArray.push_back( *pFaceVertexTPointer );
     delete pFaceVertexTPointer;
   }
+
+  if( pFaceVertexUPointer != NULL ) {
+    for ( unsigned j=0; j<extraUVSetNames.length(); j++ ) {
+      tokenPointerArray.push_back( UVSetsArray[2*j] );
+      tokenPointerArray.push_back( UVSetsArray[2*j+1] );
+    }
+    delete pFaceVertexUPointer;
+    delete pFaceVertexVPointer;
+  }
+
+  //delete &UVSetsArray;
 
   addAdditionalSurfaceParameters( mesh );
 }

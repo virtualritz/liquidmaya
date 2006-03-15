@@ -149,7 +149,8 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 		return PkDspyErrorNoResource;
 	}
 	status = sendSockData(socketId,(char*)imgSpecs,sizeof(imageInfo));
-	if(status == -1){
+
+	if(status == false){
 		#ifdef _WIN32
 			WSACleanup();
 		#endif
@@ -287,7 +288,7 @@ PtDspyError sendData(const int socket,
 	}
 
 	status = sendSockData(socket, (char*)&binfo,sizeof(bucket::bucketInfo));
-	if(status == -1){
+	if(status == false){
 		perror("[d_liqmaya] Error: write(socket,bucketInfo)");
 		return PkDspyErrorNoResource;
 	}
@@ -296,7 +297,7 @@ PtDspyError sendData(const int socket,
 		return PkDspyErrorUndefined;
 	}
 	status = sendSockData(socket, (char*)data,size);
-	if(status == -1){
+	if(status == false){
 		perror("[d_liqmaya] Error: write(socket,data)");
 		return PkDspyErrorNoResource;
 	}
@@ -338,7 +339,7 @@ int openSocket(const char *host, const int port)
 		setsockopt(clientSocket,SOL_SOCKET,SO_NOSIGPIPE,(const char *) &val,sizeof(int));
 	#endif
 
-	
+
     if (-1 == status)
     {
         perror("[d_liqmaya] Error: connect()");
@@ -350,7 +351,7 @@ int openSocket(const char *host, const int port)
 
 int sendSockData(int s,char * data,int n){
 	int i,j;
-	
+
 	j	= n;
 	i	= send(s,data,j,0);
 
@@ -365,7 +366,7 @@ int sendSockData(int s,char * data,int n){
 		j		-=	i;
 
 		i		= send(s,data,j,0);
-		
+
 		if (i <= 0) {
 			perror("[d_liqmaya] Connection broken");
 			return false;

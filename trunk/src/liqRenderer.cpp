@@ -236,18 +236,36 @@ void liqRenderer::setRenderer()
   if ( renderCommand == "" ) MGlobal::displayError( "Liquid : The render command is not defined !!\n" );
   else {
     int lastSlash = renderCommand.rindex( '/' );
-    MString tmp;
+    MString tmp, envvar, homeDir;
     if ( lastSlash < 0 ) tmp = renderCommand;
     else {
       int len = renderCommand.length();
       tmp = renderCommand.substring( lastSlash+1, len-1 );
     }
 
-    if ( tmp == "prman" )          renderName = "PRMan";
-    else if ( tmp == "rndr" )      renderName = "Pixie";
-    else if ( tmp == "renderdl" )  renderName = "3Delight";
-    else if ( tmp == "aqsis" )     renderName = "Aqsis";
-    else if ( tmp == "air" )       renderName = "Air";
+    if ( tmp == "prman" ) {
+      renderName = "PRMan";
+      envvar = "RMANTREE";
+
+    } else if ( tmp == "rndr" ) {
+      renderName = "Pixie";
+      envvar = "PIXIEHOME";
+
+    } else if ( tmp == "renderdl" ) {
+      renderName = "3Delight";
+      envvar = "DELIGHT";
+
+    } else if ( tmp == "aqsis" ) {
+      renderName = "Aqsis";
+      envvar = "AQSIS";
+
+    } else if ( tmp == "air" ) {
+      renderName = "Air";
+      envvar = "AIRHOME";
+    }
+
+    renderHome = getenv( envvar.asChar() );
+    if ( renderHome == "" ) MGlobal::displayError( "Liquid : The " + envvar + " environment variable is not defined !!\n" );
 
   }
 

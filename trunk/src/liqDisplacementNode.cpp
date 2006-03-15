@@ -64,6 +64,11 @@ MTypeId liqDisplacementNode::id( 0x00103512 );
 MObject liqDisplacementNode::aRmanShader;
 MObject liqDisplacementNode::aRmanShaderLong;
 MObject liqDisplacementNode::aRmanShaderLif;
+MObject liqDisplacementNode::aRmanParams;
+MObject liqDisplacementNode::aRmanDetails;
+MObject liqDisplacementNode::aRmanTypes;
+MObject liqDisplacementNode::aRmanDefaults;
+MObject liqDisplacementNode::aRmanArraySizes;
 MObject liqDisplacementNode::aPreviewPrimitive;
 MObject liqDisplacementNode::aPreviewObjectSize;
 MObject liqDisplacementNode::aPreviewShadingRate;
@@ -143,6 +148,22 @@ MStatus liqDisplacementNode::initialize()
 	aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
 	MAKE_INPUT(tAttr);
 
+  aRmanParams = tAttr.create(  MString("rmanParams"),  MString("rpr"), MFnData::kStringArray, aRmanParams, &status );
+	MAKE_INPUT(tAttr);
+
+  aRmanDetails = tAttr.create(  MString("rmanDetails"),  MString("rdt"), MFnData::kStringArray, aRmanDetails, &status );
+	MAKE_INPUT(tAttr);
+
+  aRmanTypes = tAttr.create(  MString("rmanTypes"),  MString("rty"), MFnData::kStringArray, aRmanTypes, &status );
+	MAKE_INPUT(tAttr);
+
+  aRmanDefaults = tAttr.create(  MString("rmanDefaults"),  MString("rdf"), MFnData::kStringArray, aRmanDefaults, &status );
+	MAKE_INPUT(tAttr);
+
+  aRmanArraySizes = tAttr.create(  MString("rmanArraySizes"),  MString("ras"), MFnData::kIntArray, aRmanArraySizes, &status );
+	MAKE_INPUT(tAttr);
+
+
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 6, &status );
   eAttr.addField( "Sphere",   0 );
   eAttr.addField( "Cube",     1 );
@@ -188,6 +209,11 @@ MStatus liqDisplacementNode::initialize()
   CHECK_MSTATUS(addAttribute(aRmanShader));
   CHECK_MSTATUS(addAttribute(aRmanShaderLong));
   CHECK_MSTATUS(addAttribute(aRmanShaderLif));
+  CHECK_MSTATUS(addAttribute(aRmanParams));
+  CHECK_MSTATUS(addAttribute(aRmanDetails));
+  CHECK_MSTATUS(addAttribute(aRmanTypes));
+  CHECK_MSTATUS(addAttribute(aRmanDefaults));
+  CHECK_MSTATUS(addAttribute(aRmanArraySizes));
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
   CHECK_MSTATUS(addAttribute(aPreviewShadingRate));

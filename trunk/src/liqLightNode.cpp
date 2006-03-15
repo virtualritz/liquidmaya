@@ -67,6 +67,11 @@ MTypeId liqLightNode::id( 0x00103514 );
 MObject liqLightNode::aRmanShader;
 MObject liqLightNode::aRmanShaderLong;
 MObject liqLightNode::aRmanShaderLif;
+MObject liqLightNode::aRmanParams;
+MObject liqLightNode::aRmanDetails;
+MObject liqLightNode::aRmanTypes;
+MObject liqLightNode::aRmanDefaults;
+MObject liqLightNode::aRmanArraySizes;
 MObject liqLightNode::aPreviewPrimitive;
 MObject liqLightNode::aOutputInShadow;
 MObject liqLightNode::aResolution;
@@ -159,6 +164,21 @@ MStatus liqLightNode::initialize()
 	aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
 	MAKE_INPUT(tAttr);
 
+  aRmanParams = tAttr.create(  MString("rmanParams"),  MString("rpr"), MFnData::kStringArray, aRmanParams, &status );
+	MAKE_INPUT(tAttr);
+
+  aRmanDetails = tAttr.create(  MString("rmanDetails"),  MString("rdt"), MFnData::kStringArray, aRmanDetails, &status );
+	MAKE_INPUT(tAttr);
+
+  aRmanTypes = tAttr.create(  MString("rmanTypes"),  MString("rty"), MFnData::kStringArray, aRmanTypes, &status );
+	MAKE_INPUT(tAttr);
+
+  aRmanDefaults = tAttr.create(  MString("rmanDefaults"),  MString("rdf"), MFnData::kStringArray, aRmanDefaults, &status );
+	MAKE_INPUT(tAttr);
+
+  aRmanArraySizes = tAttr.create(  MString("rmanArraySizes"),  MString("ras"), MFnData::kIntArray, aRmanArraySizes, &status );
+	MAKE_INPUT(tAttr);
+
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 6, &status );
   eAttr.addField( "Sphere",   0 );
   eAttr.addField( "Cube",     1 );
@@ -237,6 +257,11 @@ MStatus liqLightNode::initialize()
   CHECK_MSTATUS(addAttribute(aRmanShader));
   CHECK_MSTATUS(addAttribute(aRmanShaderLong));
   CHECK_MSTATUS(addAttribute(aRmanShaderLif));
+  CHECK_MSTATUS(addAttribute(aRmanParams));
+  CHECK_MSTATUS(addAttribute(aRmanDetails));
+  CHECK_MSTATUS(addAttribute(aRmanTypes));
+  CHECK_MSTATUS(addAttribute(aRmanDefaults));
+  CHECK_MSTATUS(addAttribute(aRmanArraySizes));
 
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));

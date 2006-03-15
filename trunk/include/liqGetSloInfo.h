@@ -36,9 +36,12 @@
 #include <maya/MString.h>
 #include <maya/MStringArray.h>
 #include <maya/MIntArray.h>
+#include <maya/MFnDependencyNode.h>
 #include <maya/MPxCommand.h>
 
 #include <vector>
+#include <map>
+
 
 
 typedef enum {
@@ -70,35 +73,47 @@ typedef enum {
 
 class liqGetSloInfo : public MPxCommand {
 public:
-	liqGetSloInfo() {};
-	virtual ~liqGetSloInfo();
-	static  void*	creator();
-	int		setShader( MString shaderName );
-	void	resetIt();
-	int		nargs() { return numParam; }
-	MString getName() { return shaderName; }
-	SHADER_TYPE getType() { return shaderType; }
-	int		getNumParam() { return numParam; }
-	MString getTypeStr();
-	MString getArgName( int num ) { return argName[ num ]; }
-	SHADER_TYPE getArgType( int num ) { return argType[ num ]; }
-	MString getArgTypeStr( int num );
-	SHADER_DETAIL getArgDetail( int num ) { return argDetail[ num ]; }
-	MString getArgDetailStr( int num );
-	MString getArgStringDefault( int num, int entry );
-	float   getArgFloatDefault( int num, int entry );
-	int     getArgArraySize( int num ) { return argArraySize[ num ]; }
-			    
+  liqGetSloInfo();
+  virtual       ~liqGetSloInfo();
+  static void*  creator();
+  int           setShader( MString shaderName );
+  int           setShaderNode( MFnDependencyNode &shaderNode );
+  void          resetIt();
+  int           nargs();
+  MString       getName();
+  SHADER_TYPE   getType();
+  int           getNumParam();
+  MString       getTypeStr();
+  MString       getArgName( int num );
+  SHADER_TYPE   getArgType( int num );
+  MString       getArgTypeStr( int num );
+  SHADER_DETAIL getArgDetail( int num );
+  MString       getArgDetailStr( int num );
+  MString       getArgStringDefault( int num, int entry );
+  float         getArgFloatDefault( int num, int entry );
+  int           getArgArraySize( int num );
+
+  struct mstrcomp
+  {
+    bool operator()(const MString s1, const MString s2) const
+    {
+      return strcmp( (char*)s1.asChar(), (char*)s2.asChar()) < 0;
+    }
+  };
+
+
 	MStatus	    doIt(const MArgList& args );
 private:
-	unsigned numParam;
-	SHADER_TYPE shaderType;
-	MString shaderName;
-	std::vector<MString> argName;
-	std::vector<SHADER_TYPE> argType;
-	std::vector<SHADER_DETAIL> argDetail;
-	std::vector<int> argArraySize;
-	std::vector<void*> argDefault;
+  unsigned numParam;
+  SHADER_TYPE shaderType;
+  MString shaderName;
+  std::vector<MString> argName;
+  std::vector<SHADER_TYPE> argType;
+  std::vector<SHADER_DETAIL> argDetail;
+  std::vector<int> argArraySize;
+  std::vector<void*> argDefault;
+  std::map<const MString, SHADER_TYPE, mstrcomp> shaderTypeMap;
+  std::map<const MString, SHADER_DETAIL, mstrcomp> shaderDetailMap;
 };
 
 

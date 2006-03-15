@@ -30,7 +30,7 @@
 //
 //  Description:
 //      Procedure called by liquidSlSetShader() to parse
-//      a prman .slo shader file.  All parsed information
+//      an air .slb shader file.  All parsed information
 //      is stored in the following global variables later
 //      used by the various liquidSl* routines:
 //
@@ -61,6 +61,7 @@ proc liquidSl_setShaderName( string $token )
     $gLiquidSlShaderName = substring( $token, 2, size( $token ) - 1 );
   }
 }
+
 
 proc string liquidSl_getShaderType( int $fid )
 {
@@ -99,7 +100,7 @@ proc string liquidSl_getParamName( string $line )
 
 proc string liquidSl_getParamDetail( string $line )
 {
-    string $prefix = "\"[^\"]*parameter *";
+    string $prefix = "\"[^\"]*";
     string $suffix = " *[floatpinvecorlsgmx]+";
 
     if      ( `match ($prefix+"uniform"+$suffix) $line` != "" ) return "uniform";
@@ -110,7 +111,7 @@ proc string liquidSl_getParamDetail( string $line )
 
 proc string liquidSl_getParamType( string $line )
 {
-    string $prefix = "\"[^\"]*parameter *[uniformvaryg]+ *";
+    string $prefix = "\"[^\"]*[uniformvaryg]+ *";
 
     if      ( `match ($prefix+"string") $line` != "" ) return "string";
     else if ( `match ($prefix+"float")  $line` != "" ) return "float";
@@ -273,11 +274,11 @@ proc string liquidSl_getParamDefault( int $fid, string $paramType )
 // Primary global procedure for parsing a prman .slo shader file
 //
 
-global proc liquidSlParseSlo( string $sloFile )
+global proc liquidSlParseSlb( string $slbFile )
 {
-    if ( ! `filetest -r $sloFile` )
+    if ( ! `filetest -r $slbFile` )
     {
-        error( "shader does not exist: " + $sloFile );
+        error( "shader does not exist: " + $slbFile );
         return;
     }
 
@@ -297,7 +298,7 @@ global proc liquidSlParseSlo( string $sloFile )
     global string $gLiquidSlParamDefaults[];
     global int    $gLiquidSlParamArraySizes[];
 
-    $gLiquidSlShaderFile = $sloFile;
+    $gLiquidSlShaderFile = $slbFile;
     $gLiquidSlShaderName = "";
     $gLiquidSlShaderType = "";
     $gLiquidSlNumParams = -1;
@@ -308,13 +309,10 @@ global proc liquidSlParseSlo( string $sloFile )
     clear( $gLiquidSlParamArraySizes );
 
 
-    // Strip the extension otherwise sloinfo will barf
-    $sloFile = `substitute "\\.slo$" $sloFile ""`;
-
     // Build and run the sloinfo command
     string $slInfo = `getAttr liquidGlobals.shaderInfo`;
     if ( $slInfo == "" ) error ("Liquid : Please load a renderer Preset or fill the field in RenderGlobals>Renderer>ShaderInfo !");
-    string $cmd = $slInfo + " \"" + $sloFile + "\"";
+    string $cmd = $slInfo + " -o \"" + $slbFile + "\"";
     int $fid = `popen $cmd "r"`;
 
 
@@ -327,7 +325,7 @@ global proc liquidSlParseSlo( string $sloFile )
     {
         pclose $fid;
         error( "unknown shader type \"" + $shaderType +
-               "\": " + $sloFile );
+               "\": " + $slbFile );
         return;
     }
 
