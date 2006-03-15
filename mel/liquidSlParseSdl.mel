@@ -34,9 +34,11 @@
 //      is stored in the following global variables later
 //      used by the various liquidSl* routines:
 //
+//          global string $gLiquidSlShaderName;
 //          global string $gLiquidSlShaderType;
 //          global int    $gLiquidSlNumParams;
 //          global string $gLiquidSlParamNames[];
+//          global string $gLiquidSlParamDetails[];
 //          global string $gLiquidSlParamTypes[];
 //          global string $gLiquidSlParamDefaults[];
 //          global int    $gLiquidSlParamArraySizes[];
@@ -49,7 +51,18 @@
 // Local helper procedures
 //
 
-proc string getShaderType( int $fid )
+proc liquidSl_setShaderName( string $token )
+{
+  global string $gLiquidSlShaderName;
+
+  if ( $token == "" ) {
+    $gLiquidSlShaderName = "unknown";
+  } else {
+    $gLiquidSlShaderName = substring( $token, 2, size( $token ) - 1 );
+  }
+}
+
+proc string liquidSl_getShaderType( int $fid )
 {
     string $type = "";
 
@@ -63,14 +76,17 @@ proc string getShaderType( int $fid )
         clear( $tokens );
         tokenize $line $tokens;
         $type = $tokens[0];
-        if ( $type != "" ) break;
+        if ( $type != "" ) {
+          liquidSl_setShaderName( $tokens[1] );
+          break;
+        }
         $line = `fgetline $fid`;
     }
 
     return $type;
 }
 
-proc string getParamName( string $line )
+proc string liquidSl_getParamName( string $line )
 {
     string $strip = `substitute "^[^\"]*\"" $line ""`;
     if ( $strip == $line ) return "";
@@ -81,7 +97,18 @@ proc string getParamName( string $line )
     return $name;
 }
 
-proc string getParamType( string $line )
+proc string liquidSl_getParamDetail( string $line )
+{
+    string $prefix = "\"[^\"]*parameter *";
+    string $suffix = " *[floatpinvecorlsgmx]+";
+
+    if      ( `match ($prefix+"uniform"+$suffix) $line` != "" ) return "uniform";
+    else if ( `match ($prefix+"varying"+$suffix) $line` != "" ) return "varying";
+
+    return "";
+}
+
+proc string liquidSl_getParamType( string $line )
 {
     string $prefix = "\"[^\"]*[uniformvaryg]+ *";
 
@@ -96,7 +123,7 @@ proc string getParamType( string $line )
     return "";
 }
 
-proc int getParamArraySize( string $line )
+proc int liquidSl_getParamArraySize( string $line )
 {
     string $strip = `substitute "^.*[a-z]\\[" $line ""`;
     if ( $strip == $line ) return 0;
@@ -108,7 +135,7 @@ proc int getParamArraySize( string $line )
     return $sizeInt;
 }
 
-proc string getParamDefaultF( int $fid, int $arraySize )
+proc string liquidSl_getParamDefaultF( int $fid, int $arraySize )
 {
     string $default = "0.0";
     string $line = strip( `fgetline $fid` );
@@ -132,7 +159,7 @@ proc string getParamDefaultF( int $fid, int $arraySize )
     return $default;
 }
 
-proc string getParamDefaultS( int $fid, int $arraySize )
+proc string liquidSl_getParamDefaultS( int $fid, int $arraySize )
 {
     string $default = "";
 
@@ -152,7 +179,7 @@ proc string getParamDefaultS( int $fid, int $arraySize )
     return $default;
 }
 
-proc string getParamDefaultM( int $fid, int $arraySize )
+proc string liquidSl_getParamDefaultM( int $fid, int $arraySize )
 {
     // Array matrices not supported yet,
     if ( $arraySize > 0 ) return "";
@@ -182,7 +209,7 @@ proc string getParamDefaultM( int $fid, int $arraySize )
     return $default;
 }
 
-proc string getParamDefaultV( int $fid, int $arraySize )
+proc string liquidSl_getParamDefaultV( int $fid, int $arraySize )
 {
     string $default = "";
     string $line = `fgetline $fid`;
@@ -244,7 +271,7 @@ proc string getParamDefaultV( int $fid, int $arraySize )
     return $default;
 }
 
-proc string getParamDefault( int $fid, string $paramType, int $arraySize )
+proc string liquidSl_getParamDefault( int $fid, string $paramType, int $arraySize )
 {
     string $default = "";
 
@@ -294,29 +321,34 @@ global proc liquidSlParseSdl( string $sdlFile )
     //
 
     global string $gLiquidSlShaderFile;
+    global string $gLiquidSlShaderName;
     global string $gLiquidSlShaderType;
     global int    $gLiquidSlNumParams;
     global string $gLiquidSlParamNames[];
+    global string $gLiquidSlParamDetails[];
     global string $gLiquidSlParamTypes[];
     global string $gLiquidSlParamDefaults[];
     global int    $gLiquidSlParamArraySizes[];
 
     $gLiquidSlShaderFile = $sdlFile;
+    $gLiquidSlShaderName = "";
     $gLiquidSlShaderType = "";
     $gLiquidSlNumParams = -1;
     clear( $gLiquidSlParamNames );
+    clear( $gLiquidSlParamDetails );
     clear( $gLiquidSlParamTypes );
     clear( $gLiquidSlParamDefaults );
     clear( $gLiquidSlParamArraySizes );
 
     // Build and run the shaderinfo command
-    // TODO: probably won't work under NT
-    string $cmd = "shaderinfo " + $sdlFile;
+    string $slInfo = `getAttr liquidGlobals.shaderInfo`;
+    if ( $slInfo == "" ) error ("Liquid : Please load a renderer Preset or fill the field in RenderGlobals>Renderer>ShaderInfo !");
+    string $cmd = $slInfo + " \"" + $sdlFile + "\"";
     int $fid = `popen $cmd "r"`;
 
 
-    // Get the shader type
-    string $shaderType = getShaderType( $fid );
+    // Get the shader type - also sets the shader name
+    string $shaderType = liquidSl_getShaderType( $fid );
     if ( $shaderType != "surface"       &&
          $shaderType != "displacement"  &&
          $shaderType != "volume"        &&
@@ -348,7 +380,7 @@ global proc liquidSlParseSdl( string $sdlFile )
             continue;
         }
 
-        string $paramName = getParamName( $line );
+        string $paramName = liquidSl_getParamName( $line );
         if ( $paramName == "" )
         {
             pclose $fid;
@@ -357,7 +389,16 @@ global proc liquidSlParseSdl( string $sdlFile )
             return;
         }
 
-        string $paramType = getParamType( $line );
+        string $paramDetail = liquidSl_getParamDetail( $line );
+        if ( $paramDetail == "" )
+        {
+            pclose $fid;
+            error( "parameter " + $paramNum +
+                   ": cannot parse parameter detail > " + $line );
+            return;
+        }
+
+        string $paramType = liquidSl_getParamType( $line );
         if ( $paramType == "" )
         {
             pclose $fid;
@@ -366,13 +407,13 @@ global proc liquidSlParseSdl( string $sdlFile )
             return;
         }
 
-        int $paramArraySize = getParamArraySize( $line );
+        int $paramArraySize = liquidSl_getParamArraySize( $line );
 
-        string $paramDefault = getParamDefault( $fid, $paramType,
-                                                $paramArraySize );
+        string $paramDefault = liquidSl_getParamDefault( $fid, $paramType, $paramArraySize );
 
         // Store the results for this parameter
         $gLiquidSlParamNames[ $paramNum ] = $paramName;
+        $gLiquidSlParamDetails[ $paramNum ] = $paramDetail;
         $gLiquidSlParamTypes[ $paramNum ] = $paramType;
         $gLiquidSlParamDefaults[ $paramNum ] = $paramDefault;
         $gLiquidSlParamArraySizes[ $paramNum ] = $paramArraySize;

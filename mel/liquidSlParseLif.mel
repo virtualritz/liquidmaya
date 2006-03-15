@@ -339,7 +339,7 @@ global proc liquidSlParseLif( string $shaderFile )
         break;
 
       default:
-        error ("unknown key : "+$key+" in \""+$lifFile+"\"\n   > \""+$line+"\"\n");
+        warning ("unknown key : "+$key+" in \""+$lifFile+"\"\n   > \""+$line+"\"\n");
         break;
     }
 

@@ -3908,7 +3908,8 @@ MStatus liqRibTranslator::ribPrologue()
       RiOption( "limits", "eyesplits", ( RtPointer ) &eyeSplits, RI_NULL );
     }
 
-
+    // set search paths
+    //
     RtString list = const_cast< char* > ( liqglo_shaderPath.asChar() );
     RiOption( "searchpath", "shader", &list, RI_NULL );
 
@@ -3922,6 +3923,16 @@ MStatus liqRibTranslator::ribPrologue()
 
     list = const_cast< char* > ( liqglo_proceduralPath.asChar() );
     RiOption( "searchpath", "procedural", &list, RI_NULL );
+
+    // if rendering to the renderview, add a path to the liqmaya display driver
+    if ( m_renderView ) {
+      MString home( getenv( "LIQUIDHOME" ) );
+
+      MString displaySearchPath;
+      displaySearchPath = ".:" + liquidRenderer.renderHome + "/etc:" + liquidSanitizePath( home ) + "/displaydDrivers";
+      list = const_cast< char* > ( displaySearchPath.asChar() );
+      RiArchiveRecord( RI_VERBATIM, "Option \"searchpath\" \"display\" [\"%s\"]\n", list );
+    }
 
 
     RiOrientation( RI_RH ); // Right-hand coordinates

@@ -77,6 +77,10 @@ global proc liquidSlSetShader( string $shaderFile )
         // pixie shader
         liquidSlParseSdr( $shaderFile );
         break;
+    case "slb":
+        // air shader
+        liquidSlParseSlb( $shaderFile );
+        break;
     default:
         error( "unknown shader extension: " + $ext );
     }
@@ -87,6 +91,7 @@ global proc liquidSlSetShader( string $shaderFile )
 global proc liquidSlInfoReset()
 {
   global string $gLiquidSlShaderFile;
+  global string $gLiquidSlShaderName;
   global string $gLiquidSlShaderType;
   global int    $gLiquidSlNumParams;
   global string $gLiquidSlParamNames[];
@@ -109,12 +114,21 @@ global proc liquidSlInfoReset()
   clear $gLiquidSlParamGuiType;
   clear $gLiquidSlParamGuiRange;
 
+  $gLiquidSlShaderName = "";
   $gLiquidSlShaderFile = "";
   $gLiquidSlLifExists = 0;
   $gLiquidSlLifGuiSize = 0;
   $gLiquidSlLifShaderDescription = "";
 }
 
+
+global proc string liquidSlShaderName()
+{
+    global string $gLiquidSlShaderName;
+    if ( $gLiquidSlShaderName == "" )
+        error( "no shader set" );
+    return $gLiquidSlShaderName;
+}
 
 global proc string liquidSlShaderType()
 {
@@ -124,7 +138,6 @@ global proc string liquidSlShaderType()
     return $gLiquidSlShaderType;
 }
 
-
 global proc int liquidSlNumParams()
 {
     global int $gLiquidSlNumParams;
@@ -132,7 +145,6 @@ global proc int liquidSlNumParams()
         error( "no shader set" );
     return $gLiquidSlNumParams;
 }
-
 
 global proc string liquidSlParamName( int $index )
 {
@@ -149,6 +161,20 @@ global proc string liquidSlParamName( int $index )
     return $gLiquidSlParamNames[$index];
 }
 
+global proc  string liquidSlParamDetail( int $index )
+{
+    global int $gLiquidSlNumParams;
+
+    if ( $gLiquidSlNumParams == -1 )
+        error( "no shader set" );
+
+    if ( $index < 0 ||
+         $index >= $gLiquidSlNumParams )
+        error( "liquidSlParamType: parameter index out of range" );
+
+    global string $gLiquidSlParamDetails[];
+    return $gLiquidSlParamDetails[$index];
+}
 
 global proc  string liquidSlParamType( int $index )
 {
@@ -165,7 +191,6 @@ global proc  string liquidSlParamType( int $index )
     return $gLiquidSlParamTypes[$index];
 }
 
-
 global proc int liquidSlParamArraySize( int $index )
 {
     global int $gLiquidSlNumParams;
@@ -180,7 +205,6 @@ global proc int liquidSlParamArraySize( int $index )
     global int $gLiquidSlParamArraySizes[];
     return $gLiquidSlParamArraySizes[$index];
 }
-
 
 global proc string liquidSlParamDefault( int $index )
 {
@@ -197,6 +221,25 @@ global proc string liquidSlParamDefault( int $index )
     return $gLiquidSlParamDefaults[$index];
 }
 
+global proc string liquidSlParamDefaultRaw( int $index )
+{
+    global int $gLiquidSlNumParams;
+
+    if ( $gLiquidSlNumParams == -1 )
+        error( "no shader set" );
+
+    if ( $index < 0 ||
+         $index >= $gLiquidSlNumParams )
+        error( "liquidSlParamDefault: parameter index out of range" );
+
+    global string $gLiquidSlParamDefaults[];
+    string $result = $gLiquidSlParamDefaults[$index];
+    while( size( match("\"*, \"*", $result ) ) ) $result = substitute("\"*, \"*", $result, ":" );
+    while( size( match("[<>{},\"]+", $result ) ) ) $result = substitute("[<>{},\"]+", $result, "" );
+    return $result;
+}
+
+
 
 //
 // Procedures for converting the string default returned
@@ -210,13 +253,11 @@ global proc string liquidSlDefaultToString( string $default )
     return $val;
 }
 
-
 global proc string[] liquidSlDefaultToStringArray( string $default )
 {
     string $val[] = eval( "string $foo_Sarray[] = " + $default );
     return $val;
 }
-
 
 global proc float liquidSlDefaultToFloat( string $default )
 {
@@ -224,13 +265,11 @@ global proc float liquidSlDefaultToFloat( string $default )
     return $val;
 }
 
-
 global proc float[] liquidSlDefaultToFloatArray( string $default )
 {
     float $val[] = eval( "float $foo_Farray[] = " + $default );
     return $val;
 }
-
 
 global proc vector liquidSlDefaultToVector( string $default )
 {
@@ -238,13 +277,11 @@ global proc vector liquidSlDefaultToVector( string $default )
     return $val;
 }
 
-
 global proc vector[] liquidSlDefaultToVectorArray( string $default )
 {
   vector $val[] = eval("vector $foo_Varray[] =" + $default );
   return $val;
 }
-
 
 global proc matrix liquidSlDefaultToMatrix( string $default )
 {
@@ -266,6 +303,42 @@ global proc float[] liquidSlDefaultToMatrixArray( string $default )
     //
     float $val[]; clear($val);
     return $val;
+}
+
+global proc string[] liquidSlAllParamNames()
+{
+  global string $gLiquidSlParamNames[];
+  return $gLiquidSlParamNames;
+}
+
+global proc string[] liquidSlAllParamTypes()
+{
+  global string $gLiquidSlParamTypes[];
+  return $gLiquidSlParamTypes;
+}
+
+global proc string[] liquidSlAllParamDetails()
+{
+  global string $gLiquidSlParamDetails[];
+  return $gLiquidSlParamDetails;
+}
+
+global proc int[] liquidSlAllParamArraySizes()
+{
+  global int $gLiquidSlParamArraySizes[];
+  return $gLiquidSlParamArraySizes;
+}
+global proc string[] liquidSlAllParamDefaultsRaw()
+{
+  global string $gLiquidSlParamDefaults[];
+  string $result[];
+  int $i;
+  for ( $i=0; $i<size( $gLiquidSlParamDefaults ); $i++ ) {
+    $result[$i] = $gLiquidSlParamDefaults[$i];
+    while( size( match("\"*, \"*", $result[$i] ) ) ) $result[$i] = substitute("\"*, \"*", $result[$i], ":" );
+    while( size( match("[<>{},\"]+", $result[$i] ) ) ) $result[$i] = substitute("[<>{},\"]+", $result[$i], "" );
+  }
+  return $result;
 }
 
 

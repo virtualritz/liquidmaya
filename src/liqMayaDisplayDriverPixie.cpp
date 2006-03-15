@@ -134,8 +134,6 @@ void	*displayStart(const char *name,int width,int height,int numSamples,const ch
 		delete imgSpecs;
 		return NULL;//PkDspyErrorNoResource;
 	}
-//	status = write(socketId,imgSpecs,sizeof(imageInfo));
-//	if(status == -1){
 	status = sendSockData(socketId,(char*)imgSpecs,sizeof(imageInfo));
 	if(!status){
 		#ifdef _WIN32
@@ -225,7 +223,7 @@ PtDspyError sendData(const int socket,
 	}
 
 	status = sendSockData(socket, (char*)&binfo,sizeof(bucket::bucketInfo));
-	if(status < 0){
+	if(!status){
 		perror("[d_liqmaya] Error: write(socket,bucketInfo)");
 		return false;
 	}
@@ -235,7 +233,7 @@ PtDspyError sendData(const int socket,
 		return false;
 	}
 	status = sendSockData(socket, (char*)data,size);
-	if(status < 0){
+	if(!status){
 		perror("[d_liqmaya] Error: write(socket,data)");
 		return false;
 	}

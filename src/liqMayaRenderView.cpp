@@ -248,9 +248,9 @@ MStatus liqMayaRenderCmd::redoIt()
 		// imageInfo imgInfo;
 		imageInfo imgInfo;
 #ifndef _WIN32
-		sleep(2);
+		//sleep(2);
 #else
-		Sleep(2000);
+		//Sleep(2000);
 #endif
 		status = readSockData(slaveSocket, (char*)&imgInfo, sizeof(imageInfo));
 		if (-1 == status) {

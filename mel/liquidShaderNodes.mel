@@ -80,13 +80,47 @@ proc rmanParams_create( string $node, int $reReadShaderParams )
 {
   if ( $reReadShaderParams ) {
     string $shaderPath = `getAttr ($node+".rmanShaderLong")`;
+    global string $gLiquidSlShaderFile;
+    $gLiquidSlShaderFile = "";
     liquidSlSetShader( $shaderPath );
   }
-  if ( !`objExists( ($node+".rmanParams") )` ) addAttr -dt stringArray -ln rmanParams $node;
+
+  setAttr -type "string" ( $node + ".rmanShader" ) (liquidSlShaderName());
+
   string $cmd = ( "setAttr -type stringArray " + $node + ".rmanParams " + liquidSlNumParams() + " " );
   for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
       $cmd += ( "\"" + liquidSlParamName($i) + "\" " );
   }
+  //trace $cmd;
+  eval $cmd;
+
+  string $cmd = ( "setAttr -type stringArray " + $node + ".rmanDetails " + liquidSlNumParams() + " " );
+  for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
+      $cmd += ( liquidSlParamDetail($i) + " " );
+  }
+  //trace $cmd;
+  eval $cmd;
+
+  string $cmd = ( "setAttr -type stringArray " + $node + ".rmanTypes " + liquidSlNumParams() + " " );
+  for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
+      $cmd += ( "\"" + liquidSlParamType($i) + "\" " );
+  }
+  //trace $cmd;
+  eval $cmd;
+
+  string $cmd = ( "setAttr -type stringArray " + $node + ".rmanDefaults " + liquidSlNumParams() + " " );
+  for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
+      if ( liquidSlParamType($i) == "string" ) $cmd += ( "\"" + encodeString(liquidSlParamDefaultRaw($i)) + "\" " );
+      else $cmd += ( "\"" + liquidSlParamDefaultRaw($i) + "\" " );
+  }
+  //trace $cmd;
+  eval $cmd;
+
+  string $cmd = ( "setAttr -type Int32Array " + $node + ".rmanArraySizes " + liquidSlNumParams() + " " );
+  for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
+      $cmd += ( liquidSlParamArraySize($i) + " " );
+  }
+  //trace $cmd;
   eval $cmd;
 }
 
@@ -392,6 +426,11 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
   }
 
   // read shader params
+  {
+    // force reload
+    global string $gLiquidSlShaderFile;
+    $gLiquidSlShaderFile = "";
+  }
   liquidSlSetShader( $shaderPath );
 
   // check the type
@@ -410,7 +449,7 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
   // create shader params
   liquidAttachShaderParams( $node, $shaderPath );
 
-  // save the list of params in a string array attribute
+  // save the params description in a string array attribute
   rmanParams_create( $node, 0 );
 
   // delete obsolete params
@@ -425,7 +464,12 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
 
   for ( $at in $obsoleteAttr ) {
     string $fullattr = ($node+"."+$at);
-    if ( $at == "rmanParams" || gmatch( $at, "*Lif") ) continue;
+    if (  $at == "rmanParams"     ||
+          $at == "rmanDetails"    ||
+          $at == "rmanTypes"      ||
+          $at == "rmanDefaults"   ||
+          $at == "rmanArraySizes" ||
+          gmatch( $at, "*Lif") ) continue;
     if ( objExists( $fullattr ) ) {
       string $connections[] = `listConnections -plugs true $fullattr`;
       for ( $c in $connections ) {
@@ -437,11 +481,6 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
     }
   }
 
-
-  // sync other params
-  //
-  string $shader = basenameEx( $shaderPath );
-  setAttr -type "string" ($node+".rmanShader") $shader;
 
   evalDeferred( "if ( `layout -q -ex \"AttrEd"+$type+"FormLayout\"` ) deleteUI \"AttrEd"+$type+"FormLayout\";");
   evalDeferred( "if ( objExists( \""+$node+"\" ) ) updateAE "+$node+";" );
@@ -465,8 +504,7 @@ global proc liquidShaderNodePreview( string $node )
   }
 
   string $previewDir  = liquidFluidGetPreviewDir();
-  string $shader      = basenameEx(`getAttr ($node+".rmanShaderLong")`);
-  setAttr -type "string" ($node+".rmanShader") $shader;
+  string $shader      = getAttr ($node+".rmanShader");
   string $image       = ($previewDir+"/"+$node+"_"+$shader+".tif");
 
   // if a a previous .done file exists remove it.
@@ -644,6 +682,9 @@ global proc liquidHideAEShaderParams( string $node)
     //trace ("    > suppressing "+$p);
     editorTemplate -suppress $p;
   }
+  editorTemplate -suppress rmanTypes;
+  editorTemplate -suppress rmanDetails;
+  editorTemplate -suppress rmanDefaults;
   layout -e -m true $gAEControlLayoutName;
 }
 
@@ -994,7 +1035,7 @@ global proc liquidAE_LifFloat_spline( string $selectedObj, string $nodeType, str
   string $interpAttr   = $attributes[3];
 
   string $compound    = lifGradientAttr_create( $selectedObj, $valueAttr, $positionAttr, $interpAttr );
-  string $shader = basenameEx( `getAttr ($selectedObj+".rmanShaderLong")` );
+  string $shader = getAttr ($selectedObj+".rmanShader");
   string $lifCtlName  = ( $shader + "__" + $compound + "Ramp" );
 
   if ( !`gradientControl -q -ex $lifCtlName` ) {
@@ -1277,7 +1318,7 @@ global proc liquidAE_LifColor_spline( string $selectedObj, string $nodeType, int
   int    $channelBox  = liquidLifChannelBoxState( $index );
 
   string $compound    = lifGradientAttr_create( $selectedObj, $colorAttr, $positionAttr, $interpAttr );
-  string $shader = basenameEx( `getAttr ($selectedObj+".rmanShaderLong")` );
+  string $shader = getAttr ($selectedObj+".rmanShader");
   string $lifCtlName  = ( $shader + "__" + $compound + "Ramp" );
 
   if ( !`gradientControl -q -ex $lifCtlName` ) {

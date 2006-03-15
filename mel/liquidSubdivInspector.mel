@@ -71,29 +71,31 @@ proc dispSelectedName( string $curSelection) {
 
     formLayout  -numberOfDivisions 100  liq_sbd_insp_SelectedNameForm;
       nameField  liq_sbd_insp_nameObject;
-      symbolButton -i "inArrow.xpm" -ann "pick Up node" -w 20 -h 18 -c ("pickWalk -d up") liq_sbd_insp_btnUpNode;
-      symbolButton -i "outArrow.xpm" -ann "pick Down node" -w 20 -h 18 -c ("pickWalk -d down") liq_sbd_insp_btnDnNode;
+      symbolButton -i "inArrow.xpm" -ann "pick Up node" -w 32 -h 18 -c ("pickWalk -d up") liq_sbd_insp_btnUpNode;
+      symbolButton -i "outArrow.xpm" -ann "pick Down node" -w 32 -h 18 -c ("pickWalk -d down") liq_sbd_insp_btnDnNode;
     setParent ..;
+
+    formLayout  -edit
+                -af liq_sbd_insp_nameObject left 2
+                -af liq_sbd_insp_nameObject top 9
+                -af liq_sbd_insp_nameObject bottom 9
+
+                -af liq_sbd_insp_btnUpNode top 9
+                -af liq_sbd_insp_btnUpNode bottom 9
+
+                -af liq_sbd_insp_btnDnNode top 9
+                -af liq_sbd_insp_btnDnNode bottom 9
+                -af liq_sbd_insp_btnDnNode right 0
+
+                -ac liq_sbd_insp_btnUpNode  right -2 liq_sbd_insp_btnDnNode
+                -ac liq_sbd_insp_nameObject right 4 liq_sbd_insp_btnUpNode
+
+                liq_sbd_insp_SelectedNameForm;
   }
 
   nameField -edit -object $curSelection liq_sbd_insp_nameObject;
 
-  formLayout  -edit
 
-  -af liq_sbd_insp_nameObject left 2
-  -af liq_sbd_insp_nameObject top 9
-  -af liq_sbd_insp_nameObject bottom 9
-
-  -af liq_sbd_insp_btnUpNode top 9
-  -af liq_sbd_insp_btnUpNode bottom 9
-
-  -af liq_sbd_insp_btnDnNode top 9
-  -af liq_sbd_insp_btnDnNode bottom 9
-  -af liq_sbd_insp_btnDnNode right 0
-
-  -ac liq_sbd_insp_btnUpNode  right 2 liq_sbd_insp_btnDnNode
-  -ac liq_sbd_insp_nameObject right 2 liq_sbd_insp_btnUpNode
-  liq_sbd_insp_SelectedNameForm;
 }
 
 global proc liq_sbd_insp_dispAttributes( string $shape ) {
@@ -184,27 +186,29 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
       }
     }
   frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Creases" -cll true -cl false frm_creases;
-  columnLayout -adj true col_creases;
-  if ( size( $creases ) ) {
-    $i=0;
-    for ( $inSetNode in $creases ) {
-      $attr = $inSetNode + ".liqSubdivCrease";
-          attrFieldSliderGrp -width 300 -adj 3 -cw4 100 50 1 1 -ct4 "both" "both" "both" "both" -label $inSetNode -at $attr -pre 2 -min 0 -max 10 -fs 0.1 -ss 0.1;
-          string $appCmdPop = `popupMenu`;
-      menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
-      menuItem -divider true;
-      menuItem -label $label_add -c "liquidSubdivCreaseUI";
-      menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
-      menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
-      menuItem -label $label_delete -c ("partition -rm liquidCreasePartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
-      $i++;
-    }
-  } else {
-    text -align "center" -label "No Creases Defined" ;
-    string $appCmdPop = `popupMenu`;
-    menuItem -label $label_add -c "liquidSubdivCreaseUI";
-  }
-  setParent liq_sbd_insp_tagsList;
+    columnLayout -adj true col_creases;
+      if ( size( $creases ) ) {
+        $i=0;
+        for ( $inSetNode in $creases ) {
+          $attr = $inSetNode + ".liqSubdivCrease";
+          rowLayout -nc 2 -cw2 300 30 -ct2 both both -adj 1;
+            attrFieldSliderGrp -width 300 -adj 3 -cw4 100 50 1 1 -ct4 "both" "both" "both" "both" -label $inSetNode -at $attr -pre 2 -min 0 -max 10 -fs 0.1 -ss 0.1;
+            iconTextButton -style "iconOnly" -w 19 -h 18 -mw 0 -mh 0 -image (liquidGetHome()+"/icons/liquidMenuButton.xpm");
+            string $appCmdPop = `popupMenu -b 1`;
+              menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
+              menuItem -divider true;
+              menuItem -label $label_add -c "liquidSubdivCreaseUI";
+              menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
+              menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
+              menuItem -label $label_delete -c ("partition -rm liquidCreasePartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
+          $i++;
+        }
+      } else {
+        text -align "center" -label "No Creases Defined" ;
+        string $appCmdPop = `popupMenu`;
+        menuItem -label $label_add -c "liquidSubdivCreaseUI";
+      }
+    setParent liq_sbd_insp_tagsList;
 
   frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Corners" -cll true -cl false frm_corners;
   columnLayout -adj true col_corners;
@@ -212,14 +216,16 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
     $i=0;
     for ( $inSetNode in $corners ) {
       $attr = $inSetNode + ".liqSubdivCorner";
-          attrFieldSliderGrp -width 300 -adj 3 -cw4 100 50 1 1 -ct4 "both" "both" "both" "both" -label $inSetNode -at $attr -pre 2 -min 0 -max 10 -fs 0.1 -ss 0.1;
-          string $appCmdPop = `popupMenu`;
-      menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
-      menuItem -divider true;
-      menuItem -label $label_add -c "liquidSubdivCornerUI";
-      menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
-      menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
-      menuItem -label $label_delete -c ("partition -rm liqCornerPartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
+      rowLayout -nc 2 -cw2 300 30 -ct2 both both -adj 1;
+        attrFieldSliderGrp -width 300 -adj 3 -cw4 100 50 1 1 -ct4 "both" "both" "both" "both" -label $inSetNode -at $attr -pre 2 -min 0 -max 10 -fs 0.1 -ss 0.1;
+        iconTextButton -style "iconOnly" -w 19 -h 18 -mw 0 -mh 0 -image (liquidGetHome()+"/icons/liquidMenuButton.xpm");
+        string $appCmdPop = `popupMenu -b 1`;
+          menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
+          menuItem -divider true;
+          menuItem -label $label_add -c "liquidSubdivCornerUI";
+          menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
+          menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
+          menuItem -label $label_delete -c ("partition -rm liqCornerPartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
       $i++;
     }
   } else {
@@ -237,14 +243,16 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
       $ck = `getAttr $attr`;
       $onCommand = ("setAttr " + $attr + " true; ");
       $offCommand = ("setAttr " + $attr + " false; ");
-      checkBoxGrp -label $inSetNode -l1 "" -v1 $ck -on1 $onCommand -of1 $offCommand ("holeFld" + $i);
-      string $appCmdPop = `popupMenu `;
-      menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
-      menuItem -divider true;
-      menuItem -label $label_add -c "liquidSubdivHoleUI";
-      menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
-      menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
-      menuItem -label $label_delete -c ("partition -rm liqHolePartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
+      rowLayout -nc 2 -cw2 300 30 -ct2 both both -adj 1;
+        checkBoxGrp -label $inSetNode -l1 "" -v1 $ck -on1 $onCommand -of1 $offCommand ("holeFld" + $i);
+        iconTextButton -style "iconOnly" -w 19 -h 18 -mw 0 -mh 0 -image (liquidGetHome()+"/icons/liquidMenuButton.xpm");
+        string $appCmdPop = `popupMenu -b 1`;
+          menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
+          menuItem -divider true;
+          menuItem -label $label_add -c "liquidSubdivHoleUI";
+          menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
+          menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
+          menuItem -label $label_delete -c ("partition -rm liqHolePartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
       $i++;
     }
   } else {
@@ -260,16 +268,16 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
     for ( $inSetNode in $stitches ) {
       $attr = $inSetNode + ".liqSubdivStitch";
       int $ck = `getAttr $attr`;
-      // attrFieldGrp -width 300 -cw 2 $cw2 -label $inSetNode -at $attr ;
-      attrFieldSliderGrp  -width 300 -cw 2 80 -label $inSetNode -at $attr ;
-      // intFieldGrp -width 300 -cw 2 $cw2 -label $inSetNode -v1 $ck ;
-      string $appCmdPop = `popupMenu`;
-      menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
-      menuItem -divider true;
-      menuItem -label $label_add -c "liquidSubdivStitchUI";
-      menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
-      menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
-      menuItem -label $label_delete -c ("partition -rm liqStitchPartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
+      rowLayout -nc 2 -cw2 300 30 -ct2 both both -adj 1;
+        attrFieldSliderGrp  -width 300 -cw 2 80 -label $inSetNode -at $attr ;
+        iconTextButton -style "iconOnly" -w 19 -h 18 -mw 0 -mh 0 -image (liquidGetHome()+"/icons/liquidMenuButton.xpm");
+          string $appCmdPop = `popupMenu -b 1`;
+            menuItem -label $label_refresh -command ("liq_sbd_insp_dispExtraTags " + $shape);
+            menuItem -divider true;
+            menuItem -label $label_add -c "liquidSubdivStitchUI";
+            menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
+            menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
+            menuItem -label $label_delete -c ("partition -rm liqStitchPartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
       $i++;
     }
   } else {

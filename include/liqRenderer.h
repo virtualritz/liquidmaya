@@ -46,6 +46,7 @@ public:
 
   // renderer and related utilities
   MString renderName;
+  MString renderHome;
   MString renderCommand;
   MString renderPreview;
   MString renderCmdFlags;

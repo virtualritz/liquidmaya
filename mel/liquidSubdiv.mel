@@ -236,7 +236,7 @@ global proc liquidSubdivCornerDoIt() {
 global proc liquidSubdivCornerApply() {
 
   int $Corner = `optionVar -q "liqSubdivCorner"`;
-      string $partitions[] = `ls -pr liqCornerPartition`;
+  string $partitions[] = `ls -pr liqCornerPartition`;
   if ($partitions[0] == "")
     partition -name liqCornerPartition;
 
@@ -273,7 +273,7 @@ global proc liquidSubdivHoleUI() {
 
 global proc liquidSubdivHoleDoIt() {
 
-  int $r = `checkBox -q -v "liqSubdivHoleWin|c1|parameters|hole"`;
+  int $r = `checkBoxGrp -q -v1 "hole"`;
   optionVar -iv "liqSubdivHole" $r;
       liquidSubdivHoleApply;
 }

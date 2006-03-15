@@ -174,7 +174,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       }
 
       liqGetSloInfo shaderInfo;
-      int success = shaderInfo.setShader( rmShaderStr );
+      int success = shaderInfo.setShaderNode( lightDepNode );
       if ( !success ) {
         perror("Slo_SetShader");
         printf("Slo_SetShader(%s) failed in liquid output! \n", assignedRManShader.asChar() );

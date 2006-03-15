@@ -78,6 +78,12 @@ class liqLightNode : public MPxNode
     static MObject aRmanShader;
     static MObject aRmanShaderLong;
     static MObject aRmanShaderLif;
+    static MObject aRmanParams;
+    static MObject aRmanDetails;
+    static MObject aRmanTypes;
+    static MObject aRmanDefaults;
+    static MObject aRmanArraySizes;
+
     static MObject aPreviewPrimitive;
     static MObject aPreviewObjectSize;
     static MObject aPreviewShadingRate;
