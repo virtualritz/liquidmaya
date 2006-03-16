@@ -77,10 +77,10 @@ private: // Data
 
   bool      interpolateBoundary;
 
-  std::vector <RtToken>	v_tags;
-  std::vector <RtInt>  v_nargs;
-  std::vector <RtInt>  v_intargs;
-  std::vector <RtFloat>	v_floatargs;
+  std::vector <RtToken> v_tags;
+  std::vector <RtInt>   v_nargs;
+  std::vector <RtInt>   v_intargs;
+  std::vector <RtFloat> v_floatargs;
 
   void checkExtraTags( MObject &mesh );
   void addExtraTags( MObject &mesh, float extraTagValue, SBD_EXTRA_TAG extraTag );

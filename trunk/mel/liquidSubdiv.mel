@@ -46,21 +46,6 @@ global proc liquidMakeSubdivUI() {
       $ck = `optionVar -q liqSubdivInterpolateBoundary`;
       checkBoxGrp -label "Interpolate Boundary" -l1 "" -v1 $ck liqSubdivInterpolate;
 
-      $ck = `optionVar -q liqSubdivUVInterpolation` + 1;
-
-      string $liqUVinterpModes[];
-
-      $liqUVinterpModes = {
-        "True Facevarying",
-        "PRMan Facevarying",
-        "Facevertex"
-      };
-
-      string $menu = `optionMenuGrp -label "UV Intepolation" -cal 1 "right" liqSubdivUV`;
-      int $i;
-      for( $i = 0; $i < 3; ++$i ) {
-        menuItem -data $i -label $liqUVinterpModes[ $i ];
-      }
     setParent ..;
     separator;
     rowColumnLayout -nc 2 -cw 1 160 -cw 2 160 buttons;
@@ -80,9 +65,6 @@ global proc liquidMakeSubdivDoIt()
 
     $r = `checkBoxGrp -q -v1 "liqSubdivWindow|c1|parameters|liqSubdivInterpolate"`;
     optionVar -iv "liqSubdivInterpolateBoundary" $r;
-
-    $r = `optionMenuGrp -q -sl "liqSubdivWindow|c1|parameters|liqSubdivUV"`;
-    optionVar -iv "liqSubdivUVInterpolation" ($r-1);
 
     deleteUI liqSubdivWindow;
     liquidMakeSubdiv();
@@ -106,9 +88,6 @@ global proc liquidMakeSubdiv() {
 
     if ( `attributeQuery -node $current -ex "mtorSubdiv"` ) {
       setAttr ( $current + ".mtorSubdiv" ) true;
-    }
-    if ( !`attributeQuery -node $current -ex "liqSubdivUVInterpolation"`) {
-      addAttr -ln liqSubdivUVInterpolation -at enum -enumName "True Facevarying=0:PRMan Facevarying=1:Facevertex=2" $current;
     }
     if ( `attributeQuery -node $current -ex "liqSubdivUVInterpolation"`) {
       setAttr ( $current + ".liqSubdivUVInterpolation" ) $fv;
