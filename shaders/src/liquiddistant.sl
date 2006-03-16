@@ -30,7 +30,7 @@ light liquiddistant(
     if( shadowname != "" ) {
       uniform float shadowsize[2];
       textureinfo( shadowname, "resolution", shadowsize );
-      __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "blur", shadowfiltersize*factor, "bias", shadowbias, "width", 1 );
+      __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "blur", shadowfiltersize*factor+shadowblur, "bias", shadowbias, "width", 1 );
     } else
       __shadow = 0;
 
