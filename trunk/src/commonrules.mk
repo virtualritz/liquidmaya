@@ -66,11 +66,10 @@ LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqRibboxNode.$(OBJEXT)  \
 					liqLightNode.$(OBJEXT)  \
 					liqLightNodeBehavior.$(OBJEXT)\
-					liqCoordSysNode.$(OBJEXT)\
-					liqGlobalsNode.$(OBJEXT)\
-					liqBucket.$(OBJEXT)\
-					liqMayaRenderView.$(OBJEXT)\
-					liqMayaDisplayDriver.$(OBJEXT)
+					liqCoordSysNode.$(OBJEXT) \
+					liqGlobalsNode.$(OBJEXT) \
+					liqBucket.$(OBJEXT) \
+					liqMayaRenderView.$(OBJEXT)
 
 
 
@@ -109,11 +108,16 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
 					$(VPATH)/liqRibboxNode.$(OBJEXT)  \
 					$(VPATH)/liqLightNode.$(OBJEXT)  \
 					$(VPATH)/liqLightNodeBehavior.$(OBJEXT)\
-					$(VPATH)/liqCoordSysNode.$(OBJEXT)\
-					$(VPATH)/liqGlobalsNode.$(OBJEXT)\
-					$(VPATH)/liqBucket.$(OBJEXT)\
-					$(VPATH)/liqMayaRenderView.$(OBJEXT)\
-					$(VPATH)/liqMayaDisplayDriver.$(OBJEXT)
+					$(VPATH)/liqCoordSysNode.$(OBJEXT) \
+					$(VPATH)/liqGlobalsNode.$(OBJEXT) \
+					$(VPATH)/liqBucket.$(OBJEXT) \
+					$(VPATH)/liqMayaRenderView.$(OBJEXT)
+
+ifeq ($(LIQRMAN),pixie)
+	LIQDISPLAYOBJS = liqMayaDisplayDriverPixie.$(OBJEXT)
+else
+	LIQDISPLAYOBJS = liqMayaDisplayDriver.$(OBJEXT)
+endif
 
 .SUFFIXES: .cpp .$(OBJEXT) .$(PLUGSUF) .c
 
@@ -153,9 +157,9 @@ $(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDLIB)
 $(LIQUIDLIB) : $(LIQUIDMAINOBJS)
 	@$(AR) $(VPATH)/$(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
 
-$(LIQUIDDPY) : liqMayaDisplayDriver.o
+$(LIQUIDDPY) : $(LIQDISPLAYOBJS)
 	@echo $@
-	@$(CPP) -shared $(VPATH)/liqMayaDisplayDriver.o -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
+	@$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
 
 
 $(LIQUIDMAINOBJS) : ../include/liquid.h
