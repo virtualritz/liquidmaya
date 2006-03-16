@@ -107,7 +107,6 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   MString currentUVSetName;
   MStringArray extraUVSetNames;
   fnMesh.getCurrentUVSetName( currentUVSetName );
-
   {
     MStringArray UVSetNames;
     fnMesh.getUVSetNames( UVSetNames );
@@ -276,7 +275,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
     delete pFaceVertexTPointer;
   }
 
-  if( pFaceVertexUPointer != NULL ) {
+  if( pFaceVertexUPointer != NULL && pFaceVertexVPointer != NULL ) {
     for ( unsigned j=0; j<extraUVSetNames.length(); j++ ) {
       tokenPointerArray.push_back( UVSetsArray[2*j] );
       tokenPointerArray.push_back( UVSetsArray[2*j+1] );

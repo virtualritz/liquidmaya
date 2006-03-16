@@ -98,7 +98,24 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
   checkExtraTags( mesh );
 
   numPoints = fnMesh.numVertices();
+
+  // UV sets -----------------
+  //
   const unsigned numSTs = fnMesh.numUVs();
+  const unsigned numUVSets = fnMesh.numUVSets();
+  MString currentUVSetName;
+  MStringArray extraUVSetNames;
+  fnMesh.getCurrentUVSetName( currentUVSetName );
+  {
+    MStringArray UVSetNames;
+    fnMesh.getUVSetNames( UVSetNames );
+
+    for ( unsigned i=0; i<numUVSets; i++ ) {
+      if ( UVSetNames[i] != currentUVSetName ) extraUVSetNames.append( UVSetNames[i] );
+    }
+    //cout <<UVSetNames<<endl;
+  }
+
   numFaces = fnMesh.numPolygons();
   const unsigned numFaceVertices = fnMesh.numFaceVertices();
   unsigned face = 0;
@@ -112,6 +129,8 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
   liqTokenPointer* pVertexSTPointerPair = NULL;
   liqTokenPointer* pFaceVertexSPointer = NULL;
   liqTokenPointer* pFaceVertexTPointer = NULL;
+  liqTokenPointer* pFaceVertexUPointer = NULL;
+  liqTokenPointer* pFaceVertexVPointer = NULL;
 
   // Allocate memory and tokens
   numFaces = numFaces;
@@ -121,19 +140,47 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
   pointsPointerPair.set( "P", rPoint, false, numPoints );
   pointsPointerPair.setDetailType( rVertex );
 
+  std::vector<liqTokenPointer> UVSetsArray;
+
   if ( numSTs > 0 ) {
     pVertexSTPointerPair = new liqTokenPointer;
     pVertexSTPointerPair->set( "st", rFloat, false, numFaceVertices, 2 );
 #ifdef DELIGHT
     pVertexSTPointerPair->setDetailType( rFaceVertex );
 #else
-  pVertexSTPointerPair->setDetailType( rFaceVarying );
+    pVertexSTPointerPair->setDetailType( rFaceVarying );
 #endif
 
-  if( liqglo_outputMeshUVs ) {
-    pFaceVertexSPointer = new liqTokenPointer;
+    for ( unsigned j=0; j<extraUVSetNames.length(); j++) {
+
+      MString setName = "u_" + extraUVSetNames[j];
+      pFaceVertexUPointer = new liqTokenPointer;
+      pFaceVertexUPointer->set( setName.asChar(), rFloat, false, true, false, numFaceVertices );
+#ifdef DELIGHT
+      pFaceVertexUPointer->setDetailType( rFaceVertex );
+#else
+      pFaceVertexUPointer->setDetailType( rFaceVarying );
+#endif
+
+      setName = "v_" + extraUVSetNames[j];
+      pFaceVertexVPointer = new liqTokenPointer;
+      pFaceVertexVPointer->set( setName.asChar(), rFloat, false, true, false, numFaceVertices );
+#ifdef DELIGHT
+      pFaceVertexVPointer->setDetailType( rFaceVertex );
+#else
+      pFaceVertexVPointer->setDetailType( rFaceVarying );
+#endif
+
+      UVSetsArray.push_back( *pFaceVertexUPointer );
+      UVSetsArray.push_back( *pFaceVertexVPointer );
+
+    }
+
+    if( liqglo_outputMeshUVs ) {
+      pFaceVertexSPointer = new liqTokenPointer;
       pFaceVertexTPointer = new liqTokenPointer;
       // Match MTOR, which also outputs face-varying STs as well for some reason - Paul
+      // not anymore - Philippe
       pFaceVertexSPointer->set( "u", rFloat, false, numFaceVertices );
 #ifdef DELIGHT
       pFaceVertexSPointer->setDetailType( rFaceVertex );
@@ -144,9 +191,9 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
 #ifdef DELIGHT
       pFaceVertexTPointer->setDetailType( rFaceVertex );
 #else
-    pFaceVertexTPointer->setDetailType( rFaceVarying );
+      pFaceVertexTPointer->setDetailType( rFaceVarying );
 #endif
-  }
+    }
   }
 
   vertexParam = pointsPointerPair.getTokenFloatArray();
@@ -169,11 +216,20 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
         pVertexSTPointerPair->setTokenFloat( faceVertex, 0, S );
         pVertexSTPointerPair->setTokenFloat( faceVertex, 1, 1 - T );
 
-    if( liqglo_outputMeshUVs ) {
+        for ( unsigned j=0; j<extraUVSetNames.length(); j++ ) {
+
+          fnMesh.getPolygonUV( face, count, S, T, &extraUVSetNames[j] );
+
+          (&UVSetsArray[2*j])->setTokenFloat( faceVertex, S );
+          (&UVSetsArray[2*j+1])->setTokenFloat( faceVertex, 1 - T );
+
+        }
+
+        if( liqglo_outputMeshUVs ) {
           // Match MTOR, which always outputs face-varying STs as well for some reason - Paul
           pFaceVertexSPointer->setTokenFloat( faceVertex, S );
           pFaceVertexTPointer->setTokenFloat( faceVertex, 1 - T );
-    }
+        }
       }
 
       ++faceVertex;
@@ -188,6 +244,15 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
   if( pVertexSTPointerPair != NULL ) {
     tokenPointerArray.push_back( *pVertexSTPointerPair );
     delete pVertexSTPointerPair;
+  }
+
+  if( pFaceVertexUPointer != NULL && pFaceVertexVPointer != NULL) {
+    for ( unsigned j=0; j<extraUVSetNames.length(); j++ ) {
+      tokenPointerArray.push_back( UVSetsArray[2*j] );
+      tokenPointerArray.push_back( UVSetsArray[2*j+1] );
+    }
+    delete pFaceVertexUPointer;
+    delete pFaceVertexVPointer;
   }
 
   if( pFaceVertexSPointer != NULL ) {
@@ -277,8 +342,8 @@ void liqRibSubdivisionData::write()
         floatargs[j] = *f;
       }
     }
-  }  
-  
+  }
+
   RiSubdivisionMeshV( "catmull-clark", numFaces, nverts, verts, ntags, tags, nargs, intargs, floatargs, numTokens, tokenArray, pointerArray );
 }
 
@@ -491,7 +556,7 @@ void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue,
             }
           }
 	  break;
-          
+
         case TAG_HOLE:
 
           if ( !component.isNull() && component.hasFn( MFn::kMeshPolygonComponent ) ) {
@@ -518,13 +583,13 @@ void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue,
             }
           }
 	  break;
-	  
+
 	case TAG_BOUNDARY:
 	default:
-	  break;	  
+	  break;
 
         }
-	
+
 
       }
     }

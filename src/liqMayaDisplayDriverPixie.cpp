@@ -56,6 +56,10 @@ int sendSockData(int s,char * data,int n);
 #define closesocket close
 #endif
 
+#ifndef INTEGER_PARAMETER
+#define INTEGER_PARAMETER FLOAT_PARAMETER
+#endif
+
 void	*displayStart(const char *name,int width,int height,int numSamples,const char *samples,TDisplayParameterFunction findParameter) {
 	int i,origin[2],originalSize[2],rc;
 
@@ -162,7 +166,11 @@ int sendSockData(int s,char * data,int n){
 	int i,j;
 	
 	j	= n;
+	#ifdef MSG_NOSIGNAL
+	i	= send(s,data,j,MSG_NOSIGNAL);
+	#else
 	i	= send(s,data,j,0);
+	#endif
 
 	if (i <= 0) {
 		perror("[d_liqmaya] Connection broken");
@@ -174,7 +182,11 @@ int sendSockData(int s,char * data,int n){
 		data	+=	i;
 		j		-=	i;
 
-		i		= send(s,data,j,0);
+		#ifdef MSG_NOSIGNAL
+		i	= send(s,data,j,MSG_NOSIGNAL);
+		#else
+		i	= send(s,data,j,0);
+		#endif
 		
 		if (i <= 0) {
 			perror("[d_liqmaya] Connection broken");
@@ -274,9 +286,11 @@ int openSocket(const char *host, const int port)
         perror("[d_liqmaya] Error: connect()");
       	return -1;
     }
-    
+   
     int val = 1;
+    #ifdef SO_NOSIGPIPE
 	setsockopt(clientSocket,SOL_SOCKET,SO_NOSIGPIPE,(const char *) &val,sizeof(int));
+	#endif
 	val = 1;
 	setsockopt(clientSocket,IPPROTO_TCP,TCP_NODELAY,(const char *) &val,sizeof(int));
 	
