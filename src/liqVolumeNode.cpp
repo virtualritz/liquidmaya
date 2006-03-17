@@ -70,6 +70,7 @@ MObject liqVolumeNode::aRmanTypes;
 MObject liqVolumeNode::aRmanDefaults;
 MObject liqVolumeNode::aRmanArraySizes;
 MObject liqVolumeNode::aPreviewPrimitive;
+MObject liqVolumeNode::aPreviewCustomPrimitive;
 MObject liqVolumeNode::aPreviewObjectSize;
 MObject liqVolumeNode::aPreviewShadingRate;
 MObject liqVolumeNode::aPreviewBackplane;
@@ -162,16 +163,20 @@ MStatus liqVolumeNode::initialize()
   aRmanArraySizes = tAttr.create(  MString("rmanArraySizes"),  MString("ras"), MFnData::kIntArray, aRmanArraySizes, &status );
 	MAKE_INPUT(tAttr);
 
-  aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 6, &status );
+  aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );
   eAttr.addField( "Sphere",   0 );
   eAttr.addField( "Cube",     1 );
   eAttr.addField( "Cylinder", 2 );
   eAttr.addField( "Torus",    3 );
   eAttr.addField( "Plane",    4 );
   eAttr.addField( "Teapot",   5 );
-  eAttr.addField( "(globals)",6 );
+  eAttr.addField( "Custom",   6 );
+  eAttr.addField( "(globals)",7 );
   MAKE_NONKEYABLE_INPUT(eAttr);
   CHECK_MSTATUS(eAttr.setConnectable(false));
+
+  aPreviewCustomPrimitive = tAttr.create(  MString("previewCustomPrimitive"),  MString("pcp"), MFnData::kString, aPreviewCustomPrimitive, &status );
+	MAKE_INPUT(tAttr);
 
   aPreviewObjectSize = nAttr.create("previewObjectSize", "pos", MFnNumericData::kDouble, 1.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
@@ -209,6 +214,7 @@ MStatus liqVolumeNode::initialize()
   CHECK_MSTATUS(addAttribute(aRmanDefaults));
   CHECK_MSTATUS(addAttribute(aRmanArraySizes));
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
+  CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
   CHECK_MSTATUS(addAttribute(aPreviewShadingRate));
   CHECK_MSTATUS(addAttribute(aPreviewBackplane));

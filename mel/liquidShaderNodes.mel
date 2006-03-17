@@ -191,7 +191,7 @@ global proc lifGradient_create( string $nodeAttr, int $bound, int $indent, int $
     if( $isColor ){
       $scc= `attrColorSliderGrp -l "Selected Color"
                                 -ann "Selected Color" -sb 0
-                                -h 26 -w 206 -cw4 123 81 1 1 -adj 3 $scName`;
+                                -h 26 -w 206 -cw4 123 81 1 1 $scName`;
     } else {
       $scc	= `attrFieldSliderGrp -l "Selected Value"
                                   -ann "Selected Value"
@@ -497,7 +497,7 @@ global proc liquidShaderNodePreview( string $node )
   if ( !liquidGlobalsExists() ) eval("liquidCreateGlobals();select "+$node+";");
 
   string $nodetype = nodeType($node);
-  if ( $nodetype == "liquidLight" || $nodetype == "liquidVol" ) {
+  if ( $nodetype == "liquidLight" || $nodetype == "liquidVolume" ) {
     warning "Preview is not yet supported for Liquid Light and Volume Shader.";
     return;
   }
@@ -978,7 +978,6 @@ global proc liquidAE_LifFloat_slider( string $selectedObj, string $nodeType, str
                         -at ( $selectedObj + "." + $theParam )
                         -cc ( "liquidParamAU " + $selectedObj)
                         -hideMapButton true
-                        -adj 3
                         ($theParamCtl+"_LIF");
   } else {
     attrFieldSliderGrp  -e
@@ -1179,7 +1178,7 @@ global proc liquidAE_LifString( string $selectedObj, string $nodeType, int $inde
           string $myFileCommand = ( "liquidChangeTextFileAttr " + $selectedObj + " " + $attr + " " + $ctlName );
           if ( !`control -q -ex $ctlName` ) {
             string $form          = `formLayout`;
-            string $fullCtlPath   = `textFieldGrp -label $theLabel -adj 2 $ctlName`;
+            string $fullCtlPath   = `textFieldGrp -label $theLabel $ctlName`;
             liquidAddTextureViewerMenu( $fullCtlPath );
             string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_tex.xpm" ($ctlName+"_BUT")`;
             setParent ..;
@@ -1212,7 +1211,7 @@ global proc liquidAE_LifString( string $selectedObj, string $nodeType, int $inde
           string $myFileCommand = ( "liquidChangeTextFileAttr " + $selectedObj + " " + $attr + " " + $ctlName );
           if ( !`control -q -ex $ctlName` ) {
             string $form          = `formLayout`;
-            textFieldGrp -label $theLabel  -adj 2 $ctlName;
+            textFieldGrp -label $theLabel $ctlName;
             liquidAddTextureViewerMenu( $ctlName );
             string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
             setParent ..;
@@ -1245,7 +1244,7 @@ global proc liquidAE_LifString( string $selectedObj, string $nodeType, int $inde
           string $myFileCommand = ( "liquidLifCoordSysBrowser " + $selectedObj + " " + $attr + " " + $ctlName );
           if ( !`control -q -ex $ctlName` ) {
             string $form          = `formLayout`;
-            textFieldGrp  -label $theLabel -adj 2 $ctlName;
+            textFieldGrp  -label $theLabel $ctlName;
             string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_cs.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
             setParent ..;
 
@@ -1286,7 +1285,7 @@ global proc liquidAE_LifString( string $selectedObj, string $nodeType, int $inde
           break;
 
         default:
-          if (  !`control -q -ex $ctlName` ) textFieldGrp -label $theLabel -adj 2 $ctlName;
+          if (  !`control -q -ex $ctlName` ) textFieldGrp -label $theLabel $ctlName;
           textFieldGrp -e -ann $description$ctlName;
           connectControl -index 2 $ctlName ($selectedObj+"."+$attr);
           break;
@@ -1379,7 +1378,6 @@ global proc liquidAE_LifColor( string $selectedObj, string $nodeType, int $index
     if ( !`control -q -ex $pnameCtl` ) attrColorSliderGrp -label $plabel
                                                           -at $attr
                                                           -sb false
-                                                          -adj 3
                                                           $pnameCtl;
     else attrColorSliderGrp -e -at $attr $pnameCtl;
 
@@ -1495,7 +1493,7 @@ global proc liquidAE_LifGrp( string $selectedObj, int $index )
 proc liquidShaderNodesCustomPrimitiveBuildCustomMenu( string $parent, string $nodeDotAttr )
 {
   // get the list of available rib files in $LIQUIDHOME/previewRibFiles
-  string $ribPath = liquidGetHome() + "previewRibFiles/";
+  string $ribPath = liquidGetHome() + "/previewRibFiles/";
   string $files[] = `getFileList -fld $ribPath -fs "*.rib"`;
 
   // remove previous menu items
@@ -1518,6 +1516,7 @@ proc liquidShaderNodesCustomPrimitiveBuildCustomMenu( string $parent, string $no
     menuItem -p ($fullParentPath+"|OptionMenu") -l $label;
     optionVar -sva "liquidCustomPrimitives" ($ribPath+$f);
   }
+  if ( !size( $files ) ) menuItem -p ($fullParentPath+"|OptionMenu") -l "none";
   setParent $oldParent;
 
   // set the menu to the attribute's current value
@@ -1526,8 +1525,26 @@ proc liquidShaderNodesCustomPrimitiveBuildCustomMenu( string $parent, string $no
 }
 
 
-global proc liquidShaderNodesCustomPrimitiveReplace( string $nodeType, string $nodeDotAttr )
+global proc liquidShaderNodesCustomPrimitiveNew( string $nodeDotAttr )
 {
+  string $nodeType = nodeType( $nodeDotAttr );
+  string $cltName = ($nodeType+"_previewCustomPrimitive");
+
+  if ( !`optionMenuGrp -q -ex $cltName` ) {
+
+    setUITemplate -pst attributeEditorTemplate;
+    optionMenuGrp -l "Custom Primitive" $cltName;
+    setUITemplate -ppt;
+
+  }
+
+  liquidShaderNodesCustomPrimitiveReplace( $nodeDotAttr );
+}
+
+
+global proc liquidShaderNodesCustomPrimitiveReplace( string $nodeDotAttr )
+{
+  string $nodeType = nodeType( $nodeDotAttr );
   string $cltName = ($nodeType+"_previewCustomPrimitive");
 
   if ( `optionMenuGrp -q -ex $cltName` ) {
@@ -1541,23 +1558,9 @@ global proc liquidShaderNodesCustomPrimitiveReplace( string $nodeType, string $n
                     "setAttr -type \"string\" "+$nodeDotAttr+" $files[$sel-1];}");
     optionMenuGrp -e -cc $cmd $cltName;
   }
+  //trace ("liquidShaderNodesCustomPrimitiveReplace( "+ $nodeDotAttr +" )");
 }
 
-
-global proc liquidShaderNodesCustomPrimitiveNew( string $nodeType, string $nodeDotAttr )
-{
-  string $cltName = ($nodeType+"_previewCustomPrimitive");
-
-  if ( !`optionMenuGrp -q -ex $cltName` ) {
-
-    setUITemplate -pst attributeEditorTemplate;
-    optionMenuGrp -l "Custom Primitive" $cltName;
-    setUITemplate -ppt;
-
-  }
-
-  liquidShaderNodesCustomPrimitiveReplace( $nodeType, $nodeDotAttr );
-}
 
 
 
@@ -1642,6 +1645,6 @@ global proc liquidShaderUpdater( int $force )
   for ( $j in $jobs ) {
     if ( gmatch( $j, "*liquidShaderUpdater*") ) scriptJob -kill (int(match("[0-9]+", $j))) -force;
   }
-  scriptJob -event "SceneOpened" "evalDeferred liquidShaderUpdater 1" -protected;
+  scriptJob -event "SceneOpened" "evalDeferred(\"liquidShaderUpdater 1\")" -protected;
 }
 

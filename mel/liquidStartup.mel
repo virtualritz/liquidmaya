@@ -44,6 +44,8 @@ global proc string liquidGetHome()
       putenv "LIQUIDHOME" $home;
     }
   }
+  // make sure we don't have a trailing slash
+  $home = substitute("/$", $home, "");
   return $home;
 }
 
