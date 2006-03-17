@@ -1549,7 +1549,7 @@ global proc liquidShaderUpdater()
   for ( $node in $shaderNodes ) {
     string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
     if ( !`filetest -r $longShaderName` ) error("Liquid : could not find shader \""+$longShaderName+"\"");
-    if ( size( `getAttr ($node+".rmanDetails")` ) < 1 ) {
+    if ( size(`getAttr  ($node+".rmanDetails")`) < 1 ) {
       trace ("liquidShaderUpdater : updating liquid shader "+$node);
       rmanParams_create( $node, 1 );
     }
