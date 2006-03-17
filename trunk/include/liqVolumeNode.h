@@ -85,6 +85,7 @@ class liqVolumeNode : public MPxNode
     static MObject aRmanDefaults;
     static MObject aRmanArraySizes;
     static MObject aPreviewPrimitive;
+    static MObject aPreviewCustomPrimitive;
     static MObject aPreviewObjectSize;
     static MObject aPreviewShadingRate;
     static MObject aPreviewBackplane;

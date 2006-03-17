@@ -99,6 +99,7 @@ MSyntax liqPreviewShader::syntax()
   syn.addFlag("cub", "cube");
   syn.addFlag("pla", "plane");
   syn.addFlag("tea", "teapot");
+  syn.addFlag("cst", "custom");
 
   return syn;
 }
@@ -125,6 +126,7 @@ typedef struct liqPreviewShoptions
   int primitiveType;
   double objectScale;
   double shadingRate;
+  MString customRibFile;
 } liqPreviewShoptions;
 
 int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *options );
@@ -197,6 +199,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.primitiveType = SPHERE;
   preview.objectScale = 1.0;
   preview.shadingRate = 1.0;
+  preview.customRibFile = "";
 
   MString displayDriver( "framebuffer" );
   MString displayName( "liqPreviewShader" );
@@ -218,8 +221,10 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
       preview.primitiveType = TORUS;
     } else if ( arg == "-cylinder" ) {
       preview.primitiveType = CYLINDER;
-    } else if ( arg == "-dodecahedron" )  {
-      preview.primitiveType = DODECAHEDRON;
+    } else if ( arg == "-custom" )  {
+      preview.primitiveType = CUSTOM;
+      i++;
+      preview.customRibFile = args.asString( i, &status );
     } else if ( ( arg == "-s" ) || ( arg == "-shader" ) ) {
       i++;
       shaderNodeName = args.asString( i, &status );
@@ -654,7 +659,13 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
 
       break;
     }
-    case DODECAHEDRON:
+    case CUSTOM: {
+      cout <<"custom : "<<options->customRibFile<<endl;
+      if ( fileExists( options->customRibFile ) ) {
+        RiArchiveRecord( RI_VERBATIM, "ReadArchive \"%s\"\n", options->customRibFile.asChar() );
+      }
+      break;
+    }
     case SPHERE:
     default: {
       RiRotate( 60.0, 1.0, 0.0, 0.0 );

@@ -47,7 +47,7 @@ enum PrimitiveType {
   CUBE         = 3,
   PLANE        = 4,
   TEAPOT       = 5,
-  DODECAHEDRON = 6
+  CUSTOM       = 6
 };
 
 class liqPreviewShader : public MPxCommand {
