@@ -45,7 +45,7 @@ bucket::~bucket() {
 }
 void bucket::free() {
 	if(m_pixels)
-		delete m_pixels;
+		delete[] m_pixels;
 	m_pixels = NULL;
 }
 int bucket::set(const bucketInfo &info, const BUCKETDATATYPE *pixels ) {
