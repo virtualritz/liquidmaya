@@ -48,7 +48,6 @@
 		1F4D55160985842E00787F2E /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55130985842E00787F2E /* liqVolumeNode.cpp */; };
 		1F4D55170985842E00787F2E /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55140985842E00787F2E /* liqWriteArchive.cpp */; };
 		1F5E72C307E633F0006FAA8F /* libri.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FADF82007721B95007DC910 /* libri.a */; };
-		1F5E72C607E633F8006FAA8F /* sdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF48EC5077A116B006AE147 /* sdr.cpp */; };
 		1FAC5D9607BE25410083A3E5 /* liqAttachPrefAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02C079F20B70069EDB7 /* liqAttachPrefAttribute.h */; };
 		1FAC5D9707BE25410083A3E5 /* liqCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02D079F20B70069EDB7 /* liqCustomNode.h */; };
 		1FAC5D9807BE25410083A3E5 /* liqExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02E079F20B70069EDB7 /* liqExpression.h */; };
@@ -164,7 +163,6 @@
 		1FCCD096079F20B70069EDB7 /* liquid.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04E079F20B70069EDB7 /* liquid.h */; };
 		1FCCD097079F20B70069EDB7 /* liqWriteArchive.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */; };
 		1FDCD16D078A094000E62CC1 /* libshaderexecenv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FDCD16C078A094000E62CC1 /* libshaderexecenv.dylib */; };
-		1FF48EC6077A116B006AE147 /* sdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF48EC5077A116B006AE147 /* sdr.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -270,7 +268,7 @@
 		1F4D55120985842E00787F2E /* liquidPlug.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liquidPlug.cpp; sourceTree = "<group>"; };
 		1F4D55130985842E00787F2E /* liqVolumeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqVolumeNode.cpp; sourceTree = "<group>"; };
 		1F4D55140985842E00787F2E /* liqWriteArchive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqWriteArchive.cpp; sourceTree = "<group>"; };
-		1F5E729C07E632E0006FAA8F /* liquidbin-pixie */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F5E729C07E632E0006FAA8F /* liquidbin-pixie */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FAC5DDB07BE25410083A3E5 /* liquid_3delight.lib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liquid_3delight.lib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FAC5DDF07BE25F80083A3E5 /* lib3delight.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = lib3delight.dylib; path = "/Applications/Graphics/3Delight-4.0.1/lib/lib3delight.dylib"; sourceTree = "<absolute>"; };
 		1FADF82007721B95007DC910 /* libri.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libri.a; path = /Applications/Graphics/Pixie/lib/libri.a; sourceTree = "<absolute>"; };
@@ -317,7 +315,6 @@
 		1FCCD04E079F20B70069EDB7 /* liquid.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liquid.h; path = ../include/liquid.h; sourceTree = SOURCE_ROOT; };
 		1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqWriteArchive.h; path = ../include/liqWriteArchive.h; sourceTree = SOURCE_ROOT; };
 		1FDCD16C078A094000E62CC1 /* libshaderexecenv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libshaderexecenv.dylib; path = /Applications/Graphics/MacAqsis.0.9.1/lib/libshaderexecenv.0.dylib; sourceTree = "<absolute>"; };
-		1FF48EC5077A116B006AE147 /* sdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = sdr.cpp; path = /Users/geohar/Development/pixie/Pixie.1.5.5/src/sdr/sdr.cpp; sourceTree = "<absolute>"; };
 		C6859E8B029090EE04C91782 /* liquidMaya.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = liquidMaya.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -427,7 +424,6 @@
 				1F4D55120985842E00787F2E /* liquidPlug.cpp */,
 				1F4D55130985842E00787F2E /* liqVolumeNode.cpp */,
 				1F4D55140985842E00787F2E /* liqWriteArchive.cpp */,
-				1FF48EC5077A116B006AE147 /* sdr.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -1199,7 +1195,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F5E72C607E633F8006FAA8F /* sdr.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1221,7 +1216,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FF48EC6077A116B006AE147 /* sdr.cpp in Sources */,
 				1F4D549F09857F5A00787F2E /* liqAttachPrefAttribute.cpp in Sources */,
 				1F4D54A009857F5A00787F2E /* liqBucket.cpp in Sources */,
 				1F4D54A109857F5A00787F2E /* liqCoordSysNode.cpp in Sources */,
