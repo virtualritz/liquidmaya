@@ -656,7 +656,7 @@ MStatus liqMayaRenderCmd::readBuckets(const char* file,vector<bucket*> &buckets,
 		if(!b->set(info,data)){
 			buckets.push_back(b);
 		}
-		delete data;
+		delete[] data;
 	}
 	fclose(fh);
 	return status;
