@@ -439,24 +439,44 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
     shaderPlug.getValue( arrayObject );
     stringArrayData.setObject( arrayObject );
     stringArrayData.copyTo( shaderDetails );
+    if ( shaderDetails.length() != numParam ) {
+      MString error;
+      error = "Liquid -> error reading " + shaderNode.name() + ".rmanDetails ... Please run \"liquidShaderUpdater(1)\" to fix your scene !";
+      throw error;
+    }
 
     // get the parameter types
     shaderPlug = shaderNode.findPlug( "rmanTypes" );
     shaderPlug.getValue( arrayObject );
     stringArrayData.setObject( arrayObject );
     stringArrayData.copyTo( shaderTypes );
+    if ( shaderTypes.length() != numParam ) {
+      MString error;
+      error = "Liquid -> error reading " + shaderNode.name() + ".rmanTypes ... Please run \"liquidShaderUpdater(1)\" to fix your scene !";
+      throw error;
+    }
 
     // get the parameter defaults
     shaderPlug = shaderNode.findPlug( "rmanDefaults" );
     shaderPlug.getValue( arrayObject );
     stringArrayData.setObject( arrayObject );
     stringArrayData.copyTo( shaderDefaults );
+    if ( shaderDefaults.length() != numParam ) {
+      MString error;
+      error = "Liquid -> error reading " + shaderNode.name() + ".rmanDefaults ... Please run \"liquidShaderUpdater(1)\" to fix your scene !";
+      throw error;
+    }
 
     // get the parameter array sizes
     shaderPlug = shaderNode.findPlug( "rmanArraySizes" );
     shaderPlug.getValue( arrayObject );
     MFnIntArrayData intArrayData( arrayObject, &stat );
     intArrayData.copyTo( shaderArraySizes );
+    if ( shaderArraySizes.length() != numParam ) {
+      MString error;
+      error = "Liquid -> error reading " + shaderNode.name() + ".rmanArraySizes ... Please run \"liquidShaderUpdater(1)\" to fix your scene !";
+      throw error;
+    }
 
     for ( unsigned k = 0; k < numParam; k++ ) {
 
