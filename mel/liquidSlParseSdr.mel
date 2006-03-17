@@ -101,8 +101,8 @@ proc string liquidSl_getParamDetail( string $line )
     string $prefix = "\"[^\"]*parameter *";
     string $suffix = " *[floatpinvecorlsgmx]+";
 
-    if      ( `match ($prefix+"uniform"+$suffix) $line` != "" ) return "uniform";
-    else if ( `match ($prefix+"varying"+$suffix) $line` != "" ) return "varying";
+    if      ( `match ("uniform"+$suffix) $line` != "" ) return "uniform";
+    else if ( `match ("varying"+$suffix) $line` != "" ) return "varying";
 
     return "";
 }
@@ -224,19 +224,19 @@ proc string liquidSl_getParamDefault( int $fid, string $paramType )
     switch ( $paramType )
     {
     case "string":
-        $default = getParamDefaultS( $fid );
+        $default = liquidSl_getParamDefaultS( $fid );
         break;
     case "float":
-        $default = getParamDefaultF( $fid );
+        $default = liquidSl_getParamDefaultF( $fid );
         break;
     case "matrix":
-        $default = getParamDefaultM( $fid );
+        $default = liquidSl_getParamDefaultM( $fid );
         break;
     case "color":
     case "point":
     case "vector":
     case "normal":
-        $default = getParamDefaultV( $fid );
+        $default = liquidSl_getParamDefaultV( $fid );
         break;
     default:
         // This should never be reached
