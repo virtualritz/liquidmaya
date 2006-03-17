@@ -98,7 +98,7 @@ proc string liquidSl_getParamName( string $line )
 
 proc string liquidSl_getParamDetail( string $line )
 {
-    string $prefix = "\"[^\"]*parameter *";
+    string $prefix = "\"[^\"]* *";
     string $suffix = " *[floatpinvecorlsgmx]+";
 
     if      ( `match ($prefix+"uniform"+$suffix) $line` != "" ) return "uniform";
