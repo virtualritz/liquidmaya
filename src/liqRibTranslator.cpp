@@ -2040,15 +2040,8 @@ bool liqRibTranslator::verifyOutputDirectories()
     MGlobal::displayWarning( "Liquid -> " + MString( type ) + " Directory, " + path + ", does not exist. Defaulting to system temp directory!\n" ); \
     cout <<((MString)("WARNING: Liquid -> "+MString(type)+" Directory, "+MString(path)+", does not exist. Defaulting to system temp directory!")).asChar()<<endl<<flush
 
-  #ifdef OSX
-      char oldPath[MAXPATHLEN];
-
-	  // first render, we're not cd'd to the right place
-	  // we do not cd back.  Maya does this later
-	  getcwd(oldPath,MAXPATHLEN);
-	  if (strcmp(oldPath,"/") == 0) {
-		chdir(liqglo_projectDir.asChar());
-	  }
+  #if defined(OSX) || defined (LINUX)
+    chdir(liqglo_projectDir.asChar());
   #endif
 
   bool problem = false;
@@ -2750,7 +2743,8 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             /* cout <<"  * referencing shadow archive "<<baseShadowName.asChar()<<endl; */
             if ( ribPrologue() == MS::kSuccess ) {
               if ( framePrologue( scanTime ) != MS::kSuccess ) break;
-              RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", baseShadowName.asChar() );
+              MString realShadowName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, baseShadowName, liqglo_projectDir );
+              RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", realShadowName.asChar() );
               if ( frameEpilogue( scanTime ) != MS::kSuccess ) break;
               ribEpilogue();
             }
@@ -3929,7 +3923,11 @@ MStatus liqRibTranslator::ribPrologue()
       MString home( getenv( "LIQUIDHOME" ) );
 
       MString displaySearchPath;
+#ifdef PIXIE
+      displaySearchPath = ".:" + liquidRenderer.renderHome + "/displays:" + liquidSanitizePath( home ) + "/displaydDrivers";
+#else
       displaySearchPath = ".:" + liquidRenderer.renderHome + "/etc:" + liquidSanitizePath( home ) + "/displaydDrivers";
+#endif
       list = const_cast< char* > ( displaySearchPath.asChar() );
       RiArchiveRecord( RI_VERBATIM, "Option \"searchpath\" \"display\" [\"%s\"]\n", list );
     }

@@ -69,6 +69,9 @@ extern bool         liqglo_shortShaderNames;
 extern MStringArray liqglo_DDimageName;
 extern bool         liqglo_doExtensionPadding;
 extern liquidlong   liqglo_outPadding;
+extern MString      liqglo_projectDir;
+extern bool         liqglo_relativeFileNames;
+extern MString      liqglo_textureDir;
 
 liqRibLightData::liqRibLightData( const MDagPath & light )
 //
@@ -540,7 +543,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       if ( liqglo_doShadows && usingShadow ) {
         if ( !rayTraced ) {
           if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" )) {
-            shadowName       = liqglo_textureDir + autoShadowName();
+            shadowName       = autoShadowName();
           }
         } else {
           shadowName = "raytrace";
@@ -582,7 +585,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       if ( liqglo_doShadows && usingShadow ) {
         if ( !rayTraced ) {
           if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" ) ) {
-            shadowName       = liqglo_textureDir + autoShadowName();
+            shadowName       = autoShadowName();
           }
         } else {
           shadowName = "raytrace";
@@ -677,13 +680,12 @@ void liqRibLightData::write()
         break;
       case MRLT_Point:
         if ( liqglo_doShadows && usingShadow ) {
-
-          MString	px = rayTraced ? "raytrace" : liqglo_textureDir + autoShadowName( pPX );
-          MString	nx = liqglo_textureDir + autoShadowName( pNX );
-          MString	py = liqglo_textureDir + autoShadowName( pPY );
-          MString	ny = liqglo_textureDir + autoShadowName( pNY );
-          MString	pz = liqglo_textureDir + autoShadowName( pPZ );
-          MString	nz = liqglo_textureDir + autoShadowName( pNZ );
+          MString	px = rayTraced ? "raytrace" : autoShadowName( pPX );
+          MString	nx = autoShadowName( pNX );
+          MString	py = autoShadowName( pPY );
+          MString	ny = autoShadowName( pNY );
+          MString	pz = autoShadowName( pPZ );
+          MString	nz = autoShadowName( pNZ );
           RtString sfpx = const_cast<char*>( px.asChar() );
           RtString sfnx = const_cast<char*>( nx.asChar() );
           RtString sfpy = const_cast<char*>( py.asChar() );
@@ -821,8 +823,9 @@ MString liqRibLightData::autoShadowName( int PointLightDir ) const
 {
   MString frame;
   MString shadowName;
+  MString tmpShadowName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_textureDir, liqglo_projectDir );
 
-  shadowName += liqglo_sceneName;
+  shadowName += tmpShadowName + liqglo_sceneName;
   shadowName =  parseString( shadowName );
   shadowName += "_";
   shadowName += lightName;
