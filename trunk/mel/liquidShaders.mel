@@ -36,27 +36,19 @@
 
 global string $liquidShadersLastDirectory = "";
 
-
+/**
+ *  compatible with liquid 1.8+
+ */
 global proc string[] liquidGetShaderList(string $type)
 {
   string $out_shaderlist[];
-  if($type == "all")
-  {
-    string $types[] = {"Surface","Light","Displacement","Volume","Ribbox","Container"};
-    for($shader_type in $types)
-    {
-      if(`attributeExists ("liquid"+$shader_type+"Shaders") liquidGlobals`)
-      {
-        $out_shaderlist = stringArrayCatenate($out_shaderlist, `listConnections ("liquidGlobals.liquid"+$shader_type+"Shaders")`);
-      }
+  if($type == "all") {
+    string $types[] = {"Surface","Light","Displacement","Volume","RibBox"};
+    for($shader_type in $types) {
+      $out_shaderlist = stringArrayCatenate($out_shaderlist, `ls -type ("liquid"+$shader_type)`);
     }
-  }
-  else
-  {
-    if(`attributeExists ("liquid"+$type+"Shaders") liquidGlobals`)
-    {
-      $out_shaderlist = `listConnections ("liquidGlobals.liquid"+$type+"Shaders")`;
-    }
+  } else {
+    $out_shaderlist = `ls -type ("liquid"+$type)`;
   }
   return $out_shaderlist;
 }
@@ -96,7 +88,7 @@ global proc string liquidGetShaderNodeType( string $node )
 /**
  *  compatible with liquid 1.8+
  */
-proc liquidAssignShaderNode_old( string $node, string $shaderNode )
+global proc liquidAssignShaderNode_old( string $node, string $shaderNode )
 {
   string $type = `liquidGetShaderNodeType $shaderNode`;
 
@@ -458,4 +450,21 @@ global proc string liquidDuplicateShaderNode( string $nodename )
   }
 
   return $newNodeName;
+}
+
+global proc string getSLShaderNodeFor( string $nodeName )
+{
+  string $classification[] = getClassification( nodeType( $nodeName ) );
+  string $liquidType = match("/[surfacediplmntvou]+", $classification[0]);
+  $liquidType = capitalizeString( match("[a-z]+", $liquidType ) );
+  //trace ("SLShaderNodeAlreadyExists( "+$nodeName+") -> "+$liquidType);
+
+  if ( objExists( ($nodeName+".liquid"+$liquidType+"ShaderNode") ) ) {
+
+    string $connections[] = `listConnections -plugs true ($nodeName+".liquid"+$liquidType+"ShaderNode")`;
+    //trace ("SLShaderNodeAlreadyExists( "+$nodeName+") -> "+$nodeName+".liquid"+$liquidType+"ShaderNode is connected to "+$connections[0]);
+    return match("[A-Za-z0-9_]+", $connections[0]);
+  }
+
+  return "";
 }
