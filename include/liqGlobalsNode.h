@@ -130,6 +130,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aMinCPU;
     static MObject aMaxCPU;
     static MObject aIgnoreShadows;
+    static MObject aShapeOnlyInShadowNames;
     static MObject aFullShadowRibs;
     static MObject aBinaryOutput;
     static MObject aCompressedOutput;

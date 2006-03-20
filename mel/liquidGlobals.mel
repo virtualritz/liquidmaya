@@ -91,10 +91,18 @@ proc liquidShowBoolGlobalPlus( string $name, string $label, string $info )
     // Only use an empty secondary label if not on Windows (looks nicer there w/o)
     if ( `about -win` == true ) {
       if ( $name == "netRManRender" ) checkBoxGrp -label $label -ann $info -value1 (getAttr( ("liquidGlobals." + $name) )) -on1 $onCommand -of1 $offCommand ( "liquidGlobals" + $name + "Check" );
-      else attrControlGrp -label $label -attribute ("liquidGlobals."+$name);
+      else {
+        string $tmp = `attrControlGrp -label $label -attribute ("liquidGlobals."+$name)`;
+        string $ch[] = `layout -q -ca $tmp`;
+        checkBox -e -ann $info ($tmp+"|"+$ch[1]);
+      }
     } else {
       if ( $name == "netRManRender" ) checkBoxGrp -label $label -ann $info -l1 " " -value1 (getAttr( ("liquidGlobals." + $name) )) -on1 $onCommand -of1 $offCommand ( "liquidGlobals" + $name + "Check" );
-      else attrControlGrp -label $label -attribute ("liquidGlobals."+$name);
+      else {
+        string $tmp = `attrControlGrp -label $label -attribute ("liquidGlobals."+$name)`;
+        string $ch[] = `layout -q -ca $tmp`;
+        checkBox -e -ann $info ($tmp+"|"+$ch[1]);
+      }
     }
 
   } else {
@@ -2235,7 +2243,8 @@ global proc liquidGlobalsOptionsTab_buildIt()
         liquidShowBoolGlobal  "ignoreShadows"  "Omit Shadow RIBs";
         separator;
         liquidShowBoolGlobal  "fullShadowRibs" "Write Full Shadow RIBs";
-        liquidShowBoolGlobal  "lazyCompute"    "Lazy Compute";
+        liquidShowBoolGlobalPlus  "shapeOnlyInShadowNames"  "MtoR-style shadow names" "Omits the scene name in the shadow file name.";
+        liquidShowBoolGlobalPlus  "lazyCompute"             "Lazy Compute"            "If your shadow are already available, the won't be recomputed.";
         frameLayout -bs "etchedIn" -l "Depth Shadows" -cll true -cl false;
           columnLayout -adj true;
             liquidShowFloatGlobal "limitsZThreshold"       "Opacity Threshold";

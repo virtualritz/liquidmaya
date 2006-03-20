@@ -135,6 +135,7 @@ RtFloat      liqglo_sampleTimes[LIQMAXMOTIONSAMPLES]; // current sample times
 liquidlong   liqglo_motionSamples;                    // used to assign more than two motion blur samples!
 float        liqglo_shutterTime;
 bool         liqglo_doShadows;                        // Kept global for liquidRigLightData
+bool         liqglo_shapeOnlyInShadowNames;
 MString      liqglo_sceneName;
 bool         liqglo_beautyRibHasCameraName;           // if true, usual behaviour, otherwise, no camera name in beauty rib
 bool         liqglo_isShadowPass;                     // true if we are rendering a shadow pass
@@ -478,6 +479,7 @@ liqRibTranslator::liqRibTranslator()
   liqglo_rotateCamera = false;      // rotate the camera 90 degrees around Z axis
   liqglo_doExtensionPadding = false;       // pad the frame number in the rib file names
   liqglo_doShadows = true;          // render shadows
+  liqglo_shapeOnlyInShadowNames = false;
   liqglo_skipSingleFrameShadows = false;
   m_justRib = false;
   cleanShadows = 0;                 // render shadows
@@ -1797,6 +1799,9 @@ void liqRibTranslator::liquidReadGlobals()
   if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_doShadows );
   gStatus.clear();
   liqglo_doShadows = !liqglo_doShadows;
+  gPlug = rGlobalNode.findPlug( "shapeOnlyInShadowNames", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_shapeOnlyInShadowNames );
+  gStatus.clear();
   gPlug = rGlobalNode.findPlug( "fullShadowRibs", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( fullShadowRib );
   gStatus.clear();
@@ -2172,8 +2177,10 @@ MString liqRibTranslator::generateShadowArchiveName( bool renderAllFrames, long 
 {
   MString baseShadowName;
   baseShadowName = liqglo_ribDir;
-  baseShadowName += liqglo_sceneName;
-  baseShadowName += "_SHADOWBODY";
+  if ( !liqglo_shapeOnlyInShadowNames ) {
+    baseShadowName += liqglo_sceneName + "_";
+  }
+  baseShadowName += "SHADOWBODY";
   if ( geometrySet != "" ) baseShadowName += "." + geometrySet.substring(0, 99);
   baseShadowName += LIQ_ANIM_EXT;
   baseShadowName += extension;
@@ -2197,8 +2204,10 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
     case fgm_shadow_tex:
       debug = "fgm_shadow_tex";
       filename = liqglo_textureDir;
-      filename += liqglo_sceneName;
-      filename += "_";
+      if ( !liqglo_shapeOnlyInShadowNames ) {
+        filename += liqglo_sceneName;
+        filename += "_";
+      }
       filename += job.name;
       filename += job.deepShadows ? "DSH" : "SHD";
       if ( job.isPoint ) {
@@ -2226,8 +2235,10 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
     case fgm_shadow_rib:
       debug = "fgm_shadow_rib";
       filename = liqglo_ribDir;
-      filename += liqglo_sceneName;
-      filename += "_";
+      if ( !liqglo_shapeOnlyInShadowNames ) {
+        filename += liqglo_sceneName;
+        filename += "_";
+      }
       filename += job.name;
       filename += job.deepShadows ? "DSH" : "SHD";
       if ( job.isPoint ) {
