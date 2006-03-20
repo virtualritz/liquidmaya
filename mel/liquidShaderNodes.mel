@@ -454,7 +454,7 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
   // delete obsolete params
   //
   global string $gLiquidSlParamNames[];
-  string $allUserDefinedAttr[] = `listAttr -ud $node`;
+  string $allUserDefinedAttr[] = `listAttr -ud -hd $node`;
   string $obsoleteAttr[] = stringArrayRemove( $gLiquidSlParamNames, $allUserDefinedAttr );
 
   //print ("> all: "+stringArrayToString( $allUserDefinedAttr, ", ")+"\n");      // DBG
@@ -468,6 +468,7 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
           $at == "rmanTypes"      ||
           $at == "rmanDefaults"   ||
           $at == "rmanArraySizes" ||
+          gmatch( $at, "liquid*ShaderNode")  ||
           gmatch( $at, "*Lif") ) continue;
     if ( objExists( $fullattr ) ) {
       string $connections[] = `listConnections -plugs true $fullattr`;
@@ -1623,7 +1624,7 @@ global proc liquidSelectAssignedToLightShader( string $node )
  */
 global proc liquidShaderUpdater( int $force )
 {
-  trace ("liquidShaderUpdater( "+$force+" )");
+  //trace ("liquidShaderUpdater( "+$force+" )");
   string $shaderNodes[] = `ls -type liquidSurface -type liquidDisplacement -type liquidVolume -type liquidLight`;
   if ( !size( $shaderNodes ) ) {
     trace "nothing";
@@ -1632,7 +1633,13 @@ global proc liquidShaderUpdater( int $force )
   for ( $node in $shaderNodes ) {
     string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
     if ( !`filetest -r $longShaderName` ) error("liquidShaderUpdater : could not find shader \""+$longShaderName+"\"");
-    if ( $force || size( `getAttr ($node+".rmanDetails")` ) < 1 ) {
+    int $numParams = size( `getAttr ($node+".rmanParams")` );
+    if ( $force ||
+        size( `getAttr ($node+".rmanDetails")` ) != $numParams ||
+        size( `getAttr ($node+".rmanTypes")` ) != $numParams ||
+        size( `getAttr ($node+".rmanDefaults")` ) != $numParams ||
+        size( `getAttr ($node+".rmanArraySizes")` ) != $numParams
+       ) {
       trace ("liquidShaderUpdater : updating liquid shader "+$node);
       rmanParams_create( $node, 1 );
     }
@@ -1645,6 +1652,6 @@ global proc liquidShaderUpdater( int $force )
   for ( $j in $jobs ) {
     if ( gmatch( $j, "*liquidShaderUpdater*") ) scriptJob -kill (int(match("[0-9]+", $j))) -force;
   }
-  scriptJob -event "SceneOpened" "evalDeferred(\"liquidShaderUpdater 1\")" -protected;
+  scriptJob -event "SceneOpened" "evalDeferred(\"liquidShaderUpdater 0\")" -protected;
 }
 
