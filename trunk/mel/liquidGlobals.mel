@@ -2266,7 +2266,7 @@ global proc liquidGlobalsOptionsTab_buildIt()
         setParent ..;
         frameLayout -bs "etchedIn" -l "Resource Paths" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowBoolGlobal "relativeFileNames" "Project Relative Paths";
+            liquidShowBoolGlobal "relativeFileNames" "Prefix Project Paths";
             liquidShowBoolGlobalPlus "shortShaderNames"  "No Shader Paths" "Don't output path names with shaders";
           setParent ..;
         setParent ..;

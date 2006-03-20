@@ -349,6 +349,12 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     RiBegin( const_cast<char *>(fileName) );
   else
     RiBegin( NULL );
+
+  char* liquidPath = getenv("LIQUIDHOME");
+  MString shaderPath = "&:@:.:~:" + MString(liquidPath) + "/shaders";
+  RtString list = const_cast< char* > ( shaderPath.asChar() );
+  RiOption( "searchpath", "shader", &list, RI_NULL );
+
   RiFrameBegin( 1 );
   RiShadingRate( ( options->shadingRate ) );
   RiPixelSamples( 3, 3 );
