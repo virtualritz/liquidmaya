@@ -122,6 +122,7 @@ MObject liqGlobalsNode::aNetRManRender;
 MObject liqGlobalsNode::aMinCPU;
 MObject liqGlobalsNode::aMaxCPU;
 MObject liqGlobalsNode::aIgnoreShadows;
+MObject liqGlobalsNode::aShapeOnlyInShadowNames;
 MObject liqGlobalsNode::aFullShadowRibs;
 MObject liqGlobalsNode::aBinaryOutput;
 MObject liqGlobalsNode::aCompressedOutput;
@@ -506,6 +507,7 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aMinCPU,                     "minCPU",                       "min",    1     );
            CREATE_INT( nAttr,  aMaxCPU,                     "maxCPU",                       "max",    1     );
           CREATE_BOOL( nAttr,  aIgnoreShadows,              "ignoreShadows",                "ish",    0     );
+          CREATE_BOOL( nAttr,  aShapeOnlyInShadowNames,     "shapeOnlyInShadowNames",       "sosn",   0     );
           CREATE_BOOL( nAttr,  aFullShadowRibs,             "fullShadowRibs",               "fsr",    0     );
           CREATE_BOOL( nAttr,  aBinaryOutput,               "binaryOutput",                 "bin",    0     );
           CREATE_BOOL( nAttr,  aCompressedOutput,           "compressedOutput",             "comp",   0     );

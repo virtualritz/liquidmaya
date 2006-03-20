@@ -65,6 +65,7 @@ extern bool         liqglo_isShadowPass;
 extern bool         liqglo_expandShaderArrays;
 extern bool         liqglo_useBMRT;
 extern bool         liqglo_doShadows;
+extern bool         liqglo_shapeOnlyInShadowNames;
 extern bool         liqglo_shortShaderNames;
 extern MStringArray liqglo_DDimageName;
 extern bool         liqglo_doExtensionPadding;
@@ -825,9 +826,12 @@ MString liqRibLightData::autoShadowName( int PointLightDir ) const
   MString shadowName;
   MString tmpShadowName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_textureDir, liqglo_projectDir );
 
-  shadowName += tmpShadowName + liqglo_sceneName;
-  shadowName =  parseString( shadowName );
-  shadowName += "_";
+  shadowName += tmpShadowName;
+  if ( !liqglo_shapeOnlyInShadowNames ) {
+    shadowName += liqglo_sceneName;
+    shadowName =  parseString( shadowName );
+    shadowName += "_";
+  }
   shadowName += lightName;
 
   shadowName += ( shadowType == stDeep )? "DSH": "SHD";
