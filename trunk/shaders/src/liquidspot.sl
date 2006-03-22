@@ -105,10 +105,8 @@ light liquidspot(
     if( shadowname != "" ) {
       uniform float shadowsize[2];
       if ( shadowname == "raytrace" ) shadowsize[0] = 5;
-      else {
-        textureinfo( shadowname, "resolution", shadowsize );
-        __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "bias", shadowbias, "blur", shadowfiltersize*1/shadowsize[0] + shadowblur );
-      }
+      else textureinfo( shadowname, "resolution", shadowsize );
+      __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "bias", shadowbias, "blur", shadowfiltersize*1/shadowsize[0] + shadowblur );
     } else
       __shadow = 0;
 
