@@ -2064,7 +2064,7 @@ bool liqRibTranslator::verifyOutputDirectories()
       liqglo_ribDir = m_systemTempDirectory;
       problem = true;
     }
-  }
+  } else LIQ_ADD_SLASH_IF_NEEDED( liqglo_ribDir );
 
   if ( liqglo_textureDir.index( '/' ) == 0 ) {
     tmp_path = m_pixDir;
@@ -2081,7 +2081,7 @@ bool liqRibTranslator::verifyOutputDirectories()
       liqglo_textureDir = m_systemTempDirectory;
       problem = true;
     }
-  }
+  } else LIQ_ADD_SLASH_IF_NEEDED( liqglo_textureDir );
 
   if ( m_pixDir.index( '/' ) == 0 ) {
     tmp_path = m_pixDir;
@@ -2098,7 +2098,7 @@ bool liqRibTranslator::verifyOutputDirectories()
       m_pixDir = m_systemTempDirectory;
       problem = true;
     }
-  }
+  } else LIQ_ADD_SLASH_IF_NEEDED( m_pixDir );
 
   tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, m_tmpDir, liqglo_projectDir );
   if ( (access( tmp_path.asChar(), dirMode )) == -1 ) {
@@ -2113,7 +2113,8 @@ bool liqRibTranslator::verifyOutputDirectories()
       m_tmpDir = m_systemTempDirectory;
       problem = true;
     }
-  }
+  } else LIQ_ADD_SLASH_IF_NEEDED( m_tmpDir );
+
 
   return problem;
 }
@@ -2354,13 +2355,10 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   }
 
   // check to see if all the directories we are working with actually exist.
-  verifyOutputDirectories();
-
-  // make sure the directories end with a slash
-  LIQ_ADD_SLASH_IF_NEEDED( liqglo_ribDir );
-  LIQ_ADD_SLASH_IF_NEEDED( liqglo_textureDir );
-  LIQ_ADD_SLASH_IF_NEEDED( m_pixDir );
-  LIQ_ADD_SLASH_IF_NEEDED( m_tmpDir );
+  if ( verifyOutputDirectories() ) {
+    MString err( "The output directories are not properly setup in the globals" );
+    throw err;
+  }
 
   // setup the error handler
 #if defined AQSIS || ( _WIN32 && DELIGHT )

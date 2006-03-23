@@ -69,7 +69,8 @@ LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqCoordSysNode.$(OBJEXT) \
 					liqGlobalsNode.$(OBJEXT) \
 					liqBucket.$(OBJEXT) \
-					liqMayaRenderView.$(OBJEXT)
+					liqMayaRenderView.$(OBJEXT) \
+					liqJobList.$(OBJEXT)
 
 
 
@@ -111,12 +112,17 @@ LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
 					$(VPATH)/liqCoordSysNode.$(OBJEXT) \
 					$(VPATH)/liqGlobalsNode.$(OBJEXT) \
 					$(VPATH)/liqBucket.$(OBJEXT) \
-					$(VPATH)/liqMayaRenderView.$(OBJEXT)
+					$(VPATH)/liqMayaRenderView.$(OBJEXT) \
+					$(VPATH)/liqJobList.$(OBJEXT)
 
-ifeq ($(LIQRMAN),pixie)
-	LIQDISPLAYOBJS = liqMayaDisplayDriverPixie.$(OBJEXT)
+ifeq ($(LIQRMAN),3delight)
+	LIQDISPLAYOBJS = liqMayaDisplayDriver3Delight.$(OBJEXT)
 else
-	LIQDISPLAYOBJS = liqMayaDisplayDriver.$(OBJEXT)
+	ifeq ($(LIQRMAN),pixie)
+		LIQDISPLAYOBJS = liqMayaDisplayDriverPixie.$(OBJEXT)
+	else
+		LIQDISPLAYOBJS = liqMayaDisplayDriver.$(OBJEXT)
+	endif
 endif
 
 .SUFFIXES: .cpp .$(OBJEXT) .$(PLUGSUF) .c
@@ -159,7 +165,7 @@ $(LIQUIDLIB) : $(LIQUIDMAINOBJS)
 
 $(LIQUIDDPY) : $(LIQDISPLAYOBJS)
 	@echo $@
-	@$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
+	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
 
 
 $(LIQUIDMAINOBJS) : ../include/liquid.h

@@ -71,6 +71,7 @@ extern "C" {
 #include <liqGlobalHelpers.h>
 #include <liqMayaRenderView.h>
 #include <liqGlobalsNode.h>
+#include <liqJobList.h>
 
 
 #define LIQVENDOR "http://liquidmaya.sourceforge.net/"
@@ -123,9 +124,13 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   status = plugin.registerCommand( "liquidWriteArchive", liqWriteArchive::creator, liqWriteArchive::syntax );
   LIQCHECKSTATUS( status, "Can't register liquidWriteArchive command" );
 
-   // register the liquidRenderView command
+  // register the liquidRenderView command
   status = plugin.registerCommand( "liquidRenderView", liqMayaRenderCmd::creator ,liqMayaRenderCmd::newSyntax);
   LIQCHECKSTATUS( status, "Can't register liquidRenderView command" );
+
+  // register the liquidJobList command
+  status = plugin.registerCommand( "liquidJobList", liqJobList::creator ,liqJobList::syntax);
+  LIQCHECKSTATUS( status, "Can't register liquidJobList command" );
 
   // register the liquidShader node
   const MString UserClassify( "shader/surface:swatch/liqSurfSwatch" );
@@ -233,6 +238,9 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
 
   status = plugin.deregisterCommand("liquidRenderView");
   LIQCHECKSTATUS( status, "Can't deregister liquidRenderView command" );
+
+  status = plugin.deregisterCommand("liquidJobList");
+  LIQCHECKSTATUS( status, "Can't deregister liquidJobList command" );
 
   status = plugin.deregisterNode( liqSurfaceNode::id );
   LIQCHECKSTATUS( status, "Can't deregister liquidSurface node" );
