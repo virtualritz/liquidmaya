@@ -124,6 +124,7 @@ private: // Data
   liquidlong frameFirst;
   liquidlong frameLast;
   liquidlong frameBy;
+  MString    m_frameList;
   liquidlong width, height, depth;
 
   // alfred stuff
