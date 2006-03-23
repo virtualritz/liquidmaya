@@ -75,6 +75,7 @@ Frame\n\
 \t-y      -height <n>\n\
 \t-ar     -aspect <n>\n\
 \t-n      -sequence <start> <stop> <step>\n\
+\t-fl     -frameList <n,n,n,...>\n\
 \t-mb     -motionBlur\n\
 \t-db     -deformationBlur\n\
 \t-m      -mbSamples <n>\n\

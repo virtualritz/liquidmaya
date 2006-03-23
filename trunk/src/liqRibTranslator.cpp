@@ -450,6 +450,7 @@ liqRibTranslator::liqRibTranslator()
   liqglo_shortShaderNames = false;
   liqglo_relativeFileNames = false;
 
+  m_frameList.clear();
   m_showProgress = false;
   m_deferredBlockSize = 1;
   m_deferredGen = false;
@@ -697,6 +698,7 @@ MSyntax liqRibTranslator::syntax()
   syntax.addFlag("err",   "errHandler");
   syntax.addFlag("sdb",   "shaderDebug");
   syntax.addFlag("n",     "sequence",         MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+  syntax.addFlag("fl",    "frameList",        MSyntax::kString);
   syntax.addFlag("m",     "mbSamples",        MSyntax::kLong);
   syntax.addFlag("dbs",   "defBlock");
   syntax.addFlag("cam",   "camera",           MSyntax::kString);
@@ -798,6 +800,8 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     liqglo_projectDir = m_systemTempDirectory;
   }
 
+  int GL_count = 0;
+
   for (unsigned int i = 0; i < args.length(); i++ ) {
     MString arg = args.asString( i, &status );
     if ((arg == "-lr") || (arg == "-launchRender")) {
@@ -809,7 +813,8 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     } else if ((arg == "-GL") || (arg == "-useGlobals")) {
       LIQCHECKSTATUS(status, "error in -useGlobals parameter");
       //load up all the render global parameters!
-      if ( liquidInitGlobals() ) liquidReadGlobals();
+      if ( liquidInitGlobals() && !GL_count ) liquidReadGlobals();
+      GL_count++;
     } else if ((arg == "-sel") || (arg == "-selected")) {
       LIQCHECKSTATUS(status, "error in -selected parameter");
       m_renderSelected = true;
@@ -885,6 +890,10 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       frameBy = argValue.asInt();
       LIQCHECKSTATUS(status, "error in -sequence parameter");
       m_animation = true;
+    } else if ((arg == "-fl") || (arg == "-frameList")) {
+      LIQCHECKSTATUS(status, "error in -frameList parameter");  i++;
+      m_frameList = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -frameList parameter");
     } else if ((arg == "-m") || (arg == "-mbSamples")) {
       LIQCHECKSTATUS(status, "error in -mbSamples parameter");   i++;
       argValue = args.asString( i, &status );
@@ -2448,6 +2457,26 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
       }
     }
 
+    // build the frame array
+    //
+    MIntArray allFrames;
+    unsigned int frameIndex;
+    {
+      if ( m_frameList != "" ) {
+        MStringArray frameStr;
+        m_frameList.split( ',', frameStr );
+        for ( int i=0; i<frameStr.length(); i++ ) {
+          allFrames.append( frameStr[i].asInt() );
+        }
+        frameFirst = allFrames[0];
+        frameLast  = allFrames[allFrames.length()-1];
+      } else {
+        for ( int i=frameFirst; i<=frameLast; i+=frameBy ) {
+          allFrames.append( i );
+        }
+      }
+    }
+
     //
     // start looping through the frames  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //
@@ -2456,7 +2485,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
     int currentBlock = 0;
 
-    for( liqglo_lframe=frameFirst; liqglo_lframe<=frameLast; liqglo_lframe = liqglo_lframe + frameBy ) {
+    for( frameIndex=0; frameIndex<allFrames.length(); frameIndex++ ) {
+
+      liqglo_lframe = allFrames[frameIndex];
 
       if ( m_showProgress ) printProgress( 1, frameFirst, frameLast, liqglo_lframe );
 
