@@ -59,6 +59,8 @@ public:
 
   MStatus doIt(const MArgList& args );
 
+  friend class liqJobList;
+
 private: // Methods
   MObject rGlobalObj;
 
