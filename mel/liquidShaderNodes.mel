@@ -669,7 +669,6 @@ global proc liquidHideAEShaderParams( string $node)
   // WARNING : these are Maya global variables !!!
   // DO NOT CHANGE THEIR VALUES AT ANY POINT !!!!!
   global string	$gAEFocusNode;
-  global string $gAEControlLayoutName;
 
   string $theNode = ($node == "")? $gAEFocusNode : $node;
 
@@ -679,7 +678,6 @@ global proc liquidHideAEShaderParams( string $node)
     return;
   }
 
-  layout -e -m false $gAEControlLayoutName;
   string $params[] = `getAttr ($theNode+".rmanParams")`;
   //trace ("    AE display suppress >"+$theNode);
   for ( $p in $params ) {
@@ -689,7 +687,6 @@ global proc liquidHideAEShaderParams( string $node)
   editorTemplate -suppress rmanTypes;
   editorTemplate -suppress rmanDetails;
   editorTemplate -suppress rmanDefaults;
-  layout -e -m true $gAEControlLayoutName;
 }
 
 
@@ -701,7 +698,6 @@ global proc liquidHideAEShaderParams( string $node)
 global proc liquidShaderNodesParamsNew ( string $msg )
 {
   //trace ( "\n>> liquidShaderNodesParamsNew  " + $msg );
-  global string $gAEControlLayoutName;
 
   float $st = `timerX`;
 
@@ -718,7 +714,6 @@ global proc liquidShaderNodesParamsNew ( string $msg )
   }
 
   if ( !`waitCursor -q -st` ) waitCursor -state on;
-  layout -e -m false $gAEControlLayoutName;
 
   // create new stuff !!
   // read the shader parameters
@@ -774,16 +769,16 @@ global proc liquidShaderNodesParamsNew ( string $msg )
 
   global float $gnst;
   $gnst = `timerX`;
-  evalDeferred ("layout -e -m true "+$gAEControlLayoutName+";if ( `waitCursor -q -st` ) waitCursor -state off;// trace (\"   #####  New back from the dead in \"+(timerX(\"-st\", $gnst))+\" sec !  #####\\n\");" );
+  evalDeferred ("if ( `waitCursor -q -st` ) waitCursor -state off;" );
 
   string $time = `timerX -st $st`;
   // trace ("   new DONE !  ( "+$time+" sec. ) ");
 }
 
+
 global proc liquidShaderNodesParamsReplace ( string $msg )
 {
   // trace ("\n>> liquidShaderNodesParamsReplace  \""+$msg+"\"");
-  global string $gAEControlLayoutName;
 
   float $st = `timerX`;
 
@@ -794,13 +789,11 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
   string $lastDisplayedShader = getLastAEShader( $type );
 
   if ( !`waitCursor -q -st` ) waitCursor -state on;
-  layout -e -m false $gAEControlLayoutName;
 
   if ( $theNode == $lastDisplayedNode && $longShaderName == $lastDisplayedShader ) {
     /* trace "\n   same node + same shader -> doing nothing";
     trace ("   > "+$theNode+" == "+$lastDisplayedNode);
     trace ("   > "+$longShaderName+" == "+$lastDisplayedShader); */
-    evalDeferred ("layout -e -m true "+$gAEControlLayoutName+";");
   }
 
   if ( $theNode != $lastDisplayedNode && $longShaderName == $lastDisplayedShader ) {
@@ -846,7 +839,6 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
       $i++;
     }
     evalDeferred ("liquidHideAEShaderParams "+$theNode+";");
-    evalDeferred ("layout -e -m true "+$gAEControlLayoutName+";");
   }
 
   if ( $theNode != $lastDisplayedNode && $longShaderName != $lastDisplayedShader ) {
@@ -856,14 +848,13 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
     evalDeferred ("if ( `layout -q -ex AttrEd"+$type+"FormLayout` ) deleteUI AttrEd"+$type+"FormLayout;");
     evalDeferred ("liquidHideAEShaderParams "+$lastDisplayedNode+";");
     evalDeferred ("liquidShaderNodesParamsNew "+$theNode+".rmanShader;");
-    evalDeferred ("updateAE "+$theNode+";layout -e -m true "+$gAEControlLayoutName+";");
+    evalDeferred ("updateAE "+$theNode+";");
   }
 
   if ( $theNode == $lastDisplayedNode && $longShaderName != $lastDisplayedShader ) {
     /* trace   "\n   same node + different shader -> rebuilding controls";
     trace ("   > "+$theNode+" == "+$lastDisplayedNode);
     trace ("   > "+$longShaderName+" != "+$lastDisplayedShader); */
-    evalDeferred ("layout -e -m true "+$gAEControlLayoutName+";");
   }
 
   setLastAENode( $theNode, $type );
@@ -872,7 +863,7 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
 
   global float $grst;
   $grst = `timerX`;
-  evalDeferred ("layout -e -m true "+$gAEControlLayoutName+";if ( `waitCursor -q -st` ) waitCursor -st off;// trace (\"   #####  Replace back from the dead in \"+(timerX(\"-st\", $grst))+\" sec !  #####\\n\");" );
+  evalDeferred ("if ( `waitCursor -q -st` ) waitCursor -st off;" );
 
   string $time = `timerX -st $st`;
   // trace ("   replace DONE !  ( "+$time+" sec. )\n");
@@ -1627,11 +1618,12 @@ global proc liquidShaderUpdater( int $force )
   //trace ("liquidShaderUpdater( "+$force+" )");
   string $shaderNodes[] = `ls -type liquidSurface -type liquidDisplacement -type liquidVolume -type liquidLight`;
   if ( !size( $shaderNodes ) ) {
-    trace "nothing";
+    //trace "nothing";
     return;
   }
   for ( $node in $shaderNodes ) {
     string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
+    if ( $longShaderName == "" ) continue;
     if ( !`filetest -r $longShaderName` ) error("liquidShaderUpdater : could not find shader \""+$longShaderName+"\"");
     int $numParams = size( `getAttr ($node+".rmanParams")` );
     if ( $force ||
