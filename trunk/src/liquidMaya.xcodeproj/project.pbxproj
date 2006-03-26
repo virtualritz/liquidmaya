@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F28DDD909D6DF5800D644D1 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
 		1F4D549F09857F5A00787F2E /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
 		1F4D54A009857F5A00787F2E /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
 		1F4D54A109857F5A00787F2E /* liqCoordSysNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */; };
@@ -228,6 +229,7 @@
 
 /* Begin PBXFileReference section */
 		0249A663FF388D9811CA2CEA /* libstdc++.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libstdc++.a"; path = "/usr/lib/libstdc++.a"; sourceTree = "<absolute>"; };
+		1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqJobList.cpp; sourceTree = "<group>"; };
 		1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqAttachPrefAttribute.cpp; sourceTree = "<group>"; };
 		1F4D547609857F5A00787F2E /* liqBucket.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqBucket.cpp; sourceTree = "<group>"; };
 		1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqCoordSysNode.cpp; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 				1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */,
 				1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */,
 				1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */,
+				1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */,
 				1F4D548009857F5A00787F2E /* liqLightNode.cpp */,
 				1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */,
 				1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */,
@@ -1256,6 +1259,7 @@
 				1F4D55150985842E00787F2E /* liquidPlug.cpp in Sources */,
 				1F4D55160985842E00787F2E /* liqVolumeNode.cpp in Sources */,
 				1F4D55170985842E00787F2E /* liqWriteArchive.cpp in Sources */,
+				1F28DDD909D6DF5800D644D1 /* liqJobList.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
