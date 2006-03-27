@@ -1609,6 +1609,37 @@ global proc liquidSelectAssignedToLightShader( string $node )
 }
 
 
+/**
+ *  proc to select the objects assigned to a material or shading group
+ */
+
+global proc liquidSelectShaderAssignedTo( string $obj )
+{
+  trace $obj;
+  string $selectionList[];
+  string $objList[];
+  if ( $obj == "" ) $objList = `ls -sl -type liquidSurface -type liquidDisplacement -type liquidVolume -type shadingEngine`;
+  else $objList = stringToStringArray( $obj, " ");
+  select -clear;
+  for ( $o in $objList ) {
+    string $shadingGroups[];
+    if ( nodeType($o) == "shadingEngine" ) $shadingGroups[0] = $o;
+    else $shadingGroups = `listConnections -d true -s false -type shadingEngine $o`;
+    for ( $sg in $shadingGroups ) {
+      string $connections[] = `listConnections -d false -s true -plugs true $sg`;
+      for ( $c in $connections ) {
+        if ( gmatch( $c, "*.instObjGroups") ) {
+          string $transform[] = `listRelatives -p -pa (basenameEx($c))`;
+          $selectionList[size( $selectionList )] = $transform[0];
+        }
+      }
+    }
+  }
+  select $selectionList;
+}
+
+
+
 
 /**
  *  update all nodes for the AE optimization.

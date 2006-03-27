@@ -92,7 +92,7 @@ global proc liquidLoadScripts()
     "liquidAttrWindow.mel",
     "liquidAttributes.mel",
     "liquidCommon.mel",
-    //"liquidContainers.mel",
+    //"liquidContainers.mel", OBSOLETE
     "liquidConvMTOR.mel",
     "liquidConvertMtor.mel",
     "liquidDelayedReadArchive.mel",
@@ -103,14 +103,14 @@ global proc liquidLoadScripts()
     "liquidHelpers.mel",
     "liquidMenuHelp.mel",
     "liquidParamDialogWindow.mel",
-    "liquidParseSlShader.mel",
+    //"liquidParseSlShader.mel", OBSOLETE
     "liquidPrefAttribute.mel",
     "liquidReAttachParams.mel",
     "liquidReadArchive.mel",
     "liquidRenderCurve.mel",
     "liquidRibBox.mel",
     "liquidRibGen.mel",
-    /*"liquidSLManager.mel",*/
+    //"liquidSLManager.mel", OBSOLETE
     "liquidShaders.mel",
     "liquidShutdown.mel",
     /*"liquidStartup.mel",*/
@@ -122,7 +122,7 @@ global proc liquidLoadScripts()
     "liquidConvertShadingNetworkToRSL.mel",
     "liquidShaderNodes.mel",
     "registerLiquidRenderer.mel",
-    //"liquidCreateCommonGlobalsTab.mel",
+    //"liquidCreateCommonGlobalsTab.mel", OBSOLETE
     "liquidCreateGlobalsTab.mel",
     "liquidRenderView.mel"
   };

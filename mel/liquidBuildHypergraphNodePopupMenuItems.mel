@@ -158,7 +158,11 @@ global proc buildHypergraphNodePopupMenuItems(
 			menuItem
 				-radialPosition "E"
 				-label "Select Objects With Material"
-				-command ("hyperShade -objects " + $node);
+				//-command ("hyperShade -objects " + $node);
+        // philippe: this is a workaround as maya selects the shapes connected to the shading group
+        // and as such yields confusing results on instanced geometry.
+        // we select the transforms instead.
+				-command ("liquidSelectShaderAssignedTo " + $node);
       }
 
 			menuItem
