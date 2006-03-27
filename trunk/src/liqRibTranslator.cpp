@@ -800,7 +800,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     liqglo_projectDir = m_systemTempDirectory;
   }
 
-  int GL_count = 0;
+  bool GL_read = false;
 
   for (unsigned int i = 0; i < args.length(); i++ ) {
     MString arg = args.asString( i, &status );
@@ -813,8 +813,8 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     } else if ((arg == "-GL") || (arg == "-useGlobals")) {
       LIQCHECKSTATUS(status, "error in -useGlobals parameter");
       //load up all the render global parameters!
-      if ( liquidInitGlobals() && !GL_count ) liquidReadGlobals();
-      GL_count++;
+      if ( liquidInitGlobals() && !GL_read ) liquidReadGlobals();
+      GL_read = true;
     } else if ((arg == "-sel") || (arg == "-selected")) {
       LIQCHECKSTATUS(status, "error in -selected parameter");
       m_renderSelected = true;
@@ -1117,7 +1117,7 @@ void liqRibTranslator::liquidReadGlobals()
   // philippe : channels are stored as structures in a vector
   {
     if ( liquidRenderer.supports_DISPLAY_CHANNELS ) {
-
+      m_channels.clear();
       unsigned int nChannels;
       gStatus.clear();
       gPlug = rGlobalNode.findPlug( "channelName", &gStatus );
@@ -1254,6 +1254,7 @@ void liqRibTranslator::liquidReadGlobals()
 
   // Display Driver Globals - Read 'em and store 'em !
   {
+    m_displays.clear();
     gStatus.clear();
     gPlug = rGlobalNode.findPlug( "ignoreAOVDisplays", &gStatus );
     if ( gStatus == MS::kSuccess ) {
