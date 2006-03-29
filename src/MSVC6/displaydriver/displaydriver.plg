@@ -1,0 +1,37 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: displaydriver - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP14BF.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPLAYDRIVER_EXPORTS" /Fp"../../../bin/win32/Release/displaydriver.pch" /YX /Fo"../../../bin/win32/Release/" /Fd"../../../bin/win32/Release/" /FD /c 
+"D:\pcc\liquidmaya2\src\liqMayaDisplayDriverPixie.cpp"
+]
+Creating command line "cl.exe @C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP14BF.tmp" 
+Creating temporary file "C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP14C0.tmp" with contents
+[
+ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"../../../bin/win32/Release/displaydriver.pdb" /machine:I386 /out:"../../../bin/win32/Release/displaydriver.dll" /implib:"../../../bin/win32/Release/displaydriver.lib" 
+\pcc\liquidmaya2\bin\win32\Release\liqMayaDisplayDriverPixie.obj
+]
+Creating command line "link.exe @C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP14C0.tmp"
+<h3>Output Window</h3>
+Compiling...
+liqMayaDisplayDriverPixie.cpp
+D:\pcc\liquidmaya2\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'rc' : unreferenced local variable
+D:\pcc\liquidmaya2\src\liqMayaDisplayDriverPixie.cpp(83) : warning C4101: 'h' : unreferenced local variable
+D:\pcc\liquidmaya2\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'i' : unreferenced local variable
+D:\pcc\liquidmaya2\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'originalSize' : unreferenced local variable
+Linking...
+   Creating library ../../../bin/win32/Release/displaydriver.lib and object ../../../bin/win32/Release/displaydriver.exp
+
+
+
+<h3>Results</h3>
+displaydriver.dll - 0 error(s), 4 warning(s)
+</pre>
+</body>
+</html>
