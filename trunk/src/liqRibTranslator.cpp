@@ -185,6 +185,7 @@ liquidlong   rt_traceMaxSpecularDepth;
 // Additionnal globals for organized people
 MString      liqglo_shotName;
 MString      liqglo_shotVersion;
+MString      liqglo_layer;
 bool         liqglo_doExtensionPadding;
 liquidlong   liqglo_outPadding;
 
@@ -563,6 +564,7 @@ liqRibTranslator::liqRibTranslator()
   rt_traceMaxSpecularDepth = 2;
   liqglo_shotName.clear();
   liqglo_shotVersion.clear();
+  liqglo_layer.clear();
 #ifdef AIR
   m_renderCommand = "air";
 #elif defined( AQSIS )
@@ -740,6 +742,7 @@ MSyntax liqRibTranslator::syntax()
   syntax.addFlag("rvp",   "renderViewPort",  MSyntax::kLong);
   syntax.addFlag("shn",   "shotName",        MSyntax::kString);
   syntax.addFlag("shv",   "shotVersion",     MSyntax::kString);
+  syntax.addFlag("lyr",   "layer",           MSyntax::kString);
 
   return syntax;
 }
@@ -2321,6 +2324,34 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   MStatus status;
   MString lastRibName;
 
+  // check if we need to switch to a specific render layer
+  unsigned int argIndex = args.flagIndex( "lyr", "layer" );
+  if (argIndex != MArgList::kInvalidArgIndex) {
+    liqglo_layer = args.asString( argIndex+1, &status );
+  }
+
+  // switch to the specified render layer
+  MString originalLayer;
+  if ( liqglo_layer != "" ) {
+
+    if ( MGlobal::executeCommand( "editRenderLayerGlobals -q -currentRenderLayer;", originalLayer, false, false ) == MS::kFailure ) {
+      MString err = "Liquid : could not get the current render layer name !";
+      MGlobal::displayError( err );
+      cerr <<err<<" ABORTING"<<endl;
+      return MS::kFailure;
+    }
+
+    MString cmd;
+    cmd = "if ( `editRenderLayerGlobals -q -currentRenderLayer` != \"" + liqglo_layer + "\" ) editRenderLayerGlobals( \"-currentRenderLayer\", \"" + liqglo_layer + "\");";
+    if (  MGlobal::executeCommand( cmd, false, false ) == MS::kFailure ) {
+      MString err = "Liquid : could not switch to render layer \"" + liqglo_layer + "\" !";
+      MGlobal::displayError( err );
+      cerr <<err<<" ABORTING"<<endl;
+      return MS::kFailure;
+    }
+
+  }
+
   liquidRenderer.setRenderer();
   m_renderCommand = liquidRenderer.renderCommand;
 
@@ -2328,6 +2359,8 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   if (!status) {
     return MS::kFailure;
   }
+
+
 
   if ( !liquidBin && !m_deferredGen ) liquidInfo("Creating RIB <Press ESC To Cancel> ...");
 
@@ -3254,6 +3287,16 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     // return to the frame we were at before we ran the animation
     LIQDEBUGPRINTF( "-> setting frame to current frame.\n" );
     MGlobal::viewFrame (originalTime);
+
+    if ( originalLayer != "" ) {
+      MString cmd;
+      cmd = "if ( `editRenderLayerGlobals -q -currentRenderLayer` != \"" + originalLayer + "\" ) editRenderLayerGlobals -currentRenderLayer \"" + originalLayer + "\";";
+      if (  MGlobal::executeCommand( cmd, false, false ) == MS::kFailure ) {
+        MString err;
+        err = "Liquid : could not switch back to render layer \"" + originalLayer + "\" !";
+        throw err;
+      }
+    }
 
     return ( (ribStatus == kRibOK || m_deferredGen) ? MS::kSuccess : MS::kFailure);
 

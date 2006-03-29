@@ -120,6 +120,7 @@ Options\n\
 \t-sdb    -shaderDebug\n\
 \t-tif    -tiff\n\
 \t-zip    -doCompression\n\
+\t-lyr    -layer\n\
 \n\
 Job\n\
 \t-dbs    -defBlock\n\
