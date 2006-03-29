@@ -483,7 +483,7 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
 
 
   evalDeferred( "if ( `layout -q -ex \"AttrEd"+$type+"FormLayout\"` ) deleteUI \"AttrEd"+$type+"FormLayout\";");
-  evalDeferred( "if ( objExists( \""+$node+"\" ) ) updateAE "+$node+";" );
+  evalDeferred( "if ( objExists( \""+$node+"\" ) && `layout -q -ex $gAEMenuBarLayoutName` ) updateAE "+$node+";" );
 }
 
 
@@ -848,7 +848,7 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
     evalDeferred ("if ( `layout -q -ex AttrEd"+$type+"FormLayout` ) deleteUI AttrEd"+$type+"FormLayout;");
     evalDeferred ("liquidHideAEShaderParams "+$lastDisplayedNode+";");
     evalDeferred ("liquidShaderNodesParamsNew "+$theNode+".rmanShader;");
-    evalDeferred ("updateAE "+$theNode+";");
+    evalDeferred ("if ( `layout -q -ex $gAEMenuBarLayoutName` ) updateAE "+$theNode+";");
   }
 
   if ( $theNode == $lastDisplayedNode && $longShaderName != $lastDisplayedShader ) {
@@ -929,8 +929,16 @@ global proc liquidShaderPickerReplace( string $nodeName, string $msg )
                             + "liquidChangeTextFileAttrPlus " + $node[0] + " " + $node[1] + " " + $ctlName + " \"" + $shaderDir + "\" (\"*.\"+" + "`getAttr(\"liquidGlobals.shaderExt\")`" + ");"
                             + "if ( `getAttr "+$msg+"`+\"\" != $v ) evalDeferred(\"liquidShaderNodes_initParams " + $node[0] + "\");"
                             + "}");
+
+  //trace $myFileCommand;
   connectControl -index 2 $ctlName $msg;
   iconTextButton -e -c $myFileCommand ($ctlName+"_button");
+}
+
+global proc liquidShaderNode_loadCMD( string $nodeDotAttr, string $longShaderName )
+{
+  setAttr -type "string" $nodeDotAttr $longShaderName;
+  evalDeferred("liquidShaderNodes_initParams "+basenameEx($nodeDotAttr));
 }
 
 /**
@@ -1615,7 +1623,7 @@ global proc liquidSelectAssignedToLightShader( string $node )
 
 global proc liquidSelectShaderAssignedTo( string $obj )
 {
-  trace $obj;
+  //trace $obj;
   string $selectionList[];
   string $objList[];
   if ( $obj == "" ) $objList = `ls -sl -type liquidSurface -type liquidDisplacement -type liquidVolume -type shadingEngine`;
