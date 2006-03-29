@@ -204,7 +204,7 @@ class liqRibNode {
     } grouping;
 
     struct delight {
-      struct {
+      struct subSurface{
         MString groupName;
         MColor  scattering;
         MColor  absorption;

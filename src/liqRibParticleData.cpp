@@ -1020,6 +1020,7 @@ void liqRibParticleData::write()
 //    Write the RIB for this surface
 //
 {
+  int i;
   LIQDEBUGPRINTF( "-> writing particles\n");
 
   RiArchiveRecord( RI_COMMENT, "Number of Particles: %d", m_numValidParticles );
@@ -1088,7 +1089,7 @@ void liqRibParticleData::write()
 
     assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
 
-    for ( int i = 0; i < tokenPointerArray.size(); i++ )
+    for ( i = 0; i < tokenPointerArray.size(); i++ )
     {
       char *tokenName = tokenPointerArray[i].getTokenName();
       if ( strcmp(tokenName, "P") == 0 )
@@ -1109,7 +1110,7 @@ void liqRibParticleData::write()
       }
     }
 
-    for (int i = 0; i < m_numValidParticles; i++)
+    for ( i = 0; i < m_numValidParticles; i++)
     {
       if ( colAttr != -1 )
       {
@@ -1147,7 +1148,7 @@ void liqRibParticleData::write()
 
     assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
 
-    for ( int i = 0; i < tokenPointerArray.size(); i++ )
+    for ( i = 0; i < tokenPointerArray.size(); i++ )
     {
       char *tokenName = tokenPointerArray[i].getTokenName();
       if ( strcmp( tokenName, "P") == 0 )
@@ -1188,10 +1189,10 @@ void liqRibParticleData::write()
     camRight *= liqglo_currentJob.camera[0].mat.inverse();
     camEye   *= liqglo_currentJob.camera[0].mat.inverse();
 
-    for( unsigned i = 0; i < m_numValidParticles; i++ )
+    for( unsigned ui = 0; ui < m_numValidParticles; ui++ )
     {
 
-      MString str = MString( "I: " ) + ( (double) i );
+      MString str = MString( "I: " ) + ( (double) ui );
 
       MGlobal::displayInfo( str );
       MVector up  = camUp;
@@ -1202,32 +1203,32 @@ void liqRibParticleData::write()
 
       if ( colAttr != -1 )
       {
-        RiColor( &((RtFloat*)pointerArray[colAttr])[i*3] );
+        RiColor( &((RtFloat*)pointerArray[colAttr])[ui*3] );
       }
       if ( opacAttr != -1 )
       {
-        RiOpacity( &((RtFloat*)pointerArray[opacAttr])[i*3] );
+        RiOpacity( &((RtFloat*)pointerArray[opacAttr])[ui*3] );
       }
       if ( twistAttr != -1 )
       {
-        float twist = -((RtFloat*)pointerArray[twistAttr])[i] * M_PI/180;
+        float twist = -((RtFloat*)pointerArray[twistAttr])[ui] * M_PI/180;
         MQuaternion twistQ( twist, camEye );
         right = camRight.rotateBy( twistQ );
         up  = camUp.rotateBy( twistQ );
       }
       if ( scaleXAttr != -1 )
       {
-        spriteRadiusX *= ((RtFloat*)pointerArray[scaleXAttr])[i];
+        spriteRadiusX *= ((RtFloat*)pointerArray[scaleXAttr])[ui];
       }
       if ( scaleYAttr != -1 )
       {
-        spriteRadiusY *= ((RtFloat*)pointerArray[scaleYAttr])[i];
+        spriteRadiusY *= ((RtFloat*)pointerArray[scaleYAttr])[ui];
       }
 
       if ( posAttr != -1 )
       {
-        float *P = &( (RtFloat*) pointerArray[ posAttr ] )[ i * 3 ];
-        float spriteNum = numAttr == -1 ? 0 : ((RtFloat*)pointerArray[numAttr])[i];
+        float *P = &( (RtFloat*) pointerArray[ posAttr ] )[ ui * 3 ];
+        float spriteNum = numAttr == -1 ? 0 : ((RtFloat*)pointerArray[numAttr])[ui];
 
         float x0 = P[ 0 ] - spriteRadiusX * right[ 0 ] + spriteRadiusY * up[ 0 ];
         float y0 = P[ 1 ] - spriteRadiusX * right[ 1 ] + spriteRadiusY * up[ 1 ];
