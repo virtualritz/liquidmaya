@@ -4114,15 +4114,17 @@ MStatus liqRibTranslator::ribPrologue()
     }
 
     // RAYTRACING OPTIONS
-#if defined ( DELIGHT ) || ( PRMAN )
+#if defined ( DELIGHT ) || defined ( PRMAN ) || defined( PIXIE)
   if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing ) {
     RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
     RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,          RI_NULL );
-    RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
-    RiOption( "trace",   "int continuationbydefault",   ( RtPointer ) &rt_traceRayContinuation,   RI_NULL );
-    RiOption( "limits",  "int geocachememory",          ( RtPointer ) &rt_traceCacheMemory,       RI_NULL );
-    RiOption( "user",    "float traceBreadthFactor",    ( RtPointer ) &rt_traceBreadthFactor,     RI_NULL );
-    RiOption( "user",    "float traceDepthFactor",      ( RtPointer ) &rt_traceDepthFactor,       RI_NULL );
+    #if defined ( DELIGHT ) || defined ( PRMAN ) 
+	    RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
+    	RiOption( "trace",   "int continuationbydefault",   ( RtPointer ) &rt_traceRayContinuation,   RI_NULL );
+    	RiOption( "limits",  "int geocachememory",          ( RtPointer ) &rt_traceCacheMemory,       RI_NULL );
+    	RiOption( "user",    "float traceBreadthFactor",    ( RtPointer ) &rt_traceBreadthFactor,     RI_NULL );
+    	RiOption( "user",    "float traceDepthFactor",      ( RtPointer ) &rt_traceDepthFactor,       RI_NULL );
+    #endif
   } else {
     if ( !liquidRenderer.supports_RAYTRACE ) RiArchiveRecord( RI_COMMENT, "Ray Tracing : NOT SUPPORTED" );
     else RiArchiveRecord( RI_COMMENT, "Ray Tracing : OFF" );
