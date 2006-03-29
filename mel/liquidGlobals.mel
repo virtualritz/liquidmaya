@@ -75,7 +75,10 @@ global proc liquidGlobalsRenderLayerOverrideUpdateMenu( string $attr )
 {
   int $en = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
   string $ctl = (gmatch( $attr, "*[*]*"))? substitute( $attr, "s/\\[*\\]*/_/g" ) : $attr;
-  menuItem -e -c ("editRenderLayerAdjustment liquidGlobals."+$attr) -en $en ("liquidGlobalsOverride_"+$ctl);
+  string $nodeOverrides = stringArrayToString( editRenderLayerAdjustment( "-q" ,("liquidGlobals."+$attr)), " ");
+  string $remove = (gmatch( $nodeOverrides, ("*liquidGlobals."+$attr+"*")))? "-remove":"";
+  string $label = ($remove == "")? "Create Layer Override":"Remove Layer Override";
+  menuItem -e -l $label -c ("editRenderLayerAdjustment "+$remove+" liquidGlobals."+$attr) -en $en ("liquidGlobalsOverride_"+$ctl);
 }
 
 proc liquidShowBoolGlobalPlus( string $name, string $label, string $info )
