@@ -224,38 +224,38 @@ private :
 
   // these are little storage variables to keep track of the current graphics state and will eventually be wrapped in
   // a specific class
-  struct {
-    struct {
+  struct globals{
+    struct feedback{
       bool showProgress;
       bool outputDetailedComments;
       bool shaderDebugging;
     } feedback;
 
-    struct {
+    struct shadowMaps{
       bool noShadowRibs;
       bool fullShadowRibs;
       bool lazyCompute;
     } shadowMaps;
 
-    struct {
+    struct depthShadows{
       bool opacityThreshold;
       bool outputAllShaders;
     } depthShadows;
 
-    struct {
+    struct deepShadows{
       bool outputAllShaders;
       bool outputLights;
     } deepShadows;
 
-    struct {
+    struct rib{
       bool readArchiveable;
 
-      struct {
+      struct output{
         bool allCurves;
         bool meshUVs;
       } output;
 
-      struct {
+      struct shaders{
         bool noSurfaces;
         bool noLights;
         bool noDisplacements;
@@ -263,17 +263,17 @@ private :
         bool expandArrays;
       } shaders;
 
-      struct {
+      struct paths{
         bool projectRelative;
         bool shaders;
       } paths;
 
-      struct {
+      struct format{
         bool binary;
         bool gZip;
       } format;
 
-      struct {
+      struct box{
         MString preWorld;
         MString postWorld;
         MString preObject;

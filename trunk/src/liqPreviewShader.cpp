@@ -326,7 +326,11 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
 
     liquidOutputPreviewShader( tempRibName.asChar(), &preview );
 #ifdef _WIN32
-    _spawnlp( _P_DETACH, preview.renderCommand, preview.renderCommand, tempRibName.asChar(), NULL );
+    _spawnlp( _P_WAIT, preview.renderCommand, preview.renderCommand, tempRibName.asChar(), NULL );
+	FILE* fid = fopen( MString( displayName + ".done").asChar(), "w" );
+	if(fid != 0)
+		fclose(fid);
+
 #else
     system( ( MString( preview.renderCommand ) + " " +  tempRibName + ";touch " + displayName + ".done&" ).asChar() );
   }

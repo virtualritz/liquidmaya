@@ -2055,9 +2055,7 @@ bool liqRibTranslator::verifyOutputDirectories()
     MGlobal::displayWarning( "Liquid -> " + MString( type ) + " Directory, " + path + ", does not exist. Defaulting to system temp directory!\n" ); \
     cout <<((MString)("WARNING: Liquid -> "+MString(type)+" Directory, "+MString(path)+", does not exist. Defaulting to system temp directory!")).asChar()<<endl<<flush
 
-  #if defined(OSX) || defined (LINUX)
-    chdir(liqglo_projectDir.asChar());
-  #endif
+  chdir(liqglo_projectDir.asChar());
 
   bool problem = false;
   MString tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_ribDir, liqglo_projectDir );
@@ -3897,9 +3895,15 @@ MStatus liqRibTranslator::buildJobs()
   }
 
   // sort the shadow jobs to put the reference frames first
+#ifndef _WIN32
   sort( jobList.begin(), jobList.end(), renderFrameSort );
 
   sort( shadowList.begin(), shadowList.end(), renderFrameSort );
+#else
+  std::sort( jobList.begin(), jobList.end(), renderFrameSort );
+
+  std::sort( shadowList.begin(), shadowList.end(), renderFrameSort );
+#endif
 
   ribStatus = kRibBegin;
   return MS::kSuccess;
