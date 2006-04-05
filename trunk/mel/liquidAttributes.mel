@@ -314,7 +314,7 @@ global proc liquidCreateVisibilityTraceAttribute()
   } else {
     for ( $currentNode in $nodes ) {
       if ( !`attributeQuery -node $currentNode -ex "liqVisibilityTrace"` ) {
-        addAttr -ln "liqVisibilityTrace" -at bool $currentNode;
+        addAttr -ln "liqVisibilityTrace" -at bool -dv 1 $currentNode;
       }
     }
   }
