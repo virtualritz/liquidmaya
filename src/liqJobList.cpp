@@ -130,9 +130,11 @@ MStatus liqJobList::redoIt()
   MObject cameraNode;
   MDagPath lightPath;
 
+  liqRibTranslator ribTranslator;
+
   try {
 
-    liqRibTranslator ribTranslator;
+    ribTranslator.m_escHandler.beginComputation();
 
 
     // set the current project directory
@@ -211,14 +213,15 @@ MStatus liqJobList::redoIt()
       if ( debug ) cout <<"done !"<<endl;
     }
 
+    ribTranslator.m_escHandler.endComputation();
 
   } catch ( MString msg ) {
 
     // catch any error
     //
     MGlobal::displayError("liquidJobList : "+msg);
+    ribTranslator.m_escHandler.endComputation();
     return MS::kFailure;
-
   }
 
   // output the result

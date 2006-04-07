@@ -116,7 +116,8 @@ Options\n\
 \t-pro    -progress\n\
 \t-ra     -readArchive\n\
 \t-sh     -shadows\n\
-\t-ssfs   -skipSingleFrameShadows\n\
+\t-sfso   -singleFrameShadowsOnly\n\
+\t-nsfs   -noSingleFrameShadows\n\
 \t-sdb    -shaderDebug\n\
 \t-tif    -tiff\n\
 \t-zip    -doCompression\n\

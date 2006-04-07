@@ -68,14 +68,17 @@ liqRibHT::liqRibHT()
 liqRibHT::~liqRibHT()
 {
   LIQDEBUGPRINTF( "-> killing hash table\n" );
-  RNMAP::iterator iter;
-  for ( iter = RibNodeMap.begin(); iter != RibNodeMap.end(); iter++ )
-  {
-    liqRibNode * node;
-    node = (*iter).second;
-    delete node;
+  if ( !RibNodeMap.empty() ) {
+    LIQDEBUGPRINTF( "-> hash table size is not empty\n" );
+    RNMAP::iterator iter;
+    for ( iter = RibNodeMap.begin(); iter != RibNodeMap.end(); iter++ )
+    {
+      liqRibNode * node;
+      node = (*iter).second;
+      if ( node != NULL ) delete node;
+    }
+    RibNodeMap.clear();
   }
-  RibNodeMap.clear();
   if ( debugMode ) {
     printf("-> finished killing hash table\n");
   }
@@ -118,7 +121,7 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   const char * name = nodeName.asChar();
 
   ulong hc = hash( name ,CountID);
-  
+
   RibHashVec.push_back(nodeName);
   LIQDEBUGPRINTF( "-> hashed node name: " );
   LIQDEBUGPRINTF( name );
@@ -227,17 +230,17 @@ liqRibNode* liqRibHT::find( MString nodeName, MDagPath path, ObjectType
 
  ulong hc;
  unsigned int indx;
- 
+
 for (indx = 0; indx < RibHashVec.size(); indx++)
 {
  if( RibHashVec[indx]==nodeName.asChar()){
  	 hc=indx;
 	break;
  }
- 
-}   
-  
-  
+
+}
+
+
   LIQDEBUGPRINTF( "-> Done\n"  );
 
   RNMAP::iterator iter = RibNodeMap.find( hc );

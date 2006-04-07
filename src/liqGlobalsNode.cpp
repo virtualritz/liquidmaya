@@ -544,7 +544,7 @@ MStatus liqGlobalsNode::initialize()
           CREATE_BOOL( nAttr,  aDeformationBlur,            "deformationBlur",              "db",     0     );
            CREATE_INT( nAttr,  aShutterConfig,              "shutterConfig",                "shc",    0     );
            CREATE_INT( nAttr,  aMotionBlurSamples,          "motionBlurSamples",            "mbs",    2     );
-         CREATE_FLOAT( nAttr,  aMotionFactor,               "motionFactor",                 "mf",     2.0   );
+         CREATE_FLOAT( nAttr,  aMotionFactor,               "motionFactor",                 "mf",     1.0   );
           CREATE_BOOL( nAttr,  aDepthOfField,               "depthOfField",                 "dof",    0     );
 
            CREATE_INT( nAttr,  aPixelSamples,               "pixelSamples",                 "ps",     4     );
