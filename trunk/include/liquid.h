@@ -301,6 +301,7 @@ struct structJob {
   int                   renderFrame;
   MString               shadowObjectSet;
   bool                  shadowArchiveRibDone;
+  bool                  skip;
 };
 
 typedef enum {

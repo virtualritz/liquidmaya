@@ -136,7 +136,7 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
   motion.transformationBlur = true;;
   motion.deformationBlur    = true;
   motion.samples            = 2;
-  motion.factor             = 2.0;
+  motion.factor             = 1.0;
 
   rib.box                   = "";
   rib.generator             = "";
@@ -501,7 +501,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( motion.samples );
       }
 
-      if ( motion.factor == 2.0f ) {
+      if ( motion.factor == 1.0f ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqMotionFactor" ), &status );
         if ( status == MS::kSuccess )

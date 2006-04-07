@@ -145,7 +145,8 @@ bool         liqglo_relativeFileNames;                // true if we only want to
 MStringArray liqglo_DDimageName;
 double       liqglo_FPS;                              // Frame-rate (for particle streak length)
 bool         liqglo_outputMeshUVs;                    // true if we are writing uvs for subdivs/polys (in addition to "st")
-bool         liqglo_skipSingleFrameShadows;            // allows you to skip single-frame shadows when you chunk a render
+bool         liqglo_noSingleFrameShadows;             // allows you to skip single-frame shadows when you chunk a render
+bool         liqglo_singleFrameShadowsOnly;           // allows you to skip single-frame shadows when you chunk a render
 
 // Kept global for liquidGlobalHelper
 MString      liqglo_projectDir;
@@ -482,7 +483,8 @@ liqRibTranslator::liqRibTranslator()
   liqglo_doExtensionPadding = false;       // pad the frame number in the rib file names
   liqglo_doShadows = true;          // render shadows
   liqglo_shapeOnlyInShadowNames = false;
-  liqglo_skipSingleFrameShadows = false;
+  liqglo_noSingleFrameShadows = false;
+  liqglo_singleFrameShadowsOnly = false;
   m_justRib = false;
   cleanShadows = 0;                 // render shadows
   cleanTextures = 0;                // render shadows
@@ -736,7 +738,8 @@ MSyntax liqRibTranslator::syntax()
   syntax.addFlag("ndf",   "noDef");
   syntax.addFlag("pad",   "padding",          MSyntax::kLong);
   syntax.addFlag("rgo",   "ribGenOnly");
-  syntax.addFlag("ssfs",   "skipSingleFrameShadows");
+  syntax.addFlag("sfso",  "singleFrameShadowsOnly");
+  syntax.addFlag("nsfs",  "noSingleFrameShadows");
   syntax.addFlag("rv",    "renderView");
   syntax.addFlag("rvl",   "renderViewlocal");
   syntax.addFlag("rvp",   "renderViewPort",  MSyntax::kLong);
@@ -1088,9 +1091,12 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       m_cropY2 = argValue.asDouble();
       LIQCHECKSTATUS(status, "error in -cropWindow parameter 4");
       if ( m_renderView ) m_renderViewCrop = true;
-    } else if ((arg == "-ssfs") || (arg == "-skipSingleFrameShadows")) {
-      LIQCHECKSTATUS(status, "error in -skipSingleFrameShadows parameter");
-      liqglo_skipSingleFrameShadows = true;
+    } else if ((arg == "-nsfs") || (arg == "-noSingleFrameShadows")) {
+      LIQCHECKSTATUS(status, "error in -noSingleFrameShadows parameter");
+      liqglo_noSingleFrameShadows = true;
+    } else if ((arg == "-sfso") || (arg == "-singleFrameShadowsOnly")) {
+      LIQCHECKSTATUS(status, "error in -singleFrameShadowsOnly parameter");
+      liqglo_singleFrameShadowsOnly = true;
     } else if ((arg == "-shn") || (arg == "-shotName")) {
       LIQCHECKSTATUS(status, "error in -shotName parameter");   i++;
       liqglo_shotName = args.asString( i, &status );
@@ -2323,6 +2329,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 {
   MStatus status;
   MString lastRibName;
+  bool hashTableInited = false;
 
   // check if we need to switch to a specific render layer
   unsigned int argIndex = args.flagIndex( "lyr", "layer" );
@@ -2602,27 +2609,30 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
         long lastScannedFrame = -100000;
         long scanTime = liqglo_lframe;
-        bool hashTableInited = false;
+        hashTableInited = false;
 
         //
         // start iterating through the job list   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
         //
+        if ( jobList.size() == 0 ) {
+          MGlobal::displayWarning( "Liquid : Nothing to Render !" );
+          cout <<"Liquid : Nothing to Render !"<<endl;
+          return MS::kSuccess;
+        }
+
+        //cout <<"Job iteration start -------------------------------------"<<endl;
+        //cout <<"    nsfs:"<<liqglo_noSingleFrameShadows<<"  sfso:"<<liqglo_singleFrameShadowsOnly<<endl;
+
         std::vector<structJob>::iterator iter = jobList.begin();
         for (; iter != jobList.end(); ++iter ) {
 
           m_currentMatteMode = false;
           liqglo_currentJob = *iter;
 
-
-          // if shadow generation was disabled, skip this job.
-          if ( liqglo_currentJob.isShadow && !liqglo_doShadows ) continue;
-
-          // if this is a single-frame shadow and
-          // we got past the first frame of the sequence, skip this job.
-          if (  liqglo_skipSingleFrameShadows || ( liqglo_currentJob.isShadow &&
-                                                   liqglo_currentJob.renderFrame != liqglo_lframe &&
-                                                   liqglo_lframe > frameFirst )
-             ) continue;
+          if ( liqglo_currentJob.skip ) {
+            //cout <<">> skipping "<<liqglo_currentJob.name<<endl;
+            continue;
+          }
 
 
           //cout <<">> outputing job ["<<liqglo_lframe<<"] ->"<<liqglo_currentJob.name.asChar()<<" -> "<<liqglo_currentJob.imageName.asChar()<<endl;
@@ -2847,7 +2857,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           if ( m_showProgress ) printProgress( 3, frameFirst, frameLast, liqglo_lframe );
         }
 
-        if ( NULL != htable ) {
+        if ( hashTableInited && NULL != htable ) {
           delete htable;
           freeShaders();
           htable = NULL;
@@ -3225,10 +3235,12 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             MGlobal::executeCommand( displayCmd );
           }
       } else {
-        // launch renders
+        // launch renders directly
+
         MGlobal::displayInfo( "\n" );
         cout <<endl;
         int exitstat = 0;
+
         // write out make texture pass
         std::vector<structJob>::iterator iter = txtList.begin();
         while ( iter != txtList.end() ) {
@@ -3247,6 +3259,11 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           cout << endl << "[!] Rendering shadow maps... " << endl;
           std::vector<structJob>::iterator iter = shadowList.begin();
           while ( iter != shadowList.end() ) {
+            if ( iter->skip ) {
+              cout <<"    - skipping "<<iter->ribFileName.asChar()<< endl;
+              ++iter;
+              continue;
+            }
             cout << "    + " << iter->ribFileName.asChar() << endl;
 #ifdef _WIN32
             if( !liqProcessLauncher::execute( liquidRenderer.renderCommand, liquidRenderer.renderCmdFlags + " \"" + iter->ribFileName + "\"", liqglo_projectDir, true ) )
@@ -3260,25 +3277,29 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
         if ( !exitstat ) {
           MGlobal::displayInfo( "Rendering hero pass... " );
           cout << "[!] Rendering hero pass..." << endl;
-          cout << "    + " << liqglo_currentJob.ribFileName.asChar() << endl;
+          if ( liqglo_currentJob.skip ) {
+            cout <<"    - skipping "<<liqglo_currentJob.ribFileName.asChar()<< endl;
+          } else {
+            cout << "    + " << liqglo_currentJob.ribFileName.asChar() << endl;
 #ifdef _WIN32
-          liqProcessLauncher::execute( liquidRenderer.renderCommand, liquidRenderer.renderCmdFlags + " \"" + liqglo_currentJob.ribFileName + "\"", liqglo_projectDir, false );
+            liqProcessLauncher::execute( liquidRenderer.renderCommand, liquidRenderer.renderCmdFlags + " \"" + liqglo_currentJob.ribFileName + "\"", liqglo_projectDir, false );
 #else
-          liqProcessLauncher::execute( liquidRenderer.renderCommand, liquidRenderer.renderCmdFlags + " " + liqglo_currentJob.ribFileName, liqglo_projectDir, false );
+            liqProcessLauncher::execute( liquidRenderer.renderCommand, liquidRenderer.renderCmdFlags + " " + liqglo_currentJob.ribFileName, liqglo_projectDir, false );
 #endif
-          /*  philippe: here we launch the liquidRenderView command which will listen to the liqmaya display driver
-              to display buckets in the renderview.
-          */
-          if ( m_renderView ) {
-            MString local = (m_renderViewLocal)? "1":"0";
-            char tmp[20];
-            sprintf( tmp, "%d", m_renderViewTimeOut);
-            MString timeout = (char*) tmp;
-            MString displayCmd = "liquidRenderView -c " + renderCamera + " -l " + local + " -port " + m_renderViewPort + " -timeout " + timeout ;
-            if ( m_renderViewCrop ) displayCmd = displayCmd + " -doRegion";
-            displayCmd = displayCmd + ";liquidSaveRenderViewImage();";
-            //cout <<displayCmd.asChar()<<endl;
-            MGlobal::executeCommand( displayCmd );
+            /*  philippe: here we launch the liquidRenderView command which will listen to the liqmaya display driver
+                to display buckets in the renderview.
+            */
+            if ( m_renderView ) {
+              MString local = (m_renderViewLocal)? "1":"0";
+              char tmp[20];
+              sprintf( tmp, "%d", m_renderViewTimeOut);
+              MString timeout = (char*) tmp;
+              MString displayCmd = "liquidRenderView -c " + renderCamera + " -l " + local + " -port " + m_renderViewPort + " -timeout " + timeout ;
+              if ( m_renderViewCrop ) displayCmd = displayCmd + " -doRegion";
+              displayCmd = displayCmd + ";liquidSaveRenderViewImage();";
+              //cout <<displayCmd.asChar()<<endl;
+              MGlobal::executeCommand( displayCmd );
+            }
           }
         }
       }
@@ -3306,14 +3327,14 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     } else {
       MGlobal::displayError( errorMessage );
     }
-    if ( NULL != htable ) delete htable;
+    if ( NULL != htable && hashTableInited ) delete htable;
     freeShaders();
     if ( debugMode ) ldumpUnfreed();
     m_escHandler.endComputation();
     return MS::kFailure;
   } catch ( ... ) {
     cerr << "RIB Export: Unknown exception thrown\n" << endl;
-    if ( NULL != htable ) delete htable;
+    if ( NULL != htable && hashTableInited ) delete htable;
     freeShaders();
     if ( debugMode ) ldumpUnfreed();
     m_escHandler.endComputation();
@@ -3544,10 +3565,11 @@ MStatus liqRibTranslator::buildJobs()
         // philippe : this is the default and can be overriden
         // by the everyFrame/renderAtFrame attributes.
         //
-        thisJob.renderFrame       = liqglo_lframe;
-        thisJob.everyFrame        = true;
-        thisJob.shadowObjectSet   = "";
+        thisJob.renderFrame           = liqglo_lframe;
+        thisJob.everyFrame            = true;
+        thisJob.shadowObjectSet       = "";
         thisJob.shadowArchiveRibDone  = false;
+        thisJob.skip                  = false;
 
         //
         // We have a shadow job, so find out if we need to use deep shadows,
@@ -3869,6 +3891,7 @@ MStatus liqRibTranslator::buildJobs()
   thisJob.path          = cameraPath;
   thisJob.name          = fnCameraNode.name();
   thisJob.isShadow      = false;
+  thisJob.skip          = false;
   thisJob.name         += "SHADOWPASS";
   thisJob.isShadowPass  = true;
   if ( m_outputShadowPass ) jobList.push_back( thisJob );
@@ -3898,6 +3921,33 @@ MStatus liqRibTranslator::buildJobs()
     if ( thisJob.isShadow ) frameFileName = generateFileName( (fileGenMode) fgm_shadow_rib, thisJob );
     else frameFileName = generateFileName( (fileGenMode) fgm_beauty_rib, thisJob );
     iter->ribFileName = frameFileName;
+
+    // set the skip flag for the job
+    //
+    iter->skip   = false;
+    thisJob.skip = false;
+
+    if ( thisJob.isShadow ) {
+      if ( !liqglo_doShadows ) {
+        // shadow generation disabled
+        iter->skip   = true;
+        thisJob.skip = true;
+      } else if ( !thisJob.everyFrame && ( liqglo_noSingleFrameShadows || liqglo_lframe > frameFirst && thisJob.renderFrame != liqglo_lframe ) ) {
+        // noSingleFrameShadows or rendering past the first frame of the sequence
+        iter->skip   = true;
+        thisJob.skip = true;
+      } else if ( thisJob.everyFrame && liqglo_singleFrameShadowsOnly ) {
+        // singleFrameShadowsOnly on regular shadows
+        iter->skip   = true;
+        thisJob.skip = true;
+      }
+    } else if ( liqglo_singleFrameShadowsOnly ) {
+      // singleFrameShadowsOnly on hero pass
+      iter->skip   = true;
+      thisJob.skip = true;
+    }
+
+
 
     MString outFileFmtString;
 
@@ -5632,8 +5682,8 @@ MStatus liqRibTranslator::objectBlock()
 
       }
 
-      if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur &&
-          ribNode->motion.factor != 2.0f ) {
+      if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur
+          && ribNode->motion.factor != 1.0f ) {
         RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
       }
 
@@ -6270,5 +6320,6 @@ bool liqRibTranslator::renderFrameSort( const structJob& a, const structJob& b )
   long v2 = ( b.isShadow )? b.renderFrame : 100000000;
   return v1 < v2;
 }
+
 
 
