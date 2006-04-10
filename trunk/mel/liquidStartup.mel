@@ -206,11 +206,12 @@ global proc liquidCreateObjectsAttributesMenu( string $prefix )
   menuItem -label "Object Attributes" -subMenu true -tearOff true;
     menuItem -label "Create Shading Group" -command liquidCreateShadingAttributes -ann "Add Shading attributes to selected Transform node(s)";
     menuItem -label "Shading Add" -subMenu true -tearOff true;
-      menuItem -label "Shading Rate"    -command liquidCreateShadingRateAttribute;
-      menuItem -label "Color"           -command liquidCreateColorAttribute;
-      menuItem -label "Opacity"         -command liquidCreateOpacityAttribute;
-      menuItem -label "Matte"           -command liquidCreateMatteAttribute;
-      menuItem -label "Camera Hit-Mode" -command liquidCreateCameraHitModeAttribute;
+      menuItem -label "Shading Rate"          -command liquidCreateShadingRateAttribute;
+      menuItem -label "Color"                 -command liquidCreateColorAttribute;
+      menuItem -label "Opacity"               -command liquidCreateOpacityAttribute;
+      menuItem -label "Matte"                 -command liquidCreateMatteAttribute;
+      menuItem -label "Camera Hit-Mode"       -command liquidCreateCameraHitModeAttribute;
+      menuItem -label "Rater-Oriented Dicing" -command "liquidCreateRasterOrientedDicingAttribute( 1 )";
     setParent -menu ..;
     menuItem -label "Remove Shading Group" -command liquidDeleteShadingAttributes -ann "Remove Shading attributes from selected Transform node(s)";
     menuItem -d true;
