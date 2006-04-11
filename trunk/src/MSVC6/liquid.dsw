@@ -3,7 +3,31 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "displaydriver"=.\displaydriver\displaydriver.dsp - Package Owner=<4>
+Project: "displayDriver3delight"=.\displayDriver3delight\displayDriver3delight.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "displayDriverAqsis"=.\displayDriverAqsis\displayDriverAqsis.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "displayDriverPixie"=.\displayDriverPixie\displayDriverPixie.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
