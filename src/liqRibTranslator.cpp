@@ -106,7 +106,6 @@ static const char *LIQUIDVERSION =
 #include <maya/MFnSet.h>
 #include <maya/MFnStringArrayData.h>
 #include <maya/MFnIntArrayData.h>
-#include <maya/MDistance.h>
 
 
 // Liquid headers
