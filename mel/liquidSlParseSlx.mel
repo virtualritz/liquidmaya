@@ -85,7 +85,7 @@ proc string liquidSl_getShaderType( int $fid )
         $line = `fgetline $fid`;
     }
 
-    return $tokens[0];
+    return $type;
 }
 
 proc string liquidSl_getParamName( string $line )
