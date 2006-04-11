@@ -18,6 +18,8 @@ CFG=liquid - Win32 Pixie Release
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "liquid - Win32 Pixie Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "liquid - Win32 Aqsis Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "liquid - Win32 3Delight Release" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -27,6 +29,9 @@ CFG=liquid - Win32 Pixie Release
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
+
+!IF  "$(CFG)" == "liquid - Win32 Pixie Release"
+
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
 # PROP BASE Output_Dir "liquid___Win32_Pixie_Release"
@@ -35,12 +40,12 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "../../bin/win32/Release"
-# PROP Intermediate_Dir "../../bin/win32/Release"
+# PROP Output_Dir "../../bin/Pixie/win32/Release/Objects"
+# PROP Intermediate_Dir "../../bin/Pixie/win32/Release/Objects"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "$(MAYA_LOCATION)/include" /I "$(DELIGHT)/include" /I "../include" /D "NDEBUG" /D "_3DELIGHT" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /D "NDEBUG" /D "PIXIE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm600 /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "$(MAYA_LOCATION)/include" /I "$(PIXIEHOME)/include" /D "NDEBUG" /D "PIXIE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm600 /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -51,11 +56,74 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 3delight.lib libtarget.lib libzip.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib liblkm.lib ws2_32.lib netapi32.lib shell32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../bin/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib shell32.lib ri.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../../bin/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(RMANTREE)/lib"
+# ADD LINK32 image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib shell32.lib ri.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../../bin/Pixie/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(PIXIEHOME)/lib"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
+
+!ELSEIF  "$(CFG)" == "liquid - Win32 Aqsis Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "liquid___Win32_Aqsis_Release"
+# PROP BASE Intermediate_Dir "liquid___Win32_Aqsis_Release"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "../../bin/Aqsis/win32/Release/Objects"
+# PROP Intermediate_Dir "../../bin/Aqsis/win32/Release/Objects"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "$(MAYA_LOCATION)/include" /I "$(PIXIEHOME)/include" /D "NDEBUG" /D "PIXIE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm600 /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "$(MAYA_LOCATION)/include" /I "$(AQSIS)/include" /D "AQSIS_STATIC_LINK" /D "NDEBUG" /D "AQSIS" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm600 /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x809 /d "NDEBUG"
+# ADD RSC /l 0x809 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib shell32.lib ri.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../../bin/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(PIXIEHOME)/lib"
+# SUBTRACT BASE LINK32 /pdb:none /incremental:yes
+# ADD LINK32 zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib shell32.lib ri2rib.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../../bin/Aqsis/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(AQSIS)/lib/static_mt"
+# SUBTRACT LINK32 /pdb:none /incremental:yes
+
+!ELSEIF  "$(CFG)" == "liquid - Win32 3Delight Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "liquid___Win32_3Delight_Release"
+# PROP BASE Intermediate_Dir "liquid___Win32_3Delight_Release"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "../../bin/3Delight/win32/Release/Objects"
+# PROP Intermediate_Dir "../../bin/3Delight/win32/Release/Objects"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "$(MAYA_LOCATION)/include" /I "$(PIXIEHOME)/include" /D "NDEBUG" /D "PIXIE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm600 /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "$(MAYA_LOCATION)/include" /I "$(DELIGHT)/include" /D "NDEBUG" /D "PIXIE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm600 /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x809 /d "NDEBUG"
+# ADD RSC /l 0x809 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib shell32.lib ri.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../../bin/Pixie/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(PIXIEHOME)/lib"
+# SUBTRACT BASE LINK32 /pdb:none /incremental:yes
+# ADD LINK32 image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib shell32.lib 3delight.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib /nologo /dll /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../../bin/3delight/win32/Release/liquid.mll" /libpath:"$(MAYA_LOCATION)/lib" /libpath:"$(DELIGHT)/lib"
+# SUBTRACT LINK32 /pdb:none /incremental:yes
+
+!ENDIF 
+
 # Begin Target
 
 # Name "liquid - Win32 Pixie Release"
+# Name "liquid - Win32 Aqsis Release"
+# Name "liquid - Win32 3Delight Release"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -94,6 +162,10 @@ SOURCE=..\liqGlobalHelpers.cpp
 # Begin Source File
 
 SOURCE=..\liqGlobalsNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\liqJobList.cpp
 # End Source File
 # Begin Source File
 
@@ -206,10 +278,6 @@ SOURCE=..\liqSurfaceNode.cpp
 # Begin Source File
 
 SOURCE=..\liqTokenPointer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\liquidBin.cpp
 # End Source File
 # Begin Source File
 
