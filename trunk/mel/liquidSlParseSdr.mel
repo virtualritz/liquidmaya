@@ -57,7 +57,7 @@ proc liquidSl_setShaderName( string $token )
   if ( $token == "" ) {
     $gLiquidSlShaderName = "unknown";
   } else {
-    $gLiquidSlShaderName = basenameEx(substring( $token, 2, size( $token ) - 1 ));
+    $gLiquidSlShaderName = basenameEx( $token );
   }
 }
 
@@ -69,20 +69,22 @@ proc string liquidSl_getShaderType( int $fid )
     // line is the shader type.
 
     string $tokens[];
+    string $tokensquote[];
     string $line = `fgetline $fid`;
     while ( ! `feof $fid` )
     {
         clear( $tokens );
+        tokenize $line "\"" $tokensquote;
         tokenize $line $tokens;
         $type = $tokens[0];
         if ( $type != "" ) {
-          liquidSl_setShaderName( $tokens[1] );
+          liquidSl_setShaderName( $tokensquote[1] );
           break;
         }
         $line = `fgetline $fid`;
     }
 
-    return $type;
+    return $tokens[0];
 }
 
 proc string liquidSl_getParamName( string $line )
