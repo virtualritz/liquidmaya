@@ -106,6 +106,7 @@ static const char *LIQUIDVERSION =
 #include <maya/MFnSet.h>
 #include <maya/MFnStringArrayData.h>
 #include <maya/MFnIntArrayData.h>
+#include <maya/MDistance.h>
 
 
 // Liquid headers
@@ -4497,7 +4498,12 @@ int count =0;
         iter->camera[sample].focalDistance = fnCamera.focusDistance();
         iter->camera[sample].fStop = fnCamera.fStop();
 
-        fnCamera.getPath(path);
+		// convert focal length to scene units
+        MDistance flenDist(iter->camera[sample].focalLength,MDistance::kMillimeters);
+		iter->camera[sample].focalLength = flenDist.as(MDistance::uiUnit());
+		
+        
+		fnCamera.getPath(path);
         MTransformationMatrix xform( path.inclusiveMatrix() );
         double scale[] = { 1, 1, -1 };
 
