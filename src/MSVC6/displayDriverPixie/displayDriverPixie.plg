@@ -1,0 +1,37 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: displayDriverPixie - Win32 Pixie Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP1795.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /I "../../../include" /I "c:\tata/include" /I "d:\pixie/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPLAYDRIVER_EXPORTS" /Fp"../../../bin/Pixie/win32/Release/Objects/displayDriverPixie.pch" /YX /Fo"../../../bin/Pixie/win32/Release/Objects/" /Fd"../../../bin/Pixie/win32/Release/Objects/" /FD /c 
+"D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp"
+]
+Creating command line "cl.exe @C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP1795.tmp" 
+Creating temporary file "C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP1796.tmp" with contents
+[
+ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"../../../bin/Pixie/win32/Release/Objects/liqmaya.pdb" /machine:I386 /out:"../../../bin/Pixie/win32/Release/liqmaya.dll" /implib:"../../../bin/Pixie/win32/Release/Objects/liqmaya.lib" 
+\pcc\liquidmaya\bin\Pixie\win32\Release\Objects\liqMayaDisplayDriverPixie.obj
+]
+Creating command line "link.exe @C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP1796.tmp"
+<h3>Output Window</h3>
+Compiling...
+liqMayaDisplayDriverPixie.cpp
+D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'rc' : unreferenced local variable
+D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(83) : warning C4101: 'h' : unreferenced local variable
+D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'i' : unreferenced local variable
+D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'originalSize' : unreferenced local variable
+Linking...
+   Creating library ../../../bin/Pixie/win32/Release/Objects/liqmaya.lib and object ../../../bin/Pixie/win32/Release/Objects/liqmaya.exp
+
+
+
+<h3>Results</h3>
+liqmaya.dll - 0 error(s), 4 warning(s)
+</pre>
+</body>
+</html>
