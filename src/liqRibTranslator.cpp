@@ -4111,9 +4111,15 @@ MStatus liqRibTranslator::ribPrologue()
           hiderName = "hidden";
 
       }
-      RiHider( hiderName, "jitter", &liqglo_jitter, RI_NULL );
-
+      #ifdef PIXIE
+      	RtFloat fJitter = liqglo_jitter;
+      	RiHider( hiderName, "jitter", &fJitter, RI_NULL );
+      #else
+      	RiHider( hiderName, "jitter", &liqglo_jitter, RI_NULL );
+      #endif
+      
       RiPixelSamples( pixelSamples, pixelSamples );
+      
 
       RiShadingRate( shadingRate );
 
@@ -4826,8 +4832,13 @@ MStatus liqRibTranslator::framePrologue(long lframe)
          ( !liqglo_currentJob.deepShadows ||
            liqglo_currentJob.shadowPixelSamples == 1 ) )
     {
+    #ifdef PIXIE
+      RtFloat zero = 0;
+      RiHider( "hidden", "jitter", &zero, RI_NULL );
+    #else
       RtInt zero = 0;
       RiHider( "hidden", "jitter", &zero, RI_NULL );
+    #endif
     }
 
     if ( liqglo_currentJob.isShadow && liqglo_currentJob.isMidPointShadow && !liqglo_currentJob.deepShadows ) {
