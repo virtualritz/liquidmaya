@@ -4,7 +4,7 @@
 global proc liquidCreateShadingAttributes()
 {
   liquidCreateShadingRateAttribute();
-  liquidCreateRasterOrientedDicingAttribute();
+  liquidCreateRasterOrientedDicingAttribute( 1 );
   liquidCreateColorAttribute();
   liquidCreateOpacityAttribute();
   liquidCreateCameraHitModeAttribute();
@@ -46,13 +46,13 @@ global proc liquidCreateShadingRateAttribute()
 }
 
 
-global proc liquidCreateRasterOrientedDicingAttribute()
+global proc liquidCreateRasterOrientedDicingAttribute( int $val )
 {
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqDiceRasterOrient"` ) {
-      addAttr -k true -ln "liqDiceRasterOrient" -at bool -dv 1  $currentNode;
+      addAttr -k true -ln "liqDiceRasterOrient" -at bool -dv $val $currentNode;
     }
   }
 }

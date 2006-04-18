@@ -193,6 +193,7 @@ void liqRenderer::setRenderer()
             if ( hider == "zbuffer" )     hider_ZBUFFER   = true;
             if ( hider == "raytrace" )    hider_RAYTRACE  = true;
             if ( hider == "opengl" )      hider_OPENGL    = true;
+            if ( hider == "depthmask" )   hider_DEPTHMASK = true;
           }
         }
       }
@@ -294,11 +295,12 @@ void liqRenderer::setRenderer()
   cout <<"  pixelfilter_LANCZOS        : "<<pixelfilter_LANCZOS<<endl;
   cout <<"  pixelfilter_BESSEL         : "<<pixelfilter_BESSEL<<endl;
   cout <<"  pixelfilter_DISK           : "<<pixelfilter_DISK<<endl;
-  cout <<"  hider_HIDDEN   : "<<hider_HIDDEN<<endl;
-  cout <<"  hider_PHOTON   : "<<hider_PHOTON<<endl;
-  cout <<"  hider_ZBUFFER  : "<<hider_ZBUFFER<<endl;
-  cout <<"  hider_RAYTRACE : "<<hider_RAYTRACE<<endl;
-  cout <<"  hider_OPENGL   : "<<hider_OPENGL<<endl;
+  cout <<"  hider_HIDDEN    : "<<hider_HIDDEN<<endl;
+  cout <<"  hider_PHOTON    : "<<hider_PHOTON<<endl;
+  cout <<"  hider_ZBUFFER   : "<<hider_ZBUFFER<<endl;
+  cout <<"  hider_RAYTRACE  : "<<hider_RAYTRACE<<endl;
+  cout <<"  hider_OPENGL    : "<<hider_OPENGL<<endl;
+  cout <<"  hider_DEPTHMASK : "<<hider_DEPTHMASK<<endl;
   cout <<"  requires_SWAPPED_UVS : "<<requires_SWAPPED_UVS<<endl;
   cout <<"  requires__PREF       : "<<requires__PREF<<endl;
   cout <<"  requires_MAKESHADOW  : "<<requires_MAKESHADOW<<endl;

@@ -249,8 +249,20 @@ MObject liqGlobalsNode::aIrradianceFileMode;
 MObject liqGlobalsNode::aUseMtorSubdiv;
 MObject liqGlobalsNode::aHider;
 MObject liqGlobalsNode::aJitter;
-MObject liqGlobalsNode::aRenderCmdFlags;
+MObject liqGlobalsNode::aHiddenOcclusionBound;
+MObject liqGlobalsNode::aHiddenMpCache;
+MObject liqGlobalsNode::aHiddenMpMemory;
+MObject liqGlobalsNode::aHiddenMpCacheDir;
+MObject liqGlobalsNode::aHiddenSampleMotion;
+MObject liqGlobalsNode::aHiddenSubPixel;
+MObject liqGlobalsNode::aHiddenExtremeMotionDof;
+MObject liqGlobalsNode::aHiddenMaxVPDepth;
 
+MObject liqGlobalsNode::aDepthMaskZFile;
+MObject liqGlobalsNode::aDepthMaskReverseSign;
+MObject liqGlobalsNode::aDepthMaskDepthBias;
+
+MObject liqGlobalsNode::aRenderCmdFlags;
 MObject liqGlobalsNode::aShaderInfo;
 MObject liqGlobalsNode::aShaderComp;
 MObject liqGlobalsNode::aShaderExt;
@@ -263,6 +275,7 @@ MObject liqGlobalsNode::aBits_hiders_1;
 MObject liqGlobalsNode::aBits_hiders_2;
 MObject liqGlobalsNode::aBits_hiders_3;
 MObject liqGlobalsNode::aBits_hiders_4;
+MObject liqGlobalsNode::aBits_hiders_5;
 
 MObject liqGlobalsNode::aBits_filters;
 MObject liqGlobalsNode::aBits_filters_0;
@@ -633,10 +646,25 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aIrradianceFileMode,         "irradianceFileMode",           "ifm",    0     );
 
           CREATE_BOOL( nAttr,  aUseMtorSubdiv,              "useMtorSubdiv",                "ums",    0     );
-           CREATE_INT( nAttr,  aHider,                      "hider",                        "h",      0     );
-           CREATE_INT( nAttr,  aJitter,                     "jitter",                       "j",      0     );
-        CREATE_STRING( tAttr,  aRenderCmdFlags,             "renderCmdFlags",               "rcf",    ""    );
 
+           CREATE_INT( nAttr,  aHider,                      "hider",                        "h",      0     );
+           // "hidden" hider advanced options - PRMAN ONLY
+           CREATE_INT( nAttr,  aJitter,                     "jitter",                       "j",      0     );
+         CREATE_FLOAT( nAttr,  aHiddenOcclusionBound,       "hiddenOcclusionBound",         "hob",    0.0   );
+          CREATE_BOOL( nAttr,  aHiddenMpCache,              "hiddenMpCache",                "hmpc",   1     );
+           CREATE_INT( nAttr,  aHiddenMpMemory,             "hiddenMpMemory",               "hmpm",   6144  );
+        CREATE_STRING( tAttr,  aHiddenMpCacheDir,           "hiddenMpCacheDir",             "hmcd",   ""   );
+          CREATE_BOOL( nAttr,  aHiddenSampleMotion,         "hiddenSampleMotion",           "hsm",    1     );
+           CREATE_INT( nAttr,  aHiddenSubPixel,             "hiddenSubPixel",               "hsp",    1     );
+          CREATE_BOOL( nAttr,  aHiddenExtremeMotionDof,     "hiddenExtremeMotionDof",       "hemd",   0     );
+           CREATE_INT( nAttr,  aHiddenMaxVPDepth,           "hiddenMaxVPDepth",             "hmvd",  -1     );
+
+        CREATE_STRING( tAttr,  aDepthMaskZFile,             "depthMaskZFile",               "dmzf",   ""    );
+          CREATE_BOOL( nAttr,  aDepthMaskReverseSign,       "depthMaskReverseSign",         "dmrs",   0     );
+         CREATE_FLOAT( nAttr,  aDepthMaskDepthBias,         "depthMaskDepthBias",           "dmdb",   0.01  );
+
+
+        CREATE_STRING( tAttr,  aRenderCmdFlags,             "renderCmdFlags",               "rcf",    ""    );
         CREATE_STRING( tAttr,  aShaderInfo,                 "shaderInfo",                   "shi",    ""    );
         CREATE_STRING( tAttr,  aShaderComp,                 "shaderComp",                   "shcp",   ""    );
         CREATE_STRING( tAttr,  aShaderExt,                  "shaderExt",                    "she",    ""    );
@@ -661,6 +689,8 @@ MStatus liqGlobalsNode::initialize()
     CHECK_MSTATUS( cAttr.addChild( aBits_hiders_3 ) );
     CREATE_BOOL( nAttr, aBits_hiders_4, "OpenGL", "OpenGL", 0 );
     CHECK_MSTATUS( cAttr.addChild( aBits_hiders_4 ) );
+    CREATE_BOOL( nAttr, aBits_hiders_5, "DepthMask", "DepthMask", 0 );
+    CHECK_MSTATUS( cAttr.addChild( aBits_hiders_5 ) );
 
     CREATE_COMP( cAttr, aBits_filters, "bits_filters", "bfil" );
       CREATE_BOOL( nAttr, aBits_filters_0, "Box", "Box", 1 );
