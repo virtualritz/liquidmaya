@@ -611,6 +611,9 @@ liqRibTranslator::liqRibTranslator()
   m_hiddenExtremeMotionDof = false;
   m_hiddenMaxVPDepth = -1;
 
+  m_raytraceFalseColor = 0;
+  m_photonEmit = 0;
+
   m_depthMaskZFile = "";
   m_depthMaskReverseSign = false;
   m_depthMaskDepthBias = 0.01;
@@ -1723,9 +1726,22 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "hiddenMaxVPDepth", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenMaxVPDepth );
     gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "raytraceFalseColor", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_raytraceFalseColor );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "photonEmit", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_photonEmit );
+    gStatus.clear();
     gPlug = rGlobalNode.findPlug( "depthMaskZFile", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_depthMaskZFile );
     gStatus.clear();
+    {
+      MString varVal;
+      gPlug = rGlobalNode.findPlug( "depthMaskZFile", &gStatus );
+      if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+      gStatus.clear();
+      if ( varVal != "" ) m_depthMaskZFile = parseString( varVal );
+    }
     gPlug = rGlobalNode.findPlug( "depthMaskReverseSign", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_depthMaskReverseSign );
     gStatus.clear();
@@ -6384,10 +6400,10 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
 {
   MString options;
 
+  // PRMAN
   if ( rendername == "PRMan" ) {
 
     if ( hidername == "hidden" ) {
-
       {
         char tmp[128];
 		#ifdef PIXIE
@@ -6404,7 +6420,6 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
         sprintf( tmp, "\"float occlusionbound\" [%f] ", m_hiddenOcclusionBound );
         options += tmp;
       }
-
       if ( m_hiddenMpCache != true ) options += "\"int mpcache\" [0] ";
       if ( m_hiddenMpMemory != 6144 ) {
         char tmp[128];
@@ -6416,30 +6431,25 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
         sprintf( tmp, "\"string mpcachedir\" [\"%s\"] ", m_hiddenMpCacheDir.asChar() );
         options += tmp;
       }
-
       if ( m_hiddenSampleMotion != true ) options += "\"int samplemotion\" [0] ";
-
       if ( m_hiddenSubPixel != 1 ) {
         char tmp[128];
         sprintf( tmp, "\"int subpixel\" [%d] ", m_hiddenSubPixel );
         options += tmp;
       }
-
-      if ( m_hiddenExtremeMotionDof != false ) {
-        char tmp[128];
-        sprintf( tmp, "\"int extrememotiondof\" [%d] ", m_hiddenSubPixel );
-        options += tmp;
-      }
-
+      if ( m_hiddenExtremeMotionDof != false ) options += "\"int extrememotiondof\" [1] ";
       if ( m_hiddenMaxVPDepth != -1 ) {
         char tmp[128];
         sprintf( tmp, "\"int maxvpdepth\" [%d] ", m_hiddenMaxVPDepth );
         options += tmp;
       }
-
-
-
     } else if ( hidername == "photon" ) {
+
+      if ( m_photonEmit != 0 ) {
+        char tmp[128];
+        sprintf( tmp, "\"int emit\" [%d] ", m_photonEmit );
+        options += tmp;
+      }
 
     } else if ( hidername == "depthmask" ) {
 
@@ -6460,6 +6470,56 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
       }
     }
 
+  }
+
+  // 3DELIGHT
+  if ( rendername == "3Delight" ) {
+
+    if ( hidername == "hidden" ) {
+      {
+        char tmp[128];
+        sprintf( tmp, "\"jitter\" [%d] ", m_hiddenJitter );
+        options += tmp;
+      }
+      if ( m_hiddenSampleMotion != true ) options += "\"int samplemotion\" [0] ";
+      if ( m_hiddenExtremeMotionDof != false ) options += "\"int extrememotiondof\" [1] ";
+    }
+
+  }
+
+  // PIXIE
+  if ( rendername == "Pixie" ) {
+
+    if ( hidername == "hidden" ) {
+      {
+        char tmp[128];
+        sprintf( tmp, "\"float jitter\" [%d] ", m_hiddenJitter );
+        options += tmp;
+      }
+    } else if ( hidername == "raytrace" ) {
+
+      if ( m_raytraceFalseColor != 0 ) options += "\"int falsecolor\" [1] ";
+
+    } else if ( hidername == "photon" ) {
+
+      if ( m_photonEmit != 0 ) {
+        char tmp[128];
+        sprintf( tmp, "\"int emit\" [%d] ", m_photonEmit );
+        options += tmp;
+      }
+
+    }
+
+  }
+
+  // AQSIS
+  if ( rendername == "Aqsis" ) {
+    // no known options
+  }
+
+  // AIR
+  if ( rendername == "Air" ) {
+    // no known options
   }
 
   return options;
