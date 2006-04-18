@@ -258,6 +258,10 @@ MObject liqGlobalsNode::aHiddenSubPixel;
 MObject liqGlobalsNode::aHiddenExtremeMotionDof;
 MObject liqGlobalsNode::aHiddenMaxVPDepth;
 
+MObject liqGlobalsNode::aRaytraceFalseColor;
+
+MObject liqGlobalsNode::aPhotonEmit;
+
 MObject liqGlobalsNode::aDepthMaskZFile;
 MObject liqGlobalsNode::aDepthMaskReverseSign;
 MObject liqGlobalsNode::aDepthMaskDepthBias;
@@ -659,10 +663,13 @@ MStatus liqGlobalsNode::initialize()
           CREATE_BOOL( nAttr,  aHiddenExtremeMotionDof,     "hiddenExtremeMotionDof",       "hemd",   0     );
            CREATE_INT( nAttr,  aHiddenMaxVPDepth,           "hiddenMaxVPDepth",             "hmvd",  -1     );
 
+           CREATE_INT( nAttr,  aRaytraceFalseColor,         "raytraceFalseColor",            "rfc",   0     );
+
+           CREATE_INT( nAttr,  aPhotonEmit,                 "photonEmit",                    "phe",   0     );
+
         CREATE_STRING( tAttr,  aDepthMaskZFile,             "depthMaskZFile",               "dmzf",   ""    );
           CREATE_BOOL( nAttr,  aDepthMaskReverseSign,       "depthMaskReverseSign",         "dmrs",   0     );
          CREATE_FLOAT( nAttr,  aDepthMaskDepthBias,         "depthMaskDepthBias",           "dmdb",   0.01  );
-
 
         CREATE_STRING( tAttr,  aRenderCmdFlags,             "renderCmdFlags",               "rcf",    ""    );
         CREATE_STRING( tAttr,  aShaderInfo,                 "shaderInfo",                   "shi",    ""    );
