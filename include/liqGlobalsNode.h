@@ -274,6 +274,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aBits_hiders_2;
     static MObject aBits_hiders_3;
     static MObject aBits_hiders_4;
+    static MObject aBits_hiders_5;
 
     static MObject aBits_filters;
     static MObject aBits_filters_0;
@@ -310,6 +311,18 @@ class liqGlobalsNode : public MPxNode
 
     static MObject aStatistics;
 
+    static MObject aHiddenOcclusionBound;
+    static MObject aHiddenMpCache;
+    static MObject aHiddenMpMemory;
+    static MObject aHiddenMpCacheDir;
+    static MObject aHiddenSampleMotion;
+    static MObject aHiddenSubPixel;
+    static MObject aHiddenExtremeMotionDof;
+    static MObject aHiddenMaxVPDepth;
+
+    static MObject aDepthMaskZFile;
+    static MObject aDepthMaskReverseSign;
+    static MObject aDepthMaskDepthBias;
 };
 
 
