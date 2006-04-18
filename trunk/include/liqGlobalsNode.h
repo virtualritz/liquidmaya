@@ -320,6 +320,10 @@ class liqGlobalsNode : public MPxNode
     static MObject aHiddenExtremeMotionDof;
     static MObject aHiddenMaxVPDepth;
 
+    static MObject aRaytraceFalseColor;
+
+    static MObject aPhotonEmit;
+
     static MObject aDepthMaskZFile;
     static MObject aDepthMaskReverseSign;
     static MObject aDepthMaskDepthBias;

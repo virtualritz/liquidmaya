@@ -2088,12 +2088,14 @@ global proc liquidHiderOptions_buildIt( string $parent )
 
   setUITemplate -pushTemplate attributeEditorTemplate;
 
+  string $theLayout = ($renderer+"Hider_"+$hider+"_Options");
+
   switch( $hider ) {
     case 0:
       // HIDDEN
       if ( $renderer == "prman" ){
-        if ( !`columnLayout -q -ex prmanHider_0_Options`) {
-          columnLayout -adj true -co "right" 20 prmanHider_0_Options;
+        if ( !`columnLayout -q -ex $theLayout`) {
+          columnLayout -adj true -co "right" 20 $theLayout;
             liquidShowBoolGlobal      "jitter"                  "Jitter";
             liquidShowFloatGlobalPlus "hiddenOcclusionBound"    "Occlusion Bound"
                                       ("Prman 11+ : use this option to force\n"+
@@ -2130,53 +2132,89 @@ global proc liquidHiderOptions_buildIt( string $parent )
             setParent ..;
           setParent ..;
         }
-        tabLayout -e -h (`layout -q -h prmanHider_0_Options`) liquidHiderOptionsTabLayout;
-        tabLayout -e -st prmanHider_0_Options liquidHiderOptionsTabLayout;
+      } else if ( $renderer == "pixie" ) {
+        if ( !`columnLayout -q -ex $theLayout`) {
+          columnLayout -adj true -co "right" 20 $theLayout;
+            liquidShowBoolGlobal      "jitter"                  "Jitter";
+          setParent ..;
+        }
+      } else if ( $renderer == "3delight" ) {
+        if ( !`columnLayout -q -ex $theLayout`) {
+          columnLayout -adj true -co "right" 20 $theLayout;
+            liquidShowBoolGlobal      "jitter"                  "Jitter";
+            liquidShowBoolGlobalPlus  "hiddenSampleMotion"      "Sample Motion"
+                                      ("This controls motion-blurred\n"+
+                                       "micro-polygon output. if set to OFF, the\n"+
+                                       "image will not be motion-blurred but\n"+
+                                       "dPdtime will be correctly computed/output\n"+
+                                       "for 2D post-processing.");
+            liquidShowBoolGlobalPlus  "hiddenExtremeMotionDof"  "Extreme Motion/DOF"
+                                      ("if enabled, prman will use\n"+
+                                       "a more accurate but MUCH SLOWER sampling\n"+
+                                       "strategy. Use only if you get extremely nasty\n"+
+                                       "artefacts with the default method.");
+          setParent ..;
+        }
+      } else {
+        if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
       }
+      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
+      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
       break;
     case 1:
       // PHOTON
-      if ( !`columnLayout -q -ex prmanHider_1_Options`) columnLayout -adj true prmanHider_1_Options;
-      tabLayout -e -h (`layout -q -h prmanHider_1_Options`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st prmanHider_1_Options liquidHiderOptionsTabLayout;
+      if ( $renderer == "prman" || $renderer == "pixie" ) {
+        if ( !`columnLayout -q -ex $theLayout` ) {
+          columnLayout -adj true $theLayout;
+            liquidShowIntGlobal     "photonEmit"    "Emit";
+          setParent ..;
+        }
+        tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
+        tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
+      }
       break;
     case 2:
       // Z BUFFER
-      if ( !`columnLayout -q -ex prmanHider_2_Options`) columnLayout -adj true prmanHider_2_Options;
-      tabLayout -e -h (`layout -q -h prmanHider_2_Options`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st prmanHider_2_Options liquidHiderOptionsTabLayout;
+      if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
+      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
+      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
       break;
     case 3:
       // RAYTRACE
-      if ( !`columnLayout -q -ex prmanHider_3_Options`) columnLayout -adj true prmanHider_3_Options;
-      tabLayout -e -h (`layout -q -h prmanHider_3_Options`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st prmanHider_3_Options liquidHiderOptionsTabLayout;
+      if ( $renderer == "pixie" ) {
+        if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
+          liquidShowIntGlobal     "raytraceFalseColor"    "False Color";
+      } else if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
+      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
+      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
       break;
     case 4:
       // OPENGL
-      if ( !`columnLayout -q -ex prmanHider_4_Options`) columnLayout -adj true prmanHider_4_Options;
-      tabLayout -e -h (`layout -q -h prmanHider_4_Options`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st prmanHider_4_Options liquidHiderOptionsTabLayout;
+      if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
+      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
+      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
       break;
     case 5:
       // DEPTHMASK
       if ( $renderer == "prman" ){
-        if ( !`columnLayout -q -ex prmanHider_5_Options`) {
-          columnLayout -adj true prmanHider_5_Options;
+        if ( !`columnLayout -q -ex $theLayout`) {
+          columnLayout -adj true $theLayout;
             liquidShowStringGlobal      "depthMaskZFile"        "Z File";
             liquidShowBoolGlobal        "depthMaskReverseSign"  "Reverse Sign";
             liquidShowFloatGlobalPlus   "depthMaskDepthBias"    "Depth Bias" "" "";
           setParent ..;
         }
-        tabLayout -e -h (`layout -q -h prmanHider_5_Options`) liquidHiderOptionsTabLayout;
-        tabLayout -e -st prmanHider_5_Options liquidHiderOptionsTabLayout;
+      } else if ( !`columnLayout -q -ex $theLayout` ) {
+        columnLayout -adj true $theLayout;
       }
+      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
+      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
       break;
     default:
       break;
   }
 
-  resizeLayout( ($renderer+"Hider_"+$hider+"_Options"), 1 );
+  resizeLayout( $theLayout, 1 );
   setUITemplate -ppt;
 
   setParent $previousParent;
@@ -2200,8 +2238,10 @@ global proc liquidGlobalsImageTab_buildIt()
 
         liquidShowBitsIntGlobalMenuPlus "hider"   "Hider"   "bits_hiders"  "liquidHiderOptions_buildIt \"\"";
 
-        tabLayout -tabsVisible false -childResizable false liquidHiderOptionsTabLayout;
-        liquidHiderOptions_buildIt "";
+        frameLayout -bs "etchedIn" -l "Hider Options" -cll true -cl true;
+          tabLayout -tabsVisible false -childResizable false liquidHiderOptionsTabLayout;
+            liquidHiderOptions_buildIt "";
+          setParent ..;
         setParent ..;
 
       setParent ..;
