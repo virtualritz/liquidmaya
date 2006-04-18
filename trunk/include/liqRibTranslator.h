@@ -77,6 +77,7 @@ private: // Methods
   bool liquidInitGlobals();
   void liquidReadGlobals();
   bool verifyOutputDirectories();
+  MString getHiderOptions( MString rendername, MString hidername );
 
   MStatus buildJobs();
   MStatus ribPrologue();
@@ -379,6 +380,21 @@ private :
   liquidlong    m_renderViewTimeOut;
 
   int           m_statistics;
+
+  int           m_hiddenJitter;
+  float         m_hiddenOcclusionBound;
+  bool          m_hiddenMpCache;
+  int           m_hiddenMpMemory;
+  MString       m_hiddenMpCacheDir;
+  bool          m_hiddenSampleMotion;
+  int           m_hiddenSubPixel;
+  bool          m_hiddenExtremeMotionDof;
+  int           m_hiddenMaxVPDepth;
+
+
+  MString       m_depthMaskZFile;
+  bool          m_depthMaskReverseSign;
+  float         m_depthMaskDepthBias;
 
   std::vector<liqShader> m_shaders;
 
