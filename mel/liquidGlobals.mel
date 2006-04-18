@@ -2149,7 +2149,7 @@ global proc liquidHiderOptions_buildIt( string $parent )
                                        "dPdtime will be correctly computed/output\n"+
                                        "for 2D post-processing.");
             liquidShowBoolGlobalPlus  "hiddenExtremeMotionDof"  "Extreme Motion/DOF"
-                                      ("if enabled, prman will use\n"+
+                                      ("if enabled, 3delight will use\n"+
                                        "a more accurate but MUCH SLOWER sampling\n"+
                                        "strategy. Use only if you get extremely nasty\n"+
                                        "artefacts with the default method.");
