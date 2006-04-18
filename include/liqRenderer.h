@@ -86,6 +86,7 @@ public:
   bool hider_ZBUFFER;
   bool hider_RAYTRACE;
   bool hider_OPENGL;
+  bool hider_DEPTHMASK;
 
   // renderer requirement
   bool requires_SWAPPED_UVS; // transpose u & v direction on NURBS
