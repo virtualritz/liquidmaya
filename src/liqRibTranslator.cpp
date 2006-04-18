@@ -167,7 +167,6 @@ MString      liqglo_currentNodeShortName;
 
 bool         liqglo_useMtorSubdiv;  // use mtor subdiv attributes
 HiderType    liqglo_hider;
-RtInt        liqglo_jitter;
 
 // Kept global for raytracing
 bool         rt_useRayTracing;
@@ -602,6 +601,20 @@ liqRibTranslator::liqRibTranslator()
 
   m_statistics        = 0;
 
+  m_hiddenJitter = 1;
+  m_hiddenOcclusionBound = 0;
+  m_hiddenMpCache = true;
+  m_hiddenMpMemory = 6144;
+  m_hiddenMpCacheDir = ".";
+  m_hiddenSampleMotion = true;
+  m_hiddenSubPixel = 1;
+  m_hiddenExtremeMotionDof = false;
+  m_hiddenMaxVPDepth = -1;
+
+  m_depthMaskZFile = "";
+  m_depthMaskReverseSign = false;
+  m_depthMaskDepthBias = 0.01;
+
   m_minCPU = m_maxCPU = 1;
   m_cropX1 = m_cropY1 = 0.0;
   m_cropX2 = m_cropY2 = 1.0;
@@ -617,7 +630,6 @@ liqRibTranslator::liqRibTranslator()
 
   liqglo_useMtorSubdiv = false;
   liqglo_hider = htHidden;
-  liqglo_jitter = 1;
 
   liqglo_shaderPath = "&:@:.:~:rmanshader";
 
@@ -1682,12 +1694,44 @@ void liqRibTranslator::liquidReadGlobals()
     if ( gStatus == MS::kSuccess )  {
     gPlug.getValue( var );
     liqglo_hider = (enum HiderType) var;
-  }
+    }
     gStatus.clear();
     gPlug = rGlobalNode.findPlug( "jitter", &gStatus );
-    if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_jitter );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenJitter );
     gStatus.clear();
-
+    gPlug = rGlobalNode.findPlug( "hiddenOcclusionBound", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenOcclusionBound );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenMpCache", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenMpCache );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenMpMemory", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenMpMemory );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenMpCacheDir", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenMpCacheDir );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenSampleMotion", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenSampleMotion );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenSubPixel", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenSubPixel );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenExtremeMotionDof", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenExtremeMotionDof );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenMaxVPDepth", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenMaxVPDepth );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "depthMaskZFile", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_depthMaskZFile );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "depthMaskReverseSign", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_depthMaskReverseSign );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "depthMaskDepthBias", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_depthMaskDepthBias );
+    gStatus.clear();
   }
   // RENDER OPTIONS:END
 
@@ -4107,19 +4151,18 @@ MStatus liqRibTranslator::ribPrologue()
         case htZbuffer:
           hiderName = "zbuffer";
           break;
+        case htDepthMask:
+          hiderName = "depthmask";
+          break;
         default:
           hiderName = "hidden";
-
       }
-      #ifdef PIXIE
-      	RtFloat fJitter = liqglo_jitter;
-      	RiHider( hiderName, "jitter", &fJitter, RI_NULL );
-      #else
-      	RiHider( hiderName, "jitter", &liqglo_jitter, RI_NULL );
-      #endif
-      
+
+      MString hiderOptions = getHiderOptions( liquidRenderer.renderName, hiderName );
+
+      RiArchiveRecord( RI_VERBATIM, "Hider \"%s\" %s\n", hiderName, (char*) hiderOptions.asChar() );
+
       RiPixelSamples( pixelSamples, pixelSamples );
-      
 
       RiShadingRate( shadingRate );
 
@@ -6337,5 +6380,89 @@ bool liqRibTranslator::renderFrameSort( const structJob& a, const structJob& b )
   return v1 < v2;
 }
 
+MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername )
+{
+  MString options;
+
+  if ( rendername == "PRMan" ) {
+
+    if ( hidername == "hidden" ) {
+
+      {
+        char tmp[128];
+		#ifdef PIXIE
+		  RtFloat fJitter = m_hiddenJitter;
+          sprintf( tmp, "\"float jitter\" [%f] ", fJitter );
+		#else
+		  sprintf( tmp, "\"int jitter\" [%d] ", m_hiddenJitter );
+		#endif
+        options += tmp;
+      }
+
+      if ( m_hiddenOcclusionBound != 0.0 ) {
+        char tmp[128];
+        sprintf( tmp, "\"float occlusionbound\" [%f] ", m_hiddenOcclusionBound );
+        options += tmp;
+      }
+
+      if ( m_hiddenMpCache != true ) options += "\"int mpcache\" [0] ";
+      if ( m_hiddenMpMemory != 6144 ) {
+        char tmp[128];
+        sprintf( tmp, "\"int mpcache\" [%d] ", m_hiddenMpMemory );
+        options += tmp;
+      }
+      if ( m_hiddenMpCacheDir != "" ) {
+        char tmp[1024];
+        sprintf( tmp, "\"string mpcachedir\" [\"%s\"] ", m_hiddenMpCacheDir.asChar() );
+        options += tmp;
+      }
+
+      if ( m_hiddenSampleMotion != true ) options += "\"int samplemotion\" [0] ";
+
+      if ( m_hiddenSubPixel != 1 ) {
+        char tmp[128];
+        sprintf( tmp, "\"int subpixel\" [%d] ", m_hiddenSubPixel );
+        options += tmp;
+      }
+
+      if ( m_hiddenExtremeMotionDof != false ) {
+        char tmp[128];
+        sprintf( tmp, "\"int extrememotiondof\" [%d] ", m_hiddenSubPixel );
+        options += tmp;
+      }
+
+      if ( m_hiddenMaxVPDepth != -1 ) {
+        char tmp[128];
+        sprintf( tmp, "\"int maxvpdepth\" [%d] ", m_hiddenMaxVPDepth );
+        options += tmp;
+      }
+
+
+
+    } else if ( hidername == "photon" ) {
+
+    } else if ( hidername == "depthmask" ) {
+
+      {
+        char tmp[1024];
+        sprintf( tmp, "\"string zfile\" [\"%s\"] ", m_depthMaskZFile.asChar() );
+        options += tmp;
+      }
+      {
+        char tmp[128];
+        sprintf( tmp, "\"int reversesign\" [\"%d\"] ", m_depthMaskReverseSign );
+        options += tmp;
+      }
+      {
+        char tmp[128];
+        sprintf( tmp, "\"float depthbias\" [%f] ", m_depthMaskDepthBias );
+        options += tmp;
+      }
+    }
+
+  }
+
+  return options;
+}
 
 
