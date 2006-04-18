@@ -391,6 +391,8 @@ private :
   bool          m_hiddenExtremeMotionDof;
   int           m_hiddenMaxVPDepth;
 
+  int           m_raytraceFalseColor;
+  int           m_photonEmit;
 
   MString       m_depthMaskZFile;
   bool          m_depthMaskReverseSign;
