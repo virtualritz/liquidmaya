@@ -93,7 +93,7 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
   name.clear();
   mayaMatteMode             = false;
 
-  shading.shadingRate       = 1.0f;
+  shading.shadingRate       = -1.0f;
   shading.diceRasterOrient  = true;
   shading.color.r           = -1.0;
   shading.opacity.r         = -1.0;
@@ -237,7 +237,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         }
       }
 
-      if ( shading.shadingRate == 1.0f ) {
+      if ( shading.shadingRate == -1.0f ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqShadingRate" ), &status );
         if ( status == MS::kSuccess )
