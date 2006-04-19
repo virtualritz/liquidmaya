@@ -5524,8 +5524,9 @@ MStatus liqRibTranslator::objectBlock()
 
     LIQDEBUGPRINTF( "-> writing node attributes" );
 
-    // if the node's shading rate -- -1,
+    // if the node's shading rate == -1,
     // it means it hasn't been overriden by a liqShadingRate attribute.
+    // No need to output it then.
     if( ribNode->shading.shadingRate > 0 )
       RiShadingRate ( ribNode->shading.shadingRate );
 
