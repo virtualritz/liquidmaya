@@ -247,7 +247,7 @@ int liqGetSloInfo::setShader( MString shaderFileName )
     // get the shader name
     cmdStat = MGlobal::executeCommand( "liquidSlShaderName();", shaderName );
     LIQCHECKSTATUS( cmdStat, "liqGetSloInfo::setShader -> liquidSlShaderName failed !" );
-    cout <<"setShader:  shaderName = "<<shaderName<<endl;
+    //cout <<"setShader:  shaderName = "<<shaderName<<endl;
 
     // get the shader type
     cmdStat = MGlobal::executeCommand( "liquidSlShaderType();", shaderType );
@@ -433,6 +433,7 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
 
     // get the number of parameters
     numParam = shaderParams.length();
+    //cout <<"setShaderNode:  numParam = "<<numParam<<endl;
 
     // get the parameter details
     shaderPlug = shaderNode.findPlug( "rmanDetails" );
@@ -526,13 +527,15 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
         case SHADER_TYPE_VECTOR:
         case SHADER_TYPE_NORMAL: {
           if( shaderArraySizes[k] > 0  ) {
+              //cout<<"setShaderNode:         - array size : "<<shaderArraySizes[k]<<endl;
               float *floats = ( float *)lmalloc( sizeof( float ) * 3 * shaderArraySizes[k] );
               MStringArray tmp;
               shaderDefaults[k].split( ':', tmp );
-              for (int kk = 0; kk < tmp.length(); kk ++ ) {
-                 floats[3 * kk] = tmp[3*kk].asFloat();
-                 floats[3 * kk + 1] = tmp[3*kk+1].asFloat();
-                 floats[3 * kk + 2] = tmp[3*kk+2].asFloat();
+              for (int kk = 0; kk < tmp.length()/3; kk++ ) {
+                //cout<<"setShaderNode:           [ "<<tmp[3*kk].asFloat()<<" "<<tmp[3*kk+1].asFloat()<<" "<<tmp[3*kk+2].asFloat()<<" ]   kk="<<kk<<endl;
+                floats[3*kk  ] = tmp[3*kk  ].asFloat();
+                floats[3*kk+1] = tmp[3*kk+1].asFloat();
+                floats[3*kk+2] = tmp[3*kk+2].asFloat();
               }
               argDefault.push_back( ( void * )floats );
           } else {
@@ -573,6 +576,7 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
         //}
 
         default: {
+          //cout <<"setShaderNode:     + DEFAULT CASE REACHED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
           argDefault.push_back( NULL );
           break;
         }

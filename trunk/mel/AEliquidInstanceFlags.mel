@@ -15,12 +15,28 @@ proc AEliquidCreateMenu()
   setParent $parent;
 }
 
+global proc liquidLargeFieldUpdater()
+{
+  if (  `window -q -ex AEWindow` &&
+        `window -q -visible AEWindow` &&
+        `scrollField -q -ex liquidLargeFieldCtlliqRIBBox` &&
+        !`scrollField -q -io liquidLargeFieldCtlliqRIBBox` )
+  {
+    string $obj[] = `ls -sl -l -tail 1`;
+    scrollField -e -tx (`getAttr ($obj[0]+".liqRIBBox")`) liquidLargeFieldCtlliqRIBBox;
+  }
+}
 
 global proc liquidFieldUpdateMenu( string $msg )
 {
   string $attr[] = stringToStringArray( $msg, ".");
   int $en = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
-  menuItem -e -c ("editRenderLayerAdjustment "+$msg) -en $en ("liquidFieldOverrideMenuItem"+$attr[1]);
+
+  string $nodeOverrides = stringArrayToString( editRenderLayerAdjustment( "-q" ,$msg), " ");
+  string $remove = (gmatch( $nodeOverrides, ("*"+$msg+"*")))? "-remove":"";
+  string $label = ($remove == "")? "Create Layer Override":"Remove Layer Override";
+
+  menuItem -e -l $label -c ("editRenderLayerAdjustment "+$remove+" "+$msg) -en $en ("liquidFieldOverrideMenuItem"+$attr[1]);
 }
 
 
@@ -71,7 +87,6 @@ global proc liquidSmallFieldReplace( string $nodeName, string $label, string $ms
     textFieldGrp -e -m 1 $ctl;
     connectControl -index 2 $ctl $msg;
     popupMenu -e -pmc ("liquidFieldUpdateMenu "+$msg) ("liquidFieldOverrideMenu"+$attr[1]);
-
   }
 }
 
