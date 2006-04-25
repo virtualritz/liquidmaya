@@ -36,6 +36,7 @@
 #include <liquid.h>
 #include <liqLightNode.h>
 #include <liqNodeSwatch.h>
+#include <liqMayaNodeIds.h>
 
 #include <maya/MGlobal.h>
 #include <maya/MCommandResult.h>
@@ -61,7 +62,7 @@
 #include <liqIOStream.h>
 
 // static data
-MTypeId liqLightNode::id( 0x00103514 );
+MTypeId liqLightNode::id( liqLightNodeId );
 
 // Attributes
 MObject liqLightNode::aRmanShader;

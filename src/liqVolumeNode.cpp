@@ -35,6 +35,7 @@
 #include <liquid.h>
 #include <liqVolumeNode.h>
 #include <liqNodeSwatch.h>
+#include <liqMayaNodeIds.h>
 
 #include <maya/MGlobal.h>
 #include <maya/MCommandResult.h>
@@ -58,7 +59,7 @@
 #include <liqIOStream.h>
 
 // static data
-MTypeId liqVolumeNode::id( 0x00103513 );
+MTypeId liqVolumeNode::id( liqVolumeNodeId );
 
 // Attributes
 MObject liqVolumeNode::aRmanShader;

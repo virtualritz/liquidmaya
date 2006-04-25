@@ -35,6 +35,7 @@
 #include <liquid.h>
 #include <liqRibboxNode.h>
 #include <liqNodeSwatch.h>
+#include <liqMayaNodeIds.h>
 
 #include <maya/MGlobal.h>
 #include <maya/MCommandResult.h>
@@ -58,7 +59,7 @@
 #include <liqIOStream.h>
 
 // static data
-MTypeId liqRibboxNode::id( 0x00103515 );
+MTypeId liqRibboxNode::id( liqRibboxNodeId );
 
 // Attributes
 MObject liqRibboxNode::aRmanShader;

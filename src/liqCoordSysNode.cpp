@@ -33,6 +33,7 @@
 #include <maya/MFnEnumAttribute.h>
 
 #include <liqCoordSysNode.h>
+#include <liqMayaNodeIds.h>
 
 #if defined(OSMac_MachO_)
 #include <OpenGL/gl.h>
@@ -44,7 +45,7 @@
 
 #include <liqIOStream.h>
 
-MTypeId liqCoordSysNode::id( 0x00103517 );
+MTypeId liqCoordSysNode::id( liqCoordSysNodeId );
 MObject liqCoordSysNode::aType;
 
 #define MAKE_INPUT(attr)		\

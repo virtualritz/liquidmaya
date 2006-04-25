@@ -2790,9 +2790,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           // Rib client file creation options MUST be set before RiBegin
 #if defined ( PRMAN ) || ( DELIGHT )
           LIQDEBUGPRINTF( "-> setting binary option\n" );
-          if ( liqglo_doBinary )
           {
-            RtString format = "binary";
+            RtString format[1] = {"ascii"};
+            if ( liqglo_doBinary ) format[0] = "binary";
             RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
           }
 
@@ -2856,13 +2856,10 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
   #ifdef DELIGHT
           LIQDEBUGPRINTF( "-> setting binary option\n" );
-          if ( liqglo_doBinary )
           {
-            RtString format = "binary";
-            RiOption(( RtToken ) "rib", ( RtToken ) "format", ( RtPointer )&format, RI_NULL);
-          } else {
-            RtString format = "ascii";
-            RiOption(( RtToken ) "rib", ( RtToken ) "format", ( RtPointer )&format, RI_NULL);
+            RtString format[1] = {"ascii"};
+            if ( liqglo_doBinary ) format[0] = "binary";
+            RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
           }
   #endif
 #else

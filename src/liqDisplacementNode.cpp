@@ -35,6 +35,7 @@
 #include <liquid.h>
 #include <liqDisplacementNode.h>
 #include <liqNodeSwatch.h>
+#include <liqMayaNodeIds.h>
 
 #include <maya/MGlobal.h>
 #include <maya/MCommandResult.h>
@@ -58,7 +59,7 @@
 #include <liqIOStream.h>
 
 // static data
-MTypeId liqDisplacementNode::id( 0x00103512 );
+MTypeId liqDisplacementNode::id( liqDisplacementNodeId );
 
 // Attributes
 MObject liqDisplacementNode::aRmanShader;
