@@ -34,6 +34,7 @@
 
 #include <liquid.h>
 #include <liqGlobalsNode.h>
+#include <liqMayaNodeIds.h>
 
 #include <maya/MGlobal.h>
 #include <maya/MCommandResult.h>
@@ -58,7 +59,7 @@
 #include <liqIOStream.h>
 
 // static data
-MTypeId liqGlobalsNode::id( 0x00103516 );
+MTypeId liqGlobalsNode::id( liqGlobalsNodeId );
 
 // Attributes
 MObject liqGlobalsNode::aLaunchRender;

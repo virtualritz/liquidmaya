@@ -139,8 +139,8 @@ MStatus liqWriteArchive::redoIt()
     fclose(f);
 
     // binary or ascii
-    RtString format = "ascii";
-    if ( binaryRib ) format = "binary";
+    RtString format[1] = {"ascii"};
+    if ( binaryRib ) format[0] = "binary";
     RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
 
     // write the RIB file
