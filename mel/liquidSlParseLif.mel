@@ -333,6 +333,7 @@ global proc liquidSlParseLif( string $shaderFile )
         string $state = "+";
 
         if ( size($tmpG) > 1 && size( match("[Cc]lose", $tmpG[1] ) ) ) $state = "-";
+        if ( size($tmpG) > 1 && size( match("[Oo]pen", $tmpG[1] ) ) ) $state = "+";
 
         $gLiquidSlParamGuiLabel[ $paramNum ] = ($label+$state);
         $gLiquidSlParamGuiType[ $paramNum ] = "group";
