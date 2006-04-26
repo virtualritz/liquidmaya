@@ -1468,7 +1468,7 @@ global proc liquidAE_LifGrp( string $selectedObj, int $index )
   string $label = liquidLifParamLabel( $index );
   //print ("Grp : "+$label+"\n");
 
-  int $state = ( gmatch( $label, "*+") )? 0:1;
+  int $state = ( gmatch( $label, "[!+]*+") )? 0:1;
 
   $label = substring($label, 1, size( $label ) - 1 );
 
@@ -1478,7 +1478,7 @@ global proc liquidAE_LifGrp( string $selectedObj, int $index )
       setParent ..;
       break;
     default:
-      frameLayout -l $label;
+      frameLayout -l $label -cl $state;
       columnLayout;
       break;
   }
