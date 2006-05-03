@@ -1,10 +1,6 @@
-SHELL		= sh
-VPATH		= ../bin/$(VBIN)/$(MAYA_VERSION)/$(BIN_VERSION)/$(LIQRMAN)
-CPPFLAGS	= $(LOCFLAGS) $(LIQRMANFLAGS) $(WARNFLAGS) $(EXTRAFLAGS) $(NO_TRANS_LINK) -DREQUIRE_IOSTREAM
-INCLUDES	= -I. -I.. -I$(MAYA_LOCATION)/include -I$(LIQRMANPATH)/include -I../include
-LDFLAGS		= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib
-MAYALIBS	= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lxpcom -lGL -lGLU
-LIBS		= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
+DEPTH = ..
+include $(DEPTH)/commondefs.mk
+
 # -lefence
 #-llkm -lzip -ltarget
 LIQUIDBINLIBS =		$(LIQRMANLIBS) $(MAYALIBS) \
@@ -140,6 +136,9 @@ newversion : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN) $(LIQUIDDPY)
 
 release : $(VPATH) $(LIQUIDPLUG) $(LIQUIDBIN) $(LIQUIDDPY)
 
+dist : distdir release
+	@$(CP) $(VPATH)/$(LIQUIDPLUG) $(DIST_DIR)/$(LIQUIDPLUG)
+
 lib : $(LIQUIDLIB)
 
 $(VPATH) :
@@ -183,3 +182,5 @@ depend:
 
 clean:
 	rm -rf $(VPATH)/*.$(PLUGSUF) $(VPATH)/*.$(OBJEXT) $(VPATH)/*.d $(VPATH)/ii_files $(VPATH)/so_locations
+
+include $(DEPTH)/commonrules.mk
