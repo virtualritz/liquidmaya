@@ -64,10 +64,10 @@ global proc liquidCreateColorAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqColor"` ) {
-      addAttr -ln "liqColor" -uac -at "float3"  $currentNode;
-      addAttr -ln "red" -at "float"  -dv 1 -parent "liqColor";
-      addAttr -ln "green" -at "float" -dv 1 -parent "liqColor";
-      addAttr -ln "blue" -at "float" -dv 1 -parent "liqColor";
+      addAttr -ln "liqColor" -uac -at "float3" -k true $currentNode;
+      addAttr -ln "red" -at "float"  -dv 1 -k true -parent "liqColor";
+      addAttr -ln "green" -at "float" -dv 1 -k true -parent "liqColor";
+      addAttr -ln "blue" -at "float" -dv 1 -k true -parent "liqColor";
     }
   }
 }

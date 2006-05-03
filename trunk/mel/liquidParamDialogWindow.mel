@@ -597,7 +597,7 @@ global proc liquidChangeTextFileAttrPlus ( string $selectedObj, string $argName,
 
 global proc liquidLifCoordSysBrowserFilter()
 {
-  string $list[] = `ls -type place3dTexture`;
+  string $list[] = `ls -type liquidCoordSys`;
   string $filter = `textField -q -tx liquidLifCoordSysBrowserTF`;
   if ( !size( $filter ) ) $filter = "*";
 
@@ -609,7 +609,7 @@ global proc liquidLifCoordSysBrowserFilter()
 
 global proc liquidLifCoordSysBrowser( string $selectedObj, string $argName, string $fieldName )
 {
-  string $coordSys[] = `ls -type place3dTexture`;
+  string $coordSys[] = `ls -type liquidCoordSys`;
 
   // use curly braces in cmd to avoid alloacting stuff in global space
   string $selectCmd = (   "{\n"
@@ -717,7 +717,7 @@ global proc liquidFluidBuildLifFile( string $longShaderName )
 
   int $fileHdl = `fopen $longLifName "w"`;
 
-  string $shadertype = liquidSlShaderType();//`liquidGetShaderNodeType $shortShaderName`;
+  string $shadertype = liquidSlShaderType();
   string $lower_stype = `tolower $shadertype`;
   $lower_stype = ($lower_stype == "disp")? "displacement":$lower_stype;
 
@@ -735,7 +735,6 @@ global proc liquidFluidBuildLifFile( string $longShaderName )
     string $argType =liquidSlParamType($i);
     if ( $argType == "float" ) {
       fprint $fileHdl ("type \"slider\";\n");
-      fprint $fileHdl ("range [ 0 1 ];\n");
     }
 
     fprint $fileHdl ("\n");
