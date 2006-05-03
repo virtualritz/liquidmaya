@@ -1,73 +1,167 @@
-SHELL = sh
-#BUILDDATE = `date "+,\040%a.,\040%e.\040%b.\040%Y,\040%R"`
-LIQUIDSHORTVERSION = `tr -d \"\\"\\"\" < liquid.version`
-BUILDDATE = `date "+%d.\040%b.\040%Y"`
-LIQUIDVERSION = \"$(LIQUIDSHORTVERSION)\040for\040$(LIQRMAN),\040$(BUILDDATE)\"
+DEPTH = ..
+include $(DEPTH)/commondefs.mk
 
-#------------------------------------------------------
-all : debug
+# -lefence
+#-llkm -lzip -ltarget
+LIQUIDBINLIBS =		$(LIQRMANLIBS) $(MAYALIBS) \
+					-lOpenMayalib \
+					-lOpenMayaFX \
+					-lAnimSlice \
+					-lDeformSlice \
+					-lDynSlice \
+					-lKinSlice \
+					-lModelSlice \
+					-lNurbsSlice \
+					-lPolySlice \
+					-lProjectSlice \
+					-lImage \
+					-lShared \
+					-lTranslators \
+					-lDataModel \
+					-lRenderModel \
+					-lNurbsEngine \
+					-lDependEngine \
+					-lCommandEngine \
+					-lFoundation \
+					-lStringCatalog \
+					$(EXTRA_LIBS) \
+					-lm
 
-lib newversion clean debug release :
-	@if( test `uname` = 'IRIX' || test `uname` = 'IRIX64'); then \
-		whichflags=irix65dbg; \
-		os=irix; \
-	elif( test `uname` = 'Linux' ); then \
-		if( test -f "/etc/redhat-release" ); then \
-			whichflags=redhat62dbg; \
-			os=redhat; \
-		elif( test -f "/etc/slackware-version" ); then \
-			whichflags=slackware1dbg; \
-			os=slackware; \
-		elif( test -f "/etc/gentoo-release" ); then \
-			whichflags=gentoo14dbg; \
-			os=gentoo; \
-		else \
-			whichflags="suse71dbg"; \
-			os=suse; \
-		fi; \
-	elif( test `uname -o` = 'Cygwin' ); then \
-		whichflags=winnt5dbg; \
-		os=windows; \
-	fi; \
-	case $${LIQRMAN} in \
-		[aA]qsis) LIQRMANPATH=$${AQSIS_BASE_PATH:=/usr/local/aqsis} LIQRMANFLAGS=-DAQSIS LIQRMANLIBS="-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs" LIQWINRMANLIBS="ri2rib.lib slxargs.lib" USEDVAR=AQSIS_BASE_PATH;; \
-		[eE]ntropy) LIQRMANPATH=$${ENTROPYHOME:=/usr/local/exluna/Entropy} LIQRMANFLAGS=-DENTROPY LIQRMANLIBS="-lribout -lsleargs" USEDVAR=ENTROPYHOME;; \
-		[pP][rR][mM]an) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lrib -lsloargs -llkm -ltarget -lzip" LIQWINRMANLIBS="rib.lib sloargs.lib" USEDVAR=RMANTREE;; \
-		[pP][rR][mM]an12_5) LIQRMANPATH=$${RMANTREE:=/usr/local/prman} LIQRMANFLAGS=-DPRMAN LIQRMANLIBS="-lrib -lsloargs -llkm -ltarget -lzip -lprmutil" LIQWINRMANLIBS="rib.lib sloargs.lib" USEDVAR=RMANTREE;; \
-		[pP]ixie) LIQRMANPATH=$${PIXIEHOME:=/usr/local/Pixie} LIQRMANFLAGS=-DPIXIE LIQRMANLIBS="-lri -lsdr" LIQWINRMANLIBS="ri.lib sdr.lib" USEDVAR=PIXIEHOME;; \
-		3[dD]elight) LIQRMANPATH=$${DELIGHT:=/usr/local/3delight} LIQRMANFLAGS=-DDELIGHT LIQRMANLIBS="-l3delight -lc -ldl -lm" LIQWINRMANLIBS="3delight.lib" USEDVAR=DELIGHT;; \
-		*) echo "Do not know how to handle" $${LIQRMAN}". Set LIQRMAN to either aqsis, entropy, prman, prman12_5, pixie or 3delight"; exit 1;; \
-	esac; \
-	if( test ! -d  $${LIQRMANPATH} ); then \
-		echo $${LIQRMANPATH} " does not seem to exist. Check your" $${USEDVAR} "env var."; exit 1; \
-	fi; \
-	if( test $@ = 'debug' ); then \
-		EXTRAFLAGS="-g -DDEBUG -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\"" ; \
-		MAYA_LOCATION=$${MAYA_LOCATION:=/usr/aw/maya} ;\
-		if( test -d $${MAYA_LOCATION}); then\
-			( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDSHORTVERSION=$(LIQUIDSHORTVERSION) LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} LIQWINRMANLIBS=$${LIQWINRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${MAYA_LOCATION} BIN_VERSION="debug" $${make:=make} -f Makeopts.$${os} $@ ); \
-		else \
-			echo $${MAYA_LOCATION} " does not seem to exists. Please set MAYA_LOCATION to a correct value."; exit 1; \
-		fi; \
-	elif( test $@ = 'release' ); then \
-		EXTRAFLAGS="-DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\"" ; \
-		MAYA_LOCATION=$${MAYA_LOCATION:=/usr/aw/maya} ;\
-		if( test -d $${MAYA_LOCATION}); then\
-			( echo Got $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDSHORTVERSION=$(LIQUIDSHORTVERSION) LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} LIQWINRMANLIBS=$${LIQWINRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${MAYA_LOCATION} BIN_VERSION="release" $${make:=make} -f Makeopts.$${os} $@ ); \
-		else \
-			echo $${MAYA_LOCATION} " does not seem to exists. Please set MAYA_LOCATION to a correct value."; exit 1; \
-		fi; \
-	else \
-		AW_LOCATION=$${AW_LOCATION:=/usr/aw} ;\
-		EXTRAFLAGS="-O -DLIQUIDVERSION=\\\"$(LIQUIDVERSION)\\\"" ; \
-		( echo Got for newversion $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDSHORTVERSION=$(LIQUIDSHORTVERSION) LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} LIQWINRMANLIBS=$${LIQWINRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${MAYA_LOCATION} BIN_VERSION="debug" $${make:=make} -f Makeopts.$${os} $@ ); \
-		( echo Got for newversion $${whichflags:=toto} $${LIQRMAN} $${LIQRMANPATH}; LIQUIDSHORTVERSION=$(LIQUIDSHORTVERSION) LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} LIQWINRMANLIBS=$${LIQWINRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${MAYA_LOCATION} BIN_VERSION="release" $${make:=make} -f Makeopts.$${os} $@ ); \
-		if( test -d $${AW_LOCATION}); then\
-			for vers in $${AW_LOCATION}/maya*.*;\
-				do ( echo Got $${whichflags} $${vers:=none} $${vers#$${AW_LOCATION}/}; LIQUIDVERSION=$(LIQUIDVERSION) LIQRMANPATH=$${LIQRMANPATH} LIQRMANFLAGS=$${LIQRMANFLAGS} LIQRMANLIBS=$${LIQRMANLIBS} LIQWINRMANLIBS=$${LIQWINRMANLIBS} EXTRAFLAGS=$${EXTRAFLAGS} MAYA_LOCATION=$${vers:=none} BIN_VERSION=$${vers#$${AW_LOCATION}/} $${make:=make} -f Makeopts.$${os} $@ );\
-			done; \
-		else \
-			echo $${AW_LOCATION} " does not seem to exists. Please set AW_LOCATION to a correct value."; exit 1; \
-		fi; \
-	fi
-# DO NOT DELETE
+LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
+					liqAttachPrefAttribute.$(OBJEXT) \
+					liqRibTranslator.$(OBJEXT) \
+					liqRibParticleData.$(OBJEXT) \
+					liqTokenPointer.$(OBJEXT) \
+					liqWriteArchive.$(OBJEXT) \
+					liqRibSurfaceData.$(OBJEXT) \
+					liqPreviewShader.$(OBJEXT) \
+					liqRibObj.$(OBJEXT) \
+					liqRibNode.$(OBJEXT) \
+					liqRibData.$(OBJEXT) \
+					liqGlobalHelpers.$(OBJEXT) \
+					liqRibNuCurveData.$(OBJEXT) \
+					liqRibMeshData.$(OBJEXT) \
+					liqRibLocatorData.$(OBJEXT) \
+					liqRibClipPlaneData.$(OBJEXT) \
+					liqRibCoordData.$(OBJEXT) \
+					liqRibLightData.$(OBJEXT) \
+					liqRibHT.$(OBJEXT) \
+					liqGetSloInfo.$(OBJEXT) \
+					liqGetAttr.$(OBJEXT) \
+					liqRibGenData.$(OBJEXT) \
+					liqRibSubdivisionData.$(OBJEXT) \
+					liqRibMayaSubdivisionData.$(OBJEXT) \
+					liqMemory.$(OBJEXT) \
+					liqProcessLauncher.$(OBJEXT) \
+					liqRenderer.$(OBJEXT) \
+					liqExpression.$(OBJEXT) \
+					liqNodeSwatch.$(OBJEXT) \
+					liqSurfaceNode.$(OBJEXT)	\
+					liqDisplacementNode.$(OBJEXT)	\
+					liqVolumeNode.$(OBJEXT)  \
+					liqRibboxNode.$(OBJEXT)  \
+					liqLightNode.$(OBJEXT)  \
+					liqLightNodeBehavior.$(OBJEXT)\
+					liqCoordSysNode.$(OBJEXT) \
+					liqGlobalsNode.$(OBJEXT) \
+					liqBucket.$(OBJEXT) \
+					liqMayaRenderView.$(OBJEXT) \
+					liqJobList.$(OBJEXT)
+
+
+
+LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
+					$(VPATH)/liqAttachPrefAttribute.$(OBJEXT) \
+					$(VPATH)/liqRibParticleData.$(OBJEXT) \
+					$(VPATH)/liqTokenPointer.$(OBJEXT) \
+					$(VPATH)/liqWriteArchive.$(OBJEXT) \
+					$(VPATH)/liqPreviewShader.$(OBJEXT) \
+					$(VPATH)/liqRibSurfaceData.$(OBJEXT) \
+					$(VPATH)/liqRibTranslator.$(OBJEXT) \
+					$(VPATH)/liqRibObj.$(OBJEXT) \
+					$(VPATH)/liqRibNode.$(OBJEXT) \
+					$(VPATH)/liqRibData.$(OBJEXT) \
+					$(VPATH)/liqGlobalHelpers.$(OBJEXT) \
+					$(VPATH)/liqRibNuCurveData.$(OBJEXT) \
+					$(VPATH)/liqRibMeshData.$(OBJEXT) \
+					$(VPATH)/liqRibLocatorData.$(OBJEXT) \
+					$(VPATH)/liqRibClipPlaneData.$(OBJEXT) \
+					$(VPATH)/liqRibCoordData.$(OBJEXT) \
+					$(VPATH)/liqRibLightData.$(OBJEXT) \
+					$(VPATH)/liqRibHT.$(OBJEXT) \
+					$(VPATH)/liqGetSloInfo.$(OBJEXT) \
+					$(VPATH)/liqGetAttr.$(OBJEXT) \
+					$(VPATH)/liqRibGenData.$(OBJEXT) \
+					$(VPATH)/liqRibSubdivisionData.$(OBJEXT) \
+					$(VPATH)/liqRibMayaSubdivisionData.$(OBJEXT) \
+					$(VPATH)/liqMemory.$(OBJEXT) \
+					$(VPATH)/liqProcessLauncher.$(OBJEXT) \
+					$(VPATH)/liqRenderer.$(OBJEXT) \
+					$(VPATH)/liqExpression.$(OBJEXT)  \
+					$(VPATH)/liqNodeSwatch.$(OBJEXT)  \
+					$(VPATH)/liqSurfaceNode.$(OBJEXT) \
+					$(VPATH)/liqDisplacementNode.$(OBJEXT)	\
+					$(VPATH)/liqVolumeNode.$(OBJEXT)  \
+					$(VPATH)/liqRibboxNode.$(OBJEXT)  \
+					$(VPATH)/liqLightNode.$(OBJEXT)  \
+					$(VPATH)/liqLightNodeBehavior.$(OBJEXT)\
+					$(VPATH)/liqCoordSysNode.$(OBJEXT) \
+					$(VPATH)/liqGlobalsNode.$(OBJEXT) \
+					$(VPATH)/liqBucket.$(OBJEXT) \
+					$(VPATH)/liqMayaRenderView.$(OBJEXT) \
+					$(VPATH)/liqJobList.$(OBJEXT)
+
+
+.SUFFIXES: .cpp .$(OBJEXT) .$(PLUGSUF) .c
+
+LIQUIDPLUG = liquid.$(PLUGSUF)
+LIQUIDBIN  = liquid
+LIQUIDLIB  = libliquid.a
+LIQUIDDPY  = d_liqmaya.so
+
+default: debug
+
+#debug : EXTRAFLAGS=-g -DDEBUG
+#debug : BIN_VERSION=debug
+#release : BIN_VERSION=release
+
+release newversion : $(VPATHRELEASE) $(LIQUIDPLUG) $(LIQUIDBIN) $(LIQUIDDPY)
+
+debug : $(VPATHDEBUG) $(LIQUIDPLUG) $(LIQUIDBIN) $(LIQUIDDPY)
+
+lib : $(VPATH) $(LIQUIDLIB)
+
+
+liquidPlug : $(LIQUIDPLUG)
+
+$(LIQUIDPLUG) : liquidPlug.$(OBJEXT) $(LIQUIDLIB)
+	@echo $@
+	@$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIBS)
+
+$(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDLIB)
+	@echo $@
+	@$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(VPATH)/$(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIQUIDBINLIBS)
+
+$(LIQUIDLIB) : $(LIQUIDMAINOBJS)
+	@$(AR) $(VPATH)/$(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
+
+$(LIQUIDDPY) : $(LIQDISPLAYOBJS)
+	@echo $@
+	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
+
+
+$(LIQUIDMAINOBJS) : ../include/liquid.h
+liqRibTranslator.o: ../include/liqRenderScript.h
+
+.cpp.$(OBJEXT):
+	@echo $@
+	$(CPP) -c $(INCLUDES) $(CPPFLAGS) -o $(VPATH)/$@ $<
+
+.cpp.i:
+	@$(CPP) -E $(INCLUDES) $(CPPFLAGS) $*.cc > $(VPATH)/$*.i
+
+depend:
+	makedepend $(INCLUDES) -I/usr/include/CC liquid.cc
+
+
+include $(DEPTH)/commonrules.mk
