@@ -106,6 +106,7 @@ static const char *LIQUIDVERSION =
 #include <maya/MFnSet.h>
 #include <maya/MFnStringArrayData.h>
 #include <maya/MFnIntArrayData.h>
+#include <maya/MDistance.h>
 
 
 // Liquid headers
@@ -955,13 +956,11 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       liqglo_relativeFileNames = true;
     } else if ((arg == "-prm") || (arg == "-preFrameMel")) {
       LIQCHECKSTATUS(status, "error in -preFrameMel parameter");  i++;
-      MString parsingString = args.asString( i, &status );
-      m_preFrameMel = parseString( parsingString );
+      m_preFrameMel =  args.asString( i, &status );
       LIQCHECKSTATUS(status, "error in -preFrameMel parameter");
     } else if ((arg == "-pom") || (arg == "-postFrameMel")) {
       LIQCHECKSTATUS(status, "error in -postFrameMel parameter");  i++;
-      MString parsingString = args.asString( i, &status );
-      m_postFrameMel = parseString( parsingString );
+      m_postFrameMel = args.asString( i, &status );
       LIQCHECKSTATUS(status, "error in -postFrameMel parameter");
     } else if ((arg == "-rid") || (arg == "-ribdir")) {
       LIQCHECKSTATUS(status, "error in -ribdir parameter");  i++;
@@ -1678,7 +1677,7 @@ void liqRibTranslator::liquidReadGlobals()
     if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
     gStatus.clear();
     if ( varVal != "" ) {
-      m_preFrameMel = parseString( varVal );
+      m_preFrameMel = varVal;
     }
   }
   {
@@ -1687,7 +1686,7 @@ void liqRibTranslator::liquidReadGlobals()
     if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
     gStatus.clear();
     if ( varVal != "" ) {
-      m_postFrameMel = parseString( varVal );
+      m_postFrameMel = varVal;
     }
   }
 
@@ -2509,10 +2508,13 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   try {
     m_escHandler.beginComputation();
 
-    if ( ( m_preFrameMel  != "" ) && !fileExists( m_preFrameMel  ) ) {
+	MString preFrameMel = parseString(m_preFrameMel);
+	MString postFrameMel = parseString(m_postFrameMel);
+
+    if ( ( preFrameMel  != "" ) && !fileExists( preFrameMel  ) ) {
       cout << "Liquid -> Cannot find pre frame mel script file! Assuming local.\n" << flush;
     }
-    if ( ( m_postFrameMel != "" ) && !fileExists( m_postFrameMel ) ) {
+    if ( ( m_postFrameMel != "" ) && !fileExists( postFrameMel ) ) {
       cout << "Liquid -> Cannot find post frame mel script file! Assuming local.\n" << flush;
     }
 
@@ -4230,7 +4232,7 @@ MStatus liqRibTranslator::ribPrologue()
   if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing ) {
     RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
     RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,          RI_NULL );
-    #if defined ( DELIGHT ) || defined ( PRMAN ) 
+    #if defined ( DELIGHT ) || defined ( PRMAN )
 	    RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
     	RiOption( "trace",   "int continuationbydefault",   ( RtPointer ) &rt_traceRayContinuation,   RI_NULL );
     	RiOption( "limits",  "int geocachememory",          ( RtPointer ) &rt_traceCacheMemory,       RI_NULL );
@@ -4276,9 +4278,10 @@ int count =0;
 
     // scanScene: execute pre-frame command
     if ( m_preFrameMel != "" ) {
-      if ( fileExists( m_preFrameMel  ) ) MGlobal::sourceFile( m_preFrameMel );
+	  MString preFrameMel = parseString(m_preFrameMel);
+      if ( fileExists( preFrameMel  ) ) MGlobal::sourceFile( preFrameMel );
       else {
-        if ( MS::kSuccess == MGlobal::executeCommand( m_preFrameMel, false, false ) ) {
+        if ( MS::kSuccess == MGlobal::executeCommand( preFrameMel, false, false ) ) {
           cout <<"Liquid -> pre-frame script executed successfully."<<endl<<flush;
         } else {
           cout <<"Liquid -> ERROR :pre-frame script failed."<<endl<<flush;
@@ -4562,8 +4565,8 @@ int count =0;
 		// convert focal length to scene units
         MDistance flenDist(iter->camera[sample].focalLength,MDistance::kMillimeters);
 		iter->camera[sample].focalLength = flenDist.as(MDistance::uiUnit());
-		
-        
+
+
 		fnCamera.getPath(path);
         MTransformationMatrix xform( path.inclusiveMatrix() );
         double scale[] = { 1, 1, -1 };
@@ -4763,9 +4766,10 @@ int count =0;
 
     // post-frame script execution
     if ( m_postFrameMel != "" ) {
-      if ( fileExists( m_postFrameMel  ) ) MGlobal::sourceFile( m_postFrameMel );
+	  MString postFrameMel = parseString(m_postFrameMel);
+      if ( fileExists( postFrameMel  ) ) MGlobal::sourceFile( postFrameMel );
       else {
-        if ( MS::kSuccess == MGlobal::executeCommand( m_postFrameMel, false, false ) ) {
+        if ( MS::kSuccess == MGlobal::executeCommand( postFrameMel, false, false ) ) {
           cout <<"Liquid -> post-frame script executed successfully."<<endl<<flush;
         } else {
           cout <<"Liquid -> ERROR :post-frame script failed."<<endl<<flush;
@@ -5498,23 +5502,33 @@ MStatus liqRibTranslator::objectBlock()
 
     // displacement bounds
     float surfaceDisplacementBounds = 0.0;
+    MString surfaceDisplacementBoundsSpace = "shader";
+    MString tmpSpace = "";
     status.clear();
     if ( !ribNode->assignedShader.object().isNull() ) {
       MPlug sDBPlug = ribNode->assignedShader.findPlug( MString( "displacementBound" ), &status );
       if ( status == MS::kSuccess ) sDBPlug.getValue( surfaceDisplacementBounds );
+      MPlug sDBSPlug = ribNode->assignedShader.findPlug( MString( "displacementBoundSpace" ), &status );
+      if ( status == MS::kSuccess ) sDBSPlug.getValue( tmpSpace );
+      if ( tmpSpace != "" ) surfaceDisplacementBoundsSpace = tmpSpace;
     }
     float dispDisplacementBounds = 0.0;
+    MString dispDisplacementBoundsSpace = "shader";
+    tmpSpace = "";
     status.clear();
     if ( !ribNode->assignedDisp.object().isNull() ) {
       MPlug dDBPlug = ribNode->assignedDisp.findPlug( MString( "displacementBound" ), &status );
       if ( status == MS::kSuccess ) dDBPlug.getValue( dispDisplacementBounds );
+      MPlug sDBSPlug = ribNode->assignedDisp.findPlug( MString( "displacementBoundSpace" ), &status );
+      if ( status == MS::kSuccess ) sDBSPlug.getValue( tmpSpace );
+      if ( tmpSpace != "" ) dispDisplacementBoundsSpace = tmpSpace;
     }
 
     if ( ( dispDisplacementBounds != 0.0 ) && ( dispDisplacementBounds > surfaceDisplacementBounds ) ) {
-      RtString coordsys = "shader";
+      RtString coordsys = const_cast<char *>(dispDisplacementBoundsSpace.asChar());
       RiAttribute( "displacementbound", (RtToken) "sphere", &dispDisplacementBounds, "coordinatesystem", &coordsys, RI_NULL );
     } else if ( ( surfaceDisplacementBounds != 0.0 ) ) {
-      RtString coordsys = "shader";
+      RtString coordsys = const_cast<char *>(surfaceDisplacementBoundsSpace.asChar());
       RiAttribute( "displacementbound", (RtToken) "sphere", &surfaceDisplacementBounds, "coordinatesystem", &coordsys, RI_NULL );
     }
 
@@ -6417,30 +6431,30 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
 
       if ( m_hiddenOcclusionBound != 0.0 ) {
         char tmp[128];
-        sprintf( tmp, "\"float occlusionbound\" [%f] ", m_hiddenOcclusionBound );
+        sprintf( tmp, "\"occlusionbound\" [%f] ", m_hiddenOcclusionBound );
         options += tmp;
       }
       if ( m_hiddenMpCache != true ) options += "\"int mpcache\" [0] ";
       if ( m_hiddenMpMemory != 6144 ) {
         char tmp[128];
-        sprintf( tmp, "\"int mpcache\" [%d] ", m_hiddenMpMemory );
+        sprintf( tmp, "\"mpcache\" [%d] ", m_hiddenMpMemory );
         options += tmp;
       }
       if ( m_hiddenMpCacheDir != "" ) {
         char tmp[1024];
-        sprintf( tmp, "\"string mpcachedir\" [\"%s\"] ", m_hiddenMpCacheDir.asChar() );
+        sprintf( tmp, "\"mpcachedir\" [\"%s\"] ", m_hiddenMpCacheDir.asChar() );
         options += tmp;
       }
       if ( m_hiddenSampleMotion != true ) options += "\"int samplemotion\" [0] ";
       if ( m_hiddenSubPixel != 1 ) {
         char tmp[128];
-        sprintf( tmp, "\"int subpixel\" [%d] ", m_hiddenSubPixel );
+        sprintf( tmp, "\"subpixel\" [%d] ", m_hiddenSubPixel );
         options += tmp;
       }
-      if ( m_hiddenExtremeMotionDof != false ) options += "\"int extrememotiondof\" [1] ";
+      if ( m_hiddenExtremeMotionDof != false ) options += "\"extrememotiondof\" [1] ";
       if ( m_hiddenMaxVPDepth != -1 ) {
         char tmp[128];
-        sprintf( tmp, "\"int maxvpdepth\" [%d] ", m_hiddenMaxVPDepth );
+        sprintf( tmp, "\"maxvpdepth\" [%d] ", m_hiddenMaxVPDepth );
         options += tmp;
       }
     } else if ( hidername == "photon" ) {
@@ -6455,17 +6469,17 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
 
       {
         char tmp[1024];
-        sprintf( tmp, "\"string zfile\" [\"%s\"] ", m_depthMaskZFile.asChar() );
+        sprintf( tmp, "\"zfile\" [\"%s\"] ", m_depthMaskZFile.asChar() );
         options += tmp;
       }
       {
         char tmp[128];
-        sprintf( tmp, "\"int reversesign\" [\"%d\"] ", m_depthMaskReverseSign );
+        sprintf( tmp, "\"reversesign\" [\"%d\"] ", m_depthMaskReverseSign );
         options += tmp;
       }
       {
         char tmp[128];
-        sprintf( tmp, "\"float depthbias\" [%f] ", m_depthMaskDepthBias );
+        sprintf( tmp, "\"depthbias\" [%f] ", m_depthMaskDepthBias );
         options += tmp;
       }
     }

@@ -587,7 +587,7 @@ global proc liquidCreateScriptJobs()
   for ( $j in $jobs ) {
     if ( gmatch( $j, "*liquidLargeFieldUpdater*") ) scriptJob -kill (int(match("[0-9]+", $j))) -force;
   }
-  scriptJob -event "renderLayerManagerChange" "eval(\"liquidLargeFieldUpdater\")" -protected;
+  scriptJob -event "renderLayerChange" "eval(\"liquidLargeFieldUpdater\")" -protected;
 }
 
 /**

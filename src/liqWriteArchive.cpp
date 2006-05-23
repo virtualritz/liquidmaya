@@ -149,6 +149,7 @@ MStatus liqWriteArchive::redoIt()
     writeObjectToRib(objDagPath, outputRootTransform);
 
     RiEnd();
+
   } catch (...) {
     MGlobal::displayError("Caught exception in liqWriteArchive::redoIt()");
     return MS::kFailure;
@@ -178,10 +179,14 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
       RiArchiveRecord( RI_COMMENT, "Additional RIB:\n%s", ribNode.rib.box.asChar() );
     }
     if ( ribNode.rib.readArchive != "" && ribNode.rib.readArchive != "-" ) {
-      RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode.rib.readArchive.asChar() );
+      // the following test prevents a really nasty infinite loop !!
+      if ( ribNode.rib.readArchive != outputFilename )
+        RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode.rib.readArchive.asChar() );
     }
     if ( ribNode.rib.delayedReadArchive != "" && ribNode.rib.delayedReadArchive != "-" ) {
-      RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.rib.delayedReadArchive.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
+      // the following test prevents a really nasty infinite loop !!
+      if ( ribNode.rib.delayedReadArchive != outputFilename )
+        RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.rib.delayedReadArchive.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
     }
 
     // If it's a curve we should write the basis function

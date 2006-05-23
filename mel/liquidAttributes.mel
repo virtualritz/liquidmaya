@@ -239,6 +239,15 @@ global proc liquidDeleteVisibilityAttributes()
     if ( `attributeQuery -node $currentNode -ex "liqVisibilityTransmission"` ) {
       deleteAttr ( $currentNode + ".liqVisibilityTransmission" );
     }
+    if ( `attributeQuery -node $currentNode -ex "liqVisibilityDiffuse"` ) {
+      deleteAttr ( $currentNode + ".liqVisibilityDiffuse" );
+    }
+    if ( `attributeQuery -node $currentNode -ex "liqVisibilitySpecular"` ) {
+      deleteAttr ( $currentNode + ".liqVisibilitySpecular" );
+    }
+    if ( `attributeQuery -node $currentNode -ex "liqVisibilityNewTransmission"` ) {
+      deleteAttr ( $currentNode + ".liqVisibilityNewTransmission" );
+    }
   }
 }
 
@@ -248,7 +257,7 @@ global proc liquidCreateVisibilityCameraAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqVisibilityCamera"` ) {
-      addAttr -ln "liqVisibilityCamera" -at bool -dv 1 $currentNode;
+      addAttr -ln "liqVisibilityCamera" -at bool -k true -dv 1 $currentNode;
     }
   }
 }
@@ -261,7 +270,7 @@ global proc liquidCreateVisibilityDiffuse()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqVisibilityDiffuse"` ) {
-      addAttr -ln "liqVisibilityDiffuse" -at bool $currentNode;
+      addAttr -ln "liqVisibilityDiffuse" -at bool -k true $currentNode;
     }
   }
 }
@@ -274,7 +283,7 @@ global proc liquidCreateVisibilitySpecular()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqVisibilitySpecular"` ) {
-      addAttr -ln "liqVisibilitySpecular" -at bool $currentNode;
+      addAttr -ln "liqVisibilitySpecular" -at bool -k true $currentNode;
     }
   }
 }
@@ -287,7 +296,7 @@ global proc liquidCreateVisibilityTransmission()
     string $currentNode;
     for ( $currentNode in $nodes ) {
       if ( !`attributeQuery -node $currentNode -ex "liqVisibilityNewTransmission"` ) {
-        addAttr -ln "liqVisibilityNewTransmission" -at bool $currentNode;
+        addAttr -ln "liqVisibilityNewTransmission" -at bool -k true $currentNode;
       }
     }
   }

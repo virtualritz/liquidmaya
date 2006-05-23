@@ -84,7 +84,7 @@ proc string liquidSl_getShaderType( int $fid )
         }
         $line = `fgetline $fid`;
     }
-	
+
     return $type;
 }
 
@@ -108,6 +108,13 @@ proc string liquidSl_getParamDetail( string $line )
     else if ( `match ($prefix+"varying"+$suffix) $line` != "" ) return "varying";
 
     return "";
+}
+
+proc int liquidSl_isOutputParam( string $line )
+{
+  if ( gmatch( $line, "*output parameter*") ) return 1;
+
+  return 0;
 }
 
 proc string liquidSl_getParamType( string $line )
@@ -295,6 +302,7 @@ global proc liquidSlParseSlo( string $sloFile )
     global int    $gLiquidSlNumParams;
     global string $gLiquidSlParamNames[];
     global string $gLiquidSlParamDetails[];
+    global int    $gLiquidSlParamIsOutput[];
     global string $gLiquidSlParamTypes[];
     global string $gLiquidSlParamDefaults[];
     global int    $gLiquidSlParamArraySizes[];
@@ -317,6 +325,7 @@ global proc liquidSlParseSlo( string $sloFile )
     string $slInfo = `getAttr liquidGlobals.shaderInfo`;
     if ( $slInfo == "" ) error ("Liquid : Please load a renderer Preset or fill the field in RenderGlobals>Renderer>ShaderInfo !");
     string $cmd = $slInfo + " \"" + $sloFile + "\"";
+    print $cmd;
     int $fid = `popen $cmd "r"`;
 
 
@@ -371,6 +380,8 @@ global proc liquidSlParseSlo( string $sloFile )
             return;
         }
 
+        int $isOutputParam = liquidSl_isOutputParam( $line );
+
         string $paramType = liquidSl_getParamType( $line );
         if ( $paramType == "" )
         {
@@ -400,6 +411,7 @@ global proc liquidSlParseSlo( string $sloFile )
         $gLiquidSlParamNames[ $paramNum ] = $paramName;
         $gLiquidSlParamDetails[ $paramNum ] = $paramDetail;
         $gLiquidSlParamTypes[ $paramNum ] = $paramType;
+        $gLiquidSlParamIsOutput[ $paramNum ] = $isOutputParam;
         $gLiquidSlParamDefaults[ $paramNum ] = $paramDefault;
         $gLiquidSlParamArraySizes[ $paramNum ] = $paramArraySize;
 

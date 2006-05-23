@@ -91,6 +91,7 @@ class liqDisplacementNode : public MPxNode
     static MObject aPreviewBackplane;
 
     static MObject aDisplacementBound;
+    static MObject aDisplacementBoundSpace;
     static MObject aOutputInShadow;
     static MObject aShaderSpace;
     static MObject aRefreshPreview;

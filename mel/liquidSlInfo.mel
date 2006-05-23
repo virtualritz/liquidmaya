@@ -54,9 +54,15 @@
 global proc liquidSlSetShader( string $shaderFile )
 {
     global string $gLiquidSlShaderFile;
+    global string $gLiquidSLifFile[];
 
-    if ( $shaderFile == $gLiquidSlShaderFile ) return;
-    else $gLiquidSlShaderFile = $shaderFile;
+    if ( $shaderFile == $gLiquidSlShaderFile ) {
+      //trace ("     - shader already parsed >> EXIT");
+      return;
+    }else {
+      $gLiquidSlShaderFile = $shaderFile;
+      clear $gLiquidSLifFile;
+    }
 
     string $ext = `substitute "^.*\\." $shaderFile ""`;
     switch ( $ext )
@@ -88,6 +94,41 @@ global proc liquidSlSetShader( string $shaderFile )
     liquidSlParseLif( $shaderFile );
 }
 
+
+global proc liquidSlSetShaderNode( string $node )
+{
+    global string $gLiquidSlShaderFile;
+    global string $gLiquidSLifFile[];
+
+    global string $gLiquidSlShaderFile;
+    global string $gLiquidSlShaderName;
+    global string $gLiquidSlShaderType;
+    global int    $gLiquidSlNumParams;
+    global string $gLiquidSlParamNames[];
+    global int    $gLiquidSlParamIsOutput[];
+    global string $gLiquidSlParamTypes[];
+    global string $gLiquidSlParamDefaults[];
+    global int    $gLiquidSlParamArraySizes[];
+
+    global string $gLiquidSLifFile[];
+    global int    $gLiquidSlParamGuiOrder[];
+    global string $gLiquidSlParamGuiLabel[];
+    global string $gLiquidSlParamGuiDescription[];
+    global string $gLiquidSlParamGuiType[];
+    global string $gLiquidSlParamGuiRange[];
+    global string $gLiquidSlLifShaderDescription;
+    global int    $gLiquidSlLifGuiSize;
+
+    $gLiquidSlShaderFile      = `getAttr ($node+".rmanShaderLong")`;
+    $gLiquidSlShaderName      =  basenameEx( $gLiquidSlShaderFile );
+    $gLiquidSlShaderType      =  tolower( substitute( "liquid", nodeType( $node ), "" ) );
+    $gLiquidSlParamNames      = `getAttr ($node+".rmanParams")`;
+    $gLiquidSlNumParams       =  size( $gLiquidSlParamNames );
+    $gLiquidSlParamTypes      = `getAttr ($node+".rmanTypes")`;
+    $gLiquidSlParamDefaults   = `getAttr ($node+".rmanDefaults")`;
+    $gLiquidSlParamArraySizes = `getAttr ($node+".rmanArraySizes")`;
+}
+
 global proc liquidSlInfoReset()
 {
   global string $gLiquidSlShaderFile;
@@ -95,10 +136,12 @@ global proc liquidSlInfoReset()
   global string $gLiquidSlShaderType;
   global int    $gLiquidSlNumParams;
   global string $gLiquidSlParamNames[];
+  global int    $gLiquidSlParamIsOutput[];
   global string $gLiquidSlParamTypes[];
   global string $gLiquidSlParamDefaults[];
   global int    $gLiquidSlParamArraySizes[];
 
+  global string $gLiquidSLifFile[];
   global int    $gLiquidSlParamGuiOrder[];
   global string $gLiquidSlParamGuiLabel[];
   global string $gLiquidSlParamGuiDescription[];
@@ -108,11 +151,13 @@ global proc liquidSlInfoReset()
   global int    $gLiquidSlLifGuiSize;
   global int    $gLiquidSlLifExists;
 
+  clear $gLiquidSLifFile;
   clear $gLiquidSlParamGuiOrder;
   clear $gLiquidSlParamGuiLabel;
   clear $gLiquidSlParamGuiDescription;
   clear $gLiquidSlParamGuiType;
   clear $gLiquidSlParamGuiRange;
+  clear $gLiquidSlParamIsOutput;
 
   $gLiquidSlShaderName = "";
   $gLiquidSlShaderFile = "";
@@ -159,6 +204,21 @@ global proc string liquidSlParamName( int $index )
 
     global string $gLiquidSlParamNames[];
     return $gLiquidSlParamNames[$index];
+}
+
+global proc int liquidSlParamIsOutput( int $index )
+{
+  global int $gLiquidSlNumParams;
+
+  if ( $gLiquidSlNumParams == -1 )
+        error( "no shader set" );
+
+  if ( $index < 0 ||
+         $index >= $gLiquidSlNumParams )
+        error( "liquidSlParamName( "+$index+" ): parameter index out of range" );
+
+  global int    $gLiquidSlParamIsOutput[];
+  return $gLiquidSlParamIsOutput[$index];
 }
 
 global proc  string liquidSlParamDetail( int $index )

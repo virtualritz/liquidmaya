@@ -91,6 +91,7 @@ class liqSurfaceNode : public MPxNode
     static MObject aColor;
     static MObject aOpacity;
     static MObject aDisplacementBound;
+    static MObject aDisplacementBoundSpace;
     static MObject aOutputInShadow;
     static MObject aShaderSpace;
 
