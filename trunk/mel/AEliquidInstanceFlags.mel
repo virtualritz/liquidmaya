@@ -17,14 +17,34 @@ proc AEliquidCreateMenu()
 
 global proc liquidLargeFieldUpdater()
 {
-  if (  `window -q -ex AEWindow` &&
-        `window -q -visible AEWindow` &&
-        `scrollField -q -ex liquidLargeFieldCtlliqRIBBox` &&
-        !`scrollField -q -io liquidLargeFieldCtlliqRIBBox` )
-  {
-    string $obj[] = `ls -sl -l -tail 1`;
-    scrollField -e -tx (`getAttr ($obj[0]+".liqRIBBox")`) liquidLargeFieldCtlliqRIBBox;
+  //early exit
+  string $globalsExists = objExists( "liquidGlobals" );
+
+  string $currentLayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+  string $prefix = ($currentLayer == "defaultRenderLayer")? "masterLayer_":"";
+  string $attr[] = { "liqRIBBox", "preframeMel", "postframeMel", "preFrameBegin", "preWorld", "postWorld", "preGeom" };
+  string $obj[]  = { "obj", "", "", "", "", "", "" };
+  string $sel[] = `ls -sl -tr -l -tail 1`;
+  string $ctl;
+
+  for ( $i=0; $i<size( $attr ); $i++ ) {
+
+    $ctl = ( $obj[$i] == "obj" )? ("liquidLargeFieldCtl"+$attr[$i]) : ($prefix+"liquidLargeFieldCtl"+$attr[$i]);
+
+    if ( !`scrollField -q -ex $ctl` ) {
+      //trace("    >>  skip "+$ctl);
+      continue;
+    }
+
+    if ( $obj[$i] == "obj" ) {
+      scrollField -e -tx (`getAttr ($sel[0]+"."+$attr[$i])`) $ctl;
+      //trace ("    >>  updated "+$ctl);
+    } else {
+      if ( $globalsExists ) scrollField -e -tx (`getAttr ("liquidGlobals."+$attr[$i])`) $ctl;
+      //trace ("    >>  updated "+$ctl);
+    }
   }
+  //trace "\n";
 }
 
 global proc liquidFieldUpdateMenu( string $msg )

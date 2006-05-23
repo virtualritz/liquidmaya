@@ -33,12 +33,18 @@
 
 
 
+//
+//  Note : from now on, the attributes are hidden to speed up loading of large shaders (100+ parameters)
+//
+
+
+
 global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFileName )
 {
-  //print ("liquidAttachShaderParams( "+$currentNodeName+", "+$shaderFileName+" )\n");
+  //trace ("liquidAttachShaderParams( "+$currentNodeName+", "+$shaderFileName+" )\n");
 
   // parse the shader
-  liquidSlInfoReset();
+  // don't force a reload
   liquidSlSetShader( $shaderFileName );
 
   // just use the globals
@@ -46,7 +52,11 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
 
   for ( $i = 0; $i < $numOfArgs ; $i++ ) {
 
+
     string $argName      = liquidSlParamName($i);
+
+    if ( liquidSlParamIsOutput($i) && !gmatch( $argName, "_*") ) return;
+
     string $argType      = liquidSlParamType($i);
     int    $argArrayLen  = liquidSlParamArraySize($i);
     string $paramDefault = liquidSlParamDefault($i);
@@ -70,7 +80,7 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             $argDefaultF = liquidSlDefaultToFloatArray( $paramDefault );
 
             // NEW WAY.
-            addAttr -longName $argName -at "double" -keyable true -multi $currentNodeName;
+            addAttr -hidden true -longName $argName -at "double" -keyable true -multi $currentNodeName;
 
             for ( $k = 0; $k < $argArrayLen; $k++ ) {
               setAttr  -k true ($currentNodeName+"."+$argName+"["+$k+"]") $argDefaultF[$k];
@@ -81,7 +91,7 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             $argDefaultF[0] = liquidSlDefaultToFloat( $paramDefault );
 
             // simple float
-            addAttr -longName $argName -at double -k true $currentNodeName;
+            addAttr -hidden true -longName $argName -at double -k true $currentNodeName;
             setAttr  ($currentNodeName+"."+$argName) $argDefaultF[0];
 
           }
@@ -96,7 +106,7 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             // string array
             $argDefaultS = liquidSlDefaultToStringArray( $paramDefault );
 
-            addAttr -longName $argName -dt "string" -multi $currentNodeName;
+            addAttr -hidden true -longName $argName -dt "string" -multi $currentNodeName;
             for ( $k = 0; $k < $argArrayLen; $k++ ) {
               setAttr -type "string" ($currentNodeName+"."+$argName+"["+$k+"]") $argDefaultS[$k];
             }
@@ -106,7 +116,7 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             // simple string
             $argDefaultS[0] = liquidSlDefaultToString( $paramDefault );
 
-            addAttr -longName $argName -dt "string" $currentNodeName;
+            addAttr -hidden true -longName $argName -dt "string" $currentNodeName;
             setAttr ( $currentNodeName + "." + $argName ) -type "string" $argDefaultS[0];
 
           }
@@ -127,10 +137,10 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             if ( `getAttr -type $tmpAttrName` == "float" ) {
               float $tmpVal = `getAttr $tmpAttrName`;
               deleteAttr $tmpAttrName;
-              addAttr -k true -longName "opacity" -usedAsColor -at float3 $currentNodeName;
-              addAttr -k true -longName "redO" -at "float" -parent "opacity" $currentNodeName;
-              addAttr -k true -longName "greenO" -at "float" -parent "opacity" $currentNodeName;
-              addAttr -k true -longName "blueO" -at "float" -parent "opacity" $currentNodeName;
+              addAttr -hidden true -k true -longName "opacity" -usedAsColor -at float3 $currentNodeName;
+              addAttr -hidden true -k true -longName "redO" -at "float" -parent "opacity" $currentNodeName;
+              addAttr -hidden true -k true -longName "greenO" -at "float" -parent "opacity" $currentNodeName;
+              addAttr -hidden true -k true -longName "blueO" -at "float" -parent "opacity" $currentNodeName;
               setAttr  ( $currentNodeName + ".opacity" ) -type float3 $tmpVal $tmpVal $tmpVal;
             }
             break;
@@ -145,10 +155,10 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             // color array
             int $size = size($argDefaultV);
 
-            addAttr -k true -longName $argName -at "float3" -usedAsColor -multi $currentNodeName;
-            addAttr -k true -longName ( $argName+"a" ) -at "float" -parent $argName $currentNodeName;
-            addAttr -k true -longName ( $argName+"b" ) -at "float" -parent $argName $currentNodeName;
-            addAttr -k true -longName ( $argName+"c" ) -at "float" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName $argName -at "float3" -usedAsColor -multi $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName+"a" ) -at "float" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName+"b" ) -at "float" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName+"c" ) -at "float" -parent $argName $currentNodeName;
 
             int $k = 0;
             for ( ; $k<$size; $k++ ) {
@@ -162,10 +172,10 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
 
             // simple color
             vector $v = $argDefaultV[0];
-            addAttr -k true -longName $argName -at "float3" -usedAsColor $currentNodeName;
-            addAttr -k true -longName ( $argName + "a" ) -at "float" -parent $argName $currentNodeName;
-            addAttr -k true -longName ( $argName + "b" ) -at "float" -parent $argName $currentNodeName;
-            addAttr -k true -longName ( $argName + "c" ) -at "float" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName $argName -at "float3" -usedAsColor $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName + "a" ) -at "float" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName + "b" ) -at "float" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName + "c" ) -at "float" -parent $argName $currentNodeName;
             setAttr  ( $currentNodeName + "." + $argName ) -type "float3" ($v.x) ($v.y) ($v.z);
 
           }
@@ -183,10 +193,10 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             // point, vector, normal array
             int $size = size($argDefaultV);
 
-            addAttr -k true -longName $argName -at "double3"-multi $currentNodeName;
-            addAttr -k true -longName ( $argName+"a" ) -at "double" -parent $argName $currentNodeName;
-            addAttr -k true -longName ( $argName+"b" ) -at "double" -parent $argName $currentNodeName;
-            addAttr -k true -longName ( $argName+"c" ) -at "double" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName $argName -at "double3"-multi $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName+"a" ) -at "double" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName+"b" ) -at "double" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName+"c" ) -at "double" -parent $argName $currentNodeName;
 
             int $k;
             for ( $k = 0; $k<$size; $k++ ) {
@@ -199,10 +209,10 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             $argDefaultV[0] = liquidSlDefaultToVector( $paramDefault );
 
             vector $v = $argDefaultV[0];
-            addAttr -k true -longName $argName -at double3 $currentNodeName;
-            addAttr -k true -longName ( $argName + "a" ) -at double -parent $argName $currentNodeName;
-            addAttr -k true -longName ( $argName + "b" ) -at double -parent $argName $currentNodeName;
-            addAttr -k true -longName ( $argName + "c" ) -at double -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName $argName -at double3 $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName + "a" ) -at double -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName + "b" ) -at double -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName + "c" ) -at double -parent $argName $currentNodeName;
             setAttr  ( $currentNodeName + "." + $argName ) -type double3 ($v.x) ($v.y) ($v.z);
 
           }

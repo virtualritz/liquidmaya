@@ -21,8 +21,8 @@ class liqCoordSysNode : public MPxLocatorNode
     virtual MStatus         compute( const MPlug& plug, MDataBlock& data );
 
     virtual void            draw( M3dView & view, const MDagPath & path,
-                                  M3dView::DisplayStyle style,
-                                  M3dView::DisplayStatus status );
+                                  M3dView::DisplayStyle displaystyle,
+                                  M3dView::DisplayStatus displaystatus );
 
     virtual bool            isBounded() const;
     virtual MBoundingBox    boundingBox() const;
@@ -30,13 +30,17 @@ class liqCoordSysNode : public MPxLocatorNode
     static  void *          creator();
     static  MStatus         initialize();
 
-    static  MObject         aType;
+    static  MObject         aDummy;
+    static  MObject         aCoordType;
+    static  MObject         aCoordColor;
+    static  MObject         aCoordOpacity;
 
   public:
     static	MTypeId		      id;
 
   private:
-    int coordType;
+    int     m_coordType;
+    MColor  m_coordColor;
 
 };
 

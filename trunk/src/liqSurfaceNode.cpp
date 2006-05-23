@@ -41,6 +41,7 @@
 #include <maya/MCommandResult.h>
 #include <maya/MIOStream.h>
 #include <maya/MString.h>
+#include <maya/MFnStringData.h>
 #include <maya/MTypeId.h>
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
@@ -77,6 +78,7 @@ MObject liqSurfaceNode::aColor;
 MObject liqSurfaceNode::aOpacity;
 MObject liqSurfaceNode::aShaderSpace;
 MObject liqSurfaceNode::aDisplacementBound;
+MObject liqSurfaceNode::aDisplacementBoundSpace;
 MObject liqSurfaceNode::aOutputInShadow;
 MObject liqSurfaceNode::aResolution;
 MObject liqSurfaceNode::aRefreshPreview;
@@ -161,6 +163,7 @@ void* liqSurfaceNode::creator()
 MStatus liqSurfaceNode::initialize()
 {
   MFnTypedAttribute   tAttr;
+  MFnStringData       tDefault;
   MFnNumericAttribute nAttr;
   MFnEnumAttribute    eAttr;
   MFnLightDataAttribute lAttr;
@@ -222,13 +225,21 @@ MStatus liqSurfaceNode::initialize()
   aColor = nAttr.createColor("color", "cs");
   nAttr.setDefault( 1.0, 1.0, 1.0 );
   MAKE_INPUT(nAttr);
+
   aOpacity = nAttr.createColor("opacity", "os");
   nAttr.setDefault( 1.0, 1.0, 1.0 );
   MAKE_INPUT(nAttr);
+
   aShaderSpace = tAttr.create( MString("shaderSpace"), MString("ssp"), MFnData::kString, aShaderSpace, &status );
 	MAKE_INPUT(tAttr);
+
   aDisplacementBound = nAttr.create("displacementBound", "db", MFnNumericData::kDouble, 0.0, &status);
   MAKE_INPUT(nAttr);
+
+  MObject defaultSpaceObj = tDefault.create( MString("shader"), &status);
+  aDisplacementBoundSpace = tAttr.create( MString("displacementBoundSpace"), MString("dbs"), MFnData::kString, defaultSpaceObj, &status );
+	MAKE_INPUT(tAttr);
+
   aOutputInShadow = nAttr.create("outputInShadow", "ois",  MFnNumericData::kBoolean, 0.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
 
@@ -396,6 +407,7 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(addAttribute(aOpacity));
   CHECK_MSTATUS(addAttribute(aShaderSpace));
   CHECK_MSTATUS(addAttribute(aDisplacementBound));
+  CHECK_MSTATUS(addAttribute(aDisplacementBoundSpace));
   CHECK_MSTATUS(addAttribute(aOutputInShadow));
   CHECK_MSTATUS(addAttribute(aResolution));
   CHECK_MSTATUS(addAttribute(aRefreshPreview));

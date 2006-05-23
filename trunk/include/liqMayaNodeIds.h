@@ -1,4 +1,3 @@
-
 /*
 **
 ** The contents of this file are subject to the Mozilla Public License Version 1.1 (the
@@ -45,4 +44,5 @@
 #define liqGlobalsNodeId		0x00103524
 #define liqCoordSysNodeId		0x00103525
 #endif
+
 #endif // __LIQ_MAYA_NODE_IDS_H__

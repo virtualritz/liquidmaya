@@ -41,6 +41,7 @@
 #include <maya/MCommandResult.h>
 #include <maya/MIOStream.h>
 #include <maya/MString.h>
+#include <maya/MFnStringData.h>
 #include <maya/MTypeId.h>
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
@@ -78,6 +79,7 @@ MObject liqDisplacementNode::aPreviewBackplane;
 
 MObject liqDisplacementNode::aShaderSpace;
 MObject liqDisplacementNode::aDisplacementBound;
+MObject liqDisplacementNode::aDisplacementBoundSpace;
 MObject liqDisplacementNode::aOutputInShadow;
 MObject liqDisplacementNode::aRefreshPreview;
 
@@ -135,6 +137,7 @@ void* liqDisplacementNode::creator()
 MStatus liqDisplacementNode::initialize()
 {
   MFnTypedAttribute   tAttr;
+  MFnStringData       tDefault;
   MFnNumericAttribute nAttr;
   MFnEnumAttribute    eAttr;
   MStatus status;
@@ -198,6 +201,11 @@ MStatus liqDisplacementNode::initialize()
 
   aDisplacementBound = nAttr.create("displacementBound", "db", MFnNumericData::kDouble, 0.0, &status);
   MAKE_INPUT(nAttr);
+
+  MObject defaultSpaceObj = tDefault.create( MString("shader"), &status);
+  aDisplacementBoundSpace = tAttr.create( MString("displacementBoundSpace"), MString("dbs"), MFnData::kString, defaultSpaceObj, &status );
+	MAKE_INPUT(tAttr);
+
   aOutputInShadow = nAttr.create("outputInShadow", "ois",  MFnNumericData::kBoolean, 0.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
 
@@ -227,6 +235,7 @@ MStatus liqDisplacementNode::initialize()
   CHECK_MSTATUS(addAttribute(aPreviewBackplane));
   CHECK_MSTATUS(addAttribute(aShaderSpace));
   CHECK_MSTATUS(addAttribute(aDisplacementBound));
+  CHECK_MSTATUS(addAttribute(aDisplacementBoundSpace));
   CHECK_MSTATUS(addAttribute(aOutputInShadow));
   CHECK_MSTATUS(addAttribute(aRefreshPreview));
 

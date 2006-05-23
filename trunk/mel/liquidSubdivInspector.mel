@@ -201,6 +201,7 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
               menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
               menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
               menuItem -label $label_delete -c ("partition -rm liquidCreasePartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
+          setParent ..;
           $i++;
         }
       } else {
@@ -226,6 +227,7 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
           menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
           menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
           menuItem -label $label_delete -c ("partition -rm liqCornerPartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
+      setParent ..;
       $i++;
     }
   } else {
@@ -253,6 +255,7 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
           menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
           menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
           menuItem -label $label_delete -c ("partition -rm liqHolePartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
+      setParent ..;
       $i++;
     }
   } else {
@@ -278,6 +281,7 @@ global proc liq_sbd_insp_dispExtraTags( string $shape ) {
             menuItem -label $label_select -c ("select -noExpand " + $inSetNode + ";");
             menuItem -label $label_select_memb -c ("select " + $inSetNode + ";");
             menuItem -label $label_delete -c ("partition -rm liqStitchPartition " + $inSetNode + "; delete " + $inSetNode + "; liq_sbd_insp_dispExtraTags " + $shape + ";");
+      setParent ..;
       $i++;
     }
   } else {

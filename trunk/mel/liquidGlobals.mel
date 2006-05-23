@@ -71,14 +71,14 @@ global proc liquidGlobalsUpdateBitsMenus( string $theAttr )
 /* Widget creation ----------------------------------------------------------*/
 // all these procs should be local !!
 
-global proc liquidGlobalsRenderLayerOverrideUpdateMenu( string $attr )
+global proc liquidGlobalsRenderLayerOverrideUpdateMenu( string $attr, string $prefix )
 {
   int $en = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
   string $ctl = (gmatch( $attr, "*[*]*"))? substitute( $attr, "s/\\[*\\]*/_/g" ) : $attr;
   string $nodeOverrides = stringArrayToString( editRenderLayerAdjustment( "-q" ,("liquidGlobals."+$attr)), " ");
   string $remove = (gmatch( $nodeOverrides, ("*liquidGlobals."+$attr+"*")))? "-remove":"";
   string $label = ($remove == "")? "Create Layer Override":"Remove Layer Override";
-  menuItem -e -l $label -c ("editRenderLayerAdjustment "+$remove+" liquidGlobals."+$attr) -en $en ("liquidGlobalsOverride_"+$ctl);
+  menuItem -e -l $label -c ("evalEcho(\"editRenderLayerAdjustment "+$remove+" liquidGlobals."+$attr+"\")") -en $en ($prefix+"liquidGlobalsOverride_"+$ctl);
 }
 
 proc resizeLayout( string $root, int $levels )
@@ -158,42 +158,53 @@ proc liquidShowBitFieldGlobal( string $attr )
   }
 }
 
-global proc liquidShowStringGlobalPlus( string $name, string $label, string $info )
+global proc liquidShowStringGlobalPlus( string $name, string $label, string $info, string $prefix )
 {
   if ( `objExists ("liquidGlobals."+$name)` ) {
     string $ctl = `textFieldGrp -label $label -ann $info`;
     connectControl -index 2 $ctl ("liquidGlobals."+$name);
-    popupMenu -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu "+$name);
-    menuItem -l "Create Layer Override" ("liquidGlobalsOverride_"+$name);
+    popupMenu -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu \""+$name+"\" \""+$prefix+"\"");
+    menuItem -l "Create Layer Override" ($prefix+"liquidGlobalsOverride_"+$name);
   } else {
     print ( "Warning : global attribute " + $name + " does not exist\n" );
   }
 }
 
-proc liquidShowStringGlobal( string $name, string $label )
+proc liquidShowStringGlobal( string $name, string $label, string $prefix )
 {
-  liquidShowStringGlobalPlus( $name, $label, "" );
+  liquidShowStringGlobalPlus( $name, $label, "", $prefix );
 }
 
-global proc liquidShowLargeStringGlobalPlus( string $name, string $label, string $info )
+global proc liquidShowLargeStringGlobalPlus( string $name, string $label, string $info, string $prefix )
 {
   string $nodeDotAttr = ("liquidGlobals."+$name);
   if ( `objExists $nodeDotAttr` ) {
+    // find out if we are going to display the masterLayer's globals or regular globals
+    string $prefix = "";
+    string $currentParent = `setParent -q`;
+    if ( gmatch( $currentParent, "unifiedRenderGlobalsWindow|rgMainForm|tabForm|masterLayerTabLayout*") ) $prefix = "masterLayer_";
+
     string $layout = `rowLayout -nc 2 -cw 2 240`;
     string $labelCtl = `text -l $label`;
     string $val = `getAttr $nodeDotAttr`;
-    string $ctl = `scrollField  -wordWrap false
-                                -font smallFixedWidthFont
-                                -w 300
-                                -h 100
-                                -ann $info
-                                -tx $val`;
+
+    int $i = 0;
+    string $suffix =  $i++;
+    string $ctl = ($prefix+"liquidLargeFieldCtl"+$name);
+
+    scrollField -wordWrap false
+                -font smallFixedWidthFont
+                -w 300
+                -h 100
+                -ann $info
+                -tx $val
+                $ctl;
      scrollField -e -cc ("{string $s = `scrollField -q -tx "+$ctl+"`;setAttr -type \"string\" "+$nodeDotAttr+" $s;}")
                     -ec ("{string $s = `scrollField -q -tx "+$ctl+"`;setAttr -type \"string\" "+$nodeDotAttr+" $s;}")
                     $ctl;
     setParent ..;
-    popupMenu -parent $ctl -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu "+$name);
-    menuItem -l "Create Layer Override" ("liquidGlobalsOverride_"+$name);
+    popupMenu -parent $ctl -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu \""+$name+"\" \""+$prefix+"\"");
+    menuItem -l "???" ($prefix+"liquidGlobalsOverride_"+$name);
   } else {
     print ( "Warning : global attribute " + $name + " does not exist\n" );
   }
@@ -234,7 +245,7 @@ proc liquidShowFloatGlobal( string $name, string $label )
   liquidShowFloatGlobalPlus( $name, $label, "", "" );
 }
 
-proc liquidShowIntGlobalMenu( string $name, string $label, string $items[] )
+proc liquidShowIntGlobalMenu( string $name, string $label, string $items[], string $prefix )
 {
   if (size($items) == 0) {
     warning( "empty list specified in liquidShowIntGlobalMenu() for attribute " + $name + "\n");
@@ -248,8 +259,8 @@ proc liquidShowIntGlobalMenu( string $name, string $label, string $items[] )
       menuItem -data $i -label $items[ $i ] ( $name + "_" + `liquidSubstituteAll "[^a-zA-Z]" $items[ $i ] ""` );
     }
     connectControl -index 2 $menu ("liquidGlobals." + $name);
-    popupMenu -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu "+$name);
-    menuItem -l "Create Layer Override" ("liquidGlobalsOverride_"+$name);
+    popupMenu -pmc ("liquidGlobalsRenderLayerOverrideUpdateMenu \""+$name+"\" \""+$prefix+"\"");
+    menuItem -l "Create Layer Override" ($prefix+"liquidGlobalsOverride_"+$name);
     //setUITemplate -ppt;
   } else {
     warning ( "global attribute " + $name + " does not exist\n" );
@@ -286,7 +297,7 @@ proc liquidUpdateBitsIntGlobalMenu( string $name, string $attr )
 
 // creates an option menu based on renderer capacities.
 // links to an int attribute.
-proc liquidShowBitsIntGlobalMenuPlus( string $name, string $label, string $attr, string $callback )
+proc liquidShowBitsIntGlobalMenuPlus( string $name, string $label, string $attr, string $callback, string $prefix )
 {
   if ( `attributeQuery -node liquidGlobals -ex $attr` ) {
     //setUITemplate -pst attributeEditorTemplate;
@@ -299,17 +310,17 @@ proc liquidShowBitsIntGlobalMenuPlus( string $name, string $label, string $attr,
       menuItem -data $i -label (liquidToUI($children[ $i ])) -en $enabled ( $name + "_" + `liquidSubstituteAll "[^a-zA-Z]" $children[ $i ] ""` );
     }
     connectControl -index 2 $menu ("liquidGlobals." + $name);
-    popupMenu -postMenuCommand ("liquidGlobalsRenderLayerOverrideUpdateMenu "+$name);
-    menuItem -l "Create Layer Override" ("liquidGlobalsOverride_"+$name);
+    popupMenu -postMenuCommand ("liquidGlobalsRenderLayerOverrideUpdateMenu \""+$name+"\" \""+$prefix+"\"");
+    menuItem -l "Create Layer Override" ($prefix+"liquidGlobalsOverride_"+$name);
     //setUITemplate -ppt;
   } else {
     warning ( "global attribute " + $name + " does not exist\n" );
   }
 }
 
-proc liquidShowBitsIntGlobalMenu( string $name, string $label, string $attr )
+proc liquidShowBitsIntGlobalMenu( string $name, string $label, string $attr, string $prefix )
 {
-  liquidShowBitsIntGlobalMenuPlus( $name, $label, $attr, "" );
+  liquidShowBitsIntGlobalMenuPlus( $name, $label, $attr, "", $prefix );
 }
 
 // end of local procs ---------------------------------------------------------
@@ -917,7 +928,7 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
   }
 
   // allow the user to pass a qualified path
-  string $globalName = (`filetest -r $name`)? $name : ( $liquidDirectory + "/" + $name + ".lg" );
+  string $globalName = (`filetest -r $name` && `filetest -f $name`)? $name : ( $liquidDirectory + "/" + $name + ".lg" );
 
   string $oldSel[] = `ls -sl`;
   // get the globals selected before applying the presets (setAttr .attr will fail otherwise)
@@ -1046,13 +1057,13 @@ global proc liquidBuildDisplayDriverMenu()
   }
 }
 
-global proc liquidBuildRenderCameraMenu()
+global proc liquidBuildRenderCameraMenu( string $prefix )
 {
   popupMenu -e -deleteAllItems LG_RenderCameraMenuCtl;
   int $i;
   string $cameras[] = `ls -cameras`;
   for ( $i=0; $i<size($cameras); $i++ ) {
-    menuItem -parent LG_RenderCameraMenuCtl -label $cameras[$i] -c ("{setAttr -type \"string\" liquidGlobals.renderCamera "+$cameras[$i]+";}");
+    menuItem -parent ($prefix+"LG_RenderCameraMenuCtl") -label $cameras[$i] -c ("{setAttr -type \"string\" liquidGlobals.renderCamera "+$cameras[$i]+";}");
   }
 }
 
@@ -1928,11 +1939,12 @@ global proc liquidDrawDisplayChannels()
 
 
 
-global proc liquidGlobalsFrameTab()
+global proc liquidGlobalsFrameTab( string $prefix )
 {
   ////setUITemplate -pushTemplate attributeEditorTemplate;
+  string $previousParent = `setParent -q`;
 
-  columnLayout -adj true liquidGlobalsFrameSet;
+  columnLayout -adj true -vis false ($prefix + "liquidGlobalsFrameSet" );
     frameLayout -bs "etchedIn" -l "Output Passes" -cll true -cl false;
       columnLayout -adj true ;
         liquidShowBoolGlobal "outputHeroPass" "Hero";
@@ -1943,10 +1955,10 @@ global proc liquidGlobalsFrameTab()
     frameLayout -bs "etchedIn" -l "Camera" -cll true -cl false;
       columnLayout -adj true ;
         rowLayout -nc 2 -cw2 362 20 -ct2 left left -cl2 left center LG_renderCameraL;
-          liquidShowStringGlobal( "renderCamera", "Render Camera" );
+          liquidShowStringGlobal( "renderCamera", "Render Camera", $prefix );
           iconTextButton -style "iconOnly" -w 19 -h 18 -mw 0 -mh 0 -image (liquidGetHome()+"/icons/liquidMenuButton.xpm") LG_RenderCameraButtonCtl;
           setParent ..;
-          popupMenu -parent LG_RenderCameraButtonCtl -b 1 -pmc liquidBuildRenderCameraMenu LG_RenderCameraMenuCtl;
+          popupMenu -parent LG_RenderCameraButtonCtl -b 1 -pmc ( "liquidBuildRenderCameraMenu \""+$prefix+"\"" ) ($prefix+"LG_RenderCameraMenuCtl");
 
         if ( objExists( "liquidGlobals.rotateCamera" ) ) {
           liquidShowBoolGlobalPlus "rotateCamera" "Rotate Camera" "This will rotate your final render by 90 degrees.";
@@ -1979,7 +1991,7 @@ global proc liquidGlobalsFrameTab()
         liquidShowIntGlobal  "motionFactor"       "Motion Factor";
         separator;
         liquidShowBoolGlobalPlus "cameraBlur"     "Camera Blur" "This is a potentially expensive switch...";
-        liquidShowIntGlobalMenu "shutterConfig"   "Shutter Configuration" {"Open on Frame","Center on Frame","Center Between Frames","Close on Next Frame"};
+        liquidShowIntGlobalMenu "shutterConfig"   "Shutter Configuration" {"Open on Frame","Center on Frame","Center Between Frames","Close on Next Frame"} $prefix;
         separator;
         liquidShowBoolGlobal "depthOfField"       "Depth of Field";
       setParent ..;
@@ -1987,26 +1999,31 @@ global proc liquidGlobalsFrameTab()
   setParent ..;
   setParent ..;
 
-  //setLayoutSize liquidGlobalsFrameSet;
+  columnLayout -e -vis true ($prefix + "liquidGlobalsFrameSet" );
+  setParent $previousParent;
 
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
   ////setUITemplate -popTemplate;
 }
 
-global proc liquidGlobalsFileTab()
+global proc liquidGlobalsFileTab( string $prefix )
 {
-  columnLayout -adj true liquidGlobalsFileSet;
+  columnLayout -adj true ($prefix + "liquidGlobalsFileSet" );
 }
 
-global proc liquidGlobalsFileTab_buildIt()
+global proc liquidGlobalsFileTab_buildIt( string $prefix )
 {
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
-  setParent liquidGlobalsFileSet;
+  string $previousParent = `setParent -q`;
+
+  setParent ($prefix + "liquidGlobalsFileSet" );
+  layout -e -vis false ($prefix + "liquidGlobalsFileSet" );
+
   frameLayout -bs "etchedIn" -l "RIB Name" -cll true -cl false;
     columnLayout -adj true;
-      liquidShowStringGlobal "ribName"   "RIB Basename";
+      liquidShowStringGlobal "ribName"   "RIB Basename" $prefix;
       liquidShowBoolGlobal   "beautyRibHasCameraName" "Camera in Bty RIB name";
       separator;
       liquidShowBoolGlobal   "doPadding" "RIB Extension Padding";
@@ -2016,18 +2033,18 @@ global proc liquidGlobalsFileTab_buildIt()
 
   frameLayout -bs "etchedIn" -l "Shot Info" -cll true -cl false;
     columnLayout -adj true;
-      liquidShowStringGlobal "shotName"     "Shot Name";
-      liquidShowStringGlobal "shotVersion"  "Shot Version";
+      liquidShowStringGlobal "shotName"     "Shot Name" $prefix;
+      liquidShowStringGlobal "shotVersion"  "Shot Version" $prefix;
     setParent ..;
   setParent ..;
 
   frameLayout -bs "etchedIn" -l "Directories" -cll true -cl false;
     columnLayout -adj true;
-      liquidShowStringGlobal "pictureDirectory" "Rendered Pictures";
-      liquidShowStringGlobal "textureDirectory" "Textures/Generated Maps";
-      liquidShowStringGlobal "ribDirectory"     "RIBs";
-      liquidShowStringGlobal "shaderDirectory"  "Generated Shaders";
-      liquidShowStringGlobal "tempDirectory"    "Temporary Files";
+      liquidShowStringGlobal "pictureDirectory" "Rendered Pictures" $prefix;
+      liquidShowStringGlobal "textureDirectory" "Textures/Generated Maps" $prefix;
+      liquidShowStringGlobal "ribDirectory"     "RIBs" $prefix;
+      liquidShowStringGlobal "shaderDirectory"  "Generated Shaders" $prefix;
+      liquidShowStringGlobal "tempDirectory"    "Temporary Files" $prefix;
 
       liquidShowBoolGlobal   "createOutputDirectories" "Create Missing Directories";
 
@@ -2040,44 +2057,42 @@ global proc liquidGlobalsFileTab_buildIt()
                           "If you fill it, it will replace the defaults.\n"+
                           "If your replacement end with ':', it will be added before the defaults.\n"+
                           "If your replacement starts with ':', it will be added after the defaults.");
-      liquidShowStringGlobalPlus "shaderPath"       "Shaders"     $pathInfo;
-      liquidShowStringGlobalPlus "texturePath"      "Textures"    $pathInfo;
-      liquidShowStringGlobalPlus "archivePath"      "Archives"    $pathInfo;
-      liquidShowStringGlobalPlus "proceduralPath"   "Procedurals" $pathInfo;
+      liquidShowStringGlobalPlus "shaderPath"       "Shaders"     $pathInfo $prefix;
+      liquidShowStringGlobalPlus "texturePath"      "Textures"    $pathInfo $prefix;
+      liquidShowStringGlobalPlus "archivePath"      "Archives"    $pathInfo $prefix;
+      liquidShowStringGlobalPlus "proceduralPath"   "Procedurals" $pathInfo $prefix;
     setParent ..;
   setParent ..;
   frameLayout -bs "etchedIn" -l "Before & After" -cll true -cl false;
     columnLayout -adj true;
-      liquidShowLargeStringGlobalPlus "preframeMel"  "Pre Frame MEL" "# and @ must be escaped.\n[...] bounds an executable mel string.";
-      liquidShowLargeStringGlobalPlus "postframeMel" "Post Frame MEL" "# and @ must be escaped.\n[...] bounds an executable mel string.";
+      liquidShowLargeStringGlobalPlus "preframeMel"  "Pre Frame MEL" "# and @ must be escaped.\n[...] bounds an executable mel string." $prefix;
+      liquidShowLargeStringGlobalPlus "postframeMel" "Post Frame MEL" "# and @ must be escaped.\n[...] bounds an executable mel string." $prefix;
     setParent ..;
   setParent ..;
   setParent ..;
 
-  //setLayoutSize liquidGlobalsFileSet;
+  layout -e -vis true ($prefix + "liquidGlobalsFileSet" );
 
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  setParent $previousParent;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
 
   setUITemplate -ppt;
   setUITemplate -ppt;
 }
 
-global proc liquidGlobalsImageTab()
+global proc liquidGlobalsImageTab( string $prefix )
 {
-  columnLayout -adj true liquidGlobalsImageSet;
+  columnLayout -adj true ($prefix + "liquidGlobalsImageSet" );
 }
 
-global proc liquidHiderOptions_buildIt( string $parent )
+global proc liquidHiderOptions_buildIt( string $prefix )
 {
   int $hider = `getAttr liquidGlobals.hider`;
   string $previousParent = `setParent -q`;
 
-  if ( $parent == "" ) {
-    $parent = `setParent liquidHiderOptionsTabLayout`;
-    $parent = `setParent ..`;
-  }
+  string $parent = ( $prefix + "liquidHiderOptionsTabLayout" );
 
-  setParent ($parent+"|liquidHiderOptionsTabLayout");
+  setParent $parent;
 
   string $renderer = `getAttr liquidGlobals.renderCommand`;
   if ( gmatch( $renderer, "*prman") )         $renderer = "prman";
@@ -2088,14 +2103,14 @@ global proc liquidHiderOptions_buildIt( string $parent )
 
   setUITemplate -pushTemplate attributeEditorTemplate;
 
-  string $theLayout = ($renderer+"Hider_"+$hider+"_Options");
+  string $theLayout = ($prefix + $renderer+"Hider_"+$hider+"_Options");
 
   switch( $hider ) {
     case 0:
       // HIDDEN
       if ( $renderer == "prman" ){
         if ( !`columnLayout -q -ex $theLayout`) {
-          columnLayout -adj true -co "right" 20 $theLayout;
+          columnLayout -adj true -co "right" 20 -vis false $theLayout;
             liquidShowBoolGlobal      "jitter"                  "Jitter";
             liquidShowFloatGlobalPlus "hiddenOcclusionBound"    "Occlusion Bound"
                                       ("Prman 11+ : use this option to force\n"+
@@ -2127,20 +2142,22 @@ global proc liquidHiderOptions_buildIt( string $parent )
               columnLayout -adj true;
                 liquidShowBoolGlobal    "hiddenMpCache"     "Enable";
                 liquidShowIntGlobal     "hiddenMpMemory"    "Memory";
-                liquidShowStringGlobal  "hiddenMpCacheDir"  "Cache Dir";
+                liquidShowStringGlobal  "hiddenMpCacheDir"  "Cache Dir" $prefix;
               setParent ..;
             setParent ..;
           setParent ..;
+          columnLayout -e -vis true $theLayout;
         }
       } else if ( $renderer == "pixie" ) {
         if ( !`columnLayout -q -ex $theLayout`) {
-          columnLayout -adj true -co "right" 20 $theLayout;
+          columnLayout -adj true -co "right" 20 -vis false $theLayout;
             liquidShowBoolGlobal      "jitter"                  "Jitter";
           setParent ..;
+          columnLayout -e -vis true $theLayout;
         }
       } else if ( $renderer == "3delight" ) {
         if ( !`columnLayout -q -ex $theLayout`) {
-          columnLayout -adj true -co "right" 20 $theLayout;
+          columnLayout -adj true -co "right" 20 -vis false $theLayout;
             liquidShowBoolGlobal      "jitter"                  "Jitter";
             liquidShowBoolGlobalPlus  "hiddenSampleMotion"      "Sample Motion"
                                       ("This controls motion-blurred\n"+
@@ -2154,61 +2171,65 @@ global proc liquidHiderOptions_buildIt( string $parent )
                                        "strategy. Use only if you get extremely nasty\n"+
                                        "artefacts with the default method.");
           setParent ..;
+          columnLayout -e -vis true $theLayout;
         }
       } else {
         if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
       }
-      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
+      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      tabLayout -e -st $theLayout $parent;
       break;
     case 1:
       // PHOTON
       if ( $renderer == "prman" || $renderer == "pixie" ) {
         if ( !`columnLayout -q -ex $theLayout` ) {
-          columnLayout -adj true $theLayout;
+          columnLayout -adj true -vis false $theLayout;
             liquidShowIntGlobal     "photonEmit"    "Emit";
           setParent ..;
+          columnLayout -e -vis true $theLayout;
         }
-        tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
-        tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
+        tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+        tabLayout -e -st $theLayout $parent;
       }
       break;
     case 2:
       // Z BUFFER
       if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
-      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
+      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      tabLayout -e -st $theLayout $parent;
       break;
     case 3:
       // RAYTRACE
       if ( $renderer == "pixie" ) {
-        if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
+        if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true -vis false $theLayout;
           liquidShowIntGlobal     "raytraceFalseColor"    "False Color";
       } else if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
-      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
+      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      tabLayout -e -st $theLayout $parent;
+      columnLayout -e -vis true $theLayout;
       break;
     case 4:
       // OPENGL
       if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
-      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
+      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      tabLayout -e -st $theLayout $parent;
       break;
     case 5:
       // DEPTHMASK
       if ( $renderer == "prman" ){
         if ( !`columnLayout -q -ex $theLayout`) {
-          columnLayout -adj true $theLayout;
-            liquidShowStringGlobal      "depthMaskZFile"        "Z File";
+          columnLayout -adj true -vis false $theLayout;
+            liquidShowStringGlobal      "depthMaskZFile"        "Z File" $prefix;
             liquidShowBoolGlobal        "depthMaskReverseSign"  "Reverse Sign";
             liquidShowFloatGlobalPlus   "depthMaskDepthBias"    "Depth Bias" "" "";
           setParent ..;
+          columnLayout -e -vis true $theLayout;
         }
       } else if ( !`columnLayout -q -ex $theLayout` ) {
         columnLayout -adj true $theLayout;
       }
-      tabLayout -e -h (`layout -q -h $theLayout`) liquidHiderOptionsTabLayout;
-      tabLayout -e -st $theLayout liquidHiderOptionsTabLayout;
+      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      tabLayout -e -st $theLayout $parent;
       break;
     default:
       break;
@@ -2220,14 +2241,17 @@ global proc liquidHiderOptions_buildIt( string $parent )
   setParent $previousParent;
 }
 
-global proc liquidGlobalsImageTab_buildIt()
+global proc liquidGlobalsImageTab_buildIt( string $prefix )
 {
   global string $liqHidersList[];
 
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
-  setParent liquidGlobalsImageSet;
+  string $previousParent = `setParent -q`;
+
+  setParent ($prefix + "liquidGlobalsImageSet" );
+  layout -e -vis false ($prefix + "liquidGlobalsImageSet" );
     frameLayout -bs "etchedIn" -l "Sampling & Shading" -cll true -cl false;
       columnLayout -adj true;
 
@@ -2236,11 +2260,11 @@ global proc liquidGlobalsImageTab_buildIt()
 
         separator;
 
-        liquidShowBitsIntGlobalMenuPlus "hider"   "Hider"   "bits_hiders"  "liquidHiderOptions_buildIt \"\"";
+        liquidShowBitsIntGlobalMenuPlus "hider"   "Hider"   "bits_hiders"  ("liquidHiderOptions_buildIt( \""+$prefix+"\" );") $prefix;
 
         frameLayout -bs "etchedIn" -l "Hider Options" -cll true -cl true;
-          tabLayout -tabsVisible false -childResizable false liquidHiderOptionsTabLayout;
-            liquidHiderOptions_buildIt "";
+          tabLayout -tabsVisible false -childResizable false ($prefix+"liquidHiderOptionsTabLayout");
+            liquidHiderOptions_buildIt( $prefix );
           setParent ..;
         setParent ..;
 
@@ -2250,7 +2274,7 @@ global proc liquidGlobalsImageTab_buildIt()
     frameLayout -bs "etchedIn" -l "Filtering" -cll true -cl false;
       columnLayout -adj true;
 
-        liquidShowBitsIntGlobalMenu   "ddPixelFilter[0]"   "Pixel Filter"  "bits_filters";
+        liquidShowBitsIntGlobalMenu   "ddPixelFilter[0]"   "Pixel Filter"  "bits_filters" $prefix;
         liquidShowIntGlobal           "ddPixelFilterX[0]"  "Filter Width";
         liquidShowIntGlobal           "ddPixelFilterY[0]"  "Filter Height";
 
@@ -2291,34 +2315,38 @@ global proc liquidGlobalsImageTab_buildIt()
     setParent ..;
   setParent ..;
 
-  //setLayoutSize liquidGlobalsImageSet;
+  layout -e -vis true ($prefix + "liquidGlobalsImageSet" );
 
   setUITemplate -ppt;
   setUITemplate -ppt;
 
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  setParent $previousParent;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
 }
 
-global proc liquidGlobalsDisplaysTab()
+global proc liquidGlobalsDisplaysTab( string $prefix )
 {
-  columnLayout -w 355 -h 1000 liquidGlobalsDisplaysSet;
+  columnLayout -w 355 -h 1000 ($prefix + "liquidGlobalsDisplaysSet" );
 }
 
-global proc liquidGlobalsDisplaysTab_buildIt()
+global proc liquidGlobalsDisplaysTab_buildIt( string $prefix )
 {
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
+  string $previousParent = `setParent -q`;
+
   int $displayChannels = liquidGlobalsFeatureQuery( "DisplayChannels" );
 
-  setParent liquidGlobalsDisplaysSet;
+  setParent ($prefix + "liquidGlobalsDisplaysSet" );
+  layout -e -vis false ($prefix + "liquidGlobalsDisplaysSet" );
     tabLayout -cr false liquidGlobalsDisplaysSubTabs;
 
       columnLayout -adj true liquidGlobalsDisplaysSetPrimary;
-        liquidShowStringGlobal( "ddImageName[0]", "Display Name" );
-        liquidShowStringGlobal( "ddImageType[0]", "Display Driver" );
-        liquidShowStringGlobal( "ddImageMode[0]", "Channel(s)" );
-        liquidShowStringGlobal( "ddParamType[0]", "Param Type" );
+        liquidShowStringGlobal( "ddImageName[0]", "Display Name", $prefix );
+        liquidShowStringGlobal( "ddImageType[0]", "Display Driver", $prefix );
+        liquidShowStringGlobal( "ddImageMode[0]", "Channel(s)", $prefix );
+        liquidShowStringGlobal( "ddParamType[0]", "Param Type", $prefix );
         frameLayout -lv false -cll false;
           columnLayout -adj true LG_PrimaryDDextraParamsLayout;
             rowLayout -nc 2 -cw 1 80 -cw 2 80 ;
@@ -2357,26 +2385,31 @@ global proc liquidGlobalsDisplaysTab_buildIt()
   if ( $displayChannels ) tabLayout -e -tabLabel liquidGlobalsDisplaysSetChannels "Display Channels" liquidGlobalsDisplaysSubTabs;
 
   //setLayoutSize liquidGlobalsDisplaysSet;
+  layout -e -vis true ( $prefix + "liquidGlobalsDisplaysSet" );
 
   setUITemplate -ppt;
   setUITemplate -ppt;
 
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  setParent $previousParent;
 
   ////setUITemplate -ppt;
 }
 
-global proc liquidGlobalsRaysTab()
+global proc liquidGlobalsRaysTab( string $prefix )
 {
-  columnLayout -adj true liquidGlobalsRaysSet;
+  columnLayout -adj true ($prefix + "liquidGlobalsRaysSet" );
 }
 
-global proc liquidGlobalsRaysTab_buildIt()
+global proc liquidGlobalsRaysTab_buildIt( string $prefix )
 {
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
-  setParent liquidGlobalsRaysSet;
+  string $previousParent = `setParent -q`;
+
+  setParent ($prefix + "liquidGlobalsRaysSet" );
+  layout -e -vis false ($prefix + "liquidGlobalsRaysSet" );
     frameLayout -bs "etchedIn" -l "Ray Tracing" -cll true -cl false;
       columnLayout -adj true;
         liquidShowBoolGlobal "useRayTracing" "Enable";
@@ -2409,31 +2442,37 @@ global proc liquidGlobalsRaysTab_buildIt()
         separator;
         frameLayout -bs "etchedIn" -l "Irradiance Cache" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowStringGlobal  "irradianceHandle"   "File";
-            liquidShowIntGlobalMenu "irradianceFileMode" "Mode" {"Ignore", "Read", "Write"};
+            liquidShowStringGlobal  "irradianceHandle"   "File" $prefix;
+            liquidShowIntGlobalMenu "irradianceFileMode" "Mode" {"Ignore", "Read", "Write"} $prefix;
           setParent ..;
         setParent ..;
       setParent ..;
     setParent ..;
   setParent ..;
 
+  layout -e -vis true ($prefix + "liquidGlobalsRaysSet" );
+
   setUITemplate -ppt;
   setUITemplate -ppt;
 
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  setParent $previousParent;
 }
 
-global proc liquidGlobalsOptionsTab()
+global proc liquidGlobalsOptionsTab( string $prefix )
 {
-  columnLayout -adj true liquidGlobalsOptionsSet;
+  columnLayout -adj true ($prefix + "liquidGlobalsOptionsSet" );
 }
 
-global proc liquidGlobalsOptionsTab_buildIt()
+global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
 {
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
-  setParent liquidGlobalsOptionsSet;
+  string $previousParent = `setParent -q`;
+
+  setParent ($prefix + "liquidGlobalsOptionsSet" );
+  layout -e -vis false ($prefix + "liquidGlobalsOptionsSet" );
     frameLayout -bs "etchedIn" -l "Shadow Maps" -cll true -cl false;
       columnLayout -adj true;
         liquidShowBoolGlobal  "ignoreShadows"  "Omit Shadow RIBs";
@@ -2482,10 +2521,10 @@ global proc liquidGlobalsOptionsTab_buildIt()
         setParent ..;
         frameLayout -bs "etchedIn" -l "Before & After RIB Requests" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowLargeStringGlobalPlus "preFrameBegin"  "Before FrameBegin" "you must escape # @ if you don't want them to be substituted ";
-            liquidShowLargeStringGlobalPlus "preWorld"  "Before WorldBegin" "you must escape # @ if you don't want them to be substituted ";
-            liquidShowLargeStringGlobalPlus "postWorld" "After WorldBegin" "you must escape # @ if you don't want them to be substituted ";
-            liquidShowLargeStringGlobalPlus "preGeom"   "Before Primitives" "you must escape # @ if you don't want them to be substituted ";
+            liquidShowLargeStringGlobalPlus "preFrameBegin"  "Before FrameBegin" "you must escape # @ if you don't want them to be substituted " $prefix;
+            liquidShowLargeStringGlobalPlus "preWorld"  "Before WorldBegin" "you must escape # @ if you don't want them to be substituted " $prefix;
+            liquidShowLargeStringGlobalPlus "postWorld" "After WorldBegin" "you must escape # @ if you don't want them to be substituted " $prefix;
+            liquidShowLargeStringGlobalPlus "preGeom"   "Before Primitives" "you must escape # @ if you don't want them to be substituted " $prefix;
           setParent ..;
         setParent ..;
         frameLayout -bs "etchedIn" -l "RIB Format" -cll true -cl false;
@@ -2505,7 +2544,7 @@ global proc liquidGlobalsOptionsTab_buildIt()
     setParent ..;
     frameLayout -bs "etchedIn" -l "Feedback" -cll true -cl false;
       columnLayout -adj true;
-        liquidShowIntGlobalMenu "statistics"   "End Of Frame Stats" {"none","simple","detailed","overwhelming"};
+        liquidShowIntGlobalMenu "statistics"   "End Of Frame Stats" {"none","simple","detailed","overwhelming"} $prefix;
         liquidShowBoolGlobal "showProgress"   "Show Progress";
         liquidShowBoolGlobal "outputComments" "Output Detailed Comments";
         separator;
@@ -2514,36 +2553,42 @@ global proc liquidGlobalsOptionsTab_buildIt()
     setParent ..;
   setParent ..;
 
+  layout -e -vis true ($prefix + "liquidGlobalsOptionsSet" );
+
   setUITemplate -ppt;
   setUITemplate -ppt;
 
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  setParent $previousParent;
 }
 
-global proc liquidGlobalsJobTab()
+global proc liquidGlobalsJobTab( string $prefix )
 {
-  columnLayout -adj true liquidGlobalsJobSet;
+  columnLayout -adj true ($prefix + "liquidGlobalsJobSet" );
 }
 
-global proc liquidGlobalsJobTab_buildIt()
+global proc liquidGlobalsJobTab_buildIt( string $prefix )
 {
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
-  setParent liquidGlobalsJobSet;
+  string $previousParent = `setParent -q`;
+
+  setParent ($prefix + "liquidGlobalsJobSet" );
+  layout -e -vis false ($prefix + "liquidGlobalsJobSet" );
     frameLayout -bs "etchedIn" -l "Global" -cll true -cl false;
       columnLayout -adj true;
         liquidShowBoolGlobal    "launchRender" "Launch Render";
         liquidShowBoolGlobal    "justRib" "Only Generate RIBs";
         separator;
         liquidShowBoolGlobal    "useRenderScript" "Use Render Job Script";
-        liquidShowIntGlobalMenu "renderScriptFormat" "Job Script Format" {"None","Alfred","XML"};
+        liquidShowIntGlobalMenu "renderScriptFormat" "Job Script Format" {"None","Alfred","XML"} $prefix;
       setParent ..;
     setParent ..;
 
     frameLayout -l "Job Script Options" -cl false;
       columnLayout -adj true LG_JobScriptOptionsColumn;
-        liquidShowStringGlobal "renderJobName" "Job Name";
+        liquidShowStringGlobal "renderJobName" "Job Name" $prefix;
 
         separator;
         liquidShowBoolGlobal   "deferredGen"   "Deferred RIB Generation";
@@ -2557,30 +2602,30 @@ global proc liquidGlobalsJobTab_buildIt()
 
         frameLayout -l "Commands" -cl false;
           columnLayout -adj true;
-            liquidShowStringGlobal "renderScriptCommand" "Job Script Interpreter";
-            liquidShowStringGlobal "ribgenCommand"       "RIB Generator";
+            liquidShowStringGlobal "renderScriptCommand" "Job Script Interpreter" $prefix;
+            liquidShowStringGlobal "ribgenCommand"       "RIB Generator" $prefix;
           setParent ..;
         setParent ..;
 
         frameLayout -l "Before" -cl false;
           columnLayout -adj true;
-            liquidShowStringGlobal "preCommand"      "Pre Command";
-            liquidShowStringGlobal "preJobCommand"   "Pre Job Command";
-            liquidShowStringGlobal "preFrameCommand" "Pre Frame Command";
+            liquidShowStringGlobal "preCommand"      "Pre Command" $prefix;
+            liquidShowStringGlobal "preJobCommand"   "Pre Job Command" $prefix;
+            liquidShowStringGlobal "preFrameCommand" "Pre Frame Command" $prefix;
           setParent ..;
         setParent ..;
 
         frameLayout -l "After" -cl false;
           columnLayout -adj true;
-            liquidShowStringGlobal "postFrameCommand" "Post Frame Command";
-            liquidShowStringGlobal "postJobCommand"   "Post Job Command";
+            liquidShowStringGlobal "postFrameCommand" "Post Frame Command" $prefix;
+            liquidShowStringGlobal "postJobCommand"   "Post Job Command" $prefix;
           setParent ..;
         setParent ..;
 
         frameLayout -l "Deferred" -cl false;
           columnLayout -adj true;
-            liquidShowStringGlobal "key"     "Deferred Tag";
-            liquidShowStringGlobal "service" "Deferred Service";
+            liquidShowStringGlobal "key"     "Deferred Tag" $prefix;
+            liquidShowStringGlobal "service" "Deferred Service" $prefix;
           setParent ..;
         setParent ..;
 
@@ -2594,25 +2639,29 @@ global proc liquidGlobalsJobTab_buildIt()
 
       frameLayout -bs "etchedIn" -label "Alfred Specific" -cll true -cl false;
         columnLayout -adj true;
-          liquidShowStringGlobal "alfredTags"     "Alfred Tags";
-          liquidShowStringGlobal "alfredServices" "Alfred Services";
+          liquidShowStringGlobal "alfredTags"     "Alfred Tags" $prefix;
+          liquidShowStringGlobal "alfredServices" "Alfred Services" $prefix;
           liquidShowBoolGlobal   "expandAlfred"   "Alfred Expand Support";
         setParent ..;
       setParent ..;
 
   setParent ..;
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+
+  layout -e -vis true ($prefix + "liquidGlobalsJobSet" );
+
+  setParent $previousParent;
 
   setUITemplate -ppt;
   setUITemplate -ppt;
 }
 
-global proc liquidGlobalsRendererTab()
+global proc liquidGlobalsRendererTab( string $prefix )
 {
-  columnLayout -cat left 0 -adj true liquidGlobalsRendererSet;
+  columnLayout -cat left 0 -adj true ($prefix + "liquidGlobalsRendererSet" );
 }
 
-global proc liquidGlobalsRendererTab_buildIt()
+global proc liquidGlobalsRendererTab_buildIt( string $prefix )
 {
   global string $liqHidersList[];
   global string $liqFeaturesList[];
@@ -2621,21 +2670,24 @@ global proc liquidGlobalsRendererTab_buildIt()
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
-  setParent liquidGlobalsRendererSet;
+  string $previousParent = `setParent -q`;
+
+  setParent ($prefix + "liquidGlobalsRendererSet" );
+  layout -e -vis false ($prefix + "liquidGlobalsRendererSet" );
     frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Commands" -cll true -cl false;
       columnLayout -adj true;
-        liquidShowStringGlobal "renderCommand" "Renderer";
-        liquidShowStringGlobal "renderCmdFlags" "Flags";
+        liquidShowStringGlobal "renderCommand" "Renderer" $prefix;
+        liquidShowStringGlobal "renderCmdFlags" "Flags" $prefix;
 
         separator;
-        liquidShowStringGlobal "previewer" "Previewer";
-        liquidShowStringGlobal "shaderInfo" "Shader Info";
-        liquidShowStringGlobal "shaderComp" "Shader Compiler";
-        liquidShowStringGlobal "makeTexture" "Make Texture";
-        liquidShowStringGlobal "viewTexture" "Texture Viewer";
+        liquidShowStringGlobal "previewer" "Previewer" $prefix;
+        liquidShowStringGlobal "shaderInfo" "Shader Info" $prefix;
+        liquidShowStringGlobal "shaderComp" "Shader Compiler" $prefix;
+        liquidShowStringGlobal "makeTexture" "Make Texture" $prefix;
+        liquidShowStringGlobal "viewTexture" "Texture Viewer" $prefix;
 
         separator;
-        liquidShowStringGlobal "shaderExt" "Shader Extension";
+        liquidShowStringGlobal "shaderExt" "Shader Extension" $prefix;
       setParent..;
     setParent..;
 
@@ -2664,19 +2716,22 @@ global proc liquidGlobalsRendererTab_buildIt()
 
     frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Deep Shadow Display Driver" -cll true -cl true;
       columnLayout -adj true;
-        liquidShowStringGlobal "dshDisplayName" "Display Name";
-        liquidShowStringGlobal "dshImageMode" "Image Mode";
+        liquidShowStringGlobal "dshDisplayName" "Display Name" $prefix;
+        liquidShowStringGlobal "dshImageMode" "Image Mode" $prefix;
       setParent..;
     setParent..;
   string $parent = `setParent -q`;
   setParent..;
 
+  layout -e -vis true ($prefix + "liquidGlobalsRendererSet" );
+
   setUITemplate -ppt;
   setUITemplate -ppt;
 
 
 
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  setParent $previousParent;
 
   // set off scriptJob to update pixelfilter menu
   int $num = `scriptJob -parent $parent
@@ -2690,34 +2745,37 @@ global proc liquidGlobalsRendererTab_buildIt()
 
 }
 
-global proc liquidGlobalsFluidTab()
+global proc liquidGlobalsFluidTab( string $prefix )
 {
-  columnLayout -adj true liquidGlobalsFluidSet;
+  columnLayout -adj true ($prefix + "liquidGlobalsFluidSet" );
 }
 
-global proc liquidGlobalsFluidTab_buildIt()
+global proc liquidGlobalsFluidTab_buildIt( string $prefix )
 {
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
-  setParent liquidGlobalsFluidSet;
+  string $previousParent = `setParent -q`;
+
+  setParent ($prefix + "liquidGlobalsFluidSet" );;
+  layout -e -vis false ($prefix + "liquidGlobalsFluidSet" );
     frameLayout -l "Shader Preview" -cl false;
       columnLayout -adj true;
-        liquidShowIntGlobalMenu "previewType" "Preview Type" {"Fluid Window", "External Window"};
+        liquidShowIntGlobalMenu "previewType" "Preview Type" {"Fluid Window", "External Window"} $prefix;
         separator;
         columnLayout -adj true liquidGlobalsFluidPreviewSet;
           liquidShowIntGlobal     "previewSize"           "Size";
-          liquidShowIntGlobalMenu "previewPrimitive"      "Primitive" {"Sphere", "Cube", "Cylinder", "Torus", "Plane", "Teapot"};
-          liquidShowStringGlobal  "previewDisplayDriver"  "Display Driver";
-          liquidShowIntGlobalMenu "previewConnectionType" "Connection Type" {"RIB", "Pipe"};
+          liquidShowIntGlobalMenu "previewPrimitive"      "Primitive" {"Sphere", "Cube", "Cylinder", "Torus", "Plane", "Teapot"} $prefix;
+          liquidShowStringGlobal  "previewDisplayDriver"  "Display Driver" $prefix;
+          liquidShowIntGlobalMenu "previewConnectionType" "Connection Type" {"RIB", "Pipe"} $prefix;
           separator;
-          liquidShowStringGlobal "previewRenderer" "Render Command";
+          liquidShowStringGlobal "previewRenderer" "Render Command" $prefix;
         setParent ..;
       setParent ..;
     setParent ..;
     frameLayout -l "Shader Browser" -cl false;
       columnLayout -adj true;
-        liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path";
+        liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path" $prefix;
       setParent ..;
     setParent ..;
     frameLayout -l "Render View" -cl false;
@@ -2728,7 +2786,11 @@ global proc liquidGlobalsFluidTab_buildIt()
       setParent ..;
     setParent ..;
   setParent ..;
-  if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+
+  layout -e -vis true ($prefix + "liquidGlobalsFluidSet" );
+
+  setParent $previousParent;
 
   setUITemplate -ppt;
   setUITemplate -ppt;

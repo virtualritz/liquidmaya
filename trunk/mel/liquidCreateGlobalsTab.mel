@@ -35,31 +35,36 @@
 //
 
 
-global proc liquidCreateMayaGlobalsTabContent()
+global proc liquidCreateMayaGlobalsTabContent( string $prefix )
 {
-  if ( `tabLayout -q -ex liquidUnifiedRenderGlobalsMainTabLayout` ) {
+  string $theTabLayout = ( $prefix + "liquidUnifiedRenderGlobalsMainTabLayout" );
 
-    string $selected[] = `tabLayout -q -tabLabel liquidUnifiedRenderGlobalsMainTabLayout`;
-    int $tab = `tabLayout -q -selectTabIndex liquidUnifiedRenderGlobalsMainTabLayout` - 1;
+  if ( `tabLayout -q -ex $theTabLayout` ) {
+
+    string $selected[] = `tabLayout -q -tabLabel $theTabLayout`;
+    int $tab = `tabLayout -q -selectTabIndex $theTabLayout` - 1;
 
     if ( $selected[ $tab ] != "" ) {
 
-      string $layout = `tabLayout -q -selectTab liquidUnifiedRenderGlobalsMainTabLayout`;
-      if ( !size( `layout -q -ca $layout` ) ) eval("liquidGlobals"+$selected[ $tab ]+"Tab_buildIt");
+      string $layout = `tabLayout -q -selectTab $theTabLayout`;
+      if ( !size( `layout -q -ca $layout` ) ) eval("liquidGlobals"+$selected[ $tab ]+"Tab_buildIt( \""+$prefix+"\" );");
 
     }
   }
 }
 
 
-global proc liquidCreateMayaGlobalsTab( string $name )
+global proc liquidCreateMayaGlobalsTab( string $prefix, string $name )
 {
+  // sanity check : we need valid globals
   if ( !liquidGlobalsExists() ) liquidCreateGlobals();
 
-  setParent liquidUnifiedRenderGlobalsMainTabLayout;
-  eval ("liquidGlobals"+$name+"Tab");
-  string $newlayout = ("liquidGlobals"+$name+"Set");
-  if ( `layout -q -ex $newlayout` ) tabLayout -e -tabLabel $newlayout $name liquidUnifiedRenderGlobalsMainTabLayout;
+  string $theTabLayout = ( $prefix + "liquidUnifiedRenderGlobalsMainTabLayout" );
+
+  setParent $theTabLayout;
+  evalEcho ("liquidGlobals"+$name+"Tab( \""+$prefix+"\");");
+  string $newlayout = ($prefix+"liquidGlobals"+$name+"Set");
+  if ( `layout -q -ex $newlayout` ) tabLayout -e -tabLabel $newlayout $name $theTabLayout;
 
 }
 
@@ -69,7 +74,13 @@ global proc liquidCreateMayaGlobalsTab( string $name )
 
 global proc liquidCreateGlobalsTab()
 {
+  string $currentParent = `setParent -q`;
+
   if ( !liquidGlobalsExists() ) liquidCreateGlobals();
+
+  // find out if we are going to display the masterLayer's globals or regular globals
+  string $prefix = "";
+  if ( gmatch( $currentParent, "unifiedRenderGlobalsWindow|rgMainForm|tabForm|masterLayerTabLayout*") ) $prefix = "masterLayer_";
 
   // make sure the maya globals are correctly initialized.
   if ( !`layout -q -ex commonTabColumn` ) {
@@ -80,6 +91,7 @@ global proc liquidCreateGlobalsTab()
     setParent $parent;
   }
 
+  // push the correct templates to create widgets
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
@@ -97,31 +109,37 @@ global proc liquidCreateGlobalsTab()
 
   separator -style "none" -h 10;
 
-  string $cmd = ("tabLayout -e -w (`window -q -w unifiedRenderGlobalsWindow`) -h (`window -q -h unifiedRenderGlobalsWindow`-170) liquidUnifiedRenderGlobalsMainTabLayout;");
+  // build the content of the globals
+  string $theTabLayout = ( $prefix + "liquidUnifiedRenderGlobalsMainTabLayout" );
+
+  string $cmd = ("tabLayout -e -w (`window -q -w unifiedRenderGlobalsWindow`) -h (`window -q -h unifiedRenderGlobalsWindow`-170) "+$theTabLayout+";");
 
   tabLayout -scrollable true -minChildWidth 200
             -cc $cmd
             -sc $cmd
             -dcc $cmd
-            liquidUnifiedRenderGlobalsMainTabLayout;
+            $theTabLayout;
 
-  if ( `layout -q -ex liquidTabLayout` ) layout -e -m true liquidTabLayout;
+  if ( `layout -q -ex liquidTabLayout` ) layout -e -vis false liquidTabLayout;
 
-  liquidCreateMayaGlobalsTab( "Frame" );
-  liquidCreateMayaGlobalsTab( "File" );
-  liquidCreateMayaGlobalsTab( "Image" );
-  liquidCreateMayaGlobalsTab( "Displays" );
-  liquidCreateMayaGlobalsTab( "Rays" );
-  liquidCreateMayaGlobalsTab( "Options" );
-  liquidCreateMayaGlobalsTab( "Job" );
-  liquidCreateMayaGlobalsTab( "Renderer" );
-  liquidCreateMayaGlobalsTab( "Fluid" );
+  liquidCreateMayaGlobalsTab( $prefix, "Frame" );
+  liquidCreateMayaGlobalsTab( $prefix, "File" );
+  liquidCreateMayaGlobalsTab( $prefix, "Image" );
+  liquidCreateMayaGlobalsTab( $prefix, "Displays" );
+  liquidCreateMayaGlobalsTab( $prefix, "Rays" );
+  liquidCreateMayaGlobalsTab( $prefix, "Options" );
+  liquidCreateMayaGlobalsTab( $prefix, "Job" );
+  liquidCreateMayaGlobalsTab( $prefix, "Renderer" );
+  liquidCreateMayaGlobalsTab( $prefix, "Fluid" );
 
 
+  // set up the tab so that it may resize and auto-build.
   if ( `layout -q -ex liquidTabLayout` ) tabLayout -e -cc $cmd -sc $cmd -dcc $cmd liquidTabLayout;
-  tabLayout -e -psc ("liquidCreateMayaGlobalsTabContent();") liquidUnifiedRenderGlobalsMainTabLayout;
+  tabLayout -e -psc ("liquidCreateMayaGlobalsTabContent( \""+$prefix+"\" );") $theTabLayout;
 
-  eval $cmd;
+  if ( `layout -q -ex liquidTabLayout` ) layout -e -vis true liquidTabLayout;
+
+  evalEcho $cmd;
   evalDeferred -lp $cmd;
 
   setUITemplate -popTemplate;

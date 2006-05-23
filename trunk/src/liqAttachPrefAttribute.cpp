@@ -126,7 +126,7 @@ MStatus liqAttachPrefAttribute::doIt(const MArgList& args)
     worldSpace = true;
   }
 
-  cout <<">> got "<<objectNames.length()<<" objects to PREF !"<<endl;
+  //cout <<">> got "<<objectNames.length()<<" objects to PREF !"<<endl;
 
   return redoIt();
 }
