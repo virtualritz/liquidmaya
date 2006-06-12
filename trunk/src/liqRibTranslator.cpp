@@ -4121,9 +4121,9 @@ MStatus liqRibTranslator::ribPrologue()
 
       MString displaySearchPath;
 #ifdef PIXIE
-      displaySearchPath = ".:" + liquidRenderer.renderHome + "/displays:" + liquidSanitizePath( home ) + "/displaydDrivers";
+      displaySearchPath = ".:" + liquidRenderer.renderHome + "/displays:" + liquidSanitizePath( home ) + "/" + liquidRenderer.renderName + "/displayDrivers";
 #else
-      displaySearchPath = ".:" + liquidRenderer.renderHome + "/etc:" + liquidSanitizePath( home ) + "/displaydDrivers";
+      displaySearchPath = ".:" + liquidRenderer.renderHome + "/etc:" + liquidSanitizePath( home ) +  "/" + liquidRenderer.renderName + "/displayDrivers";
 #endif
       list = const_cast< char* > ( displaySearchPath.asChar() );
       RiArchiveRecord( RI_VERBATIM, "Option \"searchpath\" \"display\" [\"%s\"]\n", list );
