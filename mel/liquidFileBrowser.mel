@@ -208,7 +208,8 @@ global proc liquidFileBrowserWindow_updateList( string $filemask )
 
   // fill the list
   for ( $l in $list ) {
-    if ( gmatch( $l, ".*") ) continue;
+  	print ("> " + $l + "\n");
+    if ( $l != "." && $l != ".." && gmatch( $l, ".*") ) continue;
     string $fl = ($thePath+"/"+$l);
     if ( `filetest -f $fl` && gmatch( $l, $filemask ) ) textScrollList -e -append $l lfb_fileListC;
     else if ( `filetest -d $fl` ) textScrollList -e -append ( $l + "/" ) lfb_fileListC;
@@ -293,6 +294,30 @@ global proc liquidFileBrowserWindow_load( string $filemask, string $callback )
 */
 global proc liquidFileBrowserWindow( string $path, string $filemask, string $callback )
 {
+	if (`about -nt` || `about -mac`) {
+		string $workspace = `workspace -q -fn`;
+		// note globals do NOT get set
+
+		//	On Windows, fileBrowserDialog will return
+		//	false if a system dialog cannot be created
+		//	due to lack of sufficient resources.  In 
+		//	that case, we will go through the standard
+		//	MEL-based code.
+		//
+		int $dialogSuccess = `fileBrowserDialog 
+									-fc $callback 
+									-m 0 
+									-fl $filemask
+									-an "Choose File"
+									`;
+
+		if( $dialogSuccess )
+		{
+			// previous call blocks
+			return;
+		}
+	}
+	
   if ( `window -q -ex liquidFileBrowserWindow` ) deleteUI liquidFileBrowserWindow;
   window -title "Liquid Browser" -menuBar true -width 400 -height 300 liquidFileBrowserWindow;
 
@@ -335,7 +360,7 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
     button -label "Load" -c ("liquidFileBrowserWindow_load $gLiquidFileBrowserWindowFileMask \""+$callback+"\";") lfb_ok;
     button -label "Cancel" -c "deleteUI liquidFileBrowserWindow" lfb_cancel;
     setParent ..;
-
+	
   // setup the layout
   formLayout  -e
               -af  lfb_fileMask       top     5
