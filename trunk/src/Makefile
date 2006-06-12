@@ -80,7 +80,7 @@ LIQUIDOUTMAINOBJS := $(patsubst %,$(VPATH)/%,$(LIQUIDMAINOBJS))
 LIQUIDPLUG := $(VPATH)/liquid.$(PLUGSUF)
 LIQUIDBIN  := $(VPATH)/liquid
 LIQUIDLIB  := $(VPATH)/libliquid.a
-LIQUIDDPY  := $(VPATH)/d_liqmaya.so
+LIQUIDDPY  := $(VPATH)/$(LIQDPYNAME)
 
 default: debug
 
@@ -111,6 +111,8 @@ $(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
 $(LIQUIDDPY) : $(VPATH)/$(LIQDISPLAYOBJS)
 	@echo $@
 	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(LIQUIDDPY)
+	mkdir -p ../$(LIQUIDDPYLOC)
+	cp $(LIQUIDDPY) ../$(LIQUIDDPYLOC)
 
 $(LIQUIDOUTMAINOBJS) : ../include/liquid.h
 

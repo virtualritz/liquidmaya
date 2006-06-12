@@ -5,7 +5,7 @@ include $(DEPTH)/commondefs.mk
 INCLUDES 	= -I./include -I$(LIQRMANPATH)/include
 
 SLSHADERS	= $(wildcard src/*.sl)
-SLOSHADERS	= $(SLSHADERS:.sl=.slo)
+SLOSHADERS	= $(SLSHADERS:.sl=.$(SLOEXT))
 
 SRCS			= $(SLSHADERS)
 VPATHDEBUG		= $(DEPTH)/bin/$(VBIN)/debug/$(LIQRMAN)/shaders
@@ -20,12 +20,12 @@ TARGETS 		= $(patsubst src/%,$(VPATHSHADERS)/%, $(SLOSHADERS))
 #BIN_VERSION=debug
 
 .SUFFIXES :
-.SUFFIXES : .slo .sl
+.SUFFIXES : $(SLOEXT) .sl 
 
 all : debug
 
-.sl.slo:
-	$(CSL) $(SLFLAGS) $(INCLUDES) -o $@ $<
+.sl.$(SLOEXT):
+	$(CSL) $(SLFLAGS) $(INCLUDES) $<
 
 debug : $(VPATHDEBUG) $(DEBUGS)
 release : $(VPATHRELEASE) $(RELEASES)
@@ -34,20 +34,20 @@ newversion : $(VPATHSHADERS) $(TARGETS)
 $(VPATHDEBUG) $(VPATHSHADERS) $(VPATHRELEASE) :
 	mkdir -p $@
 
-$(VPATHSHADERS)/%.slo : src/%.sl
+$(VPATHSHADERS)/%.$(SLOEXT) : src/%.sl
 	@echo $@
 	@$(CSL) $(SLFLAGS) $(INCLUDES) -o $@ $<
 
-$(VPATHDEBUG)/%.slo : src/%.sl
+$(VPATHDEBUG)/%.$(SLOEXT) : src/%.sl
 	@echo $@
 	@$(CSL) $(SLFLAGS) $(INCLUDES) -o $@ $<
 
-$(VPATHRELEASE)/%.slo : src/%.sl
+$(VPATHRELEASE)/%.$(SLOEXT) : src/%.sl
 	@echo $@
 	@$(CSL) $(SLFLAGS) $(INCLUDES) -o $@ $<
 
 
 clean Clean :
-	@rm -f $(SLOSHADERS) *.slo
+	@rm -f $(SLOSHADERS) *.$(SLOEXT)
 
 include $(DEPTH)/commonrules.mk

@@ -11,9 +11,13 @@ ALL_RELEASE_PATHS = $(patsubst bin/$(VBIN)/%,$(RELEASE_PATH)%,$(COMPILED_VERSION
 
 default : debug
 
-all clean debug release :
+clean :
 	( cd src && make $@)
 	( cd shaders && make $@)
+
+all debug release :
+	( cd src && make BIN_VERSION=$@ $@)
+	( cd shaders && make BIN_VERSION=$@ $@)
 
 realclean : 
 	rm -rf $(DEPTH)/bin/$(VBIN)
@@ -21,7 +25,7 @@ realclean :
 dist :
 	@for vers in $(strip $(MAYA_RELEASES));\
 	do \
-		( echo Maya $${vers:=none} ---------------------------------------------; cd src && MAYA_VERSION=$${vers:=none} BIN_VERSION=$${vers:=none} make newversion );\
+		( echo Maya $${vers:=none} ---------------------------------------------; cd src && make MAYA_VERSION=$${vers:=none} BIN_VERSION=$${vers:=none} newversion );\
 	done;
 	@( cd shaders && make newversion );
 	@( cd mel && make newversion );
