@@ -80,23 +80,30 @@ LIQUIDVERSION = \"$(LIQUIDSHORTVERSION)\040for\040$(LIQRMAN),\040$(BUILDDATE)\"
 ifeq "$(LIQRMAN)" "pixie"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverPixie.$(OBJEXT)
 LIQRMANPATH 	= 	$${PIXIEHOME:=/usr/local/Pixie}
+LIQUIDDPYLOC	=	displayDrivers/pixie/
+LIQDPYNAME		=	liqmaya.so
 LIQRMANFLAGS	=	-DPIXIE
 LIQRMANLIBS 	=	-lri -lsdr
 LIQWINRMANLIBS	=	"ri.lib sdr.lib" 
 USEDVAR 		=	PIXIEHOME
 CSL 			= 	$(LIQRMANPATH)/bin/sdrc
-SLFLAGS 		= 	-DPIXIE
+SLOEXT			=	sdr
+SLFLAGS 		= 	
+	#-DPIXIE # already defines this
 endif
 
 # Aqsis
 ifeq "$(LIQRMAN)" "aqsis"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAqsis.$(OBJEXT)
 LIQRMANPATH 	=	$${AQSIS_BASE_PATH:=/usr/local/aqsis}
+LIQUIDDPYLOC	=	displayDrivers/aqsis/
+LIQDPYNAME		=	d_liqmaya.so
 LIQRMANFLAGS	=	-DAQSIS
 LIQRMANLIBS 	=	-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs
 LIQWINRMANLIBS	=	ri2rib.lib slxargs.lib 
 USEDVAR 		=	AQSIS_BASE_PATH
 CSL 			= 	$(LIQRMANPATH)/bin/aqsl
+SLOEXT			=	slx
 SLFLAGS 		= 	-DAQSIS
 endif
 
@@ -104,11 +111,14 @@ endif
 ifeq "$(LIQRMAN)" "3delight"
 LIQDISPLAYOBJS  = liqMayaDisplayDriver3delight.$(OBJEXT)
 LIQRMANPATH 	=	$${DELIGHT:=/usr/local/3delight}
+LIQUIDDPYLOC	=	displayDrivers/3delight/
+LIQDPYNAME		=	d_liqmaya.so
 LIQRMANFLAGS	=	-DDELIGHT
 LIQRMANLIBS 	=	-l3delight -lc -ldl -lm
 LIQWINRMANLIBS	=	3delight.lib
 USEDVAR 		=	DELIGHT
-CSL 			= 	$(LIQRMANPATH)/bin/shaderl
+CSL 			= 	$(LIQRMANPATH)/bin/shader
+SLOEXT			=	sdl
 SLFLAGS 		=	-DDELIGHT
 endif
 
@@ -116,10 +126,13 @@ endif
 ifeq "$(LIQRMAN)" "entropy"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverEntropy.$(OBJEXT)
 LIQRMANPATH 	=	$${ENTROPYHOME:=/usr/local/exluna/Entropy}
+LIQUIDDPYLOC	=	displayDrivers/entropy/
+LIQDPYNAME		=	d_liqmaya.so
 LIQRMANFLAGS	=	-DENTROPY
 LIQRMANLIBS 	=	-lribout -lsleargs 
 USEDVAR 		=	ENTROPYHOME
 CSL 			= 	$(LIQRMANPATH)/bin/sle
+SLOEXT			=	fixme
 SLFLAGS 		= 	-DENTROPY
 endif
 
@@ -127,19 +140,24 @@ endif
 ifeq "$(patsubst prman%,prman,$(LIQRMAN))" "prman"
 PRMANVERSION 	= 	$(patsubst prman%,%,$(LIQRMAN))
 LIQRMANPATH 	=	$${RMANTREE:=/usr/local/prman}
+LIQUIDDPYLOC	=	displayDrivers/prman/
+LIQDPYNAME		=	d_liqmaya.so
 LIQRMANFLAGS	=	-DPRMAN
 USEDVAR 		= 	RMANTREE
 CSL 			= 	$(LIQRMANPATH)/bin/shader
 SLFLAGS 		= 	-DPRMAN
+SLOEXT			=	slo
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriver.$(OBJEXT)
 
 ifeq "$(patsubst 12.%,12,$(PRMANVERSION))" "12"
 LIQRMANLIBS 	=	-lrib -lsloargs -llkm -ltarget -lzip -lprmutil
 LIQWINRMANLIBS	= "rib.lib sloargs.lib"
+LIQUIDDPYLOC	=	displayDrivers/prman12/
 else
 ifeq "$(patsubst 13.%,13,$(PRMANVERSION))" "13"
 LIQRMANLIBS 	=	-lprmansdk
 LIQWINRMANLIBS	=	prmansdk.lib
+LIQUIDDPYLOC	=	displayDrivers/prman13/
 else
 LIQRMANLIBS=-lrib -lsloargs -llkm -ltarget -lzip
 LIQWINRMANLIBS	=	rib.lib sloargs.lib
