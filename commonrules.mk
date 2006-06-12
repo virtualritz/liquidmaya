@@ -2,8 +2,10 @@ debug : EXTRAFLAGS=-g -DDEBUG
 debug : BIN_VERSION=debug
 debug : VPATH=$(VPATHDEBUG)
 
-release : BIN_VERSION=release
-newversion release : VPATH=$(VPATHRELEASE)
+#release : BIN_VERSION=release
+newversion release : VPATH:=$(VPATHRELEASE)
+newversion release : $(VPATH)
+
 
 distdir :
 	@mkdir -p $(DIST_DIR)
@@ -43,7 +45,7 @@ $(VPATHDEBUG) :
 	fi;"
 
 clean : VPATH?=$(VPATHDEBUG)
-clean:
+clean :
 	rm -rf $(VPATH)/*.$(PLUGSUF) $(VPATH)/*.$(OBJEXT) $(VPATH)/*.d $(VPATH)/ii_files $(VPATH)/so_locations
 
 cleandist : VPATH?=$(VPATHDEBUG)

@@ -57,7 +57,7 @@
 
 class liqSurfaceNode : public MPxNode
 {
-	public:
+  public:
                       liqSurfaceNode();
     virtual          ~liqSurfaceNode();
 
@@ -71,7 +71,7 @@ class liqSurfaceNode : public MPxNode
     static  MTypeId   id;
     liqNodeSwatch*    renderSwatch;
 
-	private:
+  private:
 
     // Input attributes
     static MObject aRmanShader;
@@ -82,6 +82,8 @@ class liqSurfaceNode : public MPxNode
     static MObject aRmanTypes;
     static MObject aRmanDefaults;
     static MObject aRmanArraySizes;
+    static MObject aRmanLifCmds;
+
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
     static MObject aPreviewObjectSize;

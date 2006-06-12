@@ -37,17 +37,23 @@ extern int debugMode;
 
 liqShader::liqShader()
 {
-  numTPV = 0;
-  name = "";
-  file = "";
-  hasShadingRate = false;
-  shadingRate = 1.0;
-  hasDisplacementBound = false;
-  displacementBound = 0.0;
-  outputInShadow = false;
-  hasErrors = false;
-  shader_type = SHADER_TYPE_UNKNOWN;
-  shaderSpace = "";
+  numTPV                = 0;
+  name                  = "";
+  file                  = "";
+  rmColor[0]            = 1.0;
+  rmColor[1]            = 1.0;
+  rmColor[2]            = 1.0;
+  rmOpacity[0]          = 1.0;
+  rmOpacity[1]          = 1.0;
+  rmOpacity[2]          = 1.0;
+  hasShadingRate        = false;
+  shadingRate           = 1.0;
+  hasDisplacementBound  = false;
+  displacementBound     = 0.0;
+  outputInShadow        = false;
+  hasErrors             = false;
+  shader_type           = SHADER_TYPE_UNKNOWN;
+  shaderSpace           = "";
 }
 
 liqShader::liqShader( const liqShader & src )
@@ -164,17 +170,17 @@ liqShader::liqShader( MObject shaderObj )
         continue;
       }
       switch ( shaderInfo.getArgDetail(i) ) {
-      case SHADER_DETAIL_UNIFORM: {
-        tokenPointerArray[numTPV].setDetailType( rUniform );
-        break;
-      }
-      case SHADER_DETAIL_VARYING: {
-        tokenPointerArray[numTPV].setDetailType( rVarying);
-        break;
-      }
-      case SHADER_DETAIL_UNKNOWN:
-        tokenPointerArray[numTPV].setDetailType( rUniform);
-        break;
+        case SHADER_DETAIL_UNIFORM: {
+          tokenPointerArray[numTPV].setDetailType( rUniform );
+          break;
+        }
+        case SHADER_DETAIL_VARYING: {
+          tokenPointerArray[numTPV].setDetailType( rVarying);
+          break;
+        }
+        case SHADER_DETAIL_UNKNOWN:
+          tokenPointerArray[numTPV].setDetailType( rUniform);
+          break;
       }
       switch ( shaderInfo.getArgType( i ) ) {
         case SHADER_TYPE_STRING: {
@@ -362,8 +368,8 @@ liqShader & liqShader::operator=( const liqShader & src )
   for( unsigned int i = 0; i < numTPV; i++ ) {
     tokenPointerArray[i] = src.tokenPointerArray[i];
   }
-  name = src.name;
-  file = src.file;
+  name                  = src.name;
+  file                  = src.file;
   rmColor[0]            = src.rmColor[0];
   rmColor[1]            = src.rmColor[1];
   rmColor[2]            = src.rmColor[2];
@@ -376,7 +382,8 @@ liqShader & liqShader::operator=( const liqShader & src )
   displacementBound     = src.displacementBound;
   outputInShadow        = src.outputInShadow;
   hasErrors             = src.hasErrors;
-  shader_type           = shader_type;
+  shader_type           = src.shader_type;
+  shaderSpace           = src.shaderSpace;
   return *this;
 }
 

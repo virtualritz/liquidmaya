@@ -59,7 +59,7 @@
 
 class liqDisplacementNode : public MPxNode
 {
-	public:
+  public:
                       liqDisplacementNode();
     virtual          ~liqDisplacementNode();
 
@@ -73,7 +73,7 @@ class liqDisplacementNode : public MPxNode
     static  MTypeId   id;
     liqNodeSwatch*    renderSwatch;
 
-	private:
+  private:
 
     // Input attributes
     static MObject aRmanShader;
@@ -84,6 +84,8 @@ class liqDisplacementNode : public MPxNode
     static MObject aRmanTypes;
     static MObject aRmanDefaults;
     static MObject aRmanArraySizes;
+    static MObject aRmanLifCmds;
+
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
     static MObject aPreviewObjectSize;

@@ -311,6 +311,10 @@ class liqGlobalsNode : public MPxNode
 
     static MObject aStatistics;
 
+    static MObject aShadersIgnoreOutputParams;
+    static MObject aShadersOutputParamsFilter;
+    static MObject aShadersMaxCachedAELayouts;
+
     static MObject aHiddenOcclusionBound;
     static MObject aHiddenMpCache;
     static MObject aHiddenMpMemory;

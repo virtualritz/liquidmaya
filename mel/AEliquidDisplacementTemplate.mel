@@ -1,7 +1,7 @@
 
 global proc AEliquidDisplacementTemplate( string $nodeName )
 {
-  layout -e -m false "AEcontrolFormLayout";
+  layout -e -vis false "AEcontrolFormLayout";
 
   editorTemplate -callCustom ("liquidPreviewSwatchNew "+$nodeName) ("liquidPreviewSwatchReplace "+$nodeName) "message";
 
@@ -19,19 +19,16 @@ global proc AEliquidDisplacementTemplate( string $nodeName )
 
     editorTemplate -beginLayout "RIB";
       editorTemplate -addControl "displacementBound";
+      editorTemplate -label "Disp. Bound Space" -addControl "displacementBoundSpace";
       editorTemplate -addControl "shaderSpace";
       editorTemplate -addControl "outputInShadow";
     editorTemplate -endLayout;
-
-    liquidHideAEShaderParams( "" );
 
     editorTemplate -beginLayout "Parameters" -collapse 0;
 
       editorTemplate -ccu "liquidShaderNodesParamsNew" "liquidShaderNodesParamsReplace" "rmanShaderLong";
 
     editorTemplate -endLayout;
-
-    liquidHideAEShaderParams( $nodeName );
 
     editorTemplate -suppress rmanShader;
     editorTemplate -suppress rmanShaderLong;
@@ -42,6 +39,6 @@ global proc AEliquidDisplacementTemplate( string $nodeName )
 
   editorTemplate -endScrollLayout;
 
-  layout -e -m true "AEcontrolFormLayout";
+  layout -e -vis true "AEcontrolFormLayout";
 }
 

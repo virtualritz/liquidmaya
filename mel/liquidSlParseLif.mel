@@ -58,12 +58,16 @@
  *  \return the next line in the currently open file.
  *  \note lines MUST end with a semi-colon ( ; ).
  */
-proc string getNextLine( int $filehandle )
+global proc string getNextLine()
 {
+  global string $gLiquidSLifFile[];
+  global int $gLifLineNumber;
+
   string $line = "";
-  while ( ! gmatch( $line, "*;") && ! `feof $filehandle` ) {
-    string $buf = ( strip( fgetline( $filehandle ) ) );
+  while ( ! gmatch( $line, "*;") && $gLifLineNumber != size( $gLiquidSLifFile )  ) {
+    string $buf = ( strip( $gLiquidSLifFile[$gLifLineNumber] ) );
     if ( ! gmatch( $buf, "#*") ) $line += (" "+$buf);
+    $gLifLineNumber++;
   }
 
   return strip($line);
@@ -117,6 +121,7 @@ proc int getParamIndex( string $line )
  */
 global proc string[] getKeyData( string $line )
 {
+  //trace $line;
   string $tmp = $line;
   string $result[];
   string $buf[];
@@ -208,9 +213,106 @@ proc int getBoolean( string $line )
 
 
 
+
 //
-// global proc
+// global procs
 //
+
+global proc liquidSlReadLifFromDisk( string $shaderFile )
+{
+  global string $gLiquidSLifFile[];
+
+  float $st = `timerX`;
+
+  clear $gLiquidSLifFile;
+  int $i = 0;
+  string $a;
+
+  $file = fopen( $shaderFile, "r" );
+  while ( !feof( $file ) ) {
+    $a = strip(fgetline( $file ));
+    if ($a!="" && $a != "desc \"\";" ) $gLiquidSLifFile[$i++] = $a;
+  }
+  fclose( $file );
+
+  //trace ("[liquidSlReadLifFromDisk] "+`timerX -st $st`+" sec.");
+}
+
+global proc liquidSlBuildLifCmdList()
+{
+  float $st = `timerX`;
+
+  global string $gLiquidSlShaderFile;
+  global string $gLifCmdList[];
+  global string $gLifGrpCmd[];
+
+  clear $gLifGrpCmd;
+
+  string $shaderType = liquidSlShaderType();
+
+  int $groupDepth = 0;
+  int $groupNumber = 0;
+
+  int $i = 0;
+  int $guiSize = ( liquidLifGuiSize() )? liquidLifGuiSize() : liquidSlNumParams();
+
+  string $tmpList[];
+
+  while ( $i < $guiSize ) {
+
+    string $argType     = liquidLifParamType($i);
+
+    string $argSubType  = liquidLifParamGuiType($i);
+    int    $argArrayLen = liquidLifParamArraySize($i);
+    string $label       = liquidLifParamLabel($i);
+    string $paramName   = liquidLifParamName($i);
+    int    $channelBox  = liquidLifChannelBoxState( $i );
+    string $range[]     = liquidLifParamGuiRange( $i );
+    string $description = liquidLifParamDescription( $i );
+
+    //trace ($paramName);
+
+    switch( $argType ) {
+
+      case "group":
+        if ( !gmatch( $label, "end+") ) {
+          $gLifCmdList[ $i ] = ( "liquidAE_LifGrp2( \""+$label+"\" );" );
+        } else {
+          $gLifCmdList[ $i ]  = ( "liquidAE_LifGrp2( \""+$label+"\" );" );
+        }
+        break;
+
+      case "float":
+        $gLifCmdList[$i] = ( "liquidAE_LifFloat2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
+        break;
+
+      case "string":
+        $gLifCmdList[$i] = ("liquidAE_LifString2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
+        break;
+
+      case "color":
+        $gLifCmdList[$i] = ( "liquidAE_LifColor2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
+        break;
+
+      case "point":
+      case "vector":
+      case "normal":
+        $gLifCmdList[$i] = ( "liquidAE_LifVector2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
+        break;
+
+      default:
+        print ("    > \""+$argType+"\" not handled yet !\n");
+        break;
+    }
+
+    $i++;
+  }
+
+  //trace ( "[liquidSlBuildLifCmdList] " +`timerX -st $st`+" sec.");
+
+
+}
+
 
 /**
  *  the main proc to parse the LIF file.
@@ -219,6 +321,8 @@ proc int getBoolean( string $line )
 global proc liquidSlParseLif( string $shaderFile )
 {
   // init globals
+  global string $gLiquidSLifFile[];
+
   global string $gLiquidSlShaderType;
   global int    $gLiquidSlNumParams;
   global string $gLiquidSlParamNames[];
@@ -249,21 +353,22 @@ global proc liquidSlParseLif( string $shaderFile )
   $gLiquidSlParamGuiLabel = $gLiquidSlParamNames;
   $gLiquidSlParamGuiType = $gLiquidSlParamTypes;
 
+
   // get the lif file name
   string $lifFile = substitute("[a-zA-Z]{3}$", $shaderFile, "lif" );
 
   // check its existence
   // and mark the existence of the lif file
   if ( ! `filetest -r $lifFile` ) {
+    liquidSlBuildLifCmdList();
     //trace ( "no lif file for shader: " + $shaderFile );
     return;
   } else {
     $gLiquidSlLifExists = 1;
-
   }
 
   // Open file
-  int $fid = `fopen $lifFile "r"`;
+  liquidSlReadLifFromDisk( $lifFile );
 
   // start timer
   $timer = `timerX`;
@@ -272,10 +377,13 @@ global proc liquidSlParseLif( string $shaderFile )
   int $paramNum = 0;
   int $i = -1;
   int $shaderDescription = 0;
-  string $line = getNextLine( $fid );
+  global int $gLifLineNumber;
+  $gLifLineNumber = 0;
+  string $line = getNextLine();
+  int $numLines = size( $gLiquidSLifFile );
 
   // start parsing
-  while ( ! `feof $fid` ) {
+  while ( $gLifLineNumber < $numLines ) {
 
     string $key = match("^[a-z]+", $line);
 
@@ -345,14 +453,14 @@ global proc liquidSlParseLif( string $shaderFile )
     }
 
     // get next line
-    $line = getNextLine( $fid );
+    $line = getNextLine();
   }
-
-  // close file
-  fclose $fid;
 
   $gLiquidSlLifGuiSize = size( $gLiquidSlParamGuiOrder );
 
+  liquidSlBuildLifCmdList();
+
+  //trace ("[liquidSlParseLif] "+`timerX -st $timer`+" sec.");
 }
 
 
@@ -623,5 +731,5 @@ global proc gdump()
   }
 
   fclose $fh;
-  print ("gdump : DONE\n");
+  trace ("gdump : DONE\n");
 }

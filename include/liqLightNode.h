@@ -58,7 +58,7 @@
 
 class liqLightNode : public MPxNode
 {
-	public:
+  public:
                       liqLightNode();
     virtual          ~liqLightNode();
 
@@ -72,7 +72,7 @@ class liqLightNode : public MPxNode
     static  MTypeId   id;
     liqNodeSwatch*    renderSwatch;
 
-	private:
+  private:
 
     // Input attributes
     static MObject aRmanShader;
@@ -83,6 +83,7 @@ class liqLightNode : public MPxNode
     static MObject aRmanTypes;
     static MObject aRmanDefaults;
     static MObject aRmanArraySizes;
+    static MObject aRmanLifCmds;
 
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;

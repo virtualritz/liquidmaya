@@ -70,6 +70,8 @@ MObject liqVolumeNode::aRmanDetails;
 MObject liqVolumeNode::aRmanTypes;
 MObject liqVolumeNode::aRmanDefaults;
 MObject liqVolumeNode::aRmanArraySizes;
+MObject liqVolumeNode::aRmanLifCmds;
+
 MObject liqVolumeNode::aPreviewPrimitive;
 MObject liqVolumeNode::aPreviewCustomPrimitive;
 MObject liqVolumeNode::aPreviewObjectSize;
@@ -102,7 +104,7 @@ MObject liqVolumeNode::aOutColor;
 
 void liqVolumeNode::postConstructor( )
 {
-	setMPSafe(true);
+  setMPSafe(true);
 
   // init swatch
   if ( swatchInit != true ) {
@@ -140,29 +142,32 @@ MStatus liqVolumeNode::initialize()
   MStatus status;
 
   // Create input attributes
-	aRmanShader = tAttr.create( MString("rmanShader"), MString("rms"), MFnData::kString, aRmanShader, &status );
-	MAKE_INPUT(tAttr);
+  aRmanShader = tAttr.create( MString("rmanShader"), MString("rms"), MFnData::kString, aRmanShader, &status );
+  MAKE_INPUT(tAttr);
 
   aRmanShaderLong = tAttr.create( MString("rmanShaderLong"), MString("rml"), MFnData::kString, aRmanShaderLong, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
-	aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
-	MAKE_INPUT(tAttr);
+  aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
+  MAKE_INPUT(tAttr);
 
   aRmanParams = tAttr.create(  MString("rmanParams"),  MString("rpr"), MFnData::kStringArray, aRmanParams, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanDetails = tAttr.create(  MString("rmanDetails"),  MString("rdt"), MFnData::kStringArray, aRmanDetails, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanTypes = tAttr.create(  MString("rmanTypes"),  MString("rty"), MFnData::kStringArray, aRmanTypes, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanDefaults = tAttr.create(  MString("rmanDefaults"),  MString("rdf"), MFnData::kStringArray, aRmanDefaults, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanArraySizes = tAttr.create(  MString("rmanArraySizes"),  MString("ras"), MFnData::kIntArray, aRmanArraySizes, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
+
+  aRmanLifCmds = tAttr.create(  MString("rmanLifCmds"),  MString("rlc"), MFnData::kStringArray, aRmanLifCmds, &status );
+  MAKE_INPUT(tAttr);
 
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );
   eAttr.addField( "Sphere",   0 );
@@ -177,7 +182,7 @@ MStatus liqVolumeNode::initialize()
   CHECK_MSTATUS(eAttr.setConnectable(false));
 
   aPreviewCustomPrimitive = tAttr.create(  MString("previewCustomPrimitive"),  MString("pcp"), MFnData::kString, aPreviewCustomPrimitive, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aPreviewObjectSize = nAttr.create("previewObjectSize", "pos", MFnNumericData::kDouble, 1.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
@@ -192,7 +197,7 @@ MStatus liqVolumeNode::initialize()
   CHECK_MSTATUS(nAttr.setConnectable(false));
 
   aShaderSpace = tAttr.create( MString("shaderSpace"), MString("ssp"), MFnData::kString, aShaderSpace, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aOutputInShadow = nAttr.create("outputInShadow", "ois",  MFnNumericData::kBoolean, 0.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
@@ -202,9 +207,9 @@ MStatus liqVolumeNode::initialize()
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setHidden(true));
 
-	// Create output attributes
+  // Create output attributes
   aOutColor = nAttr.createColor("outColor", "oc");
-	MAKE_OUTPUT(nAttr);
+  MAKE_OUTPUT(nAttr);
 
   CHECK_MSTATUS(addAttribute(aRmanShader));
   CHECK_MSTATUS(addAttribute(aRmanShaderLong));
@@ -214,6 +219,8 @@ MStatus liqVolumeNode::initialize()
   CHECK_MSTATUS(addAttribute(aRmanTypes));
   CHECK_MSTATUS(addAttribute(aRmanDefaults));
   CHECK_MSTATUS(addAttribute(aRmanArraySizes));
+  CHECK_MSTATUS(addAttribute(aRmanLifCmds));
+
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));

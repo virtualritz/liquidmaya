@@ -47,6 +47,10 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
   // don't force a reload
   liquidSlSetShader( $shaderFileName );
 
+  // get the output filter mask from the liquidGlobals.
+  string $outputFilter = `getAttr liquidGlobals.shadersOutputParamsFilter`;
+  if ( $outputFilter == "" ) $outputFilter = "^_*";
+
   // just use the globals
   int $numOfArgs = liquidSlNumParams();
 
@@ -55,7 +59,8 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
 
     string $argName      = liquidSlParamName($i);
 
-    if ( liquidSlParamIsOutput($i) && !gmatch( $argName, "_*") ) return;
+    // filter out ouptut parameters
+    if ( liquidSlParamIsOutput($i) && size(match( $outputFilter, $argName)) ) return;
 
     string $argType      = liquidSlParamType($i);
     int    $argArrayLen  = liquidSlParamArraySize($i);

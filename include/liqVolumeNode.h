@@ -59,7 +59,7 @@
 
 class liqVolumeNode : public MPxNode
 {
-	public:
+  public:
                       liqVolumeNode();
     virtual          ~liqVolumeNode();
 
@@ -73,7 +73,7 @@ class liqVolumeNode : public MPxNode
     static  MTypeId   id;
     liqNodeSwatch*    renderSwatch;
 
-	private:
+  private:
 
     // Input attributes
     static MObject aRmanShader;
@@ -84,6 +84,8 @@ class liqVolumeNode : public MPxNode
     static MObject aRmanTypes;
     static MObject aRmanDefaults;
     static MObject aRmanArraySizes;
+    static MObject aRmanLifCmds;
+
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
     static MObject aPreviewObjectSize;

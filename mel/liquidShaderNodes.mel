@@ -39,43 +39,11 @@ global string $gLiquidAELastShader;
 global string $gLiquidAELastNode;
 
 
-proc setLastAEShader( string $shader, string $type )
-{
-  global string $gLastShader_liquidLight;
-  global string $gLastShader_liquidSurface;
-  global string $gLastShader_liquidDisplacement;
-  global string $gLastShader_liquidVolume;
-  eval ("$gLastShader_"+$type+" = \""+$shader+"\"");
-}
 
-proc string getLastAEShader( string $type )
-{
-  global string $gLastShader_liquidLight;
-  global string $gLastShader_liquidSurface;
-  global string $gLastShader_liquidDisplacement;
-  global string $gLastShader_liquidVolume;
-  return eval ( "$gLastShader_"+$type+" = $gLastShader_"+$type+";" );
-}
-
-proc setLastAENode( string $node, string $type )
-{
-  global string $gLastNode_liquidLight;
-  global string $gLastNode_liquidSurface;
-  global string $gLastNode_liquidDisplacement;
-  global string $gLastNode_liquidVolume;
-  eval ("$gLastNode_"+$type+" = \""+$node+"\"");
-}
-
-proc string getLastAENode( string $type )
-{
-  global string $gLastNode_liquidLight;
-  global string $gLastNode_liquidSurface;
-  global string $gLastNode_liquidDisplacement;
-  global string $gLastNode_liquidVolume;
-  return eval ( "$gLastNode_"+$type+" = $gLastNode_"+$type+";" );
-}
-
-
+/**
+ *  Stores extra data about the shader that will be needed at RIB export time.
+ *  Also stores a sequence of lif commands to create/reconnect widgets
+ */
 proc rmanParams_create( string $node, int $reReadShaderParams )
 {
   if ( $reReadShaderParams ) {
@@ -84,8 +52,12 @@ proc rmanParams_create( string $node, int $reReadShaderParams )
     liquidSlSetShader( $shaderPath );
   }
 
+  global string $gLifCmdList[];
+
   setAttr -type "string" ( $node + ".rmanShader" ) (liquidSlShaderName());
 
+  // store the param names
+  //
   string $cmd = ( "setAttr -type stringArray " + $node + ".rmanParams " + liquidSlNumParams() + " " );
   for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
       $cmd += ( "\"" + liquidSlParamName($i) + "\" " );
@@ -93,6 +65,8 @@ proc rmanParams_create( string $node, int $reReadShaderParams )
   //trace $cmd;
   eval $cmd;
 
+  // store the param details
+  //
   string $cmd = ( "setAttr -type stringArray " + $node + ".rmanDetails " + liquidSlNumParams() + " " );
   for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
       $cmd += ( liquidSlParamDetail($i) + " " );
@@ -100,6 +74,8 @@ proc rmanParams_create( string $node, int $reReadShaderParams )
   //trace $cmd;
   eval $cmd;
 
+  // store the param types
+  //
   string $cmd = ( "setAttr -type stringArray " + $node + ".rmanTypes " + liquidSlNumParams() + " " );
   for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
       $cmd += ( "\"" + liquidSlParamType($i) + "\" " );
@@ -107,6 +83,8 @@ proc rmanParams_create( string $node, int $reReadShaderParams )
   //trace $cmd;
   eval $cmd;
 
+  // store the defaults
+  //
   string $cmd = ( "setAttr -type stringArray " + $node + ".rmanDefaults " + liquidSlNumParams() + " " );
   for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
       if ( liquidSlParamType($i) == "string" ) $cmd += ( "\"" + liquidSlParamDefaultRaw($i) + "\" " );
@@ -115,284 +93,28 @@ proc rmanParams_create( string $node, int $reReadShaderParams )
   //trace $cmd;
   eval $cmd;
 
+  // store the array sizes
+  //
   string $cmd = ( "setAttr -type Int32Array " + $node + ".rmanArraySizes " + liquidSlNumParams() + " " );
   for ( $i = 0; $i < liquidSlNumParams(); $i++ ) {
       $cmd += ( liquidSlParamArraySize($i) + " " );
   }
   //trace $cmd;
   eval $cmd;
-}
 
-
-
-global proc lifGradient_unifyInterpolation( string $ctl )
-{
-  global string	$gAEFocusNode;
-
-  string $currentParent = `setParent -q`;
-  string $optionMenuCtl = `setParent $ctl`;
-  int $selected = `optionMenu -q -sl ($optionMenuCtl+"|optionMenu")` - 1;
-
-  string $attr = substitute("Si$", $ctl, "");
-  $attr = substitute("[A-Za-z0-9_]+__", $attr, "");
-  string $nodeAttr = ($gAEFocusNode+"."+$attr);
-  int $size = `getAttr -s $nodeAttr`;
-  for ( $i=0; $i<$size; $i++ ) {
-    setAttr ($nodeAttr+"["+$i+"]."+$attr+"_Interp") $selected;
+  // store the lif command sequence
+  //
+  int $guiSize = ( liquidLifGuiSize() )? liquidLifGuiSize() : liquidSlNumParams();
+  if ( !objExists( ($node + ".rmanLifCmds") ) ) addAttr -dt "stringArray" -ln rmanLifCmds $node;
+  string $cmd = ( "setAttr -type stringArray " + $node + ".rmanLifCmds " + $guiSize + " " );
+  for ( $i = 0; $i < $guiSize; $i++ ) {
+      $cmd += ( "\"" + encodeString($gLifCmdList[$i]) + "\" " );
   }
-  setParent $currentParent;
-}
-
-
-global proc lifGradient_connect( string $nodeAttr )
-{
-  string $buffer[];
-  tokenize($nodeAttr, ".", $buffer);
-  string $attr = $buffer[1];
-
-  string $shader = `getAttr ($buffer[0]+".rmanShaderLong")`;
-  $shader = basenameEx( $shader );
-
-  string $rampName = ( $shader + "__" + $attr + "Ramp" );
-
-  gradientControl -e -at $nodeAttr $rampName;
+  //trace $cmd;
+  eval $cmd;
 
 }
 
-
-global proc lifGradient_create( string $nodeAttr, int $bound, int $indent, int $staticEntries, int $staticPositions, int $adaptiveScaling )
-{
-  string $buffer[];
-  tokenize($nodeAttr, ".", $buffer);
-  string $attr = $buffer[1];
-
-  string $topParent = `setParent -q`;
-
-  string $shader = `getAttr ($buffer[0]+".rmanShaderLong")`;
-  $shader = basenameEx( $shader );
-
-  string $rampName = ( $shader + "__" + $attr + "Ramp" );
-  string $scName   = ( $shader + "__" + $attr + "Scc" );
-  string $spName   = ( $shader + "__" + $attr + "Sp" );
-  string $siName   = ( $shader + "__" + $attr + "Si" );
-
-  string $colEntryName =  ($nodeAttr + "[0]." + $attr + "_ColorR");
-  int $isColor = `objExists ($colEntryName)`;
-
-  setUITemplate -pst attributeEditorTemplate;
-  columnLayout -columnAttach "both" 5 -rowSpacing 2 -columnWidth 420;
-
-  // ramp block
-  string $rampForm = `formLayout ($rampName + "Form")`;
-    string $spc	= `attrFieldSliderGrp -l "Selected Position"
-                                      -ann "Selected Position"
-                                      -h 30 -w 206 -cw4 123 81 1 1 $spName`;
-    string $scc;
-    if( $isColor ){
-      $scc= `attrColorSliderGrp -l "Selected Color"
-                                -ann "Selected Color" -sb 0
-                                -h 26 -w 206 -cw4 123 81 1 1 $scName`;
-    } else {
-      $scc	= `attrFieldSliderGrp -l "Selected Value"
-                                  -ann "Selected Value"
-                                  -h 30 -w 206 -cw4 123 56 1 24 $scName`;
-    }
-
-    string $interp = `attrEnumOptionMenuGrp -l "Interpolation"
-                                            -ann "Interpolation method"
-                                            -w 206
-                                            -cw2 123 81 $siName`;
-    string $boundStyle = "etchedIn";
-    if( $bound ){
-      $boundStyle = "in";
-    }
-    string $lmax;
-    if ( $adaptiveScaling ) {
-      $lmax = `text -label "1.0" ($rampName+"LX")`;
-    }
-    string $rframe = `frameLayout -bs $boundStyle -lv 0 -cll 0 -mw 6 ($rampForm + "fr")`;
-    string $widgetName = `gradientControl -at   $nodeAttr
-                                          -snc  $staticEntries
-                                          -sp   $staticPositions
-                                          $rampName`;
-    if ( $adaptiveScaling ) {
-      gradientControl -e -as $adaptiveScaling -ror $adaptiveScaling -ulc $lmax $widgetName;
-    }
-
-    setParent ..;
-    formLayout
-      -edit
-        -attachForm $spc "left"  0
-        -attachForm $spc "right" 206
-        -attachForm $spc "top" 0
-        -attachNone $spc "bottom"
-
-        -attachForm $scc "left" 0
-        -attachForm $scc "right" 206
-        -attachControl $scc "top" 0 $spc
-        -attachNone $scc "bottom"
-
-        -attachForm $interp "left" 0
-        -attachNone $interp "right"
-        -attachControl $interp "top" 0 $scc
-        -attachNone $interp "bottom"
-
-        -attachControl $rframe "left" 2 $spc
-        -attachNone $rframe "right"
-        -attachForm $rframe "top" 0
-        -attachNone $rframe "bottom"
-        $rampForm;
-
-    if ( $adaptiveScaling ) {
-      formLayout
-        -edit
-          -attachControl $lmax "left" 2 $rframe
-          -attachNone $lmax "right"
-          -attachForm $lmax "top" 0
-          -attachNone $lmax "bottom"
-          $rampForm;
-    }
-  setParent ..;
-
-  // input
-  if(objExists ($nodeAttr +"Input")){
-    string $inLabel;
-    string $labelAttr = interToUI($attr);
-    if( $indent || size( $labelAttr ) < 9 ){
-      $inLabel =  ($labelAttr + " Input");
-    } else {
-      $inLabel = "Input";
-    }
-    if( $indent ){
-      attrEnumOptionMenuGrp -l $inLabel
-        -ann "input variable for function"
-        -cw2 204 155
-        -at ($nodeAttr + "Input") ($rampName + "Input");
-    } else {
-      attrEnumOptionMenuGrp -l $inLabel
-        -ann "input variable for function"
-        -cw2 123 500
-        -at ($nodeAttr + "Input") ($rampName + "Input");
-    }
-
-  }
-
-  // inputBias
-  if(  objExists ($nodeAttr +"InputBias") ){
-    attrFieldSliderGrp -l "Input Bias" -cw4 123 81 130	25
-        -at ($nodeAttr +"InputBias") ($rampName + "InputBias");
-  }
-
-  // inputScale
-  if(  objExists ($nodeAttr +"InputScale") ){
-    attrFieldSliderGrp -l "Input Scale" -cw4 123 81 130 25
-        -at ($nodeAttr +"InputScale") ($rampName + "InputScale");
-  }
-  // tell the port about the controls
-  gradientControl -e -scc $scc $widgetName;
-  gradientControl -e -spc $spc $widgetName;
-  gradientControl -e -sic $interp $widgetName;
-  setUITemplate -ppt;
-
-  // add command to unify interpolation
-  string $optionMenuCtl = ($interp+"|optionMenu");
-  if ( `optionMenu -q -ex $optionMenuCtl` ) optionMenu -e -cc ("lifGradient_unifyInterpolation "+$siName) $optionMenuCtl;
-
-  setParent $topParent;
-}
-
-
-proc lifGradientAttr_connect( string $node, string $valueAttr, string $positionAttr, string $interpAttr )
-{
-  int $isColor     = ( `getAttr -type ($node+"."+$valueAttr+"[0]")` == "float3" )? 1:0 ;
-  int $arraySize   =   `getAttr -size ($node+"."+$valueAttr)`;
-  int $multiInterp = ( `getAttr -size ($node+"."+$interpAttr)` )? 1:0;
-
-  string $gradAttr = ($valueAttr+"Lif");
-
-  for ( $i=0; $i<$arraySize; $i++ ) {
-
-    //trace ("  lifGradientAttr_connect "+$node+" "+$valueAttr+"["+$i+"]");
-
-    if ( $isColor ) connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Color")   ($node+"."+$valueAttr+"["+$i+"]");
-    else connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_FloatValue")   ($node+"."+$valueAttr+"["+$i+"]");
-
-    if ( objExists( ($node+"."+$positionAttr) ) ) {
-      setAttr -lock off ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position");
-      connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position") ($node+"."+$positionAttr+"["+$i+"]");
-    } else setAttr -lock on ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position");
-
-    if ( objExists( ($node+"."+$interpAttr) ) ) {
-      setAttr -lock off ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp");
-      if ( objExists( ($node+"."+$interpAttr+"["+$i+"]") ) ) {
-        connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp")   ($node+"."+$interpAttr+"["+$i+"]");
-      } else {
-        if ( $i>0 ) continue;
-        connectAttr -f ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp")   ($node+"."+$interpAttr);
-      }
-    } else setAttr -lock on ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp");
-  }
-}
-
-proc lifGradientAttr_init( string $node, string $valueAttr, string $positionAttr, string $interpAttr )
-{
-  int $isColor     = ( `getAttr -type ($node+"."+$valueAttr+"[0]")` == "float3" )? 1:0 ;
-  int $arraySize   =   `getAttr -size ($node+"."+$valueAttr)`;
-  int $multiInterp = ( `getAttr -size ($node+"."+$interpAttr)` )? 1:0;
-
-  string $gradAttr = ($valueAttr+"Lif");
-
-  for ( $i=0; $i<$arraySize; $i++ ) {
-
-    //trace ("  lifGradientAttr_init "+$node+" "+$valueAttr+"["+$i+"]");
-
-    float $pos    = ( objExists( ($node+"."+$positionAttr+"["+$i+"]") ) )? (`getAttr ($node+"."+$positionAttr+"["+$i+"]")`) : ($i*(1/($arraySize-1)));
-    float $interp = 3;
-    if ( $interpAttr != "" ) {
-      if ( objExists( ($node+"."+$interpAttr+"["+$i+"]") ) )   $interp = `getAttr ($node+"."+$interpAttr+"["+$i+"]")`;
-      else $interp = `getAttr ($node+"."+$interpAttr)`;
-    }
-
-    setAttr ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Position") $pos;
-    if ( $isColor ) {
-      float $col[]  = `getAttr ($node+"."+$valueAttr+"["+$i+"]")`;
-      setAttr ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_ColorR")   $col[0];
-      setAttr ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_ColorG")   $col[1];
-      setAttr ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_ColorB")   $col[2];
-    } else {
-      float $val  = `getAttr ($node+"."+$valueAttr+"["+$i+"]")`;
-      setAttr ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_FloatValue")  $val;
-    }
-    setAttr ($node+"."+$gradAttr+"["+$i+"]."+$gradAttr+"_Interp")   $interp;
-
-  }
-}
-
-proc string lifGradientAttr_create( string $node, string $valueAttr, string $positionAttr, string $interpAttr )
-{
-  int $isColor = ( `getAttr -type ($node+"."+$valueAttr+"[0]")` == "float3" )? 1:0;
-
-  string $gradAttr = ($valueAttr+"Lif");
-
-  if ( !`objExists ($node+"."+$gradAttr)` ) {
-    //trace ("lifGradientAttr_create "+$node+" "+$valueAttr+"  >  "+$gradAttr);
-    addAttr -hidden true -ln $gradAttr -attributeType compound -numberOfChildren 3 -multi $node;
-      addAttr -hidden true -ln ($gradAttr+"_Position") -attributeType "float" -parent $gradAttr $node;
-      if ( $isColor ) {
-        addAttr -hidden true -ln ($gradAttr+"_Color") -usedAsColor -attributeType float3 -parent $gradAttr $node;
-          addAttr -hidden true -ln ($gradAttr+"_ColorR") -attributeType "float" -parent ($gradAttr+"_Color") $node;
-          addAttr -hidden true -ln ($gradAttr+"_ColorG") -attributeType "float" -parent ($gradAttr+"_Color") $node;
-          addAttr -hidden true -ln ($gradAttr+"_ColorB") -attributeType "float" -parent ($gradAttr+"_Color") $node;
-      } else {
-        addAttr -hidden true -ln ($gradAttr+"_FloatValue") -attributeType "float" -parent $gradAttr $node;
-      }
-      addAttr -hidden true -ln ($gradAttr+"_Interp") -attributeType "enum" -en "none:linear:smooth:spline" -parent $gradAttr $node;
-
-    lifGradientAttr_init( $node, $valueAttr, $positionAttr, $interpAttr );
-    lifGradientAttr_connect( $node, $valueAttr, $positionAttr, $interpAttr );
-  }
-  return $gradAttr;
-}
 
 
 
@@ -403,33 +125,32 @@ proc string lifGradientAttr_create( string $node, string $valueAttr, string $pos
 
 /**
  *  initialize shader parameters on shading node
+ *  This proc will create all the shader attributes on the shader node.
+ *  It will force re-parsing the shader, even if it has already been parsed
+ *  In the end it will store parsed data for later reuse (rib gen)
  */
 global proc liquidShaderNodes_initParams( string $nodeAttr )
 {
-  //print ($nodeAttr+"\n");
+  //trace ("liquidShaderNodes_initParams "+$nodeAttr+"\n");
   $node = basenameEx( $nodeAttr );
   string $shaderPath = `getAttr ($node+".rmanShaderLong")`;
 
 
   // shader does not exist / not readable
   if ( !`filetest -s $shaderPath` ) {
-    warning ($shaderPath+" does not exist / is not readable");
+    warning ("[liquid] "+$shaderPath+" does not exist / is not readable");
   }
 
   // invalid path
   if ( !liquidGlobalsExists() ) eval("liquidCreateGlobals();select "+$node+";");
   string $extension = `getAttr "liquidGlobals.shaderExt"`;
   if ( match("[a-zA-Z]+$", $shaderPath ) != $extension ) {
-    warning ("Shaders must end with "+$extension+" ");
+    warning ("[liquid] Shaders must end with "+$extension+" ");
     return;
   }
 
   // read shader params
-  {
-    // force reload
-    global string $gLiquidSlShaderFile;
-    $gLiquidSlShaderFile = "";
-  }
+  liquidSlInfoReset();
   liquidSlSetShader( $shaderPath );
 
   // check the type
@@ -439,11 +160,9 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
   if ( !gmatch( $nodeType, ("*"+$shadertype+"*") ) ) {
     string $short = basenameEx($shaderPath);
     string $typ = substitute("liquid", $nodeType, "" );
-    warning ($short+" is not a "+$typ+"shader !");
+    warning ("[liquid] "+$short+" is not a "+$typ+"shader !");
     return;
   }
-
-  string $type = nodeType($node);
 
   // create shader params
   liquidAttachShaderParams( $node, $shaderPath );
@@ -457,10 +176,6 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
   string $allUserDefinedAttr[] = `listAttr -ud -hd $node`;
   string $obsoleteAttr[] = stringArrayRemove( $gLiquidSlParamNames, $allUserDefinedAttr );
 
-  //print ("> all: "+stringArrayToString( $allUserDefinedAttr, ", ")+"\n");      // DBG
-  //print ("> shd: "+stringArrayToString( $gLiquidSlParamNames, ", ")+"\n");     // DBG
-  //print ("> end: "+stringArrayToString( $obsoleteAttr, ", ")+"\n");            // DBG
-
   for ( $at in $obsoleteAttr ) {
     string $fullattr = ($node+"."+$at);
     if (  $at == "rmanParams"     ||
@@ -468,6 +183,7 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
           $at == "rmanTypes"      ||
           $at == "rmanDefaults"   ||
           $at == "rmanArraySizes" ||
+          $at == "rmanLifCmds" ||
           gmatch( $at, "liquid*ShaderNode")  ||
           gmatch( $at, "*Lif") ) continue;
     if ( objExists( $fullattr ) ) {
@@ -481,10 +197,11 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
     }
   }
 
-
-  evalDeferred( "if ( `layout -q -ex \"AttrEd"+$type+"FormLayout\"` ) deleteUI \"AttrEd"+$type+"FormLayout\";");
-  evalDeferred( "if ( objExists( \""+$node+"\" ) && `layout -q -ex $gAEMenuBarLayoutName` ) updateAE "+$node+";" );
+  //trace "[init] > done.";
 }
+
+
+
 
 
 
@@ -493,13 +210,12 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
  */
 global proc liquidShaderNodePreview( string $node )
 {
-  //print (">> liquidSurfacePreview "+$node+"\n");
 
   if ( !liquidGlobalsExists() ) eval("liquidCreateGlobals();select "+$node+";");
 
   string $nodetype = nodeType($node);
   if ( $nodetype == "liquidLight" || $nodetype == "liquidVolume" ) {
-    warning "Preview is not yet supported for Liquid Light and Volume Shader.";
+    warning "[liquid] Preview is not yet supported for Liquid Light and Volume Shader.";
     return;
   }
 
@@ -579,35 +295,36 @@ global proc liquidShaderNodePreview( string $node )
     $args = $args + ( " -noBackPlane" );
   }
 
-  //trace ($args+"\n");
+  // this will tell the node to reload the preview in the swatch
   setAttr ($node+".refreshPreview") true;
+
+  // run the command.
   eval( $args );
 
 }
 
 /**
- *  make a bigger swatch
+ *  make a bigger swatch ( 128x128 )
  */
 global proc liquidPreviewSwatchNew ( string $nodeName, string $msg )
 {
-  //// trace ("liquidPreviewSwatchNew "+$nodeName+" "+$msg);
   global int $gTextColumnWidthIndex;
 
   string $node[];
   tokenize($msg, ".", $node);
 
   string $label = nodeType($node[0]);
-  if ( gmatch( $label, "*Surface*") ) $label = "surface";
+  if ( gmatch( $label, "*Surface*") )           $label = "surface";
   else if ( gmatch( $label, "*Displacement*") ) $label = "displacement";
-  else if ( gmatch( $label, "*Volume*") ) $label = "volume";
-  else if ( gmatch( $label, "*Light*") ) $label = "light";
+  else if ( gmatch( $label, "*Volume*") )       $label = "volume";
+  else if ( gmatch( $label, "*Light*") )        $label = "light";
 
   formLayout swatchDisplayForm;
     text -l $label swatchLabel;
 
     swatchDisplayPort -wh 128 128 -sn $node[0] swatchDisplay;
-    button -w 70 -h 64 -l "preview" liquidAEswatchRefresh;
-    button -w 70 -h 28 -l "reload" liquidAEShaderReload;
+    button -w 70 -h 64 -l "preview"  liquidAEswatchRefresh;
+    button -w 70 -h 28 -l "reload"   liquidAEShaderReload;
     button -w 70 -h 28 -l "edit Lif" liquidAEEditLif;
 
     setParent ..;
@@ -632,244 +349,231 @@ global proc liquidPreviewSwatchNew ( string $nodeName, string $msg )
 
     swatchDisplayForm;
 
-  //// trace ("  liquidPreviewSwatchNew DONE");
-
   liquidPreviewSwatchReplace $nodeName $msg;
 }
+
 
 /**
  *  keep a bigger swatch
  */
 global proc liquidPreviewSwatchReplace ( string $nodeName, string $msg )
 {
-  //// trace ("liquidPreviewSwatchReplace "+$nodeName+" "+$msg);
   string $node[];
   tokenize($msg, ".", $node);
 
   string $label = nodeType($node[0]);
-  if ( gmatch( $label, "*Surface*") ) $label = "surface";
+  if ( gmatch( $label, "*Surface*") )           $label = "surface";
   else if ( gmatch( $label, "*Displacement*") ) $label = "displacement";
-  else if ( gmatch( $label, "*Volume*") ) $label = "volume";
-  else if ( gmatch( $label, "*Light*") ) $label = "light";
+  else if ( gmatch( $label, "*Volume*") )       $label = "volume";
+  else if ( gmatch( $label, "*Light*") )        $label = "light";
 
   text -e -l $label swatchLabel;
   swatchDisplayPort -edit -sn $node[0] -wh 128 128 swatchDisplay;
-  button -e -c ("liquidShaderNodePreview "+$node[0]) liquidAEswatchRefresh;
-  button -e -c ("liquidShaderNodes_initParams \""+$node[0]+"\";") liquidAEShaderReload;
-  button -e -c ("liquidFluidEditLifFile \""+$node[0]+"\";") liquidAEEditLif;
+  button -e -c ("liquidShaderNodePreview "+$node[0])            liquidAEswatchRefresh;
+  button -e -c ("liquidShaderNodes_reloadAndRefresh "+$node[0]) liquidAEShaderReload;
+  button -e -c ("liquidFluidEditLifFile \""+$node[0]+"\";")     liquidAEEditLif;
 
-  //// trace ("  liquidPreviewSwatchReplace DONE");
 }
+
+
+
+
+
 
 
 // AE procs
 
-global proc liquidHideAEShaderParams( string $node)
+
+/**
+ *  return the name of a shader's cached layout.
+ *  it uses the full path of the shader.
+ *  "/tmp/test/version1/shaders/test.slo" will become "liquidSurface_tmp_test_version1_shaders_test_slo"
+ */
+global proc string liquidAE_getShaderLayoutName( string $nodeType, string $rmanShaderLong )
 {
-  // WARNING : these are Maya global variables !!!
-  // DO NOT CHANGE THEIR VALUES AT ANY POINT !!!!!
-  global string	$gAEFocusNode;
-
-  string $theNode = ($node == "")? $gAEFocusNode : $node;
-
-  // early exit
-  if ( !objExists( ($theNode+".rmanParams") ) ) {
-    // trace ( "   !!!!!!!   NO rmanParams ATTRIBUTE ON "+$theNode+"  !!!!!!!!" );
-    return;
-  }
-
-  string $params[] = `getAttr ($theNode+".rmanParams")`;
-  //trace ("    AE display suppress >"+$theNode);
-  for ( $p in $params ) {
-    //trace ("    > suppressing "+$p);
-    editorTemplate -suppress $p;
-  }
-  editorTemplate -suppress rmanTypes;
-  editorTemplate -suppress rmanDetails;
-  editorTemplate -suppress rmanDefaults;
+  string $name = `substitute $rmanShaderLong "s/[\/\\.-]*/_/g"`;
+  return ( $nodeType + basenameEx( $name ) );
 }
+
+/**
+ *  returns the name of the cache layout.
+ *  if need be the layout will be created here.
+ */
+global proc string liquidAE_setCacheLayout( string $parent, string $shaderType, string $rmanShaderLong )
+{
+  global string $gLiquid_currentAEShader;
+
+  // create the base form layout if needed
+  string $cacheLayout = ( $shaderType + "CachedLayouts" );
+  if ( !`layout -q -ex $cacheLayout` ) formLayout $cacheLayout;
+
+  // set the parent to the base layout
+  setParent $cacheLayout;
+
+  // make the base layout invisible
+  formLayout -e -vis 0 $cacheLayout;
+
+  // make all layouts inside the formlayout non-managed
+  string $cachedLayouts[] = `layout -q -ca $cacheLayout`;
+  string $cl;
+  for ( $cl in $cachedLayouts ) {
+    layout -e -vis 0 -m 0 $cl;
+  }
+
+  // create the shader layout if needed
+  string $shaderLayout = liquidAE_getShaderLayoutName( $shaderType, $rmanShaderLong );
+  if ( !`layout -q -ex $shaderLayout` ) columnLayout -adj true -vis 0 -m 0 $shaderLayout;
+  else {
+    columnLayout -e -vis 0 -m 0 $shaderLayout;
+  }
+
+  // remove oldest layout is we are beyond the limit set in the globals
+  int $maxCachedLayouts = `getAttr liquidGlobals.shadersMaxCachedAELayouts`;
+  string $allLayouts[] = `layout -q -ca $cacheLayout`;
+
+  // note : we add 1 to $maxCachedLayouts because each layout cache contains an empty layout
+  // for the case when the rmanShaderLong field is empty.
+  if ( size( $allLayouts ) > $maxCachedLayouts+1 ) {
+    if ( $allLayouts[0] != $shaderType ) {
+      deleteUI $allLayouts[0];
+    } else if ( $allLayouts[1] != "" ) {
+      deleteUI $allLayouts[1];
+    }
+  }
+
+  // set the parent
+  setParent $shaderLayout;
+
+  $gLiquid_currentAEShader = $shaderLayout;
+
+  return $shaderLayout;
+}
+
+/**
+ *  Here we restore the visibility of the layout containing the shader's parameters.
+ *  step:
+ *      - get the name of the layout
+ *      - make sure the layout is resized to fit all children
+ *      - attach it to the base cache layout
+ *      - make it visible
+ */
+global proc liquidAE_showCachedLayout( string $shaderType, string $rmanShaderLong )
+{
+  string $baseLayout = ( $shaderType + "CachedLayouts" );
+  string $shaderLayout = liquidAE_getShaderLayoutName( $shaderType, $rmanShaderLong );
+
+  // resize the layout
+  string $children[] = `layout -q -ca $shaderLayout`;
+  string $child;
+  int $height = 1;
+  for ( $child in $children ) {
+    $height += `layout -q -h $child`;
+  }
+  layout -e -h $height $shaderLayout;
+
+
+  // attach it to the $baseLayout
+  formLayout -e
+             -af $shaderLayout top    0
+             -af $shaderLayout left   0
+             -af $shaderLayout right  0
+             -af $shaderLayout bottom 0
+             $baseLayout;
+
+  // set the layout state to managed and visible
+  formLayout -e -vis 1 $baseLayout;
+  layout -e -vis 1 -m 1 $shaderLayout;
+}
+
+
 
 
 
 /**
- *  display the shader parameters
- *  $msg contains the node.rmanShaderLong
+ *  This proc is basically empty.
+ *  We don't use the Attribute Editor's layout cache, we build and manage our own layout cache.
+ *  note: $msg contains the node.rmanShaderLong
  */
 global proc liquidShaderNodesParamsNew ( string $msg )
 {
-  //trace ( "\n>> liquidShaderNodesParamsNew  " + $msg );
-
-  float $st = `timerX`;
-
-  string $theNode = basenameEx( $msg );
-  string $longShaderName = `getAttr $msg`;
-  string $nodeType = nodeType( $theNode );
-
-  // invalid shader path : exit early
-  if ( !`filetest -r $longShaderName` ) {
-    // trace "   invalid path : exit";
-    setLastAENode( $theNode, $nodeType );
-    setLastAEShader( $longShaderName, $nodeType );
-    return;
-  }
-
-  if ( !`waitCursor -q -st` ) waitCursor -state on;
-
-  // create new stuff !!
-  // read the shader parameters
-  //trace ( "   setting shader : " + $longShaderName );
-  liquidSlSetShader( $longShaderName );
-
-
-  int $i = 0;
-  int $guiSize = ( liquidLifGuiSize() )? liquidLifGuiSize() : liquidSlNumParams();
-
-  //trace ( "   creating widgets : " + $longShaderName );
-  while ( $i < $guiSize ) {
-
-    string $argType     = liquidLifParamType($i);
-    string $argSubType  = liquidLifParamGuiType($i);
-    int    $argArrayLen = liquidLifParamArraySize($i);
-
-    switch( $argType ) {
-
-      case "group":
-        liquidAE_LifGrp( $theNode, $i );
-        break;
-
-      case "float":
-        liquidAE_LifFloat( $theNode, $nodeType, $i, $argSubType );
-        break;
-
-      case "string":
-        liquidAE_LifString( $theNode, $nodeType, $i, $argSubType );
-        break;
-
-      case "color":
-        liquidAE_LifColor( $theNode, $nodeType, $i, $argSubType );
-        break;
-
-      case "point":
-      case "vector":
-      case "normal":
-        liquidAE_LifVector( $theNode, $nodeType, $i );
-        break;
-
-      default:
-        print ("    > \""+$argType+"\" not handled yet !\n");
-        break;
-    }
-
-    $i++;
-  }
-
-  //trace "   updating shader AE refresh globals";
-  setLastAENode( $theNode, $nodeType );
-  setLastAEShader( $longShaderName, $nodeType );
-
-  global float $gnst;
-  $gnst = `timerX`;
-  evalDeferred ("if ( `waitCursor -q -st` ) waitCursor -state off;" );
-
-  string $time = `timerX -st $st`;
-  // trace ("   new DONE !  ( "+$time+" sec. ) ");
+  liquidShaderNodesParamsReplace( $msg );
 }
 
 
+/**
+ *  display the shader parameters
+ *  note: $msg contains the node.rmanShaderLong
+ */
 global proc liquidShaderNodesParamsReplace ( string $msg )
 {
-  // trace ("\n>> liquidShaderNodesParamsReplace  \""+$msg+"\"");
-
   float $st = `timerX`;
 
-  string $theNode             = basenameEx( $msg );
-  string $type                = nodeType( $theNode );
-  string $longShaderName      = getAttr( $msg );
-  string $lastDisplayedNode   = getLastAENode( $type );
-  string $lastDisplayedShader = getLastAEShader( $type );
+  string $theNode        = basenameEx( $msg );
+  string $nodeType       = nodeType( $theNode );
+  string $longShaderName = getAttr( $msg );
 
-  if ( !`waitCursor -q -st` ) waitCursor -state on;
+  global string $gLiquid_currentAEParent;
+  global string $gLiquid_currentAEShader;
+  global string $gLiquid_currentAENode;
 
-  if ( $theNode == $lastDisplayedNode && $longShaderName == $lastDisplayedShader ) {
-    /* trace "\n   same node + same shader -> doing nothing";
-    trace ("   > "+$theNode+" == "+$lastDisplayedNode);
-    trace ("   > "+$longShaderName+" == "+$lastDisplayedShader); */
-  }
+  $gLiquid_currentAENode = $theNode;
+  if ( $gLiquid_currentAENode == "" ) error ("[liquid] liquidShaderNodesParamsReplace : undefined current AE node !");
 
-  if ( $theNode != $lastDisplayedNode && $longShaderName == $lastDisplayedShader ) {
-    /* trace "\n   different node + same shader -> relinking controls";
-    trace ("   > "+$theNode+" != "+$lastDisplayedNode);
-    trace ("   > "+$longShaderName+" == "+$lastDisplayedShader); */
+  // find the layout for the current shader
+  $gLiquid_currentAEShader = liquidAE_getShaderLayoutName( $nodeType, $longShaderName );
 
-    liquidSlSetShader( $longShaderName );
+  // store the current parent to restore it later
+  string $topParent = `setParent -q`;
 
-    int $i = 0;
-    int $guiSize = ( liquidLifGuiSize() )? liquidLifGuiSize() : liquidSlNumParams();
+  // get our cache layout name
+  $gLiquid_currentAEParent = liquidAE_setCacheLayout( $topParent, $nodeType, $longShaderName );
 
-    while ( $i < $guiSize ) {
+  setParent $gLiquid_currentAEParent;
 
-      string $argType     = liquidLifParamType($i);
-      string $argSubType  = liquidLifParamGuiType($i);
-      int    $argArrayLen = liquidLifParamArraySize($i);
+  if ( objExists( ($theNode+".rmanLifCmds") ) ) {
 
-      switch( $argType ) {
-
-        case "float":
-          liquidAE_LifFloat( $theNode, $type, $i, $argSubType );
-          break;
-
-        case "string":
-          liquidAE_LifString( $theNode, $type, $i, $argSubType );
-          break;
-
-        case "color":
-          liquidAE_LifColor( $theNode, $type, $i, $argSubType );
-          break;
-
-        case "point":
-        case "vector":
-        case "normal":
-          liquidAE_LifVector( $theNode, $type, $i );
-          break;
-
-        default:
-          break;
-      }
-
-      $i++;
+    string $cmds[] = `getAttr ($theNode+".rmanLifCmds")`;
+    string $c;
+    for ( $c in $cmds ) {
+      eval $c;
     }
-    evalDeferred ("liquidHideAEShaderParams "+$theNode+";");
+
+  } else {
+    string $shaderLong = `getAttr ($theNode+".rmanShaderLong")`;
+    if ( $shaderLong != "" ) {
+      // eventually re-parse the lif and generate the commands
+      error( "[liquid]" + $msg + "-> no rmanLifCmds attr" );
+    }
   }
 
-  if ( $theNode != $lastDisplayedNode && $longShaderName != $lastDisplayedShader ) {
-    /* trace "\n   different node + different shader -> rebuilding controls";
-    trace ("   > "+$theNode+" != "+$lastDisplayedNode);
-    trace ("   > "+$longShaderName+" != "+$lastDisplayedShader); */
-    evalDeferred ("if ( `layout -q -ex AttrEd"+$type+"FormLayout` ) deleteUI AttrEd"+$type+"FormLayout;");
-    evalDeferred ("liquidHideAEShaderParams "+$lastDisplayedNode+";");
-    evalDeferred ("liquidShaderNodesParamsNew "+$theNode+".rmanShader;");
-    evalDeferred ("if ( `layout -q -ex $gAEMenuBarLayoutName` ) updateAE "+$theNode+";");
-  }
+  // restore le layout's visibility
+  liquidAE_showCachedLayout( $nodeType, $longShaderName );
 
-  if ( $theNode == $lastDisplayedNode && $longShaderName != $lastDisplayedShader ) {
-    /* trace   "\n   same node + different shader -> rebuilding controls";
-    trace ("   > "+$theNode+" == "+$lastDisplayedNode);
-    trace ("   > "+$longShaderName+" != "+$lastDisplayedShader); */
-  }
-
-  setLastAENode( $theNode, $type );
-  setLastAEShader( $longShaderName, $type );
-  liquidHideAEShaderParams( $theNode );
-
-  global float $grst;
-  $grst = `timerX`;
-  evalDeferred ("if ( `waitCursor -q -st` ) waitCursor -st off;" );
+  setParent $topParent;
 
   string $time = `timerX -st $st`;
-  // trace ("   replace DONE !  ( "+$time+" sec. )\n");
+  //trace ("   replace DONE !  ( "+$time+" sec. )");
+
 }
 
 
+/**
+ * This proc will update the shader parameters and then delete the corresponding cached layout to rebuild it.
+ */
+global proc liquidShaderNodes_reloadAndRefresh( string $node )
+{
+  liquidShaderNodes_initParams( $node );
+  string $nodeType = nodeType( $node );
+  string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
+  string $cachedLayout = liquidAE_getShaderLayoutName( $nodeType, $longShaderName );
+  if ( size(`layout -q -ca $cachedLayout`) ) deleteUI $cachedLayout;
+  liquidShaderNodesParamsReplace( ($node+".rmanShaderLong") );
+}
+
+
+/**
+ *  creates the shader selection field
+ */
 global proc liquidShaderPickerNew( string $nodeName, string $msg )
 {
   if ( !liquidGlobalsExists() ) liquidCreateGlobals();
@@ -888,7 +592,7 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
   string $form          = `formLayout`;
 
   setUITemplate -pst attributeEditorTemplate;
-  string $fullCtlPath   = `textFieldGrp -label "Shader" -adj 2 $ctlName`;
+  string $fullCtlPath   = `textFieldGrp -label "Shader" $ctlName`;
   connectControl -index 2 $fullCtlPath $msg;
   string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_button")`;
   setParent ..;
@@ -905,15 +609,17 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
     formLayout  -e
                 -af $ctlName  top     0
                 -af $ctlName  left    0
-                -af $ctlName  right   31
                 -af $button   top     2
-                -ac $button   left    0 $ctlName
+                -ac $button   left    0   $ctlName
                 $form;
   }
 
   setUITemplate -ppt;
 }
 
+/**
+ *  reconnects the shader selection field to the currently selected shader
+ */
 global proc liquidShaderPickerReplace( string $nodeName, string $msg )
 {
   if ( !liquidGlobalsExists() ) liquidCreateGlobals();
@@ -935,556 +641,20 @@ global proc liquidShaderPickerReplace( string $nodeName, string $msg )
   iconTextButton -e -c $myFileCommand ($ctlName+"_button");
 }
 
+/**
+ *  The command that will be run after selecting a shader
+ *  it store the shader path and creates the shader parameters on the node.
+ */
 global proc liquidShaderNode_loadCMD( string $nodeDotAttr, string $longShaderName )
 {
   setAttr -type "string" $nodeDotAttr $longShaderName;
   evalDeferred("liquidShaderNodes_initParams "+basenameEx($nodeDotAttr));
 }
 
-/**
- *  modified lif procedures to create the attribute editor widgets.
- */
 
-global proc liquidAE_LifFloat_slider( string $selectedObj, string $nodeType, string $paramName, int $index, string $label, string $range[], string $description )
-{
-  //trace ("       - liquidAE_LifFloat_slider "+$selectedObj+" "+$paramName+" "+$index+" "+$label+" "+$range[0]+" "+$range[1]+" "+$description);
 
-  setUITemplate -pst attributeEditorTemplate;
 
-  string $theParam    = ( $index < 0 )? $paramName : ( $paramName + "[" + $index + "]" );
-  string $theParamCtl = ( $index < 0 )? ( $nodeType + "_" + $paramName + "_0" ) : ( $nodeType + "_" + $paramName + "_" + $index );
-  string $theLabel    = ( $index < 0 )? $label : ( $label + "[" + $index + "]" );
 
-  float $min    = $range[0];
-  float $max    = $range[1];
-  float $slmin  = $range[0];
-  float $slmax  = $range[1];
-
-  if ( $min == $max ) {
-    $min    = -100000000;
-    $max    =  100000000;
-    float $val = ( $index < 0 )? `getAttr ($selectedObj+"."+$paramName)` : `getAttr ($selectedObj+"."+$paramName+"["+$index+"]")`;
-    $slmin  =  ( $val > 0 )? 0 : $val * 2;
-    $slmax  =  ( $val > 0 )? $val * 2 : 0;
-  }
-
-  if ( !`control -q -ex ($theParamCtl+"_LIF")` ) {
-    //trace ("       - created ctl "+$theParamCtl+"_LIF");
-    attrFieldSliderGrp  -label  $theLabel
-                        -ann    $description
-                        -fieldMinValue  $min      -fieldMaxValue  $max
-                        -minValue $slmin            -maxValue  $slmax
-                        -sliderMinValue $slmin    -sliderMaxValue $slmax
-                        -at ( $selectedObj + "." + $theParam )
-                        -cc ( "liquidParamAU " + $selectedObj)
-                        -hideMapButton true
-                        ($theParamCtl+"_LIF");
-  } else {
-    attrFieldSliderGrp  -e
-                        -ann    $description
-                        -at ( $selectedObj + "." + $theParam )
-                        -fieldMinValue  $min      -fieldMaxValue  $max
-                        -minValue $slmin          -maxValue  $slmax
-                        -sliderMinValue $slmin    -sliderMaxValue $slmax
-                        -cc ( "liquidParamAU " + $selectedObj)
-                        ($theParamCtl+"_LIF");
-  }
-
-  setUITemplate -ppt;
-}
-
-global proc liquidAE_LifFloat_selector( string $selectedObj, string $nodeType, string $paramName, string $label, string $range[], string  $description )
-{
-  setUITemplate -pst attributeEditorTemplate;
-
-  string $theParamCtl = ($nodeType+"_"+$paramName+"_LIF");
-
-  if ( !`control -q -ex $theParamCtl` ) {
-    optionMenuGrp -label $label $theParamCtl;
-
-    int $numSize = size( $range );
-    for ( $k = 0; $k < $numSize; $k = $k + 2 ) {
-      int $data = $range[ $k+1 ];
-      menuItem -l $range[ $k ] -data $data;
-    }
-  }
-
-  optionMenuGrp -e -ann $description $theParamCtl;
-  connectControl -index 2 $theParamCtl ($selectedObj+"."+$paramName);
-
-  setUITemplate -ppt;
-}
-
-global proc liquidAE_LifFloat_bool( string $selectedObj, string $nodeType, string $paramName, string $label, string $range[], string  $description )
-{
-  setUITemplate -pst attributeEditorTemplate;
-
-  string $theParamCtl = ($nodeType+"_"+$paramName+"_LIF");
-
-  if ( !`control -q -ex $theParamCtl` ) checkBoxGrp -label $label $theParamCtl;
-  checkBoxGrp -e -ann $description $theParamCtl;
-  connectControl -index 2 $theParamCtl ($selectedObj+"."+$paramName);
-
-  setUITemplate -ppt;
-}
-
-global proc liquidAE_LifFloat_spline( string $selectedObj, string $nodeType, string $paramName, string $label, string $subtype, string $description )
-{
-  // find which attributes are going to be connected to the widget
-  string $attributes[] = stringToStringArray( $subtype, " ");
-  string $valueAttr    = $attributes[1];
-  string $positionAttr = $attributes[2];
-  string $interpAttr   = $attributes[3];
-
-  string $compound    = lifGradientAttr_create( $selectedObj, $valueAttr, $positionAttr, $interpAttr );
-  string $shader = getAttr ($selectedObj+".rmanShader");
-  string $lifCtlName  = ( $shader + "__" + $compound + "Ramp" );
-
-  if ( !`gradientControl -q -ex $lifCtlName` ) {
-    // create the control
-    int $staticPositions = 1 - min( 1.0, float(size( $positionAttr )) );
-    lifGradient_create( ($selectedObj+"."+$compound), 0, 0, 1, $staticPositions, 0 );
-  } else {
-    // connect the control
-    lifGradient_connect( ($selectedObj+"."+$compound) );
-  }
-
-}
-
-global proc liquidAE_LifFloat( string $selectedObj, string $nodeType, int $index, string $subtype )
-{
-  string $paramName   = liquidLifParamName($index);
-  int    $arraySize   = liquidLifParamArraySize( $index );
-  int    $channelBox  = liquidLifChannelBoxState( $index );
-
-  // error checking : if the param does not exist, we might have a bad lif
-  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
-
-  string $label       = liquidLifParamLabel( $index );
-  string $range[]     = liquidLifParamGuiRange( $index );
-
-  string $description = liquidLifParamDescription( $index );
-  string $shortSubType[] = stringToStringArray( $subtype, " ");
-
-  //trace ("     + liquidAE_LifFloat "+$selectedObj+" "+$nodeType+" "+$index+" "+$subtype);
-
-  switch( $shortSubType[0] ) {
-
-
-    case "slider":
-      if ( $arraySize ) {
-
-        int $skip = `control -q -ex ($nodeType+"_"+$paramName+"_0_LIF")`;
-        if ( !$skip ) {
-          frameLayout -label ($paramName+"["+$arraySize+"]") -borderVisible false -labelIndent 10 -font "smallPlainLabelFont";
-          columnLayout;
-        }
-
-        int $j;
-        for ( $j=0; $j<$arraySize; $j++ ) {
-          liquidAE_LifFloat_slider( $selectedObj, $nodeType, $paramName, $j, $label, $range, $description );
-        }
-
-        if ( !$skip ) {
-          setParent ..;
-          setParent ..;
-        }
-
-      } else liquidAE_LifFloat_slider( $selectedObj, $nodeType, $paramName, -1, $label, $range, $description );
-
-      break;
-
-    case "selector":
-      if ( $arraySize ) {
-
-      } else liquidAE_LifFloat_selector( $selectedObj, $nodeType, $paramName, $label, $range, $description );
-      break;
-
-
-    case "bool":
-      if ( $arraySize ) {
-
-      } else liquidAE_LifFloat_bool( $selectedObj, $nodeType, $paramName, $label, $range, $description );
-      break;
-
-    case "floatspline":
-    if ( $arraySize ) {
-      liquidAE_LifFloat_spline( $selectedObj, $nodeType, $paramName, $label, $subtype, $description );
-    }
-    break;
-
-    default:
-      if ( $arraySize > 0 ) {
-
-        int $skip = `control -q -ex ($nodeType+"_"+$paramName+"_0_LIF")`;
-        if ( !$skip ) {
-          frameLayout -label ($paramName+"["+$arraySize+"]") -borderVisible false -labelIndent 10 -font "smallPlainLabelFont";
-          columnLayout ;
-        }
-
-        int $j;
-        for ( $j=0; $j<$arraySize; $j++ ) {
-          liquidAE_LifFloat_slider( $selectedObj, $nodeType, $paramName, $j, $label, $range, $description );
-        }
-
-        if ( !$skip ) {
-          setParent ..;
-          setParent ..;
-        }
-
-      } else {
-        liquidAE_LifFloat_slider( $selectedObj, $nodeType, $paramName, -1, $label, $range, $description );
-      }
-      break;
-  }
-
-  setAttr -k $channelBox ($selectedObj+"."+$paramName);
-
-  //print "Done\n";
-}
-
-global proc liquidAE_LifString( string $selectedObj, string $nodeType, int $index, string $subtype )
-{
-  setUITemplate -pst attributeEditorTemplate;
-
-  string $paramName = liquidLifParamName($index);
-  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
-
-  int    $arraySize     = liquidLifParamArraySize( $index );
-  string $label         = liquidLifParamLabel( $index );
-  string $range[]       = liquidLifParamGuiRange( $index );
-  string $description   = liquidLifParamDescription( $index );
-
-  int $j;
-  int $size = ( $arraySize > 0 )? $arraySize:1;
-  int $skip = (`control -q -ex (( $nodeType + "_" + $paramName + "_0_LIF" ))`) || ( $subtype == "selector" );
-
-  if ( $arraySize && !$skip ) {
-    frameLayout -label ($paramName+"["+$arraySize+"]") -borderVisible false -labelIndent 10 -font "smallPlainLabelFont";
-    columnLayout ;
-  }
-
-  for ( $j=0; $j<$size; $j++ ) {
-
-    string $attr          = ($arraySize)? ($paramName+"["+$j+"]"):$paramName;
-    string $theLabel      = ($arraySize)? ($label+"["+$j+"]"):$label;
-    string $currentValue  = `getAttr ( $selectedObj + "." + $attr )`;
-    string $ctlName       = ( $nodeType + "_" + $paramName + "_" + $j + "_LIF" );
-
-
-      switch( $subtype ) {
-
-        case "texture":
-          string $myFileCommand = ( "liquidChangeTextFileAttr " + $selectedObj + " " + $attr + " " + $ctlName );
-          if ( !`control -q -ex $ctlName` ) {
-            string $form          = `formLayout`;
-            string $fullCtlPath   = `textFieldGrp -label $theLabel $ctlName`;
-            liquidAddTextureViewerMenu( $fullCtlPath );
-            string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_tex.xpm" ($ctlName+"_BUT")`;
-            setParent ..;
-
-            if (`about -mac`) {
-              formLayout  -e
-                          -af $ctlName  top     0
-                          -af $ctlName  left    0
-                          -af $ctlName  right   31
-                          -af $button   top     2
-                          -af $button   right   5
-                          $form;
-            } else {
-              formLayout  -e
-                          -af $ctlName  top     0
-                          -af $ctlName  left    0
-                          -af $ctlName  right   31
-                          -af $button   top     2
-                          -ac $button   left    0 $ctlName
-                          $form;
-            }
-          }
-          iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
-          textFieldGrp -e -ann $description $ctlName;
-          connectControl -index 2 $ctlName ($selectedObj+"."+$attr);
-
-          break;
-
-        case "shadow":
-          string $myFileCommand = ( "liquidChangeTextFileAttr " + $selectedObj + " " + $attr + " " + $ctlName );
-          if ( !`control -q -ex $ctlName` ) {
-            string $form          = `formLayout`;
-            textFieldGrp -label $theLabel $ctlName;
-            liquidAddTextureViewerMenu( $ctlName );
-            string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
-            setParent ..;
-
-            if (`about -mac`) {
-              formLayout  -e
-                          -af $ctlName  top     0
-                          -af $ctlName  left    0
-                          -af $ctlName  right   31
-                          -af $button   top     2
-                          -af $button   right   5
-                          $form;
-            } else {
-              formLayout  -e
-                          -af $ctlName  top     0
-                          -af $ctlName  left    0
-                          -af $ctlName  right   31
-                          -af $button   top     2
-                          -ac $button   left    0 $ctlName
-                          $form;
-            }
-
-          }
-          iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
-          textFieldGrp -e -ann $description $ctlName;
-          connectControl -index 2 $ctlName ($selectedObj+"."+$attr);
-          break;
-
-        case "coordsys":
-          string $myFileCommand = ( "liquidLifCoordSysBrowser " + $selectedObj + " " + $attr + " " + $ctlName );
-          if ( !`control -q -ex $ctlName` ) {
-            string $form          = `formLayout`;
-            textFieldGrp  -label $theLabel $ctlName;
-            string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_cs.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
-            setParent ..;
-
-            if (`about -mac`) {
-              formLayout  -e
-                          -af $ctlName  top     0
-                          -af $ctlName  left    0
-                          -af $ctlName  right   31
-                          -af $button   top     2
-                          -af $button   right   5
-                          $form;
-            } else {
-              formLayout  -e
-                          -af $ctlName  top     0
-                          -af $ctlName  left    0
-                          -af $ctlName  right   31
-                          -af $button   top     2
-                          -ac $button   left    0 $ctlName
-                          $form;
-            }
-          }
-          iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
-          textFieldGrp  -e -ann $description $ctlName;
-          connectControl -index 2 $ctlName ($selectedObj+"."+$attr);
-          break;
-
-        case "selector":
-          if ( !`control -q -ex $ctlName` ) {
-            optionMenuGrp -label $label $ctlName;
-            int $numSize = size( $range );
-            for ( $k = 0; $k < $numSize; $k = $k + 2 ) {
-              menuItem -l $range[ $k ];
-            }
-            optionMenuGrp -e -v (`getAttr ($selectedObj+"."+$attr)`) $ctlName;
-          }
-          string $myCommand = ("setAttr -type \"string\" \""+$selectedObj+"."+$attr+"\" (`optionMenuGrp -q -v "+$ctlName+"`);");
-          optionMenuGrp -e -cc $myCommand -ann $description $ctlName;
-          break;
-
-        default:
-          if (  !`control -q -ex $ctlName` ) textFieldGrp -label $theLabel $ctlName;
-          textFieldGrp -e -ann $description$ctlName;
-          connectControl -index 2 $ctlName ($selectedObj+"."+$attr);
-          break;
-      }
-  }
-  if ( $arraySize && !$skip ) {
-    setParent ..;setParent ..;
-  }
-  setUITemplate -ppt;
-}
-
-
-
-
-global proc liquidAE_LifColor_spline( string $selectedObj, string $nodeType, int $index, string $subtype )
-{
-  // find which attributes are going to be connected to the widget
-  string $attributes[] = stringToStringArray( $subtype, " ");
-  string $colorAttr    = $attributes[1];
-  string $positionAttr = $attributes[2];
-  string $interpAttr   = $attributes[3];
-
-  setUITemplate -pst attributeEditorTemplate;
-
-  string $paramName   = liquidLifParamName($index);
-  int    $arraySize  = liquidLifParamArraySize( $index );
-  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
-
-  string $label       = liquidLifParamLabel($index);
-  string $description = liquidLifParamDescription( $index );
-  int    $arraySize   = liquidLifParamArraySize( $index );
-  int    $channelBox  = liquidLifChannelBoxState( $index );
-
-  string $compound    = lifGradientAttr_create( $selectedObj, $colorAttr, $positionAttr, $interpAttr );
-  string $shader = getAttr ($selectedObj+".rmanShader");
-  string $lifCtlName  = ( $shader + "__" + $compound + "Ramp" );
-
-  if ( !`gradientControl -q -ex $lifCtlName` ) {
-    // create the control
-    int $staticPositions = 1 - min( 1.0, float(size( $positionAttr )) );
-    lifGradient_create( ($selectedObj+"."+$compound), 0, 0, 1, $staticPositions, 0 );
-  } else {
-    // connect the control
-    lifGradient_connect( ($selectedObj+"."+$compound) );
-  }
-
-  setUITemplate -ppt;
-}
-
-global proc liquidAE_LifColor( string $selectedObj, string $nodeType, int $index, string $subtype )
-{
-  if ( gmatch( $subtype, "colorspline*") && liquidLifParamArraySize( $index ) ) {
-    liquidAE_LifColor_spline( $selectedObj, $nodeType, $index, $subtype );
-    return;
-  }
-
-  setUITemplate -pst attributeEditorTemplate;
-
-  string $paramName   = liquidLifParamName($index);
-  int    $arraySize  = liquidLifParamArraySize( $index );
-  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
-
-  string $label       = liquidLifParamLabel($index);
-  string $description = liquidLifParamDescription( $index );
-  int    $arraySize   = liquidLifParamArraySize( $index );
-  int    $channelBox  = liquidLifChannelBoxState( $index );
-
-  int $i;
-  int $nValues = ($arraySize)? $arraySize : 1;
-  int $skip    = `control -q -ex ( ( $arraySize )? ($nodeType+"_"+$paramName + "_0_LIF" ) : ($nodeType+"_"+$paramName+"_LIF" ) )`;
-
-  if ( $arraySize && !$skip ) {
-    frameLayout -label ($paramName+"["+$arraySize+"]")
-                -borderVisible false
-                -labelIndent 10
-                -font "smallPlainLabelFont";
-    columnLayout;
-  }
-
-  setAttr -k $channelBox ($selectedObj+"."+$paramName);
-
-  for ( $i=0; $i<$nValues; $i++ ) {
-
-    string $pname     = ( $arraySize )? ( $paramName + "[" + $i + "]") : $paramName;
-    string $pnameCtl  = ( $arraySize )? ( $nodeType + "_" + $paramName + "_" + $i + "_LIF" ) : ( $nodeType + "_" + $paramName + "_LIF" );
-    string $plabel    = ( $arraySize )? ( $label + "[" + $i + "]") : $label;
-
-    string $attr      = ( $selectedObj + "." + $pname );
-
-    if ( !`control -q -ex $pnameCtl` ) attrColorSliderGrp -label $plabel
-                                                          -at $attr
-                                                          -sb false
-                                                          $pnameCtl;
-    else attrColorSliderGrp -e -at $attr $pnameCtl;
-
-    string $subPname = ( $arraySize )? ($pname+"."+$paramName) : ($pname);
-    setAttr -k $channelBox ($selectedObj+"."+$pname);
-    setAttr -k $channelBox ($selectedObj+"."+$subPname+"a");
-    setAttr -k $channelBox ($selectedObj+"."+$subPname+"b");
-    setAttr -k $channelBox ($selectedObj+"."+$subPname+"c");
-
-  }
-
-  if ( $arraySize && !$skip ) {
-    setParent ..;setParent ..;
-  }
-
-  setUITemplate -ppt;
-}
-
-
-global proc liquidAE_LifVector( string $selectedObj, string $nodeType, int $index )
-{
-  setUITemplate -pst attributeEditorTemplate;
-
-  string $paramName  = liquidLifParamName($index);
-  int    $arraySize  = liquidLifParamArraySize( $index );
-
-  if ( ! objExists( ($selectedObj+"."+$paramName) ) ) return;
-
-  string $label       = liquidLifParamLabel($index);
-  string $description = liquidLifParamDescription( $index );
-  int    $arraySize   = liquidLifParamArraySize( $index );
-  int    $channelBox  = liquidLifChannelBoxState( $index );
-
-  int $i;
-  int $nValues = ($arraySize)? $arraySize : 1;
-  int $skip    = `control -q -ex ( ( $arraySize )? ( $nodeType + "_" + $paramName + "_0_LIF" ) : ( $nodeType + "_" + $paramName+"_LIF" ) )`;
-
-  if ( $arraySize && !$skip ) {
-
-    frameLayout -label ( $paramName + "[" + $arraySize + "]" )
-                -borderVisible false
-                -labelIndent 10
-                -font "smallPlainLabelFont";
-    columnLayout;
-
-  }
-
-  setAttr -k $channelBox ($selectedObj+"."+$paramName);
-
-  for ( $i=0; $i<$nValues; $i++ ) {
-
-    string $pname     = ( $arraySize )? ( $selectedObj + "." + $paramName + "[" + $i + "]" ) : ( $selectedObj + "." + $paramName );
-    string $pnameCtl  = ( $arraySize )? ( $nodeType + "_" + $paramName + "_" + $i + "_LIF" ) : ( $nodeType + "_" + $paramName + "_LIF" );
-    string $plabel    = ( $arraySize )? ( $label + "[" + $i + "]" ) : $label;
-
-    if ( !`control -q -ex $pnameCtl` ) {
-      attrFieldGrp  -label $plabel
-                    -cc ( "liquidParamAU " + $selectedObj )
-                    -attribute $pname
-                    $pnameCtl;
-    } else attrFieldGrp -e -attribute $pname -ann $description $pnameCtl;
-
-    string $subPname = ( $arraySize )? ($pname+"."+$paramName) : ($pname);
-    setAttr -k $channelBox $pname;
-    setAttr -k $channelBox ($subPname+"a");
-    setAttr -k $channelBox ($subPname+"b");
-    setAttr -k $channelBox ($subPname+"c");
-
-  }
-
-
-  if ( $arraySize && !$skip ) {
-    setParent ..;
-    setParent ..;
-  }
-
-
-
-
-
-  setUITemplate -ppt;
-}
-
-global proc liquidAE_LifGrp( string $selectedObj, int $index )
-{
-  setUITemplate -pst attributeEditorTemplate;
-
-  string $label = liquidLifParamLabel( $index );
-  //print ("Grp : "+$label+"\n");
-
-  int $state = ( gmatch( $label, "[!+]*+") )? 0:1;
-
-  $label = substring($label, 1, size( $label ) - 1 );
-
-  switch( $label ) {
-    case "end":
-      setParent ..;
-      setParent ..;
-      break;
-    default:
-      frameLayout -l $label -cl $state;
-      columnLayout;
-      break;
-  }
-
-  setUITemplate -ppt;
-}
 
 
 /**
@@ -1560,6 +730,8 @@ global proc liquidShaderNodesCustomPrimitiveReplace( string $nodeDotAttr )
   }
   //trace ("liquidShaderNodesCustomPrimitiveReplace( "+ $nodeDotAttr +" )");
 }
+
+
 
 
 
@@ -1663,7 +835,7 @@ global proc liquidShaderUpdater( int $force )
   for ( $node in $shaderNodes ) {
     string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
     if ( $longShaderName == "" ) continue;
-    if ( !`filetest -r $longShaderName` ) error("liquidShaderUpdater : could not find shader \""+$longShaderName+"\"");
+    if ( !`filetest -r $longShaderName` ) error("[liquid] liquidShaderUpdater : could not find shader \""+$longShaderName+"\"");
     int $numParams = size( `getAttr ($node+".rmanParams")` );
     if ( $force ||
         size( `getAttr ($node+".rmanDetails")` ) != $numParams ||
@@ -1680,9 +852,10 @@ global proc liquidShaderUpdater( int $force )
 
 {
   string $jobs[] = `scriptJob -lj`;
+  string $j;
   for ( $j in $jobs ) {
     if ( gmatch( $j, "*liquidShaderUpdater*") ) scriptJob -kill (int(match("[0-9]+", $j))) -force;
   }
-  scriptJob -event "SceneOpened" "evalDeferred(\"liquidShaderUpdater 0\")" -protected;
+  scriptJob -event "SceneOpened" "evalDeferred(\"liquidShaderUpdater 1\")" -protected;
 }
 
