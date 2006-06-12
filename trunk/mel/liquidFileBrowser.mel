@@ -81,9 +81,24 @@ proc lfbw_makeShaderPreview()
     warning ("[liquid] preview does not support "+$shaderType+" shader !");
     return;
   }
+  
+  string  $primitive = `getAttr liquidGlobals.previewPrimitive`;
+  string  $primArg = "-sphere";
+
+  if( $primitive == 1 ) {
+    $primArg = " -cube";
+  } else if( $primitive == 2 ) {
+    $primArg = " -cylinder";
+  } else if( $primitive == 3 ) {
+    $primArg = " -torus";
+  } else if( $primitive == 4 ) {
+    $primArg = " -plane";
+  } else if( $primitive == 5 ) {
+    $primArg = " -teapot";
+  }
 
   string $displayName = ( dirname($shaderLong) + "/." + basenameEx($shaderLong) + ".tif" );
-  string $args = ( "liquidPreviewShader -shader \"" + $shaderLong + "\" -teapot -dd tiff -dn \"" + $displayName + "\" -ds 128 -renderer \"" + $renderer + "\" -type " + $shaderType + ";");
+  string $args = ( "liquidPreviewShader -shader \"" + $shaderLong + "\" " + $primArg + " -dd tiff -dn \"" + $displayName + "\" -ds 128 -renderer \"" + $renderer + "\" -type " + $shaderType + ";");
   eval $args;
   lfbw_displayPreview( $shaderLong );
 }
