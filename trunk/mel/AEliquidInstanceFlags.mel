@@ -178,10 +178,19 @@ global proc AEliquidInstanceFlags( string $node )
 
     editorTemplate -beginLayout "Global Illumination" -collapse true;
 
-      editorTemplate -label "Shading Rate" -addDynamicControl "liqIrradianceShadingRate";
-      editorTemplate -label "Samples" -addDynamicControl "liqIrradianceNSamples";
-      editorTemplate -label "Maximum Error" -addDynamicControl "liqIrradianceMaxError";
-      editorTemplate -label "Maximum Pixel Distance" -addDynamicControl "liqIrradianceMaxPixelDist";
+      editorTemplate -label "Shading Rate"            -addDynamicControl "liqIrradianceShadingRate";
+      editorTemplate -label "Samples"                 -addDynamicControl "liqIrradianceNSamples";
+      editorTemplate -label "Maximum Error"           -addDynamicControl "liqIrradianceMaxError";
+      editorTemplate -label "Maximum Pixel Distance"  -addDynamicControl "liqIrradianceMaxPixelDist";
+
+    editorTemplate -endLayout;
+
+    editorTemplate -beginLayout "Photon Map" -collapse true;
+
+      editorTemplate -label "Global Map"    -addDynamicControl "liqPhotonGlobalMap";
+      editorTemplate -label "Caustic Map"   -addDynamicControl "liqPhotonCausticMap";
+      editorTemplate -label "Estimator"     -addDynamicControl "liqPhotonEstimator";
+      editorTemplate -label "Shading Model" -addDynamicControl "liqPhotonShadingModel";
 
     editorTemplate -endLayout;
 

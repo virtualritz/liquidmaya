@@ -578,7 +578,7 @@ MString parseString( const MString & inputString )
 }
 
 // Moritz: added below code for simple MEL parameter expression scripting support
-// syntax: [mel commands]
+// syntax: `mel commands`
 MString parseCommandString( const MString & inputString )
 {
   MString constructedString;

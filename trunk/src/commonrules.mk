@@ -68,48 +68,9 @@ LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqMayaRenderView.$(OBJEXT) \
 					liqJobList.$(OBJEXT)
 
+LIQUIDOUTMAINOBJS = $(patsubst %,$(VPATH)/%,$(LIQUIDMAINOBJS))
 
 
-LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
-					$(VPATH)/liqAttachPrefAttribute.$(OBJEXT) \
-					$(VPATH)/liqRibParticleData.$(OBJEXT) \
-					$(VPATH)/liqTokenPointer.$(OBJEXT) \
-					$(VPATH)/liqWriteArchive.$(OBJEXT) \
-					$(VPATH)/liqPreviewShader.$(OBJEXT) \
-					$(VPATH)/liqRibSurfaceData.$(OBJEXT) \
-					$(VPATH)/liqRibTranslator.$(OBJEXT) \
-					$(VPATH)/liqRibObj.$(OBJEXT) \
-					$(VPATH)/liqRibNode.$(OBJEXT) \
-					$(VPATH)/liqRibData.$(OBJEXT) \
-					$(VPATH)/liqGlobalHelpers.$(OBJEXT) \
-					$(VPATH)/liqRibNuCurveData.$(OBJEXT) \
-					$(VPATH)/liqRibMeshData.$(OBJEXT) \
-					$(VPATH)/liqRibLocatorData.$(OBJEXT) \
-					$(VPATH)/liqRibClipPlaneData.$(OBJEXT) \
-					$(VPATH)/liqRibCoordData.$(OBJEXT) \
-					$(VPATH)/liqRibLightData.$(OBJEXT) \
-					$(VPATH)/liqRibHT.$(OBJEXT) \
-					$(VPATH)/liqGetSloInfo.$(OBJEXT) \
-					$(VPATH)/liqGetAttr.$(OBJEXT) \
-					$(VPATH)/liqRibGenData.$(OBJEXT) \
-					$(VPATH)/liqRibSubdivisionData.$(OBJEXT) \
-					$(VPATH)/liqRibMayaSubdivisionData.$(OBJEXT) \
-					$(VPATH)/liqMemory.$(OBJEXT) \
-					$(VPATH)/liqProcessLauncher.$(OBJEXT) \
-					$(VPATH)/liqRenderer.$(OBJEXT) \
-					$(VPATH)/liqExpression.$(OBJEXT)  \
-					$(VPATH)/liqNodeSwatch.$(OBJEXT)  \
-					$(VPATH)/liqSurfaceNode.$(OBJEXT) \
-					$(VPATH)/liqDisplacementNode.$(OBJEXT)	\
-					$(VPATH)/liqVolumeNode.$(OBJEXT)  \
-					$(VPATH)/liqRibboxNode.$(OBJEXT)  \
-					$(VPATH)/liqLightNode.$(OBJEXT)  \
-					$(VPATH)/liqLightNodeBehavior.$(OBJEXT)\
-					$(VPATH)/liqCoordSysNode.$(OBJEXT) \
-					$(VPATH)/liqGlobalsNode.$(OBJEXT) \
-					$(VPATH)/liqBucket.$(OBJEXT) \
-					$(VPATH)/liqMayaRenderView.$(OBJEXT) \
-					$(VPATH)/liqJobList.$(OBJEXT)
 
 ifeq ($(LIQRMAN),3delight)
 	LIQDISPLAYOBJS = liqMayaDisplayDriver3Delight.$(OBJEXT)
@@ -159,7 +120,7 @@ $(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
 	@$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(VPATH)/$(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIQUIDBINLIBS)
 
-$(LIQUIDLIB) : $(LIQUIDMAINOBJS)
+$(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
 	@$(AR) $(VPATH)/$(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
 
 $(LIQUIDDPY) : $(LIQDISPLAYOBJS)

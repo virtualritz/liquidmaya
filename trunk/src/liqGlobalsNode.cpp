@@ -317,6 +317,10 @@ MObject liqGlobalsNode::aShotVersion;
 
 MObject liqGlobalsNode::aStatistics;
 
+MObject liqGlobalsNode::aShadersIgnoreOutputParams;
+MObject liqGlobalsNode::aShadersOutputParamsFilter;
+MObject liqGlobalsNode::aShadersMaxCachedAELayouts;
+
 
 
 
@@ -683,6 +687,10 @@ MStatus liqGlobalsNode::initialize()
         CREATE_STRING( tAttr,  aDshImageMode,               "dshImageMode",                 "dsim",   ""    );
 
            CREATE_INT( nAttr,  aStatistics,                 "statistics",                   "st",     0     );
+
+          CREATE_BOOL( nAttr,  aShadersIgnoreOutputParams,  "shadersIgnoreOutputParams",    "iop",    1     );
+        CREATE_STRING( tAttr,  aShadersOutputParamsFilter,  "shadersOutputParamsFilter",    "opf",    "^_*"    );
+           CREATE_INT( nAttr,  aShadersMaxCachedAELayouts,  "shadersMaxCachedAELayouts",    "mcl",    10    );
 
 
 

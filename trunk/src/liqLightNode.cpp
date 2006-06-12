@@ -73,6 +73,8 @@ MObject liqLightNode::aRmanDetails;
 MObject liqLightNode::aRmanTypes;
 MObject liqLightNode::aRmanDefaults;
 MObject liqLightNode::aRmanArraySizes;
+MObject liqLightNode::aRmanLifCmds;
+
 MObject liqLightNode::aPreviewPrimitive;
 MObject liqLightNode::aPreviewCustomPrimitive;
 MObject liqLightNode::aOutputInShadow;
@@ -119,7 +121,7 @@ MObject liqLightNode::aAssignedObjects;
 
 void liqLightNode::postConstructor( )
 {
-	setMPSafe(true);
+  setMPSafe(true);
 
   // init swatch
   if ( swatchInit != true ) {
@@ -157,29 +159,32 @@ MStatus liqLightNode::initialize()
 
   // Create input attributes
 
-	aRmanShader = tAttr.create( MString("rmanShader"), MString("rms"), MFnData::kString, aRmanShader, &status );
-	MAKE_INPUT(tAttr);
+  aRmanShader = tAttr.create( MString("rmanShader"), MString("rms"), MFnData::kString, aRmanShader, &status );
+  MAKE_INPUT(tAttr);
 
   aRmanShaderLong = tAttr.create( MString("rmanShaderLong"), MString("rml"), MFnData::kString, aRmanShaderLong, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
-	aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
-	MAKE_INPUT(tAttr);
+  aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
+  MAKE_INPUT(tAttr);
 
   aRmanParams = tAttr.create(  MString("rmanParams"),  MString("rpr"), MFnData::kStringArray, aRmanParams, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanDetails = tAttr.create(  MString("rmanDetails"),  MString("rdt"), MFnData::kStringArray, aRmanDetails, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanTypes = tAttr.create(  MString("rmanTypes"),  MString("rty"), MFnData::kStringArray, aRmanTypes, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanDefaults = tAttr.create(  MString("rmanDefaults"),  MString("rdf"), MFnData::kStringArray, aRmanDefaults, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanArraySizes = tAttr.create(  MString("rmanArraySizes"),  MString("ras"), MFnData::kIntArray, aRmanArraySizes, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
+
+  aRmanLifCmds = tAttr.create(  MString("rmanLifCmds"),  MString("rlc"), MFnData::kStringArray, aRmanLifCmds, &status );
+  MAKE_INPUT(tAttr);
 
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );
   eAttr.addField( "Sphere",   0 );
@@ -194,7 +199,7 @@ MStatus liqLightNode::initialize()
   CHECK_MSTATUS(eAttr.setConnectable(false));
 
   aPreviewCustomPrimitive = tAttr.create(  MString("previewCustomPrimitive"),  MString("pcp"), MFnData::kString, aPreviewCustomPrimitive, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aPreviewObjectSize = nAttr.create("previewObjectSize", "pos", MFnNumericData::kDouble, 1.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
@@ -251,11 +256,11 @@ MStatus liqLightNode::initialize()
   nAttr.setWritable( true );
   nAttr.setHidden( true );
 
-	// Create output attributes
+  // Create output attributes
   aOutColor = nAttr.createColor("outColor", "oc");
-	MAKE_OUTPUT(nAttr);
+  MAKE_OUTPUT(nAttr);
   aOutTransparency = nAttr.createColor("outTransparency", "ot");
-	MAKE_OUTPUT(nAttr);
+  MAKE_OUTPUT(nAttr);
   aAssignedObjects = mAttr.create("assignedObjects", "ao");
   MAKE_OUTPUT(mAttr);
 
@@ -268,6 +273,7 @@ MStatus liqLightNode::initialize()
   CHECK_MSTATUS(addAttribute(aRmanTypes));
   CHECK_MSTATUS(addAttribute(aRmanDefaults));
   CHECK_MSTATUS(addAttribute(aRmanArraySizes));
+  CHECK_MSTATUS(addAttribute(aRmanLifCmds));
 
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));

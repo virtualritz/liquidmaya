@@ -120,6 +120,7 @@ global proc liquidLoadScripts()
     "liquidWriteRSL_textures.mel",
     "liquidWriteRSL_utilities.mel",
     "liquidConvertShadingNetworkToRSL.mel",
+    "liquidLifWidgets.mel",
     "liquidShaderNodes.mel",
     "registerLiquidRenderer.mel",
     //"liquidCreateCommonGlobalsTab.mel", OBSOLETE
@@ -560,10 +561,7 @@ global proc string liquidGetSceneName()
  */
 global proc liquidCleanUp()
 {
-  string $windows[] = `lsUI -windows`;
-  for ( $win in $windows ) {
-    if ( gmatch( $win, "liquid*") || gmatch( $win, "ParamWindow*") ) deleteUI $win;
-  }
+  // nothing to do
 }
 
 /**

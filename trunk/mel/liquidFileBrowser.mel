@@ -29,21 +29,6 @@
 global string $liquidCFD; // Liquid Current File Directory
 global string $liquidFileMatch; // Current search criteria in fluid
 
-// OBSOLETE
-//global proc string[] liquidGetDirList( string $dir )
-//{
-//  string $returnValue[];
-//  string $dirList[] = `getFileList -fld ( $dir + "/" )`;
-//  string $currentToken;
-//  int $currentVal = 0;
-//  for( $currentToken in $dirList ) {
-//    if ( `filetest -d ( $dir + "/" + $currentToken )` ) {
-//      $returnValue[ $currentVal ] = $currentToken;
-//      $currentVal++;
-//    }
-//  }
-//  return $returnValue;
-//}
 
 global proc string[] liquidGetFileList( string $dir, string $fileMatch )
 {
@@ -53,177 +38,69 @@ global proc string[] liquidGetFileList( string $dir, string $fileMatch )
   return $dirList;
 }
 
-// OBSOLETE
-//global proc string liquidFileBrowserUpOneDir( string $dir )
-//{
-//  string $OS = `about -os`; // "nt", "mac", "irix" or "linux"
-//  string $returnValue;
-//  string $dirList[];
-//  tokenize $dir "/" $dirList;
-//  int $i = 0;
-//  if ( size( $dirList ) == 1 ) {
-//    if ( $OS == "nt" ) $returnValue = ( $dirList[0] + "/" );
-//  }
-//  if ( $OS != "nt" ) {
-//    $returnValue += "/";
-//  }
-//  while ( $i < ( size( $dirList ) - 1 ) ) {
-//    if ( $i > 0 ) {
-//      $returnValue += "/";
-//    }
-//    $returnValue += $dirList[ $i ];
-//    $i++;
-//  }
-//  return $returnValue;
-//}
-
-// OBSOLETE
-//global proc liquidUpdateDirList( string $widget )
-//{
-//  global string $liquidCFD;
-//  if ( `textScrollList -exists $widget` ) {
-//    textScrollList -e -ra $widget;
-//    textScrollList -e -append ".." $widget;
-//    string $dirList[] = `liquidGetDirList $liquidCFD`;
-//    string $currentDir;
-//    for ( $currentDir in $dirList ) {
-//      textScrollList -e -append $currentDir $widget;
-//    }
-//  }
-//}
-
-// OBSOLETE
-//global proc liquidUpdateFileList( string $widget, string $liquidFileDescText )
-//{
-//  global string $liquidCFD;
-//  global string $liquidFileMatch;
-//  if ( `textScrollList -exists $widget` ) {
-//    textScrollList -e -ra $widget;
-//    string $fileList[] = eval ( "liquidGetFileList \"" + $liquidCFD + "\" \"" + $liquidFileMatch + "\"" );
-//    string $currentFile;
-//    for ( $currentFile in $fileList ) {
-//      textScrollList -e -append $currentFile $widget;
-//    }
-//  }
-//}
-
-// OBSOLETE
-//global proc liquidFileBrowserDIRDCC( string $fileWidget, string $dirWidget, string $fileMatch, string $curdirWidget )
-//{
-//  global string $liquidCFD;
-//  string $selection[] = `textScrollList -q -si $dirWidget`;
-//  if ( $selection[0] == ".." ) {
-//    $liquidCFD = `liquidFileBrowserUpOneDir $liquidCFD`;
-//  } else {
-//    $liquidCFD += ( "/" + $selection[0] );
-//  }
-//  textFieldGrp -e -tx $liquidCFD $curdirWidget;
-//  liquidUpdateDirList $dirWidget;
-//  liquidUpdateFileList $fileWidget $fileMatch;
-//}
-
-// OBSOLETE
-//global proc liquidInitCFD()
-//{
-//  global string $liquidCFD;
-//  string $homeDirectory = `getenv "LIQUIDHOME"`;
-//  $liquidCFD = $homeDirectory + "/shaders";
-//  string $getINI = `liquidINIGet liquid shader_dir`;
-//  if ( $getINI != "" ) {
-//    $liquidCFD = $getINI;
-//  }
-//}
-
-// OBSOLETE
-//global proc liquidFileSpecCC( string $fileWidget, string $dirWidget, string $fileMatch )
-//{
-//  global string $liquidFileMatch;
-//  $liquidFileMatch = `textFieldGrp -q -tx $fileMatch`;
-//  liquidUpdateDirList $dirWidget;
-//  liquidUpdateFileList $fileWidget $fileMatch;
-//}
-
-// OBSOLETE
-//global proc liquidCurDirCC( string $fileWidget, string $dirWidget, string $fileMatch, string $widget )
-//{
-//  global string $liquidCFD;
-//  $liquidCFD = `textFieldGrp -q -tx $widget`;
-//
-//  // this little trick allows us to have environment variables in $dir
-//  string $expanded_dir = `system("echo " + $liquidCFD)`;
-//
-//  // the result of the system command has a \n at the end of the string.
-//  // Remove it
-//  $liquidCFD = `strip($expanded_dir)`;
-//
-//  liquidUpdateDirList $dirWidget;
-//  liquidUpdateFileList $fileWidget $fileMatch;
-//}
-
-// OBSOLETE
-//global proc string[] liquidFileBrowserIn( string $fileMatch, string $doubleClickCommand )
-//{
-//  global string $liquidCFD;
-//  global string $liquidFileMatch;
-//
-//  string $defaultShaderPath = `getAttr liquidGlobals.fluidShaderBrowserDefaultPath`;
-//  if( $defaultShaderPath !="" ) {
-//    if ( `filetest -d $defaultShaderPath` ) {
-//      $liquidCFD = $defaultShaderPath;
-//    } else {
-//      warning "The Fluid Default Shader Path set in the Globals does not exist!";
-//    }
-//  }
-//  if ( $liquidFileMatch == "" ) $liquidFileMatch = $fileMatch;
-//
-//  string $liquidFileMainWin;
-//  string $returnValue[];
-//  $liquidFileForm = `formLayout -w 400 -nd 100`;
-//    $liquidFileDescText = `textFieldGrp -w 400 -tx $liquidFileMatch -l "File Spec" liquidFileBrowserInFileSpecWidget`;
-//    $liquidCurDirText = `textFieldGrp -w 400 -tx $liquidCFD -l "Current Dir" liquidFileBrowserInDirTextWidget`;
-//    $liquidFileListPane = `paneLayout -configuration "vertical2"`;
-//      $liquidDirList = `textScrollList -w 200 liquidFileBrowserInDirListWidget`;
-//      $liquidFileList = `textScrollList -allowMultiSelection true -w 200 liquidFileBrowserInFileListWidget`;
-//      setParent ..;
-//    setParent ..;
-//
-//  popupMenu -p $liquidFileListPane;
-//    menuItem -label "Load" -command ( "liquidFluidLoadCMD " + $liquidFileList ) liquidFileLoad;
-//
-//  formLayout -e
-//    -attachForm $liquidCurDirText "top" 0
-//    -attachForm $liquidCurDirText "left" 0
-//    -attachForm $liquidCurDirText "right" 0
-//
-//    -attachControl $liquidFileDescText "top" 0 $liquidCurDirText
-//    -attachForm $liquidFileDescText "left" 0
-//    -attachForm $liquidFileDescText "right" 0
-//
-//    -attachControl $liquidFileListPane "top" 0 $liquidFileDescText
-//    -attachForm $liquidFileListPane "bottom" 0
-//    -attachForm $liquidFileListPane "left" 0
-//    -attachForm $liquidFileListPane "right" 0
-//    $liquidFileForm;
-//
-//    setParent ..;
-//  string $command = ( "liquidFileBrowserDIRDCC " + $liquidFileList + " " + $liquidDirList + " " + $liquidFileDescText + " " + $liquidCurDirText  );
-//  textScrollList -e -dcc $command $liquidDirList;
-//  if ( $doubleClickCommand != "" ) {
-//    string $command = ( $doubleClickCommand + " " + $liquidFileList );
-//    textScrollList -e -dcc $command $liquidFileList;
-//  }
-//  string $command = ( "liquidFileSpecCC " + $liquidFileList + " " + $liquidDirList + " " + $liquidFileDescText );
-//  textFieldGrp -e -cc $command $liquidFileDescText;
-//  string $command = ( "liquidCurDirCC " + $liquidFileList + " " + $liquidDirList + " " + $liquidFileDescText + " " + $liquidCurDirText );
-//  textFieldGrp -e -cc $command $liquidCurDirText;
-//  liquidUpdateFileList $liquidFileList $liquidFileDescText;
-//  liquidUpdateDirList $liquidDirList;
-//  $returnValue[0] = $liquidFileForm;
-//  $returnValue[1] = $liquidFileList;
-//  return $returnValue;
-//}
 
 
+/***********  PREVIEWS  ***************/
+
+proc lfbw_displayInfo( string $filePath )
+{
+  string $shaderExt  = `getAttr liquidGlobals.shaderExt`;
+
+  // info for shaders
+  if ( gmatch( $filePath, ("*."+$shaderExt) ) ) {
+    if ( `filetest -r $filePath` ) {
+      liquidSlSetShader( $filePath );
+      text -e -l (liquidSlShaderType()) lfb_infoType;
+    }
+  } else text -e -l "-" lfb_infoType;
+}
+
+proc lfbw_displayPreview( string $filePath )
+{
+  string $previewPath = ( dirname($filePath) + "/." + basenameEx($filePath) + ".tif" );
+  if ( `filetest -r $previewPath` ) image -e -i $previewPath lfb_preview;
+  else image -e -i (liquidGetHome()+"/icons/noPreview.iff") lfb_preview;
+}
+
+proc lfbw_makeShaderPreview()
+{
+  string $shaderExt  = `getAttr liquidGlobals.shaderExt`;
+  string $renderer   = `getAttr liquidGlobals.renderCommand`;
+  string $shaderLong = `finder -q -filePath lfb_finder`;
+
+  // not a shader ? exit !
+  if ( !gmatch( $shaderLong, ("*."+$shaderExt) ) ) {
+    warning ("[liquid] this is not a shader !");
+    return;
+  }
+
+  // check shaderType
+  liquidSlSetShader( $shaderLong );
+  string $shaderType = liquidSlShaderType();
+  if ( $shaderType == "light" || $shaderType == "volume" ) {
+    warning ("[liquid] preview does not support "+$shaderType+" shader !");
+    return;
+  }
+
+  string $displayName = ( dirname($shaderLong) + "/." + basenameEx($shaderLong) + ".tif" );
+  string $args = ( "liquidPreviewShader -shader \"" + $shaderLong + "\" -teapot -dd tiff -dn \"" + $displayName + "\" -ds 128 -renderer \"" + $renderer + "\" -type " + $shaderType + ";");
+  eval $args;
+  lfbw_displayPreview( $shaderLong );
+}
+
+global proc liquidFileBrowserWindow_makePreview()
+{
+  string $mask = `textFieldGrp -q -text lfb_fileMask`;
+  string $shaderExt = `getAttr liquidGlobals.shaderExt`;
+
+  /*** shader preview ***/
+  if ( gmatch( $mask, ("*."+$shaderExt) )  ) lfbw_makeShaderPreview();
+  else {
+    warning ("[liquid] previewing "+$mask+" files is not supported !");
+    return;
+  }
+
+}
 
 
 /***********  BOOKMARKS  ***************/
@@ -343,21 +220,31 @@ global proc liquidFileBrowserWindow_updateFinder( int $doLoad, string $filemask,
   //trace $gLiquidFileBrowserWindowDirectory;
 
   if ( `filetest -f $newPath` ) {
+
+    /*** file selection ***/
     //trace "file:";
-    // file selection
     $newPath = $gLiquidFileBrowserWindowDirectory + "/" + $fileInList[0] ;
     finder -e -fp $newPath lfb_finder;
     if ( $doLoad ) liquidFileBrowserWindow_load( $filemask, $callback );
 
   } else if ( `filetest -d $newPath` ) {
 
-    // directory selection
+    /*** directory selection ***/
     //trace ( "dir: " + $gLiquidFileBrowserWindowDirectory );
     $newPath = substitute("[^/]*$", $newPath, "");
     $newPath = ( $gLiquidFileBrowserWindowDirectory + "/" + substitute("/$", $fileInList[0], "" ) );
     finder -e -fp $newPath lfb_finder;
 
   } //else trace ( "all failed ! > " + $newPath );
+
+  string $path = dirname( $newPath );
+
+  // if the directory is not writable, do not allow preview creation
+  if ( `filetest -w $path` ) control -e -en 1 lfb_makePreview;
+  else control -e -en 0 lfb_makePreview;
+
+  lfbw_displayPreview( $newPath );
+  lfbw_displayInfo( $newPath );
 
   //$gLiquidFileBrowserWindowDirectory = $newPath;
 }
@@ -410,6 +297,25 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
                    -sc ("liquidFileBrowserWindow_updateFinder(0, $gLiquidFileBrowserWindowFileMask, \""+$callback+"\");")
                    -dcc ("liquidFileBrowserWindow_updateFinder(1, $gLiquidFileBrowserWindowFileMask, \""+$callback+"\");liquidFileBrowserWindow_updateList($gLiquidFileBrowserWindowFileMask);")
                    lfb_fileListC;
+    formLayout -nd 100 lfb_previewLayout;
+      image -w 128 -h 128 -i (liquidGetHome()+"/icons/noPreview.iff") lfb_preview;
+      button -l "Create Preview" -c "liquidFileBrowserWindow_makePreview();" lfb_makePreview;
+      text -l "Type:" -align "left" -font "tinyBoldLabelFont" lfb_infoTypeLabel;
+      text -l "" -align "left" -font "smallPlainLabelFont" lfb_infoType;
+      formLayout  -e
+                  -af lfb_preview       top   0
+                  -af lfb_preview       left  4
+                  -af lfb_preview       right 4
+                  -af lfb_makePreview   left  0
+                  -ac lfb_makePreview   top   0   lfb_preview
+                  -af lfb_makePreview   right 0
+                  -af lfb_infoTypeLabel left  0
+                  -ac lfb_infoTypeLabel top   5   lfb_makePreview
+                  -ac lfb_infoType      left  0   lfb_infoTypeLabel
+                  -ac lfb_infoType      top   5   lfb_makePreview
+                  -af lfb_infoType      right 4
+                  lfb_previewLayout;
+    setParent ..;
     finder -c ("liquidFileBrowserWindow_updateList($gLiquidFileBrowserWindowFileMask);") lfb_finder;
     button -label "Load" -c ("liquidFileBrowserWindow_load $gLiquidFileBrowserWindowFileMask \""+$callback+"\";") lfb_ok;
     button -label "Cancel" -c "deleteUI liquidFileBrowserWindow" lfb_cancel;
@@ -420,9 +326,12 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
               -af  lfb_fileMask       top     5
               -af  lfb_fileMask       right   5
 
+              -ac  lfb_previewLayout  top     5   lfb_fileMask
+              -af  lfb_previewLayout  right   5
+
               -ac  lfb_fileListC      top     5   lfb_fileMask
               -af  lfb_fileListC      left    5
-              -af  lfb_fileListC      right   5
+              -ac  lfb_fileListC      right   5   lfb_previewLayout
               -af  lfb_fileListC      bottom  75
 
               -ac  lfb_finder         top     5   lfb_fileListC

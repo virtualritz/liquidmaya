@@ -62,6 +62,7 @@ proc liquidSl_setShaderName( string $token )
   }
 }
 
+
 proc string liquidSl_getShaderType( int $fid )
 {
     string $type = "";
@@ -414,8 +415,6 @@ global proc liquidSlParseSlo( string $sloFile )
         $gLiquidSlParamIsOutput[ $paramNum ] = $isOutputParam;
         $gLiquidSlParamDefaults[ $paramNum ] = $paramDefault;
         $gLiquidSlParamArraySizes[ $paramNum ] = $paramArraySize;
-
-		  //print $gLiquidSlParamNames;
 
         $line = `fgetline $fid`;
         $paramNum += 1;

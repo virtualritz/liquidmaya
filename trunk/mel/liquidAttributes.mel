@@ -428,6 +428,10 @@ global proc liquidDeletePhotonAttributes()
     if ( `attributeQuery -node $currentNode -ex "liqPhotonEstimator"` ) {
       deleteAttr ( $currentNode + ".liqPhotonEstimator" );
     }
+
+    if ( `attributeQuery -node $currentNode -ex "liqPhotonShadingModel"` ) {
+      deleteAttr ( $currentNode + ".liqPhotonShadingModel" );
+    }
   }
 }
 
@@ -553,7 +557,7 @@ global proc liquidCreateMotionFactorAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqMotionFactor"` ) {
-      addAttr -ln "liqMotionFactor" -at "float" -dv 2 -min 0 -smx 16 $currentNode;
+      addAttr -ln "liqMotionFactor" -at "float" -dv 1 -min 0 -smx 16 $currentNode;
     }
   }
 }
@@ -566,10 +570,6 @@ global proc liquidCreateRIBAttributes()
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
   for ( $currentNode in $nodes ) {
-    if ( !`attributeQuery -node $currentNode -ex "liqNoGeometryOutput"` ) {
-      addAttr -ln "liqNoGeometryOutput" -at "bool" $currentNode;
-    }
-
     if ( !`attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
       addAttr -ln "liqRIBBox" -dt "string" $currentNode;
     }

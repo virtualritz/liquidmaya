@@ -2785,8 +2785,15 @@ global proc liquidGlobalsFluidTab_buildIt( string $prefix )
         liquidShowIntGlobal   "renderViewTimeOut" "Time-Out";
       setParent ..;
     setParent ..;
+    frameLayout -l "Shaders" -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal    "shadersIgnoreOutputParams"   "Ignore Output Params";
+        liquidShowStringGlobal  "shadersOutputParamsFilter"   "Output Params filter" $prefix;
+        liquidShowIntGlobal     "shadersMaxCachedAELayouts"   "AE Cache Limit";
+      setParent ..;
+    setParent ..;
   setParent ..;
-  //if ( `layout -q -ex liquidGlobalsTab` ) setParent liquidGlobalsTab;
+
 
   layout -e -vis true ($prefix + "liquidGlobalsFluidSet" );
 

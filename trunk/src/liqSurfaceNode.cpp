@@ -72,6 +72,8 @@ MObject liqSurfaceNode::aRmanDetails;
 MObject liqSurfaceNode::aRmanTypes;
 MObject liqSurfaceNode::aRmanDefaults;
 MObject liqSurfaceNode::aRmanArraySizes;
+MObject liqSurfaceNode::aRmanLifCmds;
+
 MObject liqSurfaceNode::aPreviewPrimitive;
 MObject liqSurfaceNode::aPreviewCustomPrimitive;
 MObject liqSurfaceNode::aColor;
@@ -132,7 +134,7 @@ MObject liqSurfaceNode::aOutTransparency;
 
 void liqSurfaceNode::postConstructor( )
 {
-	setMPSafe(true);
+  setMPSafe(true);
 
   // init swatch
   if ( swatchInit != true ) {
@@ -171,29 +173,32 @@ MStatus liqSurfaceNode::initialize()
 
   // Create input attributes
 
-	aRmanShader = tAttr.create( MString("rmanShader"), MString("rms"), MFnData::kString, aRmanShader, &status );
-	MAKE_INPUT(tAttr);
+  aRmanShader = tAttr.create( MString("rmanShader"), MString("rms"), MFnData::kString, aRmanShader, &status );
+  MAKE_INPUT(tAttr);
 
   aRmanShaderLong = tAttr.create( MString("rmanShaderLong"), MString("rml"), MFnData::kString, aRmanShaderLong, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
-	aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
-	MAKE_INPUT(tAttr);
+  aRmanShaderLif = tAttr.create(  MString("rmanShaderLif"),  MString("lif"), MFnData::kString, aRmanShaderLif, &status );
+  MAKE_INPUT(tAttr);
 
   aRmanParams = tAttr.create(  MString("rmanParams"),  MString("rpr"), MFnData::kStringArray, aRmanParams, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanDetails = tAttr.create(  MString("rmanDetails"),  MString("rdt"), MFnData::kStringArray, aRmanDetails, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanTypes = tAttr.create(  MString("rmanTypes"),  MString("rty"), MFnData::kStringArray, aRmanTypes, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanDefaults = tAttr.create(  MString("rmanDefaults"),  MString("rdf"), MFnData::kStringArray, aRmanDefaults, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aRmanArraySizes = tAttr.create(  MString("rmanArraySizes"),  MString("ras"), MFnData::kIntArray, aRmanArraySizes, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
+
+  aRmanLifCmds = tAttr.create(  MString("rmanLifCmds"),  MString("rlc"), MFnData::kStringArray, aRmanLifCmds, &status );
+  MAKE_INPUT(tAttr);
 
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );
   eAttr.addField( "Sphere",   0 );
@@ -208,7 +213,7 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(eAttr.setConnectable(false));
 
   aPreviewCustomPrimitive = tAttr.create(  MString("previewCustomPrimitive"),  MString("pcp"), MFnData::kString, aPreviewCustomPrimitive, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aPreviewObjectSize = nAttr.create("previewObjectSize", "pos", MFnNumericData::kDouble, 1.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
@@ -231,14 +236,14 @@ MStatus liqSurfaceNode::initialize()
   MAKE_INPUT(nAttr);
 
   aShaderSpace = tAttr.create( MString("shaderSpace"), MString("ssp"), MFnData::kString, aShaderSpace, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aDisplacementBound = nAttr.create("displacementBound", "db", MFnNumericData::kDouble, 0.0, &status);
   MAKE_INPUT(nAttr);
 
   MObject defaultSpaceObj = tDefault.create( MString("shader"), &status);
   aDisplacementBoundSpace = tAttr.create( MString("displacementBoundSpace"), MString("dbs"), MFnData::kString, defaultSpaceObj, &status );
-	MAKE_INPUT(tAttr);
+  MAKE_INPUT(tAttr);
 
   aOutputInShadow = nAttr.create("outputInShadow", "ois",  MFnNumericData::kBoolean, 0.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
@@ -337,7 +342,7 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( nAttr.setReadable( false ) );
   CHECK_MSTATUS( nAttr.setDefault( 1.0f, 1.0f, 1.0f ) );
 
-	// Light
+  // Light
   aLightAmbient = nAttr.create( "lightAmbient", "la", MFnNumericData::kBoolean, 0, &status );
   CHECK_MSTATUS( status );
   CHECK_MSTATUS( nAttr.setStorable( false ) );
@@ -386,9 +391,9 @@ MStatus liqSurfaceNode::initialize()
 
   // Create output attributes
   aOutColor = nAttr.createColor("outColor", "oc");
-	MAKE_OUTPUT(nAttr);
+  MAKE_OUTPUT(nAttr);
   aOutTransparency = nAttr.createColor("outTransparency", "ot");
-	MAKE_OUTPUT(nAttr);
+  MAKE_OUTPUT(nAttr);
 
   CHECK_MSTATUS(addAttribute(aRmanShader));
   CHECK_MSTATUS(addAttribute(aRmanShaderLong));
@@ -398,6 +403,8 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(addAttribute(aRmanTypes));
   CHECK_MSTATUS(addAttribute(aRmanDefaults));
   CHECK_MSTATUS(addAttribute(aRmanArraySizes));
+  CHECK_MSTATUS(addAttribute(aRmanLifCmds));
+
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
@@ -424,32 +431,32 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(attributeAffects( aMayaIgnoreLights,    aOutColor ));
   CHECK_MSTATUS(attributeAffects( aMayaKa,              aOutColor ));
   CHECK_MSTATUS(attributeAffects( aMayaKd,              aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightIntensityR,     aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightIntensityB,     aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightIntensityG,     aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightIntensity,      aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aNormalCameraX,       aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aNormalCameraY,       aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aNormalCameraZ,       aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aNormalCamera,        aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightDirectionX,     aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightDirectionY,     aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightDirectionZ,     aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightDirection,      aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightAmbient,        aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightSpecular,       aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightDiffuse,        aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightShadowFraction, aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aPreShadowIntensity,  aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightBlindData,      aOutColor ));
-	CHECK_MSTATUS(attributeAffects( aLightData,           aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightIntensityR,     aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightIntensityB,     aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightIntensityG,     aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightIntensity,      aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aNormalCameraX,       aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aNormalCameraY,       aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aNormalCameraZ,       aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aNormalCamera,        aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightDirectionX,     aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightDirectionY,     aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightDirectionZ,     aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightDirection,      aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightAmbient,        aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightSpecular,       aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightDiffuse,        aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightShadowFraction, aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aPreShadowIntensity,  aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightBlindData,      aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aLightData,           aOutColor ));
 
   return MS::kSuccess;
 }
 
 MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
 {
-	// outColor or individual R, G, B channel
+  // outColor or individual R, G, B channel
   if( (plug == aOutColor) || (plug.parent() == aOutColor) ) {
 
     //cout <<"compute... "<<endl;

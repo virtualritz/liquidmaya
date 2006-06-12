@@ -306,7 +306,7 @@ global proc mainShadowStatusReplace( string $nodeDotAttr )
 
 global proc AEliquidLightTemplate( string $nodeDotAttr )
 {
-  layout -e -m false "AEcontrolFormLayout";
+  layout -e -vis false "AEcontrolFormLayout";
 
   editorTemplate -callCustom ("liquidPreviewSwatchNew "+$nodeDotAttr) ("liquidPreviewSwatchReplace "+$nodeDotAttr) "message";
 
@@ -346,24 +346,21 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
       editorTemplate -addControl "outputInShadow";
     editorTemplate -endLayout;
 
-    liquidHideAEShaderParams( "" );
-
     editorTemplate -beginLayout "Parameters" -collapse 0;
       editorTemplate -ccu "liquidShaderNodesParamsNew" "liquidShaderNodesParamsReplace" "rmanShaderLong";
     editorTemplate -endLayout;
-
-    liquidHideAEShaderParams( $nodeDotAttr );
 
     editorTemplate -suppress rmanShader;
     editorTemplate -suppress rmanShaderLong;
     editorTemplate -suppress rmanShaderLif;
     editorTemplate -suppress rmanParams;
+    editorTemplate -suppress rmanArraySizes;
+    editorTemplate -suppress rmanLifCmds;
 
     editorTemplate -addExtraControls;
 
 
   editorTemplate -endScrollLayout;
-
-  layout -e -m true "AEcontrolFormLayout";
+  layout -e -vis true "AEcontrolFormLayout";
 }
 

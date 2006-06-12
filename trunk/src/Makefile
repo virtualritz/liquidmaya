@@ -1,5 +1,7 @@
 DEPTH = ..
+BIN_VERSION ?= debug
 include $(DEPTH)/commondefs.mk
+VPATH ?= $(VPATHDEBUG)
 
 # -lefence
 #-llkm -lzip -ltarget
@@ -69,55 +71,16 @@ LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqJobList.$(OBJEXT)
 
 
+LIQUIDOUTMAINOBJS := $(patsubst %,$(VPATH)/%,$(LIQUIDMAINOBJS))
 
-LIQUIDOUTMAINOBJS = $(VPATH)/liqShader.$(OBJEXT) \
-					$(VPATH)/liqAttachPrefAttribute.$(OBJEXT) \
-					$(VPATH)/liqRibParticleData.$(OBJEXT) \
-					$(VPATH)/liqTokenPointer.$(OBJEXT) \
-					$(VPATH)/liqWriteArchive.$(OBJEXT) \
-					$(VPATH)/liqPreviewShader.$(OBJEXT) \
-					$(VPATH)/liqRibSurfaceData.$(OBJEXT) \
-					$(VPATH)/liqRibTranslator.$(OBJEXT) \
-					$(VPATH)/liqRibObj.$(OBJEXT) \
-					$(VPATH)/liqRibNode.$(OBJEXT) \
-					$(VPATH)/liqRibData.$(OBJEXT) \
-					$(VPATH)/liqGlobalHelpers.$(OBJEXT) \
-					$(VPATH)/liqRibNuCurveData.$(OBJEXT) \
-					$(VPATH)/liqRibMeshData.$(OBJEXT) \
-					$(VPATH)/liqRibLocatorData.$(OBJEXT) \
-					$(VPATH)/liqRibClipPlaneData.$(OBJEXT) \
-					$(VPATH)/liqRibCoordData.$(OBJEXT) \
-					$(VPATH)/liqRibLightData.$(OBJEXT) \
-					$(VPATH)/liqRibHT.$(OBJEXT) \
-					$(VPATH)/liqGetSloInfo.$(OBJEXT) \
-					$(VPATH)/liqGetAttr.$(OBJEXT) \
-					$(VPATH)/liqRibGenData.$(OBJEXT) \
-					$(VPATH)/liqRibSubdivisionData.$(OBJEXT) \
-					$(VPATH)/liqRibMayaSubdivisionData.$(OBJEXT) \
-					$(VPATH)/liqMemory.$(OBJEXT) \
-					$(VPATH)/liqProcessLauncher.$(OBJEXT) \
-					$(VPATH)/liqRenderer.$(OBJEXT) \
-					$(VPATH)/liqExpression.$(OBJEXT)  \
-					$(VPATH)/liqNodeSwatch.$(OBJEXT)  \
-					$(VPATH)/liqSurfaceNode.$(OBJEXT) \
-					$(VPATH)/liqDisplacementNode.$(OBJEXT)	\
-					$(VPATH)/liqVolumeNode.$(OBJEXT)  \
-					$(VPATH)/liqRibboxNode.$(OBJEXT)  \
-					$(VPATH)/liqLightNode.$(OBJEXT)  \
-					$(VPATH)/liqLightNodeBehavior.$(OBJEXT)\
-					$(VPATH)/liqCoordSysNode.$(OBJEXT) \
-					$(VPATH)/liqGlobalsNode.$(OBJEXT) \
-					$(VPATH)/liqBucket.$(OBJEXT) \
-					$(VPATH)/liqMayaRenderView.$(OBJEXT) \
-					$(VPATH)/liqJobList.$(OBJEXT)
 
 
 .SUFFIXES: .cpp .$(OBJEXT) .$(PLUGSUF) .c
 
-LIQUIDPLUG = liquid.$(PLUGSUF)
-LIQUIDBIN  = liquid
-LIQUIDLIB  = libliquid.a
-LIQUIDDPY  = d_liqmaya.so
+LIQUIDPLUG := $(VPATH)/liquid.$(PLUGSUF)
+LIQUIDBIN  := $(VPATH)/liquid
+LIQUIDLIB  := $(VPATH)/libliquid.a
+LIQUIDDPY  := $(VPATH)/d_liqmaya.so
 
 default: debug
 
@@ -134,23 +97,27 @@ lib : $(VPATH) $(LIQUIDLIB)
 
 liquidPlug : $(LIQUIDPLUG)
 
-$(LIQUIDPLUG) : liquidPlug.$(OBJEXT) $(LIQUIDLIB)
+$(LIQUIDPLUG) : $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
-	@$(CPP) $(LDFLAGS) -shared -o $(VPATH)/$(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIBS)
+	$(CPP) $(LDFLAGS) -shared -o $(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDLIB) $(LIBS)
 
-$(LIQUIDBIN) : liquidBin.$(OBJEXT) $(LIQUIDLIB)
+$(LIQUIDBIN) : $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB)
 	@echo $@
-	@$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(VPATH)/$(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(VPATH)/$(LIQUIDLIB) $(LIQUIDBINLIBS)
+	@$(LD) -DLIQUIDBIN $(LDFLAGS) -o $(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB) $(LIQUIDBINLIBS)
 
-$(LIQUIDLIB) : $(LIQUIDMAINOBJS)
-	@$(AR) $(VPATH)/$(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
+$(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
+	@$(AR) $(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
 
-$(LIQUIDDPY) : $(LIQDISPLAYOBJS)
+$(LIQUIDDPY) : $(VPATH)/$(LIQDISPLAYOBJS)
 	@echo $@
-	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(VPATH)/$(LIQUIDDPY)
+	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(LIQUIDDPY)
 
+$(LIQUIDOUTMAINOBJS) : ../include/liquid.h
 
-$(LIQUIDMAINOBJS) : ../include/liquid.h
+$(VPATH)/%.$(OBJEXT) : %.cpp
+	@echo $@
+	$(CPP) -c $(INCLUDES) $(CPPFLAGS) -o $@ $<
+
 liqRibTranslator.o: ../include/liqRenderScript.h
 
 .cpp.$(OBJEXT):

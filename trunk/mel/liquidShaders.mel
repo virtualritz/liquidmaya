@@ -300,10 +300,14 @@ global proc string liquidNewShaderNode( string $filename )
 
   if ( $version < 1.8 ) $newNodeName = liquidNewShaderNode_old( $filename );
   else {
+    //trace ("  * new method");
     string $shortName = basenameEx( $filename );
     string $longName = $filename;
 
     // get the correct shader type - possibilities are surface, light, displacement and volume
+    if ( !`filetest -r $filename` ) error( "liquidNewShaderNode : shader is not readable > "+$filename);
+    //trace ("  * setting shader "+$filename);
+    liquidSlInfoReset();
     liquidSlSetShader( $filename );
     string $shaderType = liquidSlShaderType();
     string $nodetype = ("liquid"+capitalizeString($shaderType));

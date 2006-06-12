@@ -92,6 +92,7 @@ MSyntax liqPreviewShader::syntax()
   syn.addFlag("os","objectSize");
   syn.addFlag("sr","shadingRate");
   syn.addFlag("p","pipe");
+  syn.addFlag("t","type");
 
   syn.addFlag("sph", "sphere");
   syn.addFlag("tor", "torus");
@@ -121,12 +122,14 @@ typedef struct liqPreviewShoptions
   const char *displayName;
   const char *renderCommand;
   const char *backPlaneShader;
-  bool shortShaderName, backPlane, usePipe;
-  int displaySize;
-  int primitiveType;
-  double objectScale;
-  double shadingRate;
+  bool    shortShaderName, backPlane, usePipe;
+  int     displaySize;
+  int     primitiveType;
+  double  objectScale;
+  double  shadingRate;
   MString customRibFile;
+  bool    fullShaderPath;
+  MString type;
 } liqPreviewShoptions;
 
 int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *options );
@@ -200,6 +203,8 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.objectScale = 1.0;
   preview.shadingRate = 1.0;
   preview.customRibFile = "";
+  preview.fullShaderPath = false;
+  preview.type = "";
 
   MString displayDriver( "framebuffer" );
   MString displayName( "liqPreviewShader" );
@@ -255,8 +260,12 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
       i++;
       MString argValue = args.asString( i, &status );
       preview.shadingRate = argValue.asDouble();
+    } else if ( ( arg == "-t" ) || ( arg == "-type" ) ) {
+      i++;
+      preview.type = args.asString( i, &status );
     }
   }
+
   // Check values
   if( shaderNodeName == "" )
   {
@@ -268,6 +277,11 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
     cerr << "Need a render command for previews" << endl;
     return MS::kFailure;
   }
+
+  MString last3letters( shaderNodeName.substring( shaderNodeName.length()-3, shaderNodeName.length()-1 ) );
+
+  if ( last3letters == liquidRenderer.shaderExtension ) preview.fullShaderPath = true;
+  //cout <<"[liquid] last3letters = "<<last3letters<<endl;
 
   preview.shaderNodeName = shaderNodeName.asChar();
   preview.renderCommand = renderCommand.asChar();
@@ -393,20 +407,47 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
 
   RiAttributeBegin();
 
+  //cout <<"[liquid]  preview !"<<endl;
 
-  MSelectionList shaderNameList;
+  char *shaderFileName;
+  liqShader currentShader;
   MObject	shaderObj;
-  shaderNameList.add( options->shaderNodeName );
 
-  shaderNameList.getDependNode( 0, shaderObj );
-  if( shaderObj == MObject::kNullObj )
-  {
-    cerr << "Can't find node for " << options->shaderNodeName << endl;
-    RiEnd();
-    return 0;
+  if ( options->fullShaderPath ) {
+
+    // a full shader path was specified
+    //cout <<"[liquid] got full path for preview !"<<endl;
+
+    //shaderFileName = const_cast<char*>(options->shaderNodeName);
+
+    MString tmp(options->shaderNodeName);
+    currentShader.file = tmp.substring( 0, tmp.length()-5 ).asChar();
+    if ( options->type == "surface" ) currentShader.shader_type = SHADER_TYPE_SURFACE;
+    else if ( options->type == "displacement" ) currentShader.shader_type = SHADER_TYPE_DISPLACEMENT;
+
+    //cout <<"[liquid]   options->shaderNodeName = "<<options->shaderNodeName<<endl;
+    //cout <<"[liquid]   options->type = "<<options->type<<endl;
+
+  } else {
+
+    // a shader node was specified
+
+    MSelectionList shaderNameList;
+    shaderNameList.add( options->shaderNodeName );
+
+    shaderNameList.getDependNode( 0, shaderObj );
+    if( shaderObj == MObject::kNullObj )
+    {
+      cerr << "Can't find node for " << options->shaderNodeName << endl;
+      RiEnd();
+      return 0;
+    }
+    currentShader = liqShader( shaderObj );
+
   }
+
   MFnDependencyNode assignedShader( shaderObj );
-  liqShader currentShader( shaderObj );
+
   RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * currentShader.numTPV );
   RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * currentShader.numTPV );
 
@@ -423,7 +464,6 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     RiAttribute( "displacementbound", "sphere", &displacementBounds, "coordinatesystem", &coordsys, RI_NULL );
   }
 
-  char *shaderFileName;
   LIQ_GET_SHADER_FILE_NAME(shaderFileName, options->shortShaderName, currentShader );
 
   MString shadingSpace;
@@ -433,6 +473,8 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     RiTransformBegin();
     RiCoordSysTransform( (char*) shadingSpace.asChar() );
   }
+
+
 
   RiTransformBegin();
   // Rotate shader space to make the preview more interesting
@@ -444,9 +486,15 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   if ( currentShader.shader_type == SHADER_TYPE_SURFACE ) {
     RiColor( currentShader.rmColor );
     RiOpacity( currentShader.rmOpacity );
-    RiSurfaceV( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
+    if ( options->fullShaderPath )
+      RiSurface( shaderFileName, RI_NULL );
+    else
+      RiSurfaceV( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
   } else if ( currentShader.shader_type == SHADER_TYPE_DISPLACEMENT ) {
-    RiDisplacementV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
+    if ( options->fullShaderPath )
+      RiDisplacement( shaderFileName, RI_NULL );
+    else
+      RiDisplacementV( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
   }
 
   RiTransformEnd();
