@@ -137,7 +137,7 @@ def doSubTasks( job, startFrame, endFrame ):
 										cmd += " -N " + jobId
 									else:
 										cmd = cmdarray[ 0 ]
-
+									
 									# Convert -Progress param to -progress
 									for a in cmdarray[ 1: ]:
 										if a != "-Progress":
@@ -150,7 +150,7 @@ def doSubTasks( job, startFrame, endFrame ):
 										for holdJob in holdJobList:
 											cmd += holdJob + ","
 										cmd = cmd[ :len( cmd ) - 1 ]
-
+									
 									# On UNIX the job should be launched by os.popen or the
 									# like and the progress being captured and printed
 									os.system( cmd )
