@@ -183,6 +183,7 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -label "Maximum Error"           -addDynamicControl "liqIrradianceMaxError";
       editorTemplate -label "Maximum Pixel Distance"  -addDynamicControl "liqIrradianceMaxPixelDist";
       editorTemplate -label "Irradiance Handle"       -addDynamicControl "liqIrradianceHandle";
+      editorTemplate -label "Irradiance File Mode"    -addDynamicControl "liqIrradianceFileMode";
 
     editorTemplate -endLayout;
 
