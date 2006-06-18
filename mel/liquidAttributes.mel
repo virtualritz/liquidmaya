@@ -338,6 +338,7 @@ global proc liquidCreateGlobalIlluminationAttributes()
   liquidCreateIrradianceSamplesAttribute;
   liquidCreateIrradianceMaxErrorAttribute;
   liquidCreateIrradianceMaxPixelDistAttribute;
+  liquidCreateIrradianceHandleAttribute;
 }
 
 
@@ -397,6 +398,17 @@ global proc liquidCreateIrradianceMaxPixelDistAttribute()
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqIrradianceMaxPixelDist"` ) {
       addAttr -ln "liqIrradianceMaxPixelDist" -at "float" -dv 30 -min -1 -smx 100 $currentNode;
+    }
+  }
+}
+
+global proc liquidCreateIrradianceHandleAttribute()
+{
+  string $nodes[] = `ls -tr -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqIrradianceHandle"` ) {
+      addAttr -ln "liqIrradianceHandle" -dt "string" $currentNode;
     }
   }
 }
