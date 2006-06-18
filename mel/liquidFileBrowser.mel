@@ -288,6 +288,13 @@ global proc liquidFileBrowserWindow_load( string $filemask, string $callback )
 }
 
 
+/**
+	this proc wraps the callback for NT / OSX
+*/
+global proc liquidFileBrowserWindow_wrapCallback(string $callback, string $arg1, string $arg2){
+	if ( $callback !=  "" ) eval ( $callback + " \"" + $arg1 + "\" \"" + $arg2 + "\"" );
+}
+
 /*
   liquid file browser to load stuff
   the callback should be : callback string selectedfile string filetype
@@ -304,8 +311,10 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
 		//	that case, we will go through the standard
 		//	MEL-based code.
 		//
+		string $cb = ("liquidFileBrowserWindow_wrapCallback \"" + $callback + "\"");
+		
 		int $dialogSuccess = `fileBrowserDialog 
-									-fc $callback 
+									-fc $cb
 									-m 0 
 									-fl $filemask
 									-an "Choose File"
