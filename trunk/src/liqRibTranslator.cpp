@@ -603,6 +603,14 @@ liqRibTranslator::liqRibTranslator()
   m_statistics        = 0;
 
   m_hiddenJitter = 1;
+  // PRMAN 13 BEGIN
+  m_hiddenAperture[0] = 0.0;
+  m_hiddenAperture[1] = 0.0;
+  m_hiddenAperture[2] = 0.0;
+  m_hiddenAperture[3] = 0.0;
+  m_hiddenShutterOpening[0] = 0.0;
+  m_hiddenShutterOpening[0] = 1.0;
+  // PRMAN 13 END
   m_hiddenOcclusionBound = 0;
   m_hiddenMpCache = true;
   m_hiddenMpMemory = 6144;
@@ -611,6 +619,10 @@ liqRibTranslator::liqRibTranslator()
   m_hiddenSubPixel = 1;
   m_hiddenExtremeMotionDof = false;
   m_hiddenMaxVPDepth = -1;
+  // PRMAN 13 BEGIN
+  m_hiddenSigma = false;
+  m_hiddenSigmaBlur = 1.0;
+  // PRMAN 13 END
 
   m_raytraceFalseColor = 0;
   m_photonEmit = 0;
@@ -1701,6 +1713,26 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "jitter", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenJitter );
     gStatus.clear();
+	// PRMAN 13 BEGIN
+    gPlug = rGlobalNode.findPlug( "hiddenApertureNSides", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenAperture[0] );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenApertureAngle", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenAperture[1] );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenApertureRoundness", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenAperture[2] );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenApertureDensity", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenAperture[3] );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenShutterOpeningOpen", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenShutterOpening[0] );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenShutterOpeningClose", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenShutterOpening[1] );
+    gStatus.clear();
+	// PRMAN 13 END
     gPlug = rGlobalNode.findPlug( "hiddenOcclusionBound", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenOcclusionBound );
     gStatus.clear();
@@ -1725,6 +1757,14 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "hiddenMaxVPDepth", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenMaxVPDepth );
     gStatus.clear();
+	// PRMAN 13 BEGIN
+    gPlug = rGlobalNode.findPlug( "hiddenSigmaHiding", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenSigma );
+    gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "hiddenSigmaBlur", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_hiddenSigmaBlur );
+    gStatus.clear();
+	// PRMAN 13 END
     gPlug = rGlobalNode.findPlug( "raytraceFalseColor", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_raytraceFalseColor );
     gStatus.clear();
@@ -3409,6 +3449,7 @@ void liqRibTranslator::portFieldOfView( int port_width, int port_height,
                                         double& vertical,
                                         MFnCamera& fnCamera )
 {
+  // note : works well - api tested
   double left, right, bottom, top;
   double aspect = (double) port_width / port_height;
   computeViewingFrustum(aspect,left,right,bottom,top,fnCamera);
@@ -3481,6 +3522,13 @@ void liqRibTranslator::computeViewingFrustum ( double     window_aspect,
   right  = focal_to_near * ( .5 * aperture_x * scale_x + offset_x + translate_x );
   bottom = focal_to_near * (-.5 * aperture_y * scale_y + offset_y + translate_y );
   top    = focal_to_near * ( .5 * aperture_y * scale_y + offset_y + translate_y );
+
+  // NOTE :
+  //      all the code above could be replaced by :
+  //
+  //      cam.getRenderingFrustum( window_aspect, left, right, bottom, top );
+  //
+  //      should we keep this for educationnal purposes or use the API call ??
 }
 
 /**
@@ -4555,19 +4603,72 @@ int count =0;
         //
         iter->camera[sample].shutter = fnCamera.shutterAngle() * 0.5 / M_PI;
         liqglo_shutterTime = iter->camera[sample].shutter;
-        iter->camera[sample].orthoWidth = fnCamera.orthoWidth();
-        iter->camera[sample].orthoHeight = fnCamera.orthoWidth() * ((float)cam_height / (float)cam_width);
-        iter->camera[sample].motionBlur = fnCamera.isMotionBlur();
-        iter->camera[sample].focalLength = fnCamera.focalLength();
-        iter->camera[sample].focalDistance = fnCamera.focusDistance();
-        iter->camera[sample].fStop = fnCamera.fStop();
+        iter->camera[sample].orthoWidth     = fnCamera.orthoWidth();
+        iter->camera[sample].orthoHeight    = fnCamera.orthoWidth() * ((float)cam_height / (float)cam_width);
+        iter->camera[sample].motionBlur     = fnCamera.isMotionBlur();
+        iter->camera[sample].focalLength    = fnCamera.focalLength();
+        iter->camera[sample].focalDistance  = fnCamera.focusDistance();
+        iter->camera[sample].fStop          = fnCamera.fStop();
 
-		// convert focal length to scene units
+        // film back offsets
+        double hSize, vSize, hOffset, vOffset;
+        fnCamera.getFilmFrustum( fnCamera.focalLength(), hSize, vSize, hOffset, vOffset );
+
+        double imr = ((float)cam_width / (float)cam_height);
+        double fbr = hSize / vSize;
+        double ho, vo;
+
+        if ( imr >= 1 ) {
+
+          switch ( fnCamera.filmFit() ) {
+
+            case MFnCamera::kVerticalFilmFit:
+            case MFnCamera::kOverscanFilmFit:
+              ho = hOffset / vSize * 2.0;
+              vo = vOffset / vSize * 2.0;
+              break;
+
+            case MFnCamera::kHorizontalFilmFit:
+            case MFnCamera::kFillFilmFit:
+              ho = hOffset / ( vSize * fbr / imr ) * 2.0;
+              vo = vOffset / ( vSize * fbr / imr ) * 2.0;
+              break;
+
+            default:
+              break;
+          }
+
+        } else {
+
+          switch ( fnCamera.filmFit() ) {
+
+            case MFnCamera::kFillFilmFit:
+            case MFnCamera::kVerticalFilmFit:
+              ho = hOffset / vSize * 2.0;
+              vo = vOffset / vSize * 2.0;
+              break;
+
+            case MFnCamera::kHorizontalFilmFit:
+            case MFnCamera::kOverscanFilmFit:
+              ho = hOffset / ( vSize * fbr / imr ) * 2.0;
+              vo = vOffset / ( vSize * fbr / imr ) * 2.0;
+              break;
+
+            default:
+              break;
+          }
+
+        }
+
+        iter->camera[sample].horizontalFilmOffset = ho;
+        iter->camera[sample].verticalFilmOffset   = vo;
+
+        // convert focal length to scene units
         MDistance flenDist(iter->camera[sample].focalLength,MDistance::kMillimeters);
-		iter->camera[sample].focalLength = flenDist.as(MDistance::uiUnit());
+        iter->camera[sample].focalLength = flenDist.as(MDistance::uiUnit());
 
 
-		fnCamera.getPath(path);
+        fnCamera.getPath(path);
         MTransformationMatrix xform( path.inclusiveMatrix() );
         double scale[] = { 1, 1, -1 };
 
@@ -5188,12 +5289,28 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       RiProjection( "orthographic", RI_NULL );
       RiScreenWindow( -frameWidth, frameWidth, -frameHeight, frameHeight );
     } else {
-      RtFloat fieldOfView = liqglo_currentJob.camera[0].hFOV * 180.0 / M_PI;
+      RtFloat fieldOfView = liqglo_currentJob.camera[0].hFOV * 180.0 / M_PI ;
       if ( liqglo_currentJob.isShadow && liqglo_currentJob.isPoint ) {
         fieldOfView = liqglo_currentJob.camera[0].hFOV;
       }
       RiProjection( "perspective", RI_FOV, &fieldOfView, RI_NULL );
+
+      double ratio = (double)liqglo_currentJob.width / (double)liqglo_currentJob.height;
+      double left, right, bottom, top;
+      if ( ratio <= 0 ) {
+        left    = -1 + liqglo_currentJob.camera[0].horizontalFilmOffset;
+        right   =  1 + liqglo_currentJob.camera[0].horizontalFilmOffset;
+        bottom  = -1 / ratio + liqglo_currentJob.camera[0].verticalFilmOffset;
+        top     =  1 / ratio + liqglo_currentJob.camera[0].verticalFilmOffset;
+      } else {
+        left    = -ratio + liqglo_currentJob.camera[0].horizontalFilmOffset;
+        right   =  ratio + liqglo_currentJob.camera[0].horizontalFilmOffset;
+        bottom  = -1 + liqglo_currentJob.camera[0].verticalFilmOffset;
+        top     =  1 + liqglo_currentJob.camera[0].verticalFilmOffset;
+      }
+      RiScreenWindow( left, right, bottom, top );
     }
+
 
     RiClipping( liqglo_currentJob.camera[0].neardb, liqglo_currentJob.camera[0].fardb );
     if ( doDof && !liqglo_currentJob.isShadow ) {
@@ -6004,6 +6121,7 @@ MStatus liqRibTranslator::objectBlock()
     if ( ribNode->rib.box != "" && ribNode->rib.box != "-" ) {
       RiArchiveRecord( RI_COMMENT, " RIB Box:\n%s", ribNode->rib.box.asChar() );
     }
+
     if ( ribNode->rib.readArchive != "" && ribNode->rib.readArchive != "-" ) {
       RiArchiveRecord( RI_COMMENT, " Read Archive Data: \nReadArchive \"%s\"", ribNode->rib.readArchive.asChar() );
     }
@@ -6429,6 +6547,21 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
         options += tmp;
       }
 
+	  // PRMAN 13 BEGIN
+      if ( m_hiddenAperture[0] != 0.0 ||
+           m_hiddenAperture[1] != 0.0 ||
+           m_hiddenAperture[2] != 0.0 ||
+           m_hiddenAperture[3] != 0.0 ) {
+        char tmp[255];
+        sprintf( tmp, "\"float[4] aperture\" [%f %f %f %f] ", m_hiddenAperture[0], m_hiddenAperture[1], m_hiddenAperture[2], m_hiddenAperture[3] );
+        options += tmp;
+      }
+      if ( m_hiddenShutterOpening[0] != 0.0 && m_hiddenShutterOpening[1] != 1.0) {
+        char tmp[255];
+        sprintf( tmp, "\"float[2] shutteropening\" [%f %f] ", m_hiddenShutterOpening[0], m_hiddenShutterOpening[1] );
+        options += tmp;
+      }
+	  // PRMAN 13 END
       if ( m_hiddenOcclusionBound != 0.0 ) {
         char tmp[128];
         sprintf( tmp, "\"occlusionbound\" [%f] ", m_hiddenOcclusionBound );
@@ -6457,6 +6590,14 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
         sprintf( tmp, "\"maxvpdepth\" [%d] ", m_hiddenMaxVPDepth );
         options += tmp;
       }
+	  // PRMAN 13 BEGIN
+      if ( m_hiddenSigma != false ) {
+        options += "\"int sigma\" [1] ";
+        char tmp[128];
+        sprintf( tmp, "\"sigmablur\" [%f] ", m_hiddenSigmaBlur );
+        options += tmp;
+      }
+	// PRMAN 13 END
     } else if ( hidername == "photon" ) {
 
       if ( m_photonEmit != 0 ) {
@@ -6538,5 +6679,6 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
 
   return options;
 }
+
 
 
