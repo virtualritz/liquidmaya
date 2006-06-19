@@ -535,7 +535,7 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
     string $cmds[] = `getAttr ($theNode+".rmanLifCmds")`;
     string $c;
     for ( $c in $cmds ) {
-      eval $c;
+      if ( $c != "" ) eval $c;
     }
 
   } else {
