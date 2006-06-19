@@ -382,6 +382,10 @@ private :
   int           m_statistics;
 
   int           m_hiddenJitter;
+  // PRMAN 13 BEGIN
+  float         m_hiddenAperture[4];
+  float         m_hiddenShutterOpening[2];
+  // PRMAN 13 END
   float         m_hiddenOcclusionBound;
   bool          m_hiddenMpCache;
   int           m_hiddenMpMemory;
@@ -390,7 +394,10 @@ private :
   int           m_hiddenSubPixel;
   bool          m_hiddenExtremeMotionDof;
   int           m_hiddenMaxVPDepth;
-
+  // PRMAN 13 BEGIN
+  bool          m_hiddenSigma;
+  float         m_hiddenSigmaBlur;
+  // PRMAN 13 END
   int           m_raytraceFalseColor;
   int           m_photonEmit;
 

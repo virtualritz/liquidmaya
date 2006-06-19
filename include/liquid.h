@@ -250,6 +250,8 @@ struct structCamera {
   double  fStop;
   double  focalDistance;
   double  focalLength;
+  double  horizontalFilmOffset;
+  double  verticalFilmOffset;
 };
 
 enum RenderPass {
