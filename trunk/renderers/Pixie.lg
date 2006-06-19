@@ -59,7 +59,7 @@ proc setAttribute10() {
 	setAttr ".Raytracing" yes;
 	setAttr ".DepthOfField" yes;
 	setAttr ".AdvancedVisibility" no;
-	setAttr ".DisplayChannels" no;
+	setAttr ".DisplayChannels" yes;
 }
 
 proc setAttribute11() {
