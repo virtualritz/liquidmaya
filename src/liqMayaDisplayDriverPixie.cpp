@@ -71,7 +71,7 @@ void	*displayStart(const char *name,int width,int height,int numSamples,const ch
 	if (WSAStartup(0x202,&wsaData) == SOCKET_ERROR) 
 	{
 		WSACleanup();
-		return PkDspyErrorNoResource;
+		return NULL;
 	}
 #endif
 
