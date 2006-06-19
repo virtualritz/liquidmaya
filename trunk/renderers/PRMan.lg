@@ -36,6 +36,7 @@ proc setAttribute8() {
 	setAttr ".ZBuffer" no;
 	setAttr ".Raytrace" no;
 	setAttr ".OpenGL" no;
+	setAttr ".DepthMask" yes;
 }
 
 proc setAttribute9() {
