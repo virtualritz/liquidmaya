@@ -208,8 +208,7 @@ global proc liquidFileBrowserWindow_updateList( string $filemask )
 
   // fill the list
   for ( $l in $list ) {
-  	print ("> " + $l + "\n");
-    if ( $l != "." && $l != ".." && gmatch( $l, ".*") ) continue;
+    if ( gmatch( $l, ".*") ) continue;
     string $fl = ($thePath+"/"+$l);
     if ( `filetest -f $fl` && gmatch( $l, $filemask ) ) textScrollList -e -append $l lfb_fileListC;
     else if ( `filetest -d $fl` ) textScrollList -e -append ( $l + "/" ) lfb_fileListC;
