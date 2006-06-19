@@ -223,9 +223,9 @@ liqRibMayaSubdivisionData::liqRibMayaSubdivisionData( MObject mesh )
   DOUBLEMAP sMap;
   DOUBLEMAP tMap;
   children.clear();
-  for( unsigned u = 0; u < npolys; u++ ) {
+  for( unsigned uu = 0; uu < npolys; uu++ ) {
     MUint64 index;
-    MFnSubdNames::toMUint64( index, u, 0, 0, 0, 0 );
+    MFnSubdNames::toMUint64( index, uu, 0, 0, 0, 0 );
     fnSurf.polygonGetVertexUVs( index, uVal, vVal );
     fnSurf.polygonVertices( index, children );
     for( unsigned j = 0; j < children.length(); j++ ) {

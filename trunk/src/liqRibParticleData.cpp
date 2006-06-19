@@ -36,8 +36,13 @@ extern "C" {
 }
 
 #ifdef _WIN32
+#ifdef MSVC6
+#  include <map>
+#  include <algorithm>
+#else
 #  include <hash_map>
 #  include <algorithm>
+#endif
 #else
 #  include <hash_map.h>
 #endif
@@ -155,10 +160,13 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
 
 
 #ifdef _WIN32
-
-    stdext::hash_map<int, int> soParticles;
-    stdext::hash_map<int, int> scParticles;
-
+	#ifdef MSVC6
+		std::map<int, int> soParticles;
+		std::map<int, int> scParticles;
+	#else
+    	stdext::hash_map<int, int> soParticles;
+    	stdext::hash_map<int, int> scParticles;
+	#endif
 #else
     hash_map<int, int> soParticles;
     hash_map<int, int> scParticles;
