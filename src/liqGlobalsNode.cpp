@@ -250,6 +250,14 @@ MObject liqGlobalsNode::aIrradianceFileMode;
 MObject liqGlobalsNode::aUseMtorSubdiv;
 MObject liqGlobalsNode::aHider;
 MObject liqGlobalsNode::aJitter;
+// PRMAN 13 BEGIN
+MObject liqGlobalsNode::aHiddenApertureNSides;
+MObject liqGlobalsNode::aHiddenApertureAngle;
+MObject liqGlobalsNode::aHiddenApertureRoundness;
+MObject liqGlobalsNode::aHiddenApertureDensity;
+MObject liqGlobalsNode::aHiddenShutterOpeningOpen;
+MObject liqGlobalsNode::aHiddenShutterOpeningClose;
+// PRMAN 13 END
 MObject liqGlobalsNode::aHiddenOcclusionBound;
 MObject liqGlobalsNode::aHiddenMpCache;
 MObject liqGlobalsNode::aHiddenMpMemory;
@@ -258,6 +266,10 @@ MObject liqGlobalsNode::aHiddenSampleMotion;
 MObject liqGlobalsNode::aHiddenSubPixel;
 MObject liqGlobalsNode::aHiddenExtremeMotionDof;
 MObject liqGlobalsNode::aHiddenMaxVPDepth;
+// PRMAN 13 BEGIN
+MObject liqGlobalsNode::aHiddenSigma;
+MObject liqGlobalsNode::aHiddenSigmaBlur;
+// PRMAN 13 END
 
 MObject liqGlobalsNode::aRaytraceFalseColor;
 
@@ -659,6 +671,14 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aHider,                      "hider",                        "h",      0     );
            // "hidden" hider advanced options - PRMAN ONLY
            CREATE_INT( nAttr,  aJitter,                     "jitter",                       "j",      0     );
+		// PRMAN 13 BEGIN
+         CREATE_FLOAT( nAttr,  aHiddenApertureNSides,       "hiddenApertureNSides",         "hans",   0.0   );
+         CREATE_FLOAT( nAttr,  aHiddenApertureAngle,        "hiddenApertureAngle",          "haa",    0.0   );
+         CREATE_FLOAT( nAttr,  aHiddenApertureRoundness,    "hiddenApertureRoundness",      "har",    0.0   );
+         CREATE_FLOAT( nAttr,  aHiddenApertureDensity,      "hiddenApertureDensity",        "had",    0.0   );
+         CREATE_FLOAT( nAttr,  aHiddenShutterOpeningOpen,   "hiddenShutterOpeningOpen",     "hsoo",   0.0   );
+         CREATE_FLOAT( nAttr,  aHiddenShutterOpeningClose,  "hiddenShutterOpeningClose",    "hsoc",   1.0   );
+		// PRMAN 13 END
          CREATE_FLOAT( nAttr,  aHiddenOcclusionBound,       "hiddenOcclusionBound",         "hob",    0.0   );
           CREATE_BOOL( nAttr,  aHiddenMpCache,              "hiddenMpCache",                "hmpc",   1     );
            CREATE_INT( nAttr,  aHiddenMpMemory,             "hiddenMpMemory",               "hmpm",   6144  );
@@ -667,6 +687,10 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aHiddenSubPixel,             "hiddenSubPixel",               "hsp",    1     );
           CREATE_BOOL( nAttr,  aHiddenExtremeMotionDof,     "hiddenExtremeMotionDof",       "hemd",   0     );
            CREATE_INT( nAttr,  aHiddenMaxVPDepth,           "hiddenMaxVPDepth",             "hmvd",  -1     );
+		// PRMAN 13 BEGIN
+          CREATE_BOOL( nAttr,  aHiddenSigma,                "hiddenSigmaHiding",            "hsh",    0     );
+         CREATE_FLOAT( nAttr,  aHiddenSigmaBlur,            "hiddenSigmaBlur",              "hshb",   1.0   );
+		// PRMAN 13 END
 
            CREATE_INT( nAttr,  aRaytraceFalseColor,         "raytraceFalseColor",            "rfc",   0     );
 
