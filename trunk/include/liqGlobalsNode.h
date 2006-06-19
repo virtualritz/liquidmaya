@@ -315,6 +315,14 @@ class liqGlobalsNode : public MPxNode
     static MObject aShadersOutputParamsFilter;
     static MObject aShadersMaxCachedAELayouts;
 
+	// PRMAN 13 BEGIN
+    static MObject aHiddenApertureNSides;
+    static MObject aHiddenApertureAngle;
+    static MObject aHiddenApertureRoundness;
+    static MObject aHiddenApertureDensity;
+    static MObject aHiddenShutterOpeningOpen;
+    static MObject aHiddenShutterOpeningClose;
+	// PRMAN 13 END
     static MObject aHiddenOcclusionBound;
     static MObject aHiddenMpCache;
     static MObject aHiddenMpMemory;
@@ -323,6 +331,10 @@ class liqGlobalsNode : public MPxNode
     static MObject aHiddenSubPixel;
     static MObject aHiddenExtremeMotionDof;
     static MObject aHiddenMaxVPDepth;
+	// PRMAN 13 BEGIN
+    static MObject aHiddenSigma;
+    static MObject aHiddenSigmaBlur;
+	// PRMAN 13 END
 
     static MObject aRaytraceFalseColor;
 
