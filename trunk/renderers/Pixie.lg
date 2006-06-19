@@ -27,7 +27,7 @@ proc setAttribute6() {
 }
 
 proc setAttribute7() {
-	setAttr ".viewTexture" -type "string" "";
+	setAttr ".viewTexture" -type "string" "show";
 }
 
 proc setAttribute8() {
