@@ -2138,6 +2138,22 @@ global proc liquidHiderOptions_buildIt( string $prefix )
                                       ("control over the maximum number of visible\n"+
                                        "points considered for compositing or deep\n"+
                                        "shadow map creation") "";
+            // PRMAN 13
+            frameLayout -bs "etchedIn" -l "Aperture" -cll true -cl true;
+              columnLayout -adj true;
+                liquidShowFloatGlobalPlus    "hiddenApertureNSides"    "N-Sides"     "" "";
+                liquidShowFloatGlobalPlus    "hiddenApertureAngle"     "Angle"       "" "";
+                liquidShowFloatGlobalPlus    "hiddenApertureRoundness" "Roundness"   "" "";
+                liquidShowFloatGlobalPlus    "hiddenApertureDensity"   "Density"     "" "";
+              setParent ..;
+            setParent ..;
+            frameLayout -bs "etchedIn" -l "Shutter Opening" -cll true -cl true;
+              columnLayout -adj true;
+                liquidShowFloatGlobalPlus "hiddenShutterOpeningOpen"   "Open"  "" "";
+                liquidShowFloatGlobalPlus "hiddenShutterOpeningClose"  "Close" "" "";
+              setParent ..;
+            setParent ..;
+            // end PRMAN 13
             frameLayout -bs "etchedIn" -l "Micro-Polygon Cache" -cll true -cl true;
               columnLayout -adj true;
                 liquidShowBoolGlobal    "hiddenMpCache"     "Enable";
@@ -2145,6 +2161,14 @@ global proc liquidHiderOptions_buildIt( string $prefix )
                 liquidShowStringGlobal  "hiddenMpCacheDir"  "Cache Dir" $prefix;
               setParent ..;
             setParent ..;
+            // PRMAN 13
+            frameLayout -bs "etchedIn" -l "Sigma Hiding" -cll true -cl true;
+              columnLayout -adj true;
+                liquidShowBoolGlobal      "hiddenSigmaHiding"   "Enable";
+                liquidShowFloatGlobalPlus  "hiddenSigmaBlur"     "Sigma Blur" "" "";
+              setParent ..;
+            setParent ..;
+            // end PRMAN 13
           setParent ..;
           columnLayout -e -vis true $theLayout;
         }
