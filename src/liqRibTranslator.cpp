@@ -952,7 +952,8 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       LIQCHECKSTATUS(status, "error in -samples parameter");
     } else if ((arg == "-rnm") || (arg == "-ribName")) {
       LIQCHECKSTATUS(status, "error in -ribName parameter");  i++;
-      liqglo_sceneName = args.asString( i, &status );
+      MString parsingString = args.asString( i, &status );
+      liqglo_sceneName = parseString( parsingString );
       LIQCHECKSTATUS(status, "error in -ribName parameter");
     } else if ((arg == "-pd") || (arg == "-projectDir")) {
       LIQCHECKSTATUS(status, "error in -projectDir parameter");  i++;
