@@ -244,9 +244,8 @@ global proc liquidSlBuildLifCmdList()
 
   global string $gLiquidSlShaderFile;
   global string $gLifCmdList[];
-  global string $gLifGrpCmd[];
 
-  clear $gLifGrpCmd;
+  clear $gLifCmdList;
 
   string $shaderType = liquidSlShaderType();
 
@@ -255,6 +254,11 @@ global proc liquidSlBuildLifCmdList()
 
   int $i = 0;
   int $guiSize = ( liquidLifGuiSize() )? liquidLifGuiSize() : liquidSlNumParams();
+
+  // get the output filter mask from the liquidGlobals.
+  int $filterOutputParams = `getAttr liquidGlobals.shadersIgnoreOutputParams`;
+  string $outputFilter = strip( `getAttr liquidGlobals.shadersOutputParamsFilter` );
+  if ( $outputFilter == "" ) $outputFilter = "^_*";
 
   string $tmpList[];
 
@@ -283,21 +287,29 @@ global proc liquidSlBuildLifCmdList()
         break;
 
       case "float":
-        $gLifCmdList[$i] = ( "liquidAE_LifFloat2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
+        if ( $filterOutputParams && liquidLifParamIsOutput($i) && match( $outputFilter, $paramName) == "" ) {
+          //trace ("Lif skip : "+$paramName+" ( \""+$outputFilter+"\" )");
+        } else $gLifCmdList[$i] = ( "liquidAE_LifFloat2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
         break;
 
       case "string":
-        $gLifCmdList[$i] = ("liquidAE_LifString2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
+        if ( $filterOutputParams && liquidLifParamIsOutput($i) && match( $outputFilter, $paramName) == "" ) {
+          //trace ("Lif skip : "+$paramName+" ( \""+$outputFilter+"\" )");
+        } else $gLifCmdList[$i] = ("liquidAE_LifString2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
         break;
 
       case "color":
-        $gLifCmdList[$i] = ( "liquidAE_LifColor2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
+        if ( $filterOutputParams && liquidLifParamIsOutput($i) && match( $outputFilter, $paramName) == "" ) {
+          //trace ("Lif skip : "+$paramName+" ( \""+$outputFilter+"\" )");
+        } else $gLifCmdList[$i] = ( "liquidAE_LifColor2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
         break;
 
       case "point":
       case "vector":
       case "normal":
-        $gLifCmdList[$i] = ( "liquidAE_LifVector2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
+        if ( $filterOutputParams && liquidLifParamIsOutput($i) && match( $outputFilter, $paramName) == "" ) {
+          //trace ("Lif skip : "+$paramName+" ( \""+$outputFilter+"\" )");
+        } else $gLifCmdList[$i] = ( "liquidAE_LifVector2( \""+$paramName+"\", "+$argArrayLen+", \""+$argSubType+"\", \""+$label+"\", {\""+stringArrayToString( $range, "\", \"")+"\"}, \""+$description+"\", "+$channelBox+" );");
         break;
 
       default:
@@ -530,6 +542,26 @@ global proc string liquidLifParamName( int $i )
 
   return liquidSlParamName( $i );
 }
+
+
+/**
+ *
+ *  \return the parameter's output state for a given index.
+ */
+global proc int liquidLifParamIsOutput( int $i )
+{
+  if ( liquidLifIsAvailable() ) {
+
+    int $guiOrder = liquidLifGetGuiOrder($i);
+    if ( $guiOrder >= liquidSlNumParams() ) return 0;
+
+    return liquidSlParamIsOutput( $guiOrder );
+
+  }
+
+  return liquidSlParamIsOutput( $i );
+}
+
 
 
 /**

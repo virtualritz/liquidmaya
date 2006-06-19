@@ -326,7 +326,6 @@ global proc liquidSlParseSlo( string $sloFile )
     string $slInfo = `getAttr liquidGlobals.shaderInfo`;
     if ( $slInfo == "" ) error ("Liquid : Please load a renderer Preset or fill the field in RenderGlobals>Renderer>ShaderInfo !");
     string $cmd = $slInfo + " \"" + $sloFile + "\"";
-    print $cmd;
     int $fid = `popen $cmd "r"`;
 
 
