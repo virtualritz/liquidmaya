@@ -166,9 +166,9 @@ liqRibMayaSubdivisionData::liqRibMayaSubdivisionData( MObject mesh )
 #if defined(PRMAN) || defined(DELIGHT) // face/vertex format, which is desireable
   MDoubleArray uVal, vVal;
   MDoubleArray uMap, vMap;
-  for( unsigned i = 0; i < npolys; i++ ) {
+  for( unsigned ii = 0; ii < npolys; ii++ ) {
     MUint64 index;
-    MFnSubdNames::toMUint64( index, i, 0, 0, 0, 0 );
+    MFnSubdNames::toMUint64( index, ii, 0, 0, 0, 0 );
     fnSurf.polygonGetVertexUVs( index, uVal, vVal );
     for( unsigned j = 0; j < uVal.length(); j++ ) {
       uMap.append( uVal[j] );
@@ -206,13 +206,13 @@ liqRibMayaSubdivisionData::liqRibMayaSubdivisionData( MObject mesh )
   }
     
   stTexCordParam = stTexCordPair.getTokenFloatArray();
-  for( unsigned i = 0; i < uMap.length(); i++ ) {
-    stTexCordPair.setTokenFloat( i, 0, uMap[ i ] );
-    stTexCordPair.setTokenFloat( i, 1, vMap[ i ] );
+  for( unsigned k = 0; k < uMap.length(); k++ ) {
+    stTexCordPair.setTokenFloat( k, 0, uMap[ k ] );
+    stTexCordPair.setTokenFloat( k, 1, vMap[ k ] );
 
     if( liqglo_outputMeshUVs ) {
-      pFaceVertexSPointer->setTokenFloat( i, uMap[ i ] );
-      pFaceVertexTPointer->setTokenFloat( i, vMap[ i ] );
+      pFaceVertexSPointer->setTokenFloat( k, uMap[ k ] );
+      pFaceVertexTPointer->setTokenFloat( k, vMap[ k ] );
     }
   }
 #else // #if defined(PRMAN) || defined(DELIGHT)
