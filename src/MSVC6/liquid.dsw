@@ -1,10 +1,15 @@
 Microsoft Developer Studio Workspace File, Format Version 6.00
 
+
 # WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
 
 
 
+
+
 ###############################################################################
+
+
 
 
 
@@ -12,23 +17,35 @@ Project: "displayDriver3delight"=.\displayDriver3delight\displayDriver3delight.d
 
 
 
+
+
 Package=<5>
+
 
 {{{
 
+
 }}}
+
+
 
 
 
 Package=<4>
 
+
 {{{
+
 
 }}}
 
 
 
+
+
 ###############################################################################
+
+
 
 
 
@@ -36,23 +53,35 @@ Project: "displayDriverAqsis"=.\displayDriverAqsis\displayDriverAqsis.dsp - Pack
 
 
 
+
+
 Package=<5>
+
 
 {{{
 
+
 }}}
+
+
 
 
 
 Package=<4>
 
+
 {{{
+
 
 }}}
 
 
 
+
+
 ###############################################################################
+
+
 
 
 
@@ -60,23 +89,35 @@ Project: "displayDriverPixie"=.\displayDriverPixie\displayDriverPixie.dsp - Pack
 
 
 
+
+
 Package=<5>
+
 
 {{{
 
+
 }}}
+
+
 
 
 
 Package=<4>
 
+
 {{{
+
 
 }}}
 
 
 
+
+
 ###############################################################################
+
+
 
 
 
@@ -84,23 +125,35 @@ Project: "liquid"=.\liquid.dsp - Package Owner=<4>
 
 
 
+
+
 Package=<5>
+
 
 {{{
 
+
 }}}
+
+
 
 
 
 Package=<4>
 
+
 {{{
+
 
 }}}
 
 
 
+
+
 ###############################################################################
+
+
 
 
 
@@ -108,23 +161,35 @@ Global:
 
 
 
+
+
 Package=<5>
+
 
 {{{
 
+
 }}}
+
+
 
 
 
 Package=<3>
 
+
 {{{
+
 
 }}}
 
 
 
+
+
 ###############################################################################
+
+
 
 
 

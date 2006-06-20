@@ -103,7 +103,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "$(MAYA_LOCATION)/include" /I "$(PIXIEHOME)/include" /D "NDEBUG" /D "PIXIE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm600 /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "$(MAYA_LOCATION)/include" /I "$(DELIGHT)/include" /D "PIXIE" /D "MSVC6" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm800 /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "$(MAYA_LOCATION)/include" /I "$(DELIGHT)/include" /D "DELIGHT" /D "MSVC6" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /YX /FD /Zm800 /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
