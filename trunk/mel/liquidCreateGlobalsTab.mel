@@ -34,11 +34,10 @@
 //  Returns:
 //
 
-
 global proc liquidCreateMayaGlobalsTabContent( string $prefix )
 {
   string $theTabLayout = ( $prefix + "liquidUnifiedRenderGlobalsMainTabLayout" );
-
+  
   if ( `tabLayout -q -ex $theTabLayout` ) {
 
     string $selected[] = `tabLayout -q -tabLabel $theTabLayout`;
@@ -74,14 +73,6 @@ global proc liquidCreateMayaGlobalsTab( string $prefix, string $name )
 
 global proc liquidCreateGlobalsTab()
 {
-  string $currentParent = `setParent -q`;
-
-  if ( !liquidGlobalsExists() ) liquidCreateGlobals();
-
-  // find out if we are going to display the masterLayer's globals or regular globals
-  string $prefix = "";
-  if ( gmatch( $currentParent, "unifiedRenderGlobalsWindow|rgMainForm|tabForm|masterLayerTabLayout*") ) $prefix = "masterLayer_";
-
   // make sure the maya globals are correctly initialized.
   if ( !`layout -q -ex commonTabColumn` ) {
     string $parent = `setParent -q`;
@@ -90,14 +81,21 @@ global proc liquidCreateGlobalsTab()
     setCurrentRenderer liquid;
     setParent $parent;
   }
+  
+  string $currentParent = `setParent -q`;
+
+  if ( !liquidGlobalsExists() ) liquidCreateGlobals();
+
+  // find out if we are going to display the masterLayer's globals or regular globals
+  string $prefix = `editRenderLayerGlobals -q -currentRenderLayer`;
 
   // push the correct templates to create widgets
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
 
   // add the presets
-  menuBarLayout liquidGlobalsMenuBar;
-    menu -label "Presets" -helpMenu true -p liquidGlobalsMenuBar liquidGlobalsPresetMenu;
+  menuBarLayout ($prefix + "_liquidGlobalsMenuBar");
+    menu -label "Presets" -helpMenu true -p ($prefix + "_liquidGlobalsMenuBar") liquidGlobalsPresetMenu;
       menuItem -label "Save..." -c liquidSavePreset -p liquidGlobalsPresetMenu liquidGlobalsPresetMenuSave;
       menuItem -label "Save as Default" -enable false -p liquidGlobalsPresetMenu ;
       menuItem -label "Reset to Default" -enable false -p liquidGlobalsPresetMenu ;
@@ -132,7 +130,6 @@ global proc liquidCreateGlobalsTab()
   liquidCreateMayaGlobalsTab( $prefix, "Renderer" );
   liquidCreateMayaGlobalsTab( $prefix, "Fluid" );
 
-
   // set up the tab so that it may resize and auto-build.
   if ( `layout -q -ex liquidTabLayout` ) tabLayout -e -cc $cmd -sc $cmd -dcc $cmd liquidTabLayout;
   tabLayout -e -psc ("liquidCreateMayaGlobalsTabContent( \""+$prefix+"\" );") $theTabLayout;
@@ -150,7 +147,21 @@ global proc liquidCreateGlobalsTab()
 global proc liquidUpdateMayaGlobals()
 {
   if ( `layout -q -ex liquidCommonTab` ) layout -e -m false -vis false liquidCommonTab;
-
+ 
+  string $prefix = `editRenderLayerGlobals -q -currentRenderLayer`;
+  string $theTabLayout = ( $prefix + "liquidUnifiedRenderGlobalsMainTabLayout" );
+  if ( !`layout -q -ex $theTabLayout`) {
+  	// Will be called when switching layers
+  	
+	string $cmd = "{\n"+
+				"string $oldParent = `setParent -q`;\n"+
+				"setParent liquidTabColumn;\n"+
+			  	"evalDeferred liquidCreateGlobalsTab;\n"+
+				"setParent $oldParent;\n"+
+				"}";
+	evalDeferred $cmd;
+  }
+  
   float $resx = `getAttr liquidGlobals.xResolution`;
   float $resy = `getAttr liquidGlobals.yResolution`;
   setAttr defaultResolution.width $resx;
