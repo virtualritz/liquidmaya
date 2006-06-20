@@ -52,7 +52,16 @@ global proc string liquidGetCurrentRenderLayerName()
 	*/
 	
 	string $layerName = `editRenderLayerGlobals -q -currentRenderLayer`;
-	return `substituteAllString $layerName " " ""`;
+	string $layerNameResult = `substituteAllString $layerName " " ""`;
+	
+	// Work round maya changing it's mind about which layout we attach to
+	// depending on the number of render layers.  Lie about the name of the layer
+	// when we have more than one and it's the master
+	if ((0 == `getAttr ($layerName + ".identification")`) && (size(`getAttr renderLayerManager.renderLayerId`) > 1)) {
+		$layerNameResult = "masterLayer";
+	}
+	
+	return $layerNameResult;
 }
 
 global proc liquidSwitchGlobalsRenderLayer()
@@ -149,7 +158,10 @@ global proc liquidCreateGlobalsTab()
   string $ourUberLayout = ($prefix+"liquidUberLayout");
   
   // bail if already created
-  if (`layout -q -ex $ourUberLayout`) return;
+  if (`layout -q -ex $ourUberLayout`) {
+  	return;
+  }
+  
   formLayout $ourUberLayout;
   
   // add the presets
