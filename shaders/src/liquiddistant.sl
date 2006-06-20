@@ -20,8 +20,8 @@ light liquiddistant(
     if ( shadowname == "raytrace" ) factor = 0.2;
     else {
       uniform float shadowsize[2];
-      //textureinfo( shadowname, "resolution", shadowsize );
-      factor = 1/1024;//shadowsize[0];
+      textureinfo( shadowname, "resolution", shadowsize );
+      factor = 1/shadowsize[0];
     }
   }
 
@@ -41,7 +41,7 @@ light liquiddistant(
 #else
      Cl *= color( mix( comp(lightcolor,0), comp(shadowcolor,0), comp( __shadow, 0 )),
 				  mix( comp(lightcolor,1), comp(shadowcolor,1), comp( __shadow, 1 )),
-				  mix( comp(lightcolor,2), comp(shadowcolor,3), comp( __shadow, 2 ))	);
+				  mix( comp(lightcolor,2), comp(shadowcolor,2), comp( __shadow, 2 ))	);
 #endif
   }
 

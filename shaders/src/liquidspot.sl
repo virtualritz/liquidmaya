@@ -100,8 +100,9 @@ light liquidspot(
 
       /* W-I-P: add barndoor support */
     }
-	
-	if( shadowname != "" ) {
+
+
+    if( shadowname != "" ) {
       uniform float shadowsize[2];
       if ( shadowname == "raytrace" ) shadowsize[0] = 5;
       else textureinfo( shadowname, "resolution", shadowsize );
@@ -116,7 +117,7 @@ light liquidspot(
 #else
     Cl *= color( mix( comp(lightcolor,0), comp(shadowcolor,0), comp( __shadow, 0 )),
 				 mix( comp(lightcolor,1), comp(shadowcolor,1), comp( __shadow, 1 )),
-				 mix( comp(lightcolor,2), comp(shadowcolor,3), comp( __shadow, 2 ))	);
+				 mix( comp(lightcolor,2), comp(shadowcolor,2), comp( __shadow, 2 ))	);
 #endif
   }
 }
