@@ -584,7 +584,11 @@ global proc liquidCreateScriptJobs()
   string $jobs[] = `scriptJob -lj`;
   for ( $j in $jobs ) {
     if ( gmatch( $j, "*liquidLargeFieldUpdater*") ) scriptJob -kill (int(match("[0-9]+", $j))) -force;
+    if ( gmatch( $j, "*renderLayerManagerChange*") ) scriptJob -kill (int(match("[0-9]+", $j))) -force;
   }
+  
+  // switch layouts when the render layer changes
+  scriptJob -event "renderLayerManagerChange" "eval(\"liquidSwitchGlobalsRenderLayer\")" -protected;
   scriptJob -event "renderLayerChange" "eval(\"liquidLargeFieldUpdater\")" -protected;
 }
 
