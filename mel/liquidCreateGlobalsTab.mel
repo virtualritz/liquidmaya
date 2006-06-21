@@ -81,11 +81,11 @@ global proc liquidSwitchGlobalsRenderLayer()
 	  // Unmanage all the other uberLayouts
 	  for ($i = 0; $i < size($otherLayerTabLayouts); $i++)
 	  {
-		formLayout -edit -manage false $otherLayerTabLayouts[$i];
+		columnLayout -edit -manage false $otherLayerTabLayouts[$i];
 	  }
 	  if ( `layout -q -ex $ourUberLayout`) {
 		  // Except us, if we exist, if not, we'll be created soon
-		  formLayout -edit -manage true $ourUberLayout;
+		  columnLayout -edit -manage true $ourUberLayout;
 	  }
 	
 	  setParent $prevParent;
@@ -163,7 +163,7 @@ global proc liquidCreateGlobalsTab()
   	return;
   }
   
-  formLayout $ourUberLayout;
+  columnLayout -adjustableColumn true $ourUberLayout;
   
   // add the presets
   menuBarLayout ($prefix + "_liquidGlobalsMenuBar");
@@ -173,7 +173,6 @@ global proc liquidCreateGlobalsTab()
       menuItem -label "Reset to Default" -enable false -p liquidGlobalsPresetMenu ;
       menuItem -divider true -p liquidGlobalsPresetMenu ;
       liquidAddPresets();
-      setParent ..;
   
   // create the main tab layout
   columnLayout -adjustableColumn true ($prefix+"liquidTabColumn");
@@ -215,20 +214,17 @@ global proc liquidCreateGlobalsTab()
   setUITemplate -popTemplate;
   setUITemplate -popTemplate;
   
-  // exit the tab layout
-  setParent ..;
-  
-  // exit the uber layout
-  setParent ..;
-  
-   string $otherLayerTabLayouts[] = `formLayout -query -childArray $unifiedRendererTabName`;
+  // exit the layouts
+  setParent $unifiedRendererTabName;
+ 
+  string $otherLayerTabLayouts[] = `formLayout -query -childArray $unifiedRendererTabName`;
   // Unmanage all the other uberLayouts
   for ($i = 0; $i < size($otherLayerTabLayouts); $i++)
   {
-    formLayout -edit -manage false $otherLayerTabLayouts[$i];
+    columnLayout -edit -manage false $otherLayerTabLayouts[$i];
   }
   // Except us
-  formLayout -edit -manage true $ourUberLayout;
+  columnLayout -edit -manage true $ourUberLayout;
   
   setParent $currentParent;
 }
