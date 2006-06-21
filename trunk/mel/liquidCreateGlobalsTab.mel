@@ -135,6 +135,7 @@ global proc liquidCreateGlobalsTab()
   if ( !`layout -q -ex commonTabColumn` ) {
     setCurrentRenderer mayaSoftware;
     addRendererTabsToGlobalsWindow mayaSoftware;
+    addMasterLayerTabsToGlobalsWindow;				// This one creates the common tab
     setCurrentRenderer liquid;
   }
 
