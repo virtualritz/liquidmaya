@@ -159,6 +159,14 @@ global proc string liquidmayaRender(int $resolution0, int $resolution1, int $doS
 
   liqShowRV();
 
+  // Ensure we dont let maya test resolution optionvar bug get us
+  if (`optionVar -ex "renderViewTestResolution"`) {
+  	// seems to get set null on render abort, clear it
+	if (`optionVar -q "renderViewTestResolution"` == 0) {
+	  optionVar -remove "renderViewTestResolution";
+	 }
+  }
+  
   string $editor = `liqGetRVPanel`;
   liqRenderViewMenu( $editor );
   renderWindowEditor -e -dbf $editor;
