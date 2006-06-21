@@ -8,6 +8,11 @@
  */
 global proc int liquidmayaHasCommonGlobalValue( string $global )
 {
+  if ( !`liquidGlobalsExists` ) {
+    string $sel[] = `ls -sl`;
+    eval("liquidCreateGlobals();");
+    select $sel;
+  }
 
   int 	$isSupported = true;
 
@@ -43,6 +48,12 @@ global proc int liquidmayaHasCommonGlobalValue( string $global )
 global proc string liquidmayaGetCommonGlobalValue( string $global)
 {
   string 	$value;
+
+  if ( !`liquidGlobalsExists` ) {
+    string $sel[] = `ls -sl`;
+    eval("liquidCreateGlobals();");
+    select $sel;
+  }
 
   switch ($global)
   {
@@ -107,6 +118,12 @@ global proc liquidmayaSetCommonGlobalValue( string $global, string $value )
 
   int $intValue;
   float $floatValue;
+
+  if ( !`liquidGlobalsExists` ) {
+    string $sel[] = `ls -sl`;
+    eval("liquidCreateGlobals();");
+    select $sel;
+  }
 
   switch ($global) {
     case "animation":
