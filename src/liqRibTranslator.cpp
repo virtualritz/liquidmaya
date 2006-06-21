@@ -5899,8 +5899,10 @@ MStatus liqRibTranslator::objectBlock()
 
     bool writeShaders = true;
 
-    if ( liqglo_currentJob.isShadow && ( !m_outputShadersInShadows ||
-         ( liqglo_currentJob.deepShadows && !m_outputShadersInDeepShadows ) ) )
+    if ( liqglo_currentJob.isShadow && 
+    	 ( ( !liqglo_currentJob.deepShadows && !m_outputShadersInShadows )			||
+           ( liqglo_currentJob.deepShadows && !m_outputShadersInDeepShadows ) )
+        )
       writeShaders = false;
 
 
