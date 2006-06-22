@@ -5062,7 +5062,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
                      const_cast<char *>( liqglo_currentJob.format.asChar() ),
                      (RtToken)liqglo_currentJob.imageMode.asChar(),
                      "volumeinterpretation",
-                     ( liqglo_currentJob.shadowVolumeInterpretation == 2 ? &viContinuous : &viDiscrete ),
+                     ( liqglo_currentJob.shadowVolumeInterpretation == 1 ? &viContinuous : &viDiscrete ),
                      RI_NULL );
 #else
           // Deep shadows cannot be the primary output driver in PRMan & co.
@@ -5077,7 +5077,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
                      const_cast<char *>( liqglo_currentJob.format.asChar() ),
                      (RtToken)liqglo_currentJob.imageMode.asChar(),
                      "uniform string volumeinterpretation",
-                     ( liqglo_currentJob.shadowVolumeInterpretation == 2 ? &viContinuous : &viDiscrete ),
+                     ( liqglo_currentJob.shadowVolumeInterpretation == 1 ? &viContinuous : &viDiscrete ),
                      RI_NULL );
 #endif
         }
@@ -5937,7 +5937,7 @@ MStatus liqRibTranslator::objectBlock()
 
     bool writeShaders = true;
 
-    if ( liqglo_currentJob.isShadow && 
+    if ( liqglo_currentJob.isShadow &&
     	 ( ( !liqglo_currentJob.deepShadows && !m_outputShadersInShadows )			||
            ( liqglo_currentJob.deepShadows && !m_outputShadersInDeepShadows ) )
         )
