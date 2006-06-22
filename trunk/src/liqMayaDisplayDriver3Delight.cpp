@@ -176,7 +176,7 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 PtDspyError
 DspyImageQuery(PtDspyImageHandle pvImage,
                PtDspyQueryType querytype,
-               int datalen,
+               size_t datalen,
                void *data) {
 	if ((datalen == 0) || (NULL == data))
 		return PkDspyErrorBadParams;
