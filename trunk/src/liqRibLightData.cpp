@@ -830,7 +830,7 @@ void liqRibLightData::write()
                                 "float lightsamples",   &shadowSamples,
                                 "float doublesided",    &bothSidesEmit,
                                 "string shadowname",    &shadowname,
-                                "float __nonspecular",  &nonSpecular,
+                                "color shadowcolor",    &shadowColor,
                                 RI_NULL );
         break;
       }
