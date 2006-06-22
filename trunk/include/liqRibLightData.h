@@ -78,6 +78,7 @@ private:
   RtInt         raySamples;
   RtFloat       shadowRadius;
   bool          excludeFromRib;
+  RtFloat       bothSidesEmit;
   //bool          outputLightInShadow;
   MString       userShadowName;
   MString       lightName;

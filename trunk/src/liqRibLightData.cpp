@@ -47,9 +47,11 @@ extern "C" {
 #include <maya/MDoubleArray.h>
 #include <maya/MTransformationMatrix.h>
 #include <maya/MFnSpotLight.h>
+#include <maya/MFnAreaLight.h>
 #include <maya/MColor.h>
 #include <maya/MString.h>
 #include <maya/MStringArray.h>
+
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
@@ -126,7 +128,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 
   // check to see if the light is using raytraced shadows
 #if defined ( DELIGHT ) || defined ( PRMAN ) || defined( PIXIE )
-  lightDepNode.findPlug( MString( "useRayTraceShadows" ) ).getValue( rayTraced );
+  rayTraced = fnLight.useRayTraceShadows();
   if( rayTraced ) {
     usingShadow = true;
     int raysamples = 1;
@@ -534,6 +536,8 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
     lightType  = MRLT_Rman;
   } else {
 
+    // DIRECT MAYA LIGHTS SUPPORT
+
     if ( light.hasFn( MFn::kAmbientLight ) ) {
       lightType      = MRLT_Ambient;
 
@@ -596,6 +600,30 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
         shadowSamples    = fnSpotLight.numShadowSamples( &status );
         shadowRadius     = fnSpotLight.shadowRadius( &status );
       }
+    } else if ( light.hasFn( MFn::kAreaLight ) ) {
+      MFnAreaLight fnAreaLight( light );
+      lightType      = MRLT_Area;
+      decay          = fnAreaLight.decayRate();
+      if ( liqglo_doShadows && usingShadow ) {
+        if ( !rayTraced ) {
+          if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" ) ) {
+            shadowName   = autoShadowName();
+          }
+        } else {
+          shadowName = "raytrace";
+        }
+        shadowFilterSize = fnAreaLight.depthMapFilterSize( &status );
+        shadowBias       = fnAreaLight.depthMapBias( &status );
+        shadowSamples    = fnAreaLight.numShadowSamples( &status );
+        shadowRadius     = fnAreaLight.shadowRadius( &status );
+      }
+      MPlug xtraPlug = lightDepNode.findPlug( "liqBothSidesEmit", &status );
+      bool bothsides = false;
+      if ( status == MS::kSuccess ) {
+        xtraPlug.getValue( bothsides );
+      }
+      bothSidesEmit = (bothsides == true)? 1.0:0.0;
+
     }
   }
 }
@@ -782,8 +810,28 @@ void liqRibLightData::write()
         handle = RiLightSourceV( shaderName, tokenPointerArray.size(), tokenArray, pointerArray );
         break;
       }
-      case MRLT_Area:
-      {
+      case MRLT_Area: {
+        RtString shadowname = const_cast< char* >( shadowName.asChar() );
+
+        MString coordsys = (lightName+"CoordSys");
+        RtString areacoordsys = const_cast< char* >( coordsys.asChar() );
+
+        MString areashader( getenv("LIQUIDHOME") );
+        areashader += "/shaders/liquidarea";
+
+        // if raytraced shadows are off, we get a negative value, so we correct it here.
+        if ( shadowSamples < 1 ) shadowSamples = 64.0f;
+
+        handle = RiLightSource( const_cast< char* >( areashader.asChar() ),
+                                "float intensity",      &intensity,
+                                "color lightcolor",     color,
+                                "float decay",          &decay,
+                                "string coordsys",      &areacoordsys,
+                                "float lightsamples",   &shadowSamples,
+                                "float doublesided",    &bothSidesEmit,
+                                "string shadowname",    &shadowname,
+                                "float __nonspecular",  &nonSpecular,
+                                RI_NULL );
         break;
       }
       case MRLT_Unknown:

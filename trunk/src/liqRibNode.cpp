@@ -143,8 +143,8 @@ liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
   rib.readArchive           = "";
   rib.delayedReadArchive    = "";
 
-  invisible = false;
-  ignoreShapes = false;
+  invisible                 = false;
+  ignoreShapes              = false;
 }
 
 /**
