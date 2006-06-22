@@ -19,6 +19,7 @@ liquidarea(
             uniform float   lightsamples  = 16;
             uniform float   doublesided   = 0;
             uniform string  shadowname    = "";
+            uniform color   shadowcolor   = 0;
 
             output uniform float __nonspecular          = 1;
             output varying color __shadow               = 0;
@@ -90,7 +91,7 @@ liquidarea(
             /* raytraced occlusion - only if the point is reasonnably lit */
             if ( shadowname == "raytrace" && (comp(c,0)+comp(c,1)+comp(c,2))>0.005  ) {
               __shadow = transmission(Ps, p);
-              c *= __shadow;
+              c *= mix( shadowcolor, color(1), __shadow);
             }
             Cl += c;
           }
