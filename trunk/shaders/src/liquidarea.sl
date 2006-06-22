@@ -76,7 +76,7 @@ liquidarea(
           /* luminaire sidedness */
           if ( doublesided == 0 ) {
             Nl = ( p - point "shader" ((x - 0.5) * xsize, (y - 0.5) * ysize, 1) ) ;
-            orient = clamp(Nl.len, 0, 1);
+            orient = clamp( (Nl.len)/dist, 0, 1);
           }
 
           /* Compute light from point p to surface point Ps */
