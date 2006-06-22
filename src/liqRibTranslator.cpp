@@ -107,6 +107,7 @@ static const char *LIQUIDVERSION =
 #include <maya/MFnStringArrayData.h>
 #include <maya/MFnIntArrayData.h>
 #include <maya/MDistance.h>
+#include <maya/MDagModifier.h>
 
 
 // Liquid headers
@@ -4357,6 +4358,43 @@ int count =0;
 
         // scanScene: if it's a light then insert it into the hash table
         if ( currentNode.hasFn( MFn::kLight ) ) {
+
+          if ( currentNode.hasFn( MFn::kAreaLight ) ) {
+            // add a coordSys node if necessary
+            MStatus status;
+            bool coordsysExists = false;
+            // get the coordsys name
+            MFnDependencyNode areaLightDep( currentNode );
+            MString coordsysName = areaLightDep.name()+"CoordSys";
+            // get the transform
+            MObject transform = path.transform();
+            // check the coordsys does not exist yet under the transform
+            MFnDagNode transformDag( transform );
+            int numChildren = transformDag.childCount();
+            if ( numChildren > 1 ) {
+              for ( unsigned int i=0; i<numChildren; i++ ) {
+                MObject childObj = transformDag.child( i, &status );
+                if ( status == MS::kSuccess && childObj.hasFn( MFn::kLocator ) ) {
+                  MFnDependencyNode test(childObj);
+                  if ( test.name() == coordsysName ) coordsysExists = true;
+                }
+              }
+            }
+            if ( !coordsysExists ) {
+              // create the coordsys
+              MDagModifier coordsysNode;
+              MObject coordsysObj  = coordsysNode.createNode( "liquidCoordSys", transform, &status );
+              if ( status == MS::kSuccess ) {
+                // rename node to match light name
+                coordsysNode.doIt();
+                if ( status == MS::kSuccess ) {
+                  MFnDependencyNode coordsysDep( coordsysObj );
+                  coordsysDep.setName( coordsysName );
+                }
+              }
+            }
+          }
+
           if ( ( sample > 0 ) && isObjectMotionBlur( path )) {
             htable->insert(path, lframe, sample, MRT_Light,count++ );
           } else {

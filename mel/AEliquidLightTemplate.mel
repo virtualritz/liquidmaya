@@ -364,3 +364,12 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
   layout -e -vis true "AEcontrolFormLayout";
 }
 
+
+
+
+global proc AEliquidAreaLight( string $node )
+{
+  editorTemplate -beginLayout "Liquid" -collapse true;
+    editorTemplate -label "Both Sides Emit" -addDynamicControl "liqBothSidesEmit";
+  editorTemplate -endLayout;
+}

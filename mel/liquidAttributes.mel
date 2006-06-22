@@ -1108,4 +1108,29 @@ global proc liquidDeleteIgnoreShapesAttribute()
   }
 }
 
+global proc liquidCreateAreaLightAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  print $nodes;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !objExists( ($currentNode+".liqBothSidesEmit") ) ) {
+      trace ("[liquid] "+$currentNode);
+      addAttr -ln "liqBothSidesEmit" -at bool -dv 0 $currentNode;
+    }
+  }
+}
+
+global proc liquidDeleteAreaLightAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( objExists( ($currentNode+".liqBothSidesEmit") ) ) {
+      deleteAttr ( $currentNode+".liqBothSidesEmit" );
+    }
+  }
+}
+
+
 
