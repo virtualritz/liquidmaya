@@ -1,4 +1,18 @@
+
+#ifdef PRMAN
 #include "/opt/pixar/RenderManProServer-13.0/lib/shaders/normals.h"
+#else
+
+normal shadingnormal(normal Ne){
+	normal Ns;
+	uniform float sides = 2;
+	attribute("Sides",sides);
+	if(sides == 2)	Ns = faceforward(normalize(Ne),I,Ne);
+	else			Ns = normalize(Ne);
+	return Ns;
+}
+
+#endif
 
 /*
  * Rectangle light, an example of a "pseudo area light".
