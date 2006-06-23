@@ -167,6 +167,7 @@ private: // Data
   liquidlong gridSize;
   liquidlong textureMemory;
   liquidlong eyeSplits;
+  float othreshold;
   bool renderAllCameras;   // Render all cameras, or only active ones
   bool ignoreFilmGate;
   double fov_ratio;

@@ -88,6 +88,7 @@ extern MString liqglo_currentNodeName;
 extern MString liqglo_currentNodeShortName;
 extern MString liqglo_shotName;
 extern MString liqglo_shotVersion;
+extern MString liqglo_layer;
 
 void liquidInfo( MString info )
 //
@@ -516,6 +517,10 @@ MString parseString( const MString & inputString )
         tokenString.clear();
       } else if ( tokenString == "VER" ) {
         constructedString += liqglo_shotVersion;
+        inToken = false;
+        tokenString.clear();
+      } else if ( tokenString == "LYR" ) {
+        constructedString += liqglo_layer;
         inToken = false;
         tokenString.clear();
       }
