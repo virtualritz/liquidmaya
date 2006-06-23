@@ -525,6 +525,7 @@ liqRibTranslator::liqRibTranslator()
   gridSize = 256;
   textureMemory = 2048;
   eyeSplits = 10;
+  othreshold = 0.996;
   liqglo_shutterTime = 0.5;
   shutterConfig = OPEN_ON_FRAME;
   m_blurTime = 1.0;
@@ -2037,6 +2038,9 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "limitsEyeSplits", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( eyeSplits );
   gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "limitsOThreshold", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( othreshold );
+  gStatus.clear();
 
   gPlug = rGlobalNode.findPlug( "cleanRib", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanRib );
@@ -2433,22 +2437,24 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   bool hashTableInited = false;
 
   // check if we need to switch to a specific render layer
+  // we do that here because we need to switch to the chosen layer first
+  // to be able to read overriden gloabsl and stuff...
   unsigned int argIndex = args.flagIndex( "lyr", "layer" );
   if (argIndex != MArgList::kInvalidArgIndex) {
     liqglo_layer = args.asString( argIndex+1, &status );
   }
 
-  // switch to the specified render layer
+  // get the name of the current render layer
   MString originalLayer;
+  if ( MGlobal::executeCommand( "editRenderLayerGlobals -q -currentRenderLayer;", originalLayer, false, false ) == MS::kFailure ) {
+    MString err = "Liquid : could not get the current render layer name !";
+    MGlobal::displayError( err );
+    cerr <<err<<" ABORTING"<<endl;
+    return MS::kFailure;
+  }
+
+  // switch to the specified render layer
   if ( liqglo_layer != "" ) {
-
-    if ( MGlobal::executeCommand( "editRenderLayerGlobals -q -currentRenderLayer;", originalLayer, false, false ) == MS::kFailure ) {
-      MString err = "Liquid : could not get the current render layer name !";
-      MGlobal::displayError( err );
-      cerr <<err<<" ABORTING"<<endl;
-      return MS::kFailure;
-    }
-
     MString cmd;
     cmd = "if ( `editRenderLayerGlobals -q -currentRenderLayer` != \"" + liqglo_layer + "\" ) editRenderLayerGlobals( \"-currentRenderLayer\", \"" + liqglo_layer + "\");";
     if (  MGlobal::executeCommand( cmd, false, false ) == MS::kFailure ) {
@@ -2457,7 +2463,10 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
       cerr <<err<<" ABORTING"<<endl;
       return MS::kFailure;
     }
-
+  } else {
+    // we fill liqglo_layer with current layer name
+    // to be able to substitute $LYR in strings.
+    liqglo_layer = originalLayer;
   }
 
   liquidRenderer.setRenderer();
@@ -4141,12 +4150,30 @@ MStatus liqRibTranslator::ribPrologue()
 
     // set any rib options
     //
-    if ( m_statistics != 0 ) RiOption( "statistics", "endofframe", ( RtPointer ) &m_statistics, RI_NULL );
-    if ( bucketSize != 0 ) RiOption( "limits", "bucketsize", ( RtPointer ) &bucketSize, RI_NULL );
-    if ( gridSize != 0 ) RiOption( "limits", "gridsize", ( RtPointer ) &gridSize, RI_NULL );
+    cout <<"stats = "<<m_statistics<<endl;
+    if ( m_statistics != 0 )  {
+      if ( m_statistics < 4 ) RiOption( "statistics", "endofframe", ( RtPointer ) &m_statistics, RI_NULL );
+      else {
+        cout <<"xml stats "<<endl;
+        int stats = 3;
+        RiOption( "statistics", "int endofframe", ( RtPointer ) &stats, RI_NULL );
+        MString xml("$PDIRstats.xml");
+        MString xmlout = parseString( xml );
+        RiArchiveRecord( RI_VERBATIM, "Option \"statistics\" \"xmlfilename\" [\"%s\"]\n", const_cast< char* > ( xmlout.asChar() ) );
+        MString css("file://%RMANTREE%/etc/rmStatsHtml_1.1.xml");
+        MString cssout = parseString( css );
+        RiArchiveRecord( RI_VERBATIM, "Option \"statistics\" \"stylesheet\" [\"%s\"]\n", const_cast< char* > ( cssout.asChar() ) );
+      }
+    }
+    if ( bucketSize != 0 )    RiOption( "limits", "bucketsize", ( RtPointer ) &bucketSize, RI_NULL );
+    if ( gridSize != 0 )      RiOption( "limits", "gridsize", ( RtPointer ) &gridSize, RI_NULL );
     if ( textureMemory != 0 ) RiOption( "limits", "texturememory", ( RtPointer) &textureMemory, RI_NULL );
     if ( liquidRenderer.supports_EYESPLITS ) {
       RiOption( "limits", "eyesplits", ( RtPointer ) &eyeSplits, RI_NULL );
+    }
+    {
+      RtColor othresholdC = {othreshold, othreshold, othreshold};
+      RiOption( "limits", "othreshold", &othresholdC, RI_NULL );
     }
 
     // set search paths
