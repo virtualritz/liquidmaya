@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+
+use strict;
+
+my $DestDir	= 	$ARGV[1];
+
+$DestDir =~ s|(.*)/$|$1|;
+
+# Backup the old version
+
+if ( -d ${DestDir} ) {
+	my $ext = 1;
+	while( -e "${DestDir}_old${ext}") {
+		$ext++;
+	}
+	system("mv \"${DestDir}\" \"${DestDir}_old${ext}\" ");
+}
+
+exit 0;
