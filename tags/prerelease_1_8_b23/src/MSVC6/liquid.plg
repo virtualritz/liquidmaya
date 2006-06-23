@@ -1,0 +1,344 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: liquid - Win32 Pixie Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\cedric\LOCALS~1\Temp\RSP7D.tmp" with contents
+[
+/nologo /MT /W3 /GR /GX /O2 /I "../../include" /I "C:\Program Files\Alias\Maya7.0/include" /I "C:\Program Files\Pixie/include" /D "NDEBUG" /D "PIXIE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIQUID_EXPORTS" /D "_BOOL" /D ulong="unsigned long" /D uint="unsigned int" /D "_WIN32" /D "REQUIRE_IOSTREAM" /Fp"../../bin/Pixie/win32/Release/Objects/liquid.pch" /YX /Fo"../../bin/Pixie/win32/Release/Objects/" /Fd"../../bin/Pixie/win32/Release/Objects/" /FD /Zm600 /c 
+"C:\Develop\liquidmaya\src\liqAttachPrefAttribute.cpp"
+"C:\Develop\liquidmaya\src\liqBucket.cpp"
+"C:\Develop\liquidmaya\src\liqCoordSysNode.cpp"
+"C:\Develop\liquidmaya\src\liqDisplacementNode.cpp"
+"C:\Develop\liquidmaya\src\liqExpression.cpp"
+"C:\Develop\liquidmaya\src\liqGetAttr.cpp"
+"C:\Develop\liquidmaya\src\liqGetSloInfo.cpp"
+"C:\Develop\liquidmaya\src\liqGlobalHelpers.cpp"
+"C:\Develop\liquidmaya\src\liqGlobalsNode.cpp"
+"C:\Develop\liquidmaya\src\liqJobList.cpp"
+"C:\Develop\liquidmaya\src\liqLightNode.cpp"
+"C:\Develop\liquidmaya\src\liqLightNodeBehavior.cpp"
+"C:\Develop\liquidmaya\src\liqMayaRenderView.cpp"
+"C:\Develop\liquidmaya\src\liqMemory.cpp"
+"C:\Develop\liquidmaya\src\liqNodeSwatch.cpp"
+"C:\Develop\liquidmaya\src\liqPreviewShader.cpp"
+"C:\Develop\liquidmaya\src\liqProcessLauncher.cpp"
+"C:\Develop\liquidmaya\src\liqRenderer.cpp"
+"C:\Develop\liquidmaya\src\liqRibboxNode.cpp"
+"C:\Develop\liquidmaya\src\liqRibClipPlaneData.cpp"
+"C:\Develop\liquidmaya\src\liqRibCoordData.cpp"
+"C:\Develop\liquidmaya\src\liqRibData.cpp"
+"C:\Develop\liquidmaya\src\liqRibGenData.cpp"
+"C:\Develop\liquidmaya\src\liqRibHT.cpp"
+"C:\Develop\liquidmaya\src\liqRibLightData.cpp"
+"C:\Develop\liquidmaya\src\liqRibLocatorData.cpp"
+"C:\Develop\liquidmaya\src\liqRibMayaSubdivisionData.cpp"
+"C:\Develop\liquidmaya\src\liqRibMeshData.cpp"
+"C:\Develop\liquidmaya\src\liqRibNode.cpp"
+"C:\Develop\liquidmaya\src\liqRibNuCurveData.cpp"
+"C:\Develop\liquidmaya\src\liqRibObj.cpp"
+"C:\Develop\liquidmaya\src\liqRibParticleData.cpp"
+"C:\Develop\liquidmaya\src\liqRibSubdivisionData.cpp"
+"C:\Develop\liquidmaya\src\liqRibSurfaceData.cpp"
+"C:\Develop\liquidmaya\src\liqRibTranslator.cpp"
+"C:\Develop\liquidmaya\src\liqShader.cpp"
+"C:\Develop\liquidmaya\src\liqSurfaceNode.cpp"
+"C:\Develop\liquidmaya\src\liqTokenPointer.cpp"
+"C:\Develop\liquidmaya\src\liquidPlug.cpp"
+"C:\Develop\liquidmaya\src\liqVolumeNode.cpp"
+"C:\Develop\liquidmaya\src\liqWriteArchive.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\cedric\LOCALS~1\Temp\RSP7D.tmp" 
+Creating temporary file "C:\DOCUME~1\cedric\LOCALS~1\Temp\RSP7E.tmp" with contents
+[
+image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib shell32.lib ri.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib /nologo /dll /incremental:no /pdb:"../../bin/Pixie/win32/Release/Objects/liquid.pdb" /machine:I386 /nodefaultlib:"libmmt.lib" /nodefaultlib:"libircmt.lib" /out:"../../bin/Pixie/win32/Release/liquid.mll" /implib:"../../bin/Pixie/win32/Release/Objects/liquid.lib" /libpath:"C:\Program Files\Alias\Maya7.0/lib" /libpath:"C:\Program Files\Pixie/lib" 
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqAttachPrefAttribute.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqBucket.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqCoordSysNode.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqDisplacementNode.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqExpression.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqGetAttr.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqGetSloInfo.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqGlobalHelpers.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqGlobalsNode.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqJobList.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqLightNode.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqLightNodeBehavior.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqMayaRenderView.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqMemory.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqNodeSwatch.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqPreviewShader.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqProcessLauncher.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRenderer.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibboxNode.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibClipPlaneData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibCoordData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibGenData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibHT.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibLightData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibLocatorData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibMayaSubdivisionData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibMeshData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibNode.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibNuCurveData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibObj.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibParticleData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibSubdivisionData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibSurfaceData.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqRibTranslator.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqShader.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqSurfaceNode.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqTokenPointer.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liquidPlug.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqVolumeNode.obj
+\Develop\liquidmaya\bin\Pixie\win32\Release\Objects\liqWriteArchive.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\cedric\LOCALS~1\Temp\RSP7E.tmp"
+<h3>Output Window</h3>
+Compiling...
+liqAttachPrefAttribute.cpp
+liqBucket.cpp
+liqCoordSysNode.cpp
+liqDisplacementNode.cpp
+liqExpression.cpp
+liqGetAttr.cpp
+liqGetSloInfo.cpp
+C:\Develop\liquidmaya\src\liqGetSloInfo.cpp(253) : warning C4800: 'SHADER_TYPE' : forcing value to bool 'true' or 'false' (performance warning)
+C:\Develop\liquidmaya\src\liqGetSloInfo.cpp(257) : warning C4800: 'unsigned int' : forcing value to bool 'true' or 'false' (performance warning)
+liqGlobalHelpers.cpp
+liqGlobalsNode.cpp
+liqJobList.cpp
+../../include\liqRenderScript.h(369) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+liqLightNode.cpp
+liqLightNodeBehavior.cpp
+liqMayaRenderView.cpp
+C:\Develop\liquidmaya\src\liqMayaRenderView.cpp(209) : warning C4003: not enough actual parameters for macro 'CHECKERRNO'
+liqMemory.cpp
+liqNodeSwatch.cpp
+liqPreviewShader.cpp
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(391) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(391) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(459) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(459) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(459) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(461) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(462) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(462) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(463) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(464) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(464) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(465) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(465) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(466) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(467) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(467) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(469) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(469) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(474) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(476) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(476) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(492) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(492) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(495) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(495) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(495) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(501) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(501) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(501) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(505) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(505) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(509) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(509) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(509) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(509) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(509) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(509) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(509) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(509) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(512) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(512) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(512) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(512) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(512) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(512) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(512) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(512) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(515) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(515) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(515) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(515) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(515) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(515) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(515) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(515) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(518) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(518) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(518) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(518) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(518) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(518) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(518) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(518) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(521) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(521) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(521) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(521) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(521) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(521) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(521) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(521) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(524) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(524) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(524) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(524) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(524) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(524) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(524) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(524) : warning C4305: 'initializing' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(528) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(528) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(529) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(529) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(529) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(533) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(533) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(535) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(535) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(535) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(539) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(539) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(541) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(541) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(541) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(545) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(545) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(547) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(547) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(547) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(551) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(556) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(556) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(557) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(557) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(561) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(561) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(563) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(563) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(569) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(569) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(570) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(570) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(574) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(574) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(576) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(576) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(584) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(585) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(585) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(585) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(589) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(591) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(591) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(591) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(597) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(598) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(598) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(598) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(602) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(604) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(604) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(604) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(610) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(615) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(615) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(616) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(616) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(620) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(620) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(622) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(622) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(628) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(628) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(629) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(629) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(633) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(633) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(635) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(635) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(643) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(645) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(645) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(645) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(649) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(651) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(651) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(651) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(657) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(659) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(659) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(659) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(663) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(665) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(665) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(665) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(695) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(695) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Develop\liquidmaya\src\liqPreviewShader.cpp(695) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+liqProcessLauncher.cpp
+liqRenderer.cpp
+C:\Develop\liquidmaya\src\liqRenderer.cpp(124) : warning C4305: 'argument' : truncation from 'class MStatus *' to 'bool'
+C:\Develop\liquidmaya\src\liqRenderer.cpp(124) : warning C4800: 'class MStatus *' : forcing value to bool 'true' or 'false' (performance warning)
+C:\Develop\liquidmaya\src\liqRenderer.cpp(153) : warning C4305: 'argument' : truncation from 'class MStatus *' to 'bool'
+C:\Develop\liquidmaya\src\liqRenderer.cpp(153) : warning C4800: 'class MStatus *' : forcing value to bool 'true' or 'false' (performance warning)
+C:\Develop\liquidmaya\src\liqRenderer.cpp(186) : warning C4305: 'argument' : truncation from 'class MStatus *' to 'bool'
+C:\Develop\liquidmaya\src\liqRenderer.cpp(186) : warning C4800: 'class MStatus *' : forcing value to bool 'true' or 'false' (performance warning)
+C:\Develop\liquidmaya\src\liqRenderer.cpp(213) : warning C4305: 'argument' : truncation from 'class MStatus *' to 'bool'
+C:\Develop\liquidmaya\src\liqRenderer.cpp(213) : warning C4800: 'class MStatus *' : forcing value to bool 'true' or 'false' (performance warning)
+liqRibboxNode.cpp
+liqRibClipPlaneData.cpp
+liqRibCoordData.cpp
+liqRibData.cpp
+liqRibGenData.cpp
+liqRibHT.cpp
+C:\Develop\liquidmaya\src\liqRibHT.cpp(125) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+C:\Develop\liquidmaya\src\liqRibHT.cpp(225) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+liqRibLightData.cpp
+C:\Develop\liquidmaya\src\liqRibLightData.cpp(157) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+liqRibLocatorData.cpp
+liqRibMayaSubdivisionData.cpp
+liqRibMeshData.cpp
+liqRibNode.cpp
+C:\Develop\liquidmaya\src\liqRibNode.cpp(155) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+C:\Develop\liquidmaya\src\liqRibNode.cpp(159) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+C:\Develop\liquidmaya\src\liqRibNode.cpp(1178) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+liqRibNuCurveData.cpp
+liqRibObj.cpp
+liqRibParticleData.cpp
+liqRibSubdivisionData.cpp
+liqRibSurfaceData.cpp
+liqRibTranslator.cpp
+../../include\liqRenderScript.h(369) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+C:\Develop\liquidmaya\src\liqRibTranslator.cpp(562) : warning C4305: '=' : truncation from 'const double' to 'float'
+liqShader.cpp
+C:\Develop\liquidmaya\src\liqShader.cpp(87) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+liqSurfaceNode.cpp
+liqTokenPointer.cpp
+C:\Develop\liquidmaya\src\liqTokenPointer.cpp(280) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+liquidPlug.cpp
+../../include\liqRenderScript.h(369) : warning C4002: too many actual parameters for macro 'LIQDEBUGPRINTF'
+liqVolumeNode.cpp
+liqWriteArchive.cpp
+Linking...
+   Creating library ../../bin/Pixie/win32/Release/Objects/liquid.lib and object ../../bin/Pixie/win32/Release/Objects/liquid.exp
+
+
+
+<h3>Results</h3>
+liquid.mll - 0 error(s), 191 warning(s)
+</pre>
+</body>
+</html>
