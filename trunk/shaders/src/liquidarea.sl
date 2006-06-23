@@ -105,7 +105,13 @@ liquidarea(
             /* raytraced occlusion - only if the point is reasonnably lit */
             if ( shadowname == "raytrace" && (comp(c,0)+comp(c,1)+comp(c,2))>0.005  ) {
               __shadow = transmission(Ps, p);
+			  #ifdef PRMAN
               c *= mix( shadowcolor, color(1), __shadow);
+			  #else
+			  c *= color(mix(comp(shadowcolor,0),1,comp(__shadow,0)),
+			  			 mix(comp(shadowcolor,1),1,comp(__shadow,1)),
+						 mix(comp(shadowcolor,2),1,comp(__shadow,2)));
+			  #endif
             }
             Cl += c;
           }
