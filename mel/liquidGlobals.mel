@@ -2200,7 +2200,7 @@ global proc liquidHiderOptions_buildIt( string $prefix )
       } else {
         if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
       }
-      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      if (!`os -win) {  tabLayout -e -h (`layout -q -h $theLayout`) $parent; }
       tabLayout -e -st $theLayout $parent;
       break;
     case 1:
@@ -2212,14 +2212,14 @@ global proc liquidHiderOptions_buildIt( string $prefix )
           setParent ..;
           columnLayout -e -vis true $theLayout;
         }
-        tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+        if (!`os -win) {  tabLayout -e -h (`layout -q -h $theLayout`) $parent; }
         tabLayout -e -st $theLayout $parent;
       }
       break;
     case 2:
       // Z BUFFER
       if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
-      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      if (!`os -win) {  tabLayout -e -h (`layout -q -h $theLayout`) $parent; }
       tabLayout -e -st $theLayout $parent;
       break;
     case 3:
@@ -2228,14 +2228,14 @@ global proc liquidHiderOptions_buildIt( string $prefix )
         if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true -vis false $theLayout;
           liquidShowIntGlobal     "raytraceFalseColor"    "False Color";
       } else if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
-      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      if (!`os -win) {  tabLayout -e -h (`layout -q -h $theLayout`) $parent; }
       tabLayout -e -st $theLayout $parent;
       columnLayout -e -vis true $theLayout;
       break;
     case 4:
       // OPENGL
       if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
-      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      if (!`os -win) {  tabLayout -e -h (`layout -q -h $theLayout`) $parent; }
       tabLayout -e -st $theLayout $parent;
       break;
     case 5:
@@ -2252,7 +2252,7 @@ global proc liquidHiderOptions_buildIt( string $prefix )
       } else if ( !`columnLayout -q -ex $theLayout` ) {
         columnLayout -adj true $theLayout;
       }
-      tabLayout -e -h (`layout -q -h $theLayout`) $parent;
+      if (!`os -win) {  tabLayout -e -h (`layout -q -h $theLayout`) $parent; }
       tabLayout -e -st $theLayout $parent;
       break;
     default:
