@@ -391,7 +391,7 @@ global proc liquidPreviewSwatchReplace ( string $nodeName, string $msg )
  */
 global proc string liquidAE_getShaderLayoutName( string $nodeType, string $rmanShaderLong )
 {
-  string $name = `substitute $rmanShaderLong "s/[\/\\.- ]*/_/g"`;
+  string $name = `substitute $rmanShaderLong "s/[\/\\. -]*/_/g"`;
   return ( $nodeType + basenameEx( $name ) );
 }
 
