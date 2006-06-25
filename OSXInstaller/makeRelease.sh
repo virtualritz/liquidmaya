@@ -4,6 +4,10 @@ echo "Make sure all the binaries"
 echo "Make sure all the display drivers"
 echo "Make sure all the shaders are compiled"
 
+rm -rf liquidmaya
+rm -rf liquidmaya_pixie
+rm -rf liquidmaya_3delight
+
 mkdir -p ./liquidmaya/plugin/7.0/
 cp -R ../bin/OSX/ ./liquidmaya/plugin/7.0/
 
@@ -49,3 +53,8 @@ rm ./liquidmaya_3delight/shaders/*.sdr		>&/dev/null
 rm ./liquidmaya_3delight/shaders/*.slo		>&/dev/null
 rm ./liquidmaya_3delight/plugin/7.0/liquid_pixie.lib
 rm -rf ./liquidmaya_3delight/displayDrivers/Pixie
+
+#/Developer/Tools/packagemaker -build -p ./installers -proj ./liquid_installer_pixie.pmproj -v
+#tar zcvf ./liquidmaya_pixie.pkg.tgz ./liquidmaya_pixie.pkg
+#/Developer/Tools/packagemaker -build -p ./installers -proj ./liquid_installer_3delight.pmproj -v
+#tar zcvf ./liquidmaya_3delight.pkg.tgz ./liquidmaya_3delight.pkg
