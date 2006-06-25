@@ -4172,8 +4172,10 @@ MStatus liqRibTranslator::ribPrologue()
       RiOption( "limits", "eyesplits", ( RtPointer ) &eyeSplits, RI_NULL );
     }
     {
+      #if defined(PRMAN) || defined(DELIGHT)
       RtColor othresholdC = {othreshold, othreshold, othreshold};
       RiOption( "limits", "othreshold", &othresholdC, RI_NULL );
+      #endif
     }
 
     // set search paths
@@ -4222,8 +4224,9 @@ MStatus liqRibTranslator::ribPrologue()
       } else {
         option = "shadow";
       }
+      #if defined(PRMAN) || defined(DELIGHT)
       RiOption("user", "uniform string pass", (RtPointer)&option, RI_NULL);
-
+	  #endif
     } else {
 
       RtString hiderName;
