@@ -288,19 +288,19 @@ proc string liquidSl_getParamDefault( int $fid, string $paramType, int $arraySiz
     switch ( $paramType )
     {
     case "string":
-        $default = getParamDefaultS( $fid, $arraySize );
+        $default = liquidSl_getParamDefaultS( $fid, $arraySize );
         break;
     case "float":
-        $default = getParamDefaultF( $fid, $arraySize );
+        $default = liquidSl_getParamDefaultF( $fid, $arraySize );
         break;
     case "matrix":
-        $default = getParamDefaultM( $fid, $arraySize );
+        $default = liquidSl_getParamDefaultM( $fid, $arraySize );
         break;
     case "color":
     case "point":
     case "vector":
     case "normal":
-        $default = getParamDefaultV( $fid, $arraySize );
+        $default = liquidSl_getParamDefaultV( $fid, $arraySize );
         break;
     default:
         // This should never be reached
