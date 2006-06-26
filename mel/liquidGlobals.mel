@@ -1059,7 +1059,7 @@ global proc liquidBuildDisplayDriverMenu()
 
 global proc liquidBuildRenderCameraMenu( string $prefix )
 {
-  popupMenu -e -deleteAllItems LG_RenderCameraMenuCtl;
+  popupMenu -e -deleteAllItems ($prefix + "LG_RenderCameraMenuCtl");
   int $i;
   string $cameras[] = `ls -cameras`;
   for ( $i=0; $i<size($cameras); $i++ ) {
@@ -1956,9 +1956,9 @@ global proc liquidGlobalsFrameTab( string $prefix )
       columnLayout -adj true ;
         rowLayout -nc 2 -cw2 362 20 -ct2 left left -cl2 left center LG_renderCameraL;
           liquidShowStringGlobal( "renderCamera", "Render Camera", $prefix );
-          iconTextButton -style "iconOnly" -w 19 -h 18 -mw 0 -mh 0 -image (liquidGetHome()+"/icons/liquidMenuButton.xpm") LG_RenderCameraButtonCtl;
+          iconTextButton -style "iconOnly" -w 19 -h 18 -mw 0 -mh 0 -image (liquidGetHome()+"/icons/liquidMenuButton.xpm") ($prefix + "LG_RenderCameraButtonCtl");
           setParent ..;
-          popupMenu -parent LG_RenderCameraButtonCtl -b 1 -pmc ( "liquidBuildRenderCameraMenu \""+$prefix+"\"" ) ($prefix+"LG_RenderCameraMenuCtl");
+          popupMenu -parent ($prefix + "LG_RenderCameraButtonCtl") -b 1 -pmc ( "liquidBuildRenderCameraMenu \""+$prefix+"\"" ) ($prefix+"LG_RenderCameraMenuCtl");
 
         if ( objExists( "liquidGlobals.rotateCamera" ) ) {
           liquidShowBoolGlobalPlus "rotateCamera" "Rotate Camera" "This will rotate your final render by 90 degrees.";
