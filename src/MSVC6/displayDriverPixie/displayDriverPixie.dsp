@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="displaydriver" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="displayDriverPixie" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=DISPLAYDRIVER - WIN32 PIXIE RELEASE
+CFG=displayDriverPixie - Win32 Pixie Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=DISPLAYDRIVER - WIN32 PIXIE RELEASE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "displayDriverPixie.mak" CFG="DISPLAYDRIVER - WIN32 PIXIE RELEASE"
+!MESSAGE NMAKE /f "displayDriverPixie.mak" CFG="displayDriverPixie - Win32 Pixie Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -74,5 +74,65 @@ SOURCE=..\..\..\include\liqMayaDisplayDriverPixie.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidarea.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquidarea.sl
+
+"$(InputDir)\..\liquidcheckerarea.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquidarea.sdr
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidchecker.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquidchecker.sl
+
+"$(InputDir)\..\liquidchecker.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquidchecker.sdr
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquiddistant.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquiddistant.sl
+
+"$(InputDir)\..\liquiddistant.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquiddistant.sdr
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidpoint.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquidpoint.sl
+
+"$(InputDir)\..\liquidpoint.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquidpoint.sdr
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidspot.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquidspot.sl
+
+"$(InputDir)\..\liquidspot.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquidspot.sdr
+
+# End Custom Build
+# End Source File
 # End Target
 # End Project
