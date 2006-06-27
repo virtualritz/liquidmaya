@@ -2569,6 +2569,7 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
     frameLayout -bs "etchedIn" -l "Feedback" -cll true -cl false;
       columnLayout -adj true;
         liquidShowIntGlobalMenu "statistics"  "End Of Frame Stats" {"none","simple","detailed","overwhelming", "xml"} $prefix;
+        liquidShowStringGlobalPlus "statisticsFile"  "Stat File" "enter the full path to the xml statistics file" $prefix;
         liquidShowBoolGlobal "showProgress"   "Show Progress";
         liquidShowBoolGlobal "outputComments" "Output Detailed Comments";
         separator;

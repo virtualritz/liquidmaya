@@ -603,6 +603,7 @@ liqRibTranslator::liqRibTranslator()
   m_renderViewTimeOut = 10;
 
   m_statistics        = 0;
+  m_statisticsFile    = "";
 
   m_hiddenJitter = 1;
   // PRMAN 13 BEGIN
@@ -2078,7 +2079,15 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "statistics", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( m_statistics );
   gStatus.clear();
-
+  {
+    MString varVal;
+    gPlug = rGlobalNode.findPlug( "statisticsFile", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( varVal );
+    gStatus.clear();
+    if ( varVal != "" ) {
+      m_statisticsFile = parseString( varVal );
+    }
+  }
   // Philippe : OBSOLETE ?
   {
     MString varVal;
@@ -4155,14 +4164,9 @@ MStatus liqRibTranslator::ribPrologue()
       if ( m_statistics < 4 ) RiOption( "statistics", "endofframe", ( RtPointer ) &m_statistics, RI_NULL );
       else {
         cout <<"xml stats "<<endl;
-        int stats = 3;
+        int stats = 1;
         RiOption( "statistics", "int endofframe", ( RtPointer ) &stats, RI_NULL );
-        MString xml("$PDIRstats.xml");
-        MString xmlout = parseString( xml );
-        RiArchiveRecord( RI_VERBATIM, "Option \"statistics\" \"xmlfilename\" [\"%s\"]\n", const_cast< char* > ( xmlout.asChar() ) );
-        MString css("file://%RMANTREE%/etc/rmStatsHtml_1.1.xml");
-        MString cssout = parseString( css );
-        RiArchiveRecord( RI_VERBATIM, "Option \"statistics\" \"stylesheet\" [\"%s\"]\n", const_cast< char* > ( cssout.asChar() ) );
+        RiArchiveRecord( RI_VERBATIM, "Option \"statistics\" \"xmlfilename\" [\"%s\"]\n", const_cast< char* > ( m_statisticsFile.asChar() ) );
       }
     }
     if ( bucketSize != 0 )    RiOption( "limits", "bucketsize", ( RtPointer ) &bucketSize, RI_NULL );
