@@ -39,7 +39,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPLAYDRIVER3DELIGHT_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../../include" /I "$(DELIGHT)/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPLAYDRIVER3DELIGHT_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../../include" /I "$(DELIGHT)/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "_WIN32" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
@@ -49,7 +49,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib /nologo /dll /machine:I386 /out:"../../../bin/3Delight/win32/Release/liqmaya.dll" /libpath:"$(DELIGHT)/lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib /nologo /dll /machine:I386 /out:"../../../bin/3Delight/win32/Release/liqmaya.dpy" /libpath:"$(DELIGHT)/lib"
+# SUBTRACT LINK32 /pdb:none
 # Begin Target
 
 # Name "displayDriver3delight - Win32 3Delight Release"
@@ -64,14 +65,70 @@ SOURCE=..\..\liqMayaDisplayDriver3Delight.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=..\..\..\include\liqMayaRenderView.h
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidarea.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquidarea.sl
+
+"$(InputDir)\..\liquidarea.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquidarea.sdl
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidchecker.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquidchecker.sl
+
+"$(InputDir)\..\liquidchecker.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquidchecker.sdl
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquiddistant.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquiddistant.sl
+
+"$(InputDir)\..\liquiddistant.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquiddistant.sdl
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidpoint.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquidpoint.sl
+
+"$(InputDir)\..\liquidpoint.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquidpoint.sdl
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidspot.sl
+# Begin Custom Build
+InputDir=\CVS-files\liquidmaya\shaders\src
+InputPath=..\..\..\shaders\src\liquidspot.sl
+
+"$(InputDir)\..\liquidspot.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquidspot.sdl
+
+# End Custom Build
+# End Source File
 # End Target
 # End Project
