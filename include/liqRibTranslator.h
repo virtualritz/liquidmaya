@@ -381,6 +381,7 @@ private :
   liquidlong    m_renderViewTimeOut;
 
   int           m_statistics;
+  MString       m_statisticsFile;
 
   int           m_hiddenJitter;
   // PRMAN 13 BEGIN

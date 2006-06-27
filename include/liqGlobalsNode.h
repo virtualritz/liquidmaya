@@ -310,6 +310,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aShotVersion;
 
     static MObject aStatistics;
+    static MObject aStatisticsFile;
 
     static MObject aShadersIgnoreOutputParams;
     static MObject aShadersOutputParamsFilter;
