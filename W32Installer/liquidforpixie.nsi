@@ -12,10 +12,11 @@ SetFont "Comic Sans MS" 8
 
 LicenseText "License page"
 LicenseData "mpl.rtf"
-InstallDir "$PROGRAMFILES\Liquid"
+InstallDir "$PROGRAMFILES\Alias\Maya7.0\bin\plug-ins"
+DirText "Please select the Maya's plugin folder ..."
 
 Var /GLOBAL Mayahome
-Var /GLOBAL RendererHome
+Var /GLOBAL Mayaplugdir
 ; Macros
 
 !macro BIMAGE IMAGE PARMS
@@ -29,14 +30,17 @@ Var /GLOBAL RendererHome
 
 ; Pages
 
+Page directory dirFun
 Page license licenseFunc
 Page instfiles
 UninstPage uninstConfirm
 UninstPage instfiles
 
+
 ; Sections
 
 Section ""
+	StrCpy $Mayaplugdir $INSTDIR
 	ClearErrors
 	IfFileExists $DOCUMENTS\maya\7.0\Maya.env.liquidbackup 0 +2
 	Goto envfound
@@ -75,7 +79,7 @@ Section ""
 	SetOutPath "$PROGRAMFILES\Liquid\previewRibFiles"
 	CreateDirectory "$PROGRAMFILES\Liquid\previewRibFiles"
 	File "..\previewRibFiles\*.rib"
-	SetOutPath "$Mayahome\bin\plug-ins"
+	SetOutPath "$Mayaplugdir"
 	File "..\bin\Pixie\win32\release\liquid.mll"
         CreateDirectory "$PROGRAMFILES\Liquid\displayDrivers"
 	CreateDirectory "$PROGRAMFILES\Liquid\displayDrivers\Pixie"
@@ -88,36 +92,28 @@ SectionEnd
 
 Section "Uninstall"
 	ClearErrors
-	ReadEnvStr $Mayahome MAYA_LOCATION
-	IfErrors abortMaya
-	MessageBox MB_YESNO "Uninstall Liquid for MAYA?" IDYES continue
-	Quit
-	continue:
-	goto theend
-	abortMaya:
-	StrCpy $Mayahome "$PROGRAMFILES\alias"
-    theend:
+	MessageBox MB_YESNO "Uninstall Liquid for MAYA?" IDNO end
 	Delete $PROGRAMFILES\liquid\uninst.exe
 	RMDir /r "$PROGRAMFILES\Liquid"
-	Delete $Mayahome\bin\plug-ins\liquid.mll
-SectionEnd
+	MessageBox MB_OK "Liquid deleted, please delete liquid.mll yourself in the Maya's plugins folder."
+	end:
+	SectionEnd
 
 Function licenseFunc
 	!insertmacro BIMAGE "liquidlarge.bmp" /RESIZETOFIT
+FunctionEnd
+
+Function dirFun
 	ClearErrors
 	ReadEnvStr $Mayahome MAYA_LOCATION
-	IfErrors abortMaya
-	ReadEnvStr $RendererHome PIXIEHOME
-	IfErrors abortRenderer
-	goto theend
-	abortRenderer:
-	MessageBox MB_OK "Pixie not found cannot install.$\nCheck your Pixie installation"
-	Quit
-	abortMaya:
-	MessageBox MB_YESNO "MAYA_LOCATION not found, Assume $PROGRAMFILES\alias ?" IDNO noassume
-	StrCpy $Mayahome "$PROGRAMFILES\alias"
-	goto theend
-	noassume:
-	Quit
-	theend:
+	IfErrors next
+		MessageBox MB_YESNO "MAYA_LOCATION found in your environment variables, using it?" IDNO next
+		StrCpy $INSTDIR "$Mayahome\bin\plug-ins"
+		Abort
+	next:
+	IfFileExists "C:\Program files\Alias\Maya7.0\bin\plug-ins" 0 notfound
+		MessageBox MB_YESNO "Maya found at C:\Program files\Alias\Maya7.0, use this one?" IDNO notfound
+		StrCpy $INSTDIR "C:\Program files\Alias\Maya7.0\bin\plug-ins"
+		Abort
+	 notfound:
 FunctionEnd
