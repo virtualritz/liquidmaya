@@ -6,25 +6,60 @@
 --------------------Configuration: displayDriverPixie - Win32 Pixie Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP1795.tmp" with contents
+Creating temporary file "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP21.bat" with contents
 [
-/nologo /MT /W3 /GX /O2 /I "../../../include" /I "c:\tata/include" /I "d:\pixie/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPLAYDRIVER_EXPORTS" /Fp"../../../bin/Pixie/win32/Release/Objects/displayDriverPixie.pch" /YX /Fo"../../../bin/Pixie/win32/Release/Objects/" /Fd"../../../bin/Pixie/win32/Release/Objects/" /FD /c 
-"D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp"
+@echo off
+"C:\Program Files\Pixie\bin\sdrc.exe" ..\..\..\shaders\src\liquidarea.sl -o \CVS-files\liquidmaya\shaders\src\..\liquidarea.sdr
 ]
-Creating command line "cl.exe @C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP1795.tmp" 
-Creating temporary file "C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP1796.tmp" with contents
+Creating command line "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP21.bat"
+Creating temporary file "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP22.bat" with contents
+[
+@echo off
+"C:\Program Files\Pixie\bin\sdrc.exe" ..\..\..\shaders\src\liquidspot.sl -o \CVS-files\liquidmaya\shaders\src\..\liquidspot.sdr
+]
+Creating command line "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP22.bat"
+Creating temporary file "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP23.bat" with contents
+[
+@echo off
+"C:\Program Files\Pixie\bin\sdrc.exe" ..\..\..\shaders\src\liquidpoint.sl -o \CVS-files\liquidmaya\shaders\src\..\liquidpoint.sdr
+]
+Creating command line "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP23.bat"
+Creating temporary file "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP24.bat" with contents
+[
+@echo off
+"C:\Program Files\Pixie\bin\sdrc.exe" ..\..\..\shaders\src\liquiddistant.sl -o \CVS-files\liquidmaya\shaders\src\..\liquiddistant.sdr
+]
+Creating command line "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP24.bat"
+Creating temporary file "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP25.bat" with contents
+[
+@echo off
+"C:\Program Files\Pixie\bin\sdrc.exe" ..\..\..\shaders\src\liquidchecker.sl -o \CVS-files\liquidmaya\shaders\src\..\liquidchecker.sdr
+]
+Creating command line "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP25.bat"
+Creating temporary file "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP26.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /I "../../../include" /I "C:\Program Files\Alias\Maya7.0/include" /I "C:\Program Files\Pixie/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPLAYDRIVER_EXPORTS" /Fp"../../../bin/Pixie/win32/Release/Objects/displayDriverPixie.pch" /YX /Fo"../../../bin/Pixie/win32/Release/Objects/" /Fd"../../../bin/Pixie/win32/Release/Objects/" /FD /c 
+"C:\CVS-files\liquidmaya\src\liqMayaDisplayDriverPixie.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP26.tmp" 
+Performing Custom Build Step on ..\..\..\shaders\src\liquidarea.sl
+Performing Custom Build Step on ..\..\..\shaders\src\liquidspot.sl
+Performing Custom Build Step on ..\..\..\shaders\src\liquidpoint.sl
+Performing Custom Build Step on ..\..\..\shaders\src\liquiddistant.sl
+Performing Custom Build Step on ..\..\..\shaders\src\liquidchecker.sl
+Creating temporary file "C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP27.tmp" with contents
 [
 ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"../../../bin/Pixie/win32/Release/Objects/liqmaya.pdb" /machine:I386 /out:"../../../bin/Pixie/win32/Release/liqmaya.dll" /implib:"../../../bin/Pixie/win32/Release/Objects/liqmaya.lib" 
-\pcc\liquidmaya\bin\Pixie\win32\Release\Objects\liqMayaDisplayDriverPixie.obj
+"\CVS-files\liquidmaya\bin\Pixie\win32\Release\Objects\liqMayaDisplayDriverPixie.obj"
 ]
-Creating command line "link.exe @C:\WINNT\Profiles\pcc\LOCALS~1\Temp\RSP1796.tmp"
+Creating command line "link.exe @C:\DOCUME~1\CEDRIC~1\LOCALS~1\Temp\RSP27.tmp"
 <h3>Output Window</h3>
 Compiling...
 liqMayaDisplayDriverPixie.cpp
-D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'rc' : unreferenced local variable
-D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(83) : warning C4101: 'h' : unreferenced local variable
-D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'i' : unreferenced local variable
-D:\pcc\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'originalSize' : unreferenced local variable
+C:\CVS-files\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'rc' : unreferenced local variable
+C:\CVS-files\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(83) : warning C4101: 'h' : unreferenced local variable
+C:\CVS-files\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'i' : unreferenced local variable
+C:\CVS-files\liquidmaya\src\liqMayaDisplayDriverPixie.cpp(64) : warning C4101: 'originalSize' : unreferenced local variable
 Linking...
    Creating library ../../../bin/Pixie/win32/Release/Objects/liqmaya.lib and object ../../../bin/Pixie/win32/Release/Objects/liqmaya.exp
 
