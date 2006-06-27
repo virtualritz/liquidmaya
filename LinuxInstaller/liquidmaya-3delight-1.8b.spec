@@ -1,7 +1,7 @@
 Name: liquidmaya
 Summary: Renderman translator for MAYA
 Version: 1.8
-Release: Pixie
+Release: 3Delight
 License: MPL
 Group: Applications
 Source: %{name}-%{version}.tar.gz
@@ -12,7 +12,7 @@ Packager: Cedric PAILLE
 Distribution: suse 10
 Prefix: /usr
 Url: http://sourceforge.net/projects/liquidmaya
-Provides: Liquid rendering toolkit for PIXIE
+Provides: Liquid rendering toolkit for 3DELIGHT
 
 
 
@@ -28,22 +28,17 @@ mkdir $RPM_BUILD_ROOT
 %setup -q
 
 %build
-export LIQRMAN=pixie
-export PIXIEHOME=/opt/pixie
+export LIQRMAN=3delight
 export MAYA_LOCATION=/usr/aw/maya
-export PATH=$PATH:/opt/pixie/bin
 cd shaders
 sh compile.sh
 cd ..
 make release
 
 %install
-export LIQRMAN=pixie
-export PIXIEHOME=/opt/pixie
-export MAYA_LOCATION=/usr/aw/maya
-export PATH=$PATH:/opt/pixie/bin
+export LIQRMAN=3delight
 mkdir -p $RPM_BUILD_ROOT/usr/aw/maya/bin/plug-ins
-make DESTDIR=$RPM_BUILD_ROOT installpixie
+make DESTDIR=$RPM_BUILD_ROOT install3delight
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -63,7 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir /usr/share/liquid/renderers
 /usr/share/liquid/renderers/*.lg
 %dir /usr/share/liquid/displayDrivers
-%dir /usr/share/liquid/displayDrivers/Pixie
-/usr/share/liquid/displayDrivers/Pixie/*.so
+%dir /usr/share/liquid/displayDrivers/3Delight
+/usr/share/liquid/displayDrivers/3Delight/*.dpy
 %dir /usr/share/liquid/shaders
-/usr/share/liquid/shaders/*.sdr
+/usr/share/liquid/shaders/*.sdl
