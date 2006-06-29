@@ -180,7 +180,8 @@ class liqRibNode {
         SHADINGMODEL_GLASS = 1,
         SHADINGMODEL_WATER = 2,
         SHADINGMODEL_CHROME = 3,
-        SHADINGMODEL_TRANSPARENT = 4
+        SHADINGMODEL_TRANSPARENT = 4,
+        SHADINGMODEL_DIALECTRIC = 5
       } shadingModel;
       int estimator;
     } photon;

@@ -209,7 +209,7 @@ global proc liquidCreateTransmissionAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqVisibilityTransmission"` ) {
-      addAttr -ln "liqVisibilityTransmission" -at enum -enumName "Transparent=0:Opaque=1:Use Opacity=2:From Shader=3"  $currentNode;
+      addAttr -ln "liqVisibilityTransmission" -at enum -enumName "Transparent=0:Opaque=1:Use Opacity=2:From Shader=3" -dv 1  $currentNode;
     }
   }
 }
@@ -500,7 +500,7 @@ global proc liquidCreatePhotonShadingModelAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqPhotonShadingModel"` ) {
-      addAttr -ln "liqPhotonShadingModel" -dt "string" $currentNode;
+      addAttr -ln "liqPhotonShadingModel" -at enum -enumName "Matte=0:Glass=1:Water=2:Chrome=3:Transparent=4:Dielectric=5" $currentNode;
     }
   }
 }
