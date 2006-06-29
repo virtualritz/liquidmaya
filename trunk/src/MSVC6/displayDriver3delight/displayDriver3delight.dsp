@@ -74,11 +74,10 @@ SOURCE=..\..\liqMayaDisplayDriver3Delight.cpp
 
 SOURCE=..\..\..\shaders\src\liquidarea.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquidarea.sl
 
-"$(InputDir)\..\liquidarea.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquidarea.sdl
+"..\..\..\liquidarea.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquidarea.sdl
 
 # End Custom Build
 # End Source File
@@ -86,11 +85,10 @@ InputPath=..\..\..\shaders\src\liquidarea.sl
 
 SOURCE=..\..\..\shaders\src\liquidchecker.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquidchecker.sl
 
-"$(InputDir)\..\liquidchecker.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquidchecker.sdl
+"..\..\..\liquidchecker.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquidchecker.sdl
 
 # End Custom Build
 # End Source File
@@ -98,11 +96,10 @@ InputPath=..\..\..\shaders\src\liquidchecker.sl
 
 SOURCE=..\..\..\shaders\src\liquiddistant.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquiddistant.sl
 
-"$(InputDir)\..\liquiddistant.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquiddistant.sdl
+"..\..\..\liquiddistant.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquiddistant.sdl
 
 # End Custom Build
 # End Source File
@@ -110,11 +107,10 @@ InputPath=..\..\..\shaders\src\liquiddistant.sl
 
 SOURCE=..\..\..\shaders\src\liquidpoint.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquidpoint.sl
 
-"$(InputDir)\..\liquidpoint.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquidpoint.sdl
+"..\..\..\liquidpoint.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquidpoint.sdl
 
 # End Custom Build
 # End Source File
@@ -122,11 +118,10 @@ InputPath=..\..\..\shaders\src\liquidpoint.sl
 
 SOURCE=..\..\..\shaders\src\liquidspot.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquidspot.sl
 
-"$(InputDir)\..\liquidspot.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o $(InputDir)\..\liquidspot.sdl
+"..\..\..\liquidspot.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquidspot.sdl
 
 # End Custom Build
 # End Source File

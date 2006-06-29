@@ -78,11 +78,10 @@ SOURCE=..\..\..\include\liqMayaDisplayDriverPixie.h
 
 SOURCE=..\..\..\shaders\src\liquidarea.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquidarea.sl
 
-"$(InputDir)\..\liquidcheckerarea.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquidarea.sdr
+"..\..\..\shaders\liquidarea.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PIXIEHOME)\bin\sdrc.exe" $(InputPath) -o ..\..\..\shaders\liquidarea.sdr
 
 # End Custom Build
 # End Source File
@@ -90,11 +89,10 @@ InputPath=..\..\..\shaders\src\liquidarea.sl
 
 SOURCE=..\..\..\shaders\src\liquidchecker.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquidchecker.sl
 
-"$(InputDir)\..\liquidchecker.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquidchecker.sdr
+"..\..\..\shaders\liquidchecker.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PIXIEHOME)\bin\sdrc.exe" $(InputPath) -o ..\..\..\shaders\liquidchecker.sdr
 
 # End Custom Build
 # End Source File
@@ -102,11 +100,10 @@ InputPath=..\..\..\shaders\src\liquidchecker.sl
 
 SOURCE=..\..\..\shaders\src\liquiddistant.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquiddistant.sl
 
-"$(InputDir)\..\liquiddistant.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquiddistant.sdr
+"..\..\..\shaders\liquiddistant.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PIXIEHOME)\bin\sdrc.exe" $(InputPath) -o ..\..\..\shaders\liquiddistant.sdr
 
 # End Custom Build
 # End Source File
@@ -114,11 +111,10 @@ InputPath=..\..\..\shaders\src\liquiddistant.sl
 
 SOURCE=..\..\..\shaders\src\liquidpoint.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquidpoint.sl
 
-"$(InputDir)\..\liquidpoint.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquidpoint.sdr
+"..\..\..\shaders\liquidpoint.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PIXIEHOME)\bin\sdrc.exe" $(InputPath) -o ..\..\..\shaders\liquidpoint.sdr
 
 # End Custom Build
 # End Source File
@@ -126,11 +122,10 @@ InputPath=..\..\..\shaders\src\liquidpoint.sl
 
 SOURCE=..\..\..\shaders\src\liquidspot.sl
 # Begin Custom Build
-InputDir=\CVS-files\liquidmaya\shaders\src
 InputPath=..\..\..\shaders\src\liquidspot.sl
 
-"$(InputDir)\..\liquidspot.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"$(PiXIEHOME)\bin\sdrc.exe" $(InputPath) -o $(InputDir)\..\liquidspot.sdr
+"..\..\..\shaders\liquidspot.sdr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(PIXIEHOME)\bin\sdrc.exe" $(InputPath) -o ..\..\..\shaders\liquidspot.sdr
 
 # End Custom Build
 # End Source File

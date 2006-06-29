@@ -73,5 +73,49 @@ SOURCE=..\..\..\include\liqMayaDisplayDriver.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidchecker.sl
+# Begin Custom Build
+InputPath=..\..\..\shaders\src\liquidchecker.sl
+
+"..\..\..\shaders\liquidchecker.slx" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(AQSIS)\bin\aqsl.exe" $(InputPath) -o ..\..\..\shaders\liquidchecker.slx
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquiddistant.sl
+# Begin Custom Build
+InputPath=..\..\..\shaders\src\liquiddistant.sl
+
+"..\..\..\shaders\liquiddistant.slx" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(AQSIS)\bin\aqsl.exe" $(InputPath) -o ..\..\..\shaders\liquiddistant.slx
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidpoint.sl
+# Begin Custom Build
+InputPath=..\..\..\shaders\src\liquidpoint.sl
+
+"..\..\..\shaders\liquidpoint.slx" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(AQSIS)\bin\aqsl.exe" $(InputPath) -o ..\..\..\shaders\liquidpoint.slx
+
+# End Custom Build
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\shaders\src\liquidspot.sl
+# Begin Custom Build
+InputPath=..\..\..\shaders\src\liquidspot.sl
+
+"..\..\..\shaders\liquidspot.slx" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"$(AQSIS)\bin\aqsl.exe" $(InputPath) -o ..\..\..\shaders\liquidspot.slx
+
+# End Custom Build
+# End Source File
 # End Target
 # End Project
