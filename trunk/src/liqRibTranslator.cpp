@@ -5947,6 +5947,9 @@ MStatus liqRibTranslator::objectBlock()
             case liqRibNode::photon::SHADINGMODEL_TRANSPARENT:
               model = "chrome";
               break;
+            case liqRibNode::photon::SHADINGMODEL_DIALECTRIC:
+              model = "dielectric";
+              break;
             case liqRibNode::photon::SHADINGMODEL_MATTE:
             default:
               model = "matte";
