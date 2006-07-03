@@ -1,26 +1,23 @@
 ; Liquid installer
 
 Name "LIQUID FOR MAYA"
-OutFile "LiquidMayaFor3Delight.exe"
+OutFile "LiquidMayaForAqsis.exe"
+
 XPStyle on
+
 AddBrandingImage left 100
 
 ; Sets the font of the installer
-
 SetFont "Comic Sans MS" 8
+
 LicenseText "License page"
 LicenseData "mpl.rtf"
 InstallDir "$PROGRAMFILES\Alias\Maya7.0\bin\plug-ins"
 DirText "Please select the Maya's plugin folder ..."
 
-
-
 Var /GLOBAL Mayahome
 Var /GLOBAL Mayaplugdir
-
 ; Macros
-
-
 
 !macro BIMAGE IMAGE PARMS
 	Push $0
@@ -38,6 +35,7 @@ Page license licenseFunc
 Page instfiles
 UninstPage uninstConfirm
 UninstPage instfiles
+
 
 ; Sections
 
@@ -77,7 +75,7 @@ Section ""
 	File "..\icons\*.*"
 	SetOutPath "$PROGRAMFILES\Liquid\shaders"
 	CreateDirectory "$PROGRAMFILES\Liquid\shaders"
-	File "..\shaders\*.sdl"
+	File "..\shaders\*.slx"
 	SetOutPath "$PROGRAMFILES\Liquid\shaders\src"
 	CreateDirectory "$PROGRAMFILES\Liquid\shaders\src"
 	File "..\shaders\src\*.*"
@@ -85,13 +83,18 @@ Section ""
 	CreateDirectory "$PROGRAMFILES\Liquid\previewRibFiles"
 	File "..\previewRibFiles\*.rib"
 	SetOutPath "$Mayaplugdir"
-	File "..\bin\3Delight\win32\release\liquid.mll"
+	File "..\bin\Aqsis\win32\release\liquid.mll"
     CreateDirectory "$PROGRAMFILES\Liquid\displayDrivers"
-	CreateDirectory "$PROGRAMFILES\Liquid\displayDrivers\3Delight"
-	SetOutPath "$PROGRAMFILES\Liquid\displayDrivers\3Delight"
-	File "..\bin\3Delight\win32\release\liqmaya.dpy"
-   	SetOutPath "$PROGRAMFILES\Liquid\scripts"
+	CreateDirectory "$PROGRAMFILES\Liquid\displayDrivers\Aqsis"
+	SetOutPath "$PROGRAMFILES\Liquid\displayDrivers\Aqsis"
+	File "..\bin\Aqsis\win32\release\liqmaya.dll"
+    	SetOutPath "$PROGRAMFILES\Liquid\scripts"
 	File "..\scripts\*.*"
+	FileOpen $0 "$PROGRAMFILES\Liquid\displayDrivers\Aqsis\displays.ini" w
+	IfErrors error
+	FileWrite $0 "liqmaya			liqmaya.dll"
+	FileClose $0
+	error:
 	WriteUninstaller $PROGRAMFILES\Liquid\uninst.exe
 SectionEnd
 
