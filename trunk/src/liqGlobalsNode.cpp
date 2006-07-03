@@ -328,6 +328,7 @@ MObject liqGlobalsNode::aShotName;
 MObject liqGlobalsNode::aShotVersion;
 
 MObject liqGlobalsNode::aStatistics;
+MObject liqGlobalsNode::aStatisticsFile;
 
 MObject liqGlobalsNode::aShadersIgnoreOutputParams;
 MObject liqGlobalsNode::aShadersOutputParamsFilter;
@@ -711,6 +712,7 @@ MStatus liqGlobalsNode::initialize()
         CREATE_STRING( tAttr,  aDshImageMode,               "dshImageMode",                 "dsim",   ""    );
 
            CREATE_INT( nAttr,  aStatistics,                 "statistics",                   "st",     0     );
+        CREATE_STRING( tAttr,  aStatisticsFile,             "statisticsFile",               "stf",    ""    );
 
           CREATE_BOOL( nAttr,  aShadersIgnoreOutputParams,  "shadersIgnoreOutputParams",    "iop",    1     );
         CREATE_STRING( tAttr,  aShadersOutputParamsFilter,  "shadersOutputParamsFilter",    "opf",    "^_*"    );
