@@ -168,6 +168,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aDeformationBlur;
     static MObject aShutterConfig;
     static MObject aMotionBlurSamples;
+	static MObject aRelativeMotion;
     static MObject aMotionFactor;
     static MObject aDepthOfField;
 
