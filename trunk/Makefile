@@ -22,6 +22,16 @@ all debug release :
 realclean : 
 	rm -rf $(DEPTH)/bin/$(VBIN)
 
+ifeq ($(LIQRMAN),3delight)
+install :
+	( cd src && make BIN_VERSION="release" install3delight)
+endif
+
+ifeq ($(LIQRMAN),pixie)
+install :
+	( cd src && make BIN_VERSION="release" installpixie)
+endif
+
 dist :
 	@for vers in $(strip $(MAYA_RELEASES));\
 	do \

@@ -26,6 +26,34 @@ LIQUIDBINLIBS =		$(LIQRMANLIBS) $(MAYALIBS) \
 					-lCommandEngine \
 					-lFoundation \
 					-lStringCatalog \
+					-lIMF \
+					-lAG \
+					-lAnimEngine \
+					-lAppVersion \
+					-lGeometryEngine \
+					-lDependCommand \
+					-lExtensionLayer \
+					-lPolyEngine \
+					-lSubdivEngine \
+					-lSubdivGeom \
+					-l3dGraphics \
+					-lNurbs \
+					-lPoly \
+					-lSubdiv \
+					-lHWFoundation \
+					-lHWGL \
+					-lHWRender \
+					-lBase \
+					-lSharedUI \
+					-lHWRenderMaya \
+					-lDevices \
+					-lManips \
+					-lAnimUISlice \
+					-lDynUISlice \
+					-lRenderSlice \
+					-lImageUI \
+					-lModelUISlice \
+					-lUrchinSlice \
 					$(EXTRA_LIBS) \
 					-lm
 
@@ -132,5 +160,48 @@ liqRibTranslator.o: ../include/liqRenderScript.h
 depend:
 	makedepend $(INCLUDES) -I/usr/include/CC liquid.cc
 
+installpixie:
+	@echo $(LIQUIDPLUG)
+	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/aw/maya/bin/plug-ins/liquid.so
+	@mkdir -p $(DESTDIR)/usr/share/liquid
+	@mkdir -p $(DESTDIR)/usr/share/liquid/mel
+	@cp -rf ../mel/*.mel $(DESTDIR)/usr/share/liquid/mel
+	@mkdir -p $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.xpm $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.iff $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.jpg $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/render_* $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/lif_* $(DESTDIR)/usr/share/liquid/icons
+	@mkdir -p $(DESTDIR)/usr/share/liquid/renderers
+	@cp -rf ../renderers/*.lg $(DESTDIR)/usr/share/liquid/renderers
+	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders
+	@cp -rf ../shaders/*.sdr $(DESTDIR)/usr/share/liquid/shaders
+	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders/src
+	@cp -rf ../shaders/src/*.sl $(DESTDIR)/usr/share/liquid/shaders/src
+	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers
+	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers/Pixie
+	@cp -rf $(LIQUIDDPY) $(DESTDIR)/usr/share/liquid/displayDrivers/Pixie/liqmaya.so
+
+install3delight:
+	@echo $(LIQUIDPLUG)
+	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/aw/maya/bin/plug-ins/liquid.so
+	@mkdir -p $(DESTDIR)/usr/share/liquid
+	@mkdir -p $(DESTDIR)/usr/share/liquid/mel
+	@cp -rf ../mel/*.mel $(DESTDIR)/usr/share/liquid/mel
+	@mkdir -p $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.xpm $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.iff $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.jpg $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/render_* $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/lif_* $(DESTDIR)/usr/share/liquid/icons
+	@mkdir -p $(DESTDIR)/usr/share/liquid/renderers
+	@cp -rf ../renderers/*.lg $(DESTDIR)/usr/share/liquid/renderers
+	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders
+	@cp -rf ../shaders/*.sdl $(DESTDIR)/usr/share/liquid/shaders
+	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders/src
+	@cp -rf ../shaders/src/*.sl $(DESTDIR)/usr/share/liquid/shaders/src
+	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers
+	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers/3Delight
+	@cp -rf $(LIQUIDDPY) $(DESTDIR)/usr/share/liquid/displayDrivers/3Delight/liqmaya.dpy
 
 include $(DEPTH)/commonrules.mk
