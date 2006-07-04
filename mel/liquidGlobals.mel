@@ -431,6 +431,7 @@ global proc liquidInitGlobalVals()
     ,"deformationBlur",             "bool",   false
     ,"shutterConfig",               "long",   0
     ,"motionBlurSamples",           "long",   2
+    ,"relativeMotion",           	"bool",   false
     ,"motionFactor",                "float",  2.0
     ,"depthOfField",                "bool",   false
 
@@ -1988,6 +1989,7 @@ global proc liquidGlobalsFrameTab( string $prefix )
         liquidShowBoolGlobal "transformationBlur" "Transformation Blur";
         liquidShowBoolGlobal "deformationBlur"    "Deformation Blur";
         liquidShowIntGlobal  "motionBlurSamples"  "Motion Samples";
+		liquidShowBoolGlobal "relativeMotion"	  "Shutter Relative Motion Blocks";
         liquidShowIntGlobal  "motionFactor"       "Motion Factor";
         separator;
         liquidShowBoolGlobalPlus "cameraBlur"     "Camera Blur" "This is a potentially expensive switch...";

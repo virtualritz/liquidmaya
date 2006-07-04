@@ -161,6 +161,7 @@ MObject liqGlobalsNode::aTransformationBlur;
 MObject liqGlobalsNode::aDeformationBlur;
 MObject liqGlobalsNode::aShutterConfig;
 MObject liqGlobalsNode::aMotionBlurSamples;
+MObject liqGlobalsNode::aRelativeMotion;
 MObject liqGlobalsNode::aMotionFactor;
 MObject liqGlobalsNode::aDepthOfField;
 
@@ -579,6 +580,7 @@ MStatus liqGlobalsNode::initialize()
           CREATE_BOOL( nAttr,  aDeformationBlur,            "deformationBlur",              "db",     0     );
            CREATE_INT( nAttr,  aShutterConfig,              "shutterConfig",                "shc",    0     );
            CREATE_INT( nAttr,  aMotionBlurSamples,          "motionBlurSamples",            "mbs",    2     );
+          CREATE_BOOL( nAttr,  aRelativeMotion,             "relativeMotion",            	"rmot",   0     );
          CREATE_FLOAT( nAttr,  aMotionFactor,               "motionFactor",                 "mf",     1.0   );
           CREATE_BOOL( nAttr,  aDepthOfField,               "depthOfField",                 "dof",    0     );
 

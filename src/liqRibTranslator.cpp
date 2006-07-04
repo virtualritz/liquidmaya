@@ -133,7 +133,9 @@ bool         liqglo_doMotion;                         // Motion blur for transfo
 bool         liqglo_doDef;                            // Motion blur for deforming objects
 bool         liqglo_doCompression;                    // output compressed ribs
 bool         liqglo_doBinary;                         // output binary ribs
+bool		 liqglo_relativeMotion;					  // Use relative motion blocks
 RtFloat      liqglo_sampleTimes[LIQMAXMOTIONSAMPLES]; // current sample times
+RtFloat      liqglo_sampleTimesOffsets[LIQMAXMOTIONSAMPLES]; // current sample times (as offsets from frame)
 liquidlong   liqglo_motionSamples;                    // used to assign more than two motion blur samples!
 float        liqglo_shutterTime;
 bool         liqglo_doShadows;                        // Kept global for liquidRigLightData
@@ -479,6 +481,7 @@ liqRibTranslator::liqRibTranslator()
   launchRender = false;
   liqglo_doMotion = false;          // matrix motion blocks
   liqglo_doDef = false;             // geometry motion blocks
+  liqglo_relativeMotion = false;
   doCameraMotion = false;           // camera motion blocks
   liqglo_rotateCamera = false;      // rotate the camera 90 degrees around Z axis
   liqglo_doExtensionPadding = false;       // pad the frame number in the rib file names
@@ -723,6 +726,7 @@ MSyntax liqRibTranslator::syntax()
   syntax.addFlag("cln",   "cleanRib");
   syntax.addFlag("pro",   "progress");
   syntax.addFlag("mb",    "motionBlur");
+  syntax.addFlag("rmot",  "relativeMotion");
   syntax.addFlag("db",    "deformationBlur");
   syntax.addFlag("d",     "debug");
   syntax.addFlag("net",   "netRender");
@@ -935,6 +939,9 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       LIQCHECKSTATUS(status, "error in -mbSamples parameter");   i++;
       argValue = args.asString( i, &status );
       liqglo_motionSamples = argValue.asInt();
+      LIQCHECKSTATUS(status, "error in -mbSamples parameter");
+    } else if ((arg == "-rmot") || (arg == "-relativeMotion")) {
+      liqglo_relativeMotion = true;
       LIQCHECKSTATUS(status, "error in -mbSamples parameter");
     } else if ((arg == "-dbs") || (arg == "-defBlock")) {
       LIQCHECKSTATUS(status, "error in -defBlock parameter");   i++;
@@ -2015,6 +2022,9 @@ void liqRibTranslator::liquidReadGlobals()
   gStatus.clear();
   if( liqglo_motionSamples > LIQMAXMOTIONSAMPLES )
     liqglo_motionSamples = LIQMAXMOTIONSAMPLES;
+  gPlug = rGlobalNode.findPlug( "relativeMotion", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_relativeMotion );
+  gStatus.clear();
   gPlug = rGlobalNode.findPlug( "depthOfField", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( doDof );
   gStatus.clear();
@@ -2805,6 +2815,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
                   break;
               }
               liqglo_sampleTimes[ msampleOn ] = subframe;
+              liqglo_sampleTimesOffsets[ msampleOn ] = msampleOn*sampleinc;
             }
 
             //cout <<"about to scan... "<<endl;
@@ -2816,7 +2827,8 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
                 scanScene( liqglo_sampleTimes[ msampleOn ] , msampleOn );
               }
             } else {
-              liqglo_sampleTimes[ 0 ] = scanTime;
+			  liqglo_sampleTimes[ 0 ] = scanTime;
+              liqglo_sampleTimesOffsets[ 0 ] = 0;
               scanScene( scanTime, 0 );
             }
 
@@ -5391,25 +5403,49 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     }
     // Set up for camera motion blur
     /* doCameraMotion = liqglo_currentJob.camera[0].motionBlur && liqglo_doMotion; */
+	float frameOffset = 0;
     if ( doCameraMotion || liqglo_doMotion || liqglo_doDef ) {
       switch( shutterConfig ) {
         case OPEN_ON_FRAME:
         default:
-          RiShutter( lframe, lframe + liqglo_currentJob.camera[0].shutter );
+		  if (liqglo_relativeMotion)
+	          RiShutter( 0, liqglo_currentJob.camera[0].shutter );
+		  else
+	          RiShutter( lframe, lframe + liqglo_currentJob.camera[0].shutter );
+		  frameOffset = lframe;
           break;
         case CENTER_ON_FRAME:
-          RiShutter( ( lframe - ( liqglo_currentJob.camera[0].shutter * 0.5 ) ), ( lframe + ( liqglo_currentJob.camera[0].shutter * 0.5 ) ) );
+		  if (liqglo_relativeMotion)
+	          RiShutter(  - ( liqglo_currentJob.camera[0].shutter * 0.5 ),  ( liqglo_currentJob.camera[0].shutter * 0.5 ) );
+		  else
+    	      RiShutter( ( lframe - ( liqglo_currentJob.camera[0].shutter * 0.5 ) ), ( lframe + ( liqglo_currentJob.camera[0].shutter * 0.5 ) ) );
+		  frameOffset = lframe - ( liqglo_currentJob.camera[0].shutter * 0.5 );
           break;
         case CENTER_BETWEEN_FRAMES:
-          RiShutter( lframe + ( 0.5 * ( 1 - liqglo_currentJob.camera[0].shutter ) ), lframe + liqglo_currentJob.camera[0].shutter + ( 0.5 * ( 1 - liqglo_currentJob.camera[0].shutter ) ) );
-          break;
+		  if (liqglo_relativeMotion)
+		  	RiShutter( + ( 0.5 * ( 1 - liqglo_currentJob.camera[0].shutter ) ), + liqglo_currentJob.camera[0].shutter + ( 0.5 * ( 1 - liqglo_currentJob.camera[0].shutter ) ) );
+		  else
+	        RiShutter( lframe + ( 0.5 * ( 1 - liqglo_currentJob.camera[0].shutter ) ), lframe + liqglo_currentJob.camera[0].shutter + ( 0.5 * ( 1 - liqglo_currentJob.camera[0].shutter ) ) );
+          frameOffset = lframe + ( 0.5 * ( 1 - liqglo_currentJob.camera[0].shutter ) );
+		  break;
         case CLOSE_ON_NEXT_FRAME:
-          RiShutter( lframe + ( 1 - liqglo_currentJob.camera[0].shutter ), lframe + 1 );
+		  if (liqglo_relativeMotion)
+          	RiShutter( + ( 1 - liqglo_currentJob.camera[0].shutter ),  1 );
+		  else
+            RiShutter( lframe + ( 1 - liqglo_currentJob.camera[0].shutter ), lframe + 1 );
+		  frameOffset = lframe + ( 1 - liqglo_currentJob.camera[0].shutter );
           break;
       }
     } else {
-      RiShutter( lframe, lframe );
+      if (liqglo_relativeMotion)
+	  	RiShutter( 0, 0);
+	  else
+	  	RiShutter( lframe, lframe );
+	  frameOffset = lframe;
     }
+
+	// relative motion
+	if (liqglo_relativeMotion)	RiOption( "shutter", "offset", &frameOffset, RI_NULL);
 
     if ( liqglo_currentJob.gotJobOptions ) {
       RiArchiveRecord( RI_COMMENT, "jobOptions: \n%s", liqglo_currentJob.jobOptions.asChar() );
@@ -5440,9 +5476,12 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     }
 
     if ( doCameraMotion && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows) ) {
-      /*RiMotionBegin( 2, ( lframe - ( liqglo_currentJob.camera[0].shutter * m_blurTime * 0.5  )), ( lframe + ( liqglo_currentJob.camera[0].shutter * m_blurTime * 0.5  )) );*/
+      /*, RI_NULLRiMotionBegin( 2, ( lframe - ( liqglo_currentJob.camera[0].shutter * m_blurTime * 0.5  )), ( lframe + ( liqglo_currentJob.camera[0].shutter * m_blurTime * 0.5  )) );*/
       // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
-      RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
+	  if (liqglo_relativeMotion)
+	      RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
+	  else
+          RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
     }
     RtMatrix cameraMatrix;
     liqglo_currentJob.camera[0].mat.get( cameraMatrix );
@@ -5598,7 +5637,10 @@ MStatus liqRibTranslator::objectBlock()
     {
       LIQDEBUGPRINTF( "-> writing matrix motion blur data\n" );
       // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
-      RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
+	  if (liqglo_relativeMotion)
+        RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
+      else
+		RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
     }
     RtMatrix ribMatrix;
     matrix = ribNode->object( 0 )->matrix( path.instanceNumber() );
@@ -6244,7 +6286,10 @@ MStatus liqRibTranslator::objectBlock()
       if( liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
           && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
         // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
-        RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
+	    if (liqglo_relativeMotion)
+        	RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
+		else
+        	RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
       }
 
       ribNode->object(0)->writeObject();
