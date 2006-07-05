@@ -4171,7 +4171,6 @@ MStatus liqRibTranslator::ribPrologue()
 
     // set any rib options
     //
-    cout <<"stats = "<<m_statistics<<endl;
     if ( m_statistics != 0 )  {
       if ( m_statistics < 4 ) RiOption( "statistics", "endofframe", ( RtPointer ) &m_statistics, RI_NULL );
       else {
