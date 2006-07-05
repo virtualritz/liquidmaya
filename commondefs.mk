@@ -24,7 +24,7 @@ NO_TRANS_LINK =
 VBIN          = redhat
 EXTRA_LIBS    =
 AR            = ar cqs
-CPP 		?= gcc
+CPP 		  ?= gcc
 
 UX_RELEASE_TEST_FILES = /etc/fedora-release /etc/redhat-release /etc/slackware-version /etc/gentoo-release
 UX_RELEASE_FILE ?= $(foreach FILE, $(UX_RELEASE_TEST_FILES), $(wildcard $(FILE)*))
@@ -50,7 +50,7 @@ PLUGSUF			= .mll
 BINSUF			= .exe
 OBJSUF			= .obj
 LIBSUF			= .lib
-CPP			= cl
+CPP			    = cl
 LINK			= link
 LD				= $(MAYA_LOCATION)/bin/mayald
 LOCFLAGS		= -nologo -O2 -EHsc -MT -YXstdafx.h -FD -GR -D_BOOL -D_WIN32 -DWIN32 -D_USRDLL -DLIQUID_EXPORTS -Dulong="unsigned long" -Duint="unsigned int"
@@ -81,14 +81,14 @@ ifeq "$(LIQRMAN)" "pixie"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverPixie.$(OBJEXT)
 LIQRMANPATH 	= 	$${PIXIEHOME:=/usr/local/Pixie}
 LIQUIDDPYLOC	=	displayDrivers/pixie/
-LIQDPYNAME	=	liqmaya.so
+LIQDPYNAME		=	liqmaya.so
 LIQRMANFLAGS	=	-DPIXIE
 LIQRMANLIBS 	=	-lri -lsdr
 LIQWINRMANLIBS	=	"ri.lib sdr.lib" 
-USEDVAR 	=	PIXIEHOME
-CSL 		= 	$(LIQRMANPATH)/bin/sdrc
-SLOEXT		=	sdr
-SLFLAGS 	= 	
+USEDVAR 		=	PIXIEHOME
+CSL 			= 	$(LIQRMANPATH)/bin/sdrc
+SLOEXT			=	sdr
+SLFLAGS 		= 	
 	#-DPIXIE # already defines this
 endif
 
@@ -97,14 +97,14 @@ ifeq "$(LIQRMAN)" "aqsis"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAqsis.$(OBJEXT)
 LIQRMANPATH 	=	$${AQSIS_BASE_PATH:=/usr/local/aqsis}
 LIQUIDDPYLOC	=	displayDrivers/aqsis/
-LIQDPYNAME	=	liqmaya.so
+LIQDPYNAME		=	liqmaya.so
 LIQRMANFLAGS	=	-DAQSIS
 LIQRMANLIBS 	=	-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs
 LIQWINRMANLIBS	=	ri2rib.lib slxargs.lib 
-USEDVAR 	=	AQSIS_BASE_PATH
-CSL 		= 	$(LIQRMANPATH)/bin/aqsl
-SLOEXT		=	slx
-SLFLAGS 	= 	-DAQSIS
+USEDVAR 		=	AQSIS_BASE_PATH
+CSL 			= 	$(LIQRMANPATH)/bin/aqsl
+SLOEXT			=	slx
+SLFLAGS 		= 	-DAQSIS
 endif
 
 # 3delight
@@ -112,14 +112,14 @@ ifeq "$(LIQRMAN)" "3delight"
 LIQDISPLAYOBJS  =	liqMayaDisplayDriver3Delight.$(OBJEXT)
 LIQRMANPATH 	=	$${DELIGHT:=/usr/local/3delight}
 LIQUIDDPYLOC	=	displayDrivers/3Delight/
-LIQDPYNAME	=	liqmaya.dpy
+LIQDPYNAME		=	liqmaya.dpy
 LIQRMANFLAGS	=	-DDELIGHT
 LIQRMANLIBS 	=	-l3delight -lc -ldl -lm
 LIQWINRMANLIBS	=	3delight.lib
-USEDVAR 	=	DELIGHT
-CSL 		= 	$(LIQRMANPATH)/bin/shaderdl
-SLOEXT		=	sdl
-SLFLAGS 	=	-DDELIGHT
+USEDVAR 		=	DELIGHT
+CSL 			= 	$(LIQRMANPATH)/bin/shaderdl
+SLOEXT			=	sdl
+SLFLAGS 		=	-DDELIGHT
 endif
 
 # Entropy
