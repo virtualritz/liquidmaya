@@ -94,9 +94,18 @@ global proc liqRVExposure( float $val )
   //print ("$exposure = "+$exposure+"\n");
 
   if ( $exposure > 1 ) {
+
+    string $editor = `liqGetRVPanel`;
+    string $caption = `renderWindowEditor -q -caption $editor`;
+
     if ( `filetest -r $last` ) liquidRenderView -camera $cam -renderFromFile 1 -bucketFile $last -quantize 0 $exposure 0 255 -timeout 10;
+
+    $caption = "Exposure : " + $newExp + " f-stop";
+    renderWindowEditor -e -caption $caption $editor;
+
     $gLiqLastExposed = $last;
     $gLiqLastExposure = $newExp;
+
   }
 
 }
@@ -104,6 +113,19 @@ global proc liqRVExposure( float $val )
 global proc liquidRVOptions()
 {
   // coming soon
+}
+
+global proc int liqRVGetAutoSaveState()
+{
+  if ( !`optionVar -ex liquidRenderViewAutoSave` ) {
+    optionVar -intValue liquidRenderViewAutoSave 1;
+  }
+  return (`optionVar -q liquidRenderViewAutoSave`);
+}
+
+global proc liqRVToggleAutoSaveState()
+{
+  optionVar -iv liquidRenderViewAutoSave (1-`liqRVGetAutoSaveState`);
 }
 
 global proc liqRenderViewMenu( string $editor)
@@ -136,9 +158,12 @@ global proc liqRenderViewMenu( string $editor)
               -command  ("if ( `menuItem -q -cb "+$editor+"RVLazyCompute` && objExists( \"liquidGlobals\" ) ) setAttr liquidGlobals.lazyCompute 1;"+
                          "else setAttr liquidGlobals.lazyCompute 0;")
               ($editor + "RVLazyCompute");
-    //menuItem  -label    "RenderView Options..."
-    //          -command  "liquidRVOptions"
-    //          ($editor + "RVoptions");
+    menuItem  -divider true;
+    menuItem  -label    "Auto-Save Images"
+              -checkBox (`liqRVGetAutoSaveState`)
+              -postMenuCommand  ("menuItem -e -cb "+liqRVGetAutoSaveState()+" "+$editor+"RVAutoSave;")
+              -command  "liqRVToggleAutoSaveState();"
+              ($editor + "RVAutoSave");
 
   }
 
@@ -166,7 +191,7 @@ global proc string liquidmayaRender(int $resolution0, int $resolution1, int $doS
 	  optionVar -remove "renderViewTestResolution";
 	 }
   }
-  
+
   string $editor = `liqGetRVPanel`;
   liqRenderViewMenu( $editor );
   renderWindowEditor -e -dbf $editor;
@@ -186,6 +211,7 @@ global proc liquidmayaRenderRegion( string $editor )
 
 global proc liquidSaveRenderViewImage()
 {
+  if ( liqRVGetAutoSaveState() == 0 ) return;
   string $editor = `liqGetRVPanel`;
 
   int $currentImage = `renderWindowEditor -q -displayImage $editor`;
