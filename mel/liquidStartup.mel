@@ -509,10 +509,16 @@ global proc liquidPreview()
   if ( !`liquidGlobalsExists` ) {
     liquidCreateGlobals;
   }
-  int $imageSize[2] = liquidPreview_getRenderViewResolution();
   undoInfo -stateWithoutFlush 0;
-  liquid -GL -renderView -x $imageSize[0] -y $imageSize[1];
+  int $mods = `getModifiers`;
+  if ( ($mods / 1) % 2) {
+    liquidPreviewSelected();
+  } else {
+    int $imageSize[2] = liquidPreview_getRenderViewResolution();
+    liquid -GL -renderView -x $imageSize[0] -y $imageSize[1];
+  }
   undoInfo -stateWithoutFlush 1;
+
 }
 
 global proc liquidCropPreview()
@@ -540,6 +546,7 @@ global proc liquidPreviewSelected()
   if ( !`liquidGlobalsExists` ) {
     liquidCreateGlobals;
   }
+  liqShowRV();
   int $imageSize[2] = liquidPreview_getRenderViewResolution();
   liquid -GL -renderView -x $imageSize[0] -y $imageSize[1] -sel;
 }
