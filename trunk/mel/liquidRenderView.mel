@@ -46,7 +46,7 @@ global proc string liqGetRVPanel()
   return $thePanel;
 }
 
-proc liqShowRV()
+global proc liqShowRV()
 {
   string $editor = `liqGetRVPanel`;
 
