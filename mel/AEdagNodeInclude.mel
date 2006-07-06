@@ -44,8 +44,11 @@ global proc AEdagNodeInclude ( string $nodeName )
      AEliquidInstanceFlags $nodeName;
   }
 
-  if (`objectType $nodeName` == "camera" )    AEliquidCamera      $nodeName;
-  if (`objectType $nodeName` == "areaLight" ) AEliquidAreaLight   $nodeName;
+  if (`objectType $nodeName` == "camera" )    AEliquidCamera          $nodeName;
+  if (`objectType $nodeName` == "areaLight" ) AEliquidAreaLight       $nodeName;
+  if (`objectType $nodeName` == "spotLight" ||
+      `objectType $nodeName` == "directionalLight" ||
+      `objectType $nodeName` == "pointLight" ) AEliquidShadowControls  $nodeName;
 
   AEdependNodeTemplate $nodeName;
 }

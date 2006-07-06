@@ -147,10 +147,10 @@ enum LightType {
   MRLT_Unknown  = 0,
   MRLT_Ambient  = 1,
   MRLT_Distant  = 2,
-  MRLT_Point	= 3,
-  MRLT_Spot	    = 4,
-  MRLT_Rman	    = 5,
-  MRLT_Area	    = 6
+  MRLT_Point    = 3,
+  MRLT_Spot     = 4,
+  MRLT_Rman     = 5,
+  MRLT_Area     = 6
 };
 
 enum AnimType {

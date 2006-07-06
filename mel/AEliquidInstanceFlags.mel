@@ -2,6 +2,8 @@ proc AEliquidCreateMenu()
 {
   global string $gAERootLayoutName;
 
+  if ( $gAERootLayoutName == "" ) return ;
+
   string $parent = `setParent -q`;
   setParent $gAERootLayoutName;
 

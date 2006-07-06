@@ -1111,11 +1111,9 @@ global proc liquidDeleteIgnoreShapesAttribute()
 global proc liquidCreateAreaLightAttributes()
 {
   string $nodes[] = `ls -lights -dag -sl`;
-  print $nodes;
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !objExists( ($currentNode+".liqBothSidesEmit") ) ) {
-      trace ("[liquid] "+$currentNode);
       addAttr -ln "liqBothSidesEmit" -at bool -dv 0 $currentNode;
     }
   }
@@ -1132,5 +1130,71 @@ global proc liquidDeleteAreaLightAttributes()
   }
 }
 
+global proc liquidCreateLightShadowAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !( nodeType($currentNode) == "spotLight" || nodeType($currentNode) == "pointLight" || nodeType($currentNode) == "directionalLight" ) ) {
+      warning ("These attributes can only be added to spotLights directionalLights or pointLights !");
+      continue;
+    }
+    if ( !objExists( ($currentNode+".liqShadowMapSamples") ) ) {
+      addAttr -ln "liqShadowMapSamples" -at "short" -dv 16 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".deepShadows") ) ) {
+      addAttr -ln "deepShadows" -sn "dsh" -at bool -dv 0 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".pixelSamples") ) ) {
+      addAttr -ln "pixelSamples" -sn "dps" -at "short" -dv 0 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".volumeInterpretation") ) ) {
+      addAttr -ln "volumeInterpretation" -sn "dvi" -at "enum" -enumName "Discreet:Continuous" $currentNode;
+    }
+    if ( !objExists( ($currentNode+".everyFrame") ) ) {
+      addAttr -ln "everyFrame" -sn "ef" -at bool -dv 1 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".renderAtFrame") ) ) {
+      addAttr -ln "renderAtFrame" -sn "raf" -at "short" -dv 0 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".geometrySet") ) ) {
+      addAttr -ln "geometrySet" -sn "sgs" -dt "string" $currentNode;
+    }
+    if ( !objExists( ($currentNode+".shadingRateFactor") ) ) {
+      addAttr -ln "shadingRateFactor" -sn "srf" -at "float" -dv 1.0 $currentNode;
+    }
+  }
+}
+global proc liquidDeleteLightShadowAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( objExists( ($currentNode+".liqShadowMapSamples") ) ) {
+      deleteAttr ( $currentNode+".liqShadowMapSamples" );
+    }
+    if ( objExists( ($currentNode+".deepShadows") ) ) {
+      deleteAttr ( $currentNode+".deepShadows" );
+    }
+    if ( objExists( ($currentNode+".pixelSamples") ) ) {
+      deleteAttr ( $currentNode+".pixelSamples" );
+    }
+    if ( objExists( ($currentNode+".volumeInterpretation") ) ) {
+      deleteAttr ( $currentNode+".volumeInterpretation" );
+    }
+    if ( objExists( ($currentNode+".everyFrame") ) ) {
+      deleteAttr ( $currentNode+".everyFrame" );
+    }
+    if ( objExists( ($currentNode+".renderAtFrame") ) ) {
+      deleteAttr ( $currentNode+".renderAtFrame" );
+    }
+    if ( objExists( ($currentNode+".geometrySet") ) ) {
+      deleteAttr ( $currentNode+".geometrySet" );
+    }
+    if ( objExists( ($currentNode+".shadingRateFactor") ) ) {
+      deleteAttr ( $currentNode+".shadingRateFactor" );
+    }
+  }
+}
 
 
