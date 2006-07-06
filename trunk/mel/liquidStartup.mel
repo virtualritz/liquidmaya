@@ -69,6 +69,7 @@ global proc liquidLoadScripts()
     "AEliquidNurbsCurveShape.mel",
     "AEliquidSetFlags.mel",
     "AEliquidCamera.mel",
+    "AEliquidShadowControls.mel",
     "AEliquidSubdivisionSurfaceShape.mel",
     "AEobjectSetTemplate.mel",
     "AEoldBlindDataBaseTemplate.mel",
@@ -282,6 +283,9 @@ global proc liquidCreateLightsAttributesMenu( string $prefix )
   menuItem -label "Light Attributes" -subMenu true -tearOff true;
     menuItem -label "Create Area Light Attributes" -command liquidCreateAreaLightAttributes -ann "Add Area Light attributes to selected Light shape node(s)";
     menuItem -label "Remove Area Light Attributes" -command liquidDeleteAreaLightAttributes -ann "Remove Area Light attributes from selected Light shape node(s)";
+    menuItem -d true;
+    menuItem -label "Create Shadow Attributes" -command liquidCreateLightShadowAttributes -ann "Add shadow attributes to selected Light shape node(s)";
+    menuItem -label "Remove Shadow Attributes" -command liquidDeleteLightShadowAttributes -ann "Remove shadow attributes from selected Light shape node(s)";
     menuItem -d true;
     menuItem -label "Create Ray Tracing Group" -command liquidCreateLightRayTracingAttributes -ann "Add Ray Tracing attributes to selected Light Transform node(s)";
     menuItem -label "Ray Tracing Add" -subMenu true -tearOff true;

@@ -495,7 +495,9 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
     }
   } else {
     if( !rayTraced ) {
+
       fnLight.findPlug( "useDepthMapShadows" ).getValue( usingShadow );
+
     }
   }
 #else
@@ -550,13 +552,16 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
           if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" )) {
             shadowName       = autoShadowName();
           }
+          MPlug samplePlug = lightDepNode.findPlug( "liqShadowMapSamples", &status );
+          if ( status == MS::kSuccess ) samplePlug.getValue(shadowSamples);
+          else shadowSamples = fnDistantLight.numShadowSamples( &status );
         } else {
           shadowName = "raytrace";
+          shadowSamples = fnDistantLight.numShadowSamples( &status );
         }
 
         shadowFilterSize = fnDistantLight.depthMapFilterSize( &status );
         shadowBias       = fnDistantLight.depthMapBias( &status );
-        shadowSamples    = fnDistantLight.numShadowSamples( &status );
         // Philippe : on a distant light, it seems that shadow radius always returns 0.
         shadowRadius     = fnDistantLight.shadowRadius( &status );
       }
@@ -570,8 +575,14 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       if ( liqglo_doShadows && usingShadow ) {
         shadowFilterSize = fnPointLight.depthMapFilterSize( &status );
         shadowBias       = fnPointLight.depthMapBias( &status );
-        shadowSamples    = fnPointLight.numShadowSamples( &status );
         shadowRadius     = fnPointLight.shadowRadius( &status );
+        if ( !rayTraced ) {
+          MPlug samplePlug = lightDepNode.findPlug( "liqShadowMapSamples", &status );
+          if ( status == MS::kSuccess ) samplePlug.getValue(shadowSamples);
+          else shadowSamples = fnPointLight.numShadowSamples( &status );
+        } else {
+          shadowSamples = fnPointLight.numShadowSamples( &status );
+        }
       }
 
     } else if ( light.hasFn( MFn::kSpotLight ) ) {
@@ -592,12 +603,15 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
           if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" ) ) {
             shadowName       = autoShadowName();
           }
+          MPlug samplePlug = lightDepNode.findPlug( "liqShadowMapSamples", &status );
+          if ( status == MS::kSuccess ) samplePlug.getValue(shadowSamples);
+          else shadowSamples = fnSpotLight.numShadowSamples( &status );
         } else {
           shadowName = "raytrace";
+          shadowSamples    = fnSpotLight.numShadowSamples( &status );
         }
         shadowFilterSize = fnSpotLight.depthMapFilterSize( &status );
         shadowBias       = fnSpotLight.depthMapBias( &status );
-        shadowSamples    = fnSpotLight.numShadowSamples( &status );
         shadowRadius     = fnSpotLight.shadowRadius( &status );
       }
     } else if ( light.hasFn( MFn::kAreaLight ) ) {

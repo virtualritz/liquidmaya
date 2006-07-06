@@ -55,6 +55,7 @@ global proc liqShowRV()
     string $wins[] = `lsUI -windows`;
     for ( $w in $wins ) {
       if ($w == "renderViewWindow") {
+        liqRenderViewMenu( $editor );
         showWindow $w;
         return;
       }
@@ -65,11 +66,15 @@ global proc liqShowRV()
     // maybe it is in a docked panel ?
     string $panels[] = `getPanel -vis`;
     for ( $p in $panels ) {
-      if ($p == $editor) return;
+      if ($p == $editor) {
+        liqRenderViewMenu( $editor );
+        return;
+      }
     }
   }
 
   // let's tear it off, then !
+  liqRenderViewMenu( $editor );
   scriptedPanel -edit -tearOff $editor;
 
 }
@@ -139,6 +144,7 @@ global proc liqRenderViewMenu( string $editor)
     menu  -label              "Liquid"
           -tearOff            true
           -allowOptionBoxes   true
+          -parent             $editor
           ($editor + "LiquidRVMenu");
 
     menuItem  -label    "+ 0.5 f-stop"
@@ -193,7 +199,6 @@ global proc string liquidmayaRender(int $resolution0, int $resolution1, int $doS
   }
 
   string $editor = `liqGetRVPanel`;
-  liqRenderViewMenu( $editor );
   renderWindowEditor -e -dbf $editor;
   string $renderCamera = `getAttr liquidGlobals.renderCamera`;
   renderWindowEditor -e -currentCamera $renderCamera $editor;

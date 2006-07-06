@@ -3766,6 +3766,45 @@ MStatus liqRibTranslator::buildJobs()
 
           fnLightShaderNode.findPlug( "shadingRateFactor" ).getValue( thisJob.shadingRateFactor );
 
+        } else {
+
+          /* Here we support the same options as those found on light shader nodes
+             but we look for dynamic attributes, so we need a bit more error checking.
+           */
+
+          MPlug paramPlug = fnLightNode.findPlug( "deepShadows", &status );
+          if ( status == MS::kSuccess ) {
+            paramPlug.getValue( thisJob.deepShadows );
+          }
+          if ( thisJob.deepShadows ) {
+            paramPlug = fnLightNode.findPlug( "pixelSamples", &status );
+            if ( status == MS::kSuccess ) {
+              paramPlug.getValue( thisJob.shadowPixelSamples );
+            }
+            paramPlug = fnLightNode.findPlug( "volumeInterpretation", &status );
+            if ( status == MS::kSuccess ) {
+              paramPlug.getValue( thisJob.shadowVolumeInterpretation );
+            }
+          }
+          paramPlug = fnLightNode.findPlug( "everyFrame", &status );
+          if ( status == MS::kSuccess ) {
+            paramPlug.getValue( thisJob.everyFrame );
+          }
+          if ( !thisJob.everyFrame ) {
+            paramPlug = fnLightNode.findPlug( "renderAtFrame", &status );
+            if ( status == MS::kSuccess ) {
+              paramPlug.getValue( thisJob.renderFrame );
+            }
+          }
+          paramPlug = fnLightNode.findPlug( "geometrySet", &status );
+          if ( status == MS::kSuccess ) {
+            paramPlug.getValue( thisJob.shadowObjectSet );
+          }
+          paramPlug = fnLightNode.findPlug( "shadingRateFactor", &status );
+          if ( status == MS::kSuccess ) {
+            paramPlug.getValue( thisJob.shadingRateFactor );
+          }
+
         }
 
         // this will store the shadow camera path and the test's result

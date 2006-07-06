@@ -94,28 +94,27 @@ void liqRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringArray
       if ( plugObj.apiType() == MFn::kVectorArrayData ) {
         MFnVectorArrayData  fnVectorArrayData( plugObj );
         MVectorArray vectorArrayData = fnVectorArrayData.array( &status );
-        tokenPointerPair.set(
-          cutString.asChar(),
-          pType,
-          ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
-          true,
-          false,
-          vectorArrayData.length() );
+        tokenPointerPair.set(   cutString.asChar(),
+                                pType,
+                                ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+                                true,
+                                false,
+                                vectorArrayData.length() );
         for ( int kk = 0; kk < vectorArrayData.length(); kk++ ) {
           tokenPointerPair.setTokenFloat( kk, vectorArrayData[kk].x, vectorArrayData[kk].y, vectorArrayData[kk].z );
         }
-        tokenPointerPair.setDetailType( rVertex );
+        if ( type() == MRT_Mesh && pType == rNormal ) tokenPointerPair.setDetailType( rFaceVarying );
+        else tokenPointerPair.setDetailType( rVertex );
         tokenPointerArray.push_back( tokenPointerPair );
       } else {
         // Hmmmm float ? double ?
         float x, y, z;
-        tokenPointerPair.set(
-          cutString.asChar(),
-          pType,
-          ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
-          false,
-          false,
-          0 );
+          tokenPointerPair.set( cutString.asChar(),
+                                pType,
+                                ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+                                false,
+                                false,
+                                0 );
         vPlug.child(0).getValue( x );
         vPlug.child(1).getValue( y );
         vPlug.child(2).getValue( z );
@@ -152,6 +151,7 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
   MStringArray normalAttributesFound = findAttributesByPrefix( "rmanN", nodeFn );
   MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodeFn );
   MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );
+
 
   if ( floatAttributesFound.length() > 0 ) {
     for ( i = 0; i < floatAttributesFound.length(); i++ ) {
@@ -207,13 +207,12 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
       if ( plugObj.apiType() == MFn::kPointArrayData ) {
         MFnPointArrayData  fnPointArrayData( plugObj );
         MPointArray pointArrayData = fnPointArrayData.array( &status );
-        tokenPointerPair.set(
-          cutString.asChar(),
-          rPoint,
-          ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
-          true,
-          false,
-          pointArrayData.length() );
+        tokenPointerPair.set( cutString.asChar(),
+                              rPoint,
+                              ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+                              true,
+                              false,
+                              pointArrayData.length() );
         if ( type() == MRT_Nurbs || type() == MRT_NuCurve ) {
           for ( int kk = 0; kk < pointArrayData.length(); kk++ ) {
             tokenPointerPair.setTokenFloat( kk, pointArrayData[kk].x, pointArrayData[kk].y, pointArrayData[kk].z, pointArrayData[kk].w );
@@ -228,12 +227,12 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
         // Hmmmm float ? double ?
         float x, y, z;
         tokenPointerPair.set(
-          cutString.asChar(),
-          rPoint,
-          ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
-          false,
-          false,
-          0 );
+                cutString.asChar(),
+                rPoint,
+                ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+                false,
+                false,
+                0 );
         // Hmmm should check as for arrays if we are in nurbs mode : 4 values
         pPlug.child(0).getValue( x );
         pPlug.child(1).getValue( y );
