@@ -73,10 +73,11 @@ SOURCE=..\..\liqMayaDisplayDriver3Delight.cpp
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquidarea.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquidarea.sl
 
-"..\..\..\liquidarea.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"..\..\..\shaders\liquidarea.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquidarea.sdl
 
 # End Custom Build
@@ -84,10 +85,11 @@ InputPath=..\..\..\shaders\src\liquidarea.sl
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquidchecker.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquidchecker.sl
 
-"..\..\..\liquidchecker.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"..\..\..\shaders\liquidchecker.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquidchecker.sdl
 
 # End Custom Build
@@ -95,10 +97,11 @@ InputPath=..\..\..\shaders\src\liquidchecker.sl
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquiddistant.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquiddistant.sl
 
-"..\..\..\liquiddistant.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"..\..\..\shaders\liquiddistant.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquiddistant.sdl
 
 # End Custom Build
@@ -106,10 +109,11 @@ InputPath=..\..\..\shaders\src\liquiddistant.sl
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquidpoint.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquidpoint.sl
 
-"..\..\..\liquidpoint.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"..\..\..\shaders\liquidpoint.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquidpoint.sdl
 
 # End Custom Build
@@ -117,10 +121,11 @@ InputPath=..\..\..\shaders\src\liquidpoint.sl
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquidspot.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquidspot.sl
 
-"..\..\..\liquidspot.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"..\..\..\shaders\liquidspot.sdl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	"$(DELIGHT)\bin\shaderdl.exe" $(InputPath) -o ..\..\..\shaders\liquidspot.sdl
 
 # End Custom Build

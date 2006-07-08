@@ -30,6 +30,7 @@ mkdir $RPM_BUILD_ROOT
 %build
 export LIQRMAN=3delight
 export MAYA_LOCATION=/usr/aw/maya
+export CPP=g++334
 cd shaders
 sh compile.sh
 cd ..
@@ -38,7 +39,7 @@ make release
 %install
 export LIQRMAN=3delight
 mkdir -p $RPM_BUILD_ROOT/usr/aw/maya/bin/plug-ins
-make DESTDIR=$RPM_BUILD_ROOT install3delight
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -62,3 +63,5 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/liquid/displayDrivers/3Delight/*.dpy
 %dir /usr/share/liquid/shaders
 /usr/share/liquid/shaders/*.sdl
+%dir /usr/share/liquid/shaders/src
+/usr/share/liquid/shaders/src/*.sl
