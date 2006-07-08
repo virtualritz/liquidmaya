@@ -32,6 +32,7 @@ export LIQRMAN=pixie
 export PIXIEHOME=/opt/pixie
 export MAYA_LOCATION=/usr/aw/maya
 export PATH=$PATH:/opt/pixie/bin
+export CPP=g++334
 cd shaders
 sh compile.sh
 cd ..
@@ -43,7 +44,7 @@ export PIXIEHOME=/opt/pixie
 export MAYA_LOCATION=/usr/aw/maya
 export PATH=$PATH:/opt/pixie/bin
 mkdir -p $RPM_BUILD_ROOT/usr/aw/maya/bin/plug-ins
-make DESTDIR=$RPM_BUILD_ROOT installpixie
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -67,3 +68,5 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/liquid/displayDrivers/Pixie/*.so
 %dir /usr/share/liquid/shaders
 /usr/share/liquid/shaders/*.sdr
+%dir /usr/share/liquid/shaders/src
+/usr/share/liquid/shaders/src/*.sl

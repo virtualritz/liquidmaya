@@ -76,6 +76,7 @@ SOURCE=..\..\..\include\liqMayaDisplayDriver.h
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquidchecker.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquidchecker.sl
 
@@ -87,6 +88,7 @@ InputPath=..\..\..\shaders\src\liquidchecker.sl
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquiddistant.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquiddistant.sl
 
@@ -98,6 +100,7 @@ InputPath=..\..\..\shaders\src\liquiddistant.sl
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquidpoint.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquidpoint.sl
 
@@ -109,6 +112,7 @@ InputPath=..\..\..\shaders\src\liquidpoint.sl
 # Begin Source File
 
 SOURCE=..\..\..\shaders\src\liquidspot.sl
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\..\..\shaders\src\liquidspot.sl
 
