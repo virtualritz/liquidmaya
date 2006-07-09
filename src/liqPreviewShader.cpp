@@ -362,16 +362,48 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
  */
 int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *options )
 {
+  // Get the Pathes in globals node
+  MObject globalObjNode;
+  MString liquidShaderPath = "",liquidTexturePath = "",liquidProceduralPath = "";
   MStatus status;
+  MSelectionList globalList;
+  status = globalList.add( "liquidGlobals" );
+  if ( globalList.length() > 0 ) {
+    status.clear();
+    status = globalList.getDependNode( 0, globalObjNode );
+    if ( status == MS::kSuccess ) {
+	  MPlug shaderPlug;
+	  MFnDependencyNode globalNode( globalObjNode );
+      status.clear();
+	  shaderPlug = globalNode.findPlug( "shaderPath", &status );
+	  if ( status == MStatus::kSuccess )
+        shaderPlug.getValue( liquidShaderPath );
+      status.clear();
+	  shaderPlug = globalNode.findPlug( "texturePath", &status );
+	  if ( status == MStatus::kSuccess )
+        shaderPlug.getValue( liquidTexturePath );
+      status.clear();
+	  shaderPlug = globalNode.findPlug( "proceduralPath", &status );
+	  if ( status == MStatus::kSuccess )
+        shaderPlug.getValue( liquidProceduralPath );
+    }
+  }
+
   if( fileName )
     RiBegin( const_cast<char *>(fileName) );
   else
     RiBegin( NULL );
 
   char* liquidPath = getenv("LIQUIDHOME");
-  MString shaderPath = "&:@:.:~:" + MString(liquidPath) + "/shaders";
+  MString shaderPath = "&:@:.:~:" + MString(liquidPath) + "/shaders" + ":" + liquidShaderPath;
   RtString list = const_cast< char* > ( shaderPath.asChar() );
   RiOption( "searchpath", "shader", &list, RI_NULL );
+  RtString texPath = const_cast< char* > ( liquidTexturePath.asChar() );
+  if( texPath[0] != '\0' )
+	  RiOption ("searchpath","texture", &texPath, NULL);
+  RtString procPath = const_cast< char* > ( liquidProceduralPath.asChar() );
+  if( procPath[0] != '\0' )
+	  RiOption ("searchpath","procedural", &procPath, NULL);
 
   RiFrameBegin( 1 );
   RiShadingRate( ( options->shadingRate ) );
