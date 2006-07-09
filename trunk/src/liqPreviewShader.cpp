@@ -375,10 +375,6 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
 	  MPlug shaderPlug;
 	  MFnDependencyNode globalNode( globalObjNode );
       status.clear();
-	  shaderPlug = globalNode.findPlug( "shaderPath", &status );
-	  if ( status == MStatus::kSuccess )
-        shaderPlug.getValue( liquidShaderPath );
-      status.clear();
 	  shaderPlug = globalNode.findPlug( "texturePath", &status );
 	  if ( status == MStatus::kSuccess )
         shaderPlug.getValue( liquidTexturePath );
@@ -395,7 +391,7 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     RiBegin( NULL );
 
   char* liquidPath = getenv("LIQUIDHOME");
-  MString shaderPath = "&:@:.:~:" + MString(liquidPath) + "/shaders" + ":" + liquidShaderPath;
+  MString shaderPath = "&:@:.:~:" + MString(liquidPath) + "/shaders";
   RtString list = const_cast< char* > ( shaderPath.asChar() );
   RiOption( "searchpath", "shader", &list, RI_NULL );
   RtString texPath = const_cast< char* > ( liquidTexturePath.asChar() );
