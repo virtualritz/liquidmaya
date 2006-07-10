@@ -103,9 +103,17 @@ void liqRibData::parseVectorAttributes( MFnDependencyNode & nodeFn, MStringArray
         for ( int kk = 0; kk < vectorArrayData.length(); kk++ ) {
           tokenPointerPair.setTokenFloat( kk, vectorArrayData[kk].x, vectorArrayData[kk].y, vectorArrayData[kk].z );
         }
-        if ( type() == MRT_Mesh && pType == rNormal ) tokenPointerPair.setDetailType( rFaceVarying );
-        else tokenPointerPair.setDetailType( rVertex );
+
+        // should it be per vertex or face-varying
+        if ( ( ( type() == MRT_Mesh ) || ( type() == MRT_Subdivision ) ) && ( vectorArrayData.length() == faceVaryingCount ) ) {
+          tokenPointerPair.setDetailType( rFaceVarying);
+        } else {
+          tokenPointerPair.setDetailType( rVertex );
+        }
+
+        // store it all
         tokenPointerArray.push_back( tokenPointerPair );
+
       } else {
         // Hmmmm float ? double ?
         float x, y, z;
@@ -133,8 +141,9 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
   unsigned i;
 
   // work out how many elements there would be in a facevarying array if a mesh or subD
-  unsigned faceVaryingCount = 0;
+  // faceVaryingCount is a private data member
   if ( ( type() == MRT_Mesh ) || ( type() == MRT_Subdivision ) ) {
+    faceVaryingCount = 0;
     MFnMesh fnMesh( node );
     for ( uint pOn = 0; pOn < fnMesh.numPolygons(); pOn++ ) {
       faceVaryingCount += fnMesh.polygonVertexCount( pOn );

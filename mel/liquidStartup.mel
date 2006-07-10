@@ -361,6 +361,9 @@ global proc liquidCreateMenus()
       menuItem -label "Reference Geometry" -subMenu true -tearOff true;
         menuItem -label "Freeze Reference Pose (__Pref)" -command liquidAddPrefAttribute -ann "Lock reference attribute (__Pref) to current position";
         menuItem -label "Delete Reference Pose" -command liquidDeletePrefAttribute -ann "Delete reference attribute (__Pref)";
+        menuItem -d true;
+        menuItem -label "Freeze Reference Normals (__Nref)" -command liquidAddNrefAttribute -ann "Lock reference attribute (__Nref) to current normals";
+        menuItem -label "Delete Reference Normals" -command liquidDeleteNrefAttribute -ann "Delete reference attribute (__Nref)";
       setParent -menu ..;
       menuItem -d true;
       menuItem -label "Create Coordinate System" -command liquidAddCoordSystem;

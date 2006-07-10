@@ -51,6 +51,7 @@ public:
 private:
   MStringArray  objectNames;
   bool          worldSpace;
+  bool          exportN;
 };
 
 #endif
