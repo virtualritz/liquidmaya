@@ -72,6 +72,7 @@ extern "C" {
 #include <maya/MItSurfaceCV.h>
 #include <maya/MPointArray.h>
 #include <maya/MFnPointArrayData.h>
+#include <maya/MFnVectorArrayData.h>
 #include <maya/MFnMesh.h>
 #include <maya/MFnNurbsSurface.h>
 #include <maya/MPxCommand.h>
@@ -104,6 +105,7 @@ MSyntax liqAttachPrefAttribute::syntax()
   syn.useSelectionAsDefault( true );
 
   syn.addFlag("ws", "worldSpace");
+  syn.addFlag("en", "exportN");
 
   return syn;
 }
@@ -126,6 +128,12 @@ MStatus liqAttachPrefAttribute::doIt(const MArgList& args)
     worldSpace = true;
   }
 
+  exportN = false;
+  flagIndex = args.flagIndex("en", "exportN");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    exportN = true;
+  }
+
   //cout <<">> got "<<objectNames.length()<<" objects to PREF !"<<endl;
 
   return redoIt();
@@ -146,12 +154,21 @@ MStatus	liqAttachPrefAttribute::redoIt()
     nodeList.getDagPath( 0, dagNode );
     MFnDependencyNode depNode( depNodeObj );
     MObject prefAttr;
+    MString attrName, varName;
 
-    if ( liquidRenderer.requires__PREF ) {
-      prefAttr = tAttr.create( "rmanP__Pref", "rmanP__Pref", MFnData::kPointArray );
-    } else {
-      prefAttr = tAttr.create( "rmanPPref", "rmanPPref", MFnData::kPointArray );
-    }
+    // make sure the renderer description is up to date
+    liquidRenderer.setRenderer();
+
+    // build the name of the attribute
+    varName = ( ( exportN && depNodeObj.hasFn( MFn::kMesh ) )? "N":"P" );
+    attrName = "rman";
+    attrName += varName;
+    attrName += ( ( liquidRenderer.requires__PREF )? "__":"" );
+    attrName += varName + "ref";
+
+    // create the attribute
+    prefAttr = tAttr.create( attrName, attrName, MFnData::kPointArray );
+
 
     if ( depNodeObj.hasFn( MFn::kNurbsSurface ) ) {
       MFnNurbsSurface nodeFn( depNodeObj );
@@ -177,6 +194,7 @@ MStatus	liqAttachPrefAttribute::redoIt()
       nodePlug.setValue( prefDefault );
 
     } else if ( depNodeObj.hasFn( MFn::kMesh ) ) {
+
       MFnMesh nodeFn( depNodeObj );
       // Moritz: modified this line to dim nodePArray -- otherwise
       // nodePArray.set() in the wile loop below throws an exception
@@ -186,31 +204,77 @@ MStatus	liqAttachPrefAttribute::redoIt()
 
       nodeFn.addAttribute( prefAttr );
 
-      // TODO: do we need to account for the altMeshExport algo that's
-      // used in liquidRibMeshData?
-      // Moritz: no, it's basically the same as the algo below
-      for ( MItMeshPolygon polyIt( dagNode, MObject::kNullObj ); !polyIt.isDone(); polyIt.next()) {
-        count = polyIt.polygonVertexCount();
+      if ( exportN ) {
+        // export Nref
 
-        {
-            char pointstr[256];
-            sprintf( pointstr, "Points: %d" , count );
-            MGlobal::displayInfo( pointstr );
+        unsigned vertex;
+        unsigned normal;
+        unsigned face = 0;
+        unsigned faceVertex = 0;
+        unsigned int numNormals = nodeFn.numNormals();
+        unsigned int numPoints  = nodeFn.numVertices();
+        MFloatVectorArray normals;
+        MVectorArray normalAttArray;
+        nodeFn.getNormals( normals );
+
+        if ( numNormals > numPoints ) {
+          // if we get more than 1 normal per vertex,
+          // force the arraysize to the full facevarying size
+          uint faceVaryingCount = 0;
+          for ( uint pOn = 0; pOn < nodeFn.numPolygons(); pOn++ ) {
+            faceVaryingCount += nodeFn.polygonVertexCount( pOn );
+          }
+          normalAttArray.setLength( faceVaryingCount );
+        } else {
+          normalAttArray.setLength(normals.length());
         }
 
-        while ( count > 0 ) {
-          --count;
-          unsigned	vertexIndex = polyIt.vertexIndex( count );
-          MPoint nodePoint = (worldSpace)? polyIt.point( count, MSpace::kWorld ) : polyIt.point( count, MSpace::kObject );
-          // Moritz: this returns MS::kFailure but seems to work?!
-          nodePArray.set( nodePoint, vertexIndex );
+        for ( MItMeshPolygon polyIt ( depNodeObj ); polyIt.isDone() == false; polyIt.next() ) {
+          count = polyIt.polygonVertexCount();
+
+          while ( count > 0 ) {
+            --count;
+            normal = polyIt.normalIndex( count );
+            vertex = polyIt.vertexIndex( count );
+
+            if( numNormals == numPoints )
+              normalAttArray.set(normals[normal], vertex);
+            else
+              normalAttArray.set(normals[normal], faceVertex);
+
+            ++faceVertex;
+          }
+          ++face;
         }
+
+        MFnVectorArrayData pArrayData;
+        MObject prefDefault = pArrayData.create( normalAttArray );
+        MPlug nodePlug( depNodeObj, prefAttr );
+        nodePlug.setValue( prefDefault );
+
+      } else {
+        // TODO: do we need to account for the altMeshExport algo that's
+        // used in liquidRibMeshData?
+        // Moritz: no, it's basically the same as the algo below
+        for ( MItMeshPolygon polyIt( dagNode, MObject::kNullObj ); !polyIt.isDone(); polyIt.next()) {
+          count = polyIt.polygonVertexCount();
+
+          while ( count > 0 ) {
+            --count;
+            unsigned	vertexIndex = polyIt.vertexIndex( count );
+            MPoint nodePoint = (worldSpace)? polyIt.point( count, MSpace::kWorld ) : polyIt.point( count, MSpace::kObject );
+            // Moritz: this returns MS::kFailure but seems to work?!
+            nodePArray.set( nodePoint, vertexIndex );
+          }
+        }
+
+        MFnPointArrayData pArrayData;
+        MObject prefDefault = pArrayData.create( nodePArray );
+        MPlug nodePlug( depNodeObj, prefAttr );
+        nodePlug.setValue( prefDefault );
+
       }
 
-      MFnPointArrayData pArrayData;
-      MObject prefDefault = pArrayData.create( nodePArray );
-      MPlug nodePlug( depNodeObj, prefAttr );
-      nodePlug.setValue( prefDefault );
     } else cerr << "Neither a Nurbs nor a Mesh !!" << endl;
   }
 
