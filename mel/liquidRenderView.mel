@@ -79,6 +79,10 @@ global proc liqShowRV()
 
 }
 
+/**
+ *  compute new exposure and display it in the renderView.
+ *  we match lab f-stops ( 12 printer lights per f-stop )
+ */
 global proc liqRVExposure( float $val )
 {
   global int $gLiqLastRenderIsRenderRegion;
@@ -96,7 +100,7 @@ global proc liqRVExposure( float $val )
 
   float $newExp = $gLiqLastExposure + $val;
   float $exposure = exp( $newExp ) * 255;
-  //print ("$exposure = "+$exposure+"\n");
+  //trace ("$exposure = "+$exposure+"\n");
 
   if ( $exposure > 1 ) {
 
@@ -147,14 +151,20 @@ global proc liqRenderViewMenu( string $editor)
           -parent             $editor
           ($editor + "LiquidRVMenu");
 
-    menuItem  -label    "+ 0.5 f-stop"
+    menuItem  -label    "+ 0.25 f-stop"
               -command  "liqRVExposure 0.25"
+              -ctl      true
+              -ke       "+"
               ($editor + "RVexposureUp");
-    menuItem  -label    "- 0.5 f-stop"
+    menuItem  -label    "- 0.25 f-stop"
               -command  "liqRVExposure -0.25"
+              -ctl      true
+              -ke       "-"
               ($editor + "RVexposureDown");
     menuItem  -label    "original exposure"
               -command  "liqRVExposure 0"
+              -ctl      true
+              -ke       "0"
               ($editor + "RVexposureReset");
     menuItem  -divider true;
     menuItem  -label    "Lazy Compute"
