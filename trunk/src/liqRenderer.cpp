@@ -125,15 +125,13 @@ void liqRenderer::setRenderer()
           featurePlug.getValue( enabled );
           feature = feature.toLowerCase();
 
-          if ( enabled ) {
-            if ( feature == "blobbies" )            supports_BLOBBIES             = true;
-            if ( feature == "points" )              supports_POINTS               = true;
-            if ( feature == "eyesplits" )           supports_EYESPLITS            = true;
-            if ( feature == "raytracing" )          supports_RAYTRACE             = true;
-            if ( feature == "depthoffield" )        supports_DOF                  = true;
-            if ( feature == "advancedvisibility" )  supports_ADVANCED_VISIBILITY  = true;
-            if ( feature == "displaychannels" )     supports_DISPLAY_CHANNELS     = true;
-          }
+          if ( feature == "blobbies" )            supports_BLOBBIES             = enabled;
+          if ( feature == "points" )              supports_POINTS               = enabled;
+          if ( feature == "eyesplits" )           supports_EYESPLITS            = enabled;
+          if ( feature == "raytracing" )          supports_RAYTRACE             = enabled;
+          if ( feature == "depthoffield" )        supports_DOF                  = enabled;
+          if ( feature == "advancedvisibility" )  supports_ADVANCED_VISIBILITY  = enabled;
+          if ( feature == "displaychannels" )     supports_DISPLAY_CHANNELS     = enabled;
         }
       }
     }
@@ -154,19 +152,17 @@ void liqRenderer::setRenderer()
           filterPlug.getValue( enabled );
           filter = filter.toLowerCase();
 
-          if ( enabled ) {
-            if ( filter == "box" )                   pixelfilter_BOX             = true;
-            if ( filter == "triangle" )              pixelfilter_TRIANGLE        = true;
-            if ( filter == "catmull_rom" )           pixelfilter_CATMULLROM      = true;
-            if ( filter == "gaussian" )              pixelfilter_GAUSSIAN        = true;
-            if ( filter == "sinc" )                  pixelfilter_SINC            = true;
-            if ( filter == "blackman_harris" )       pixelfilter_BLACKMANHARRIS  = true;
-            if ( filter == "mitchell" )              pixelfilter_MITCHELL        = true;
-            if ( filter == "separablecatmull_rom" )  pixelfilter_SEPCATMULLROM   = true;
-            if ( filter == "lanczos" )               pixelfilter_LANCZOS         = true;
-            if ( filter == "bessel" )                pixelfilter_BESSEL          = true;
-            if ( filter == "disk" )                  pixelfilter_DISK            = true;
-          }
+          if ( filter == "box" )                   pixelfilter_BOX             = enabled;
+          if ( filter == "triangle" )              pixelfilter_TRIANGLE        = enabled;
+          if ( filter == "catmull_rom" )           pixelfilter_CATMULLROM      = enabled;
+          if ( filter == "gaussian" )              pixelfilter_GAUSSIAN        = enabled;
+          if ( filter == "sinc" )                  pixelfilter_SINC            = enabled;
+          if ( filter == "blackman_harris" )       pixelfilter_BLACKMANHARRIS  = enabled;
+          if ( filter == "mitchell" )              pixelfilter_MITCHELL        = enabled;
+          if ( filter == "separablecatmull_rom" )  pixelfilter_SEPCATMULLROM   = enabled;
+          if ( filter == "lanczos" )               pixelfilter_LANCZOS         = enabled;
+          if ( filter == "bessel" )                pixelfilter_BESSEL          = enabled;
+		  if ( filter == "disk" )                  pixelfilter_DISK            = enabled;
         }
       }
     }
@@ -187,14 +183,12 @@ void liqRenderer::setRenderer()
           hiderPlug.getValue( enabled );
           hider = hider.toLowerCase();
 
-          if ( enabled ) {
-            if ( hider == "hidden" )      hider_HIDDEN    = true;
-            if ( hider == "photon" )      hider_PHOTON    = true;
-            if ( hider == "zbuffer" )     hider_ZBUFFER   = true;
-            if ( hider == "raytrace" )    hider_RAYTRACE  = true;
-            if ( hider == "opengl" )      hider_OPENGL    = true;
-            if ( hider == "depthmask" )   hider_DEPTHMASK = true;
-          }
+          if ( hider == "hidden" )      hider_HIDDEN    = enabled;
+          if ( hider == "photon" )      hider_PHOTON    = enabled;
+          if ( hider == "zbuffer" )     hider_ZBUFFER   = enabled;
+          if ( hider == "raytrace" )    hider_RAYTRACE  = enabled;
+          if ( hider == "opengl" )      hider_OPENGL    = enabled;
+          if ( hider == "depthmask" )   hider_DEPTHMASK = enabled;
         }
       }
     }
@@ -215,11 +209,9 @@ void liqRenderer::setRenderer()
           requiredPlug.getValue( enabled );
           required = required.toLowerCase();
 
-          if ( enabled ) {
-            if ( required == "swap_uv" )     requires_SWAPPED_UVS  = true;
-            if ( required == "__pref" )      requires__PREF        = true;
-            if ( required == "makeshadow" )  requires_MAKESHADOW   = true;
-          }
+          if ( required == "swap_uv" )     requires_SWAPPED_UVS  = enabled;
+          if ( required == "__pref" )      requires__PREF        = enabled;
+          if ( required == "makeshadow" )  requires_MAKESHADOW   = enabled;
         }
       }
     }
