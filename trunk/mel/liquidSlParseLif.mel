@@ -64,7 +64,7 @@ global proc string getNextLine()
   global int $gLifLineNumber;
 
   string $line = "";
-  while ( ! gmatch( $line, "*;") && $gLifLineNumber != size( $gLiquidSLifFile )  ) {
+  while ( ! gmatch( $line, "*;") && $gLifLineNumber <= size( $gLiquidSLifFile )  ) {
     string $buf = ( strip( $gLiquidSLifFile[$gLifLineNumber] ) );
     if ( ! gmatch( $buf, "#*") ) $line += (" "+$buf);
     $gLifLineNumber++;
@@ -395,7 +395,7 @@ global proc liquidSlParseLif( string $shaderFile )
   int $numLines = size( $gLiquidSLifFile );
 
   // start parsing
-  while ( $gLifLineNumber < $numLines ) {
+  while ( $gLifLineNumber <= $numLines ) {
 
     string $key = match("^[a-z]+", $line);
 
