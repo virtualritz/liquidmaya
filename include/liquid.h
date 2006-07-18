@@ -140,7 +140,9 @@ enum ObjectType {
   MRT_Subdivision     = 11,
   MRT_MayaSubdivision = 12,
   MRT_Custom          = 13,
-  MRT_ClipPlane       = 14
+  MRT_ClipPlane       = 14,
+  MRT_PfxToon         = 15,
+  MRT_PfxHair         = 16
 };
 
 enum LightType {

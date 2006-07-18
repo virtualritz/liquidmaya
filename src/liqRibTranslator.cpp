@@ -1,5 +1,6 @@
 /*
 **
+**
 ** The contents of this file are subject to the Mozilla Public License Version
 ** 1.1 (the "License"); you may not use this file except in compliance with
 ** the License. You may obtain a copy of the License at
@@ -133,7 +134,7 @@ bool         liqglo_doMotion;                         // Motion blur for transfo
 bool         liqglo_doDef;                            // Motion blur for deforming objects
 bool         liqglo_doCompression;                    // output compressed ribs
 bool         liqglo_doBinary;                         // output binary ribs
-bool		 liqglo_relativeMotion;					  // Use relative motion blocks
+bool         liqglo_relativeMotion;                   // Use relative motion blocks
 RtFloat      liqglo_sampleTimes[LIQMAXMOTIONSAMPLES]; // current sample times
 RtFloat      liqglo_sampleTimesOffsets[LIQMAXMOTIONSAMPLES]; // current sample times (as offsets from frame)
 liquidlong   liqglo_motionSamples;                    // used to assign more than two motion blur samples!
@@ -151,6 +152,7 @@ double       liqglo_FPS;                              // Frame-rate (for particl
 bool         liqglo_outputMeshUVs;                    // true if we are writing uvs for subdivs/polys (in addition to "st")
 bool         liqglo_noSingleFrameShadows;             // allows you to skip single-frame shadows when you chunk a render
 bool         liqglo_singleFrameShadowsOnly;           // allows you to skip single-frame shadows when you chunk a render
+MString      liqglo_renderCamera;                     // a global copy for liqRibPfxToonData
 
 // Kept global for liquidGlobalHelper
 MString      liqglo_projectDir;
@@ -951,6 +953,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     } else if ((arg == "-cam") || (arg == "-camera")) {
       LIQCHECKSTATUS(status, "error in -camera parameter");   i++;
       renderCamera = args.asString( i, &status );
+      liqglo_renderCamera = renderCamera;
       LIQCHECKSTATUS(status, "error in -camera parameter");
     } else if ((arg == "-rcam") || (arg == "-rotateCamera")) {
       LIQCHECKSTATUS(status, "error in -rotateCamera parameter");
@@ -1642,6 +1645,7 @@ void liqRibTranslator::liquidReadGlobals()
     if ( varVal != "" ) {
       renderCamera = parseString( varVal );
     }
+    liqglo_renderCamera = renderCamera;
   }
   gPlug = rGlobalNode.findPlug( "rotateCamera", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_rotateCamera );
@@ -3893,7 +3897,6 @@ MStatus liqRibTranslator::buildJobs()
             MString fileName;
             fileName = generateFileName( (fileGenMode) fgm_shadow_tex, thisJob );
             if ( fileExists( fileName ) ) computeShadow = false;
-            //cout <<"++ computed name : "<<fileName.asChar()<<endl;
           }
 
 
@@ -4566,11 +4569,13 @@ int count =0;
           }
 
         }
-        if ( currentNode.hasFn(MFn::kNurbsSurface)
-             || currentNode.hasFn(MFn::kMesh)
-             || currentNode.hasFn(MFn::kParticle)
-             || currentNode.hasFn(MFn::kLocator)
-             || currentNode.hasFn( MFn::kSubdiv) ) {
+        if (    currentNode.hasFn( MFn::kNurbsSurface)
+             || currentNode.hasFn( MFn::kMesh)
+             || currentNode.hasFn( MFn::kParticle)
+             || currentNode.hasFn( MFn::kLocator)
+             || currentNode.hasFn( MFn::kSubdiv)
+             || currentNode.hasFn( MFn::kPfxHair)
+             || currentNode.hasFn( MFn::kPfxToon) ) {
           if ( ( sample > 0 ) && isObjectMotionBlur( path )){
             htable->insert(path, lframe, sample, MRT_Unknown,count++ );
           } else {
@@ -4649,7 +4654,10 @@ int count =0;
           if ( currentNode.hasFn(MFn::kNurbsSurface)
                || currentNode.hasFn(MFn::kMesh)
                || currentNode.hasFn(MFn::kParticle)
-               || currentNode.hasFn(MFn::kLocator) ) {
+               || currentNode.hasFn(MFn::kLocator)
+               || currentNode.hasFn( MFn::kSubdiv)
+               || currentNode.hasFn( MFn::kPfxHair)
+               || currentNode.hasFn( MFn::kPfxToon) ) {
             if ( ( sample > 0 ) && isObjectMotionBlur( path )){
               htable->insert(path, lframe, sample, MRT_Unknown,count++ );
             } else {
@@ -5060,13 +5068,6 @@ void liqRibTranslator::doAttributeBlocking( const MDagPath & newPath, const MDag
     RtString ribname = const_cast < char*>( name.asChar() );
     RiAttribute( "identifier", "name", &ribname, RI_NULL );
 
-    //if( ribNode->grouping.membership != "" ) {
-    //  RtString members = const_cast<char*>( ribNode->grouping.membership.asChar() );
-    //  RiAttribute( "grouping", "membership",&members, RI_NULL );
-    //}
-    //
-    //RiAttribute( "grouping", "membership", &name, RI_NULL );
-
     if ( newPath.hasFn( MFn::kTransform ) ) {
       // We have a transform, so write out the info
       //
@@ -5403,12 +5404,10 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     }
 
     if ( liqglo_currentJob.camera[0].isOrtho ) {
-      MDistance unitHelper;
-      MDistance unit( 1, unitHelper.uiUnit() );
       RtFloat frameWidth, frameHeight;
       // the whole frame width has to be scaled according to the UI Unit
-      frameWidth  = liqglo_currentJob.camera[0].orthoWidth  * 5 * unit.asMeters();
-      frameHeight = liqglo_currentJob.camera[0].orthoHeight * 5 * unit.asMeters();
+      frameWidth  = liqglo_currentJob.camera[0].orthoWidth  * 0.5 ;
+      frameHeight = liqglo_currentJob.camera[0].orthoHeight * 0.5 ;
       RiProjection( "orthographic", RI_NULL );
       RiScreenWindow( -frameWidth, frameWidth, -frameHeight, frameHeight );
     } else {
@@ -5670,15 +5669,18 @@ MStatus liqRibTranslator::objectBlock()
       }
     }
 
-    if ( liqglo_doMotion && ribNode->motion.transformationBlur && ( ribNode->object( 1 ) != NULL ) && ( ribNode->object(0)->type != MRT_Locator ) &&
+    if ( liqglo_doMotion &&
+         ribNode->motion.transformationBlur &&
+         ( ribNode->object( 1 ) != NULL ) &&
+         ( ribNode->object(0)->type != MRT_Locator ) &&
          ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
     {
       LIQDEBUGPRINTF( "-> writing matrix motion blur data\n" );
       // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
-	  if (liqglo_relativeMotion)
+      if (liqglo_relativeMotion)
         RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
       else
-		RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
+        RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
     }
     RtMatrix ribMatrix;
     matrix = ribNode->object( 0 )->matrix( path.instanceNumber() );
@@ -5687,7 +5689,10 @@ MStatus liqRibTranslator::objectBlock()
 
     // Output the world matrices for the motionblur
     // This will override the current transformation setting
-    if ( liqglo_doMotion && ribNode->motion.transformationBlur && ( ribNode->object( 1 ) != NULL ) && ( ribNode->object( 0 )->type != MRT_Locator ) &&
+    if ( liqglo_doMotion &&
+         ribNode->motion.transformationBlur &&
+         ( ribNode->object( 1 ) != NULL ) &&
+         ( ribNode->object( 0 )->type != MRT_Locator ) &&
          ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
     {
       path = ribNode->path();
@@ -6179,13 +6184,64 @@ MStatus liqRibTranslator::objectBlock()
         if ( !m_ignoreSurfaces ) {
           MObject shadingGroup = ribNode->assignedShadingGroup.object();
           MObject shader = ribNode->findShader( shadingGroup );
+          //
           // here we check for regular shader nodes first
+          // and assign default shader to shader-less nodes.
+          //
           if ( m_shaderDebug ) {
             RiSurface( "constant", RI_NULL );
           } else if ( shader.apiType() == MFn::kLambert ) {
             RiSurface( "matte", RI_NULL );
           } else if ( shader.apiType() == MFn::kPhong ) {
             RiSurface( "plastic", RI_NULL );
+          } else if ( path.hasFn( MFn::kPfxHair ) ) {
+
+            // get some of the hair system parameters
+            float translucence = 0, specularPower = 0;
+            float specularColor[3];
+            //cout <<"getting pfxHair shading params..."<<endl;
+            MObject hairSystemObj;
+            MFnDependencyNode pfxHairNode( path.node() );
+            MPlug plugToHairSystem = pfxHairNode.findPlug( "renderHairs", &status );
+            MPlugArray hsPlugs;
+            status.clear();
+            if ( plugToHairSystem.connectedTo( hsPlugs, true, false, &status ) ) {
+              //cout <<"connected"<<endl;
+              if ( status == MS::kSuccess ) {
+                hairSystemObj = hsPlugs[0].node();
+              }
+            }
+            if ( hairSystemObj != MObject::kNullObj ) {
+              MFnDependencyNode hairSystemNode(hairSystemObj);
+              MPlug paramPlug;
+              status.clear();
+              paramPlug = hairSystemNode.findPlug( "translucence", &status );
+              if ( status == MS::kSuccess ) {
+                paramPlug.getValue( translucence );
+                //cout <<"translucence = "<<translucence<<endl;
+              }
+              status.clear();
+              paramPlug = hairSystemNode.findPlug( "specularColor", &status );
+              if ( status == MS::kSuccess ) {
+                paramPlug.child(0).getValue( specularColor[0] );
+                paramPlug.child(1).getValue( specularColor[1] );
+                paramPlug.child(2).getValue( specularColor[2] );
+                //cout <<"specularColor = "<<specularColor<<endl;
+              }
+              status.clear();
+              paramPlug = hairSystemNode.findPlug( "specularPower", &status );
+              if ( status == MS::kSuccess ) {
+                paramPlug.getValue( specularPower );
+                //cout <<"specularPower = "<<specularPower<<endl;
+              }
+            }
+            RiSurface(  "liquidPfxHair",
+                        "float specularPower", &specularPower,
+                        "float translucence",  &translucence,
+                        "color specularColor", &specularColor,
+                        RI_NULL );
+          } else if ( path.hasFn( MFn::kPfxToon ) ) {
+            RiSurface( "liquidPfxToon", RI_NULL );
           } else {
             RiSurface( "plastic", RI_NULL );
           }
@@ -6246,6 +6302,54 @@ MStatus liqRibTranslator::objectBlock()
           rOpacity[2] = ribNode->opacity[2];
           RiOpacity( rOpacity );
         }
+
+        if ( path.hasFn( MFn::kPfxHair ) ) {
+
+            // get some of the hair system parameters
+            float translucence = 0, specularPower = 0;
+            float specularColor[3];
+            //cout <<"getting pfxHair shading params..."<<endl;
+            MObject hairSystemObj;
+            MFnDependencyNode pfxHairNode( path.node() );
+            MPlug plugToHairSystem = pfxHairNode.findPlug( "renderHairs", &status );
+            MPlugArray hsPlugs;
+            status.clear();
+            if ( plugToHairSystem.connectedTo( hsPlugs, true, false, &status ) ) {
+              //cout <<"connected"<<endl;
+              if ( status == MS::kSuccess ) {
+                hairSystemObj = hsPlugs[0].node();
+              }
+            }
+            if ( hairSystemObj != MObject::kNullObj ) {
+              MFnDependencyNode hairSystemNode(hairSystemObj);
+              MPlug paramPlug;
+              status.clear();
+              paramPlug = hairSystemNode.findPlug( "translucence", &status );
+              if ( status == MS::kSuccess ) {
+                paramPlug.getValue( translucence );
+                //cout <<"translucence = "<<translucence<<endl;
+              }
+              status.clear();
+              paramPlug = hairSystemNode.findPlug( "specularColor", &status );
+              if ( status == MS::kSuccess ) {
+                paramPlug.child(0).getValue( specularColor[0] );
+                paramPlug.child(1).getValue( specularColor[1] );
+                paramPlug.child(2).getValue( specularColor[2] );
+                //cout <<"specularColor = "<<specularColor<<endl;
+              }
+              status.clear();
+              paramPlug = hairSystemNode.findPlug( "specularPower", &status );
+              if ( status == MS::kSuccess ) {
+                paramPlug.getValue( specularPower );
+                //cout <<"specularPower = "<<specularPower<<endl;
+              }
+            }
+            RiSurface(  "liquidPfxHair",
+                        "float specularPower", &specularPower,
+                        "float translucence",  &translucence,
+                        "color specularColor", &specularColor,
+                        RI_NULL );
+          }
       }
     }
 
@@ -6317,22 +6421,33 @@ MStatus liqRibTranslator::objectBlock()
     if ( !ribNode->ignoreShapes ) {
 
       // check to see if we are writing a curve to set the proper basis
-      if ( ribNode->object(0)->type == MRT_NuCurve ) {
+      if ( ribNode->object(0)->type == MRT_NuCurve ||
+           ribNode->object(0)->type == MRT_PfxHair ) {
         RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
       }
 
-      if( liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
-          && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
+      if( liqglo_doDef &&
+          ribNode->motion.deformationBlur &&
+          ( ribNode->object(1) != NULL ) &&
+          ( ribNode->object(0)->type != MRT_RibGen ) &&
+          ( ribNode->object(0)->type != MRT_Locator ) &&
+          ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
+      {
         // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
-	    if (liqglo_relativeMotion)
-        	RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
-		else
-        	RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
+        if (liqglo_relativeMotion)
+          RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
+        else
+          RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
       }
 
       ribNode->object(0)->writeObject();
-      if ( liqglo_doDef && ribNode->motion.deformationBlur && ( ribNode->object(1) != NULL ) && ( ribNode->object(0)->type != MRT_RibGen )
-           && ( ribNode->object(0)->type != MRT_Locator ) && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
+      if ( liqglo_doDef &&
+           ribNode->motion.deformationBlur &&
+           ( ribNode->object(1) != NULL ) &&
+           ( ribNode->object(0)->type != MRT_RibGen ) &&
+           ( ribNode->object(0)->type != MRT_Locator ) &&
+           ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
+      {
         LIQDEBUGPRINTF( "-> writing deformation blur data\n" );
         int msampleOn = 1;
         while ( msampleOn < liqglo_motionSamples ) {

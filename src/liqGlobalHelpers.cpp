@@ -313,14 +313,21 @@ bool isObjectReceivesShadows( const MDagPath & path )
 bool isObjectMotionBlur( const MDagPath & path )
 //
 //  Description:
-//      Check if the given object is visible
+//      Check if the given object is motion-blurred
 //
 {
   MStatus status;
   MFnDagNode fnDN( path );
-  // Check the visibility attribute of the node
+  // Check the motionBlur attribute of the node
   //
-  MPlug vPlug = fnDN.findPlug( "motionBlur", &status );
+  MString motionBlurAttr;
+  if ( path.hasFn(MFn::kPfxHair) ||
+       path.hasFn(MFn::kPfxHair)  )
+    motionBlurAttr = "motionBlurred";
+  else
+    motionBlurAttr = "motionBlur";
+
+  MPlug vPlug = fnDN.findPlug( motionBlurAttr, &status );
   bool motionBlur = false;
   if ( status == MS::kSuccess ) {
     vPlug.getValue( motionBlur );

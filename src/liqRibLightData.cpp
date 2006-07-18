@@ -163,7 +163,6 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
         deepShadowsPlug.getValue( deepShadows );
         if ( deepShadows ) shadowType = stDeep;
       }
-
       MPlug paramPlug = lightDepNode.findPlug( "everyFrame", &status );
       if ( status == MS::kSuccess ) {
         paramPlug.getValue( everyFrame );
@@ -497,6 +496,30 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
     if( !rayTraced ) {
 
       fnLight.findPlug( "useDepthMapShadows" ).getValue( usingShadow );
+
+      if ( usingShadow ) {
+
+        MPlug deepShadowsPlug = lightDepNode.findPlug( "deepShadows", &status );
+        if ( status == MS::kSuccess ) {
+          deepShadowsPlug.getValue( deepShadows );
+          if ( deepShadows ) shadowType = stDeep;
+        }
+        MPlug paramPlug = lightDepNode.findPlug( "everyFrame", &status );
+        if ( status == MS::kSuccess ) {
+          paramPlug.getValue( everyFrame );
+        }
+        paramPlug = lightDepNode.findPlug( "renderAtFrame", &status );
+        if ( status == MS::kSuccess ) {
+          float tmp;
+          paramPlug.getValue( tmp );
+          renderAtFrame = (int) tmp;
+        }
+        paramPlug = lightDepNode.findPlug( "geometrySet", &status );
+        if ( status == MS::kSuccess ) {
+          paramPlug.getValue( geometrySet );
+        }
+
+      }
 
     }
   }
