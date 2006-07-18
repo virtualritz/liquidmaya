@@ -22,7 +22,6 @@ light liquidpoint(
     output float __nonspecular   = 0;
 )
 {
-  uniform float shadowsize[2];
   illuminate( point "shader" ( 0, 0, 0 ) ) {
 
     if ( shadownamepx == "raytrace" ) {
@@ -39,25 +38,31 @@ light liquidpoint(
 
       if( ( LxAbs > LyAbs ) && ( LxAbs > LzAbs ) ) {
         if( ( Lx > 0 ) && ( shadownamepx != "" ) ) {
+          uniform float shadowsize[2];
           textureinfo( shadownamepx, "resolution", shadowsize );
           __shadow = shadow( shadownamepx, Ps, "samples", shadowsamples, "blur", shadowfiltersize*1/shadowsize[0]+shadowblur, "bias", shadowbias, "width", 1 );
         } else if( shadownamenx != "") {
+          uniform float shadowsize[2];
           textureinfo( shadownamenx, "resolution", shadowsize );
           __shadow = shadow( shadownamenx, Ps, "samples", shadowsamples, "blur", shadowfiltersize*1/shadowsize[0]+shadowblur, "bias", shadowbias, "width", 1 );
         }
       } else if( (LyAbs > LxAbs) && ( LyAbs > LzAbs ) ) {
         if( ( Ly > 0 ) && ( shadownamepy != "" ) ) {
+          uniform float shadowsize[2];
           textureinfo( shadownamepy, "resolution", shadowsize );
           __shadow = shadow( shadownamepy, Ps, "samples", shadowsamples, "blur", shadowfiltersize*1/shadowsize[0]+shadowblur, "bias", shadowbias, "width", 1 );
         } else if( shadownameny != "" ) {
+          uniform float shadowsize[2];
           textureinfo( shadownameny, "resolution", shadowsize );
           __shadow = shadow( shadownameny, Ps, "samples", shadowsamples, "blur", shadowfiltersize*1/shadowsize[0]+shadowblur, "bias", shadowbias, "width", 1 );
         }
       } else if( ( LzAbs > LyAbs ) && ( LzAbs > LxAbs ) ) {
         if( ( Lz > 0 ) && ( shadownamepz != "" ) ) {
+          uniform float shadowsize[2];
           textureinfo( shadownamepz, "resolution", shadowsize );
           __shadow = shadow( shadownamepz, Ps, "samples", shadowsamples, "blur", shadowfiltersize*1/shadowsize[0]+shadowblur, "bias", shadowbias, "width", 1 );
         } else if( shadownamenz != "") {
+          uniform float shadowsize[2];
           textureinfo( shadownamenz, "resolution", shadowsize );
           __shadow = shadow( shadownamenz, Ps, "samples", shadowsamples, "blur", shadowfiltersize*1/shadowsize[0]+shadowblur, "bias", shadowbias, "width", 1 );
         }

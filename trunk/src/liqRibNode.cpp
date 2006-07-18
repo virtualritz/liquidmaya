@@ -638,7 +638,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 
   while( dagSearcher.length() > 0 );
 
-  // Set membership handling
+  // Raytracing Sets membership handling
   if ( grouping.membership == "" ) {
     MObjectArray setArray;
     MGlobal::getAssociatedSets( hierarchy, setArray );
@@ -659,7 +659,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
     }
 
     status.clear();
-    //grouping.membership = path.fullPathName( &status ) + grouping.membership;
   }
 
 

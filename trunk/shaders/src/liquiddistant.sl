@@ -16,10 +16,10 @@ light liquiddistant(
 )
 {
   uniform float factor;
-  uniform float shadowsize[2];
   if( shadowname != "" ) {
     if ( shadowname == "raytrace" ) factor = 0.2;
     else {
+      uniform float shadowsize[2];
       textureinfo( shadowname, "resolution", shadowsize );
       factor = 1/shadowsize[0];
     }
@@ -28,6 +28,7 @@ light liquiddistant(
   solar( vector "shader" ( 0, 0, 1 ), 0 ) {
 
     if( shadowname != "" ) {
+      uniform float shadowsize[2];
       textureinfo( shadowname, "resolution", shadowsize );
       __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "blur", shadowfiltersize*factor+shadowblur, "bias", shadowbias, "width", 1 );
     } else

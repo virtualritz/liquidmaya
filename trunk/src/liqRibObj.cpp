@@ -60,6 +60,8 @@ extern "C" {
 #include <liqRibCoordData.h>
 #include <liqRibGenData.h>
 #include <liqRibCustomNode.h>
+#include <liqRibPfxToonData.h>
+#include <liqRibPfxHairData.h>
 
 extern int debugMode;
 extern bool liqglo_useMtorSubdiv;
@@ -168,6 +170,14 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
           type = MRT_NuCurve;
           if ( !ignoreShapes ) data = new liqRibNuCurveData( obj );
           else data = new liqRibNuCurveData( skip );
+        } else if ( obj.hasFn( MFn::kPfxToon ) ) {
+          type = MRT_PfxToon;
+          if ( !ignoreShapes ) data = new liqRibPfxToonData( obj );
+          else data = new liqRibPfxToonData( skip );
+        } else if ( obj.hasFn( MFn::kPfxHair ) ) {
+          type = MRT_PfxHair;
+          if ( !ignoreShapes ) data = new liqRibPfxHairData( obj );
+          else data = new liqRibPfxHairData( skip );
         } else if ( obj.hasFn(MFn::kParticle) ) {
           type = MRT_Particles;
           if ( !ignoreShapes ) data = new liqRibParticleData( obj );
@@ -304,6 +314,7 @@ AnimType liqRibObj::compareBody(const liqRibObj *o)
 //
 {
   LIQDEBUGPRINTF( "-> comparing rib node handle body\n");
+  //cout <<"-> comparing rib node handle body"<<endl;
   AnimType cmp = MRX_Const;
   if (data == NULL || o->data == NULL) {
     cmp = MRX_Const;

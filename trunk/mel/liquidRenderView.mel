@@ -34,6 +34,38 @@
 //  Returns:
 //
 
+proc liqRVSetRenderCamera( string $editor )
+{
+  string $renderCamera = `getAttr liquidGlobals.renderCamera`;
+  renderWindowEditor -e -currentCamera $renderCamera $editor;
+}
+
+proc liqRVSetUpShortCuts()
+{
+  nameCommand -default true -ann "exposure +0.25 f-stop" -c "liqRVExposure 0.25"  liqExposureUpCmd;
+  nameCommand -default true -ann "exposure -0.25 f-stop" -c "liqRVExposure -0.25" liqExposureDownCmd;
+  nameCommand -default true -ann "exposure reset"        -c "liqRVExposure 0"     liqExposureResetCmd;
+
+  nameCommand -default true -ann "view all channels"     -c "liqRVDisplayChannels 0"  liqRVViewAllCmd;
+  nameCommand -default true -ann "view red channel"      -c "liqRVDisplayChannels 1"  liqRVViewRedCmd;
+  nameCommand -default true -ann "view green channel"    -c "liqRVDisplayChannels 2"  liqRVViewGreenCmd;
+  nameCommand -default true -ann "view blue channel"     -c "liqRVDisplayChannels 3"  liqRVViewBlueCmd;
+  nameCommand -default true -ann "view alpha channel"    -c "liqRVDisplayChannels 4"  liqRVViewAlphaCmd;
+  nameCommand -default true -ann "view luminance"        -c "liqRVDisplayChannels 5"  liqRVViewLumCmd;
+
+
+  if ( `hotkeyCheck -keyString "+" -ctl` == "" ) hotkey -k "+" -ctl -name liqExposureUpCmd;
+  if ( `hotkeyCheck -keyString "-" -ctl` == "" ) hotkey -k "-" -ctl -name liqExposureDownCmd;
+  if ( `hotkeyCheck -keyString "Return" -ctl` == "" ) hotkey -k "Return" -ctl -name liqExposureResetCmd;
+
+  if ( `hotkeyCheck -keyString "0" -ctl` == "" ) hotkey -k "0" -ctl -name liqRVViewAllCmd;
+  if ( `hotkeyCheck -keyString "1" -ctl` == "" ) hotkey -k "1" -ctl -name liqRVViewRedCmd;
+  if ( `hotkeyCheck -keyString "2" -ctl` == "" ) hotkey -k "2" -ctl -name liqRVViewGreenCmd;
+  if ( `hotkeyCheck -keyString "3" -ctl` == "" ) hotkey -k "3" -ctl -name liqRVViewBlueCmd;
+  if ( `hotkeyCheck -keyString "4" -ctl` == "" ) hotkey -k "4" -ctl -name liqRVViewAlphaCmd;
+  if ( `hotkeyCheck -keyString "5" -ctl` == "" ) hotkey -k "5" -ctl -name liqRVViewLumCmd;
+
+}
 
 global proc string liqGetRVPanel()
 {
@@ -50,11 +82,15 @@ global proc liqShowRV()
 {
   string $editor = `liqGetRVPanel`;
 
+
+
   {
     // window already exists ? open it.
     string $wins[] = `lsUI -windows`;
     for ( $w in $wins ) {
       if ($w == "renderViewWindow") {
+        liqRVSetUpShortCuts();
+        liqRVSetRenderCamera( $editor );
         liqRenderViewMenu( $editor );
         showWindow $w;
         return;
@@ -67,6 +103,8 @@ global proc liqShowRV()
     string $panels[] = `getPanel -vis`;
     for ( $p in $panels ) {
       if ($p == $editor) {
+        liqRVSetUpShortCuts();
+        liqRVSetRenderCamera( $editor );
         liqRenderViewMenu( $editor );
         return;
       }
@@ -74,9 +112,38 @@ global proc liqShowRV()
   }
 
   // let's tear it off, then !
+  liqRVSetUpShortCuts();
+  liqRVSetRenderCamera( $editor );
   liqRenderViewMenu( $editor );
   scriptedPanel -edit -tearOff $editor;
 
+}
+
+global proc liqRVDisplayChannels( int $num )
+{
+  string $editor = liqGetRVPanel();
+  string $upd = ";refreshRenderViewIcons(\""+$editor+"\")";
+  switch( $num ) {
+    case 1:
+      $upd = ("renderWindowEditor -edit -displayStyle \"color\" -scaleRed 1 -scaleGreen -1000 -scaleBlue -1000 " + $editor + $upd );
+      break;
+    case 2:
+      $upd = ("renderWindowEditor -edit -displayStyle \"color\" -scaleRed -1000 -scaleGreen 1 -scaleBlue -1000 " + $editor + $upd );
+      break;
+    case 3:
+      $upd = ("renderWindowEditor -edit -displayStyle \"color\" -scaleRed -1000 -scaleGreen -1000 -scaleBlue 1 " + $editor + $upd );
+      break;
+    case 4:
+      $upd = ("renderWindowEditor -edit -displayStyle \"mask\" " + $editor + $upd );
+      break;
+    case 5:
+      $upd = ("renderWindowEditor -edit -displayStyle \"lum\" " + $editor + $upd );
+      break;
+     default:
+      $upd = ("renderWindowEditor -edit -displayStyle \"color\" " + "-scaleRed 1 -scaleGreen 1 -scaleBlue 1 " + $editor + $upd );
+      break;
+  }
+  eval $upd;
 }
 
 /**
@@ -119,10 +186,6 @@ global proc liqRVExposure( float $val )
 
 }
 
-global proc liquidRVOptions()
-{
-  // coming soon
-}
 
 global proc int liqRVGetAutoSaveState()
 {
@@ -137,13 +200,10 @@ global proc liqRVToggleAutoSaveState()
   optionVar -iv liquidRenderViewAutoSave (1-`liqRVGetAutoSaveState`);
 }
 
+
 global proc liqRenderViewMenu( string $editor)
 {
   if ( !`menu -q -ex ($editor + "LiquidRVMenu")` ) {
-
-    nameCommand -default true -ann "exposure +0.25 f-stop" -c "liqRVExposure 0.25"  liqExposureUpCmd;
-    nameCommand -default true -ann "exposure -0.25 f-stop" -c "liqRVExposure -0.25" liqExposureDownCmd;
-    nameCommand -default true -ann "exposure reset"        -c "liqRVExposure 0"     liqExposureResetCmd;
 
     menu  -label              "Liquid"
           -tearOff            true
@@ -182,11 +242,6 @@ global proc liqRenderViewMenu( string $editor)
               ($editor + "RVAutoSave");
 
   }
-
-  if ( `hotkeyCheck -keyString "+" -ctl` == "" ) hotkey -k "+" -ctl -name liqExposureUpCmd;
-  if ( `hotkeyCheck -keyString "-" -ctl` == "" ) hotkey -k "-" -ctl -name liqExposureDownCmd;
-  if ( `hotkeyCheck -keyString "0" -ctl` == "" ) hotkey -k "0" -ctl -name liqExposureResetCmd;
-
 }
 
 global proc string liquidmayaRender(int $resolution0, int $resolution1, int $doShadows, int $doGlowPass, string $camera, string $option)
@@ -208,12 +263,9 @@ global proc string liquidmayaRender(int $resolution0, int $resolution1, int $doS
 	 }
   }
 
-  string $editor = `liqGetRVPanel`;
-  renderWindowEditor -e -dbf $editor;
-  string $renderCamera = `getAttr liquidGlobals.renderCamera`;
-  renderWindowEditor -e -currentCamera $renderCamera $editor;
   liquidPreview();
   $gLiqLastRenderIsRenderRegion = 0;
+
   return "";
 }
 

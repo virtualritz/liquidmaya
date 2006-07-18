@@ -44,6 +44,8 @@ LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqRibLocatorData.$(OBJEXT) \
 					liqRibClipPlaneData.$(OBJEXT) \
 					liqRibCoordData.$(OBJEXT) \
+					liqRibPfxToonData.$(OBJEXT) \
+					liqRibPfxHairData.$(OBJEXT) \
 					liqRibLightData.$(OBJEXT) \
 					liqRibHT.$(OBJEXT) \
 					liqGetSloInfo.$(OBJEXT) \
