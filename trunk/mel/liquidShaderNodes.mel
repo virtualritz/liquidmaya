@@ -759,27 +759,21 @@ global proc liquidSelectAssignedToRibbox( string $node )
 
 
 /**
- *  proc to attach a ribbox node to selected objects
+ *  proc to attach a liquidLight node to selected objects
  */
 
 global proc liquidAssignLightShaderToSelected( string $node )
 {
-  string $selected[] = `ls -lights -sl`;
-  if ( !size( $selected ) ) $selected = `ls -transforms -sl`;
-  //trace ("selected : "+stringArrayToString( $selected, " "));
+  string $selected[] = `ls -l -lights -dag -sl`;
 
   for ( $sel in $selected ) {
-    if ( nodeType($sel) == "transform" ) {
-      string $shapes[] = `listRelatives -c -type light $sel`;
-      if ( size( $shapes ) ) $sel = $shapes[0];
-      else continue;
-    }
 
     if ( !objExists( ($sel+".liquidLightShaderNode") ) ) {
       addAttr -ln liquidLightShaderNode -at message $sel;
     }
 
-    connectAttr -f ($node+".assignedObjects") ($sel+".liquidLightShaderNode");
+    if ( !isConnected( ($node+".assignedObjects"), ($sel+".liquidLightShaderNode" ) ) )
+      connectAttr -f ($node+".assignedObjects") ($sel+".liquidLightShaderNode");
   }
 }
 
@@ -788,6 +782,28 @@ global proc liquidSelectAssignedToLightShader( string $node )
   select (`listConnections ($node+".assignedObjects")`);
 }
 
+global proc liquidAssignSurfaceShaderToSelected( string $node )
+{
+  // assign the shader to geometry
+  if ( size(`ls -geometry -dag -sl`) ) hyperShade -assign $node;
+
+  // special case for nodes not supported by the hypershade
+  string $selected[] = `ls  -type "pfxToon"
+                            -type "pfxHair"
+                            -type "locator"
+                            -dag -sl`;
+  //trace (stringArrayToString( $selected, ", "));
+
+  if ( !objExists( ($node+".liqAssignedObjects") ) )
+      addAttr -ln liqAssignedObjects -at message $node;
+
+  for ( $sel in $selected ) {
+    if ( !objExists( ($sel+".liquidSurfaceShaderNode") ) )
+      addAttr -ln liquidSurfaceShaderNode -at message $sel;
+    if ( !isConnected( ($node+".liqAssignedObjects"), ($sel+".liquidSurfaceShaderNode" ) ) )
+      connectAttr -f ($node+".liqAssignedObjects") ($sel+".liquidSurfaceShaderNode");
+  }
+}
 
 /**
  *  proc to select the objects assigned to a material or shading group
@@ -802,9 +818,11 @@ global proc liquidSelectShaderAssignedTo( string $obj )
   else $objList = stringToStringArray( $obj, " ");
   select -clear;
   for ( $o in $objList ) {
+
     string $shadingGroups[];
     if ( nodeType($o) == "shadingEngine" ) $shadingGroups[0] = $o;
     else $shadingGroups = `listConnections -d true -s false -type shadingEngine $o`;
+
     for ( $sg in $shadingGroups ) {
       string $connections[] = `listConnections -d false -s true -plugs true $sg`;
       for ( $c in $connections ) {
@@ -814,12 +832,28 @@ global proc liquidSelectShaderAssignedTo( string $obj )
         }
       }
     }
+
+    if ( objExists( ($o+".liqAssignedObjects") ) ) {
+      string $connected[] = `listConnections -d true -s false ($o+".liqAssignedObjects")`;
+      for ( $cc in $connected ) {
+        $selectionList[size( $selectionList )] = $cc;
+      }
+    }
+
   }
   select $selectionList;
 }
 
 
-
+/**
+ *  assign shaders in the hypershade
+ */
+global proc liquidAssignShaderToSelected( string $node )
+{
+  string $nodetype = nodeType($node);
+  if ( $nodetype == "liquidLight" ) liquidAssignLightShaderToSelected( $node );
+  else if ( $nodetype == "liquidSurface" ) liquidAssignSurfaceShaderToSelected( $node );
+}
 
 /**
  *  update all nodes for the AE optimization.
