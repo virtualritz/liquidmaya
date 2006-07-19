@@ -15,7 +15,7 @@
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
 ** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** Contributor(s): Berj Bannayan.
+** Contributor(s): Philippe Leprince.
 **
 **
 ** The RenderMan (R) Interface Procedures and Protocol are:
@@ -28,7 +28,7 @@
 
 /* ______________________________________________________________________
 **
-** Liquid Rib Nurbs Curve Data Source
+** Liquid Rib pfxToon Curve Data Source
 ** ______________________________________________________________________
 */
 
@@ -72,9 +72,10 @@ liqRibPfxToonData::liqRibPfxToonData( MObject pfxToon )
   : nverts( NULL ),
     CVs( NULL ),
     curveWidth( NULL ),
-    cvColor( NULL )
+    cvColor( NULL ),
+    cvOpacity( NULL )
 {
-  LIQDEBUGPRINTF( "-> creating pfxToon nurbs curve\n" );
+  LIQDEBUGPRINTF( "-> creating pfxToon curves\n" );
   MStatus status = MS::kSuccess;
 
   // update the pfxToon node with the renderCamera's position
@@ -102,24 +103,20 @@ liqRibPfxToonData::liqRibPfxToonData( MObject pfxToon )
     MRenderLineArray profileArray;
     MRenderLineArray creaseArray;
     MRenderLineArray intersectionArray;
-    MRenderLineArray copy;
 
     bool doLines          = true;
-    bool doTwist          = true;
+    bool doTwist          = false;
     bool doWidth          = true;
     bool doFlatness       = false;
     bool doParameter      = false;
     bool doColor          = true;
     bool doIncandescence  = false;
-    bool doTransparency   = false;
+    bool doTransparency   = true;
     bool doWorldSpace     = false;
 
     //cout <<"[liquid] >> fill line arrays.... "<<endl;
     status = pfxtoon.getLineData( profileArray, creaseArray, intersectionArray, doLines, doTwist, doWidth, doFlatness, doParameter, doColor, doIncandescence, doTransparency, doWorldSpace );
 
-    //cout <<"[liquid] >> profileArray contains "<<profileArray.length()<<" curves !"<<endl;
-    //cout <<"[liquid] >> creaseArray contains "<<creaseArray.length()<<" curves !"<<endl;
-    //cout <<"[liquid] >> intersectionArray contains "<<intersectionArray.length()<<" curves !"<<endl;
 
     if ( status == MS::kSuccess ) {
 
@@ -128,12 +125,22 @@ liqRibPfxToonData::liqRibPfxToonData( MObject pfxToon )
       // get the lines and fill the arrays.
       ncurves = profileArray.length();
 
+      {
+        MFnDependencyNode pfxNode( pfxToon );
+        MString info( "[liquid] pfxToon node " );
+        info += pfxNode.name() + " : " + ncurves + " curves.";
+        cout << info << endl << flush;
+      }
+
       unsigned int totalNumberOfVertices = 0;
-      MFloatArray CV, vWidth, vColor;
 
       if ( ncurves > 0 ) {
 
         nverts = (RtInt*)lmalloc( sizeof( RtInt ) * ( ncurves ) );
+        RtFloat* cvPtr      = CVs;
+        RtFloat* widthPtr   = curveWidth;
+        RtFloat* colorPtr   = cvColor;
+        RtFloat* opacityPtr = cvOpacity;
 
         unsigned i=0;
         for ( ; i<ncurves; i++ ) {
@@ -142,9 +149,10 @@ liqRibPfxToonData::liqRibPfxToonData( MObject pfxToon )
 
           if ( status == MS::kSuccess ) {
 
-            MVectorArray vertices = theLine.getLine();
-            MDoubleArray width    = theLine.getWidth();
-            MVectorArray vertexColor = theLine.getColor();
+            MVectorArray vertices           = theLine.getLine();
+            MDoubleArray width              = theLine.getWidth();
+            MVectorArray vertexColor        = theLine.getColor();
+            MVectorArray vertexTransparency = theLine.getTransparency();
 
             //cout <<"line "<<i<<" contains "<<vertices.length()<<" vertices."<<endl;
             //cout <<vertexColor<<endl;
@@ -153,53 +161,130 @@ liqRibPfxToonData::liqRibPfxToonData( MObject pfxToon )
             totalNumberOfVertices += vertices.length();
             unsigned int vertIndex = 0;
 
+            // allocate memory
+            CVs = (RtFloat*)realloc( CVs, sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
+            if ( CVs == NULL ) {
+              MString err("liqRibPfxToonData failed to allocate CV memory !");
+              cout <<err<<endl<<flush;
+              throw(err);
+              return;
+            } else cvPtr = CVs + ( totalNumberOfVertices * 3 - nverts[i] * 3 ) ;
+
+            curveWidth = (RtFloat*)realloc( curveWidth, sizeof( RtFloat ) * ( totalNumberOfVertices ) );
+            if ( curveWidth == NULL ) {
+              MString err("liqRibPfxToonData failed to allocate per vertex width memory !");
+              cout <<err<<endl<<flush;
+              throw(err);
+              return;
+            } else widthPtr = curveWidth + ( totalNumberOfVertices - nverts[i] ) ;
+
+            cvColor = (RtFloat*)realloc( cvColor, sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
+            if ( cvColor == NULL ) {
+              MString err("liqRibPfxToonData failed to allocate CV color memory !");
+              cout <<err<<endl<<flush;
+              throw(err);
+              return;
+            } else colorPtr = cvColor + ( totalNumberOfVertices * 3 - nverts[i] * 3 ) ;
+
+            cvOpacity = (RtFloat*)realloc( cvOpacity, sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
+            if ( cvOpacity == NULL ) {
+              MString err("liqRibPfxToonData failed to allocate CV opacity memory !");
+              cout <<err<<endl<<flush;
+              throw(err);
+              return;
+            } else opacityPtr = cvOpacity + ( totalNumberOfVertices * 3 - nverts[i] * 3 ) ;
+
+
             for ( ; vertIndex < vertices.length(); vertIndex++ ) {
-              CV.append( (float) vertices[vertIndex].x );
-              CV.append( (float) vertices[vertIndex].y );
-              CV.append( (float) vertices[vertIndex].z );
-              vWidth.append( (float) width[vertIndex] );
-              vColor.append( (float) vertexColor[vertIndex].x );
-              vColor.append( (float) vertexColor[vertIndex].y );
-              vColor.append( (float) vertexColor[vertIndex].z );
+              *cvPtr      = (RtFloat) vertices[vertIndex].x;                        *cvPtr++;
+              *cvPtr      = (RtFloat) vertices[vertIndex].y;                        *cvPtr++;
+              *cvPtr      = (RtFloat) vertices[vertIndex].z;                        *cvPtr++;
+
+              *widthPtr   = (RtFloat) ( width[vertIndex] );                         *widthPtr++;
+
+              *colorPtr   = (RtFloat) vertexColor[vertIndex].x ;                    *colorPtr++;
+              *colorPtr   = (RtFloat) vertexColor[vertIndex].y ;                    *colorPtr++;
+              *colorPtr   = (RtFloat) vertexColor[vertIndex].z ;                    *colorPtr++;
+
+              *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].x ) ;  *opacityPtr++;
+              *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].y ) ;  *opacityPtr++;
+              *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].z ) ;  *opacityPtr++;
             }
 
           }
         }
 
         // store for output
-        //cout <<"store for output"<<endl;
-        liqTokenPointer profile_pointsPointerPair;
-        profile_pointsPointerPair.set( "P", rPoint, false, true, false, totalNumberOfVertices );
-        profile_pointsPointerPair.setDetailType( rVertex );
-        CVs   = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
-        CV.get( CVs );
-        profile_pointsPointerPair.setTokenFloats( CVs );
-        tokenPointerArray.push_back( profile_pointsPointerPair );
+        // cout <<"store P for output... ";
+        liqTokenPointer points_pointerPair;
+        int test = points_pointerPair.set( "P", rPoint, false, true, false, totalNumberOfVertices );
+        if ( test == 0 ) {
+          MString err("liqRibPfxToonData: liqTokenPointer failed to allocate CV memory !");
+          cout <<err<<endl;
+          throw(err);
+          return;
+        } //else cout <<"points_pointerPair = "<<test<<endl;
+        points_pointerPair.setDetailType( rVertex );
+        points_pointerPair.setTokenFloats( CVs );
+        tokenPointerArray.push_back( points_pointerPair );
+        if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
+        // cout <<"Done !"<<endl;
+
 
         // store width params
-        liqTokenPointer profile_widthPointerPair;
-        profile_widthPointerPair.set( "width", rFloat, false, true, false, totalNumberOfVertices );
-        profile_widthPointerPair.setDetailType( rVarying );
-        curveWidth = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( totalNumberOfVertices ) );
-        vWidth.get( curveWidth );
-        profile_widthPointerPair.setTokenFloats( curveWidth );
-        tokenPointerArray.push_back( profile_widthPointerPair );
+        // cout <<"store width for output... ";
+        liqTokenPointer width_pointerPair;
+        test = width_pointerPair.set( "width", rFloat, false, true, false, totalNumberOfVertices );
+        if ( test == 0 ) {
+          MString err("liqRibPfxToonData: liqTokenPointer failed to allocate width memory !");
+          cout <<err<<endl;
+          throw(err);
+          return;
+        }// else cout <<"width_pointerPair = "<<test<<endl;
+        width_pointerPair.setDetailType( rVarying );
+        width_pointerPair.setTokenFloats( curveWidth );
+        tokenPointerArray.push_back( width_pointerPair );
+        if ( curveWidth != NULL ) { lfree( curveWidth ); curveWidth = NULL; }
+        // cout <<"Done !"<<endl;
 
         // store color params
-        liqTokenPointer profile_colorPointerPair;
-        profile_colorPointerPair.set( "pfxToon_vtxColor", rColor, false, true, false, totalNumberOfVertices );
-        profile_colorPointerPair.setDetailType( rVertex );
-        cvColor = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
-        vColor.get( cvColor );
-        profile_colorPointerPair.setTokenFloats( cvColor );
-        tokenPointerArray.push_back( profile_colorPointerPair );
+        // cout <<"store color for output... ";
+        liqTokenPointer color_pointerPair;
+        test = color_pointerPair.set( "pfxToon_vtxColor", rColor, false, true, false, totalNumberOfVertices );
+        if ( test == 0 ) {
+          MString err("liqRibPfxToonData: liqTokenPointer failed to allocate color memory !");
+          cout <<err<<endl;
+          throw(err);
+          return;
+        } //else cout <<"color_pointerPair = "<<test<<endl;
+        color_pointerPair.setDetailType( rVertex );
+        color_pointerPair.setTokenFloats( cvColor );
+        tokenPointerArray.push_back( color_pointerPair );
+        if ( cvColor != NULL ) { lfree( cvColor ); cvColor = NULL; }
+        // cout <<"Done !"<<endl;
+
+        // store opacity params
+        // cout <<"store opacity for output... ";
+        liqTokenPointer opacity_pointerPair;
+        test = opacity_pointerPair.set( "pfxToon_vtxOpacity", rColor, false, true, false, totalNumberOfVertices );
+        if ( test == 0 ) {
+          MString err("liqRibPfxToonData: liqTokenPointer failed to allocate opacity memory !");
+          cout <<err<<endl<<flush;
+          throw(err);
+          return;
+        } //else cout <<"opacity_pointerPair = "<<test<<endl;
+        opacity_pointerPair.setDetailType( rVertex );
+        opacity_pointerPair.setTokenFloats( cvOpacity );
+        tokenPointerArray.push_back( opacity_pointerPair );
+        if ( cvOpacity != NULL ) { lfree( cvOpacity ); cvOpacity = NULL; }
+        // cout <<"Done !"<<endl;
 
         addAdditionalSurfaceParameters( pfxToon );
 
       }
 
       // delete line arrays
-      //cout <<"[liquid] >> delete line arrays.... "<<endl;
+      // cout <<"delete line arrays.... "<<endl;
       profileArray.deleteArray();
       creaseArray.deleteArray();
       intersectionArray.deleteArray();
@@ -216,11 +301,12 @@ liqRibPfxToonData::~liqRibPfxToonData()
 {
   if ( ncurves > 0 ) {
     // Free all arrays
-    LIQDEBUGPRINTF( "-> killing nurbs curve\n" );
-    if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
-    if ( nverts != NULL ) { lfree( nverts ); nverts = NULL; }
-    if ( curveWidth != NULL ) { lfree( curveWidth ); curveWidth = NULL; }
-    if ( cvColor != NULL ) { lfree( cvColor ); cvColor = NULL; }
+    LIQDEBUGPRINTF( "-> killing pfxToon curves\n" );
+    if ( CVs != NULL )        { lfree( CVs );         CVs = NULL;         }
+    if ( nverts != NULL )     { lfree( nverts );      nverts = NULL;      }
+    if ( curveWidth != NULL ) { lfree( curveWidth );  curveWidth = NULL;  }
+    if ( cvColor != NULL )    { lfree( cvColor );     cvColor = NULL;     }
+    if ( cvOpacity != NULL )  { lfree( cvOpacity );   cvOpacity = NULL;   }
   }
 }
 
@@ -230,7 +316,7 @@ void liqRibPfxToonData::write()
 //      Write the RIB for this surface
 //
 {
-  LIQDEBUGPRINTF( "-> writing nurbs curve\n" );
+  LIQDEBUGPRINTF( "-> writing pfxToon curve\n" );
 
   if ( ncurves > 0 ) {
 
@@ -252,7 +338,7 @@ bool liqRibPfxToonData::compare( const liqRibData & otherObj ) const
 //      if it is animated.
 //
 {
-  LIQDEBUGPRINTF( "-> comparing nurbs curve\n");
+  LIQDEBUGPRINTF( "-> comparing pfxToon curves\n");
   if ( otherObj.type() != MRT_PfxToon ) return false;
   //const liqRibPfxToonData & other = (liqRibPfxToonData&)otherObj;
 
