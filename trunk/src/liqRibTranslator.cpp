@@ -2637,6 +2637,14 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     MIntArray allFrames;
     unsigned int frameIndex;
     {
+      if ( m_renderView ) {
+        // if we are in renderView mode,
+        // just ignore the animation range
+        // and render the current frame.
+        frameFirst = (int) originalTime.as(MTime::uiUnit());
+        frameLast  = (int) originalTime.as(MTime::uiUnit());
+        frameBy    = 1;
+      }
       if ( m_frameList != "" ) {
         MStringArray frameStr;
         m_frameList.split( ',', frameStr );
