@@ -162,7 +162,6 @@ liqRibNode::~liqRibNode()
     }
   }
   LIQDEBUGPRINTF( "-> killing no obj\n" );
-  no = NULL;
   name.clear();
   irradiance.handle.clear();
   photon.globalMap.clear();
@@ -818,7 +817,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
   LIQDEBUGPRINTF( "-> creating rib object for given path\n");
 
   MObject obj = path.node();
-  no = new liqRibObj( path, objType );
+  liqRibObj *no = new liqRibObj( path, objType );
   LIQDEBUGPRINTF( "-> creating rib object for reference\n");
   no->ref();
 
@@ -840,6 +839,9 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 
   LIQDEBUGPRINTF( "-> inserting object into ribnode's obj sample table\n" );
   if ( objects[ sample ] == NULL ) {
+    objects[ sample ] = no;
+  } else {
+	objects[ sample ]->unref();
     objects[ sample ] = no;
   }
 

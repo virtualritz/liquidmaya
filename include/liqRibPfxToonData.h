@@ -54,14 +54,10 @@ private: // Data
 
     RtInt     * nverts;
     RtInt       ncurves;
-    //MFloatArray   CV;
-    //RtInt   * order;
-    //RtFloat * knot;
-    //RtFloat * min;
-    //RtFloat * max;
     RtFloat   * CVs;
     RtFloat   * curveWidth;
     RtFloat   * cvColor;
+    RtFloat   * cvOpacity;
 
 };
 

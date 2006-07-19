@@ -65,7 +65,7 @@ class liqRibNode {
     AnimType           bodyXForm;
 
     liqRibObj *        object( unsigned );
-    liqRibObj *        no;
+  //liqRibObj *        no;
 
     MDagPath &         path();
 

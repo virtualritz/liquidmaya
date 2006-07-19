@@ -15,7 +15,7 @@
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
 ** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** Contributor(s): Berj Bannayan.
+** Contributor(s): Philippe Leprince.
 **
 **
 ** The RenderMan (R) Interface Procedures and Protocol are:
@@ -28,7 +28,7 @@
 
 /* ______________________________________________________________________
 **
-** Liquid Rib Nurbs Curve Data Source
+** Liquid Rib pfxHair Curve Data Source
 ** ______________________________________________________________________
 */
 
@@ -48,9 +48,6 @@ extern "C" {
 #include <maya/MRenderLineArray.h>
 #include <maya/MRenderLine.h>
 #include <maya/MVectorArray.h>
-#include <maya/MIntArray.h>
-#include <maya/MFloatArray.h>
-#include <maya/MColorArray.h>
 
 
 #include <liquid.h>
@@ -71,12 +68,12 @@ liqRibPfxHairData::liqRibPfxHairData( MObject pfxHair )
     cvColor( NULL ),
     cvOpacity( NULL )
 {
-  LIQDEBUGPRINTF( "-> creating pfxHair nurbs curve\n" );
+  LIQDEBUGPRINTF( "-> creating pfxHair curve\n" );
   MStatus status = MS::kSuccess;
 
   //cout <<"[liquid] >> getting the pfxHair node... "<<endl;
 
-  MFnPfxGeometry pfxtoon( pfxHair, &status );
+  MFnPfxGeometry pfxhair( pfxHair, &status );
 
   if ( status == MS::kSuccess ) {
 
@@ -99,11 +96,7 @@ liqRibPfxHairData::liqRibPfxHairData( MObject pfxHair )
     bool doWorldSpace     = false;
 
     //cout <<"[liquid] >> fill line arrays.... "<<endl;
-    status = pfxtoon.getLineData( profileArray, creaseArray, intersectionArray, doLines, doTwist, doWidth, doFlatness, doParameter, doColor, doIncandescence, doTransparency, doWorldSpace );
-
-    //cout <<"[liquid] >> profileArray contains "<<profileArray.length()<<" curves !"<<endl;
-    //cout <<"[liquid] >> creaseArray contains "<<creaseArray.length()<<" curves !"<<endl;
-    //cout <<"[liquid] >> intersectionArray contains "<<intersectionArray.length()<<" curves !"<<endl;
+    status = pfxhair.getLineData( profileArray, creaseArray, intersectionArray, doLines, doTwist, doWidth, doFlatness, doParameter, doColor, doIncandescence, doTransparency, doWorldSpace );
 
     if ( status == MS::kSuccess ) {
 
@@ -112,12 +105,22 @@ liqRibPfxHairData::liqRibPfxHairData( MObject pfxHair )
       // get the lines and fill the arrays.
       ncurves = profileArray.length();
 
-      unsigned int totalNumberOfVertices = 0;
-      MFloatArray CV, vWidth, vColor, vOpacity;
+      {
+        MFnDependencyNode pfxNode( pfxHair );
+        MString info( "[liquid] pfxHair node " );
+        info += pfxNode.name() + " : " + ncurves + " curves.";
+        cout << info << endl << flush;
+      }
+
+      unsigned int totalNumberOfVertices = 0, totalNumberOfSpans = 0;
 
       if ( ncurves > 0 ) {
 
         nverts = (RtInt*)lmalloc( sizeof( RtInt ) * ( ncurves ) );
+        RtFloat* cvPtr      = CVs;
+        RtFloat* widthPtr   = curveWidth;
+        RtFloat* colorPtr   = cvColor;
+        RtFloat* opacityPtr = cvOpacity;
 
         unsigned i=0;
         for ( ; i<ncurves; i++ ) {
@@ -136,82 +139,153 @@ liqRibPfxHairData::liqRibPfxHairData( MObject pfxHair )
 
             nverts[i] = vertices.length() + 2;
             totalNumberOfVertices += vertices.length() + 2;
+            totalNumberOfSpans += vertices.length();
             unsigned int vertIndex = 0;
 
-            CV.append( (float) vertices[vertIndex].x );
-            CV.append( (float) vertices[vertIndex].y );
-            CV.append( (float) vertices[vertIndex].z );
-            vColor.append( (float) vertexColor[vertIndex].x );
-            vColor.append( (float) vertexColor[vertIndex].y );
-            vColor.append( (float) vertexColor[vertIndex].z );
-            vOpacity.append( (float) 1 - vertexTransparency[vertIndex].x );
-            vOpacity.append( (float) 1 - vertexTransparency[vertIndex].y );
-            vOpacity.append( (float) 1 - vertexTransparency[vertIndex].z );
+            // allocate memory
+            CVs = (RtFloat*)realloc( CVs, sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
+            if ( CVs == NULL ) {
+              MString err("liqRibPfxHairData failed to allocate CV memory !");
+              cout <<err<<endl<<flush;
+              throw(err);
+              return;
+            } else cvPtr = CVs + ( totalNumberOfVertices * 3 - nverts[i] * 3 ) ;
+
+            curveWidth = (RtFloat*)realloc( curveWidth, sizeof( RtFloat ) * ( totalNumberOfSpans ) );
+            if ( curveWidth == NULL ) {
+              MString err("liqRibPfxHairData failed to allocate per vertex width memory !");
+              cout <<err<<endl<<flush;
+              throw(err);
+              return;
+            } else widthPtr = curveWidth + ( totalNumberOfSpans - vertices.length() ) ;
+
+            cvColor = (RtFloat*)realloc( cvColor, sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
+            if ( cvColor == NULL ) {
+              MString err("liqRibPfxHairData failed to allocate CV color memory !");
+              cout <<err<<endl<<flush;
+              throw(err);
+              return;
+            } else colorPtr = cvColor + ( totalNumberOfVertices * 3 - nverts[i] * 3 ) ;
+
+            cvOpacity = (RtFloat*)realloc( cvOpacity, sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
+            if ( cvOpacity == NULL ) {
+              MString err("liqRibPfxHairData failed to allocate CV opacity memory !");
+              cout <<err<<endl<<flush;
+              throw(err);
+              return;
+            } else opacityPtr = cvOpacity + ( totalNumberOfVertices * 3 - nverts[i] * 3 ) ;
+
+
+
+            *cvPtr      = (RtFloat) vertices[vertIndex].x;                          *cvPtr++;
+            *cvPtr      = (RtFloat) vertices[vertIndex].y;                          *cvPtr++;
+            *cvPtr      = (RtFloat) vertices[vertIndex].z;                          *cvPtr++;
+
+            *colorPtr   = (RtFloat) vertexColor[vertIndex].x ;                      *colorPtr++;
+            *colorPtr   = (RtFloat) vertexColor[vertIndex].y ;                      *colorPtr++;
+            *colorPtr   = (RtFloat) vertexColor[vertIndex].z ;                      *colorPtr++;
+
+            *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].x ) ;    *opacityPtr++;
+            *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].y ) ;    *opacityPtr++;
+            *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].z ) ;    *opacityPtr++;
+
 
             for ( ; vertIndex < vertices.length(); vertIndex++ ) {
-              CV.append( (float) vertices[vertIndex].x );
-              CV.append( (float) vertices[vertIndex].y );
-              CV.append( (float) vertices[vertIndex].z );
-              vWidth.append( (float) width[vertIndex] );
-              vColor.append( (float) vertexColor[vertIndex].x );
-              vColor.append( (float) vertexColor[vertIndex].y );
-              vColor.append( (float) vertexColor[vertIndex].z );
-              vOpacity.append( (float) 1 - vertexTransparency[vertIndex].x );
-              vOpacity.append( (float) 1 - vertexTransparency[vertIndex].y );
-              vOpacity.append( (float) 1 - vertexTransparency[vertIndex].z );
+              *cvPtr      = (RtFloat) vertices[vertIndex].x;                        *cvPtr++;
+              *cvPtr      = (RtFloat) vertices[vertIndex].y;                        *cvPtr++;
+              *cvPtr      = (RtFloat) vertices[vertIndex].z;                        *cvPtr++;
+
+              *widthPtr   = (RtFloat) width[vertIndex];                             *widthPtr++;
+
+              *colorPtr   = (RtFloat) vertexColor[vertIndex].x ;                    *colorPtr++;
+              *colorPtr   = (RtFloat) vertexColor[vertIndex].y ;                    *colorPtr++;
+              *colorPtr   = (RtFloat) vertexColor[vertIndex].z ;                    *colorPtr++;
+
+              *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].x ) ;  *opacityPtr++;
+              *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].y ) ;  *opacityPtr++;
+              *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex].z ) ;  *opacityPtr++;
             }
 
-            //cout <<"last index is "<<vertIndex<<endl;
 
-            CV.append( (float) vertices[vertIndex-1].x );
-            CV.append( (float) vertices[vertIndex-1].y );
-            CV.append( (float) vertices[vertIndex-1].z );
-            vColor.append( (float) vertexColor[vertIndex-1].x );
-            vColor.append( (float) vertexColor[vertIndex-1].y );
-            vColor.append( (float) vertexColor[vertIndex-1].z );
-            vOpacity.append( (float) 1 - vertexTransparency[vertIndex-1].x );
-            vOpacity.append( (float) 1 - vertexTransparency[vertIndex-1].y );
-            vOpacity.append( (float) 1 - vertexTransparency[vertIndex-1].z );
+            *cvPtr = (float) vertices[vertIndex-1].x;                               *cvPtr++;
+            *cvPtr = (float) vertices[vertIndex-1].y;                               *cvPtr++;
+            *cvPtr = (float) vertices[vertIndex-1].z;                               *cvPtr++;
+
+            *colorPtr = (RtFloat) vertexColor[vertIndex-1].x ;                      *colorPtr++;
+            *colorPtr = (RtFloat) vertexColor[vertIndex-1].y ;                      *colorPtr++;
+            *colorPtr = (RtFloat) vertexColor[vertIndex-1].z ;                      *colorPtr++;
+
+            *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex-1].x ) ;  *opacityPtr++;
+            *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex-1].y ) ;  *opacityPtr++;
+            *opacityPtr = (RtFloat) ( 1.0f - vertexTransparency[vertIndex-1].z ) ;  *opacityPtr++;
 
           }
         }
 
         // store for output
-        //cout <<"store for output"<<endl;
+        //cout <<"store P for output... ";
         liqTokenPointer points_pointerPair;
-        points_pointerPair.set( "P", rPoint, false, true, false, totalNumberOfVertices );
+        int test = points_pointerPair.set( "P", rPoint, false, true, false, totalNumberOfVertices );
+        if ( test == 0 ) {
+          MString err("liqRibPfxHairData: liqTokenPointer failed to allocate CV memory !");
+          cout <<err<<endl;
+          throw(err);
+          return;
+        }// else cout <<"points_pointerPair = "<<test<<endl;
         points_pointerPair.setDetailType( rVertex );
-        CVs   = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
-        CV.get( CVs );
         points_pointerPair.setTokenFloats( CVs );
         tokenPointerArray.push_back( points_pointerPair );
+        if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
+        //cout <<"Done !"<<endl;
+
 
         // store width params
+        //cout <<"store width for output... ";
         liqTokenPointer width_pointerPair;
-        width_pointerPair.set( "width", rFloat, false, true, false, totalNumberOfVertices );
+        test = width_pointerPair.set( "width", rFloat, false, true, false, totalNumberOfSpans );
+        if ( test == 0 ) {
+          MString err("liqRibPfxHairData: liqTokenPointer failed to allocate width memory !");
+          cout <<err<<endl;
+          throw(err);
+          return;
+        }// else cout <<"width_pointerPair = "<<test<<endl;
         width_pointerPair.setDetailType( rVarying );
-        curveWidth = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( totalNumberOfVertices ) );
-        vWidth.get( curveWidth );
         width_pointerPair.setTokenFloats( curveWidth );
         tokenPointerArray.push_back( width_pointerPair );
+        if ( curveWidth != NULL ) { lfree( curveWidth ); curveWidth = NULL; }
+        //cout <<"Done !"<<endl;
 
         // store color params
+        //cout <<"store color for output... ";
         liqTokenPointer color_pointerPair;
-        color_pointerPair.set( "pfxHair_vtxColor", rColor, false, true, false, totalNumberOfVertices );
+        test = color_pointerPair.set( "pfxHair_vtxColor", rColor, false, true, false, totalNumberOfVertices );
+        if ( test == 0 ) {
+          MString err("liqRibPfxHairData: liqTokenPointer failed to allocate color memory !");
+          cout <<err<<endl;
+          throw(err);
+          return;
+        } //else cout <<"color_pointerPair = "<<test<<endl;
         color_pointerPair.setDetailType( rVertex );
-        cvColor = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
-        vColor.get( cvColor );
         color_pointerPair.setTokenFloats( cvColor );
         tokenPointerArray.push_back( color_pointerPair );
+        if ( cvColor != NULL ) { lfree( cvColor ); cvColor = NULL; }
+        //cout <<"Done !"<<endl;
 
         // store opacity params
+        //cout <<"store opacity for output... ";
         liqTokenPointer opacity_pointerPair;
-        opacity_pointerPair.set( "pfxHair_vtxOpacity", rColor, false, true, false, totalNumberOfVertices );
+        test = opacity_pointerPair.set( "pfxHair_vtxOpacity", rColor, false, true, false, totalNumberOfVertices );
+        if ( test == 0 ) {
+          MString err("liqRibPfxHairData: liqTokenPointer failed to allocate opacity memory !");
+          cout <<err<<endl<<flush;
+          throw(err);
+          return;
+        } //else cout <<"opacity_pointerPair = "<<test<<endl;
         opacity_pointerPair.setDetailType( rVertex );
-        cvOpacity = (RtFloat*)lmalloc( sizeof( RtFloat ) * ( totalNumberOfVertices * 3 ) );
-        vOpacity.get( cvOpacity );
         opacity_pointerPair.setTokenFloats( cvOpacity );
         tokenPointerArray.push_back( opacity_pointerPair );
+        if ( cvOpacity != NULL ) { lfree( cvOpacity ); cvOpacity = NULL; }
+        //cout <<"Done !"<<endl;
 
         // additional rman* params
         addAdditionalSurfaceParameters( pfxHair );
@@ -219,10 +293,11 @@ liqRibPfxHairData::liqRibPfxHairData( MObject pfxHair )
       }
 
       // delete line arrays
-      //cout <<"[liquid] >> delete line arrays.... "<<endl;
+      //cout <<"[liquid] >> delete line arrays.... ";
       profileArray.deleteArray();
       creaseArray.deleteArray();
       intersectionArray.deleteArray();
+      //cout <<"Done !"<<endl;
 
     }
 
@@ -234,14 +309,15 @@ liqRibPfxHairData::~liqRibPfxHairData()
 //  Description:
 //      class destructor
 {
+  //cout <<"~ killing pfxHair curve !"<<endl;
   if ( ncurves > 0 ) {
     // Free all arrays
-    LIQDEBUGPRINTF( "-> killing nurbs curve\n" );
-    if ( CVs != NULL ) { lfree( CVs ); CVs = NULL; }
-    if ( nverts != NULL ) { lfree( nverts ); nverts = NULL; }
-    if ( curveWidth != NULL ) { lfree( curveWidth ); curveWidth = NULL; }
-    if ( cvColor != NULL ) { lfree( cvColor ); cvColor = NULL; }
-    if ( cvOpacity != NULL ) { lfree( cvOpacity ); cvOpacity = NULL; }
+    LIQDEBUGPRINTF( "-> killing pfxHair curves\n" );
+    if ( CVs != NULL )        { lfree( CVs );         CVs = NULL;         }
+    if ( nverts != NULL )     { lfree( nverts );      nverts = NULL;      }
+    if ( curveWidth != NULL ) { lfree( curveWidth );  curveWidth = NULL;  }
+    if ( cvColor != NULL )    { lfree( cvColor );     cvColor = NULL;     }
+    if ( cvOpacity != NULL )  { lfree( cvOpacity );   cvOpacity = NULL;   }
   }
 }
 
@@ -251,19 +327,23 @@ void liqRibPfxHairData::write()
 //      Write the RIB for this surface
 //
 {
-  LIQDEBUGPRINTF( "-> writing nurbs curve\n" );
+  LIQDEBUGPRINTF( "-> writing pfxHair curves\n" );
 
   if ( ncurves > 0 ) {
 
+    //cout <<"allocating ram...";
     unsigned numTokens = tokenPointerArray.size();
     RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * numTokens );
     RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * numTokens );
+    //cout <<"Done !"<<endl;
 
+    //cout <<"assigning tokens... ";
     assignTokenArraysV( &tokenPointerArray, tokenArray, pointerArray );
+    //cout <<"Done !"<<endl;
 
-    //RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
+    //cout <<"make Ri call... ";
     RiCurvesV( "cubic", ncurves, nverts, "nonperiodic", numTokens, tokenArray, pointerArray );
-
+    //cout <<"Done !"<<endl;
   }
 }
 
@@ -274,15 +354,13 @@ bool liqRibPfxHairData::compare( const liqRibData & otherObj ) const
 //      if it is animated.
 //
 {
-  LIQDEBUGPRINTF( "-> comparing nurbs curve\n");
-  if ( otherObj.type() != MRT_PfxHair ) return false;
-  //const liqRibPfxHairData & other = (liqRibPfxHairData&)otherObj;
+  LIQDEBUGPRINTF( "-> comparing pfxHair curves\n");
+  //cout <<"-> comparing pfxHair curves..."<<endl;
 
-  // // Check CVs
-  // last = nverts[0] * 3;
-  // for ( i = 0; i < last; ++i ) {
-  //     if ( !equiv( CVs[i], other.CVs[i] ) ) return false;
-  // }
+  if ( otherObj.type() != MRT_PfxHair ) return false;
+  const liqRibPfxHairData & other = (liqRibPfxHairData&)otherObj;
+
+  if ( ncurves != other.ncurves ) return false;
 
   return false;
 }
