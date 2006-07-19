@@ -132,12 +132,12 @@ global proc buildHypergraphNodePopupMenuItems(
 					-label "Assign Material To Selection"
 					-command ("assignOceanShader " + $node);
 			}
-      else if ( nodeType($node) == "liquidLight" )
+      else if ( isClassified($node, "liq*Swatch" ) )
       {
         menuItem
 					-radialPosition "N"
-					-label "Assign Light Shader To Selection"
-					-command ("liquidAssignLightShaderToSelected " + $node);
+					-label "Assign Shader To Selection"
+					-command ("liquidAssignShaderToSelected " + $node);
       }
 			else
 			{
