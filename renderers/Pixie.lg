@@ -15,7 +15,7 @@ proc setAttribute3() {
 }
 
 proc setAttribute4() {
-	setAttr ".shaderComp" -type "string" "shader";
+	setAttr ".shaderComp" -type "string" "sdrc";
 }
 
 proc setAttribute5() {
