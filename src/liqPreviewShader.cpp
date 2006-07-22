@@ -793,7 +793,3 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
 
   return 1;
 }
-
-
-
-

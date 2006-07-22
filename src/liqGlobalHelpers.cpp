@@ -797,7 +797,11 @@ char * basename( const char *filename ) {
 //  Description:
 //      returns the filename portion of a path
 //
+#ifdef MSVC6	
   char *p = strrchr( filename, '/' );
+#else
+  char *p = const_cast<char*>(strrchr( filename, '/' ));
+#endif
   return p ? p + 1 : (char *) filename;
 }
 #endif
