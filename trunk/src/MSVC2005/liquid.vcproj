@@ -706,8 +706,8 @@
 		</Configuration>
 		<Configuration
 			Name="Air Generic ribLib Release|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory=".\../../bin/Air/win32/Release/Objects"
+			IntermediateDirectory=".\../../bin/Air/win32/Release/Objects"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
