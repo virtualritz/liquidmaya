@@ -127,7 +127,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   }
 
   // check to see if the light is using raytraced shadows
-#if defined ( DELIGHT ) || defined ( PRMAN ) || defined( PIXIE )
+#if defined ( DELIGHT ) || defined ( PRMAN ) || defined( PIXIE ) || defined( AIR )
   rayTraced = fnLight.useRayTraceShadows();
   if( rayTraced ) {
     usingShadow = true;
