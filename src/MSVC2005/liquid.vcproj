@@ -3798,97 +3798,273 @@
 				RelativePath="..\..\include\liqWriteArchive.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\include\PixliqMayaDisplayDriverPixie.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\PixliqMayaRenderView.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="MEL Scripts"
 			Filter="*.mel"
 			>
 			<File
-				RelativePath="..\mel\getMultiListerSelection.mel"
+				RelativePath="..\..\mel\AEdagNodeInclude.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidAttachParams.mel"
+				RelativePath="..\..\mel\AEdependNodeTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidAttrWindow.mel"
+				RelativePath="..\..\mel\AEliquidCamera.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidConvMTOR.mel"
+				RelativePath="..\..\mel\AEliquidCoordSysTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidDelayedReadArchive.mel"
+				RelativePath="..\..\mel\AEliquidDisplacementTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidFileBrowser.mel"
+				RelativePath="..\..\mel\AEliquidFGGIOverrideFlags.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidFluid.mel"
+				RelativePath="..\..\mel\AEliquidInstanceFlags.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidGlobals.mel"
+				RelativePath="..\..\mel\AEliquidLightTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidHelpers.mel"
+				RelativePath="..\..\mel\AEliquidNurbsCurveShape.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidMenuHelp.mel"
+				RelativePath="..\..\mel\AEliquidRibBoxTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidParamDialogWindow.mel"
+				RelativePath="..\..\mel\AEliquidSetFlags.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidPrefAttribute.mel"
+				RelativePath="..\..\mel\AEliquidShadowControls.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidReadArchive.mel"
+				RelativePath="..\..\mel\AEliquidSubdivisionSurfaceShape.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidReAttachParams.mel"
+				RelativePath="..\..\mel\AEliquidSurfaceTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidRibBox.mel"
+				RelativePath="..\..\mel\AEliquidVolumeTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidRibGen.mel"
+				RelativePath="..\..\mel\AEobjectSetTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidShaders.mel"
+				RelativePath="..\..\mel\AEoldBlindDataBaseTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidShutdown.mel"
+				RelativePath="..\..\mel\createLiquidGlobalsTab.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidStartup.mel"
+				RelativePath="..\..\mel\getMultiListerSelection.mel"
 				>
 			</File>
 			<File
-				RelativePath="..\mel\liquidSubD.mel"
+				RelativePath="..\..\mel\liquidAttachParams.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidAttributes.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidAttrWindow.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidBuildHypergraphNodePopupMenuItems.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidCommon.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidContainers.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidConvertMtor.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidConvertShadingNetworkToRSL.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidConvMTOR.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidCreateGlobalsTab.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidDelayedReadArchive.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidFileBrowser.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidFluid.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidFluidOutliner.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidGlobals.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidHelpers.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidIni.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidLifWidgets.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidMenuHelp.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidParamDialogWindow.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidParseSlShader.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidPrefAttribute.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidReadArchive.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidReAttachParams.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidRenderCurve.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidRenderView.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidRibBox.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidRibGen.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidShaderNodes.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidShaders.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidShutdown.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSlInfo.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSLManager.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSlParseLif.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSlParseSdl.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSlParseSdr.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSlParseSlb.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSlParseSlo.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSlParseSlx.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidStartup.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSubdiv.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidSubdivInspector.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidVertexPrimvars.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidWriteRSL_materials.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidWriteRSL_textures.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\liquidWriteRSL_utilities.mel"
+				>
+			</File>
+			<File
+				RelativePath="..\..\mel\registerLiquidRenderer.mel"
 				>
 			</File>
 		</Filter>
