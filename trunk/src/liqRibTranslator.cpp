@@ -698,7 +698,7 @@ liqRibTranslator::~liqRibTranslator()
  * Error handling function.
  * This gets called when the RIB library detects an error.
  */
-#if defined ( DELIGHT ) || ( ENTROPY ) || ( PIXIE ) || ( PRMAN )
+#if defined ( DELIGHT ) || ( ENTROPY ) || ( PIXIE ) || ( PRMAN ) || ( AIR )
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
 #else
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
@@ -4264,7 +4264,7 @@ MStatus liqRibTranslator::ribPrologue()
       MString home( getenv( "LIQUIDHOME" ) );
 
       MString displaySearchPath;
-#ifdef PIXIE
+#if defined ( PIXIE ) || ( AIR )
       displaySearchPath = ".:@::" + liquidRenderer.renderHome + "/displays:" + liquidSanitizePath( home ) + "/displayDrivers/" + liquidRenderer.renderName + "/";
 #else
       displaySearchPath = ".:@:" + liquidRenderer.renderHome + "/etc:" + liquidSanitizePath( home ) +  "/displayDrivers/" + liquidRenderer.renderName + "/";
@@ -4373,7 +4373,7 @@ MStatus liqRibTranslator::ribPrologue()
     }
 
     // RAYTRACING OPTIONS
-#if defined ( DELIGHT ) || defined ( PRMAN ) || defined( PIXIE)
+#if defined ( DELIGHT ) || defined ( PRMAN ) || defined( PIXIE ) || defined( AIR )
   if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing ) {
     RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
     RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,          RI_NULL );

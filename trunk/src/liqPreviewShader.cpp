@@ -191,7 +191,7 @@ void liquidNewPreview( liqPreviewShoptions *options )
 
 MStatus	liqPreviewShader::doIt( const MArgList& args )
 {
-#if defined( PRMAN ) || defined( ENTROPY ) || defined( AQSIS ) || defined( DELIGHT ) || defined( PIXIE )
+#if defined( PRMAN ) || defined( ENTROPY ) || defined( AQSIS ) || defined( DELIGHT ) || defined( PIXIE ) || defined( AIR )
   MStatus status;
   int i;
   liqPreviewShoptions preview;
