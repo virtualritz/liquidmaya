@@ -67,6 +67,7 @@ Section ""
 	SetOutPath "$PROGRAMFILES\Liquid\mel"
 	CreateDirectory "$PROGRAMFILES\Liquid\mel"
 	File "..\mel\*.mel"
+	File "..\mel\*.png"
 	SetOutPath "$PROGRAMFILES\Liquid\renderers"
 	CreateDirectory "$PROGRAMFILES\Liquid\renderers"
 	File "..\renderers\*.lg"
@@ -91,6 +92,7 @@ Section ""
 	SetOutPath "$PROGRAMFILES\Liquid\scripts"
 	File "..\scripts\*.*"
 	WriteUninstaller $PROGRAMFILES\Liquid\uninst.exe
+	MessageBox MB_OK "Installation complete, if the modules don't load, get a copy of zlib1.dll and put it in your system32 directory"
 SectionEnd
 
 Section "Uninstall"

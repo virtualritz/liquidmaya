@@ -1,24 +1,17 @@
 ; Liquid installer
-
 Name "LIQUID FOR MAYA"
 OutFile "LiquidMayaForAqsis.exe"
-
 XPStyle on
-
 AddBrandingImage left 100
-
 ; Sets the font of the installer
 SetFont "Comic Sans MS" 8
-
 LicenseText "License page"
 LicenseData "mpl.rtf"
 InstallDir "$PROGRAMFILES\Alias\Maya7.0\bin\plug-ins"
 DirText "Please select the Maya's plugin folder ..."
-
 Var /GLOBAL Mayahome
 Var /GLOBAL Mayaplugdir
 ; Macros
-
 !macro BIMAGE IMAGE PARMS
 	Push $0
 	GetTempFileName $0
@@ -27,18 +20,13 @@ Var /GLOBAL Mayaplugdir
 	Delete $0
 	Pop $0
 !macroend
-
 ; Pages
-
 Page directory dirFun
 Page license licenseFunc
 Page instfiles
 UninstPage uninstConfirm
 UninstPage instfiles
-
-
 ; Sections
-
 Section ""
 	StrCpy $Mayaplugdir $INSTDIR
 	ClearErrors
@@ -67,6 +55,7 @@ Section ""
 	SetOutPath "$PROGRAMFILES\Liquid\mel"
 	CreateDirectory "$PROGRAMFILES\Liquid\mel"
 	File "..\mel\*.mel"
+	File "..\mel\*.png"
 	SetOutPath "$PROGRAMFILES\Liquid\renderers"
 	CreateDirectory "$PROGRAMFILES\Liquid\renderers"
 	File "..\renderers\*.lg"
@@ -96,8 +85,8 @@ Section ""
 	FileClose $0
 	error:
 	WriteUninstaller $PROGRAMFILES\Liquid\uninst.exe
+	MessageBox MB_OK "Installation complete, if the modules don't load, get a copy of zlib1.dll and put it in your system32 directory"
 SectionEnd
-
 Section "Uninstall"
 	ClearErrors
 	MessageBox MB_YESNO "Uninstall Liquid for MAYA?" IDNO end
@@ -106,11 +95,9 @@ Section "Uninstall"
 	MessageBox MB_OK "Liquid deleted, please delete liquid.mll yourself in the Maya's plugins folder."
 	end:
 	SectionEnd
-
 Function licenseFunc
 	!insertmacro BIMAGE "liquidlarge.bmp" /RESIZETOFIT
 FunctionEnd
-
 Function dirFun
 	ClearErrors
 	ReadEnvStr $Mayahome MAYA_LOCATION
