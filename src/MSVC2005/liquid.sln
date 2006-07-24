@@ -34,8 +34,8 @@ Global
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.3Delight Generic ribLib Release|Win32.Build.0 = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.3Delight Release|Win32.ActiveCfg = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.3Delight Release|Win32.Build.0 = Release|Win32
-		{2C342CB8-4207-4594-8C09-74201C27A23C}.Air Generic ribLib Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
-		{2C342CB8-4207-4594-8C09-74201C27A23C}.Air Generic ribLib Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{2C342CB8-4207-4594-8C09-74201C27A23C}.Air Generic ribLib Release|Win32.ActiveCfg = Release|Win32
+		{2C342CB8-4207-4594-8C09-74201C27A23C}.Air Generic ribLib Release|Win32.Build.0 = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Air Release|Win32.ActiveCfg = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Air Release|Win32.Build.0 = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Aqsis Generic ribLib Release|Win32.ActiveCfg = Release|Win32
@@ -54,8 +54,8 @@ Global
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.3Delight Generic ribLib Release|Win32.Build.0 = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.3Delight Release|Win32.ActiveCfg = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.3Delight Release|Win32.Build.0 = 3Delight Release|Win32
-		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Air Generic ribLib Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
-		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Air Generic ribLib Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Air Generic ribLib Release|Win32.ActiveCfg = 3Delight Release|Win32
+		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Air Generic ribLib Release|Win32.Build.0 = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Air Release|Win32.ActiveCfg = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Air Release|Win32.Build.0 = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Aqsis Generic ribLib Release|Win32.ActiveCfg = 3Delight Release|Win32
@@ -74,8 +74,8 @@ Global
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.3Delight Generic ribLib Release|Win32.Build.0 = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.3Delight Release|Win32.ActiveCfg = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.3Delight Release|Win32.Build.0 = Air Release|Win32
-		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Air Generic ribLib Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
-		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Air Generic ribLib Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Air Generic ribLib Release|Win32.ActiveCfg = Air Release|Win32
+		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Air Generic ribLib Release|Win32.Build.0 = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Air Release|Win32.ActiveCfg = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Air Release|Win32.Build.0 = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Aqsis Generic ribLib Release|Win32.ActiveCfg = Air Release|Win32
@@ -94,8 +94,8 @@ Global
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.3Delight Generic ribLib Release|Win32.Build.0 = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.3Delight Release|Win32.ActiveCfg = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.3Delight Release|Win32.Build.0 = Aqsis Release|Win32
-		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Air Generic ribLib Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
-		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Air Generic ribLib Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Air Generic ribLib Release|Win32.ActiveCfg = Aqsis Release|Win32
+		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Air Generic ribLib Release|Win32.Build.0 = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Air Release|Win32.ActiveCfg = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Air Release|Win32.Build.0 = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Aqsis Generic ribLib Release|Win32.ActiveCfg = Aqsis Release|Win32
@@ -114,8 +114,8 @@ Global
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.3Delight Generic ribLib Release|Win32.Build.0 = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.3Delight Release|Win32.ActiveCfg = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.3Delight Release|Win32.Build.0 = Pixie Release|Win32
-		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Air Generic ribLib Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
-		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Air Generic ribLib Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Air Generic ribLib Release|Win32.ActiveCfg = Pixie Release|Win32
+		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Air Generic ribLib Release|Win32.Build.0 = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Air Release|Win32.ActiveCfg = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Air Release|Win32.Build.0 = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Aqsis Generic ribLib Release|Win32.ActiveCfg = Pixie Release|Win32
