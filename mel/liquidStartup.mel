@@ -172,7 +172,7 @@ global proc liquidShowAbout()
         text -width 280 -align "left" -bgc 1 1 1 -l "George Harker, Jamie McCarter, Ken McGaugh,";
         text -width 280 -align "left" -bgc 1 1 1 -l "Michael Duffy, Moritz Moeller, Paul Scruby,";
         text -width 280 -align "left" -bgc 1 1 1 -l "Philippe Leprince, Richard Pickler, Rob Pieke,";
-        text -width 280 -align "left" -bgc 1 1 1 -l "Stephane Deverly, Yuri Meshalkin";
+        text -width 280 -align "left" -bgc 1 1 1 -l "Stephane Deverly, Yuri Meshalkin, Cedric Paille";
         text -width 280 -height 10 -bgc 1 1 1 -l "";
         text -width 280 -align "left" -bgc 1 1 1 -l "http://liquidmaya.sourceforge.net/";
         text -width 280 -bgc 1 1 1 -l "";
