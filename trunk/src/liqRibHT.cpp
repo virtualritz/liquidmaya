@@ -244,7 +244,7 @@ for (indx = 0; indx < RibHashVec.size(); indx++)
   LIQDEBUGPRINTF( "-> Done\n"  );
 
   RNMAP::iterator iter = RibNodeMap.find( hc );
-  while ( ( (*iter).first == hc ) && ( iter != RibNodeMap.end() ) ) {
+  while ( ( iter != RibNodeMap.end() ) && ( (*iter).first == hc ) ) {
     if ( (*iter).second->path() == path ) {
       result = (*iter).second;
       iter = RibNodeMap.end();
