@@ -1197,4 +1197,31 @@ global proc liquidDeleteLightShadowAttributes()
   }
 }
 
+global proc liquidCreateLightOutputAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !objExists( ($currentNode+".__category") ) ) {
+      addAttr -ln "__category" -dt "string" $currentNode;
+    }
+    if ( !objExists( ($currentNode+".lightID") ) ) {
+      addAttr -ln "lightID" -at byte $currentNode;
+    }
+  }
+}
+
+global proc liquidDeleteLightOutputAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( objExists( ($currentNode+".__category") ) ) {
+      deleteAttr ( $currentNode+".__category" );
+    }
+    if ( objExists( ($currentNode+".lightID") ) ) {
+      deleteAttr ( $currentNode+".lightID" );
+    }
+  }
+}
 
