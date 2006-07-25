@@ -1,10 +1,6 @@
-Note for compiling with MSVC++6
+Note for compiling with MSVC2005
 
-You'll need to modify the standard header basetsd.h in the MSVC include dir as follow:
+1st note: Projects comes with a generic RIB library to avoid linking problem.
 
-line 124 <BASETSD.H>:
-original:
-  typedef unsigned long UINT_PTR, *PUINT_PTR;
-modified:
-  typedef unsigned UINT_PTR, *PUINT_PTR;
-  
+2nd note: if you want to compile the generic RIB library, you'll need to create an empty unistd.h
+in your MSVC standard include directory (due to the bison/flex file generator), and install zlib headers and libs.
