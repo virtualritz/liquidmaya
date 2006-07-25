@@ -142,10 +142,11 @@ proc int liquidSl_getParamArraySize( string $line )
     if ( $sizeStr == $strip ) return 0;
 
     int $sizeInt = $sizeStr;
+
     return $sizeInt;
 }
 
-proc string liquidSl_getParamDefaultF( int $fid )
+proc string liquidSl_getParamDefaultF( int $fid, int $paramArraySize )
 {
     string $default = "0.0";
     string $line = strip( `fgetline $fid` );
@@ -159,16 +160,26 @@ proc string liquidSl_getParamDefaultF( int $fid )
     if ( $strip != $line )
         $default = $strip;
 
-    // Check we don't have a 1e20 value
-    $default = float($default);
+    if ( $paramArraySize ) {
 
-    // Make sure we have somethings that looks like a float
-    if ( match( "[e\.]", $default) == "" ) $default += ".0";
+      $default = substitute("\\[", $default, "{");
+      $default = substitute("]", $default, "}");
+      $default = substitute($default, "s/ /, /g");
+
+    } else {
+
+      // Check we don't have a 1e20 value
+      $default = float($default);
+
+      // Make sure we have somethings that looks like a float
+      if ( match( "[e\.]", $default) == "" ) $default += ".0";
+
+    }
 
     return $default;
 }
 
-proc string liquidSl_getParamDefaultS( int $fid )
+proc string liquidSl_getParamDefaultS( int $fid, int $paramArraySize )
 {
     string $default = "";
     string $line = strip( `fgetline $fid` );
@@ -182,6 +193,12 @@ proc string liquidSl_getParamDefaultS( int $fid )
     string $strip = `substitute "^.*[Dd]efault value: *" $line ""`;
     if ( $strip != $line )
         $default = $strip;
+
+    if ( $paramArraySize ) {
+      $default = substitute("\\[", $default, "{");
+      $default = substitute("]", $default, "}");
+      $default = substitute($default, "s/\" \"/\", \"/g");
+    }
 
     return $default;
 }
@@ -222,8 +239,9 @@ proc string liquidSl_getParamDefaultM( int $fid )
     return $default;
 }
 
-proc string liquidSl_getParamDefaultV( int $fid )
+proc string liquidSl_getParamDefaultV( int $fid, int $paramArraySize )
 {
+    global int    $gLiquidSlParamArraySizes[];
     string $default = "<<0, 0, 0>>";
     string $line = `fgetline $fid`;
 
@@ -241,24 +259,42 @@ proc string liquidSl_getParamDefaultV( int $fid )
 
     string $tokens[];
     tokenize $strip2 $tokens;
-    $default = ( "<<" + $tokens[0] + ", " +
-                 $tokens[1] + ", " +
-                 $tokens[2] + ">>" );
+
+    int $i;
+    if ( $paramArraySize > 0 ) {
+
+      $default = "";
+
+      for ( $i=0; $i<$paramArraySize; $i++ ) {
+
+        $default += ( "<<" + $tokens[3*$i+0] + ", " +
+                             $tokens[3*$i+1] + ", " +
+                             $tokens[3*$i+2] + ">>" );
+        if ( $i<$paramArraySize-1 ) $default += ", ";
+      }
+
+      $default = "{" + $default + "}";
+
+    } else {
+      $default = ( "<<" + $tokens[0] + ", " +
+                          $tokens[1] + ", " +
+                          $tokens[2] + ">>" );
+    }
 
     return $default;
 }
 
-proc string liquidSl_getParamDefault( int $fid, string $paramType )
+proc string liquidSl_getParamDefault( int $fid, string $paramType, int $paramArraySize )
 {
     string $default = "";
 
     switch ( $paramType )
     {
     case "string":
-        $default = liquidSl_getParamDefaultS( $fid );
+        $default = liquidSl_getParamDefaultS( $fid, $paramArraySize );
         break;
     case "float":
-        $default = liquidSl_getParamDefaultF( $fid );
+        $default = liquidSl_getParamDefaultF( $fid, $paramArraySize );
         break;
     case "matrix":
         $default = liquidSl_getParamDefaultM( $fid );
@@ -267,7 +303,7 @@ proc string liquidSl_getParamDefault( int $fid, string $paramType )
     case "point":
     case "vector":
     case "normal":
-        $default = liquidSl_getParamDefaultV( $fid );
+        $default = liquidSl_getParamDefaultV( $fid, $paramArraySize );
         break;
     default:
         // This should never be reached
@@ -390,19 +426,7 @@ global proc liquidSlParseSlb( string $slbFile )
 
         int $paramArraySize = liquidSl_getParamArraySize( $line );
 
-        string $paramDefault = liquidSl_getParamDefault( $fid, $paramType );
-
-        if ( $paramArraySize > 0 )
-        {
-            int $i = 1;
-            for ( ; $i < $paramArraySize; $i++ )
-            {
-                string $this = liquidSl_getParamDefault( $fid, $paramType );
-                $paramDefault += ", " + $this;
-            }
-            $paramDefault = "{" + $paramDefault + "}";
-        }
-
+        string $paramDefault = liquidSl_getParamDefault( $fid, $paramType, $paramArraySize );
 
         // Store the results for this parameter
         $gLiquidSlParamNames[ $paramNum ] = $paramName;
