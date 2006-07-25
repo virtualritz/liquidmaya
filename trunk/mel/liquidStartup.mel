@@ -287,6 +287,9 @@ global proc liquidCreateLightsAttributesMenu( string $prefix )
     menuItem -label "Create Shadow Attributes" -command liquidCreateLightShadowAttributes -ann "Add shadow attributes to selected Light shape node(s)";
     menuItem -label "Remove Shadow Attributes" -command liquidDeleteLightShadowAttributes -ann "Remove shadow attributes from selected Light shape node(s)";
     menuItem -d true;
+    menuItem -label "Create Output Attributes" -command liquidCreateLightOutputAttributes -ann "Add output attributes to selected Light shape node(s)";
+    menuItem -label "Remove Output Attributes" -command liquidDeleteLightOutputAttributes -ann "Remove output attributes from selected Light shape node(s)";
+    menuItem -d true;
     menuItem -label "Create Ray Tracing Group" -command liquidCreateLightRayTracingAttributes -ann "Add Ray Tracing attributes to selected Light Transform node(s)";
     menuItem -label "Ray Tracing Add" -subMenu true -tearOff true;
       menuItem -label "Sample Motion" -command liquidCreateSampleMotionAttribute;
