@@ -95,6 +95,7 @@ class liqGlobalsNode : public MPxNode
 
     static MObject aChannelName;
     static MObject aChannelType;
+    static MObject aChannelArraySize;
     static MObject aChannelQuantize;
     static MObject aChannelBitDepth;
     static MObject aChannelDither;

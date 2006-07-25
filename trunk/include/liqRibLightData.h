@@ -101,6 +101,8 @@ private:
   RtFloat       shadowFilterSize;
   RtFloat       shadowSamples;
   RtColor       shadowColor;
+  MString       lightCategory;
+  RtFloat       lightID;
 };
 
 

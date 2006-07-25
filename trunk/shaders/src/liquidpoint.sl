@@ -1,25 +1,29 @@
-light liquidpoint(
-    uniform float  intensity     = 1;
-    uniform color  lightcolor    = 1;
-    uniform float decay          = 0;
+light
+liquidpoint(
+      uniform float  intensity     = 1;
+      uniform color  lightcolor    = 1;
+      uniform float decay          = 0;
 
-    uniform string shadownamepx  = "";
-    uniform string shadownamenx  = "";
-    uniform string shadownamepy  = "";
-    uniform string shadownameny  = "";
-    uniform string shadownamepz  = "";
-    uniform string shadownamenz  = "";
+      uniform string shadownamepx  = "";
+      uniform string shadownamenx  = "";
+      uniform string shadownamepy  = "";
+      uniform string shadownameny  = "";
+      uniform string shadownamepz  = "";
+      uniform string shadownamenz  = "";
 
-    uniform float  shadowbias    = 0.01;
-    uniform float  shadowblur    = 0.0;
-    uniform float  shadowsamples = 16;
-    uniform float  shadowfiltersize = 1;
-    uniform color  shadowcolor   = 0;
+      uniform float  shadowbias    = 0.01;
+      uniform float  shadowblur    = 0.0;
+      uniform float  shadowsamples = 16;
+      uniform float  shadowfiltersize = 1;
+      uniform color  shadowcolor   = 0;
 
-    output varying color __shadow = 0;
-    output varying color __unshadowed_Cl = 0;
-    output float __nondiffuse    = 0;
-    output float __nonspecular   = 0;
+      uniform float  lightID          = 0;
+      uniform string __category       = "";
+
+      output varying color __shadow = 0;
+      output varying color __unshadowed_Cl = 0;
+      output float __nondiffuse    = 0;
+      output float __nonspecular   = 0;
 )
 {
   illuminate( point "shader" ( 0, 0, 0 ) ) {

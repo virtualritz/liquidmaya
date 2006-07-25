@@ -35,20 +35,24 @@ normal shadingnormal(normal Ne){
 
 light
 liquidarea(
-            uniform float   intensity     = 1;
-            uniform color   lightcolor    = 1;
-            uniform float   decay         = 2;
-            uniform string  coordsys      = "";
-            uniform float   lightsamples  = 32;
-            uniform float   doublesided   = 0;
-            uniform string  shadowname    = "";
-            uniform color   shadowcolor   = 0;
+      uniform float   intensity     = 1;
+      uniform color   lightcolor    = 1;
+      uniform float   decay         = 2;
+      uniform string  coordsys      = "";
+      uniform float   lightsamples  = 32;
+      uniform float   doublesided   = 0;
+      uniform string  shadowname    = "";
+      uniform color   shadowcolor   = 0;
 
-            output uniform float __nonspecular          = 1;
-            output varying color __shadow               = 0;
-            output varying color __unshadowed_Cl        = 0;
-            output uniform float __arealightIntensity   = 0;
-            output uniform color __arealightColor       = 0;
+      uniform float  lightID        = 0;
+      uniform string __category     = "";
+
+      output uniform float __nonspecular          = 1;
+      output varying color __shadowF              = 0;
+      output varying color __shadowC              = 0;
+      output varying color __unshadowed_Cl        = 0;
+      output uniform float __arealightIntensity   = 0;
+      output uniform color __arealightColor       = 0;
 )
 {
   /* force non-specular */
@@ -114,13 +118,14 @@ liquidarea(
           __unshadowed_Cl = c;
           /* raytraced occlusion - only if the point is reasonnably lit */
           if ( shadowname == "raytrace" && (comp(c,0)+comp(c,1)+comp(c,2))>0.005  ) {
-            __shadow = transmission(Ps, p);
+            __shadowC = transmission(Ps, p);
+            __shadowF = comp(__shadowC, 0)*0.3 + comp(__shadowC, 1)*0.59 + comp(__shadowC, 2)*0.11;
 #ifdef PRMAN
-            c *= mix( shadowcolor, color(1), __shadow);
+            c *= mix( shadowcolor, color(1), __shadowC);
 #else
-            c *= color(mix(comp(shadowcolor,0),1,comp(__shadow,0)),
-                       mix(comp(shadowcolor,1),1,comp(__shadow,1)),
-                       mix(comp(shadowcolor,2),1,comp(__shadow,2)));
+            c *= color(mix(comp(shadowcolor,0),1,comp(__shadowC,0)),
+                       mix(comp(shadowcolor,1),1,comp(__shadowC,1)),
+                       mix(comp(shadowcolor,2),1,comp(__shadowC,2)));
 #endif
           }
           Cl += c;

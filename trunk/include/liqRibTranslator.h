@@ -360,6 +360,7 @@ private :
   typedef struct structChannel {
     MString     name;
     int         type;
+    int         arraySize;
     bool        quantize;
     int         bitDepth;
     float       dither;

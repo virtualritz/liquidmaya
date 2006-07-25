@@ -41,31 +41,36 @@ clipSuperellipse( point Q; /* Test point on the x-y plane */
 
 
 
-light liquidspot(
-    uniform float intensity      = 1;
-    uniform color lightcolor     = 1;
-    uniform float coneangle      = radians( 40 );
-    uniform float penumbraangle  = radians( 0 );
-    uniform float dropoff        = 0;
-    uniform float decay          = 0;
+light
+liquidspot(
+      uniform float intensity      = 1;
+      uniform color lightcolor     = 1;
+      uniform float coneangle      = radians( 40 );
+      uniform float penumbraangle  = radians( 0 );
+      uniform float dropoff        = 0;
+      uniform float decay          = 0;
 
-    uniform float barndoors      = 0;
-    uniform float leftbarndoor   = 10;
-    uniform float rightbarndoor  = 10;
-    uniform float topbarndoor    = 10;
-    uniform float bottombarndoor = 10;
+      uniform float barndoors      = 0;
+      uniform float leftbarndoor   = 10;
+      uniform float rightbarndoor  = 10;
+      uniform float topbarndoor    = 10;
+      uniform float bottombarndoor = 10;
 
-    uniform string shadowname       = "";
-    uniform float  shadowbias       = 0.01;
-    uniform float  shadowblur       = 0.0;
-    uniform float  shadowsamples    = 32;
-    uniform float  shadowfiltersize = 1;
-    uniform color  shadowcolor      = 0;
+      uniform string shadowname       = "";
+      uniform float  shadowbias       = 0.01;
+      uniform float  shadowblur       = 0.0;
+      uniform float  shadowsamples    = 32;
+      uniform float  shadowfiltersize = 1;
+      uniform color  shadowcolor      = 0;
 
-    output varying color __shadow         = 0;
-    output varying color __unshadowed_Cl  = 0;
-    output float         __nondiffuse     = 0;
-    output float         __nonspecular    = 0;
+      uniform float  lightID          = 0;
+      uniform string __category       = "";
+
+      output varying color __shadowC        = 0;
+      output varying float __shadowF        = 0;
+      output varying color __unshadowed_Cl  = 0;
+      output float         __nondiffuse     = 0;
+      output float         __nonspecular    = 0;
 )
 {
   float atten, cosangle;
