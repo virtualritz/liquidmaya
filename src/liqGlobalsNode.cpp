@@ -88,6 +88,7 @@ MObject liqGlobalsNode::aNumDDParam;
 
 MObject liqGlobalsNode::aChannelName;
 MObject liqGlobalsNode::aChannelType;
+MObject liqGlobalsNode::aChannelArraySize;
 MObject liqGlobalsNode::aChannelQuantize;
 MObject liqGlobalsNode::aChannelBitDepth;
 MObject liqGlobalsNode::aChannelDither;
@@ -508,6 +509,7 @@ MStatus liqGlobalsNode::initialize()
 
   CREATE_MULTI_STRING( tAttr,  aChannelName,                "channelName",                  "dcn",    ""    );
      CREATE_MULTI_INT( nAttr,  aChannelType,                "channelType",                  "dct",    0     );
+     CREATE_MULTI_INT( nAttr,  aChannelArraySize,           "channelArraySize",             "dcs",    0     );
     CREATE_MULTI_BOOL( nAttr,  aChannelQuantize,            "channelQuantize",              "dcq",    0     );
      CREATE_MULTI_INT( nAttr,  aChannelBitDepth,            "channelBitDepth",              "dcbd",   8     );
    CREATE_MULTI_FLOAT( nAttr,  aChannelDither,              "channelDither",                "dcd",    0.5   );

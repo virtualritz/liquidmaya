@@ -589,11 +589,17 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
         shadowRadius     = fnDistantLight.shadowRadius( &status );
       }
 
+      MPlug catPlug = lightDepNode.findPlug( "__category", &status );
+      if ( status == MS::kSuccess ) catPlug.getValue(lightCategory);
+      else lightCategory = "";
+      MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
+      if ( status == MS::kSuccess ) idPlug.getValue(lightID);
+      else lightID = 0;
+
     } else if ( light.hasFn( MFn::kPointLight ) ) {
       MFnNonExtendedLight fnPointLight( light );
       lightType      = MRLT_Point;
       decay          = fnPointLight.decayRate();
-
 
       if ( liqglo_doShadows && usingShadow ) {
         shadowFilterSize = fnPointLight.depthMapFilterSize( &status );
@@ -607,6 +613,13 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
           shadowSamples = fnPointLight.numShadowSamples( &status );
         }
       }
+
+      MPlug catPlug = lightDepNode.findPlug( "__category", &status );
+      if ( status == MS::kSuccess ) catPlug.getValue(lightCategory);
+      else lightCategory = "";
+      MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
+      if ( status == MS::kSuccess ) idPlug.getValue(lightID);
+      else lightID = 0;
 
     } else if ( light.hasFn( MFn::kSpotLight ) ) {
       MFnSpotLight fnSpotLight( light );
@@ -637,6 +650,14 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
         shadowBias       = fnSpotLight.depthMapBias( &status );
         shadowRadius     = fnSpotLight.shadowRadius( &status );
       }
+
+      MPlug catPlug = lightDepNode.findPlug( "__category", &status );
+      if ( status == MS::kSuccess ) catPlug.getValue(lightCategory);
+      else lightCategory = "";
+      MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
+      if ( status == MS::kSuccess ) idPlug.getValue(lightID);
+      else lightID = 0;
+
     } else if ( light.hasFn( MFn::kAreaLight ) ) {
       MFnAreaLight fnAreaLight( light );
       lightType      = MRLT_Area;
@@ -660,7 +681,12 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
         xtraPlug.getValue( bothsides );
       }
       bothSidesEmit = (bothsides == true)? 1.0:0.0;
-
+      MPlug catPlug = lightDepNode.findPlug( "__category", &status );
+      if ( status == MS::kSuccess ) catPlug.getValue(lightCategory);
+      else lightCategory = "";
+      MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
+      if ( status == MS::kSuccess ) idPlug.getValue(lightID);
+      else lightID = 0;
     }
   }
 }
@@ -704,6 +730,8 @@ void liqRibLightData::write()
       }
     } else {
 
+      RtString cat = const_cast< char* >( lightCategory.asChar() );
+
 #ifdef DELIGHT
       // If the light is casting raytraced shadows then set the attribute
       // and the samples for shadow oversampling
@@ -734,6 +762,8 @@ void liqRibLightData::write()
                                   "color shadowcolor",      &shadowColor,
                                   "float __nondiffuse",     &nonDiffuse,
                                   "float __nonspecular",    &nonSpecular,
+                                  "string __category",      &cat,
+                                  "float lightID",          &lightID,
                                   RI_NULL );
         } else {
           handle = RiLightSource( "liquiddistant",
@@ -741,6 +771,8 @@ void liqRibLightData::write()
                                   "lightcolor",           color,
                                   "float __nondiffuse",   &nonDiffuse,
                                   "float __nonspecular",  &nonSpecular,
+                                  "string __category",    &cat,
+                                  "float lightID",        &lightID,
                                   RI_NULL );
         }
         break;
@@ -775,6 +807,8 @@ void liqRibLightData::write()
                                   "color shadowcolor",          &shadowColor,
                                   "float __nondiffuse",         &nonDiffuse,
                                   "float __nonspecular",        &nonSpecular,
+                                  "string __category",          &cat,
+                                  "float lightID",              &lightID,
                                   RI_NULL );
         } else {
           handle = RiLightSource( "liquidpoint",
@@ -783,6 +817,8 @@ void liqRibLightData::write()
                                   "float decay",          &decay,
                                   "float __nondiffuse",   &nonDiffuse,
                                   "float __nonspecular",  &nonSpecular,
+                                  "string __category",    &cat,
+                                  "float lightID",        &lightID,
                                   RI_NULL );
         }
         break;
@@ -811,6 +847,8 @@ void liqRibLightData::write()
                                   "color shadowcolor",      &shadowColor,
                                   "float __nondiffuse",     &nonDiffuse,
                                   "float __nonspecular",    &nonSpecular,
+                                  "string __category",      &cat,
+                                  "float lightID",          &lightID,
                                   RI_NULL );
           } else {
           RtString shadowname = const_cast< char* >( shadowName.asChar() );
@@ -831,6 +869,8 @@ void liqRibLightData::write()
                                   "float shadowsamples",  &shadowSamples,
                                   "float __nondiffuse",   &nonDiffuse,
                                   "float __nonspecular",  &nonSpecular,
+                                  "string __category",    &cat,
+                                  "float lightID",        &lightID,
                                   RI_NULL );
         }
         break;
@@ -868,6 +908,8 @@ void liqRibLightData::write()
                                 "float doublesided",    &bothSidesEmit,
                                 "string shadowname",    &shadowname,
                                 "color shadowcolor",    &shadowColor,
+                                "string __category",    &cat,
+                                "float lightID",        &lightID,
                                 RI_NULL );
         break;
       }

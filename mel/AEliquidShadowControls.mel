@@ -39,18 +39,27 @@ global proc AEliquidShadowControls( string $node )
 {
   editorTemplate -beginLayout "Liquid" -collapse false;
 
-    editorTemplate -label "Shadow Map Samples" -addControl "liqShadowMapSamples";
-
-    editorTemplate -beginLayout "Deep Shadows" -collapse false;
-      editorTemplate -label "Deep Shadows" -addControl "deepShadows";
-      editorTemplate -label "Pixel Samples" -addControl "pixelSamples";
-      editorTemplate -label "Volume Interpretation" -addControl "volumeInterpretation";
+    editorTemplate -beginLayout "Output" -collapse false;
+      editorTemplate -label "Light Category" -addDynamicControl "__category";
+      editorTemplate -label "Light ID" -addDynamicControl "lightID";
     editorTemplate -endLayout;
 
-    editorTemplate -label "Every Frame" -addControl "everyFrame";
-    editorTemplate -label "Render At Frame" -addControl "renderAtFrame";
-    editorTemplate -label "Geometry Set" -addControl "geometrySet";
-    editorTemplate -label "Shading Rate Factor" -addControl "shadingRateFactor";
+    editorTemplate -beginLayout "Shadows" -collapse false;
+
+      editorTemplate -label "Shadow Map Samples" -addDynamicControl "liqShadowMapSamples";
+
+      editorTemplate -beginLayout "Deep Shadows" -collapse false;
+        editorTemplate -label "Deep Shadows"          -addDynamicControl "deepShadows";
+        editorTemplate -label "Pixel Samples"         -addDynamicControl "pixelSamples";
+        editorTemplate -label "Volume Interpretation" -addDynamicControl "volumeInterpretation";
+      editorTemplate -endLayout;
+
+      editorTemplate -label "Every Frame"         -addDynamicControl "everyFrame";
+      editorTemplate -label "Render At Frame"     -addDynamicControl "renderAtFrame";
+      editorTemplate -label "Geometry Set"        -addDynamicControl "geometrySet";
+      editorTemplate -label "Shading Rate Factor" -addDynamicControl "shadingRateFactor";
+
+    editorTemplate -endLayout;
 
   editorTemplate -endLayout;
 }

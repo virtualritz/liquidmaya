@@ -1750,8 +1750,10 @@ global proc liquidDisplayChannelsGuiUpdateList()
 
     for ( $i=0; $i<$numChannels; $i++  ) {
       int $type = `getAttr liquidGlobals.channelType[$i]`;
+      int $sizeVal = `getAttr liquidGlobals.channelArraySize[$i]`;
+      string $sizeStr = ($sizeVal > 0)? ("["+$sizeVal+"]") : "";
       string $name = `getAttr liquidGlobals.channelName[$i]`;
-      string $line = ( " "+$i+"    "+$channelTypes[$type]+" "+$name );
+      string $line = ( " "+$i+"    "+$channelTypes[$type]+$sizeStr+"  "+$name );
       textScrollList -e -append $line LG_DClist;
     }
 
@@ -1768,6 +1770,7 @@ global proc liquidDisplayChannelsGuiUpdateCtls()
 
     connectControl -index 2 LG_DCnameCtl            liquidGlobals.channelName[$i];
     connectControl -index 2 LG_DCtypeCtl            liquidGlobals.channelType[$i];
+    connectControl -index 2 LG_DCarraySizeCtl       liquidGlobals.channelArraySize[$i];
     connectControl -index 2 LG_DCenablefilterCtl    liquidGlobals.channelFilter[$i];
     connectControl -index 2 LG_DCpixelfilterCtl     liquidGlobals.channelPixelFilter[$i];
     connectControl -index 2 LG_DCfilterwidthCtl     liquidGlobals.channelPixelFilterX[$i];
@@ -1783,6 +1786,7 @@ global proc liquidGlobalsAddDC()
   int $numChannels = `getAttr -size liquidGlobals.channelName`;
   setAttr -type "string" liquidGlobals.channelName[$numChannels]         "";
   setAttr                liquidGlobals.channelType[$numChannels]          0;
+  setAttr                liquidGlobals.channelArraySize[$numChannels]     0;
   setAttr                liquidGlobals.channelFilter[$numChannels]        0;
   setAttr                liquidGlobals.channelPixelFilter[$numChannels]   0;
   setAttr                liquidGlobals.channelPixelFilterX[$numChannels]  0;
@@ -1810,6 +1814,7 @@ global proc liquidGlobalsDeleteDC( int $channelNum )
     for ( $i=$channel; $i<$size-1; $i++  ) {
       setAttr -type "string" liquidGlobals.channelName[$i]  (`getAttr liquidGlobals.channelName[$i+1]`);
       setAttr liquidGlobals.channelType[$i]                 (`getAttr liquidGlobals.channelType[$i+1]`);
+      setAttr liquidGlobals.channelArraySize[$i]            (`getAttr liquidGlobals.channelArraySize[$i+1]`);
       setAttr liquidGlobals.channelFilter[$i]               (`getAttr liquidGlobals.channelFilter[$i+1]`);
       setAttr liquidGlobals.channelPixelFilter[$i]          (`getAttr liquidGlobals.channelPixelFilter[$i+1]`);
       setAttr liquidGlobals.channelPixelFilterX[$i]         (`getAttr liquidGlobals.channelPixelFilterX[$i+1]`);
@@ -1821,6 +1826,7 @@ global proc liquidGlobalsDeleteDC( int $channelNum )
   } else {
     connectControl -index 2 LG_DCnameCtl            liquidGlobals.dummy;
     connectControl -index 2 LG_DCtypeCtl            liquidGlobals.dummy;
+    connectControl -index 2 LG_DCarraySizeCtl       liquidGlobals.dummy;
     connectControl -index 2 LG_DCenablefilterCtl    liquidGlobals.dummy;
     connectControl -index 2 LG_DCpixelfilterCtl     liquidGlobals.dummy;
     connectControl -index 2 LG_DCfilterwidthCtl     liquidGlobals.dummy;
@@ -1832,6 +1838,7 @@ global proc liquidGlobalsDeleteDC( int $channelNum )
 
   removeMultiInstance -b 1 liquidGlobals.channelName[$size-1];
   removeMultiInstance -b 1 liquidGlobals.channelType[$size-1];
+  removeMultiInstance -b 1 liquidGlobals.channelArraySize[$size-1];
   removeMultiInstance -b 1 liquidGlobals.channelFilter[$size-1];
   removeMultiInstance -b 1 liquidGlobals.channelPixelFilter[$size-1];
   removeMultiInstance -b 1 liquidGlobals.channelPixelFilterX[$size-1];
@@ -1857,6 +1864,7 @@ global proc liquidGlobalsDuplicateDC()
 
   setAttr -type "string" liquidGlobals.channelName[$size]  (`getAttr liquidGlobals.channelName[$channel]`);
   setAttr liquidGlobals.channelType[$size]                 (`getAttr liquidGlobals.channelType[$channel]`);
+  setAttr liquidGlobals.channelArraySize[$size]            (`getAttr liquidGlobals.channelArraySize[$channel]`);
   setAttr liquidGlobals.channelFilter[$size]               (`getAttr liquidGlobals.channelFilter[$channel]`);
   setAttr liquidGlobals.channelPixelFilter[$size]          (`getAttr liquidGlobals.channelPixelFilter[$channel]`);
   setAttr liquidGlobals.channelPixelFilterX[$size]         (`getAttr liquidGlobals.channelPixelFilterX[$channel]`);
@@ -1901,6 +1909,8 @@ global proc liquidDrawDisplayChannels()
       for( $i = 0; $i < size( $channelTypes ); ++$i ) {
         menuItem -data $i -label $channelTypes[ $i ];
       }
+
+      intFieldGrp -label "Channel Array Size" -cc liquidDisplayChannelsGuiUpdateList  LG_DCarraySizeCtl;
 
       frameLayout -lv false -cll false;
         columnLayout -adj true;

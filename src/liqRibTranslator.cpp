@@ -1207,6 +1207,19 @@ void liqRibTranslator::liquidReadGlobals()
         }
 
         gStatus.clear();
+        gPlug = rGlobalNode.findPlug( "channelArraySize", &gStatus );
+        if ( gStatus == MS::kSuccess ) {
+          gStatus.clear();
+          MPlug elementPlug;
+          elementPlug = gPlug.elementByLogicalIndex( i, &gStatus );
+          if ( gStatus == MS::kSuccess ) {
+            int val;
+            elementPlug.getValue( val );
+            theChannel.arraySize = val;
+          }
+        }
+
+        gStatus.clear();
         gPlug = rGlobalNode.findPlug( "channelQuantize", &gStatus );
         if ( gStatus == MS::kSuccess ) {
           gStatus.clear();
@@ -5228,7 +5241,11 @@ MStatus liqRibTranslator::framePrologue(long lframe)
           int quantize[4];
           float filterwidth[2];
 
-          channel = channeltype[(*m_channels_iterator).type] + " " + (*m_channels_iterator).name ;
+          channel = channeltype[(*m_channels_iterator).type];
+          char theArraySize[8];
+          sprintf( theArraySize, "%d", (*m_channels_iterator).arraySize );
+          if ( (*m_channels_iterator).arraySize > 0 ) channel += "[" + (MString)theArraySize + "]";
+          channel += " " + (*m_channels_iterator).name ;
 
           if ( (*m_channels_iterator).quantize ) {
 

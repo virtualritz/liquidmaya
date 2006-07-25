@@ -27,7 +27,7 @@ proc setAttribute6() {
 }
 
 proc setAttribute7() {
-	setAttr ".viewTexture" -type "string" "";
+	setAttr ".viewTexture" -type "string" "airshow";
 }
 
 proc setAttribute8() {
@@ -36,6 +36,7 @@ proc setAttribute8() {
 	setAttr ".ZBuffer" no;
 	setAttr ".Raytrace" no;
 	setAttr ".OpenGL" no;
+	setAttr ".DepthMask" no;
 }
 
 proc setAttribute9() {
@@ -48,14 +49,14 @@ proc setAttribute9() {
 	setAttr ".Mitchell" yes;
 	setAttr ".SeparableCatmull_Rom" no;
 	setAttr ".Lanczos" yes;
-	setAttr ".Bessel" no
+	setAttr ".Bessel" no;
 	setAttr ".Disk" yes;
 }
 
 proc setAttribute10() {
 	setAttr ".Blobbies" yes;
 	setAttr ".Points" yes;
-	setAttr ".Eyesplits" yes;
+	setAttr ".Eyesplits" no;
 	setAttr ".Raytracing" yes;
 	setAttr ".DepthOfField" yes;
 	setAttr ".AdvancedVisibility" no;
