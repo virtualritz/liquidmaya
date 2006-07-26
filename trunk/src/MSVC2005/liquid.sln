@@ -12,9 +12,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "displayDriverPixie", "displayDriverPixie\displayDriverPixie.vcproj", "{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liquid", "liquid.vcproj", "{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2C342CB8-4207-4594-8C09-74201C27A23C} = {2C342CB8-4207-4594-8C09-74201C27A23C}
-	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liquidBin", "liquidBin\liquidBin.vcproj", "{C72B3D60-A418-41EF-9B83-0F16430BC6CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +23,7 @@ Global
 		Air Release|Win32 = Air Release|Win32
 		Aqsis Generic ribLib Release|Win32 = Aqsis Generic ribLib Release|Win32
 		Aqsis Release|Win32 = Aqsis Release|Win32
+		Debug|Win32 = Debug|Win32
 		Pixie Generic ribLib Release|Win32 = Pixie Generic ribLib Release|Win32
 		Pixie Release|Win32 = Pixie Release|Win32
 		Prman Release|Win32 = Prman Release|Win32
@@ -42,6 +42,8 @@ Global
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Aqsis Generic ribLib Release|Win32.Build.0 = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Aqsis Release|Win32.ActiveCfg = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Aqsis Release|Win32.Build.0 = Release|Win32
+		{2C342CB8-4207-4594-8C09-74201C27A23C}.Debug|Win32.ActiveCfg = Release|Win32
+		{2C342CB8-4207-4594-8C09-74201C27A23C}.Debug|Win32.Build.0 = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Pixie Generic ribLib Release|Win32.ActiveCfg = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Pixie Generic ribLib Release|Win32.Build.0 = Release|Win32
 		{2C342CB8-4207-4594-8C09-74201C27A23C}.Pixie Release|Win32.ActiveCfg = Release|Win32
@@ -62,6 +64,8 @@ Global
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Aqsis Generic ribLib Release|Win32.Build.0 = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Aqsis Release|Win32.ActiveCfg = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Aqsis Release|Win32.Build.0 = 3Delight Release|Win32
+		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Debug|Win32.ActiveCfg = 3Delight Release|Win32
+		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Debug|Win32.Build.0 = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Pixie Generic ribLib Release|Win32.ActiveCfg = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Pixie Generic ribLib Release|Win32.Build.0 = 3Delight Release|Win32
 		{C819AC2D-82DD-4A79-A777-DE415CE09E11}.Pixie Release|Win32.ActiveCfg = 3Delight Release|Win32
@@ -82,6 +86,8 @@ Global
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Aqsis Generic ribLib Release|Win32.Build.0 = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Aqsis Release|Win32.ActiveCfg = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Aqsis Release|Win32.Build.0 = Air Release|Win32
+		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Debug|Win32.ActiveCfg = Air Release|Win32
+		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Debug|Win32.Build.0 = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Pixie Generic ribLib Release|Win32.ActiveCfg = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Pixie Generic ribLib Release|Win32.Build.0 = Air Release|Win32
 		{BAED7037-8C31-41AB-897C-49A07BED17A5}.Pixie Release|Win32.ActiveCfg = Air Release|Win32
@@ -102,6 +108,8 @@ Global
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Aqsis Generic ribLib Release|Win32.Build.0 = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Aqsis Release|Win32.ActiveCfg = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Aqsis Release|Win32.Build.0 = Aqsis Release|Win32
+		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Debug|Win32.ActiveCfg = Aqsis Release|Win32
+		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Debug|Win32.Build.0 = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Pixie Generic ribLib Release|Win32.ActiveCfg = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Pixie Generic ribLib Release|Win32.Build.0 = Aqsis Release|Win32
 		{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}.Pixie Release|Win32.ActiveCfg = Aqsis Release|Win32
@@ -122,6 +130,8 @@ Global
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Aqsis Generic ribLib Release|Win32.Build.0 = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Aqsis Release|Win32.ActiveCfg = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Aqsis Release|Win32.Build.0 = Pixie Release|Win32
+		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Debug|Win32.ActiveCfg = Pixie Release|Win32
+		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Debug|Win32.Build.0 = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Pixie Generic ribLib Release|Win32.ActiveCfg = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Pixie Generic ribLib Release|Win32.Build.0 = Pixie Release|Win32
 		{59A8A411-90E8-495F-BC45-3C60FF6E9B2F}.Pixie Release|Win32.ActiveCfg = Pixie Release|Win32
@@ -142,6 +152,8 @@ Global
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Generic ribLib Release|Win32.Build.0 = Aqsis Generic ribLib Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Release|Win32.ActiveCfg = Aqsis Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Release|Win32.Build.0 = Aqsis Release|Win32
+		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Debug|Win32.ActiveCfg = Air Generic ribLib Release|Win32
+		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Debug|Win32.Build.0 = Air Generic ribLib Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Pixie Generic ribLib Release|Win32.ActiveCfg = Pixie Generic ribLib Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Pixie Generic ribLib Release|Win32.Build.0 = Pixie Generic ribLib Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Pixie Release|Win32.ActiveCfg = Pixie Release|Win32
@@ -150,6 +162,28 @@ Global
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Prman Release|Win32.Build.0 = Prman Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Release|Win32.ActiveCfg = Aqsis Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Release|Win32.Build.0 = Aqsis Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.3Delight Generic ribLib Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.3Delight Generic ribLib Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.3Delight Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.3Delight Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Air Generic ribLib Release|Win32.ActiveCfg = Pixie Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Air Generic ribLib Release|Win32.Build.0 = Pixie Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Air Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Air Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Aqsis Generic ribLib Release|Win32.ActiveCfg = Aqsis Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Aqsis Generic ribLib Release|Win32.Build.0 = Aqsis Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Aqsis Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Aqsis Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Debug|Win32.ActiveCfg = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Debug|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Generic ribLib Release|Win32.ActiveCfg = Pixie Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Generic ribLib Release|Win32.Build.0 = Pixie Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Release|Win32.ActiveCfg = Pixie Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Release|Win32.Build.0 = Pixie Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Prman Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Prman Release|Win32.Build.0 = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Release|Win32.Build.0 = Air Generic ribLib Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

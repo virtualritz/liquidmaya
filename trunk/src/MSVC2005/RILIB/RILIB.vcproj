@@ -44,7 +44,7 @@
 				InlineFunctionExpansion="1"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAVE_ZLIB"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\../../../bin/win32lib/objs/RILIB.pch"
 				AssemblerListingLocation=".\../../../bin/win32lib/objs/"
@@ -66,8 +66,10 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				LinkLibraryDependencies="false"
 				OutputFile="../../../bin/win32lib/RILIB.lib"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
