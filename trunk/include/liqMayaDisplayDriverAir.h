@@ -36,6 +36,8 @@
 #if !defined(__D_LIQMAYA_H__)
 #define __D_LIQMAYA_H__
 
+#include <stdlib.h>
+
 #ifdef WIN32
 #define EXPORT extern "C" __declspec(dllexport)
 #else
