@@ -2,7 +2,7 @@
 //
 //                             Pixie
 //
-// Copyright © 1999 - 2003, Okan Arikan
+// Copyright  1999 - 2003, Okan Arikan
 //
 // Contact: okan@cs.berkeley.edu
 //
@@ -36,6 +36,7 @@
 #include "ribOut.h"
 #include "ri.h"
 #include "error.h"
+#include <assert.h>
 
 // This is the size of the temporary buffer we use before going to the file
 const	int	ribOutScratchSize	=	1000;
