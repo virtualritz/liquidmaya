@@ -12,12 +12,20 @@ ALL_RELEASE_PATHS = $(patsubst bin/$(VBIN)/%,$(RELEASE_PATH)%,$(COMPILED_VERSION
 default : debug
 
 clean :
-	( cd src && make $@)
-	( cd shaders && make $@)
+	( cd ribLib && make $@ )
+	( cd src && make $@ )
+	( cd shaders && make $@ )
 
+ifeq "$(USE_RIBLIB)" "yes"
 all debug release :
-	( cd src && make BIN_VERSION=$@ $@)
-	( cd shaders && make BIN_VERSION=$@ $@)
+	( cd ribLib && make )
+	( cd src && make BIN_VERSION=$@ $@ )
+	( cd shaders && make BIN_VERSION=$@ $@ )
+else
+all debug release :
+	( cd src && make BIN_VERSION=$@ $@ )
+	( cd shaders && make BIN_VERSION=$@ $@ )
+endif
 
 realclean : 
 	rm -rf $(DEPTH)/bin/$(VBIN)
