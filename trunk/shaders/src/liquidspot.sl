@@ -1,4 +1,3 @@
-
 /* Superellipse soft clipping -- straight from uberlight
  * Input:
  *   - point Q on the x-y plane
@@ -66,6 +65,7 @@ liquidspot(
       uniform float  lightID          = 0;
       uniform string __category       = "";
 
+	  output varying color __shadow = 0;
       output varying color __shadowC        = 0;
       output varying float __shadowF        = 0;
       output varying color __unshadowed_Cl  = 0;
