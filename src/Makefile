@@ -140,7 +140,7 @@ $(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
 
 $(LIQUIDDPY) : $(VPATH)/$(LIQDISPLAYOBJS)
 	@echo $@
-	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(LIQUIDDPY)
+	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -I$(LIQRMANPATH) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(LIQUIDDPY)
 	mkdir -p ../$(LIQUIDDPYLOC)
 	cp $(LIQUIDDPY) ../$(LIQUIDDPYLOC)
 
@@ -168,6 +168,7 @@ installpixie:
 	@mkdir -p $(DESTDIR)/usr/share/liquid
 	@mkdir -p $(DESTDIR)/usr/share/liquid/mel
 	@cp -rf ../mel/*.mel $(DESTDIR)/usr/share/liquid/mel
+	@cp -rf ../mel/*.png $(DESTDIR)/usr/share/liquid/mel
 	@mkdir -p $(DESTDIR)/usr/share/liquid/icons
 	@cp -rf ../icons/*.xpm $(DESTDIR)/usr/share/liquid/icons
 	@cp -rf ../icons/*.iff $(DESTDIR)/usr/share/liquid/icons
@@ -177,7 +178,7 @@ installpixie:
 	@mkdir -p $(DESTDIR)/usr/share/liquid/renderers
 	@cp -rf ../renderers/*.lg $(DESTDIR)/usr/share/liquid/renderers
 	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders
-	@cp -rf ../shaders/*.sdr $(DESTDIR)/usr/share/liquid/shaders
+	@cp -rf $(VPATHSHADERS)/*.sdr $(DESTDIR)/usr/share/liquid/shaders
 	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders/src
 	@cp -rf ../shaders/src/*.sl $(DESTDIR)/usr/share/liquid/shaders/src
 	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers
@@ -190,6 +191,7 @@ install3delight:
 	@mkdir -p $(DESTDIR)/usr/share/liquid
 	@mkdir -p $(DESTDIR)/usr/share/liquid/mel
 	@cp -rf ../mel/*.mel $(DESTDIR)/usr/share/liquid/mel
+	@cp -rf ../mel/*.png $(DESTDIR)/usr/share/liquid/mel
 	@mkdir -p $(DESTDIR)/usr/share/liquid/icons
 	@cp -rf ../icons/*.xpm $(DESTDIR)/usr/share/liquid/icons
 	@cp -rf ../icons/*.iff $(DESTDIR)/usr/share/liquid/icons
@@ -199,7 +201,7 @@ install3delight:
 	@mkdir -p $(DESTDIR)/usr/share/liquid/renderers
 	@cp -rf ../renderers/*.lg $(DESTDIR)/usr/share/liquid/renderers
 	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders
-	@cp -rf ../shaders/*.sdl $(DESTDIR)/usr/share/liquid/shaders
+	@cp -rf $(VPATHSHADERS)/*.sdl $(DESTDIR)/usr/share/liquid/shaders
 	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders/src
 	@cp -rf ../shaders/src/*.sl $(DESTDIR)/usr/share/liquid/shaders/src
 	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers
