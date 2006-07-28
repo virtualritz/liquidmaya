@@ -1,17 +1,17 @@
 SHELL = sh
 
-# ****************************************************
-# Set default if variables not set
-# ****************************************************
-AW_LOCATION		?= /usr/aw
-MAYA_LOCATION	?= $(AW_LOCATION)/maya
-MAYA_VERSIONS	:= $(wildcard $(AW_LOCATION)/maya*)
-MAYA_VERSION	?= 7.0
-LIQRMAN			?= pixie
-LIQ_OLD_MAYA_IDS ?= 0
 
+# Set default if variables not set
+
+AW_LOCATION ?= /usr/aw
+MAYA_LOCATION ?= $(AW_LOCATION)/maya
+MAYA_VERSIONS := $(wildcard $(AW_LOCATION)/maya*)
+MAYA_VERSION ?= 7.0
+LIQRMAN ?= pixie
+LIQ_OLD_MAYA_IDS ?= 0
 # Os settings
 # What about Suze ?
+
 OS_NAME := $(shell uname -o)
 
 ifeq "$(OS_NAME)" "GNU/Linux"
@@ -31,9 +31,7 @@ UX_RELEASE_FILE ?= $(foreach FILE, $(UX_RELEASE_TEST_FILES), $(wildcard $(FILE)*
 FLAVORX := $(patsubst /etc/%-release,%,$(UX_RELEASE_FILE))
 FLAVORX := $(patsubst /etc/%-version,%,$(FLAVORX))
 
-# ****************************************************
 # Anything special for some linux flavor ?
-# ****************************************************
 ifeq "$(FLAVORX)" "fedora redhat"
 VBIN	= fedora
 # Make sure we use gcc 3.3.4 if 3.4.4 is default one
@@ -47,7 +45,7 @@ endif
 else
 ifeq "$(OS_NAME)" "Cygwin"
 # Cygwin 
-FLAVORX			= cygwin
+FLAVORX = cygwin
 PLUGSUF			= .mll
 BINSUF			= .exe
 OBJSUF			= .obj
@@ -67,10 +65,8 @@ OUTFLAG			= -Fo
 EXTRALIBS		= $(LIBFLAG)shell32$(LIBSUF) $(LIBFLAG)Foundation$(LIBSUF)
 
 endif
-# ****************************************************
-# Not Linux, not Cygwin ...what is it ?
-# ****************************************************
 
+# Not Linux, not Cygwin ...what is it ?
 FLAVORX = "notunix"
 endif
 
@@ -78,12 +74,11 @@ LIQUIDSHORTVERSION := $(shell tr -d \"\\"\\"\" < $(DEPTH)/src/liquid.version)
 BUILDDATE := $(shell date "+%d.\040%b.\040%Y")
 LIQUIDVERSION = \"$(LIQUIDSHORTVERSION)\040for\040$(LIQRMAN),\040$(BUILDDATE)\"
 
-# ****************************************************
+
 # Renderers setting
 # Pixie
-# ****************************************************
 ifeq "$(LIQRMAN)" "pixie"
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriverPixie
+LIQDISPLAYOBJS  = 	liqMayaDisplayDriverPixie.$(OBJEXT)
 LIQRMANPATH 	= 	$${PIXIEHOME:=/usr/local/Pixie}
 LIQUIDDPYLOC	=	displayDrivers/pixie/
 LIQDPYNAME		=	liqmaya.so
@@ -97,30 +92,9 @@ SLFLAGS 		=
 	#-DPIXIE # already defines this
 endif
 
-# ****************************************************
-# Renderers setting
-# Air
-# ****************************************************
-ifeq "$(LIQRMAN)" "air"
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAir
-LIQRMANPATH 	= 	$${AIRHOME:=/usr/local/Air}
-LIQUIDDPYLOC	=	displayDrivers/air/
-LIQDPYNAME		=	d_liqmaya.so
-LIQRMANFLAGS	=	-DAIR
-USE_RIBLIB		:=	"yes"
-LIQRMANLIBS 	=	
-LIQWINRMANLIBS	=	""
-USEDVAR 		=	AIRHOME
-CSL 			= 	$(LIQRMANPATH)/bin/shaded
-SLOEXT			=	sdb
-SLFLAGS 		= 	
-endif
-
-# ****************************************************
 # Aqsis
-# ****************************************************
 ifeq "$(LIQRMAN)" "aqsis"
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAqsis
+LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAqsis.$(OBJEXT)
 LIQRMANPATH 	=	$${AQSIS_BASE_PATH:=/usr/local/aqsis}
 LIQUIDDPYLOC	=	displayDrivers/aqsis/
 LIQDPYNAME		=	liqmaya.so
@@ -133,11 +107,9 @@ SLOEXT			=	slx
 SLFLAGS 		= 	-DAQSIS
 endif
 
-# ****************************************************
 # 3delight
-# ****************************************************
 ifeq "$(LIQRMAN)" "3delight"
-LIQDISPLAYOBJS  =	liqMayaDisplayDriver3Delight
+LIQDISPLAYOBJS  =	liqMayaDisplayDriver3Delight.$(OBJEXT)
 LIQRMANPATH 	=	$${DELIGHT:=/usr/local/3delight}
 LIQUIDDPYLOC	=	displayDrivers/3Delight/
 LIQDPYNAME		=	liqmaya.dpy
@@ -150,11 +122,9 @@ SLOEXT			=	sdl
 SLFLAGS 		=	-DDELIGHT
 endif
 
-# ****************************************************
 # Entropy
-# ****************************************************
 ifeq "$(LIQRMAN)" "entropy"
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriverEntropy
+LIQDISPLAYOBJS  = 	liqMayaDisplayDriverEntropy.$(OBJEXT)
 LIQRMANPATH 	=	$${ENTROPYHOME:=/usr/local/exluna/Entropy}
 LIQUIDDPYLOC	=	displayDrivers/entropy/
 LIQDPYNAME		=	d_liqmaya.so
@@ -166,9 +136,7 @@ SLOEXT			=	fixme
 SLFLAGS 		= 	-DENTROPY
 endif
 
-# ****************************************************
 # Prman
-# ****************************************************
 ifeq "$(patsubst prman%,prman,$(LIQRMAN))" "prman"
 PRMANVERSION 	= 	$(patsubst prman%,%,$(LIQRMAN))
 LIQRMANPATH 	=	$${RMANTREE:=/usr/local/prman}
@@ -179,7 +147,7 @@ USEDVAR 		= 	RMANTREE
 CSL 			= 	$(LIQRMANPATH)/bin/shader
 SLFLAGS 		= 	-DPRMAN
 SLOEXT			=	slo
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriver
+LIQDISPLAYOBJS  = 	liqMayaDisplayDriver.$(OBJEXT)
 
 ifeq "$(patsubst 12.%,12,$(PRMANVERSION))" "12"
 LIQRMANLIBS 	=	-lrib -lsloargs -llkm -ltarget -lzip -lprmutil
@@ -219,18 +187,10 @@ VPATHMEL 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/mel
 VPATHRENDERS 	= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/renderers
 VPATHICONS  	= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/icons
 CPPFLAGS		= -DLIQUIDVERSION=$(LIQUIDVERSION) $(LOCFLAGS) $(LIQRMANFLAGS) $(WARNFLAGS) $(EXTRAFLAGS) $(NO_TRANS_LINK) -DREQUIRE_IOSTREAM
-ifeq "$(USE_RIBLIB)" "yes"
-INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(DEPTH)/ribLib -I../include
-LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L/usr/lib -L/usr/X11R6/lib
-LIBS			= $(DEPTH)/bin/linux32/librib.a $(MAYALIBS) $(EXTRA_LIBS) -lm
-LIQRMANLIBS		:= $(DEPTH)/bin/linux32/librib.a
-else
 INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(LIQRMANPATH)/include -I../include
-LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib -L/usr/X11R6/lib
-LIBS			= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
-endif
-DPYINCLUDES		:= -I$(LIQRMANPATH)/include -I../include -I. -I..
+LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib
 MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lxpcom -lGL -lGLU
+LIBS			= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
 TARGET  		= $(VPATH)/$(LIQUIDPLUG)
 
 
