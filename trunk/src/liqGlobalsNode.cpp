@@ -100,6 +100,10 @@ MObject liqGlobalsNode::aChannelPixelFilterY;
 MObject liqGlobalsNode::aCreateOutputDirectories;
 MObject liqGlobalsNode::aExpandShaderArrays;
 
+MObject liqGlobalsNode::aBakeNonRasterOrient;
+MObject liqGlobalsNode::aBakeNoCullBackface;
+MObject liqGlobalsNode::aBakeNoCullHidden;
+
 MObject liqGlobalsNode::aShaderPath;
 MObject liqGlobalsNode::aTexturePath;
 MObject liqGlobalsNode::aArchivePath;
@@ -520,6 +524,10 @@ MStatus liqGlobalsNode::initialize()
 
           CREATE_BOOL( nAttr,  aCreateOutputDirectories,    "createOutputDirectories",      "cod",    1     );
           CREATE_BOOL( nAttr,  aExpandShaderArrays,         "expandShaderArrays",           "esa",    1     );
+          
+		  CREATE_BOOL( nAttr,  aBakeNonRasterOrient,        "bakeNonRasterOrient",          "nro",    0     );
+		  CREATE_BOOL( nAttr,  aBakeNoCullBackface,         "bakeNoCullBackface",           "ncb",    0     );
+		  CREATE_BOOL( nAttr,  aBakeNoCullHidden,           "bakeNoCullHidden",             "nch",    0     );
 
         CREATE_STRING( tAttr,  aShaderPath,                 "shaderPath",                   "spth",   ""    );
         CREATE_STRING( tAttr,  aTexturePath,                "texturePath",                  "tpth",   ""    );

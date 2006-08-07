@@ -74,6 +74,9 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
     editorTemplate -suppress rmanShaderLong;
     editorTemplate -suppress rmanShaderLif;
     editorTemplate -suppress rmanParams;
+    editorTemplate -suppress rmanDetails;
+    editorTemplate -suppress rmanTypes;
+    editorTemplate -suppress rmanDefaults;
     editorTemplate -suppress rmanArraySizes;
     editorTemplate -suppress rmanLifCmds;
 

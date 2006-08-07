@@ -370,6 +370,10 @@ global proc liquidInitGlobalVals()
     ,"createOutputDirectories",     "bool",   true
     ,"expandShaderArrays",          "bool",   false
 
+	,"bakeNonRasterOrient",			"bool",   false
+	,"bakeNoCullBackface",			"bool",   false
+	,"bakeNoCullHidden",			"bool",   true
+
     ,"shaderPath",                  "string", ""
     ,"texturePath",                 "string", ""
     ,"archivePath",                 "string", ""
@@ -2555,6 +2559,13 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
           columnLayout -adj true;
             liquidShowBoolGlobal "expandShaderArrays" "Expand Shader Arrays";
           setParent ..;
+        setParent ..;
+		frameLayout -bs "etchedIn" -l "Baking" -cll true -cl false;
+		  columnLayout -adj true;
+			liquidShowBoolGlobal "bakeNonRasterOrient" "Non raster-oriented dicing";
+			liquidShowBoolGlobal "bakeNoCullBackface" "Don't cull backfacing grids";
+			liquidShowBoolGlobal "bakeNoCullHidden" "Don't cull hidden grids";
+		  setParent ..;
         setParent ..;
         frameLayout -bs "etchedIn" -l "Before & After RIB Requests" -cll true -cl false;
           columnLayout -adj true;
