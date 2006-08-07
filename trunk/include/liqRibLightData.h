@@ -103,6 +103,7 @@ private:
   RtColor       shadowColor;
   MString       lightCategory;
   RtFloat       lightID;
+  MString       hitmode;
 };
 
 
