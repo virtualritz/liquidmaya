@@ -1,12 +1,12 @@
 CPPFLAGS += -DHAVE_ZLIB
-RIBLIB := $(DEPTH)/bin/linux32/librib.a
+RIBLIB := ../bin/linux32/librib.a
 RIBLIBOBJS = ri.o\
 	riInterface.o\
 	ribOut.o\
 	variable.o\
 	error.o
 
-objs : $(RIBLIBOBJS) $(RIBLIB)
+all : $(RIBLIBOBJS) $(RIBLIB)
 
 $(RIBLIB) :
 	@mkdir -p ../bin/linux32

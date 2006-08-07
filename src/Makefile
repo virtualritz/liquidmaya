@@ -5,101 +5,100 @@ VPATH ?= $(VPATHDEBUG)
 
 # -lefence
 #-llkm -lzip -ltarget
-LIQUIDBINLIBS =		$(LIQRMANLIBS) $(MAYALIBS) \
-					-lOpenMayalib \
-					-lOpenMayaFX \
-					-lAnimSlice \
-					-lDeformSlice \
-					-lDynSlice \
-					-lKinSlice \
-					-lModelSlice \
-					-lNurbsSlice \
-					-lPolySlice \
-					-lProjectSlice \
-					-lImage \
-					-lShared \
-					-lTranslators \
-					-lDataModel \
-					-lRenderModel \
-					-lNurbsEngine \
-					-lDependEngine \
-					-lCommandEngine \
-					-lFoundation \
-					-lStringCatalog \
-					-lIMF \
-					-lAG \
-					-lAnimEngine \
-					-lAppVersion \
-					-lGeometryEngine \
-					-lDependCommand \
-					-lExtensionLayer \
-					-lPolyEngine \
-					-lSubdivEngine \
-					-lSubdivGeom \
-					-l3dGraphics \
-					-lNurbs \
-					-lPoly \
-					-lSubdiv \
-					-lHWFoundation \
-					-lHWGL \
-					-lHWRender \
-					-lBase \
-					-lSharedUI \
-					-lHWRenderMaya \
-					-lDevices \
-					-lManips \
-					-lAnimUISlice \
-					-lDynUISlice \
-					-lRenderSlice \
-					-lImageUI \
-					-lModelUISlice \
-					-lUrchinSlice \
-					$(EXTRA_LIBS) \
-					-lm
+LIQUIDBINLIBS =		 $(LIBS) $(MAYALIBS) \
+				-lOpenMayalib \
+				-lOpenMayaFX \
+				-lAnimSlice \
+				-lDeformSlice \
+				-lDynSlice \
+				-lKinSlice \
+				-lModelSlice \
+				-lNurbsSlice \
+				-lPolySlice \
+				-lProjectSlice \
+				-lImage \
+				-lShared \
+				-lTranslators \
+				-lDataModel \
+				-lRenderModel \
+				-lNurbsEngine \
+				-lDependEngine \
+				-lCommandEngine \
+				-lFoundation \
+				-lStringCatalog \
+				-lIMF \
+				-lAG \
+				-lAnimEngine \
+				-lAppVersion \
+				-lGeometryEngine \
+				-lDependCommand \
+				-lExtensionLayer \
+				-lPolyEngine \
+				-lSubdivEngine \
+				-lSubdivGeom \
+				-l3dGraphics \
+				-lNurbs \
+				-lPoly \
+				-lSubdiv \
+				-lHWFoundation \
+				-lHWGL \
+				-lHWRender \
+				-lBase \
+				-lSharedUI \
+				-lHWRenderMaya \
+				-lDevices \
+				-lManips \
+				-lAnimUISlice \
+				-lDynUISlice \
+				-lRenderSlice \
+				-lImageUI \
+				-lModelUISlice \
+				-lUrchinSlice \
+				$(EXTRA_LIBS) \
+				-lm
 
 LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
-					liqAttachPrefAttribute.$(OBJEXT) \
-					liqRibTranslator.$(OBJEXT) \
-					liqRibParticleData.$(OBJEXT) \
-					liqTokenPointer.$(OBJEXT) \
-					liqWriteArchive.$(OBJEXT) \
-					liqRibSurfaceData.$(OBJEXT) \
-					liqPreviewShader.$(OBJEXT) \
-					liqRibObj.$(OBJEXT) \
-					liqRibNode.$(OBJEXT) \
-					liqRibData.$(OBJEXT) \
-					liqGlobalHelpers.$(OBJEXT) \
-					liqRibNuCurveData.$(OBJEXT) \
-					liqRibMeshData.$(OBJEXT) \
-					liqRibLocatorData.$(OBJEXT) \
-					liqRibClipPlaneData.$(OBJEXT) \
-					liqRibCoordData.$(OBJEXT) \
-					liqRibPfxToonData.$(OBJEXT) \
-					liqRibPfxHairData.$(OBJEXT) \
-					liqRibLightData.$(OBJEXT) \
-					liqRibHT.$(OBJEXT) \
-					liqGetSloInfo.$(OBJEXT) \
-					liqGetAttr.$(OBJEXT) \
-					liqRibGenData.$(OBJEXT) \
-					liqRibSubdivisionData.$(OBJEXT) \
-					liqRibMayaSubdivisionData.$(OBJEXT) \
-					liqMemory.$(OBJEXT) \
-					liqProcessLauncher.$(OBJEXT) \
-					liqRenderer.$(OBJEXT) \
-					liqExpression.$(OBJEXT) \
-					liqNodeSwatch.$(OBJEXT) \
-					liqSurfaceNode.$(OBJEXT)	\
-					liqDisplacementNode.$(OBJEXT)	\
-					liqVolumeNode.$(OBJEXT)  \
-					liqRibboxNode.$(OBJEXT)  \
-					liqLightNode.$(OBJEXT)  \
-					liqLightNodeBehavior.$(OBJEXT)\
-					liqCoordSysNode.$(OBJEXT) \
-					liqGlobalsNode.$(OBJEXT) \
-					liqBucket.$(OBJEXT) \
-					liqMayaRenderView.$(OBJEXT) \
-					liqJobList.$(OBJEXT)
-
+			liqAttachPrefAttribute.$(OBJEXT) \
+			liqRibTranslator.$(OBJEXT) \
+			liqRibParticleData.$(OBJEXT) \
+			liqTokenPointer.$(OBJEXT) \
+			liqWriteArchive.$(OBJEXT) \
+			liqRibSurfaceData.$(OBJEXT) \
+			liqPreviewShader.$(OBJEXT) \
+			liqRibObj.$(OBJEXT) \
+			liqRibNode.$(OBJEXT) \
+			liqRibData.$(OBJEXT) \
+			liqGlobalHelpers.$(OBJEXT) \
+			liqRibNuCurveData.$(OBJEXT) \
+			liqRibMeshData.$(OBJEXT) \
+			liqRibLocatorData.$(OBJEXT) \
+			liqRibClipPlaneData.$(OBJEXT) \
+			liqRibCoordData.$(OBJEXT) \
+			liqRibPfxToonData.$(OBJEXT) \
+			liqRibPfxHairData.$(OBJEXT) \
+			liqRibLightData.$(OBJEXT) \
+			liqRibHT.$(OBJEXT) \
+			liqGetSloInfo.$(OBJEXT) \
+			liqGetAttr.$(OBJEXT) \
+			liqRibGenData.$(OBJEXT) \
+			liqRibSubdivisionData.$(OBJEXT) \
+			liqRibMayaSubdivisionData.$(OBJEXT) \
+			liqMemory.$(OBJEXT) \
+			liqProcessLauncher.$(OBJEXT) \
+			liqRenderer.$(OBJEXT) \
+			liqExpression.$(OBJEXT) \
+			liqNodeSwatch.$(OBJEXT) \
+			liqSurfaceNode.$(OBJEXT)	\
+			liqDisplacementNode.$(OBJEXT)	\
+			liqVolumeNode.$(OBJEXT)  \
+			liqRibboxNode.$(OBJEXT)  \
+			liqLightNode.$(OBJEXT)  \
+			liqLightNodeBehavior.$(OBJEXT)\
+			liqCoordSysNode.$(OBJEXT) \
+			liqGlobalsNode.$(OBJEXT) \
+			liqBucket.$(OBJEXT) \
+			liqMayaRenderView.$(OBJEXT) \
+			liqJobList.$(OBJEXT)
 
 LIQUIDOUTMAINOBJS := $(patsubst %,$(VPATH)/%,$(LIQUIDMAINOBJS))
 
@@ -138,13 +137,17 @@ $(LIQUIDBIN) : $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB)
 $(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
 	@$(AR) $(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
 
-$(LIQUIDDPY) : $(VPATH)/$(LIQDISPLAYOBJS)
+$(LIQUIDDPY) : $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT)
 	@echo $@
-	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS) -I$(LIQRMANPATH) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(LIQUIDDPY)
+	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT) -I$(LIQRMANPATH) -L$(LIQRMANPATH)/lib -o $(LIQUIDDPY)
 	mkdir -p ../$(LIQUIDDPYLOC)
 	cp $(LIQUIDDPY) ../$(LIQUIDDPYLOC)
 
 $(LIQUIDOUTMAINOBJS) : ../include/liquid.h
+
+$(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT) : $(LIQDISPLAYOBJS).cpp
+	@echo "compiling > $@"
+	$(CPP) -c $(DPYINCLUDES) $(INCLUDES) $(CPPFLAGS) -o $@ $<
 
 $(VPATH)/%.$(OBJEXT) : %.cpp
 	@echo $@
@@ -207,5 +210,36 @@ install3delight:
 	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers
 	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers/3Delight
 	@cp -rf $(LIQUIDDPY) $(DESTDIR)/usr/share/liquid/displayDrivers/3Delight/liqmaya.dpy
+
+installair:
+	@echo $(LIQUIDPLUG)
+	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/aw/maya/bin/plug-ins/liquid.so
+	@mkdir -p $(DESTDIR)/usr/share/liquid
+	@mkdir -p $(DESTDIR)/usr/share/liquid/mel
+	@cp -rf ../mel/*.mel $(DESTDIR)/usr/share/liquid/mel
+	@cp -rf ../mel/*.png $(DESTDIR)/usr/share/liquid/mel
+	@mkdir -p $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.xpm $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.iff $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/*.jpg $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/render_* $(DESTDIR)/usr/share/liquid/icons
+	@cp -rf ../icons/lif_* $(DESTDIR)/usr/share/liquid/icons
+	@mkdir -p $(DESTDIR)/usr/share/liquid/renderers
+	@cp -rf ../renderers/*.lg $(DESTDIR)/usr/share/liquid/renderers
+	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders
+	@cp -rf $(VPATHSHADERS)/*.sdb $(DESTDIR)/usr/share/liquid/shaders
+	@mkdir -p $(DESTDIR)/usr/share/liquid/shaders/src
+	@cp -rf ../shaders/src/*.sl $(DESTDIR)/usr/share/liquid/shaders/src
+	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers
+	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers/Air
+	@cp -rf $(LIQUIDDPY) $(DESTDIR)/usr/share/liquid/displayDrivers/Air/d_liqmaya.so
+
+clean : VPATH?=$(VPATHDEBUG)
+clean :
+	rm -rf $(VPATH)/*.$(PLUGSUF) $(VPATH)/*.$(OBJEXT) $(VPATH)/*.d $(VPATH)/ii_files $(VPATH)/so_locations
+
+cleandist : VPATH?=$(VPATHDEBUG)
+cleandist :
+	rm -rf $(VPATH)/*.$(OBJEXT) $(VPATH)/*.d $(VPATH)/ii_files
 
 include $(DEPTH)/commonrules.mk

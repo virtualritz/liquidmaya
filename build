@@ -1,0 +1,43 @@
+#!/bin/bash
+
+if [[ $1 == "-clean" ]]; then make clean;make realclean;exit
+fi
+
+echo "What is your g++ version 3.3.4 executable? (Press enter if g++)"
+read CPP
+
+if [[ $CPP == "" ]]; then CPP="g++";
+fi
+
+CPPVER=`${CPP} -dumpversion`
+if [[ $CPPVER != "3.3.4" ]]; then echo "You are about to compile LIQUID with a bad gcc version";
+	echo "Do you want to continue (y/n)?";
+	read YESNO;
+	if [[ $YESNO == "n" ]]; then exit;
+	fi
+fi
+
+echo "Wish renderer do you use ?"
+echo "1) Pixie"
+echo "2) Air"
+echo "3) 3Delght"
+echo "2) Aqsis"
+read RENDERER
+if [[ $RENDERER == "1" ]]; then LIQRMAN="pixie"
+fi
+if [[ $RENDERER == "2" ]]; then LIQRMAN="air"
+fi
+if [[ $RENDERER == "3" ]]; then LIQRMAN="3delight"
+fi
+if [[ $RENDERER == "4" ]]; then LIQRMAN="aqsis"
+fi
+if [[ $LIQRMAN == "" ]]; then echo "Bad choice.";exit
+fi
+
+echo "Do you want to compile with the generic rib library (y/n)?"
+read RIBLIB
+
+if [[ $RIBLIB == "y" ]]; then USE_RIBLIB=yes; else USE_RIBLIB=no;
+fi
+
+make CPP=$CPP LIQRMAN=$LIQRMAN USE_RIBLIB=$USE_RIBLIB release

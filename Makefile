@@ -29,6 +29,7 @@ endif
 
 realclean : 
 	rm -rf $(DEPTH)/bin/$(VBIN)
+	rm -rf $(DEPTH)/bin/linux32/*
 
 ifeq ($(LIQRMAN),3delight)
 install :
@@ -38,6 +39,11 @@ endif
 ifeq ($(LIQRMAN),pixie)
 install :
 	( cd src && make BIN_VERSION="release" installpixie)
+endif
+
+ifeq ($(LIQRMAN),air)
+install :
+	( cd src && make BIN_VERSION="release" installair)
 endif
 
 dist :
