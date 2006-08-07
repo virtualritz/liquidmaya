@@ -93,6 +93,7 @@ MSyntax liqPreviewShader::syntax()
   syn.addFlag("sr","shadingRate");
   syn.addFlag("p","pipe");
   syn.addFlag("t","type");
+  syn.addFlag("pi","previewIntensity");
 
   syn.addFlag("sph", "sphere");
   syn.addFlag("tor", "torus");
@@ -130,6 +131,7 @@ typedef struct liqPreviewShoptions
   MString customRibFile;
   bool    fullShaderPath;
   MString type;
+  double   previewIntensity;
 } liqPreviewShoptions;
 
 int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *options );
@@ -205,6 +207,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.customRibFile = "";
   preview.fullShaderPath = false;
   preview.type = "";
+  preview.previewIntensity = 1.0;
 
   MString displayDriver( "framebuffer" );
   MString displayName( "liqPreviewShader" );
@@ -263,6 +266,10 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
     } else if ( ( arg == "-t" ) || ( arg == "-type" ) ) {
       i++;
       preview.type = args.asString( i, &status );
+    } else if ( ( arg == "-pi" ) || ( arg == "-previewIntensity" ) ) {
+      i++;
+      MString argValue = args.asString( i, &status );
+      preview.previewIntensity = argValue.asDouble();
     }
   }
 
@@ -421,17 +428,26 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   RiTransformEnd();
   RtLightHandle ambientLightH, directionalLightH;
   RtFloat intensity;
-  intensity = 0.05f;
+  intensity = 0.05f * options->previewIntensity;
   ambientLightH = RiLightSource( "ambientlight", "intensity", &intensity, RI_NULL );
-  intensity = 0.9f;
+  intensity = 0.9f * options->previewIntensity;
   RtPoint from;
   RtPoint to;
   from[0] = -1.0; from[1] = 1.5; from[2] = -1.0;
   to[0] = 0.0; to[1] = 0.0; to[2] = 0.0;
-  directionalLightH = RiLightSource( "distantlight", "intensity", &intensity, "from", &from, "to", &to, RI_NULL );
-  intensity = 0.2f;
+  RiTransformBegin();
+    RiRotate( 55.0,  1, 0, 0 );
+    RiRotate( 30.0,  0, 1, 0 );
+    directionalLightH = RiLightSource( "liquiddistant", "intensity", &intensity, RI_NULL );
+  RiTransformEnd();
+  intensity = 0.2f * options->previewIntensity;
+  cout <<"options->previewIntensity  = "<<options->previewIntensity<<endl;
   from[0] = 1.3; from[1] = -1.2; from[2] = -1.0;
-  directionalLightH = RiLightSource( "distantlight", "intensity", &intensity, "from", &from, "to", &to, RI_NULL );
+  RiTransformBegin();
+    RiRotate( -50.0,  1, 0, 0 );
+    RiRotate( -40.0,  0, 1, 0 );
+    directionalLightH = RiLightSource( "liquiddistant", "intensity", &intensity, RI_NULL );
+  RiTransformEnd();
 
   RiAttributeBegin();
 
