@@ -1034,7 +1034,7 @@ global proc liquidCreateCameraHitModeAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqHitModeCamera"` ) {
-      addAttr -ln "liqHitModeCamera" -at enum -enumName "Primitive=0:Shader=1" $currentNode;
+      addAttr -ln "liqHitModeCamera" -at enum -enumName "Primitive=0:Shader=1" -k true $currentNode;
       setAttr ($currentNode+".liqHitModeCamera") 1;
     }
   }
@@ -1049,7 +1049,7 @@ global proc liquidCreateHitModeDiffuseAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqHitModeDiffuse"` ) {
-      addAttr -ln "liqHitModeDiffuse" -at enum -enumName "Primitive=0:Shader=1"  $currentNode;
+      addAttr -ln "liqHitModeDiffuse" -at enum -enumName "Primitive=0:Shader=1" -k true $currentNode;
       setAttr ($currentNode+".liqHitModeDiffuse") 0;
     }
   }
@@ -1064,7 +1064,7 @@ global proc liquidCreateHitModeSpecularAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqHitModeSpecular"` ) {
-      addAttr -ln "liqHitModeSpecular" -at enum -enumName "Primitive=0:Shader=1"  $currentNode;
+      addAttr -ln "liqHitModeSpecular" -at enum -enumName "Primitive=0:Shader=1" -k true $currentNode;
       setAttr ($currentNode+".liqHitModeSpecular") 1;
     }
   }
@@ -1079,7 +1079,7 @@ global proc liquidCreateHitModeTransmissionAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqHitModeTransmission"` ) {
-      addAttr -ln "liqHitModeTransmission" -at enum -enumName "Primitive=0:Shader=1"  $currentNode;
+      addAttr -ln "liqHitModeTransmission" -at enum -enumName "Primitive=0:Shader=1" -k true $currentNode;
       setAttr ($currentNode+".liqHitModeTransmission") 1;
     }
   }
@@ -1092,7 +1092,7 @@ global proc liquidCreateIgnoreShapesAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !objExists( ($currentNode+".liqIgnoreShapes") ) ) {
-      addAttr -ln "liqIgnoreShapes" -at bool -dv 1 $currentNode;
+      addAttr -ln "liqIgnoreShapes" -at bool -dv 1 -k true $currentNode;
     }
   }
 }
@@ -1136,7 +1136,7 @@ global proc liquidCreateLightShadowAttributes()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !( nodeType($currentNode) == "spotLight" || nodeType($currentNode) == "pointLight" || nodeType($currentNode) == "directionalLight" ) ) {
-      warning ("These attributes can only be added to spotLights directionalLights or pointLights !");
+      warning ("These attributes can only be added to spotLights, directionalLights or pointLights !");
       continue;
     }
     if ( !objExists( ($currentNode+".liqShadowMapSamples") ) ) {

@@ -951,6 +951,7 @@ global proc liquidLoadGlobals( string $name, string $presetType ) {
 
       // everything failed, force the user to select a preset file
       warning ("Preset file " + $name + " not found! : please pick a preset file...");
+      confirmDialog -title "No renderer chosen..." -message ("Preset file " + $name + " not found! : please click OK and pick a preset file\nYou can then save this with the name 'default' in the preset menu...") -button "OK" -defaultButton "OK";
       string $thePreset = `fileDialog -dm ($liquidDirectory+"/*.lg")`;
 	  if ( size($thePreset) ) {
         evalDeferred -lp ("{ select \"liquidGlobals\"; source \""+$thePreset+"\"; if (`window -q -ex \"unifiedRenderGlobalsWindow\"`) { deleteUI \"unifiedRenderGlobalsWindow\"; unifiedRenderGlobalsWindow; } }");
