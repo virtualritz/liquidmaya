@@ -441,7 +441,6 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     directionalLightH = RiLightSource( "liquiddistant", "intensity", &intensity, RI_NULL );
   RiTransformEnd();
   intensity = 0.2f * options->previewIntensity;
-  cout <<"options->previewIntensity  = "<<options->previewIntensity<<endl;
   from[0] = 1.3; from[1] = -1.2; from[2] = -1.0;
   RiTransformBegin();
     RiRotate( -50.0,  1, 0, 0 );

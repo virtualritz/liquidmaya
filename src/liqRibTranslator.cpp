@@ -643,7 +643,11 @@ liqRibTranslator::liqRibTranslator()
   m_cropX1 = m_cropY1 = 0.0;
   m_cropX2 = m_cropY2 = 1.0;
   liqglo_isShadowPass = false;
-
+  
+  m_bakeNonRasterOrient	= false;
+  m_bakeNoCullBackface	= false;
+  m_bakeNoCullHidden	= false;
+  
   m_preFrameRIB.clear();
   m_preWorldRIB.clear();
   m_postWorldRIB.clear();
@@ -2125,7 +2129,25 @@ void liqRibTranslator::liquidReadGlobals()
       outFormat = parseString( varVal );
     }
   }
-
+  
+  {
+  	gPlug = rGlobalNode.findPlug( "bakeNonRasterOrient", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_bakeNonRasterOrient );
+    gStatus.clear();
+  }
+  
+  {
+  	gPlug = rGlobalNode.findPlug( "bakeNoCullBackface", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_bakeNoCullBackface );
+    gStatus.clear();
+  }
+  
+  {
+  	gPlug = rGlobalNode.findPlug( "bakeNoCullHidden", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_bakeNoCullHidden );
+    gStatus.clear();
+  }
+  
   {
     MString varVal;
     gPlug = rGlobalNode.findPlug( "preFrameBegin", &gStatus );
@@ -4409,6 +4431,18 @@ MStatus liqRibTranslator::ribPrologue()
     RiArchiveRecord(RI_VERBATIM, (char*) m_preFrameRIB.asChar());
     RiArchiveRecord(RI_VERBATIM, "\n");
   }
+
+  if (m_bakeNonRasterOrient || m_bakeNoCullHidden || m_bakeNoCullBackface) {
+  	RiArchiveRecord(RI_COMMENT, "Bake Attributes");
+	int zero = 0;
+	if (m_bakeNonRasterOrient)
+		RiAttribute("dice","int rasterorient",&zero,NULL);
+	if (m_bakeNoCullBackface) 
+		RiAttribute("cull","int backfacing",&zero,NULL);
+	if (m_bakeNoCullHidden) 
+		RiAttribute("cull","int hidden",&zero,NULL);
+  }
+  
   }
   ribStatus = kRibBegin;
   return MS::kSuccess;
