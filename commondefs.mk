@@ -70,9 +70,15 @@ endif
 FLAVORX = "notunix"
 endif
 
+ifeq "$(OS_NAME)" "Cygwin"
+SPC = \040
+else
+SPC = " "
+endif
+
 LIQUIDSHORTVERSION := $(shell tr -d \"\\"\\"\" < $(DEPTH)/src/liquid.version)
-BUILDDATE := $(shell date "+%d.\040%b.\040%Y")
-LIQUIDVERSION = \"$(LIQUIDSHORTVERSION)\040for\040$(LIQRMAN),\040$(BUILDDATE)\"
+BUILDDATE := $(shell date '+%d.$(SPC)%b.$(SPC)%Y$(SPC):$(SPC)%R')
+LIQUIDVERSION = \"$(SPC)$(LIQUIDSHORTVERSION)$(SPC)for$(SPC)$(LIQRMAN),$(SPC)$(BUILDDATE)$(SPC)\"
 
 
 # Renderers setting
