@@ -87,6 +87,9 @@ MObject liqSurfaceNode::aRefreshPreview;
 MObject liqSurfaceNode::aPreviewObjectSize;
 MObject liqSurfaceNode::aPreviewShadingRate;
 MObject liqSurfaceNode::aPreviewBackplane;
+MObject liqSurfaceNode::aPreviewIntensity;
+MObject liqSurfaceNode::aCi;
+MObject liqSurfaceNode::aOi;
 
 MObject liqSurfaceNode::aMayaIgnoreLights;
 MObject liqSurfaceNode::aMayaKa;
@@ -227,6 +230,11 @@ MStatus liqSurfaceNode::initialize()
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setConnectable(false));
 
+  aPreviewIntensity = nAttr.create("previewIntensity", "pi", MFnNumericData::kDouble, 1.0, &status);
+  MAKE_NONKEYABLE_INPUT(nAttr);
+  CHECK_MSTATUS(nAttr.setConnectable(false));
+
+
   aColor = nAttr.createColor("color", "cs");
   nAttr.setDefault( 1.0, 1.0, 1.0 );
   MAKE_INPUT(nAttr);
@@ -259,6 +267,15 @@ MStatus liqSurfaceNode::initialize()
   aRefreshPreview = nAttr.create("refreshPreview", "rfp",  MFnNumericData::kBoolean, 0.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setHidden(true));
+
+  // dynamic shader attr
+  aCi = nAttr.createColor("Ci", "ci");
+  nAttr.setDefault( 1.0, 1.0, 1.0 );
+  MAKE_INPUT(nAttr);
+
+  aOi = nAttr.createColor("Oi", "oi");
+  nAttr.setDefault( 1.0, 1.0, 1.0 );
+  MAKE_INPUT(nAttr);
 
 
   // create attributes for maya renderer
@@ -410,6 +427,10 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
   CHECK_MSTATUS(addAttribute(aPreviewShadingRate));
   CHECK_MSTATUS(addAttribute(aPreviewBackplane));
+  CHECK_MSTATUS(addAttribute(aPreviewIntensity));
+  CHECK_MSTATUS(addAttribute(aCi));
+  CHECK_MSTATUS(addAttribute(aOi));
+
   CHECK_MSTATUS(addAttribute(aColor));
   CHECK_MSTATUS(addAttribute(aOpacity));
   CHECK_MSTATUS(addAttribute(aShaderSpace));
