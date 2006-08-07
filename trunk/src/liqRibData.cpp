@@ -172,13 +172,12 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
       if ( plugObj.apiType() == MFn::kDoubleArrayData ) {
         MFnDoubleArrayData  fnDoubleArrayData( plugObj );
         MDoubleArray doubleArrayData = fnDoubleArrayData.array( &status );
-        tokenPointerPair.set(
-          cutString.asChar(),
-          rFloat,
-          ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
-          true,
-          false,
-          doubleArrayData.length() );
+        tokenPointerPair.set( cutString.asChar(),
+                              rFloat,
+                              ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+                              true,
+                              false,
+                              doubleArrayData.length() );
         for( unsigned int kk = 0; kk < doubleArrayData.length(); kk++ ) {
           tokenPointerPair.setTokenFloat( kk, doubleArrayData[kk] );
         }
@@ -190,17 +189,40 @@ void liqRibData::addAdditionalSurfaceParameters( MObject node )
           tokenPointerPair.setDetailType( rVertex );
         }
       } else {
-        float floatValue;
-        tokenPointerPair.set(
-          cutString.asChar(),
-          rFloat,
-          ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
-          false,
-          false,
-          0 );
-        fPlug.getValue( floatValue );
-        tokenPointerPair.setTokenFloat( 0, floatValue );
-        tokenPointerPair.setDetailType( rConstant );
+
+        if( fPlug.isArray() ) {
+
+          int nbElts = fPlug.evaluateNumElements();
+          float floatValue;
+          tokenPointerPair.set( cutString.asChar(),
+                                rFloat,
+                                ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+                                false,
+                                true, // philippe :passed as uArray, otherwise it will think it is a single float
+                                nbElts );
+          MPlug elementPlug;
+          for( unsigned int kk = 0; kk < nbElts; kk++ ) {
+            elementPlug = fPlug.elementByPhysicalIndex(kk);
+            elementPlug.getValue( floatValue );
+            tokenPointerPair.setTokenFloat( kk, floatValue );
+          }
+          tokenPointerPair.setDetailType( rConstant );
+
+        } else {
+
+          float floatValue;
+          tokenPointerPair.set( cutString.asChar(),
+                                rFloat,
+                                ( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+                                false,
+                                false,
+                                0 );
+          fPlug.getValue( floatValue );
+          tokenPointerPair.setTokenFloat( 0, floatValue );
+          tokenPointerPair.setDetailType( rConstant );
+
+        }
+
       }
       tokenPointerArray.push_back( tokenPointerPair );
     }
