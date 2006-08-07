@@ -43,12 +43,13 @@ liquidarea(
       uniform float   doublesided   = 0;
       uniform string  shadowname    = "";
       uniform color   shadowcolor   = 0;
+      uniform string  hitmode       = "primitive";
 
       uniform float  lightID        = 0;
       uniform string __category     = "";
 
       output uniform float __nonspecular          = 1;
-      output varying color __shadowF              = 0;
+      output varying float __shadowF              = 0;
       output varying color __shadowC              = 0;
       output varying color __unshadowed_Cl        = 0;
       output uniform float __arealightIntensity   = 0;
@@ -83,6 +84,9 @@ liquidarea(
   if ( xsamples == 2 ) ysamples /= 2;
   if ( ysamples == 2 ) xsamples /= 2;
 
+  uniform float totalNbrSamples = xsamples * ysamples;
+  color unshadowedC = 0, shadowC = 0;
+
   /* Compute illumination */
   illuminate ( Ps + Ns ) {  /* force execution independent of light location */
 
@@ -115,26 +119,28 @@ liquidarea(
           c *= pow(dist , -decay);
           /* Lambert's cosine law at the surface */
           c *= dot;
-          __unshadowed_Cl = c;
+          /* accumulate unshadowed contribution */
+          __unshadowed_Cl += c;
           /* raytraced occlusion - only if the point is reasonnably lit */
           if ( shadowname == "raytrace" && (comp(c,0)+comp(c,1)+comp(c,2))>0.005  ) {
-            __shadowC = transmission(Ps, p);
-            __shadowF = comp(__shadowC, 0)*0.3 + comp(__shadowC, 1)*0.59 + comp(__shadowC, 2)*0.11;
-#ifdef PRMAN
-            c *= mix( shadowcolor, color(1), __shadowC);
-#else
-            c *= color(mix(comp(shadowcolor,0),1,comp(__shadowC,0)),
-                       mix(comp(shadowcolor,1),1,comp(__shadowC,1)),
-                       mix(comp(shadowcolor,2),1,comp(__shadowC,2)));
-#endif
+            shadowC = transmission(Ps, p, "hitmode", hitmode, "label", "liqAreaLightShad");
+            __shadowC += shadowC;
           }
-          Cl += c;
         }
       }
     }
-    Cl /= xsamples * ysamples;
+    __unshadowed_Cl /= totalNbrSamples;
+    __shadowC /= totalNbrSamples;
+#ifdef PRMAN
+    Cl = mix( shadowcolor, __unshadowed_Cl, __shadowC );
+#else
+    Cl = color(mix(comp(shadowcolor,0),comp(__unshadowed_Cl,0),comp(__shadowC,0)),
+               mix(comp(shadowcolor,1),comp(__unshadowed_Cl,1),comp(__shadowC,1)),
+               mix(comp(shadowcolor,2),comp(__unshadowed_Cl,2),comp(__shadowC,2)));
+#endif
   }
 
+  __shadowF = 1 - ( comp(__shadowC, 0)*0.3 + comp(__shadowC, 1)*0.59 + comp(__shadowC, 2)*0.11);
   __arealightIntensity = intensity;
   __arealightColor     = lightcolor;
 

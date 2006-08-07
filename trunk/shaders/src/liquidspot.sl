@@ -1,3 +1,4 @@
+
 /* Superellipse soft clipping -- straight from uberlight
  * Input:
  *   - point Q on the x-y plane
@@ -65,7 +66,6 @@ liquidspot(
       uniform float  lightID          = 0;
       uniform string __category       = "";
 
-	  output varying color __shadow = 0;
       output varying color __shadowC        = 0;
       output varying float __shadowF        = 0;
       output varying color __unshadowed_Cl  = 0;
@@ -111,18 +111,21 @@ liquidspot(
       uniform float shadowsize[2];
       if ( shadowname == "raytrace" ) shadowsize[0] = 5;
       else textureinfo( shadowname, "resolution", shadowsize );
-      __shadow = shadow( shadowname, Ps, "samples", shadowsamples, "bias", shadowbias, "blur", shadowfiltersize*1/shadowsize[0] + shadowblur );
-    } else
-      __shadow = 0;
+      __shadowF = shadow( shadowname, Ps, "samples", shadowsamples, "bias", shadowbias, "blur", shadowfiltersize*1/shadowsize[0] + shadowblur );
+      __shadowC = __shadowF;
+    } else {
+      __shadowF = 0;
+      __shadowC = 0;
+    }
 
     Cl = intensity * atten;
     __unshadowed_Cl = Cl * lightcolor;
 #if defined ( DELIGHT ) || defined ( PRMAN )
-    Cl *= mix( lightcolor, shadowcolor, __shadow );
+    Cl *= mix( lightcolor, shadowcolor, __shadowC );
 #else
-    Cl *= color( mix( comp(lightcolor,0), comp(shadowcolor,0), comp( __shadow, 0 )),
-				 mix( comp(lightcolor,1), comp(shadowcolor,1), comp( __shadow, 1 )),
-				 mix( comp(lightcolor,2), comp(shadowcolor,2), comp( __shadow, 2 ))	);
+    Cl *= color( mix( comp(lightcolor,0), comp(shadowcolor,0), comp( __shadowC, 0 )),
+				 mix( comp(lightcolor,1), comp(shadowcolor,1), comp( __shadowC, 1 )),
+				 mix( comp(lightcolor,2), comp(shadowcolor,2), comp( __shadowC, 2 ))	);
 #endif
   }
 }
