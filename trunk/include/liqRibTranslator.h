@@ -324,7 +324,11 @@ private :
   MString m_postFrameCommand;
 
   MString m_shaderPath;
-
+  
+  bool	  m_bakeNonRasterOrient;
+  bool	  m_bakeNoCullBackface;
+  bool	  m_bakeNoCullHidden;
+  
   MString m_preFrameRIB;
   MString m_preWorldRIB;
   MString m_postWorldRIB;
