@@ -687,6 +687,9 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
       if ( status == MS::kSuccess ) idPlug.getValue(lightID);
       else lightID = 0;
+      MPlug hitmodePlug = lightDepNode.findPlug( "liqAreaHitmode", &status );
+      if ( status == MS::kSuccess ) hitmodePlug.getValue(hitmode);
+      else hitmode = "primitive";
     }
   }
 }
@@ -896,6 +899,8 @@ void liqRibLightData::write()
         MString areashader( getenv("LIQUIDHOME") );
         areashader += "/shaders/liquidarea";
 
+        RtString rt_hitmode = const_cast< char* >( hitmode.asChar() );
+
         // if raytraced shadows are off, we get a negative value, so we correct it here.
         if ( shadowSamples < 1 ) shadowSamples = 64.0f;
 
@@ -910,6 +915,7 @@ void liqRibLightData::write()
                                 "color shadowcolor",    &shadowColor,
                                 "string __category",    &cat,
                                 "float lightID",        &lightID,
+                                "string hitmode",       &rt_hitmode,
                                 RI_NULL );
         break;
       }
