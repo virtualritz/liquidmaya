@@ -125,13 +125,15 @@ liquidarea(
           if ( shadowname == "raytrace" && (comp(c,0)+comp(c,1)+comp(c,2))>0.005  ) {
             shadowC = transmission(Ps, p, "hitmode", hitmode, "label", "liqAreaLightShad");
             __shadowC += shadowC;
+          } else {
+          	__shadowC += 1;
           }
         }
       }
     }
     __unshadowed_Cl /= totalNbrSamples;
     __shadowC /= totalNbrSamples;
-#ifdef PRMAN
+#if defined(PRMAN) || defined(PIXIE)
     Cl = mix( shadowcolor, __unshadowed_Cl, __shadowC );
 #else
     Cl = color(mix(comp(shadowcolor,0),comp(__unshadowed_Cl,0),comp(__shadowC,0)),
