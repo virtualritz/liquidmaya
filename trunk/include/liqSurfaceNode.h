@@ -89,6 +89,7 @@ class liqSurfaceNode : public MPxNode
     static MObject aPreviewObjectSize;
     static MObject aPreviewShadingRate;
     static MObject aPreviewBackplane;
+    static MObject aPreviewIntensity;
 
     static MObject aColor;
     static MObject aOpacity;
@@ -99,6 +100,9 @@ class liqSurfaceNode : public MPxNode
 
     static MObject aResolution;
     static MObject aRefreshPreview;
+
+    static MObject aCi;
+    static MObject aOi;
 
     static MObject aMayaIgnoreLights;
     static MObject aMayaKa;

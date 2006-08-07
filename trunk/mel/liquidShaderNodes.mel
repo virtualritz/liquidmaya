@@ -295,6 +295,10 @@ global proc liquidShaderNodePreview( string $node )
     $args = $args + ( " -noBackPlane" );
   }
 
+  float $intensityScale = (objExists( ($node+".previewIntensity") ))? (`getAttr ($node+".previewIntensity")`):1.0;
+  $args = $args + ( " -previewIntensity " + $intensityScale );
+
+
   // this will tell the node to reload the preview in the swatch
   setAttr ($node+".refreshPreview") true;
 
@@ -566,7 +570,7 @@ global proc liquidShaderNodes_reloadAndRefresh( string $node )
   string $nodeType = nodeType( $node );
   string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
   string $cachedLayout = liquidAE_getShaderLayoutName( $nodeType, $longShaderName );
-  if ( size(`layout -q -ca $cachedLayout`) ) deleteUI $cachedLayout;
+  if ( `layout -q -ex $cachedLayout` && size(`layout -q -ca $cachedLayout`) ) deleteUI $cachedLayout;
   liquidShaderNodesParamsReplace( ($node+".rmanShaderLong") );
 }
 

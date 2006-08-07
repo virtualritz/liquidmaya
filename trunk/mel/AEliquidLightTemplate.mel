@@ -370,6 +370,14 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
 global proc AEliquidAreaLight( string $node )
 {
   editorTemplate -beginLayout "Liquid" -collapse true;
+
     editorTemplate -label "Both Sides Emit" -addDynamicControl "liqBothSidesEmit";
+    editorTemplate -label "Transmission Hit-Mode" -addDynamicControl "liqAreaHitmode";
+
+    editorTemplate -beginLayout "Output" -collapse false;
+      editorTemplate -label "Light Category" -addDynamicControl "__category";
+      editorTemplate -label "Light ID" -addDynamicControl "lightID";
+    editorTemplate -endLayout;
+
   editorTemplate -endLayout;
 }

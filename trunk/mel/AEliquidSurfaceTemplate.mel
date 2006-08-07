@@ -47,6 +47,7 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
       editorTemplate -addControl "previewObjectSize";
       editorTemplate -addControl "previewShadingRate";
       editorTemplate -addControl "previewBackplane";
+      editorTemplate -addControl "previewIntensity";
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "RIB";
