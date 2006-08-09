@@ -59,6 +59,9 @@ global proc AEliquidShadowControls( string $node )
       editorTemplate -label "Geometry Set"        -addDynamicControl "geometrySet";
       editorTemplate -label "Shading Rate Factor" -addDynamicControl "shadingRateFactor";
 
+      editorTemplate -label "Near Clip Plane"     -addDynamicControl "nearClipPlane";
+      editorTemplate -label "Far Clip Plane"      -addDynamicControl "farClipPlane";
+
     editorTemplate -endLayout;
 
   editorTemplate -endLayout;

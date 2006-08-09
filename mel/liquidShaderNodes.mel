@@ -484,6 +484,10 @@ global proc liquidAE_showCachedLayout( string $shaderType, string $rmanShaderLon
              -af $shaderLayout bottom 0
              $baseLayout;
 
+  // update the labels of
+  // overriden string parameters
+  liquidAE_LifStringOverrideDisplayAll();
+
   // set the layout state to managed and visible
   formLayout -e -vis 1 $baseLayout;
   layout -e -vis 1 -m 1 $shaderLayout;
@@ -864,27 +868,27 @@ global proc liquidAssignShaderToSelected( string $node )
  */
 global proc liquidShaderUpdater( int $force )
 {
-  //trace ("liquidShaderUpdater( "+$force+" )");
-  string $shaderNodes[] = `ls -type liquidSurface -type liquidDisplacement -type liquidVolume -type liquidLight`;
-  if ( !size( $shaderNodes ) ) {
-    //trace "nothing";
-    return;
-  }
-  for ( $node in $shaderNodes ) {
-    string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
-    if ( $longShaderName == "" ) continue;
-    if ( !`filetest -r $longShaderName` ) error("[liquid] liquidShaderUpdater : could not find shader \""+$longShaderName+"\"");
-    int $numParams = size( `getAttr ($node+".rmanParams")` );
-    if ( $force ||
-        size( `getAttr ($node+".rmanDetails")` ) != $numParams ||
-        size( `getAttr ($node+".rmanTypes")` ) != $numParams ||
-        size( `getAttr ($node+".rmanDefaults")` ) != $numParams ||
-        size( `getAttr ($node+".rmanArraySizes")` ) != $numParams
-       ) {
-      trace ("liquidShaderUpdater : updating liquid shader "+$node);
-      rmanParams_create( $node, 1 );
-    }
-  }
+//  //trace ("liquidShaderUpdater( "+$force+" )");
+//  string $shaderNodes[] = `ls -type liquidSurface -type liquidDisplacement -type liquidVolume -type liquidLight`;
+//  if ( !size( $shaderNodes ) ) {
+//    //trace "nothing";
+//    return;
+//  }
+//  for ( $node in $shaderNodes ) {
+//    string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
+//    if ( $longShaderName == "" ) continue;
+//    if ( !`filetest -r $longShaderName` ) error("[liquid] liquidShaderUpdater : could not find shader \""+$longShaderName+"\"");
+//    int $numParams = size( `getAttr ($node+".rmanParams")` );
+//    if ( $force ||
+//        size( `getAttr ($node+".rmanDetails")` ) != $numParams ||
+//        size( `getAttr ($node+".rmanTypes")` ) != $numParams ||
+//        size( `getAttr ($node+".rmanDefaults")` ) != $numParams ||
+//        size( `getAttr ($node+".rmanArraySizes")` ) != $numParams
+//       ) {
+//      trace ("liquidShaderUpdater : updating liquid shader "+$node);
+//      rmanParams_create( $node, 1 );
+//    }
+//  }
 }
 
 

@@ -682,6 +682,121 @@ global proc liquidAE_LifFloat2( string $paramName, int $arraySize, string $subty
 
 
 
+/**
+ *  this proc will update the menuItem's label and command
+ *  depending on the override state of the attribute.
+ */
+global proc liquidAE_LifStringOverrideEnabler( string $nodeDotAttr, string $ctl )
+{
+  int    $enable        = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
+  string $nodeOverrides = (" "+stringArrayToString( editRenderLayerAdjustment( "-q" ,$nodeDotAttr), " ")+" ");
+  string $remove        = (gmatch( $nodeOverrides, ("* "+$nodeDotAttr+" *")))? "-remove":"";
+  string $label         = ($remove == "")? "Create Layer Override":"Remove Layer Override";
+  int    $state         = ($remove == "")? 1:0;
+  string $ctlShort      = match("[A-Za-z0-9_]+$", $ctl);
+
+  //trace (" >> checking "+$nodeDotAttr+" ( "+$ctlShort+" ) :: isRenderLayer : "+$enable+"  overriden : "+(($remove == "")? "no":"yes"));
+
+  if ( `menuItem -q -ex ($ctlShort+"PopupMenuOVR")` ) {
+    menuItem -e -l $label
+                -c (  "editRenderLayerAdjustment "+$remove+" "+$nodeDotAttr+";"+
+                      "liquidAE_LifStringOverrideDisplay "+$state+" "+$ctlShort+";")
+                -en $enable
+                ($ctlShort+"PopupMenuOVR");
+  } else warning ("cannot find "+$ctlShort+"PopupMenuOVR");
+}
+
+
+/**
+ *  this proc will create a popupmenu if none can be found.
+ *  it will then create/append a menu item to manage the overrides.
+ *  the popupmenu has a postcommand to refresh the state/cmd of the menu item.
+ */
+global proc liquidAE_LifStringOverride( string $nodeDotAttr, string $ctl )
+{
+  string $parentMenu;
+
+  if ( !`menuItem -q -ex ($ctl+"PopupMenuOVR")` ) {
+    // get the popup menu
+    string $menus[] = `control -q -pma $ctl`;
+    if ( size( $menus ) ) {
+      for ( $m in $menus ) {
+        if ( `popupMenu -q -b $m` == 3 ) $parentMenu = $m;
+      }
+    } else {
+      string $attr = match("[A-Za-z0-9_]+$", $nodeDotAttr);
+      $parentMenu = `popupMenu -parent $ctl -button 3 -postMenuCommand ("liquidAE_LifStringOverrideEnabler ($gLiquid_currentAENode+\"."+$attr+"\") "+$ctl) ($ctl+"PopupMenu")`;
+    }
+    string $t = `menuItem -parent $parentMenu ($ctl+"PopupMenuOVR")`;
+  }
+}
+
+global proc liquidAE_LifStringOverrideDisplay( int $override, string $ctl )
+{
+  // remember the original parent
+  string $originalParent = `setParent -q`;
+
+  // compute the font and the full path to the control
+  string $font = ( $override )? "boldLabelFont":"plainLabelFont";
+  string $ctlLabel = ( `setParent $ctl` + "|label" );
+
+  // do it.
+  if ( `text -q -ex $ctlLabel` ) {
+    text -e -fn $font $ctlLabel;
+  }
+
+  // reset the parent
+  setParent $originalParent;
+}
+
+global proc liquidAE_LifStringOverrideDisplayAll()
+{
+  // global maintained by maya containing the name
+  // of the main attribute editor window.
+  global string $gAttributeEditorWindowName;
+
+  // liquid globals containing the current node and shader in the AE
+  global string $gLiquid_currentAENode;
+  global string $gLiquid_currentAEShader;
+
+  if ( !objExists( $gLiquid_currentAENode ) ) return;
+
+  // is the attribute editor visible ?
+  if ( (  `window -exists $gAttributeEditorWindowName`
+      &&  `window -q -vis $gAttributeEditorWindowName`)
+      || (`isAttributeEditorVisible`))
+  {
+    // are we dealing with a liquid node ?
+    string $nodetype = nodeType($gLiquid_currentAENode);
+    if ( gmatch( $nodetype, "*liquid*") ) {
+
+      // remember the original parent
+      string $originalParent = `setParent -q`;
+
+      // default layer or render layer ?
+      int $isRenderLayer = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
+
+      // get the list of overriden params
+      string $nodeOverrides = (" "+stringArrayToString( editRenderLayerAdjustment( "-q" ,$gLiquid_currentAENode), " ")+" " );
+
+      // get the list of string attributes on the node
+      string $userAttr[] = `listAttr -ud $gLiquid_currentAENode`;
+
+      string $a;
+      for ( $a in $userAttr ) {
+
+        if ( `getAttr -type ($gLiquid_currentAENode+"."+$a)` != "string" ) continue;
+
+        string $ctlName = ( $gLiquid_currentAEShader + "_" + match("[A-Za-z0-9_]+$", $a) + "_0_LIF" );
+        int $overrideState = ( $isRenderLayer && gmatch( $nodeOverrides, ("* "+$gLiquid_currentAENode+"."+$a+" *")) )? 1:0;
+        liquidAE_LifStringOverrideDisplay( $overrideState, $ctlName );
+
+      }
+
+      setParent $originalParent;
+    }
+  }
+}
 
 global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subtype, string $label, string $range[], string $description, int $channelBox )
 {
@@ -714,7 +829,6 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
     string $currentValue  = `getAttr ( $gLiquid_currentAENode + "." + $attr )`;
     string $ctlName       = ( $gLiquid_currentAEShader + "_" + $paramName + "_" + $j + "_LIF" );
 
-
       switch( $subtype ) {
 
         case "texture":
@@ -722,7 +836,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           if ( !`control -q -ex $ctlName` ) {
             string $form          = `formLayout -p $gLiquid_currentAEParent`;
             string $fullCtlPath   = `textFieldGrp -p $form -label $theLabel $ctlName`;
-            liquidAddTextureViewerMenu( $fullCtlPath );
+            liquidAddTextureViewerMenu( $fullCtlPath, ($gLiquid_currentAENode+"."+$attr) );
             string $button = `iconTextButton -p $form -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_tex.xpm" ($ctlName+"_BUT")`;
             setParent ..;
 
@@ -745,6 +859,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp -e -ann $description $ctlName;
+          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           connectControl -index 2 $ctlName ($gLiquid_currentAENode+"."+$attr);
 
           break;
@@ -754,7 +869,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           if ( !`control -q -ex $ctlName` ) {
             string $form = `formLayout -p $gLiquid_currentAEParent`;
             textFieldGrp -p $form -label $theLabel $ctlName;
-            liquidAddTextureViewerMenu( $ctlName );
+            liquidAddTextureViewerMenu( $ctlName, ($gLiquid_currentAENode+"."+$attr) );
             string $button = `iconTextButton -p $form -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
             setParent ..;
 
@@ -778,6 +893,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp -e -ann $description $ctlName;
+          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           connectControl -index 2 $ctlName ($gLiquid_currentAENode+"."+$attr);
           break;
 
@@ -808,6 +924,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp  -e -ann $description $ctlName;
+          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           connectControl -index 2 $ctlName ($gLiquid_currentAENode+"."+$attr);
           break;
 
@@ -822,11 +939,13 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           }
           string $myCommand = ("setAttr -type \"string\" \""+$gLiquid_currentAENode+"."+$attr+"\" (`optionMenuGrp -q -v "+$ctlName+"`);");
           optionMenuGrp -e -cc $myCommand -ann $description $ctlName;
+          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           break;
 
         default:
           if (  !`control -q -ex $ctlName` ) textFieldGrp -p $gLiquid_currentAEParent -label $theLabel $ctlName;
           textFieldGrp -e -ann $description$ctlName;
+          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           connectControl -index 2 $ctlName ($gLiquid_currentAENode+"."+$attr);
           break;
       }
@@ -1009,8 +1128,6 @@ global proc liquidAE_LifVector2( string $paramName, int $arraySize, string $subt
     $gLiquid_currentAEParent = substitute("|[A-Za-z0-9_]+$", $gLiquid_currentAEParent, "" );
     $gLiquid_currentAEParent = substitute("|[A-Za-z0-9_]+$", $gLiquid_currentAEParent, "" );
     setParent $gLiquid_currentAEParent;
-    //setParent ..;
-    //setParent ..;
   }
 
   setUITemplate -ppt;

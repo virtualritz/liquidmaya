@@ -40,11 +40,12 @@
  *  STRINGS  --  COMPATIBLE with arrays
  */
 
-global proc liquidAddTextureViewerMenu( string $textFieldGrp )
+global proc liquidAddTextureViewerMenu( string $textFieldGrp, string $nodeDotAttr )
 {
   string $viewer = `getAttr liquidGlobals.viewTexture`;
   if ( $viewer != "" ) {
-    popupMenu -button 3;
+    string $attr = match("[A-Za-z0-9_]+$", $nodeDotAttr);
+    popupMenu -button 3 -postMenuCommand ("liquidAE_LifStringOverrideEnabler ($gLiquid_currentAENode+\"."+$attr+"\") "+$textFieldGrp) ($textFieldGrp+"PopupMenu");
       menuItem  -l ("View in "+$viewer)
                 -c ("{\n"+
                     "  string $file = `textFieldGrp -q -tx "+$textFieldGrp+"`;"+
