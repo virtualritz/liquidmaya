@@ -1,3 +1,9 @@
+
+DEPTH = ..
+BIN_VERSION ?= debug
+include $(DEPTH)/commondefs.mk
+VPATH ?= $(VPATHDEBUG)
+
 CPPFLAGS += -DHAVE_ZLIB
 RIBLIB := ../bin/linux32/librib.a
 RIBLIBOBJS = ri.o\
@@ -6,11 +12,11 @@ RIBLIBOBJS = ri.o\
 	variable.o\
 	error.o
 
-all : $(RIBLIBOBJS) $(RIBLIB)
+all : $(RIBLIB)
 
-$(RIBLIB) :
-	@mkdir -p ../bin/linux32
-	@$(AR) cqs $(RIBLIB) $(RIBLIBOBJS)
+$(RIBLIB) : $(RIBLIBOBJS)
+	@mkdir -p ../bin/linux32/
+	$(AR) $(RIBLIB) $(RIBLIBOBJS)
 
 .cpp.o :
 	$(CPP) -c $(INCLUDES) $(CPPFLAGS) -o $@ $<

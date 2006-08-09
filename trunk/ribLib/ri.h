@@ -151,6 +151,7 @@ EXTERN(RtToken)		RI_IRRADIANCE;
 EXTERN(RtToken)		RI_CULL;
 EXTERN(RtToken)		RI_COMPRESSION;
 EXTERN(RtToken)		RI_RIB;
+EXTERN(RtToken)		RI_BRICKMEMORY;
 
 ////////////////////////////////////////////////////////////////////////
 //

@@ -213,6 +213,7 @@ RtToken		RI_IRRADIANCE			=	"irradiance";
 RtToken		RI_CULL					=	"cull";
 RtToken		RI_COMPRESSION			=	"compression";
 RtToken		RI_RIB					=	"rib";
+RtToken		RI_BRICKMEMORY			=	"brickmemory";
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -378,7 +379,8 @@ const	unsigned int		RENDERMAN_SOLID_UNION_BLOCK			=	RENDERMAN_SOLID_DIFFERENCE_B
 
 
 // Global variables to convert calls to the vector form
-static	int					nTokens,mTokens;							// Parameter list info
+static	int					nTokens = 0;
+static	int					mTokens = 0;							// Parameter list info
 static	RtToken				*tokens				=	NULL;
 static	RtPointer			*values				=	NULL;
 static	vector<int>			blocks;										// The block stack
@@ -451,6 +453,12 @@ static	inline	void	getArgs(va_list args) {
 	tmp			= va_arg(args,RtToken);
     nTokens		= 0;
     while (tmp != RI_NULL) {
+		if (nTokens == 0) {
+			tokens	=	new RtToken[mTokens + 50];
+			values	=	new RtToken[mTokens + 50];
+			mTokens =	50;
+		}
+		
 		tokens[nTokens] = tmp;
 		values[nTokens] = va_arg(args,RtPointer);
 		nTokens++;
@@ -913,7 +921,7 @@ RiRelativeDetail (RtFloat relativedetail) {
 EXTERN(RtVoid)
 RiOption (char *name, ...) {
 	va_list	args;
-
+	
 	va_start(args,name);
 	getArgs(args);
 	RiOptionV(name,nTokens,tokens,values);
@@ -943,6 +951,7 @@ RiOptionV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
 				}
 			}
 		}
+		return;
 	}
 	
 	if (check("RiOption",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;

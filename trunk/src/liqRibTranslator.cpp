@@ -2909,7 +2909,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           LIQDEBUGPRINTF( "-> setting RiOptions\n" );
 
           // Rib client file creation options MUST be set before RiBegin
-#if defined ( PRMAN ) || ( DELIGHT )
+#if defined ( PRMAN ) || defined( DELIGHT ) || defined (PIXIE)
           LIQDEBUGPRINTF( "-> setting binary option\n" );
           {
             RtString format[1] = {"ascii"};
