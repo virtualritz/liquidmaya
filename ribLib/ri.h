@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU General Public
 // License as published by the Free Software Foundation; either
 // version 2 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -128,6 +128,8 @@ EXTERN(RtToken)	RI_BESSELFILTER;
 EXTERN(RtToken)	RI_CATMULLROMFILTER;
 EXTERN(RtToken)	RI_CUSTOM;
 EXTERN(RtToken)	RI_BESSELFILTER;
+EXTERN(RtToken)	RI_BLACKMANHARRISFILTER;
+EXTERN(RtToken)	RI_SEPARABLECATMULLROMFILTER;
 
 
 
@@ -407,12 +409,12 @@ EXTERN(RtVoid)
     RiGeneralPolygonV (RtInt nloops, RtInt *nverts,
 		       RtInt n, RtToken tokens[], RtPointer params[]),
     RiPointsPolygons (RtInt npolys, RtInt *nverts, RtInt *verts, ...),
-    RiPointsPolygonsV (RtInt npolys, RtInt *nverts, RtInt *verts, 
+    RiPointsPolygonsV (RtInt npolys, RtInt *nverts, RtInt *verts,
 		      RtInt n, RtToken tokens[], RtPointer params[]),
     RiPointsGeneralPolygons (RtInt npolys, RtInt *nloops,
 			     RtInt *nverts, RtInt *verts, ...),
     RiPointsGeneralPolygonsV (RtInt npolys, RtInt *nloops,
-			     RtInt *nverts, RtInt *verts, 
+			     RtInt *nverts, RtInt *verts,
 			      RtInt n, RtToken tokens[], RtPointer params[]),
     RiBasis (RtBasis ubasis, RtInt ustep, RtBasis vbasis, RtInt vstep),
     RiPatch (RtToken type, ...),
@@ -426,7 +428,7 @@ EXTERN(RtVoid)
 	       RtFloat *vknot, RtFloat vmin, RtFloat vmax, ...),
     RiNuPatchV (RtInt nu, RtInt uorder, RtFloat *uknot,
 		RtFloat umin, RtFloat umax, RtInt nv, RtInt vorder,
-		RtFloat *vknot, RtFloat vmin, RtFloat vmax, 
+		RtFloat *vknot, RtFloat vmin, RtFloat vmax,
 		RtInt n, RtToken tokens[], RtPointer params[]),
     RiTrimCurve (RtInt nloops, RtInt *ncurves, RtInt *order,
 		 RtFloat *knot, RtFloat *amin, RtFloat *amax,
@@ -438,21 +440,21 @@ EXTERN(RtVoid)
     RiSphereV (RtFloat radius, RtFloat zmin, RtFloat zmax, RtFloat thetamax,
 	       RtInt n, RtToken tokens[], RtPointer params[]),
     RiCone (RtFloat height, RtFloat radius, RtFloat thetamax, ...),
-    RiConeV (RtFloat height, RtFloat radius, RtFloat thetamax, 
+    RiConeV (RtFloat height, RtFloat radius, RtFloat thetamax,
 	    RtInt n, RtToken tokens[], RtPointer params[]),
-    RiCylinder (RtFloat radius, RtFloat zmin, RtFloat zmax, 
+    RiCylinder (RtFloat radius, RtFloat zmin, RtFloat zmax,
 		RtFloat thetamax, ...),
     RiCylinderV (RtFloat radius, RtFloat zmin, RtFloat zmax, RtFloat thetamax,
 		 RtInt n, RtToken tokens[], RtPointer params[]),
     RiHyperboloid (RtPoint point1, RtPoint point2, RtFloat thetamax, ...),
-    RiHyperboloidV (RtPoint point1, RtPoint point2, RtFloat thetamax, 
+    RiHyperboloidV (RtPoint point1, RtPoint point2, RtFloat thetamax,
 		   RtInt n, RtToken tokens[], RtPointer params[]),
     RiParaboloid (RtFloat rmax, RtFloat zmin,
 		  RtFloat zmax, RtFloat thetamax, ...),
-    RiParaboloidV (RtFloat rmax, RtFloat zmin, RtFloat zmax, RtFloat thetamax, 
+    RiParaboloidV (RtFloat rmax, RtFloat zmin, RtFloat zmax, RtFloat thetamax,
 		   RtInt n, RtToken tokens[], RtPointer params[]),
     RiDisk (RtFloat height, RtFloat radius, RtFloat thetamax, ...),
-    RiDiskV (RtFloat height, RtFloat radius, RtFloat thetamax, 
+    RiDiskV (RtFloat height, RtFloat radius, RtFloat thetamax,
 	     RtInt n, RtToken tokens[], RtPointer params[]),
     RiTorus (RtFloat majorrad, RtFloat minorrad, RtFloat phimin,
 	     RtFloat phimax, RtFloat thetamax, ...),
@@ -460,7 +462,7 @@ EXTERN(RtVoid)
 	     RtFloat phimax, RtFloat thetamax,
 	      RtInt n, RtToken tokens[], RtPointer params[]),
     RiCurves (RtToken degree, RtInt ncurves, RtInt nverts[], RtToken wrap, ...),
-    RiCurvesV (RtToken degree, RtInt ncurves, RtInt nverts[], RtToken wrap, 
+    RiCurvesV (RtToken degree, RtInt ncurves, RtInt nverts[], RtToken wrap,
 	      RtInt n, RtToken tokens[], RtPointer params[]),
     RiProcedural (RtPointer data, RtBound bound,
 		  RtVoid (*subdivfunc) (RtPointer, RtFloat),
@@ -482,7 +484,7 @@ EXTERN(RtVoid)
     RiSubdivisionMeshV (RtToken scheme, RtInt nfaces,
 		       RtInt nvertices[], RtInt vertices[],
 		       RtInt ntags, RtToken tags[], RtInt nargs[],
-		       RtInt intargs[], RtFloat floatargs[], 
+		       RtInt intargs[], RtFloat floatargs[],
 		       RtInt n, RtToken tokens[], RtPointer params[]),
     RiBlobby (RtInt nleaf, RtInt ncode, RtInt code[],
 	      RtInt nflt, RtFloat flt[], RtInt nstr, RtString str[], ...),
@@ -547,7 +549,7 @@ EXTERN(RtVoid)
     RiReadArchiveV (RtString filename, RtFunc callback,
 		    int n, RtToken tokens[], RtPointer params[]);
 
-			
+
 
 EXTERN(RtVoid)
 	RiTrace(RtInt,RtPoint *,RtPoint *,RtPoint *);

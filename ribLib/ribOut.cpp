@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU General Public
 // License as published by the Free Software Foundation; either
 // version 2 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,14 +54,18 @@ static	char	*getFilter(float (*function)(float,float,float,float)) {
 		return	RI_TRIANGLEFILTER;
 	} else if (function == RiCatmullRomFilter) {
 		return	RI_CATMULLROMFILTER;
-	}else if (function == RiBesselFilter) {
-		return	RI_BESSELFILTER;
-	}else if (function == RiBesselFilter) {
-		return	RI_DISKFILTER;
-	}else if (function == RiDiskFilter) {
-		return	RI_LANCZOSFILTER;
+	} else if (function == RiSeparableCatmullRomFilter) {
+		return	RI_SEPARABLECATMULLROMFILTER;
+	} else if (function == RiBesselFilter) {
+		 return	RI_BESSELFILTER;
+	} else if (function == RiDiskFilter) {
+		 return	RI_DISKFILTER;
 	} else if (function == RiLanczosFilter) {
+		return	RI_LANCZOSFILTER;
+	} else if (function == RiSincFilter) {
 		return	RI_SINCFILTER;
+	} else if (function == RiBlackmanHarrisFilter) {
+		return	RI_BLACKMANHARRISFILTER;
 	} else {
 		return	RI_GAUSSIANFILTER;
 	}
@@ -97,8 +101,8 @@ CRibOut::CRibOut(const char *n) : CRiInterface() {
 
 #ifdef HAVE_ZLIB
 
-		if (	(strstr(outName,".Z") != NULL)		|| 
-				(strstr(outName,".zip") != NULL)	|| 
+		if (	(strstr(outName,".Z") != NULL)		||
+				(strstr(outName,".zip") != NULL)	||
 				(strstr(outName,".z") != NULL)		||
 				(preferCompressedRibOut == TRUE) ) {
 			outFile				=	(FILE *) gzopen(outName,"wb");
@@ -111,7 +115,7 @@ CRibOut::CRibOut(const char *n) : CRiInterface() {
 		outFile				=	fopen(outName,"w");
 		outputCompressed	=	FALSE;
 #endif
-		
+
 		outputIsPipe		=	FALSE;
 	}
 	declaredVariables	=	new map<string,CVariable *>;
@@ -263,6 +267,14 @@ void		CRibOut::RiPixelFilter(float (*function)(float,float,float,float),float xw
 		out("PixelFilter \"%s\" %g %g\n",RI_BESSELFILTER,xwidth,ywidth);
 	} else if (function == RiSincFilter) {
 		out("PixelFilter \"%s\" %g %g\n",RI_SINCFILTER,xwidth,ywidth);
+	} else if (function == RiSeparableCatmullRomFilter) {
+		out("PixelFilter \"%s\" %g %g\n",RI_SEPARABLECATMULLROMFILTER,xwidth,ywidth);
+	} else if (function == RiBlackmanHarrisFilter) {
+		out("PixelFilter \"%s\" %g %g\n",RI_BLACKMANHARRISFILTER,xwidth,ywidth);
+	} else if (function == RiDiskFilter) {
+		out("PixelFilter \"%s\" %g %g\n",RI_DISKFILTER,xwidth,ywidth);
+	} else if (function == RiLanczosFilter) {
+		out("PixelFilter \"%s\" %g %g\n",RI_LANCZOSFILTER,xwidth,ywidth);
 	} else {
 		errorHandler(RIE_BADHANDLE,RIE_ERROR,"Unable to write custom filter function\n");
 	}
@@ -672,9 +684,9 @@ void		CRibOut::RiAttributeV(char *name,int n,char *tokens[],char *params[]) {
 			if (FALSE) {
 			attributeCheckInt(RI_NUMPROBES,2)
 			attributeCheckInt(RI_MINSUBDIVISION,1)
-			attributeCheckInt(RI_MAXSUBDIVISION,1)				
-			attributeCheckInt(RI_MINSPLITS,1)				
-			attributeCheckFloat(RI_BOUNDEXPAND,1)				
+			attributeCheckInt(RI_MAXSUBDIVISION,1)
+			attributeCheckInt(RI_MINSPLITS,1)
+			attributeCheckFloat(RI_BOUNDEXPAND,1)
 			attributeCheckInt(RI_BINARY,1)
 			attributeCheckInt(RI_RASTERORIENT,1)
 			attributeEndCheck
@@ -1291,7 +1303,7 @@ void		CRibOut::writePL(int numParameters,char *tokens[],char *vals[]) {
 	for (i=0;i<numParameters;i++) {
 		CVariable	tmpVar;
 		CVariable	*variable;
-		
+
 		map<string,CVariable*>::iterator it;
 		if (( it = declaredVariables->find(tokens[i])) != declaredVariables->end()) {
 			variable = it->second;
@@ -1583,7 +1595,7 @@ void		CRibOut::declareDefaultVariables() {
 	declareVariable(RI_PHOTON,				"int");
 
 	declareVariable(RI_NAME,				"string");
-	
+
 	declareVariable(RI_HIDDEN,				"int");
 	declareVariable(RI_BACKFACING,			"backfacing");
 
@@ -1599,7 +1611,7 @@ void		CRibOut::declareDefaultVariables() {
 	declareVariable("compression",			"string");
 	declareVariable("NP",					"float[16]");
 	declareVariable("Nl",					"float[16]");
-	
+
 	// Declare the rest
 	declareVariable("P",	"global vertex point");
 	declareVariable("Ps",	"global vertex point");
@@ -1639,7 +1651,7 @@ void		CRibOut::declareDefaultVariables() {
 
 	// Misc. variables
 	declareVariable("fov",	"float");
-	
+
 	// Standard RI variables
 	declareVariable("Ka",				"float");
 	declareVariable("Kd",				"float");
