@@ -125,13 +125,13 @@ void liqRenderer::setRenderer()
           featurePlug.getValue( enabled );
           feature = feature.toLowerCase();
 
-          if ( feature == "blobbies" )            supports_BLOBBIES             = enabled;
-          if ( feature == "points" )              supports_POINTS               = enabled;
-          if ( feature == "eyesplits" )           supports_EYESPLITS            = enabled;
-          if ( feature == "raytracing" )          supports_RAYTRACE             = enabled;
-          if ( feature == "depthoffield" )        supports_DOF                  = enabled;
-          if ( feature == "advancedvisibility" )  supports_ADVANCED_VISIBILITY  = enabled;
-          if ( feature == "displaychannels" )     supports_DISPLAY_CHANNELS     = enabled;
+		  if ( feature == "blobbies" )            supports_BLOBBIES             = enabled;
+		  if ( feature == "points" )              supports_POINTS               = enabled;
+		  if ( feature == "eyesplits" )           supports_EYESPLITS            = enabled;
+		  if ( feature == "raytracing" )          supports_RAYTRACE             = enabled;
+		  if ( feature == "depthoffield" )        supports_DOF                  = enabled;
+		  if ( feature == "advancedvisibility" )  supports_ADVANCED_VISIBILITY  = enabled;
+		  if ( feature == "displaychannels" )     supports_DISPLAY_CHANNELS     = enabled;
         }
       }
     }
@@ -162,7 +162,7 @@ void liqRenderer::setRenderer()
           if ( filter == "separablecatmull_rom" )  pixelfilter_SEPCATMULLROM   = enabled;
           if ( filter == "lanczos" )               pixelfilter_LANCZOS         = enabled;
           if ( filter == "bessel" )                pixelfilter_BESSEL          = enabled;
-		  if ( filter == "disk" )                  pixelfilter_DISK            = enabled;
+          if ( filter == "disk" )                  pixelfilter_DISK            = enabled;
         }
       }
     }
