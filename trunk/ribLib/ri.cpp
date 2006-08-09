@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU General Public
 // License as published by the Free Software Foundation; either
 // version 2 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -182,15 +182,17 @@ RtToken		RI_EYE				=	"eye";
 //	Filter types
 //
 ////////////////////////////////////////////////////////////////////////
-RtToken		RI_BOXFILTER				=	"box";
-RtToken		RI_TRIANGLEFILTER			=	"triangle";
-RtToken		RI_GAUSSIANFILTER			=	"gaussian";
-RtToken		RI_SINCFILTER				=	"sinc";
-RtToken		RI_DISKFILTER				=	"disk";
-RtToken		RI_LANCZOSFILTER			=	"lanczos";
-RtToken		RI_BESSELFILTER				=	"bessel";
-RtToken		RI_CATMULLROMFILTER			=	"catmull-rom";
-RtToken		RI_CUSTOM					=	"custom";
+RtToken   RI_BOXFILTER                  = "box";
+RtToken   RI_TRIANGLEFILTER             = "triangle";
+RtToken   RI_GAUSSIANFILTER             = "gaussian";
+RtToken   RI_SINCFILTER                 = "sinc";
+RtToken   RI_DISKFILTER                 = "disk";
+RtToken   RI_LANCZOSFILTER              = "lanczos";
+RtToken   RI_BESSELFILTER               = "bessel";
+RtToken   RI_CATMULLROMFILTER           = "catmull-rom";
+RtToken   RI_BLACKMANHARRISFILTER       = "blackman-harris";
+RtToken   RI_SEPARABLECATMULLROMFILTER  = "separable-catmull-rom";
+RtToken   RI_CUSTOM                     = "custom";
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -338,7 +340,7 @@ RtBasis		RiCatmullRomBasis	= {
 	{(float)  ( 0.0/2.0),	(float)  ( 2.0/2.0),	(float)  ( 0.0/2.0),	(float)  ( 0.0/2.0)}};
 
 
-RtBasis		RiBezierBasis		= { 
+RtBasis		RiBezierBasis		= {
 	{(float) -1,	(float)	3,		(float)	-3,		(float)	1},
 	{(float) 3,		(float)	-6,		(float)	3,		(float)	0},
 	{(float) -3,	(float)	3,		(float)	0,		(float)	0},
@@ -350,7 +352,7 @@ RtBasis		RiBSplineBasis		= {
 	{(float) (-3.0/6.0),	(float) (0.0/6.0),	(float) (3.0/6.0),	(float)  (0.0/6.0)},
 	{(float) (1.0/6.0),		(float) (4.0/6.0),	(float) (1.0/6.0),	(float)  (0.0/6.0)}};
 
-RtBasis		RiHermiteBasis		= { 
+RtBasis		RiHermiteBasis		= {
 	{(float) 1 ,	(float) 1 ,		(float)	-3 ,	(float)	1},
 	{(float) -1 ,	(float) -2 ,	(float)	4 ,		(float)	-1},
 	{(float) -1,	(float) 1 ,		(float)	0 ,		(float)	0},
@@ -371,7 +373,7 @@ const	unsigned int		RENDERMAN_ATTRIBUTE_BLOCK			=	RENDERMAN_XFORM_BLOCK << 1;
 const	unsigned int		RENDERMAN_WORLD_BLOCK				=	RENDERMAN_ATTRIBUTE_BLOCK << 1;
 const	unsigned int		RENDERMAN_FRAME_BLOCK				=	RENDERMAN_WORLD_BLOCK << 1;
 const	unsigned int		RENDERMAN_OBJECT_BLOCK				=	RENDERMAN_FRAME_BLOCK << 1;
-const	unsigned int		RENDERMAN_MOTION_BLOCK				=	RENDERMAN_OBJECT_BLOCK << 1;		
+const	unsigned int		RENDERMAN_MOTION_BLOCK				=	RENDERMAN_OBJECT_BLOCK << 1;
 const	unsigned int		RENDERMAN_SOLID_PRIMITIVE_BLOCK		=	RENDERMAN_MOTION_BLOCK << 1;
 const	unsigned int		RENDERMAN_SOLID_INTERSECTION_BLOCK	=	RENDERMAN_SOLID_PRIMITIVE_BLOCK << 1;
 const	unsigned int		RENDERMAN_SOLID_DIFFERENCE_BLOCK	=	RENDERMAN_SOLID_INTERSECTION_BLOCK << 1;
@@ -580,7 +582,7 @@ RiEnd (void) {
 	delete renderMan;
 	renderMan	=	NULL;
 }
-   
+
 // FrameBegin - End stuff
 EXTERN(RtVoid)
 RiFrameBegin (RtInt number) {
@@ -836,7 +838,7 @@ RiTriangleFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
 		return (RtFloat) (ywidth-y) / ywidth;
 	}
 
-    
+
 }
 
 EXTERN(RtFloat)
@@ -935,7 +937,7 @@ RiOptionV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
 	// This section allows us to parse RibOut options before RiBegin, to match the standard
 	if (renderMan == NULL) {
 		extern int preferCompressedRibOut;
-		
+
 		// Check the rib format options
 		if (strcmp(name,RI_RIB) == 0) {
 			for (int i=0;i<n;i++) {
@@ -953,7 +955,7 @@ RiOptionV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
 		}
 		return;
 	}
-	
+
 	if (check("RiOption",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;
 
 	renderMan->RiOptionV(name,n,tokens,params);
@@ -1323,7 +1325,7 @@ RiTransformPoints (RtToken fromspace, RtToken tospace,
 EXTERN(RtVoid)
 RiTransformBegin (void) {
 	if (check("RiTransformBegin",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
-	
+
 	renderMan->RiTransformBegin();
 
 	blocks.push_back(currentBlock);
@@ -1409,7 +1411,7 @@ RiPointsPolygons (RtInt npolys, RtInt *nverts, RtInt *verts, ...) {
 }
 
 EXTERN(RtVoid)
-RiPointsPolygonsV (RtInt npolys, RtInt *nverts, RtInt *verts, 
+RiPointsPolygonsV (RtInt npolys, RtInt *nverts, RtInt *verts,
 				   RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiPointsPolygons",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1429,7 +1431,7 @@ RiPointsGeneralPolygons (RtInt npolys, RtInt *nloops,
 
 EXTERN(RtVoid)
 RiPointsGeneralPolygonsV (RtInt npolys, RtInt *nloops,
-			     RtInt *nverts, RtInt *verts, 
+			     RtInt *nverts, RtInt *verts,
 				 RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiPointsGeneralPolygons",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1476,7 +1478,7 @@ EXTERN(RtVoid)
 		  RtToken vwrap, RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiPatchMesh",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
-	
+
 	renderMan->RiPatchMeshV(type,nu,uwrap,nv,vwrap,n,tokens,params);
 }
 
@@ -1496,7 +1498,7 @@ EXTERN(RtVoid)
 EXTERN(RtVoid)
     RiNuPatchV (RtInt nu, RtInt uorder, RtFloat *uknot,
 		RtFloat umin, RtFloat umax, RtInt nv, RtInt vorder,
-		RtFloat *vknot, RtFloat vmin, RtFloat vmax, 
+		RtFloat *vknot, RtFloat vmin, RtFloat vmax,
 		RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiNuPatch",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1543,7 +1545,7 @@ RiCone (RtFloat height, RtFloat radius, RtFloat thetamax, ...) {
 }
 
 EXTERN(RtVoid)
-    RiConeV (RtFloat height, RtFloat radius, RtFloat thetamax, 
+    RiConeV (RtFloat height, RtFloat radius, RtFloat thetamax,
 	RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiCone",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1551,7 +1553,7 @@ EXTERN(RtVoid)
 }
 
 EXTERN(RtVoid)
-    RiCylinder (RtFloat radius, RtFloat zmin, RtFloat zmax, 
+    RiCylinder (RtFloat radius, RtFloat zmin, RtFloat zmax,
 	RtFloat thetamax, ...) {
 	va_list	args;
 
@@ -1581,7 +1583,7 @@ RiHyperboloid (RtPoint point1, RtPoint point2, RtFloat thetamax, ...) {
 }
 
 EXTERN(RtVoid)
-    RiHyperboloidV (RtPoint point1, RtPoint point2, RtFloat thetamax, 
+    RiHyperboloidV (RtPoint point1, RtPoint point2, RtFloat thetamax,
 	RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiHyperboloid",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1601,7 +1603,7 @@ EXTERN(RtVoid)
 }
 
 EXTERN(RtVoid)
-    RiParaboloidV (RtFloat radius, RtFloat zmin, RtFloat zmax, RtFloat thetamax, 
+    RiParaboloidV (RtFloat radius, RtFloat zmin, RtFloat zmax, RtFloat thetamax,
 	RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiParaboloid",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1619,7 +1621,7 @@ RiDisk (RtFloat height, RtFloat radius, RtFloat thetamax, ...) {
 }
 
 EXTERN(RtVoid)
-    RiDiskV (RtFloat height, RtFloat radius, RtFloat thetamax, 
+    RiDiskV (RtFloat height, RtFloat radius, RtFloat thetamax,
 	RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiDisk",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1658,7 +1660,7 @@ RiCurves (RtToken degree, RtInt ncurves, RtInt nverts[], RtToken wrap, ...) {
 
 
 EXTERN(RtVoid)
-RiCurvesV (RtToken degree, RtInt ncurves, RtInt nverts[], RtToken wrap, 
+RiCurvesV (RtToken degree, RtInt ncurves, RtInt nverts[], RtToken wrap,
 		   RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiCurves",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1725,7 +1727,7 @@ EXTERN(RtVoid)
     RiSubdivisionMeshV (RtToken scheme, RtInt nfaces,
 		       RtInt nvertices[], RtInt vertices[],
 		       RtInt ntags, RtToken tags[], RtInt nargs[],
-		       RtInt intargs[], RtFloat floatargs[], 
+		       RtInt intargs[], RtFloat floatargs[],
 			   RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiSubdivisionMesh",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
@@ -1766,16 +1768,16 @@ RiProcDelayedReadArchive (RtPointer data, RtFloat detail) {
 EXTERN(RtVoid)
 RiProcRunProgram (RtPointer data, RtFloat detail) {
 	CDelayedData	*delayed	=	(CDelayedData *) data;
-	
+
 	// GSHTODO: cache the open pipes and close on last RunProgram
-	
+
 #ifdef WIN32
 	char			progString[256];
 	char			tmpFile[512];
 
 	// GSHTODO: do proper redirection.  See
 	// http://support.microsoft.com/default.aspx?scid=kb;en-us;190351
-	
+
 	tmpnam(tmpFile);
 	sprintf(progString,"echo %f [%s] | %s > %s",detail,delayed->helper,delayed->generator,tmpFile);
 	system(progString);
@@ -1787,32 +1789,32 @@ RiProcRunProgram (RtPointer data, RtFloat detail) {
 
 	if ((pipe(fdin) != -1) && (pipe(fdout) != -1)) {
 		int cpid;
-		
+
 		if ( (cpid = fork()) >= 0) {
-			
+
 			if (cpid != 0) {
 				char	tmp[128];
 
 				// we are the parent rndr
-				
+
 				close(fdout[0]);			// close the ends the client uses
 				close(fdin[1]);
-				
+
 				// repoen as files, close the fd versions
 				sprintf(tmp,"|%d",fdin[0]);
 				FILE	*out	= fdopen(fdout[1],"wb");
-				
+
 				if (out != NULL) {
 					// This write may SIGPIPE out - so guard against it
 					void (*oldHandler)(int) = signal(SIGPIPE,SIG_IGN);
-					
+
 					fprintf(out,"%f [%s]\n",detail,delayed->helper);
 					fflush(out);		// ensure the output is synchronized
 					fclose(out);		// send eof (remove this when we keep pipe open)
 					out = NULL;
-					
+
 					signal(SIGPIPE,oldHandler);
-					
+
 					renderMan->RiReadArchiveV(tmp,NULL,0,NULL,NULL);
 				} else {
 					error(CODE_SYSTEM,"Failed to redirect input or output for \"%s\"\n",delayed->generator);
@@ -1821,20 +1823,20 @@ RiProcRunProgram (RtPointer data, RtFloat detail) {
 				if (out	!= NULL) fclose(out);
 			} else {
 				// We are the child process
-				
+
 				close(fdout[1]);		// we'll read from fdout[0], fdout[1] belongs to parent
 				close(fdin[0]);			// we'll write to fdin[1], fdin[0] belongs to parent
-				
+
 				dup2(fdout[0],STDIN_FILENO);	close(fdout[0]);// remap stdin and stdout
 				dup2(fdin[1],STDOUT_FILENO);	close(fdin[1]);
-				
+
 				putenv("PIXIE_RUNPROGRAM=1");
-				
+
 				// launch the program (via shell to do cmdline parsing / breaking up!)
 				if (system(delayed->generator) != 0) {
 					error(CODE_SYSTEM,"Failed to execute \"%s\"\n",delayed->generator);
 				}
-				
+
 				exit(0);
 			}
 		} else {
@@ -1919,7 +1921,7 @@ RiObjectBegin (void) {
 
 EXTERN(RtVoid)
 RiObjectEnd (void) {
-	if (check("RiObjectBegin",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK)) return;	
+	if (check("RiObjectBegin",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK)) return;
 
 	renderMan->RiObjectEnd();
 }
@@ -1952,8 +1954,8 @@ RiMotionBegin (RtInt N, ...) {
 
 EXTERN(RtVoid)
 RiMotionBeginV (RtInt N, RtFloat times[]) {
-	if (check("RiMotionBegin",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;	
-	
+	if (check("RiMotionBegin",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
+
 	renderMan->RiMotionBeginV(N,times);
 
 	blocks.push_back(currentBlock);
@@ -1962,7 +1964,7 @@ RiMotionBeginV (RtInt N, RtFloat times[]) {
 
 EXTERN(RtVoid)
 RiMotionEnd (void) {
-	if (check("RiMotionEnd",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_MOTION_BLOCK)) return;	
+	if (check("RiMotionEnd",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
 
 	if (currentBlock != RENDERMAN_MOTION_BLOCK) {
 		error(CODE_NESTING,"Expecting a motion block\n");
@@ -1991,7 +1993,7 @@ EXTERN(RtVoid)
     RiMakeTextureV (char *pic, char *tex, RtToken swrap, RtToken twrap,
 		    RtFilterFunc filterfunc, RtFloat swidth, RtFloat twidth,
 			RtInt n, RtToken tokens[], RtPointer params[]) {
-	if (check("RiMakeTexture",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;	
+	if (check("RiMakeTexture",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
 
 	renderMan->RiMakeTextureV(pic,tex,swrap,twrap,filterfunc,swidth,twidth,n,tokens,params);
 }
@@ -2011,7 +2013,7 @@ EXTERN(RtVoid)
     RiMakeBumpV (char *pic, char *tex, RtToken swrap, RtToken twrap,
 		 RtFilterFunc filterfunc, RtFloat swidth, RtFloat twidth,
 		 RtInt n, RtToken tokens[], RtPointer params[]) {
-	if (check("RiMakeBump",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;	
+	if (check("RiMakeBump",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;
 
 	renderMan->RiMakeBumpV(pic,tex,swrap,twrap,filterfunc,swidth,twidth,n,tokens,params);
 }
@@ -2031,7 +2033,7 @@ EXTERN(RtVoid)
     RiMakeLatLongEnvironmentV (char *pic, char *tex, RtFilterFunc filterfunc,
 			      RtFloat swidth, RtFloat twidth,
 				  RtInt n, RtToken tokens[], RtPointer params[]) {
-	if (check("RiMakeLatLongEnvironment",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;	
+	if (check("RiMakeLatLongEnvironment",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;
 
 	renderMan->RiMakeLatLongEnvironmentV(pic,tex,filterfunc,swidth,twidth,n,tokens,params);
 }
@@ -2056,7 +2058,7 @@ EXTERN(RtVoid)
 				RtFloat swidth, RtFloat twidth,
 				RtInt n, RtToken tokens[], RtPointer params[]) {
 
-	if (check("RiMakeCubeFaceEnvironmentV",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;	
+	if (check("RiMakeCubeFaceEnvironmentV",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;
 
 	renderMan->RiMakeCubeFaceEnvironmentV(px,nx,py,ny,pz,nz,tex,fov,filterfunc,swidth,twidth,n,tokens,params);
 }
@@ -2075,7 +2077,7 @@ EXTERN(RtVoid)
     RiMakeShadowV (char *pic, char *tex,
 	RtInt n, RtToken tokens[], RtPointer params[]) {
 
-	if (check("RiMakeShadow",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;	
+	if (check("RiMakeShadow",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
 
 	renderMan->RiMakeShadowV(pic,tex,n,tokens,params);
 }
@@ -2106,7 +2108,7 @@ RiErrorPrint (RtInt code, RtInt severity, char *message) {
 	} else if (severity == RIE_ERROR) {
 		fprintf(stderr,"%s",message);
 		fflush(stderr);
-		
+
 		RiLastError = code;
 	} else {
 		fprintf(stdout,"%s",message);
@@ -2118,7 +2120,7 @@ EXTERN(RtVoid)
 RiErrorAbort (RtInt code, RtInt severity, char *message) {
 	if ((severity == RIE_ERROR) || (severity == RIE_SEVERE)) {
 		RiLastError = code;
-		
+
 		exit(-1);
 	}
 }
