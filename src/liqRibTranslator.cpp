@@ -643,11 +643,11 @@ liqRibTranslator::liqRibTranslator()
   m_cropX1 = m_cropY1 = 0.0;
   m_cropX2 = m_cropY2 = 1.0;
   liqglo_isShadowPass = false;
-  
+
   m_bakeNonRasterOrient	= false;
   m_bakeNoCullBackface	= false;
   m_bakeNoCullHidden	= false;
-  
+
   m_preFrameRIB.clear();
   m_preWorldRIB.clear();
   m_postWorldRIB.clear();
@@ -2129,25 +2129,25 @@ void liqRibTranslator::liquidReadGlobals()
       outFormat = parseString( varVal );
     }
   }
-  
+
   {
   	gPlug = rGlobalNode.findPlug( "bakeNonRasterOrient", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_bakeNonRasterOrient );
     gStatus.clear();
   }
-  
+
   {
   	gPlug = rGlobalNode.findPlug( "bakeNoCullBackface", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_bakeNoCullBackface );
     gStatus.clear();
   }
-  
+
   {
   	gPlug = rGlobalNode.findPlug( "bakeNoCullHidden", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_bakeNoCullHidden );
     gStatus.clear();
   }
-  
+
   {
     MString varVal;
     gPlug = rGlobalNode.findPlug( "preFrameBegin", &gStatus );
@@ -4437,12 +4437,12 @@ MStatus liqRibTranslator::ribPrologue()
 	int zero = 0;
 	if (m_bakeNonRasterOrient)
 		RiAttribute("dice","int rasterorient",&zero,NULL);
-	if (m_bakeNoCullBackface) 
+	if (m_bakeNoCullBackface)
 		RiAttribute("cull","int backfacing",&zero,NULL);
-	if (m_bakeNoCullHidden) 
+	if (m_bakeNoCullHidden)
 		RiAttribute("cull","int hidden",&zero,NULL);
   }
-  
+
   }
   ribStatus = kRibBegin;
   return MS::kSuccess;
@@ -4985,6 +4985,10 @@ int count =0;
           } else {
             iter->camera[sample].neardb   = 0.001;    // TODO: these values are duplicated elsewhere in this file
             iter->camera[sample].fardb    = 250000.0; // TODO: these values are duplicated elsewhere in this file
+            MPlug nearPlug = fnLight.findPlug( "nearClipPlane", &status );
+            if ( status == MS::kSuccess ) nearPlug.getValue( iter->camera[sample].neardb );
+            MPlug farPlug = fnLight.findPlug( "farClipPlane", &status );
+            if ( status == MS::kSuccess ) farPlug.getValue( iter->camera[sample].fardb );
           }
 
           if ( fnLight.dagPath().hasFn( MFn::kDirectionalLight ) ) {
