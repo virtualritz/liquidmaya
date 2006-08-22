@@ -390,12 +390,22 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( nAttr.setHidden( true ) );
   CHECK_MSTATUS( nAttr.setReadable( false ) );
   CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+  
+  #if MAYA_API_VERSION >= 800
+  aLightBlindData = nAttr.createAddr( "lightBlindData", "lbld", 0, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( false ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( false ) );
+  CHECK_MSTATUS( nAttr.setDefault( (void*) 0 ) );
+  #else 
   aLightBlindData = nAttr.create( "lightBlindData", "lbld", MFnNumericData::kLong, 0, &status );
   CHECK_MSTATUS( status );
   CHECK_MSTATUS( nAttr.setStorable( false ) );
   CHECK_MSTATUS( nAttr.setHidden( true ) );
   CHECK_MSTATUS( nAttr.setReadable( false ) );
   CHECK_MSTATUS( nAttr.setDefault( 0 ) );
+  #endif
   aLightData = lAttr.create( "lightDataArray", "ltd", aLightDirection,
                               aLightIntensity, aLightAmbient, aLightDiffuse, aLightSpecular,
                               aLightShadowFraction, aPreShadowIntensity, aLightBlindData,

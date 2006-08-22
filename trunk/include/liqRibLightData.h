@@ -66,6 +66,20 @@ private:
   RtFloat       topBarnDoor;
   RtFloat       bottomBarnDoor;
 
+  RtFloat       decayRegions;
+  RtFloat       startDistance1;
+  RtFloat       endDistance1;
+  RtFloat       startDistance2;
+  RtFloat       endDistance2;
+  RtFloat       startDistance3;
+  RtFloat       endDistance3;
+  RtFloat       startDistanceIntensity1;
+  RtFloat       endDistanceIntensity1;
+  RtFloat       startDistanceIntensity2;
+  RtFloat       endDistanceIntensity2;
+  RtFloat       startDistanceIntensity3;
+  RtFloat       endDistanceIntensity3;
+
   RtFloat       nonDiffuse;
   RtFloat       nonSpecular;
   //RtPoint       from, to;

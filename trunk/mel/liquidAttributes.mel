@@ -1176,6 +1176,7 @@ global proc liquidCreateLightShadowAttributes()
     }
   }
 }
+
 global proc liquidDeleteLightShadowAttributes()
 {
   string $nodes[] = `ls -lights -dag -sl`;
@@ -1238,6 +1239,59 @@ global proc liquidDeleteLightOutputAttributes()
     }
     if ( objExists( ($currentNode+".lightID") ) ) {
       deleteAttr ( $currentNode+".lightID" );
+    }
+  }
+}
+
+global proc liquidCreateDecayRegionAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !objExists( ($currentNode+".startDistanceIntensity1") ) ) {
+      addAttr -ln "startDistanceIntensity1" -at "float" -dv 1 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".endDistanceIntensity1") ) ) {
+      addAttr -ln "endDistanceIntensity1" -at "float" -dv 1 $currentNode;
+    }
+     if ( !objExists( ($currentNode+".startDistanceIntensity2") ) ) {
+      addAttr -ln "startDistanceIntensity2" -at "float" -dv 1 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".endDistanceIntensity2") ) ) {
+      addAttr -ln "endDistanceIntensity2" -at "float" -dv 1 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".startDistanceIntensity3") ) ) {
+      addAttr -ln "startDistanceIntensity3" -at "float" -dv 1 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".endDistanceIntensity3") ) ) {
+      addAttr -ln "endDistanceIntensity3" -at "float" -dv 1 $currentNode;
+    }
+
+  }
+}
+
+global proc liquidDeleteDecayRegionAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( objExists( ($currentNode+".startDistanceIntensity1") ) ) {
+      deleteAttr ( $currentNode+".startDistanceIntensity1" );
+    }
+    if ( objExists( ($currentNode+".endDistanceIntensity1") ) ) {
+      deleteAttr ( $currentNode+".endDistanceIntensity1" );
+    }
+    if ( objExists( ($currentNode+".startDistanceIntensity2") ) ) {
+      deleteAttr ( $currentNode+".startDistanceIntensity2" );
+    }
+    if ( objExists( ($currentNode+".endDistanceIntensity2") ) ) {
+      deleteAttr ( $currentNode+".endDistanceIntensity2" );
+    }
+    if ( objExists( ($currentNode+".startDistanceIntensity3") ) ) {
+      deleteAttr ( $currentNode+".startDistanceIntensity3" );
+    }
+    if ( objExists( ($currentNode+".endDistanceIntensity3") ) ) {
+      deleteAttr ( $currentNode+".endDistanceIntensity3" );
     }
   }
 }

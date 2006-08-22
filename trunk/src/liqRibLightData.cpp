@@ -544,8 +544,18 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 
   MMatrix lightFix( rLightFix );
 
-  nonDiffuse     = fnLight.lightDiffuse() ? 0 : 1;
-  nonSpecular    = fnLight.lightSpecular() ? 0 : 1;
+  /*
+    philippe : why not use fnLight.lightDiffuse() and fnLight.lightSpecular() ?
+    answer :  when decay regions are enabled on a spotlight,
+              suddenly these calls return 0 and the light goes black.
+              On the other hand, the attributes still have the correct value,
+              that's why we use them.
+  */
+  fnLight.findPlug( "emitDiffuse"  ).getValue( nonDiffuse );
+  fnLight.findPlug( "emitSpecular" ).getValue( nonSpecular );
+  nonDiffuse  = 1 - nonDiffuse;
+  nonSpecular = 1 - nonSpecular;
+
   colorVal       = fnLight.shadowColor();
   shadowColor[ 0 ]  = colorVal.r;
   shadowColor[ 1 ]  = colorVal.g;
@@ -623,16 +633,41 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 
     } else if ( light.hasFn( MFn::kSpotLight ) ) {
       MFnSpotLight fnSpotLight( light );
-      lightType      = MRLT_Spot;
-      decay          = fnSpotLight.decayRate();
-      coneAngle      = fnSpotLight.coneAngle() / 2.0;
-      penumbraAngle  = fnSpotLight.penumbraAngle();
-      dropOff        = fnSpotLight.dropOff();
-      barnDoors      = fnSpotLight.barnDoors();
-      leftBarnDoor   = fnSpotLight.barnDoorAngle( MFnSpotLight::kLeft );
-      rightBarnDoor  = fnSpotLight.barnDoorAngle( MFnSpotLight::kRight );
-      topBarnDoor    = fnSpotLight.barnDoorAngle( MFnSpotLight::kTop );
-      bottomBarnDoor = fnSpotLight.barnDoorAngle( MFnSpotLight::kBottom );
+      lightType         = MRLT_Spot;
+      decay             = fnSpotLight.decayRate();
+      coneAngle         = fnSpotLight.coneAngle() / 2.0;
+      penumbraAngle     = fnSpotLight.penumbraAngle();
+      dropOff           = fnSpotLight.dropOff();
+      barnDoors         = fnSpotLight.barnDoors();
+      leftBarnDoor      = fnSpotLight.barnDoorAngle( MFnSpotLight::kLeft   );
+      rightBarnDoor     = fnSpotLight.barnDoorAngle( MFnSpotLight::kRight  );
+      topBarnDoor       = fnSpotLight.barnDoorAngle( MFnSpotLight::kTop    );
+      bottomBarnDoor    = fnSpotLight.barnDoorAngle( MFnSpotLight::kBottom );
+      decayRegions      = fnSpotLight.useDecayRegions();
+      startDistance1    = fnSpotLight.startDistance( MFnSpotLight::kFirst  );
+      endDistance1      = fnSpotLight.endDistance(   MFnSpotLight::kFirst  );
+      startDistance2    = fnSpotLight.startDistance( MFnSpotLight::kSecond );
+      endDistance2      = fnSpotLight.endDistance(   MFnSpotLight::kSecond );
+      startDistance3    = fnSpotLight.startDistance( MFnSpotLight::kThird  );
+      endDistance3      = fnSpotLight.endDistance(   MFnSpotLight::kThird  );
+      MPlug intensityPlug = lightDepNode.findPlug( "startDistanceIntensity1", &status );
+      if ( status == MS::kSuccess ) intensityPlug.getValue( startDistanceIntensity1 );
+      else startDistanceIntensity1 = 1.0;
+      intensityPlug = lightDepNode.findPlug( "endDistanceIntensity1", &status );
+      if ( status == MS::kSuccess ) intensityPlug.getValue( endDistanceIntensity1 );
+      else endDistanceIntensity1 = 1.0;
+      intensityPlug = lightDepNode.findPlug( "startDistanceIntensity2", &status );
+      if ( status == MS::kSuccess ) intensityPlug.getValue( startDistanceIntensity2 );
+      else startDistanceIntensity2 = 1.0;
+      intensityPlug = lightDepNode.findPlug( "endDistanceIntensity2", &status );
+      if ( status == MS::kSuccess ) intensityPlug.getValue( endDistanceIntensity2 );
+      else endDistanceIntensity2 = 1.0;
+      intensityPlug = lightDepNode.findPlug( "startDistanceIntensity3", &status );
+      if ( status == MS::kSuccess ) intensityPlug.getValue( startDistanceIntensity3 );
+      else startDistanceIntensity3 = 1.0;
+      intensityPlug = lightDepNode.findPlug( "endDistanceIntensity3", &status );
+      if ( status == MS::kSuccess ) intensityPlug.getValue( endDistanceIntensity3 );
+      else endDistanceIntensity3 = 1.0;
 
       if ( liqglo_doShadows && usingShadow ) {
         if ( !rayTraced ) {
@@ -832,48 +867,74 @@ void liqRibLightData::write()
           } */
           RtString shadowname = const_cast< char* >( shadowName.asChar() );
           handle = RiLightSource( "liquidspot",
-                                  "intensity",              &intensity,
-                                  "lightcolor",             color,
-                                  "float coneangle",        &coneAngle,
-                                  "float penumbraangle",    &penumbraAngle,
-                                  "float dropoff",          &dropOff,
-                                  "float decay",            &decay,
-                                  "float barndoors",        &barnDoors,
-                                  "float leftbarndoor",     &leftBarnDoor,
-                                  "float rightbarndoor",    &rightBarnDoor,
-                                  "float topbarndoor",      &topBarnDoor,
-                                  "float bottombarndoor",   &bottomBarnDoor,
-                                  "string shadowname",      &shadowname,
-                                  "float shadowfiltersize", rayTraced ? &shadowRadius : &shadowFilterSize,
-                                  "float shadowbias",       &shadowBias,
-                                  "float shadowsamples",    &shadowSamples,
-                                  "color shadowcolor",      &shadowColor,
-                                  "float __nondiffuse",     &nonDiffuse,
-                                  "float __nonspecular",    &nonSpecular,
-                                  "string __category",      &cat,
-                                  "float lightID",          &lightID,
+                                  "intensity",                    &intensity,
+                                  "lightcolor",                   color,
+                                  "float coneangle",              &coneAngle,
+                                  "float penumbraangle",          &penumbraAngle,
+                                  "float dropoff",                &dropOff,
+                                  "float decay",                  &decay,
+                                  "float barndoors",              &barnDoors,
+                                  "float leftbarndoor",           &leftBarnDoor,
+                                  "float rightbarndoor",          &rightBarnDoor,
+                                  "float topbarndoor",            &topBarnDoor,
+                                  "float bottombarndoor",         &bottomBarnDoor,
+                                  "float decayRegions",           &decayRegions,
+                                  "float startDistance1",         &startDistance1,
+                                  "float endDistance1",           &endDistance1,
+                                  "float startDistance2",         &startDistance2,
+                                  "float endDistance2",           &endDistance2,
+                                  "float startDistance3",         &startDistance3,
+                                  "float endDistance3",           &endDistance3,
+                                  "float startDistanceIntensity1",&startDistanceIntensity1,
+                                  "float endDistanceIntensity1",  &endDistanceIntensity1,
+                                  "float startDistanceIntensity2",&startDistanceIntensity2,
+                                  "float endDistanceIntensity2",  &endDistanceIntensity2,
+                                  "float startDistanceIntensity3",&startDistanceIntensity3,
+                                  "float endDistanceIntensity3",  &endDistanceIntensity3,
+                                  "string shadowname",            &shadowname,
+                                  "float shadowfiltersize",       rayTraced ? &shadowRadius : &shadowFilterSize,
+                                  "float shadowbias",             &shadowBias,
+                                  "float shadowsamples",          &shadowSamples,
+                                  "color shadowcolor",            &shadowColor,
+                                  "float __nondiffuse",           &nonDiffuse,
+                                  "float __nonspecular",          &nonSpecular,
+                                  "string __category",            &cat,
+                                  "float lightID",                &lightID,
                                   RI_NULL );
           } else {
           RtString shadowname = const_cast< char* >( shadowName.asChar() );
           handle = RiLightSource( "liquidspot",
-                                  "intensity",            &intensity,
-                                  "lightcolor",           color,
-                                  "float coneangle",      &coneAngle,
-                                  "float penumbraangle",  &penumbraAngle,
-                                  "float dropoff",        &dropOff,
-                                  "float decay",          &decay,
-                                  "float barndoors",      &barnDoors,
-                                  "float leftbarndoor",   &leftBarnDoor,
-                                  "float rightbarndoor",  &rightBarnDoor,
-                                  "float topbarndoor",    &topBarnDoor,
-                                  "float bottombarndoor", &bottomBarnDoor,
-                                  "string shadowname",    &shadowname,
-                                  "float shadowbias",     &shadowBias,
-                                  "float shadowsamples",  &shadowSamples,
-                                  "float __nondiffuse",   &nonDiffuse,
-                                  "float __nonspecular",  &nonSpecular,
-                                  "string __category",    &cat,
-                                  "float lightID",        &lightID,
+                                  "intensity",                    &intensity,
+                                  "lightcolor",                   color,
+                                  "float coneangle",              &coneAngle,
+                                  "float penumbraangle",          &penumbraAngle,
+                                  "float dropoff",                &dropOff,
+                                  "float decay",                  &decay,
+                                  "float barndoors",              &barnDoors,
+                                  "float leftbarndoor",           &leftBarnDoor,
+                                  "float rightbarndoor",          &rightBarnDoor,
+                                  "float topbarndoor",            &topBarnDoor,
+                                  "float bottombarndoor",         &bottomBarnDoor,
+                                  "float decayRegions",           &decayRegions,
+                                  "float startDistance1",         &startDistance1,
+                                  "float endDistance1",           &endDistance1,
+                                  "float startDistance2",         &startDistance2,
+                                  "float endDistance2",           &endDistance2,
+                                  "float startDistance3",         &startDistance3,
+                                  "float endDistance3",           &endDistance3,
+                                  "float startDistanceIntensity1",&startDistanceIntensity1,
+                                  "float endDistanceIntensity1",  &endDistanceIntensity1,
+                                  "float startDistanceIntensity2",&startDistanceIntensity2,
+                                  "float endDistanceIntensity2",  &endDistanceIntensity2,
+                                  "float startDistanceIntensity3",&startDistanceIntensity3,
+                                  "float endDistanceIntensity3",  &endDistanceIntensity3,
+                                  "string shadowname",            &shadowname,
+                                  "float shadowbias",             &shadowBias,
+                                  "float shadowsamples",          &shadowSamples,
+                                  "float __nondiffuse",           &nonDiffuse,
+                                  "float __nonspecular",          &nonSpecular,
+                                  "string __category",            &cat,
+                                  "float lightID",                &lightID,
                                   RI_NULL );
         }
         break;
