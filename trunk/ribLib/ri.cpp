@@ -2,7 +2,7 @@
 //
 //                             Pixie
 //
-// Copyright © 1999 - 2003, Okan Arikan
+// Copyright  1999 - 2003, Okan Arikan
 //
 // Contact: okan@cs.berkeley.edu
 //
@@ -886,6 +886,16 @@ RiDiskFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
 
 EXTERN(RtFloat)
 RiLanczosFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+	return 0;
+}
+
+EXTERN(RtFloat)
+RiBlackmanHarrisFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+	return 0;
+}
+
+EXTERN(RtFloat)
+RiSeparableCatmullRomFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
 	return 0;
 }
 
