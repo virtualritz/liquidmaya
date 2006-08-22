@@ -2,7 +2,7 @@
 //
 //                             Pixie
 //
-// Copyright © 1999 - 2003, Okan Arikan
+// Copyright  1999 - 2003, Okan Arikan
 //
 // Contact: okan@cs.berkeley.edu
 //
@@ -331,7 +331,9 @@ EXTERN(RtFloat)
     RiSincFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth),
 	RiLanczosFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth),
 	RiDiskFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth),
-	RiBesselFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth);
+	RiBesselFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth),
+	RiSeparableCatmullRomFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth),
+	RiBlackmanHarrisFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth);
 
 EXTERN(RtVoid)
     RiHider (RtToken type, ...),
