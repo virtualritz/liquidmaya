@@ -37,9 +37,13 @@ FLAVORX := $(patsubst /etc/%-version,%,$(FLAVORX))
 #********************************************
 ifeq "$(FLAVORX)" "fedora redhat"
 VBIN	= fedora
+ifneq "$(MAYA_VERSION)" "8.0"
 # Make sure we use gcc 3.3.4 if 3.4.4 is default one
 ifeq "$(shell $(CPP) -dumpversion)" "3.4.4"
 CPP = g++334
+endif
+else
+CPP = g++
 endif
 else
 VBIN	= $(FLAVORX)
@@ -91,7 +95,7 @@ LIQUIDVERSION = \"$(SPC)$(LIQUIDSHORTVERSION)$(SPC)for$(SPC)$(LIQRMAN),$(SPC)$(B
 ifeq "$(LIQRMAN)" "pixie"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverPixie
 LIQRMANPATH 	= 	$${PIXIEHOME:=/usr/local/Pixie}
-LIQUIDDPYLOC	=	displayDrivers/pixie/
+LIQUIDDPYLOC	=	displayDrivers/Pixie/
 LIQDPYNAME		=	liqmaya.so
 LIQRMANFLAGS	=	-DPIXIE
 LIQRMANLIBS 	=	-lri -lsdr
@@ -110,7 +114,7 @@ ifeq "$(LIQRMAN)" "air"
 USE_RIBLIB		:=	yes
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAir
 LIQRMANPATH 	= 	$${AIRHOME:=/usr/local/Air}
-LIQUIDDPYLOC	=	displayDrivers/pixie/
+LIQUIDDPYLOC	=	displayDrivers/Air/
 LIQDPYNAME		=	d_liqmaya.so
 LIQRMANFLAGS	=	-DAIR
 LIQRMANLIBS 	=	
@@ -127,7 +131,7 @@ endif
 ifeq "$(LIQRMAN)" "aqsis"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAqsis
 LIQRMANPATH 	=	$${AQSIS_BASE_PATH:=/usr/local/aqsis}
-LIQUIDDPYLOC	=	displayDrivers/aqsis/
+LIQUIDDPYLOC	=	displayDrivers/Aqsis/
 LIQDPYNAME		=	liqmaya.so
 LIQRMANFLAGS	=	-DAQSIS
 LIQRMANLIBS 	=	-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs
@@ -161,7 +165,7 @@ endif
 ifeq "$(LIQRMAN)" "entropy"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverEntropy
 LIQRMANPATH 	=	$${ENTROPYHOME:=/usr/local/exluna/Entropy}
-LIQUIDDPYLOC	=	displayDrivers/entropy/
+LIQUIDDPYLOC	=	displayDrivers/Entropy/
 LIQDPYNAME		=	d_liqmaya.so
 LIQRMANFLAGS	=	-DENTROPY
 LIQRMANLIBS 	=	-lribout -lsleargs 
@@ -177,7 +181,7 @@ endif
 ifeq "$(patsubst prman%,prman,$(LIQRMAN))" "prman"
 PRMANVERSION 	= 	$(patsubst prman%,%,$(LIQRMAN))
 LIQRMANPATH 	=	$${RMANTREE:=/usr/local/prman}
-LIQUIDDPYLOC	=	displayDrivers/prman/
+LIQUIDDPYLOC	=	displayDrivers/PRMan/
 LIQDPYNAME		=	d_liqmaya.so
 LIQRMANFLAGS	=	-DPRMAN
 USEDVAR 		= 	RMANTREE
@@ -189,12 +193,12 @@ LIQDISPLAYOBJS  = 	liqMayaDisplayDriver
 ifeq "$(patsubst 12.%,12,$(PRMANVERSION))" "12"
 LIQRMANLIBS 	=	-lrib -lsloargs -llkm -ltarget -lzip -lprmutil
 LIQWINRMANLIBS	= "rib.lib sloargs.lib"
-LIQUIDDPYLOC	=	displayDrivers/prman12/
+LIQUIDDPYLOC	=	displayDrivers/PRMan/
 else
 ifeq "$(patsubst 13.%,13,$(PRMANVERSION))" "13"
 LIQRMANLIBS 	=	-lprmansdk
 LIQWINRMANLIBS	=	prmansdk.lib
-LIQUIDDPYLOC	=	displayDrivers/prman13/
+LIQUIDDPYLOC	=	displayDrivers/PRMan/
 else
 LIQRMANLIBS=-lrib -lsloargs -llkm -ltarget -lzip
 LIQWINRMANLIBS	=	rib.lib sloargs.lib
@@ -233,7 +237,11 @@ INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(LIQRMANPATH)/include -I../in
 LIBS			= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
 endif
 DPYINCLUDES		= -I$(LIQRMANPATH)/include
+ifeq "$(MAYA_VERSION)" "8.0"
+MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lGL -lGLU
+else
 MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lxpcom -lGL -lGLU
+endif
 TARGET  		= $(VPATH)/$(LIQUIDPLUG)
 
 CP 		= cp

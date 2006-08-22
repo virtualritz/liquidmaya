@@ -20,8 +20,8 @@ LIQUIDBINLIBS =		$(LIBS) $(MAYALIBS) \
 					-lShared \
 					-lTranslators \
 					-lDataModel \
-					-lRenderModel \
 					-lNurbsEngine \
+					-lRenderModel \
 					-lDependEngine \
 					-lCommandEngine \
 					-lFoundation \
@@ -56,6 +56,15 @@ LIQUIDBINLIBS =		$(LIBS) $(MAYALIBS) \
 					-lUrchinSlice \
 					$(EXTRA_LIBS) \
 					-lm
+
+ifeq "$(MAYA_VERSION)" "8.0"
+LIQUIDBINLIBS +=	-Wl,-rpath -Wl,$(MAYA_LOCATION)/lib \
+					-lawxml2 \
+					-lguide \
+					-lsvml \
+					-liff \
+					-lm
+endif
 
 LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqAttachPrefAttribute.$(OBJEXT) \

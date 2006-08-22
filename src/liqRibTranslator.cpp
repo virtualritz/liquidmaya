@@ -5031,7 +5031,14 @@ int count =0;
           MStatus coneStatus;
           MPlug lightPlug = fnLight.findPlug( "coneAngle", &coneStatus );
           if ( coneStatus == MS::kSuccess ) {
-            lightPlug.getValue( iter->camera[sample].hFOV );
+            // philippe : if we have a penumbra > 0, we must add it to the coneangle
+            // to cover correctly the penumbra area.
+            float angle = 0, penumbra = 0;
+            lightPlug.getValue( angle );
+            lightPlug = fnLight.findPlug( "penumbraAngle", &coneStatus );
+            if ( coneStatus == MS::kSuccess ) lightPlug.getValue( penumbra );
+            if ( penumbra > 0 ) angle += penumbra;
+            iter->camera[sample].hFOV = angle;
           } else {
             iter->camera[sample].hFOV = 95;
           }
