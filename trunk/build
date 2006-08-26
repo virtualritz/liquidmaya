@@ -41,7 +41,7 @@ echo "Which renderer do you use ?"
 echo "1) Pixie"
 echo "2) Air"
 echo "3) 3Delight"
-echo "2) Aqsis"
+echo "4) Aqsis"
 read RENDERER
 if [[ $RENDERER == "1" ]]; then LIQRMAN="pixie"
 fi
