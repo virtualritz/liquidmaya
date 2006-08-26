@@ -3,24 +3,44 @@
 if [[ $1 == "-clean" ]]; then make clean;make realclean;exit
 fi
 
-echo "What is your g++ version 3.3.4 executable? (Press enter if g++)"
-read CPP
+echo "What is your maya version ? (7.0 or 8.0)"
+read MAYA_VERSION
 
-if [[ $CPP == "" ]]; then CPP="g++";
-fi
+if [[ $MAYA_VERSION == "7.0" ]]; then 
+	echo "What is your g++ version 3.3.4 executable? (Press enter if g++)"
+	read CPP
 
-CPPVER=`${CPP} -dumpversion`
-if [[ $CPPVER != "3.3.4" ]]; then echo "You are about to compile LIQUID with a bad gcc version";
-	echo "Do you want to continue (y/n)?";
-	read YESNO;
-	if [[ $YESNO == "n" ]]; then exit;
+	if [[ $CPP == "" ]]; then CPP="g++";
 	fi
+	CPPVER=`${CPP} -dumpversion`
+	if [[ $CPPVER != "3.3.4" ]]; then echo "You are about to compile LIQUID with a bad gcc version";
+		echo "Do you want to continue (y/n)?";
+		read YESNO;
+		if [[ $YESNO == "n" ]]; then exit;
+		fi
+	fi
+elif [[ $MAYA_VERSION == "8.0" ]]; then
+	echo "What is your g++ version 4.0.2 executable? (Press enter if g++)"
+	read CPP
+
+	if [[ $CPP == "" ]]; then CPP="g++";
+	fi
+	CPPVER=`${CPP} -dumpversion`
+	if [[ $CPPVER != "4.0.2" ]]; then echo "You are about to compile LIQUID with a bad gcc version";
+		echo "Do you want to continue (y/n)?";
+		read YESNO;
+		if [[ $YESNO == "n" ]]; then exit;
+		fi
+	fi
+else
+	echo "Unsupported version"
+	exit
 fi
 
-echo "Wish renderer do you use ?"
+echo "Which renderer do you use ?"
 echo "1) Pixie"
 echo "2) Air"
-echo "3) 3Delght"
+echo "3) 3Delight"
 echo "2) Aqsis"
 read RENDERER
 if [[ $RENDERER == "1" ]]; then LIQRMAN="pixie"
@@ -40,4 +60,11 @@ read RIBLIB
 if [[ $RIBLIB == "y" ]]; then USE_RIBLIB=yes; else USE_RIBLIB=no;
 fi
 
-make CPP=$CPP LIQRMAN=$LIQRMAN USE_RIBLIB=$USE_RIBLIB release
+echo "Do you want to compile in debug mode ? (y/n)"
+read DEBUG
+
+if [[ $DEBUG == "y" ]]; then
+	make MAYA_VERSION=$MAYA_VERSION CPP=$CPP LIQRMAN=$LIQRMAN USE_RIBLIB=$USE_RIBLIB debug
+else
+	make MAYA_VERSION=$MAYA_VERSION CPP=$CPP LIQRMAN=$LIQRMAN USE_RIBLIB=$USE_RIBLIB release
+fi
