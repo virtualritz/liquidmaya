@@ -1,11 +1,10 @@
-
 DEPTH = ..
 BIN_VERSION ?= debug
 include $(DEPTH)/commondefs.mk
 VPATH ?= $(VPATHDEBUG)
 
 CPPFLAGS += -DHAVE_ZLIB
-RIBLIB := ../bin/linux32/librib.a
+RIBLIB := $(DEPTH)/bin/linux32/librib.a
 RIBLIBOBJS = ri.o\
 	riInterface.o\
 	ribOut.o\
@@ -15,7 +14,7 @@ RIBLIBOBJS = ri.o\
 all : $(RIBLIB)
 
 $(RIBLIB) : $(RIBLIBOBJS)
-	@mkdir -p ../bin/linux32/
+	@mkdir -p $(DEPTH)/bin/linux32/
 	$(AR) $(RIBLIB) $(RIBLIBOBJS)
 
 .cpp.o :

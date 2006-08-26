@@ -702,7 +702,7 @@ liqRibTranslator::~liqRibTranslator()
  * Error handling function.
  * This gets called when the RIB library detects an error.
  */
-#if defined ( DELIGHT ) || ( ENTROPY ) || ( PIXIE ) || ( PRMAN ) || ( AIR )
+#if defined ( DELIGHT ) || ( ENTROPY ) || ( PIXIE ) || ( PRMAN ) || ( AIR ) || ( GENERIC_RIBLIB )
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
 #else
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
@@ -2909,7 +2909,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           LIQDEBUGPRINTF( "-> setting RiOptions\n" );
 
           // Rib client file creation options MUST be set before RiBegin
-#if defined ( PRMAN ) || defined( DELIGHT ) || defined (PIXIE)
+#if defined ( PRMAN ) || defined( DELIGHT ) ||  defined (PIXIE) ||  defined (GENERIC_RIBLIB)
           LIQDEBUGPRINTF( "-> setting binary option\n" );
           {
             RtString format[1] = {"ascii"};
@@ -4299,11 +4299,12 @@ MStatus liqRibTranslator::ribPrologue()
       MString home( getenv( "LIQUIDHOME" ) );
 
       MString displaySearchPath;
-#if defined ( PIXIE ) || ( AIR )
-      displaySearchPath = ".:@::" + liquidRenderer.renderHome + "/displays:" + liquidSanitizePath( home ) + "/displayDrivers/" + liquidRenderer.renderName + "/";
-#else
-      displaySearchPath = ".:@:" + liquidRenderer.renderHome + "/etc:" + liquidSanitizePath( home ) +  "/displayDrivers/" + liquidRenderer.renderName + "/";
-#endif
+      if ( (liquidRenderer.renderName == MString("Pixie")) || (liquidRenderer.renderName == MString("Air")) ){ 
+        displaySearchPath = ".:@::" + liquidRenderer.renderHome + "/displays:" + liquidSanitizePath( home ) + "/displayDrivers/" + liquidRenderer.renderName + "/";
+      }
+      else {
+        displaySearchPath = ".:@:" + liquidRenderer.renderHome + "/etc:" + liquidSanitizePath( home ) +  "/displayDrivers/" + liquidRenderer.renderName + "/";
+      }
       list = const_cast< char* > ( displaySearchPath.asChar() );
       RiArchiveRecord( RI_VERBATIM, "Option \"searchpath\" \"display\" [\"%s\"]\n", list );
     }
@@ -4324,9 +4325,9 @@ MStatus liqRibTranslator::ribPrologue()
       } else {
         option = "shadow";
       }
-      #if defined(PRMAN) || defined(DELIGHT)
-      RiOption("user", "uniform string pass", (RtPointer)&option, RI_NULL);
-	  #endif
+      if ( (liquidRenderer.renderName == MString("PRMan")) || (liquidRenderer.renderName == MString("3Delight")) ){
+        RiOption("user", "uniform string pass", (RtPointer)&option, RI_NULL);
+      }
     } else {
 
       RtString hiderName;
@@ -4413,7 +4414,7 @@ MStatus liqRibTranslator::ribPrologue()
     RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
     RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,          RI_NULL );
     #if defined ( DELIGHT ) || defined ( PRMAN )
-	    RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
+	RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
     	RiOption( "trace",   "int continuationbydefault",   ( RtPointer ) &rt_traceRayContinuation,   RI_NULL );
     	RiOption( "limits",  "int geocachememory",          ( RtPointer ) &rt_traceCacheMemory,       RI_NULL );
     	RiOption( "user",    "float traceBreadthFactor",    ( RtPointer ) &rt_traceBreadthFactor,     RI_NULL );
