@@ -50,7 +50,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="AQSIS;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="GENERIC_RIBLIB;AQSIS;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -149,7 +149,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="PIXIE;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="GENERIC_RIBLIB;PIXIE;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -346,7 +346,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="DELIGHT;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="GENERIC_RIBLIB;DELIGHT;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -741,7 +741,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="AIR;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="GENERIC_RIBLIB;AIR;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -768,6 +768,105 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
 				OutputFile="../../bin/Air/win32/Release/liquid.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				IgnoreDefaultLibraryNames=""
+				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/Pixie/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="All renderers with generic RibLib Release|Win32"
+			OutputDirectory=".\../../bin/Generic/win32/Release/Objects"
+			IntermediateDirectory=".\../../bin/Generic/win32/Release/Objects"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../../bin/Pixie/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				PreprocessorDefinitions="GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/Generic/win32/Release/Objects/"
+				ObjectFile=".\../../bin/Generic/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/Generic/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/Generic/win32/Release/liquid.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
@@ -886,6 +985,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqBucket.cpp"
@@ -955,6 +1063,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1038,6 +1155,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqDisplacementNode.cpp"
@@ -1107,6 +1233,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1190,6 +1325,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqGetAttr.cpp"
@@ -1259,6 +1403,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1342,6 +1495,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqGlobalHelpers.cpp"
@@ -1411,6 +1573,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1494,6 +1665,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqJobList.cpp"
@@ -1563,6 +1743,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1646,6 +1835,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqLightNodeBehavior.cpp"
@@ -1715,6 +1913,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1798,6 +2005,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqMemory.cpp"
@@ -1867,6 +2083,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1950,6 +2175,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqPreviewShader.cpp"
@@ -2019,6 +2253,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2102,6 +2345,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRenderer.cpp"
@@ -2171,6 +2423,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2254,6 +2515,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibClipPlaneData.cpp"
@@ -2323,6 +2593,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2406,6 +2685,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibData.cpp"
@@ -2475,6 +2763,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2558,6 +2855,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibHT.cpp"
@@ -2627,6 +2933,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2710,6 +3025,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibLocatorData.cpp"
@@ -2779,6 +3103,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2862,6 +3195,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibMeshData.cpp"
@@ -2931,6 +3273,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3014,6 +3365,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibNuCurveData.cpp"
@@ -3083,6 +3443,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3166,6 +3535,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibParticleData.cpp"
@@ -3235,6 +3613,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3318,6 +3705,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibPfxToonData.cpp"
@@ -3387,6 +3783,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3470,6 +3875,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqRibSurfaceData.cpp"
@@ -3539,6 +3953,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3622,6 +4045,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqShader.cpp"
@@ -3691,6 +4123,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3774,6 +4215,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqTokenPointer.cpp"
@@ -3843,6 +4293,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3926,6 +4385,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqVolumeNode.cpp"
@@ -4002,6 +4470,15 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\liqWriteArchive.cpp"
@@ -4071,6 +4548,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Air Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

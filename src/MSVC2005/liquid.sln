@@ -148,8 +148,8 @@ Global
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Air Generic ribLib Release|Win32.Build.0 = Air Generic ribLib Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Air Release|Win32.ActiveCfg = Aqsis Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Air Release|Win32.Build.0 = Aqsis Release|Win32
-		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Generic ribLib Release|Win32.ActiveCfg = Aqsis Generic ribLib Release|Win32
-		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Generic ribLib Release|Win32.Build.0 = Aqsis Generic ribLib Release|Win32
+		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Generic ribLib Release|Win32.ActiveCfg = All renderers with generic RibLib Release|Win32
+		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Generic ribLib Release|Win32.Build.0 = All renderers with generic RibLib Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Release|Win32.ActiveCfg = Aqsis Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Aqsis Release|Win32.Build.0 = Aqsis Release|Win32
 		{EC91D9D7-946F-4D42-AEA6-F607A1FBE4F5}.Debug|Win32.ActiveCfg = Air Generic ribLib Release|Win32
