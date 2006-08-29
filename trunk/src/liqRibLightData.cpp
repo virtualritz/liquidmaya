@@ -57,6 +57,7 @@ extern "C" {
 #include <liqGlobalHelpers.h>
 #include <liqRibLightData.h>
 #include <liqGetSloInfo.h>
+#include <liqRenderer.h>
 
 extern int debugMode;
 
@@ -75,6 +76,8 @@ extern liquidlong   liqglo_outPadding;
 extern MString      liqglo_projectDir;
 extern bool         liqglo_relativeFileNames;
 extern MString      liqglo_textureDir;
+
+extern liqRenderer liquidRenderer;
 
 liqRibLightData::liqRibLightData( const MDagPath & light )
 //
@@ -127,16 +130,15 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   }
 
   // check to see if the light is using raytraced shadows
-#if defined ( DELIGHT ) || defined ( PRMAN ) || defined( PIXIE ) || defined( AIR )
-  rayTraced = fnLight.useRayTraceShadows();
-  if( rayTraced ) {
-    usingShadow = true;
-    int raysamples = 1;
-    lightDepNode.findPlug( MString( "shadowRays" ) ).getValue( raysamples );
-    raySamples = raysamples;
+  if( liquidRenderer.supports_RAYTRACE ) {
+    rayTraced = fnLight.useRayTraceShadows();
+    if( rayTraced ) {
+      usingShadow = true;
+      int raysamples = 1;
+      lightDepNode.findPlug( MString( "shadowRays" ) ).getValue( raysamples );
+      raySamples = raysamples;
+    }
   }
-#endif
-
 
 
   lightName = fnLight.name();

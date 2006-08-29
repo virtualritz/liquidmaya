@@ -702,7 +702,7 @@ liqRibTranslator::~liqRibTranslator()
  * Error handling function.
  * This gets called when the RIB library detects an error.
  */
-#if defined ( DELIGHT ) || ( ENTROPY ) || ( PIXIE ) || ( PRMAN ) || ( AIR ) || ( GENERIC_RIBLIB )
+#if defined( DELIGHT ) || defined( ENTROPY ) || defined( PIXIE ) || defined( PRMAN ) || defined( AIR ) || defined( GENERIC_RIBLIB )
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
 #else
 void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
@@ -2577,7 +2577,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   }
 
   // setup the error handler
-#if defined AQSIS || ( _WIN32 && DELIGHT )
+#if ( !defined (GENERIC_RIBLIB) ) && ( defined ( AQSIS ) || ( _WIN32 && DELIGHT ) ) 
 #  ifdef _WIN32
   if ( m_errorMode ) RiErrorHandler( (void(__cdecl*)(int,int,char*))liqRibTranslatorErrorHandler );
 #  else
@@ -2909,7 +2909,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           LIQDEBUGPRINTF( "-> setting RiOptions\n" );
 
           // Rib client file creation options MUST be set before RiBegin
-#if defined ( PRMAN ) || defined( DELIGHT ) ||  defined (PIXIE) ||  defined (GENERIC_RIBLIB)
+#if defined ( PRMAN ) || defined( DELIGHT ) ||  defined ( PIXIE ) ||  defined ( GENERIC_RIBLIB )
           LIQDEBUGPRINTF( "-> setting binary option\n" );
           {
             RtString format[1] = {"ascii"};
@@ -2975,14 +2975,14 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 #ifndef PRMAN
           RiBegin( const_cast<char *>( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_currentJob.ribFileName, liqglo_projectDir ).asChar() ) );
 
-  #ifdef DELIGHT
-          LIQDEBUGPRINTF( "-> setting binary option\n" );
-          {
-            RtString format[1] = {"ascii"};
-            if ( liqglo_doBinary ) format[0] = "binary";
-            RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
-          }
-  #endif
+		  if( liquidRenderer.renderName == MString("3Delight") ){
+            LIQDEBUGPRINTF( "-> setting binary option\n" );
+            {
+              RtString format[1] = {"ascii"};
+              if ( liqglo_doBinary ) format[0] = "binary";
+              RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
+            }
+		  }
 #else
           liqglo_ribFP = fopen( LIQ_GET_ABS_REL_FILE_NAME(liqglo_relativeFileNames, liqglo_currentJob.ribFileName, liqglo_projectDir ).asChar(), "w" );
 
@@ -4272,10 +4272,10 @@ MStatus liqRibTranslator::ribPrologue()
       RiOption( "limits", "eyesplits", ( RtPointer ) &eyeSplits, RI_NULL );
     }
     {
-      #if defined(PRMAN) || defined(DELIGHT)
-      RtColor othresholdC = {othreshold, othreshold, othreshold};
-      RiOption( "limits", "othreshold", &othresholdC, RI_NULL );
-      #endif
+	  if (liquidRenderer.renderName == MString("PRMan") || liquidRenderer.renderName == MString("3Delight") ){
+        RtColor othresholdC = {othreshold, othreshold, othreshold};
+        RiOption( "limits", "othreshold", &othresholdC, RI_NULL );
+	  }
     }
 
     // set search paths
@@ -4299,7 +4299,7 @@ MStatus liqRibTranslator::ribPrologue()
       MString home( getenv( "LIQUIDHOME" ) );
 
       MString displaySearchPath;
-      if ( (liquidRenderer.renderName == MString("Pixie")) || (liquidRenderer.renderName == MString("Air")) ){ 
+      if ( (liquidRenderer.renderName == MString("Pixie")) || (liquidRenderer.renderName == MString("Air")) || (liquidRenderer.renderName == MString("3Delight")) ){ 
         displaySearchPath = ".:@::" + liquidRenderer.renderHome + "/displays:" + liquidSanitizePath( home ) + "/displayDrivers/" + liquidRenderer.renderName + "/";
       }
       else {
@@ -4379,7 +4379,7 @@ MStatus liqRibTranslator::ribPrologue()
         case pfSincFilter:
           RiPixelFilter( RiSincFilter, m_rFilterX, m_rFilterY );
           break;
-#if defined ( DELIGHT ) || ( PRMAN )
+#if defined ( DELIGHT ) || defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
         case pfBlackmanHarrisFilter:
           RiArchiveRecord( RI_VERBATIM, "PixelFilter \"blackman-harris\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
@@ -4393,7 +4393,7 @@ MStatus liqRibTranslator::ribPrologue()
           RiPixelFilter( RiBesselFilter, m_rFilterX, m_rFilterY );
           break;
 #endif
-#ifdef PRMAN
+#if defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
         case pfLanczosFilter:
           RiPixelFilter( RiLanczosFilter, m_rFilterX, m_rFilterY );
           break;
@@ -4409,22 +4409,22 @@ MStatus liqRibTranslator::ribPrologue()
     }
 
     // RAYTRACING OPTIONS
-#if defined ( DELIGHT ) || defined ( PRMAN ) || defined( PIXIE ) || defined( AIR )
   if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing ) {
     RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
     RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,          RI_NULL );
-    #if defined ( DELIGHT ) || defined ( PRMAN )
-	RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
-    	RiOption( "trace",   "int continuationbydefault",   ( RtPointer ) &rt_traceRayContinuation,   RI_NULL );
-    	RiOption( "limits",  "int geocachememory",          ( RtPointer ) &rt_traceCacheMemory,       RI_NULL );
-    	RiOption( "user",    "float traceBreadthFactor",    ( RtPointer ) &rt_traceBreadthFactor,     RI_NULL );
-    	RiOption( "user",    "float traceDepthFactor",      ( RtPointer ) &rt_traceDepthFactor,       RI_NULL );
+    #if defined ( DELIGHT ) || defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
+	if( (liquidRenderer.renderName == MString("3Delight")) || (liquidRenderer.renderName == MString("PRMan")) ){
+	  RiOption( "trace",   "float specularthreshold",     ( RtPointer ) &rt_traceSpecularThreshold, RI_NULL );
+      RiOption( "trace",   "int continuationbydefault",   ( RtPointer ) &rt_traceRayContinuation,   RI_NULL );
+      RiOption( "limits",  "int geocachememory",          ( RtPointer ) &rt_traceCacheMemory,       RI_NULL );
+      RiOption( "user",    "float traceBreadthFactor",    ( RtPointer ) &rt_traceBreadthFactor,     RI_NULL );
+      RiOption( "user",    "float traceDepthFactor",      ( RtPointer ) &rt_traceDepthFactor,       RI_NULL );
+	}
     #endif
   } else {
     if ( !liquidRenderer.supports_RAYTRACE ) RiArchiveRecord( RI_COMMENT, "Ray Tracing : NOT SUPPORTED" );
     else RiArchiveRecord( RI_COMMENT, "Ray Tracing : OFF" );
   }
-#endif
 
   // CUSTOM OPTIONS
   if (m_preFrameRIB != "") {
@@ -5184,13 +5184,13 @@ MStatus liqRibTranslator::framePrologue(long lframe)
          ( !liqglo_currentJob.deepShadows ||
            liqglo_currentJob.shadowPixelSamples == 1 ) )
     {
-    #ifdef PIXIE
-      RtFloat zero = 0;
-      RiHider( "hidden", "jitter", &zero, RI_NULL );
-    #else
-      RtInt zero = 0;
-      RiHider( "hidden", "jitter", &zero, RI_NULL );
-    #endif
+	  if ( liquidRenderer.renderName == MString("Pixie") ){
+        RtFloat zero = 0;
+        RiHider( "hidden", "jitter", &zero, RI_NULL );
+	  } else {
+        RtInt zero = 0;
+        RiHider( "hidden", "jitter", &zero, RI_NULL );
+	  }
     }
 
     if ( liqglo_currentJob.isShadow && liqglo_currentJob.isMidPointShadow && !liqglo_currentJob.deepShadows ) {
@@ -5209,29 +5209,32 @@ MStatus liqRibTranslator::framePrologue(long lframe)
           RtString viContinuous = "continuous";
           RtString viDiscrete   = "discrete";
 
-#ifdef DELIGHT
-          RiDisplay( const_cast<char *>( relativeShadowName.asChar()),
-                     const_cast<char *>( liqglo_currentJob.format.asChar() ),
-                     (RtToken)liqglo_currentJob.imageMode.asChar(),
-                     "volumeinterpretation",
-                     ( liqglo_currentJob.shadowVolumeInterpretation == 1 ? &viContinuous : &viDiscrete ),
-                     RI_NULL );
-#else
-          // Deep shadows cannot be the primary output driver in PRMan & co.
-          // We need to create a null output zfile first, and use the deep
-          // shadows as a secondary output.
-          //
-          #ifndef PIXIE
-          RiDisplay( "null", "null", "z", RI_NULL );
-          #endif
-          MString deepFileImageName = "+" + relativeShadowName;
-          RiDisplay( const_cast<char *>( deepFileImageName.asChar() ),
-                     const_cast<char *>( liqglo_currentJob.format.asChar() ),
-                     (RtToken)liqglo_currentJob.imageMode.asChar(),
-                     "uniform string volumeinterpretation",
-                     ( liqglo_currentJob.shadowVolumeInterpretation == 1 ? &viContinuous : &viDiscrete ),
-                     RI_NULL );
-#endif
+
+		  if( liquidRenderer.renderName == MString("3Delight") ){
+            RiDisplay( const_cast<char *>( relativeShadowName.asChar()),
+                       const_cast<char *>( liqglo_currentJob.format.asChar() ),
+                       (RtToken)liqglo_currentJob.imageMode.asChar(),
+                       "volumeinterpretation",
+                       ( liqglo_currentJob.shadowVolumeInterpretation == 1 ? &viContinuous : &viDiscrete ),
+                       RI_NULL );
+  		  }
+		  else
+		  {
+            // Deep shadows cannot be the primary output driver in PRMan & co.
+            // We need to create a null output zfile first, and use the deep
+            // shadows as a secondary output.
+            //
+            if ( liquidRenderer.renderName != MString("Pixie") ){
+              RiDisplay( "null", "null", "z", RI_NULL );
+		    }
+            MString deepFileImageName = "+" + relativeShadowName;
+            RiDisplay( const_cast<char *>( deepFileImageName.asChar() ),
+                       const_cast<char *>( liqglo_currentJob.format.asChar() ),
+                       (RtToken)liqglo_currentJob.imageMode.asChar(),
+                       "uniform string volumeinterpretation",
+                       ( liqglo_currentJob.shadowVolumeInterpretation == 1 ? &viContinuous : &viDiscrete ),
+                       RI_NULL );
+		  }
         }
         else
         {
@@ -5318,8 +5321,9 @@ MStatus liqRibTranslator::framePrologue(long lframe)
             values[ numTokens ] = (RtPointer)filterwidth;
             numTokens++;
           }
-#ifdef PRMAN
-          RiDisplayChannelV( (RtToken)channel.asChar(), numTokens, tokens, values );
+#if defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
+		  if( liquidRenderer.renderName == MString("PRMan") )
+            RiDisplayChannelV( (RtToken)channel.asChar(), numTokens, tokens, values );
 #endif
           m_channels_iterator++;
         }
@@ -6885,12 +6889,7 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
     if ( hidername == "hidden" ) {
       {
         char tmp[128];
-		#ifdef PIXIE
-		  RtFloat fJitter = m_hiddenJitter;
-          sprintf( tmp, "\"float jitter\" [%f] ", fJitter );
-		#else
-		  sprintf( tmp, "\"int jitter\" [%d] ", m_hiddenJitter );
-		#endif
+		sprintf( tmp, "\"int jitter\" [%d] ", m_hiddenJitter );
         options += tmp;
       }
 
