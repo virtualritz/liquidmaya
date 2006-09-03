@@ -634,6 +634,7 @@ liqRibTranslator::liqRibTranslator()
 
   m_raytraceFalseColor = 0;
   m_photonEmit = 0;
+  m_photonSampleSpectrum = 0;
 
   m_depthMaskZFile = "";
   m_depthMaskReverseSign = false;
@@ -1803,6 +1804,9 @@ void liqRibTranslator::liquidReadGlobals()
     gPlug = rGlobalNode.findPlug( "photonEmit", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_photonEmit );
     gStatus.clear();
+    gPlug = rGlobalNode.findPlug( "photonSampleSpectrum", &gStatus );
+    if ( gStatus == MS::kSuccess ) gPlug.getValue( m_photonSampleSpectrum );
+    gStatus.clear();
     gPlug = rGlobalNode.findPlug( "depthMaskZFile", &gStatus );
     if ( gStatus == MS::kSuccess ) gPlug.getValue( m_depthMaskZFile );
     gStatus.clear();
@@ -2909,7 +2913,8 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           LIQDEBUGPRINTF( "-> setting RiOptions\n" );
 
           // Rib client file creation options MUST be set before RiBegin
-#if defined ( PRMAN ) || defined( DELIGHT ) ||  defined ( PIXIE ) ||  defined ( GENERIC_RIBLIB )
+#if defined ( PRMAN ) || defined( DELIGHT ) /*||  defined ( PIXIE ) ||  defined ( GENERIC_RIBLIB )*/
+											/* THERE IS A RIBLIB BUG WHICH PREVENTS THIS WORKING */
           LIQDEBUGPRINTF( "-> setting binary option\n" );
           {
             RtString format[1] = {"ascii"};
@@ -6948,7 +6953,7 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
 
       if ( m_photonEmit != 0 ) {
         char tmp[128];
-        sprintf( tmp, "\"int emit\" [%d] ", m_photonEmit );
+        sprintf( tmp, " \"int emit\" [%d] ", m_photonEmit );
         options += tmp;
       }
 
@@ -7005,7 +7010,13 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
 
       if ( m_photonEmit != 0 ) {
         char tmp[128];
-        sprintf( tmp, "\"int emit\" [%d] ", m_photonEmit );
+        sprintf( tmp, " \"int emit\" [%d] ", m_photonEmit );
+        options += tmp;
+      }
+      
+      if ( m_photonSampleSpectrum ) {
+        char tmp[128];
+        sprintf( tmp, " \"int samplespectrum\" [1] ");
         options += tmp;
       }
 
