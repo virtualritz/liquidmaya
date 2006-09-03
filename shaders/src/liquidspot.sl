@@ -137,22 +137,22 @@ liquidspot(
     atten *= smoothstep( cosoutside + pwc, cosinside + pwc*2, cosangle );
 
     // decay regions support
-    if ( decayRegions ) {
+    if ( decayRegions != 0 ) {
 
       varying float region = 0, mask = 0;
 
       mask =  smoothstep( startDistance1 - Pz_width, startDistance1 + Pz_width, Pz ) - smoothstep( endDistance1 - Pz_width, endDistance1 + Pz_width, Pz );
-      if ( startDistanceIntensity1 !=1 || endDistanceIntensity1 != 1 )
+      if ( startDistanceIntensity1 != 1 || endDistanceIntensity1 != 1 )
         mask *= mix( startDistanceIntensity1, endDistanceIntensity1, smoothstep( startDistance1, endDistance1, Pz ) );
       region = mask;
 
       mask = smoothstep( startDistance2 - Pz_width, startDistance2 + Pz_width, Pz ) - smoothstep( endDistance2 - Pz_width, endDistance2 + Pz_width, Pz );
-      if ( startDistanceIntensity2 !=1 || endDistanceIntensity2 != 1 )
+      if ( startDistanceIntensity2 != 1 || endDistanceIntensity2 != 1 )
         mask *= mix( startDistanceIntensity2, endDistanceIntensity2, smoothstep( startDistance2, endDistance2, Pz ) );
       region += mask;
 
       mask = smoothstep( startDistance3 - Pz_width, startDistance3 + Pz_width, Pz ) - smoothstep( endDistance3 - Pz_width, endDistance3 + Pz_width, Pz );
-      if ( startDistanceIntensity3 !=1 || endDistanceIntensity3 != 1 )
+      if ( startDistanceIntensity3 != 1 || endDistanceIntensity3 != 1 )
         mask *= mix( startDistanceIntensity3, endDistanceIntensity3, smoothstep( startDistance3, endDistance3, Pz ) );
       region += mask;
 
