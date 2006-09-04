@@ -280,6 +280,7 @@ MObject liqGlobalsNode::aHiddenSigmaBlur;
 MObject liqGlobalsNode::aRaytraceFalseColor;
 
 MObject liqGlobalsNode::aPhotonEmit;
+MObject liqGlobalsNode::aPhotonSampleSpectrum;
 
 MObject liqGlobalsNode::aDepthMaskZFile;
 MObject liqGlobalsNode::aDepthMaskReverseSign;
@@ -708,6 +709,7 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aRaytraceFalseColor,         "raytraceFalseColor",            "rfc",   0     );
 
            CREATE_INT( nAttr,  aPhotonEmit,                 "photonEmit",                    "phe",   0     );
+          CREATE_BOOL( nAttr,  aPhotonSampleSpectrum,       "photonSampleSpectrum",          "phss",  0     );
 
         CREATE_STRING( tAttr,  aDepthMaskZFile,             "depthMaskZFile",               "dmzf",   ""    );
           CREATE_BOOL( nAttr,  aDepthMaskReverseSign,       "depthMaskReverseSign",         "dmrs",   0     );

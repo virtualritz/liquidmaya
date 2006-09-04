@@ -346,6 +346,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aRaytraceFalseColor;
 
     static MObject aPhotonEmit;
+    static MObject aPhotonSampleSpectrum;
 
     static MObject aDepthMaskZFile;
     static MObject aDepthMaskReverseSign;

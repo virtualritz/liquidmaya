@@ -2226,6 +2226,9 @@ global proc liquidHiderOptions_buildIt( string $prefix )
         if ( !`columnLayout -q -ex $theLayout` ) {
           columnLayout -adj true -vis false $theLayout;
             liquidShowIntGlobal     "photonEmit"    "Emit";
+			if ( $renderer == "pixie" ) {
+	            liquidShowBoolGlobal    "photonSampleSpectrum"    "Sample Color Spectrum";
+			}
           setParent ..;
           columnLayout -e -vis true $theLayout;
         }
