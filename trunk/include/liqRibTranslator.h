@@ -407,6 +407,7 @@ private :
   // PRMAN 13 END
   int           m_raytraceFalseColor;
   int           m_photonEmit;
+  int           m_photonSampleSpectrum;
 
   MString       m_depthMaskZFile;
   bool          m_depthMaskReverseSign;
