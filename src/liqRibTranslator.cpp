@@ -2938,7 +2938,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             //
             //  create the read-archive shadow files
             //
-#ifndef PRMAN
+#if !defined(PRMAN) || defined(GENERIC_RIBLIB)
             LIQDEBUGPRINTF( "-> beginning rib output\n" );
             RiBegin( const_cast<char *>( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, baseShadowName, liqglo_projectDir ).asChar() ) );
 #else
@@ -2959,7 +2959,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             if ( objectBlock() != MS::kSuccess ) break;
             if ( worldEpilogue() != MS::kSuccess ) break;
             RiEnd();
-#ifdef PRMAN
+#if defined(PRMAN) && !defined(GENERIC_RIBLIB)
             fclose( liqglo_ribFP );
 #endif
             liqglo_ribFP = NULL;
@@ -2978,17 +2978,17 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
             m_alfShadowRibGen = true;
           }
-#ifndef PRMAN
+#if !defined(PRMAN) || defined(GENERIC_RIBLIB)
           RiBegin( const_cast<char *>( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_currentJob.ribFileName, liqglo_projectDir ).asChar() ) );
 
-		  if( liquidRenderer.renderName == MString("3Delight") ){
-            LIQDEBUGPRINTF( "-> setting binary option\n" );
-            {
-              RtString format[1] = {"ascii"};
-              if ( liqglo_doBinary ) format[0] = "binary";
-              RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
-            }
-		  }
+  #ifdef DELIGHT
+          LIQDEBUGPRINTF( "-> setting binary option\n" );
+          {
+            RtString format[1] = {"ascii"};
+            if ( liqglo_doBinary ) format[0] = "binary";
+            RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
+          }
+  #endif
 #else
           liqglo_ribFP = fopen( LIQ_GET_ABS_REL_FILE_NAME(liqglo_relativeFileNames, liqglo_currentJob.ribFileName, liqglo_projectDir ).asChar(), "w" );
 
@@ -3034,7 +3034,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           }
 
           RiEnd();
-#ifdef PRMAN
+#if defined(PRMAN) && !defined(GENERIC_RIBLIB)
           fclose( liqglo_ribFP );
 #endif
           liqglo_ribFP = NULL;
@@ -5201,7 +5201,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
         RiHider( "hidden", "jitter", &zero, RI_NULL );
 	  } else {
         RtInt zero = 0;
-        RiHider( "hidden", "jitter", &zero, RI_NULL );
+        RiHider( "hidden", "int jitter", &zero, RI_NULL );
 	  }
     }
 
