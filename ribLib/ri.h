@@ -56,7 +56,7 @@ typedef RtFloat RtBasis[4][4];
 typedef RtFloat RtBound[6];
 typedef char   *RtString;
 
-typedef char   *RtPointer;
+typedef void   *RtPointer;
 #define RtVoid void
 typedef RtFloat (*RtFilterFunc)(RtFloat, RtFloat, RtFloat, RtFloat);
 typedef RtVoid  (*RtErrorHandler)(RtInt code, RtInt severity, char *msg);
@@ -234,6 +234,7 @@ EXTERN(RtToken)		RI_HIERARCHYDEPTH;
 EXTERN(RtToken)		RI_HIERARCHYOBJECTS;
 EXTERN(RtToken)		RI_SHADERCACHE;
 EXTERN(RtToken)		RI_EYESPLITS;
+EXTERN(RtToken)		RI_OTHRESHOLD;
 
 // Trace options
 EXTERN(RtToken)		RI_MAXDEPTH;

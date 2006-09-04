@@ -293,6 +293,7 @@ RtToken		RI_HIERARCHYDEPTH		=	"hierarchydepth";
 RtToken		RI_HIERARCHYOBJECTS		=	"hierarchyleafobjects";
 RtToken		RI_SHADERCACHE			=	"shadercache";
 RtToken		RI_EYESPLITS			=	"eyesplits";
+RtToken		RI_OTHRESHOLD			=	"othreshold";
 
 // Trace options
 RtToken		RI_MAXDEPTH				=	"maxdepth";
@@ -457,7 +458,7 @@ static	inline	void	getArgs(va_list args) {
     while (tmp != RI_NULL) {
 		if (nTokens == 0) {
 			tokens	=	new RtToken[mTokens + 50];
-			values	=	new RtToken[mTokens + 50];
+			values	=	new RtPointer[mTokens + 50];
 			mTokens =	50;
 		}
 		
@@ -466,7 +467,7 @@ static	inline	void	getArgs(va_list args) {
 		nTokens++;
 		if (nTokens == mTokens) {
 			RtToken		*ttokens	=	new RtToken[mTokens + 50];
-			RtPointer	*tvalues	=	new RtToken[mTokens + 50];
+			RtPointer	*tvalues	=	new RtPointer[mTokens + 50];
 			int			i;
 
 			for (i=0;i<nTokens;i++) {
