@@ -522,6 +522,7 @@ global proc liquidAE_LifFloat_selector2( string $paramName, int $index, string $
 
     int $numSize = size( $range );
     for ( $k = 0; $k < $numSize; $k = $k + 2 ) {
+      if ( $range[ $k+1 ] == "" ) warning ("missing index on selector : "+$range[ $k ]);
       int $data = $range[ $k+1 ];
       menuItem -l $range[ $k ] -data $data;
     }
