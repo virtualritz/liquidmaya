@@ -1,3 +1,4 @@
+
 DEPTH = ..
 BIN_VERSION ?= debug
 include $(DEPTH)/commondefs.mk
