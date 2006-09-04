@@ -109,7 +109,7 @@ static const char *LIQUIDVERSION =
 #include <maya/MFnIntArrayData.h>
 #include <maya/MDistance.h>
 #include <maya/MDagModifier.h>
-
+#include <maya/MPxNode.h>
 
 // Liquid headers
 #include <liquid.h>
@@ -118,6 +118,7 @@ static const char *LIQUIDVERSION =
 #include <liqGlobalHelpers.h>
 #include <liqProcessLauncher.h>
 #include <liqRenderer.h>
+#include <liqCustomNode.h>
 
 typedef int RtError;
 
@@ -4264,7 +4265,7 @@ MStatus liqRibTranslator::ribPrologue()
     if ( m_statistics != 0 )  {
       if ( m_statistics < 4 ) RiOption( "statistics", "endofframe", ( RtPointer ) &m_statistics, RI_NULL );
       else {
-        cout <<"xml stats "<<endl;
+        //cout <<"xml stats "<<endl;
         int stats = 1;
         RiOption( "statistics", "int endofframe", ( RtPointer ) &stats, RI_NULL );
         RiArchiveRecord( RI_VERBATIM, "Option \"statistics\" \"xmlfilename\" [\"%s\"]\n", const_cast< char* > ( m_statisticsFile.asChar() ) );
@@ -4859,11 +4860,11 @@ int count =0;
         MDistance flenDist(iter->camera[sample].focalLength,MDistance::kMillimeters);
         iter->camera[sample].focalLength = flenDist.as(MDistance::uiUnit());
 
-
         fnCamera.getPath(path);
         MTransformationMatrix xform( path.inclusiveMatrix() );
-        double scale[] = { 1, 1, -1 };
 
+        // the camera is pointing toward negative Z
+        double scale[] = { 1, 1, -1 };
         xform.setScale( scale, MSpace::kTransform );
 
         // scanScene:
@@ -4953,6 +4954,8 @@ int count =0;
           MFnCamera fnCamera( iter->shadowCamPath );
           fnCamera.getPath(path);
           MTransformationMatrix xform( path.inclusiveMatrix() );
+
+          // the camera is pointing toward negative Z
           double scale[] = { 1, 1, -1 };
           xform.setScale( scale, MSpace::kTransform );
 
@@ -4965,8 +4968,12 @@ int count =0;
         } else {
           // scanScene: the light does not use a shadow cam
           //
+
+          // get the camera world matrix
           fnLight.getPath(path);
           MTransformationMatrix xform( path.inclusiveMatrix() );
+
+          // the camera is pointing toward negative Z
           double scale[] = { 1, 1, -1 };
           xform.setScale( scale, MSpace::kTransform );
 
@@ -5043,7 +5050,7 @@ int count =0;
             lightPlug.getValue( angle );
             lightPlug = fnLight.findPlug( "penumbraAngle", &coneStatus );
             if ( coneStatus == MS::kSuccess ) lightPlug.getValue( penumbra );
-            if ( penumbra > 0 ) angle += penumbra;
+            if ( penumbra > 0 ) angle += penumbra*2;
             iter->camera[sample].hFOV = angle;
           } else {
             iter->camera[sample].hFOV = 95;
@@ -5326,7 +5333,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
             values[ numTokens ] = (RtPointer)filterwidth;
             numTokens++;
           }
-#if defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
+#if defined ( PRMAN ) || defined (PIXIE) || defined ( GENERIC_RIBLIB )
 		  if( liquidRenderer.renderName == MString("PRMan") )
             RiDisplayChannelV( (RtToken)channel.asChar(), numTokens, tokens, values );
 #endif
@@ -5489,7 +5496,13 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       frameWidth  = liqglo_currentJob.camera[0].orthoWidth  * 0.5 ;
       frameHeight = liqglo_currentJob.camera[0].orthoHeight * 0.5 ;
       RiProjection( "orthographic", RI_NULL );
-      RiScreenWindow( -frameWidth, frameWidth, -frameHeight, frameHeight );
+
+      // if we are describing a shadow map camera,
+      // we need to set the screenwindow to the default,
+      // as shadow maps are always square.
+      if ( liqglo_currentJob.isShadow == false ) RiScreenWindow( -frameWidth, frameWidth, -frameHeight, frameHeight );
+      else RiScreenWindow( -1.0, 1.0, -1.0, 1.0 );
+
     } else {
       RtFloat fieldOfView = liqglo_currentJob.camera[0].hFOV * 180.0 / M_PI ;
       if ( liqglo_currentJob.isShadow && liqglo_currentJob.isPoint ) {
@@ -5497,20 +5510,28 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       }
       RiProjection( "perspective", RI_FOV, &fieldOfView, RI_NULL );
 
-      double ratio = (double)liqglo_currentJob.width / (double)liqglo_currentJob.height;
-      double left, right, bottom, top;
-      if ( ratio <= 0 ) {
-        left    = -1 + liqglo_currentJob.camera[0].horizontalFilmOffset;
-        right   =  1 + liqglo_currentJob.camera[0].horizontalFilmOffset;
-        bottom  = -1 / ratio + liqglo_currentJob.camera[0].verticalFilmOffset;
-        top     =  1 / ratio + liqglo_currentJob.camera[0].verticalFilmOffset;
+      // if we are describing a shadow map camera,
+      // we need to set the screenwindow to the default,
+      // as shadow maps are always square.
+      if ( liqglo_currentJob.isShadow == false )
+      {
+        double ratio = (double)liqglo_currentJob.width / (double)liqglo_currentJob.height;
+        double left, right, bottom, top;
+        if ( ratio <= 0 ) {
+          left    = -1 + liqglo_currentJob.camera[0].horizontalFilmOffset;
+          right   =  1 + liqglo_currentJob.camera[0].horizontalFilmOffset;
+          bottom  = -1 / ratio + liqglo_currentJob.camera[0].verticalFilmOffset;
+          top     =  1 / ratio + liqglo_currentJob.camera[0].verticalFilmOffset;
+        } else {
+          left    = -ratio + liqglo_currentJob.camera[0].horizontalFilmOffset;
+          right   =  ratio + liqglo_currentJob.camera[0].horizontalFilmOffset;
+          bottom  = -1 + liqglo_currentJob.camera[0].verticalFilmOffset;
+          top     =  1 + liqglo_currentJob.camera[0].verticalFilmOffset;
+        }
+        RiScreenWindow( left, right, bottom, top );
       } else {
-        left    = -ratio + liqglo_currentJob.camera[0].horizontalFilmOffset;
-        right   =  ratio + liqglo_currentJob.camera[0].horizontalFilmOffset;
-        bottom  = -1 + liqglo_currentJob.camera[0].verticalFilmOffset;
-        top     =  1 + liqglo_currentJob.camera[0].verticalFilmOffset;
+        RiScreenWindow( -1.0, 1.0, -1.0, 1.0 );
       }
-      RiScreenWindow( left, right, bottom, top );
     }
 
 
@@ -5592,17 +5613,24 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       }
     }
 
+    // if we motion-blur the cam, open the motion block
+    //
     if ( doCameraMotion && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows) ) {
-      /*, RI_NULLRiMotionBegin( 2, ( lframe - ( liqglo_currentJob.camera[0].shutter * m_blurTime * 0.5  )), ( lframe + ( liqglo_currentJob.camera[0].shutter * m_blurTime * 0.5  )) );*/
-      // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
-	  if (liqglo_relativeMotion)
-	      RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
-	  else
+      if (liqglo_relativeMotion)
+          RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
+      else
           RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
     }
+
+    // write the camera transform
+    //
     RtMatrix cameraMatrix;
     liqglo_currentJob.camera[0].mat.get( cameraMatrix );
     RiTransform( cameraMatrix );
+
+
+    // if we motion-blur the cam, write the subsequent motion samples and close the motion block
+    //
     if ( doCameraMotion && ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) ) {
       int mm = 1;
       while ( mm < liqglo_motionSamples ) {
@@ -5612,6 +5640,7 @@ MStatus liqRibTranslator::framePrologue(long lframe)
       }
       RiMotionEnd();
     }
+
   }
   return MS::kSuccess;
 }
@@ -5789,6 +5818,13 @@ MStatus liqRibTranslator::objectBlock()
 
     MFnDagNode fnDagNode( path );
     bool hasSurfaceShader = false;
+	typedef enum {
+		liqRegularShaderNode = 0, 		// A regular Liquid node, keep it 0 to evaluate to false in conditions
+		liqCustomPxShaderNode = 1, 	// A custom MPxNode inheriting from liqCustomNode
+		liqRibBoxShader = 2  		// A rib box attached to the shader
+	} liqDetailShaderKind;
+	liqDetailShaderKind hasCustomSurfaceShader = liqRegularShaderNode;
+	MString shaderRibBox( "" );
     bool hasDisplacementShader = false;
     bool hasVolumeShader = false;
 
@@ -5811,7 +5847,34 @@ MStatus liqRibTranslator::objectBlock()
           //cout <<"setting shader"<<endl;
           ribNode->assignedShader.setObject( rmShaderNodeObj );
           hasSurfaceShader = true;
-        }
+        } else { // Is it a custom shading node ?
+			MPxNode *mpxNode = shaderDepNode.userNode();
+			liqCustomNode *customNode = NULL;
+			if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>(mpxNode) ) ) { // customNode will be null if can't be casted to a liqCustomNode
+			  ribNode->assignedShader.setObject( rmShaderNodeObj );
+			  hasSurfaceShader = true;
+			  hasCustomSurfaceShader = liqCustomPxShaderNode;
+			} else {
+			// Try to find a liqRIBBox attribute
+        MPlug ribbPlug = shaderDepNode.findPlug( MString( "liqRIBBox" ), &status );
+        if ( status == MS::kSuccess ) {
+        	ribbPlug.getValue( shaderRibBox );
+        	if ( shaderRibBox.substring(0,2) == "*H*" ) {
+            MString parseThis = shaderRibBox.substring(3, shaderRibBox.length() - 1 );
+					  shaderRibBox = parseThis;
+        	} else if ( shaderRibBox.substring(0,3) == "*SH*" ) {
+            MString parseThis = shaderRibBox.substring(3, shaderRibBox.length() - 1 );
+						shaderRibBox = parseThis;
+        	}
+			  	hasSurfaceShader = true;
+			  	hasCustomSurfaceShader = liqRibBoxShader;
+        } else {
+					MGlobal::displayError( MString( "Don't know how to handle " ) + shaderDepNode.typeName()  );
+				}
+
+			}
+		}
+
       }
     }
     // Check for displacement shader
@@ -6173,53 +6236,68 @@ MStatus liqRibTranslator::objectBlock()
       }
 
       if ( hasSurfaceShader && !m_ignoreSurfaces ) {
+	  		if( hasCustomSurfaceShader ) {
+					if( hasCustomSurfaceShader == liqCustomPxShaderNode ) {  // Just call the write method of the custom shader
+						MFnDependencyNode customShaderDepNode( ribNode->assignedShader.object() );
+						MPxNode *mpxNode = customShaderDepNode.userNode();
+						liqCustomNode *customNode = NULL;
+						if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>(mpxNode) ) ) {
+							customNode->liquidWrite();
+						} else {
+								// Should never happen in theory ... but what is the way to report a problem ???
+						}
+					} else { // Default : just write the contents of the rib box
+						RiArchiveRecord(RI_VERBATIM, (char*) shaderRibBox.asChar());
+						RiArchiveRecord(RI_VERBATIM, "\n");
+					}
+				} else {
+        	liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
 
-        liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
+        	// per shader shadow pass override
+        	bool outputSurfaceShader = true;
+        	if ( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) outputSurfaceShader = false;
 
-        // per shader shadow pass override
-        bool outputSurfaceShader = true;
-        if ( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) outputSurfaceShader = false;
+        	// Output color overrides or color
+        	if (ribNode->shading.color.r != -1.0) {
+        	  RtColor rColor;
+        	  rColor[0] = ribNode->shading.color[0];
+        	  rColor[1] = ribNode->shading.color[1];
+        	  rColor[2] = ribNode->shading.color[2];
+        	  RiColor( rColor );
+        	} else {
+        	  RiColor( currentShader.rmColor );
+        	}
 
-        // Output color overrides or color
-        if (ribNode->shading.color.r != -1.0) {
-          RtColor rColor;
-          rColor[0] = ribNode->shading.color[0];
-          rColor[1] = ribNode->shading.color[1];
-          rColor[2] = ribNode->shading.color[2];
-          RiColor( rColor );
-        } else {
-          RiColor( currentShader.rmColor );
-        }
+        	if (ribNode->shading.opacity.r != -1.0) {
+        	  RtColor rOpacity;
+        	  rOpacity[0] = ribNode->shading.opacity[0];
+        	  rOpacity[1] = ribNode->shading.opacity[1];
+        	  rOpacity[2] = ribNode->shading.opacity[2];
+        	  RiOpacity( rOpacity );
+        	} else {
+        	  RiOpacity( currentShader.rmOpacity );
+        	}
 
-        if (ribNode->shading.opacity.r != -1.0) {
-          RtColor rOpacity;
-          rOpacity[0] = ribNode->shading.opacity[0];
-          rOpacity[1] = ribNode->shading.opacity[1];
-          rOpacity[2] = ribNode->shading.opacity[2];
-          RiOpacity( rOpacity );
-        } else {
-          RiOpacity( currentShader.rmOpacity );
-        }
+        	if ( outputSurfaceShader ) {
+        	  RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * currentShader.numTPV );
+        	  RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * currentShader.numTPV );
 
-        if ( outputSurfaceShader ) {
-          RtToken *tokenArray = (RtToken *)alloca( sizeof(RtToken) * currentShader.numTPV );
-          RtPointer *pointerArray = (RtPointer *)alloca( sizeof(RtPointer) * currentShader.numTPV );
+        	  assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
 
-          assignTokenArrays( currentShader.numTPV, currentShader.tokenPointerArray, tokenArray, pointerArray );
+        	  char *shaderFileName;
+        	  LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
 
-          char *shaderFileName;
-          LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
+        	  // check shader space transformation
+        	  if ( currentShader.shaderSpace != "" ) {
+            	RiTransformBegin();
+            	RiCoordSysTransform( (char*) currentShader.shaderSpace.asChar() );
+        	  }
+        	  // output shader
+        	  RiSurfaceV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
+        	  if ( currentShader.shaderSpace != "" ) RiTransformEnd();
 
-          // check shader space transformation
-          if ( currentShader.shaderSpace != "" ) {
-            RiTransformBegin();
-            RiCoordSysTransform( (char*) currentShader.shaderSpace.asChar() );
-          }
-          // output shader
-          RiSurfaceV ( shaderFileName, currentShader.numTPV, tokenArray, pointerArray );
-          if ( currentShader.shaderSpace != "" ) RiTransformEnd();
-
-        }
+        	}
+		}
 
       } else {
         RtColor rColor,rOpacity;
@@ -6331,8 +6409,8 @@ MStatus liqRibTranslator::objectBlock()
 
       // if the current job is a deep shadow,
       // we still want to output primitive color and opacity.
-
-      if ( hasSurfaceShader ) {
+	  // In case of custom shaders, what should we do ? Stephane.
+      if ( hasSurfaceShader && ! hasCustomSurfaceShader ) {
 
         liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
 
