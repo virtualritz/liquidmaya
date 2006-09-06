@@ -5493,8 +5493,6 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     if ( liqglo_currentJob.camera[0].isOrtho ) {
       RtFloat frameWidth, frameHeight;
       // the whole frame width has to be scaled according to the UI Unit
-      frameWidth  = liqglo_currentJob.camera[0].orthoWidth  * 0.5 ;
-      frameHeight = liqglo_currentJob.camera[0].orthoHeight * 0.5 ;
       RiProjection( "orthographic", RI_NULL );
 
       // if we are describing a shadow map camera,
@@ -5848,34 +5846,33 @@ MStatus liqRibTranslator::objectBlock()
           ribNode->assignedShader.setObject( rmShaderNodeObj );
           hasSurfaceShader = true;
         } else { // Is it a custom shading node ?
-			MPxNode *mpxNode = shaderDepNode.userNode();
-			liqCustomNode *customNode = NULL;
-			if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>(mpxNode) ) ) { // customNode will be null if can't be casted to a liqCustomNode
-			  ribNode->assignedShader.setObject( rmShaderNodeObj );
-			  hasSurfaceShader = true;
-			  hasCustomSurfaceShader = liqCustomPxShaderNode;
-			} else {
-			// Try to find a liqRIBBox attribute
-        MPlug ribbPlug = shaderDepNode.findPlug( MString( "liqRIBBox" ), &status );
-        if ( status == MS::kSuccess ) {
-        	ribbPlug.getValue( shaderRibBox );
-        	if ( shaderRibBox.substring(0,2) == "*H*" ) {
-            MString parseThis = shaderRibBox.substring(3, shaderRibBox.length() - 1 );
-					  shaderRibBox = parseThis;
-        	} else if ( shaderRibBox.substring(0,3) == "*SH*" ) {
-            MString parseThis = shaderRibBox.substring(3, shaderRibBox.length() - 1 );
-						shaderRibBox = parseThis;
-        	}
-			  	hasSurfaceShader = true;
-			  	hasCustomSurfaceShader = liqRibBoxShader;
-        } else {
-					MGlobal::displayError( MString( "Don't know how to handle " ) + shaderDepNode.typeName()  );
-				}
-
-			}
-		}
-
-      }
+            MPxNode *mpxNode = shaderDepNode.userNode();
+            liqCustomNode *customNode = NULL;
+            if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>(mpxNode) ) ) { // customNode will be null if can't be casted to a liqCustomNode
+              ribNode->assignedShader.setObject( rmShaderNodeObj );
+              hasSurfaceShader = true;
+              hasCustomSurfaceShader = liqCustomPxShaderNode;
+            } else {
+              // Try to find a liqRIBBox attribute
+              MPlug ribbPlug = shaderDepNode.findPlug( MString( "liqRIBBox" ), &status );
+              if ( status == MS::kSuccess ) {
+                ribbPlug.getValue( shaderRibBox );
+                if ( shaderRibBox.substring(0,2) == "*H*" ) {
+                  MString parseThis = shaderRibBox.substring(3, shaderRibBox.length() - 1 );
+                  shaderRibBox = parseThis;
+                } else if ( shaderRibBox.substring(0,3) == "*SH*" ) {
+                  MString parseThis = shaderRibBox.substring(3, shaderRibBox.length() - 1 );
+                  shaderRibBox = parseThis;
+                }
+                hasSurfaceShader = true;
+                hasCustomSurfaceShader = liqRibBoxShader;
+              }
+              // else {
+              //  MGlobal::displayError( MString( "Don't know how to handle " ) + shaderDepNode.typeName()  );
+              //}
+           }
+         }
+       }
     }
     // Check for displacement shader
     status.clear();
@@ -6236,30 +6233,30 @@ MStatus liqRibTranslator::objectBlock()
       }
 
       if ( hasSurfaceShader && !m_ignoreSurfaces ) {
-	  		if( hasCustomSurfaceShader ) {
-					if( hasCustomSurfaceShader == liqCustomPxShaderNode ) {  // Just call the write method of the custom shader
-						MFnDependencyNode customShaderDepNode( ribNode->assignedShader.object() );
-						MPxNode *mpxNode = customShaderDepNode.userNode();
-						liqCustomNode *customNode = NULL;
-						if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>(mpxNode) ) ) {
-							customNode->liquidWrite();
-						} else {
-								// Should never happen in theory ... but what is the way to report a problem ???
-						}
-					} else { // Default : just write the contents of the rib box
-						RiArchiveRecord(RI_VERBATIM, (char*) shaderRibBox.asChar());
-						RiArchiveRecord(RI_VERBATIM, "\n");
-					}
-				} else {
-        	liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
+        if( hasCustomSurfaceShader ) {
+            if( hasCustomSurfaceShader == liqCustomPxShaderNode ) {  // Just call the write method of the custom shader
+                    MFnDependencyNode customShaderDepNode( ribNode->assignedShader.object() );
+                    MPxNode *mpxNode = customShaderDepNode.userNode();
+                    liqCustomNode *customNode = NULL;
+                    if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>(mpxNode) ) ) {
+                        customNode->liquidWrite();
+                    } else {
+                            // Should never happen in theory ... but what is the way to report a problem ???
+                    }
+            } else { // Default : just write the contents of the rib box
+                RiArchiveRecord(RI_VERBATIM, (char*) shaderRibBox.asChar());
+                RiArchiveRecord(RI_VERBATIM, "\n");
+            }
+        } else {
+            liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
 
-        	// per shader shadow pass override
-        	bool outputSurfaceShader = true;
-        	if ( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) outputSurfaceShader = false;
+            // per shader shadow pass override
+            bool outputSurfaceShader = true;
+            if ( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) outputSurfaceShader = false;
 
-        	// Output color overrides or color
-        	if (ribNode->shading.color.r != -1.0) {
-        	  RtColor rColor;
+            // Output color overrides or color
+            if (ribNode->shading.color.r != -1.0) {
+              RtColor rColor;
         	  rColor[0] = ribNode->shading.color[0];
         	  rColor[1] = ribNode->shading.color[1];
         	  rColor[2] = ribNode->shading.color[2];
