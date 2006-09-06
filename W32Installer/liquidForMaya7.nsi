@@ -101,6 +101,12 @@ Section ""
 	CreateDirectory "$PROGRAMFILES\Liquid\displayDrivers\Air"
 	SetOutPath "$PROGRAMFILES\Liquid\displayDrivers\Air"
 	File "..\bin\Air\win32\release\d_liqmaya.so"
+	ClearErrors
+	FileOpen $0 "$PROGRAMFILES\Liquid\displayDrivers\Aqsis\displays.ini" w
+	IfErrors erroraqsisdpy
+	FileWrite $0 "liqmaya			liqmaya.dll"
+	FileClose $0
+	erroraqsisdpy:
 	SetOutPath "$PROGRAMFILES\Liquid\scripts"
 	File "..\scripts\*.*"
 	MessageBox MB_YESNO "Do you want to compile shaders?" IDNO noshaders
@@ -108,7 +114,6 @@ Section ""
 	Exec "$PROGRAMFILES\Liquid\shaders\compile.cmd"
 	noshaders:
 	WriteUninstaller $PROGRAMFILES\Liquid\uninst.exe
-	MessageBox MB_OK "Installation complete, if the modules don't load, get a copy of zlib1.dll and put it in your system32 directory"
 SectionEnd
 
 Section "Uninstall"
