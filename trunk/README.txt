@@ -116,7 +116,7 @@ by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 
 Contributor(s): Dan Bethell, Berj Bannayan, Andrew Chapman, Colin Doncaster,
 Stéphane Deverly, George Harker, Jamie McCarter, Ken McGaugh, Moritz Moeller,
-Michael Duffy, Richard Pickler, Rob Pieke, Paul Scruby, Yuri Meshalkin.
+Michael Duffy, Richard Pickler, Rob Pieke, Paul Scruby, Yuri Meshalkin, Cedric Paille.
 
 The RenderMan (R) Interface Procedures and Protocol are:
 Copyright 1988, 1989, Pixar
