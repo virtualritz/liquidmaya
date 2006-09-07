@@ -188,6 +188,8 @@ bool         rt_traceSampleMotion;
 RtFloat      rt_traceBias;
 liquidlong   rt_traceMaxDiffuseDepth;
 liquidlong   rt_traceMaxSpecularDepth;
+RtFloat      rt_irradianceMaxError;
+RtFloat      rt_irradianceMaxPixelDist;
 
 // Additionnal globals for organized people
 MString      liqglo_shotName;
@@ -1881,6 +1883,12 @@ void liqRibTranslator::liquidReadGlobals()
   gStatus.clear();
   gPlug = rGlobalNode.findPlug( "traceMaxSpecularDepth", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_traceMaxSpecularDepth );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "irradianceMaxError", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_irradianceMaxError );
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "irradianceMaxPixelDist", &gStatus );
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( rt_irradianceMaxPixelDist );
   gStatus.clear();
   // RAYTRACING OPTIONS:END
 
@@ -5493,6 +5501,8 @@ MStatus liqRibTranslator::framePrologue(long lframe)
     if ( liqglo_currentJob.camera[0].isOrtho ) {
       RtFloat frameWidth, frameHeight;
       // the whole frame width has to be scaled according to the UI Unit
+      frameWidth  = liqglo_currentJob.camera[0].orthoWidth  * 0.5 ;
+      frameHeight = liqglo_currentJob.camera[0].orthoHeight * 0.5 ;
       RiProjection( "orthographic", RI_NULL );
 
       // if we are describing a shadow map camera,
@@ -6680,6 +6690,25 @@ MStatus liqRibTranslator::worldPrologue()
     }
 
     RiWorldBegin();
+
+    // set attributes from the globals
+    if ( rt_useRayTracing )
+    {
+      RiArchiveRecord(RI_COMMENT,  " Ray-Tracing Attributes from liquid globals");
+      RtInt on = 1;
+      if ( rt_traceDisplacements )
+        RiAttribute("trace", "int displacements", &on, RI_NULL);
+      if ( rt_traceSampleMotion )
+        RiAttribute("trace", "int samplemotion", &on, RI_NULL);
+      if ( rt_traceBias != 0 )
+        RiAttribute("trace", "float bias", &rt_traceBias, RI_NULL);
+      RiAttribute("trace", "int maxdiffusedepth", &rt_traceMaxDiffuseDepth, RI_NULL);
+      RiAttribute("trace", "int maxspeculardepth", &rt_traceMaxSpecularDepth, RI_NULL);
+      if ( rt_irradianceMaxError != -1.0 )
+        RiAttribute( "irradiance", (RtToken) "float maxerror", &rt_irradianceMaxError, RI_NULL );
+      if ( rt_irradianceMaxPixelDist != -1.0 )
+        RiAttribute( "irradiance", (RtToken) "float maxpixeldist", &rt_irradianceMaxPixelDist, RI_NULL );
+    }
 
     // put in post-worldbegin statements
     if (m_postWorldRIB != "") {
