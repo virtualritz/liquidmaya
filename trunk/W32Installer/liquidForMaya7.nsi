@@ -12,11 +12,7 @@ SetFont "Comic Sans MS" 8
 
 LicenseText "License page"
 LicenseData "mpl.rtf"
-InstallDir "$PROGRAMFILES\Alias\Maya7.0\bin\plug-ins"
-DirText "Please select the Maya's plugin folder ..."
 
-Var /GLOBAL Mayahome
-Var /GLOBAL Mayaplugdir
 ; Macros
 
 !macro BIMAGE IMAGE PARMS
@@ -30,7 +26,6 @@ Var /GLOBAL Mayaplugdir
 
 ; Pages
 
-Page directory dirFun
 Page license licenseFunc
 Page instfiles
 UninstPage uninstConfirm
@@ -40,10 +35,11 @@ UninstPage instfiles
 ; Sections
 
 Section ""
-	StrCpy $Mayaplugdir $INSTDIR
 	ClearErrors
-	IfFileExists $DOCUMENTS\maya\7.0\Maya.env.liquidbackup 0 +2
-	Goto envfound
+	IfFileExists $DOCUMENTS\maya\7.0\Maya.env.liquidbackup 0 foundlbu
+	MessageBox MB_OK "Installer have detected an older installation, please desinstall and replace the Maya.env.backup file with Maya.env and delete Maya.env.backup.$\nInstallation aborted, sorry."
+	Quit
+	foundlbu:
 	MessageBox MB_YESNO "Do you want the installer try to setup your Maya.env file?" IDYES yestry IDNO envfound
 	yestry:
 	MessageBox MB_YESNO "Do you want to make a copy of the Maya.env file?" IDNO nobackup
@@ -56,7 +52,7 @@ Section ""
 	FileSeek $0 0 END
 	FileWrite $0 "$\nLIQUIDHOME = $PROGRAMFILES\Liquid"
 	FileWrite $0 "$\nXBMLANGPATH = $PROGRAMFILES\Liquid\icons\$\n"
-	FileWrite $0 "$\nMAYA_PLUG_IN_PATH = $PROGRAMFILES\Liquid\plugin$\n"
+	FileWrite $0 "MAYA_PLUG_IN_PATH = $PROGRAMFILES\Liquid\plugin$\n"
 	FileClose $0
 	Goto envfound
 	envnotfound:
@@ -121,25 +117,15 @@ Section "Uninstall"
 	MessageBox MB_YESNO "Uninstall Liquid for MAYA?" IDNO end
 	Delete $PROGRAMFILES\liquid\uninst.exe
 	RMDir /r "$PROGRAMFILES\Liquid"
-	MessageBox MB_OK "Liquid deleted, please delete liquid.mll yourself in the Maya's plugins folder."
+	MessageBox MB_YESNO "Do you want to restore your old Maya.env file?" IDNO end
+	ClearErrors
+	IfFileExists $DOCUMENTS\maya\7.0\Maya.env.liquidbackup 0 end
+	Rename $DOCUMENTS\maya\7.0\Maya.env $DOCUMENTS\maya\7.0\Maya.env.bak
+	CopyFiles $DOCUMENTS\maya\7.0\Maya.env.liquidbackup $DOCUMENTS\maya\7.0\Maya.env
+	Delete $DOCUMENTS\maya\7.0\Maya.env.liquidbackup
 	end:
-	SectionEnd
+SectionEnd
 
 Function licenseFunc
 	!insertmacro BIMAGE "liquidlarge.bmp" /RESIZETOFIT
-FunctionEnd
-
-Function dirFun
-	ClearErrors
-	ReadEnvStr $Mayahome MAYA_LOCATION
-	IfErrors next
-		MessageBox MB_YESNO "MAYA_LOCATION found in your environment variables, using it?" IDNO next
-		StrCpy $INSTDIR "$Mayahome\bin\plug-ins"
-		Abort
-	next:
-	IfFileExists "C:\Program files\Alias\Maya7.0\bin\plug-ins" 0 notfound
-		MessageBox MB_YESNO "Maya found at C:\Program files\Alias\Maya7.0, use this one?" IDNO notfound
-		StrCpy $INSTDIR "C:\Program files\Alias\Maya7.0\bin\plug-ins"
-		Abort
-	 notfound:
 FunctionEnd
