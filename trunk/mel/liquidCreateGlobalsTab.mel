@@ -175,7 +175,7 @@ global proc liquidCreateGlobalsTab()
       liquidAddPresets();
   
   // create the main tab layout
-  columnLayout -adjustableColumn false ($prefix+"liquidTabColumn");
+  columnLayout -adjustableColumn true ($prefix+"liquidTabColumn");
 
   separator -style "none" -h 10;
 
