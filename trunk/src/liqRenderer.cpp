@@ -250,7 +250,7 @@ void liqRenderer::setRenderer()
 
     } else if ( tmp == "aqsis" ) {
       renderName = "Aqsis";
-      envvar = "AQSIS";
+      envvar = "AQSISHOME";
 
     } else if ( tmp == "air" ) {
       renderName = "Air";
