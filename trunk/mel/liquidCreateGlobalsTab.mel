@@ -175,15 +175,19 @@ global proc liquidCreateGlobalsTab()
       liquidAddPresets();
   
   // create the main tab layout
-  columnLayout -adjustableColumn true ($prefix+"liquidTabColumn");
+  columnLayout -adjustableColumn false ($prefix+"liquidTabColumn");
 
   separator -style "none" -h 10;
 
   // build the content of the globals
   string $theTabLayout = ( $prefix + "liquidUnifiedRenderGlobalsMainTabLayout" );
-
-  string $cmd = ("tabLayout -e -w (`window -q -w unifiedRenderGlobalsWindow`) -h (`window -q -h unifiedRenderGlobalsWindow`-170) "+$theTabLayout+";");
-
+  
+  string $cmd;
+  if ( `about -win` == true ) {
+    $cmd = ("evalDeferred -lp \"tabLayout -e -w (`window -q -w unifiedRenderGlobalsWindow`-12) -h (`window -q -h unifiedRenderGlobalsWindow`-200) "+$theTabLayout+"\";");
+  } else {
+    $cmd = ("tabLayout -e -w (`window -q -w unifiedRenderGlobalsWindow`) -h (`window -q -h unifiedRenderGlobalsWindow`-170) "+$theTabLayout+";");
+  }
   tabLayout -scrollable true -minChildWidth 200
             -cc $cmd
             -sc $cmd
