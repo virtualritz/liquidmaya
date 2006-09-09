@@ -147,17 +147,21 @@ $(LIQUIDBIN) : $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB)
 $(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
 	@$(AR) $(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
 
+ifneq "$(LIQRMAN)" "GENERIC"
 $(LIQUIDDPY) : $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT)
 	@echo $@
 	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT) -I$(LIQRMANPATH) -L$(LIQRMANPATH)/lib -o $(LIQUIDDPY)
 	mkdir -p ../$(LIQUIDDPYLOC)
 	cp $(LIQUIDDPY) ../$(LIQUIDDPYLOC)
+endif
 
 $(LIQUIDOUTMAINOBJS) : ../include/liquid.h
 
+ifneq "$(LIQRMAN)" "GENERIC"
 $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT) : $(LIQDISPLAYOBJS).cpp
 	@echo "compiling > $@"
 	$(CPP) -c $(DPYINCLUDES) $(INCLUDES) $(CPPFLAGS) -o $@ $<
+endif
 
 $(VPATH)/%.$(OBJEXT) : %.cpp
 	@echo $@
@@ -177,8 +181,9 @@ depend:
 
 installpixie:
 	@echo $(LIQUIDPLUG)
-	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/aw/maya/bin/plug-ins/liquid.so
 	@mkdir -p $(DESTDIR)/usr/share/liquid
+	@mkdir -p $(DESTDIR)/usr/share/liquid/bin
+	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/share/liquid/bin/liquid.so
 	@mkdir -p $(DESTDIR)/usr/share/liquid/mel
 	@cp -rf ../mel/*.mel $(DESTDIR)/usr/share/liquid/mel
 	@cp -rf ../mel/*.png $(DESTDIR)/usr/share/liquid/mel
@@ -200,8 +205,9 @@ installpixie:
 
 install3delight:
 	@echo $(LIQUIDPLUG)
-	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/aw/maya/bin/plug-ins/liquid.so
 	@mkdir -p $(DESTDIR)/usr/share/liquid
+	@mkdir -p $(DESTDIR)/usr/share/liquid/bin
+	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/share/liquid/bin/liquid.so
 	@mkdir -p $(DESTDIR)/usr/share/liquid/mel
 	@cp -rf ../mel/*.mel $(DESTDIR)/usr/share/liquid/mel
 	@cp -rf ../mel/*.png $(DESTDIR)/usr/share/liquid/mel
@@ -223,8 +229,9 @@ install3delight:
 
 installair:
 	@echo $(LIQUIDPLUG)
-	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/aw/maya/bin/plug-ins/liquid.so
 	@mkdir -p $(DESTDIR)/usr/share/liquid
+	@mkdir -p $(DESTDIR)/usr/share/liquid/bin
+	@cp -rf $(LIQUIDPLUG) $(DESTDIR)/usr/share/liquid/bin/liquid.so
 	@mkdir -p $(DESTDIR)/usr/share/liquid/mel
 	@cp -rf ../mel/*.mel $(DESTDIR)/usr/share/liquid/mel
 	@cp -rf ../mel/*.png $(DESTDIR)/usr/share/liquid/mel
