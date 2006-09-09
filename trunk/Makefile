@@ -15,17 +15,29 @@ clean :
 	( cd ribLib && make $@ )
 	( cd src && make $@ )
 	( cd shaders && make $@ )
+	( cd src && make $@ )
 
 ifeq "$(USE_RIBLIB)" "yes"
 all debug release :
 	( cd ribLib && make )
 	( cd src && make BIN_VERSION=$@ $@ )
-	( cd shaders && make BIN_VERSION=$@ $@ )
 else
 all debug release :
 	( cd src && make BIN_VERSION=$@ $@ )
 	( cd shaders && make BIN_VERSION=$@ $@ )
 endif
+
+displaydriverair :
+	( cd src && make -f Makefile.dd $@ )
+
+displaydriverpixie :
+	( cd src && make -f Makefile.dd $@ )
+
+displaydriveraqsis :
+	( cd src && make -f Makefile.dd $@ )
+
+displaydriverdelight :
+	( cd src && make -f Makefile.dd $@ )
 
 realclean : 
 	rm -rf $(DEPTH)/bin/$(VBIN)

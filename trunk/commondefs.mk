@@ -16,16 +16,16 @@ LIQ_OLD_MAYA_IDS ?= 0
 OS_NAME := $(shell uname -o)
 
 ifeq "$(OS_NAME)" "GNU/Linux"
-PLUGSUF       = so
-OBJEXT        = o
-LD            = $(MAYA_LOCATION)/bin/mayald
-LOCFLAGS      = -ffast-math -march=pentiumpro -D_BOOL -DLINUX -DLIQ_OLD_MAYA_IDS=$(LIQ_OLD_MAYA_IDS)
-WARNFLAGS     = -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
-NO_TRANS_LINK =
-VBIN          = redhat
-EXTRA_LIBS    =
-AR            = ar cqs
-CPP 		  ?= gcc
+PLUGSUF		= so
+OBJEXT		= o
+LD		= $(MAYA_LOCATION)/bin/mayald
+LOCFLAGS	= -ffast-math -march=pentiumpro -D_BOOL -DLINUX -DLIQ_OLD_MAYA_IDS=$(LIQ_OLD_MAYA_IDS)
+WARNFLAGS	= -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
+NO_TRANS_LINK	=
+VBIN		= redhat
+EXTRA_LIBS	=
+AR		= ar cqs
+CPP		?= gcc
 
 UX_RELEASE_TEST_FILES = /etc/fedora-release /etc/redhat-release /etc/slackware-version /etc/gentoo-release
 UX_RELEASE_FILE ?= $(foreach FILE, $(UX_RELEASE_TEST_FILES), $(wildcard $(FILE)*))
@@ -57,13 +57,13 @@ PLUGSUF			= .mll
 BINSUF			= .exe
 OBJSUF			= .obj
 LIBSUF			= .lib
-CPP			    = cl
+CPP			= cl
 LINK			= link
-LD				= $(MAYA_LOCATION)/bin/mayald
+LD			= $(MAYA_LOCATION)/bin/mayald
 LOCFLAGS		= -nologo -O2 -EHsc -MT -YXstdafx.h -FD -GR -D_BOOL -D_WIN32 -DWIN32 -D_USRDLL -DLIQUID_EXPORTS -Dulong="unsigned long" -Duint="unsigned int"
 WARNFLAGS		= -W1
 VBIN			= win32
-AR				= ar cqs
+AR			= ar cqs
 LINKEROPTS		= -INCREMENTAL:NO -NOLOGO -NODEFAULTLIB:libircmt$(LIBEXT) -PDB:liquid.pdb -MACHINE:I386
 LIBPATHFLAG		= -LIBPATH:
 LIBFLAG			=
@@ -96,14 +96,21 @@ ifeq "$(LIQRMAN)" "pixie"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverPixie
 LIQRMANPATH 	= 	$${PIXIEHOME:=/usr/local/Pixie}
 LIQUIDDPYLOC	=	displayDrivers/Pixie/
-LIQDPYNAME		=	liqmaya.so
+LIQDPYNAME	=	liqmaya.so
 LIQRMANFLAGS	=	-DPIXIE
 LIQRMANLIBS 	=	-lri -lsdr
 LIQWINRMANLIBS	=	"ri.lib sdr.lib" 
-USEDVAR 		=	PIXIEHOME
-CSL 			= 	$(LIQRMANPATH)/bin/sdrc
-SLOEXT			=	sdr
-SLFLAGS 		= 	
+USEDVAR 	=	PIXIEHOME
+CSL 		= 	$(LIQRMANPATH)/bin/sdrc
+SLOEXT		=	sdr
+SLFLAGS 	= 	
+endif
+
+ifeq "$(LIQRMAN)" "GENERIC"
+USE_RIBLIB	= yes
+LIQRMANFLAGS	= -DGENERIC_RIBLIB
+LIQRMANLIBS	=
+LIQDISPLAYOBJ	= liqMayaDisplayDriverAir
 endif
 
 #********************************************
@@ -115,14 +122,14 @@ USE_RIBLIB		:=	yes
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAir
 LIQRMANPATH 	= 	$${AIRHOME:=/usr/local/Air}
 LIQUIDDPYLOC	=	displayDrivers/Air/
-LIQDPYNAME		=	d_liqmaya.so
+LIQDPYNAME	=	d_liqmaya.so
 LIQRMANFLAGS	=	-DAIR
 LIQRMANLIBS 	=	
 LIQWINRMANLIBS	=	
-USEDVAR 		=	AIRHOME
-CSL 			= 	$(LIQRMANPATH)/bin/shaded
-SLOEXT			=	sdb
-SLFLAGS 		= 	
+USEDVAR 	=	AIRHOME
+CSL 		= 	$(LIQRMANPATH)/bin/shaded
+SLOEXT		=	sdb
+SLFLAGS 	= 	
 endif
 
 #********************************************
@@ -132,14 +139,14 @@ ifeq "$(LIQRMAN)" "aqsis"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAqsis
 LIQRMANPATH 	=	$${AQSIS_BASE_PATH:=/usr/local/aqsis}
 LIQUIDDPYLOC	=	displayDrivers/Aqsis/
-LIQDPYNAME		=	liqmaya.so
+LIQDPYNAME	=	liqmaya.so
 LIQRMANFLAGS	=	-DAQSIS
 LIQRMANLIBS 	=	-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs
 LIQWINRMANLIBS	=	ri2rib.lib slxargs.lib 
-USEDVAR 		=	AQSIS_BASE_PATH
-CSL 			= 	$(LIQRMANPATH)/bin/aqsl
-SLOEXT			=	slx
-SLFLAGS 		= 	-DAQSIS
+USEDVAR 	=	AQSIS_BASE_PATH
+CSL 		= 	$(LIQRMANPATH)/bin/aqsl
+SLOEXT		=	slx
+SLFLAGS 	= 	-DAQSIS
 endif
 
 #********************************************
@@ -149,14 +156,14 @@ ifeq "$(LIQRMAN)" "3delight"
 LIQDISPLAYOBJS  =	liqMayaDisplayDriver3Delight
 LIQRMANPATH 	=	$${DELIGHT:=/usr/local/3delight}
 LIQUIDDPYLOC	=	displayDrivers/3Delight/
-LIQDPYNAME		=	liqmaya.dpy
+LIQDPYNAME	=	liqmaya.dpy
 LIQRMANFLAGS	=	-DDELIGHT
 LIQRMANLIBS 	=	-l3delight -lc -ldl -lm
 LIQWINRMANLIBS	=	3delight.lib
-USEDVAR 		=	DELIGHT
-CSL 			= 	$(LIQRMANPATH)/bin/shaderdl
-SLOEXT			=	sdl
-SLFLAGS 		=	-DDELIGHT
+USEDVAR 	=	DELIGHT
+CSL 		= 	$(LIQRMANPATH)/bin/shaderdl
+SLOEXT		=	sdl
+SLFLAGS 	=	-DDELIGHT
 endif
 
 #********************************************
@@ -166,7 +173,7 @@ ifeq "$(LIQRMAN)" "entropy"
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriverEntropy
 LIQRMANPATH 	=	$${ENTROPYHOME:=/usr/local/exluna/Entropy}
 LIQUIDDPYLOC	=	displayDrivers/Entropy/
-LIQDPYNAME		=	d_liqmaya.so
+LIQDPYNAME	=	d_liqmaya.so
 LIQRMANFLAGS	=	-DENTROPY
 LIQRMANLIBS 	=	-lribout -lsleargs 
 USEDVAR 	=	ENTROPYHOME
@@ -182,12 +189,12 @@ ifeq "$(patsubst prman%,prman,$(LIQRMAN))" "prman"
 PRMANVERSION 	= 	$(patsubst prman%,%,$(LIQRMAN))
 LIQRMANPATH 	=	$${RMANTREE:=/usr/local/prman}
 LIQUIDDPYLOC	=	displayDrivers/PRMan/
-LIQDPYNAME		=	d_liqmaya.so
+LIQDPYNAME	=	d_liqmaya.so
 LIQRMANFLAGS	=	-DPRMAN
-USEDVAR 		= 	RMANTREE
-CSL 			= 	$(LIQRMANPATH)/bin/shader
-SLFLAGS 		= 	-DPRMAN
-SLOEXT			=	slo
+USEDVAR 	= 	RMANTREE
+CSL 		= 	$(LIQRMANPATH)/bin/shader
+SLFLAGS 	= 	-DPRMAN
+SLOEXT		=	slo
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriver
 
 ifeq "$(patsubst 12.%,12,$(PRMANVERSION))" "12"
@@ -219,16 +226,17 @@ LIQ_SHADERS_SRC_DIR = $(INSTALL_DIR)/shaders/src
 LIQ_SHADERS_DIR 	= $(INSTALL_DIR)/shaders
 LIQ_RENDERERS_DIR 	= $(INSTALL_DIR)/renderers
 
-#BIN_VERSION 	?= $(LIQUIDSHORTVERSION)
+#BIN_VERSION 		?= $(LIQUIDSHORTVERSION)
 VPATHDEBUG		= $(DEPTH)/bin/$(VBIN)/debug/$(LIQRMAN)/$(MAYA_VERSION)
-VPATHRELEASE	= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/$(MAYA_VERSION)
+VPATHRELEASE		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/$(MAYA_VERSION)
 VPATH			?= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/$(MAYA_VERSION)
-VPATHSHADERS 	= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/shaders
+VPATHSHADERS 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/shaders
 VPATHMEL 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/mel
-VPATHRENDERS 	= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/renderers
-VPATHICONS  	= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/icons
+VPATHRENDERS 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/renderers
+VPATHICONS  		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/icons
 CPPFLAGS		= -DLIQUIDVERSION=$(LIQUIDVERSION) $(LOCFLAGS) $(LIQRMANFLAGS) $(WARNFLAGS) $(EXTRAFLAGS) $(NO_TRANS_LINK) -DREQUIRE_IOSTREAM
 LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib 
+
 ifeq "$(USE_RIBLIB)" "yes"
 INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(DEPTH)/ribLib -I../include
 LIBS			= $(DEPTH)/bin/linux32/librib.a $(MAYALIBS) $(EXTRA_LIBS) -lm -lz
@@ -237,12 +245,15 @@ else
 INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(LIQRMANPATH)/include -I../include
 LIBS			= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
 endif
+
 DPYINCLUDES		= -I$(LIQRMANPATH)/include
+
 ifeq "$(MAYA_VERSION)" "8.0"
 MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lGL -lGLU
 else
 MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lxpcom -lGL -lGLU
 endif
+
 TARGET  		= $(VPATH)/$(LIQUIDPLUG)
 
 CP 		= cp
