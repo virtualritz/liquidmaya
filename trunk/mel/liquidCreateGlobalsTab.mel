@@ -175,8 +175,12 @@ global proc liquidCreateGlobalsTab()
       liquidAddPresets();
   
   // create the main tab layout
-  columnLayout -adjustableColumn true ($prefix+"liquidTabColumn");
-
+  if ( `about -win` == true ) {
+    columnLayout -adjustableColumn false ($prefix+"liquidTabColumn");
+  } else {
+    columnLayout -adjustableColumn true ($prefix+"liquidTabColumn");
+  }
+  
   separator -style "none" -h 10;
 
   // build the content of the globals
