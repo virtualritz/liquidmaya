@@ -110,7 +110,7 @@ ifeq "$(LIQRMAN)" "GENERIC"
 USE_RIBLIB	= yes
 LIQRMANFLAGS	= -DGENERIC_RIBLIB
 LIQRMANLIBS	=
-LIQDISPLAYOBJ	= liqMayaDisplayDriverAir
+LIQDISPLAYOBJ	=
 endif
 
 #********************************************
