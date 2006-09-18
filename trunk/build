@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $1 == "-clean" ]]; then make clean;make realclean;exit
+if [ "$1" = "-clean" ]; then make clean;make realclean;exit
 fi
 
 USE_RIBLIB=yes
@@ -8,30 +8,29 @@ USE_RIBLIB=yes
 echo "What is your maya version ? (7.0 or 8.0)"
 read MAYA_VERSION
 
-if [[ $MAYA_VERSION == "7.0" ]]; then 
+if [ "$MAYA_VERSION" = "7.0" ]; then 
 	echo "What is your g++ version 3.3.4 executable? (Press enter if g++)"
 	read CPP
 
-	if [[ $CPP == "" ]]; then CPP="g++";
+	if [ ! -n "$CPP" ]; then CPP=g++;
 	fi
 	CPPVER=`${CPP} -dumpversion`
-	if [[ $CPPVER != "3.3.4" ]]; then echo "You are about to compile LIQUID with a bad gcc version";
+	if [ "$CPPVER" != "3.3.4" ]; then echo "You are about to compile LIQUID with a bad gcc version";
 		echo "Do you want to continue (y/n)?";
 		read YESNO;
-		if [[ $YESNO == "n" ]]; then exit;
+		if [ "$YESNO" = "n" ]; then exit;
 		fi
 	fi
-elif [[ $MAYA_VERSION == "8.0" ]]; then
+elif [ "$MAYA_VERSION" = "8.0" ]; then
 	echo "What is your g++ version 4.0.2 executable? (Press enter if g++)"
 	read CPP
-
-	if [[ $CPP == "" ]]; then CPP="g++";
+	if [ ! -n "$CPP" ]; then CPP=g++;
 	fi
 	CPPVER=`${CPP} -dumpversion`
-	if [[ $CPPVER != "4.0.2" ]]; then echo "You are about to compile LIQUID with a bad gcc version";
+	if [ $CPPVER != "4.0.2" ]; then echo "You are about to compile LIQUID with a bad gcc version";
 		echo "Do you want to continue (y/n)?";
 		read YESNO;
-		if [[ $YESNO == "n" ]]; then exit;
+		if [ $YESNO = "n" ]; then exit;
 		fi
 	fi
 else
@@ -47,71 +46,70 @@ echo "4) Aqsis"
 echo "5) Build generic version"
 read RENDERER
 
-if [[ $RENDERER == "1" ]]; then LIQRMAN=pixie
+if [ "$RENDERER" = "1" ]; then LIQRMAN="pixie"
 fi
-if [[ $RENDERER == "2" ]]; then LIQRMAN=air
+if [ "$RENDERER" = "2" ]; then LIQRMAN="air"
 fi
-if [[ $RENDERER == "3" ]]; then LIQRMAN=3delight
+if [ "$RENDERER" = "3" ]; then LIQRMAN="3delight"
 fi
-if [[ $RENDERER == "4" ]]; then LIQRMAN=aqsis
+if [ "$RENDERER" = "4" ]; then LIQRMAN="aqsis"
 fi
-if [[ $RENDERER == "5" ]]; then LIQRMAN=GENERIC;USE_RIBLIB=yes
+if [ "$RENDERER" = "5" ]; then LIQRMAN="GENERIC";USE_RIBLIB="yes"
 fi
-if [[ $LIQRMAN == "" ]]; then echo "Bad choice.";exit
+if [ "$LIQRMAN" = "" ]; then echo "Bad choice.";exit
 fi
 
-if [[ $LIQRMAN != "GENERIC" ]]; then
-if [[ $LIQRMAN != "air" ]]; then
+if [ "$LIQRMAN" != "GENERIC" -a  $LIQRMAN != "air" ]; then
 echo "Do you want to compile with the generic rib library (y/n)?"
 read RIBLIB
 
-if [[ $RIBLIB == "y" ]]; then USE_RIBLIB=yes; else USE_RIBLIB=no;
-fi
+if [ "$RIBLIB" = "y" ]; then USE_RIBLIB=yes; else USE_RIBLIB=no;
 fi
 fi
 
-if [[ $LIQRMAN == "GENERIC" ]]; then
+if [ "$LIQRMAN" = "GENERIC" ]; then
 echo "Do you want to compile Pixie's display drivers (y/n)?"
 read PIXIEIN
-if [[ $PIXIEIN == "y" ]]; then PIXIEDD=yes; else PIXIEDD=no;
+if [ "$PIXIEIN" = "y" ]; then PIXIEDD=yes; else PIXIEDD=no;
 fi
 
 echo "Do you want to compile Air's display drivers (y/n)?"
 read AIRIN
-if [[ $AIRIN == "y" ]]; then AIRDD=yes; else AIRDD=no;
+if [ "$AIRIN" = "y" ]; then AIRDD=yes; else AIRDD=no;
 fi
 
 echo "Do you want to compile 3Delight's display drivers (y/n)?"
 read DELIGHTIN
-if [[ $DELIGHTIN == "y" ]]; then DELIGHTDD=yes; else DELIGHTDD=no;
+if [ "$DELIGHTIN" = "y" ]; then DELIGHTDD=yes; else DELIGHTDD=no;
 fi
 
 echo "Do you want to compile Aqsis' display drivers (y/n)?"
 read AQSISIN
-if [[ $AQSISIN == "y" ]]; then AQSISDD=yes; else AQSISDD=no;
+if [ "$AQSISIN" = "y" ]; then AQSISDD=yes; else AQSISDD=no;
 fi
 fi
 
 echo "Do you want to compile in debug mode ? (y/n)"
 read DEBUG
 
-if [[ $DEBUG == "y" ]]; then
+if [ "$DEBUG" = "y" ]; then
 	make MAYA_VERSION=$MAYA_VERSION CPP=$CPP LIQRMAN=$LIQRMAN USE_RIBLIB=$USE_RIBLIB debug
 else
 	make MAYA_VERSION=$MAYA_VERSION CPP=$CPP LIQRMAN=$LIQRMAN USE_RIBLIB=$USE_RIBLIB release
 fi
 
-if [[ $AQSISDD == "yes" ]]; then
+if [ "$AQSISDD" = "yes" ]; then
 	make CPP=$CPP displaydriveraqsis
 fi
-if [[ $PIXIEDD == "yes" ]]; then
+
+if [ "$PIXIEDD" = "yes" ]; then
 	make CPP=$CPP displaydriverpixie
 fi
 
-if [[ $DELIGHTDD == "yes" ]]; then
+if [ "$DELIGHTDD" = "yes" ]; then
 	make CPP=$CPP displaydriverdelight
 fi
 
-if [[ $AIRDD == "yes" ]]; then
+if [ "$AIRDD" = "yes" ]; then
 	make CPP=$CPP displaydriverair
 fi
