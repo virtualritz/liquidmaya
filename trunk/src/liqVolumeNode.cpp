@@ -48,6 +48,7 @@
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnEnumAttribute.h>
+#include <maya/MFnMessageAttribute.h>
 #include <maya/MFloatVector.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MSwatchRenderBase.h>
@@ -75,6 +76,7 @@ MObject liqVolumeNode::aRmanLifCmds;
 MObject liqVolumeNode::aPreviewPrimitive;
 MObject liqVolumeNode::aPreviewCustomPrimitive;
 MObject liqVolumeNode::aPreviewObjectSize;
+MObject liqVolumeNode::aPreviewPixelSamples;
 MObject liqVolumeNode::aPreviewShadingRate;
 MObject liqVolumeNode::aPreviewBackplane;
 
@@ -82,6 +84,7 @@ MObject liqVolumeNode::aShaderSpace;
 MObject liqVolumeNode::aOutputInShadow;
 MObject liqVolumeNode::aRefreshPreview;
 
+MObject liqVolumeNode::aAssignedObjects;
 MObject liqVolumeNode::aOutColor;
 
 #define MAKE_INPUT(attr)		\
@@ -139,6 +142,7 @@ MStatus liqVolumeNode::initialize()
   MFnTypedAttribute   tAttr;
   MFnNumericAttribute nAttr;
   MFnEnumAttribute    eAttr;
+  MFnMessageAttribute mAttr;
   MStatus status;
 
   // Create input attributes
@@ -188,6 +192,10 @@ MStatus liqVolumeNode::initialize()
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setConnectable(false));
 
+  aPreviewPixelSamples = nAttr.create("previewPixelSamples", "pxs",  MFnNumericData::kInt, 3, &status);
+  MAKE_NONKEYABLE_INPUT(nAttr);
+  CHECK_MSTATUS(nAttr.setConnectable(false));
+
   aPreviewShadingRate = nAttr.create("previewShadingRate", "psr", MFnNumericData::kDouble, 1.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setConnectable(false));
@@ -210,6 +218,8 @@ MStatus liqVolumeNode::initialize()
   // Create output attributes
   aOutColor = nAttr.createColor("outColor", "oc");
   MAKE_OUTPUT(nAttr);
+  aAssignedObjects = mAttr.create("liqAssignedObjects", "ao");
+  MAKE_OUTPUT(mAttr);
 
   CHECK_MSTATUS(addAttribute(aRmanShader));
   CHECK_MSTATUS(addAttribute(aRmanShaderLong));
@@ -224,12 +234,14 @@ MStatus liqVolumeNode::initialize()
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
+  CHECK_MSTATUS(addAttribute(aPreviewPixelSamples));
   CHECK_MSTATUS(addAttribute(aPreviewShadingRate));
   CHECK_MSTATUS(addAttribute(aPreviewBackplane));
   CHECK_MSTATUS(addAttribute(aShaderSpace));
   CHECK_MSTATUS(addAttribute(aOutputInShadow));
   CHECK_MSTATUS(addAttribute(aRefreshPreview));
 
+  CHECK_MSTATUS(addAttribute(aAssignedObjects));
   CHECK_MSTATUS(addAttribute(aOutColor));
 
   return MS::kSuccess;

@@ -49,6 +49,7 @@
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnEnumAttribute.h>
+#include <maya/MFnMessageAttribute.h>
 #include <maya/MFloatVector.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MSwatchRenderBase.h>
@@ -76,6 +77,7 @@ MObject liqDisplacementNode::aRmanLifCmds;
 MObject liqDisplacementNode::aPreviewPrimitive;
 MObject liqDisplacementNode::aPreviewCustomPrimitive;
 MObject liqDisplacementNode::aPreviewObjectSize;
+MObject liqDisplacementNode::aPreviewPixelSamples;
 MObject liqDisplacementNode::aPreviewShadingRate;
 MObject liqDisplacementNode::aPreviewBackplane;
 
@@ -87,6 +89,7 @@ MObject liqDisplacementNode::aRefreshPreview;
 
 MObject liqDisplacementNode::aDisplacement;
 MObject liqDisplacementNode::aOutColor;
+MObject liqDisplacementNode::aAssignedObjects;
 
 #define MAKE_INPUT(attr)		\
     CHECK_MSTATUS(attr.setKeyable(true)); 		\
@@ -141,6 +144,7 @@ MStatus liqDisplacementNode::initialize()
   MFnTypedAttribute   tAttr;
   MFnStringData       tDefault;
   MFnNumericAttribute nAttr;
+  MFnMessageAttribute mAttr;
   MFnEnumAttribute    eAttr;
   MStatus status;
 
@@ -192,6 +196,11 @@ MStatus liqDisplacementNode::initialize()
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setConnectable(false));
 
+  aPreviewPixelSamples = nAttr.create("previewPixelSamples", "pxs",  MFnNumericData::kInt, 3, &status);
+  MAKE_NONKEYABLE_INPUT(nAttr);
+  CHECK_MSTATUS(nAttr.setConnectable(false));
+
+
   aPreviewShadingRate = nAttr.create("previewShadingRate", "psr", MFnNumericData::kDouble, 1.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setConnectable(false));
@@ -223,6 +232,8 @@ MStatus liqDisplacementNode::initialize()
   MAKE_OUTPUT(nAttr);
   aOutColor = nAttr.createColor("outColor", "oc");
   MAKE_OUTPUT(nAttr);
+  aAssignedObjects = mAttr.create("liqAssignedObjects", "ao");
+  MAKE_OUTPUT(mAttr);
 
   CHECK_MSTATUS(addAttribute(aRmanShader));
   CHECK_MSTATUS(addAttribute(aRmanShaderLong));
@@ -237,6 +248,7 @@ MStatus liqDisplacementNode::initialize()
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
+  CHECK_MSTATUS(addAttribute(aPreviewPixelSamples));
   CHECK_MSTATUS(addAttribute(aPreviewShadingRate));
   CHECK_MSTATUS(addAttribute(aPreviewBackplane));
   CHECK_MSTATUS(addAttribute(aShaderSpace));
@@ -245,6 +257,7 @@ MStatus liqDisplacementNode::initialize()
   CHECK_MSTATUS(addAttribute(aOutputInShadow));
   CHECK_MSTATUS(addAttribute(aRefreshPreview));
 
+  CHECK_MSTATUS(addAttribute(aAssignedObjects));
   CHECK_MSTATUS(addAttribute(aDisplacement));
   CHECK_MSTATUS(addAttribute(aOutColor));
 

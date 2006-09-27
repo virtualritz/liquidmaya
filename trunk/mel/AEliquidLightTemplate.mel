@@ -371,6 +371,8 @@ global proc AEliquidAreaLight( string $node )
 {
   editorTemplate -beginLayout "Liquid" -collapse true;
 
+    editorTemplate -label "Light Map" -addDynamicControl "liqLightMap";
+    editorTemplate -label "Map Saturation" -addDynamicControl "liqLightMapSaturation";
     editorTemplate -label "Both Sides Emit" -addDynamicControl "liqBothSidesEmit";
     editorTemplate -label "Transmission Hit-Mode" -addDynamicControl "liqAreaHitmode";
 

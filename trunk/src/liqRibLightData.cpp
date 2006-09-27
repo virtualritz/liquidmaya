@@ -699,6 +699,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       MFnAreaLight fnAreaLight( light );
       lightType      = MRLT_Area;
       decay          = fnAreaLight.decayRate();
+      shadowSamples  = 64.0f;
       if ( liqglo_doShadows && usingShadow ) {
         if ( !rayTraced ) {
           if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ) == "autoshadow" ) ) {
@@ -726,7 +727,16 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       else lightID = 0;
       MPlug hitmodePlug = lightDepNode.findPlug( "liqAreaHitmode", &status );
       if ( status == MS::kSuccess ) hitmodePlug.getValue(hitmode);
-      else hitmode = "primitive";
+      else hitmode = 1;
+      MPlug lightmapPlug = lightDepNode.findPlug( "liqLightMap", &status );
+      if ( status == MS::kSuccess ) {
+        lightmapPlug.getValue(lightMap);
+        lightMap = parseString( lightMap );
+      } else lightMap = "";
+      MPlug lightmapsatPlug = lightDepNode.findPlug( "liqLightMapSaturation", &status );
+      if ( status == MS::kSuccess ) lightmapsatPlug.getValue(lightMapSaturation);
+      else lightMapSaturation = 1.0;
+
     }
   }
 }
@@ -962,23 +972,35 @@ void liqRibLightData::write()
         MString areashader( getenv("LIQUIDHOME") );
         areashader += "/shaders/liquidarea";
 
-        RtString rt_hitmode = const_cast< char* >( hitmode.asChar() );
+        RtString rt_hitmode;
+        switch( hitmode ) {
+          case 1:
+            rt_hitmode = const_cast< char* >( "primitive" );
+            break;
+          case 2:
+            rt_hitmode = const_cast< char* >( "shader" );
+            break;
+          default:
+            rt_hitmode = const_cast< char* >( "default" );
+            break;
+        }
 
-        // if raytraced shadows are off, we get a negative value, so we correct it here.
-        if ( shadowSamples < 1 ) shadowSamples = 64.0f;
+        RtString rt_lightmap = const_cast< char* >( lightMap.asChar() );
 
         handle = RiLightSource( const_cast< char* >( areashader.asChar() ),
-                                "float intensity",      &intensity,
-                                "color lightcolor",     color,
-                                "float decay",          &decay,
-                                "string coordsys",      &areacoordsys,
-                                "float lightsamples",   &shadowSamples,
-                                "float doublesided",    &bothSidesEmit,
-                                "string shadowname",    &shadowname,
-                                "color shadowcolor",    &shadowColor,
-                                "string __category",    &cat,
-                                "float lightID",        &lightID,
-                                "string hitmode",       &rt_hitmode,
+                                "float intensity",            &intensity,
+                                "color lightcolor",           color,
+                                "float decay",                &decay,
+                                "string coordsys",            &areacoordsys,
+                                "float lightsamples",         &shadowSamples,
+                                "float doublesided",          &bothSidesEmit,
+                                "string shadowname",          &shadowname,
+                                "color shadowcolor",          &shadowColor,
+                                "string lightmap",            &rt_lightmap,
+                                "float lightmapsaturation",   &lightMapSaturation,
+                                "string __category",          &cat,
+                                "float lightID",              &lightID,
+                                "string hitmode",             &rt_hitmode,
                                 RI_NULL );
         break;
       }

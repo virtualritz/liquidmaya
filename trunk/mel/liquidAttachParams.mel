@@ -76,7 +76,6 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
 
     int $hiddenState = false;
 
-
     if ( ! objExists( ($currentNodeName + "." + $argName ) ) ) {
 
       switch( $argType ) {

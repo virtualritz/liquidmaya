@@ -87,9 +87,11 @@ class liqSurfaceNode : public MPxNode
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
     static MObject aPreviewObjectSize;
+    static MObject aPreviewPixelSamples;
     static MObject aPreviewShadingRate;
     static MObject aPreviewBackplane;
     static MObject aPreviewIntensity;
+    static MObject aGLPreviewTexture;
 
     static MObject aColor;
     static MObject aOpacity;
@@ -130,6 +132,7 @@ class liqSurfaceNode : public MPxNode
     // Output attributes
     static MObject aOutColor;
     static MObject aOutTransparency;
+    static MObject aAssignedObjects;
 
     bool    swatchInit;
 };

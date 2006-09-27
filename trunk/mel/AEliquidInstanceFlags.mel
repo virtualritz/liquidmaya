@@ -210,11 +210,22 @@ global proc AEliquidInstanceFlags( string $node )
     editorTemplate -beginLayout "RIB" -collapse true;
 
       editorTemplate -ccu ("liquidLargeFieldNew "+$node+" \"RIB Box\"") ("liquidLargeFieldReplace "+$node+" \"RIB Box\"") "liqRIBBox";
-      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"RIB Generator\"") ("liquidSmallFieldReplace "+$node+" \"RIB Box\"") "liqRIBGenerator";
-      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"RIB Box\"") "liqRIBReadArchive";
-      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Delayed Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"RIB Box\"") "liqRIBDelayedReadArchive";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"RIB Generator\"") ("liquidSmallFieldReplace "+$node+" \"RIB Generator\"") "liqRIBGenerator";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"Read Archive\"") "liqRIBReadArchive";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Delayed Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"Delayed Read Archive\"") "liqRIBDelayedReadArchive";
       editorTemplate -label "DRA Bounding Box" -addDynamicControl "ribDelayedArchiveBBox";
       editorTemplate -label "DRA Bounds Scaling" -addDynamicControl "liqRIBDelayedReadArchiveBBoxScale";
+
+      editorTemplate -beginLayout "Shadow RIB" -collapse true;
+
+        editorTemplate -ccu ("liquidLargeFieldNew "+$node+" \"Shadow RIB Box\"") ("liquidLargeFieldReplace "+$node+" \"Shadow RIB Box\"") "liqShdRIBBox";
+        editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Shadow RIB Generator\"") ("liquidSmallFieldReplace "+$node+" \"Shadow RIB Generator\"") "liqShdRIBGenerator";
+        editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Shadow Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"Shadow Read Archive\"") "liqShdRIBReadArchive";
+        editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Shadow Delayed Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"Shadow Delayed Read Archive\"") "liqShdRIBDelayedReadArchive";
+        editorTemplate -label "DRA Bounding Box" -addDynamicControl "ribShdDelayedArchiveBBox";
+        editorTemplate -label "DRA Bounds Scaling" -addDynamicControl "liqShdRIBDelayedReadArchiveBBoxScale";
+
+      editorTemplate -endLayout;
 
     editorTemplate -endLayout;
 

@@ -13,6 +13,7 @@ global proc AEliquidDisplacementTemplate( string $nodeName )
       editorTemplate -addControl "previewPrimitive";
       editorTemplate -ccu "liquidShaderNodesCustomPrimitiveNew" "liquidShaderNodesCustomPrimitiveReplace" "previewCustomPrimitive";
       editorTemplate -addControl "previewObjectSize";
+      editorTemplate -addControl "previewPixelSamples";
       editorTemplate -addControl "previewShadingRate";
       editorTemplate -addControl "previewBackplane";
     editorTemplate -endLayout;

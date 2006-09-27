@@ -200,6 +200,13 @@ class liqRibNode {
       MString delayedReadArchive;
     } rib;
 
+    struct shadowRib {
+      MString box;
+      MString generator;
+      MString readArchive;
+      MString delayedReadArchive;
+    } shadowRib;
+
     struct grouping {
       MString membership;
     } grouping;

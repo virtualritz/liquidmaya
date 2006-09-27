@@ -203,33 +203,33 @@ global proc registerLiquidRenderer()
 
     string $icon = ( liquidGetHome() + "/icons/liquidIcon2.xpm" );
 
-	 if (getApplicationVersionAsFloat() >= 8.0) {
-	 	eval  (
-			"renderer  -rendererUIName                      \"Liquid\"	"								+
-					"-addGlobalsNode						\"liquidGlobals\" "							+
-					"-renderProcedure                       \"liquidmayaRender\" "						+
-					"-commandRenderProcedure                \"liquidmayaCmdlineRender\" "				+
-					"-batchRenderProcedure                  \"liquidmayaBatchRender\" "					+
-					"-renderRegionProcedure                 \"liquidmayaRenderRegion\"	"				+
-					"-logoImageName                         \"" + $icon + "\" "							+
-					"-logoCallbackProcedure                 \"liquidRenderLogoCallback\" "				+
-					"liquid;"
-				);
-	  } else {
-		eval (
-				"renderer  -rendererUIName                 \"Liquid\" "									+
-					"-renderProcedure                      \"liquidmayaRender\" "						+
-					"-commandRenderProcedure               \"liquidmayaCmdlineRender\" "				+
-					"-batchRenderProcedure                 \"liquidmayaBatchRender\" "					+
-					"-renderRegionProcedure                \"liquidmayaRenderRegion\" "					+
-					"-hasCommonGlobalValueProcedure        \"liquidmayaHasCommonGlobalValue\" "			+
-					"-getCommonGlobalValueProcedure        \"liquidmayaGetCommonGlobalValue\" "			+
-					"-setCommonGlobalValueProcedure        \"liquidmayaSetCommonGlobalValue\" "			+
-					"-logoImageName                        \"" + $icon + "\" "							+
-					"-logoCallbackProcedure                \"liquidRenderLogoCallback\" "				+
-					"liquid;"
-			 );
-	  }
+    if (getApplicationVersionAsFloat() >= 8.0) {
+      eval  (
+        "renderer  -rendererUIName                        \"Liquid\" "                    +
+                  "-addGlobalsNode                        \"liquidGlobals\" "             +
+                  "-renderProcedure                       \"liquidmayaRender\" "          +
+                  "-commandRenderProcedure                \"liquidmayaCmdlineRender\" "   +
+                  "-batchRenderProcedure                  \"liquidmayaBatchRender\" "     +
+                  "-renderRegionProcedure                 \"liquidmayaRenderRegion\" "    +
+                  "-logoImageName                         \"" + $icon + "\" "             +
+                  "-logoCallbackProcedure                 \"liquidRenderLogoCallback\" "  +
+                  "liquid;"
+      );
+    } else {
+      eval (
+        "renderer  -rendererUIName                      \"Liquid\" "                          +
+                  "-renderProcedure                     \"liquidmayaRender\" "                +
+                  "-commandRenderProcedure              \"liquidmayaCmdlineRender\" "         +
+                  "-batchRenderProcedure                \"liquidmayaBatchRender\" "           +
+                  "-renderRegionProcedure               \"liquidmayaRenderRegion\" "          +
+                  "-hasCommonGlobalValueProcedure       \"liquidmayaHasCommonGlobalValue\" "  +
+                  "-getCommonGlobalValueProcedure       \"liquidmayaGetCommonGlobalValue\" "  +
+                  "-setCommonGlobalValueProcedure       \"liquidmayaSetCommonGlobalValue\" "  +
+                  "-logoImageName                       \"" + $icon + "\" "                   +
+                  "-logoCallbackProcedure               \"liquidRenderLogoCallback\" "        +
+                  "liquid;"
+      );
+    }
 
       evalDeferred liquidAddTabs;
 
