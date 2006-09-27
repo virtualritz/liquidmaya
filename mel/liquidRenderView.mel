@@ -229,11 +229,20 @@ global proc liqRenderViewMenu( string $editor)
     menuItem  -divider true;
     menuItem  -label    "Lazy Compute"
               -checkBox (`getAttr liquidGlobals.lazyCompute`)
-              -postMenuCommand  ("if ( `getAttr liquidGlobals.lazyCompute` ) ) menuItem -e -cb true "+$editor+"RVLazyCompute;"+
+              -postMenuCommand  ("liquidCheckGlobals;if ( `getAttr liquidGlobals.lazyCompute` ) ) menuItem -e -cb true "+$editor+"RVLazyCompute;"+
                                  "else menuItem -e -cb false "+$editor+"RVLazyCompute;")
-              -command  ("if ( `menuItem -q -cb "+$editor+"RVLazyCompute` && objExists( \"liquidGlobals\" ) ) setAttr liquidGlobals.lazyCompute 1;"+
+              -command  ("liquidCheckGlobals;"+
+                         "if ( `menuItem -q -cb "+$editor+"RVLazyCompute` ) setAttr liquidGlobals.lazyCompute 1;"+
                          "else setAttr liquidGlobals.lazyCompute 0;")
               ($editor + "RVLazyCompute");
+    menuItem  -label    "Ignore AOV displays"
+              -checkBox (`getAttr liquidGlobals.ignoreAOVDisplays`)
+              -postMenuCommand  ("liquidCheckGlobals();"+
+                                 "if ( `getAttr liquidGlobals.ignoreAOVDisplays` ) ) menuItem -e -cb true "+$editor+"RVNoAOVs;"+
+                                 "else menuItem -e -cb false "+$editor+"RVNoAOVs;")
+              -command  ("liquidCheckGlobals;if ( `menuItem -q -cb "+$editor+"RVNoAOVs` ) setAttr liquidGlobals.ignoreAOVDisplays 1;"+
+                         "else setAttr liquidGlobals.ignoreAOVDisplays 0;")
+              ($editor + "RVNoAOVs");
     menuItem  -divider true;
     menuItem  -label    "Auto-Save Images"
               -checkBox (`liqRVGetAutoSaveState`)

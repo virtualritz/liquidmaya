@@ -116,7 +116,108 @@ proc rmanParams_create( string $node, int $reReadShaderParams )
 }
 
 
+global proc removeObsoleteParams( string $node )
+{
+  // delete obsolete params
+  //
+  global string $gLiquidSlParamNames[];
+  string $allUserDefinedAttr[] = `listAttr -ud -hd $node`;
+  string $obsoleteAttr[] = stringArrayRemove( $gLiquidSlParamNames, $allUserDefinedAttr );
 
+  // remove obsolete attributes - that is the ones
+  // that do not exist anymore.
+  for ( $at in $obsoleteAttr ) {
+
+    string $fullattr = ($node+"."+$at);
+
+    // if we have a well-known attr, skip it.
+    if (  $at == "rmanParams"     ||
+          $at == "rmanDetails"    ||
+          $at == "rmanTypes"      ||
+          $at == "rmanDefaults"   ||
+          $at == "rmanArraySizes" ||
+          $at == "rmanLifCmds" ||
+          gmatch( $at, "liquid*ShaderNode")  ||
+          gmatch( $at, "*Lif") ) continue;
+
+    if ( objExists( $fullattr ) ) {
+      string $connections[] = `listConnections -plugs true $fullattr`;
+      for ( $c in $connections ) {
+        //trace ("  disconnectAttr "+$c+" "+$fullattr);
+        catch(`disconnectAttr $c $fullattr`);
+      }
+      string $parentAttr[] = `attributeQuery -n $node -listParent $at`;
+      if ( !size($parentAttr) ) deleteAttr $fullattr;
+    }
+
+  }
+
+  // remove attributes whose type or size has changed
+}
+
+
+/** here we check for false-positives : parameters with the same name
+ *  but a different type or array size.
+ *  This can be done only once the shader has been set.
+ */
+
+proc checkParamsDefinition( string $node )
+{
+  int $numOfArgs = liquidSlNumParams();
+
+  for ( $i = 0; $i < $numOfArgs ; $i++ ) {
+
+    string $argName      = liquidSlParamName($i);
+    string $argType      = liquidSlParamType($i);
+    int    $argArrayLen  = liquidSlParamArraySize($i);
+
+    if ( objExists( ($node + "." + $argName ) ) ) {
+
+      string $mayaType;
+      switch( $argType ) {
+        case "float":
+          $mayaType = "double";
+          break;
+        case "string":
+          $mayaType = "string";
+          break;
+        case "color":
+          $mayaType = "float3";
+          break;
+        case "point":
+        case "normal":
+        case "vector":
+          $mayaType = "double3";
+          break;
+        default:
+          break;
+      }
+
+      int $deleteAttr = 0;
+      string $attrType = `getAttr -type ($node + "." + $argName )`;
+      int $attrSize    = `getAttr -size ($node + "." + $argName )`;
+
+      $attrSize = ( $attrSize = 1 )?  0 : $attrSize;
+
+      if ( $argArrayLen != $attrSize ) {
+        //trace ("size : we must delete "+$node + "." + $argName + " ( "+$argArrayLen+" != "+$attrSize+" )");
+        $deleteAttr = 1;
+      }
+
+      if ( $mayaType != $attrType ) {
+        //trace ("type : we must delete "+$node + "." + $argName + " ( "+$mayaType+" != "+$attrType+" )");
+        $deleteAttr = 1;
+      }
+
+      if ( $deleteAttr == 1 ) {
+        //trace ("   >> deleted : "+$node + "." + $argName );
+        catch(`deleteAttr ($node + "." + $argName )`);
+      }
+
+    }
+
+  }
+}
 
 
 
@@ -164,6 +265,11 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
     return;
   }
 
+  // here we check for false-positives : parameters with the same name
+  // but a different type or array size.
+  // This can be done only once the shader has been set.
+  checkParamsDefinition( $node );
+
   // create shader params
   liquidAttachShaderParams( $node, $shaderPath );
 
@@ -177,7 +283,10 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
   string $obsoleteAttr[] = stringArrayRemove( $gLiquidSlParamNames, $allUserDefinedAttr );
 
   for ( $at in $obsoleteAttr ) {
+
     string $fullattr = ($node+"."+$at);
+
+    // if we have a well-known attr, skip it.
     if (  $at == "rmanParams"     ||
           $at == "rmanDetails"    ||
           $at == "rmanTypes"      ||
@@ -186,6 +295,7 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
           $at == "rmanLifCmds" ||
           gmatch( $at, "liquid*ShaderNode")  ||
           gmatch( $at, "*Lif") ) continue;
+
     if ( objExists( $fullattr ) ) {
       string $connections[] = `listConnections -plugs true $fullattr`;
       for ( $c in $connections ) {
@@ -195,6 +305,7 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
       string $parentAttr[] = `attributeQuery -n $node -listParent $at`;
       if ( !size($parentAttr) ) deleteAttr $fullattr;
     }
+
   }
 
   //trace "[init] > done.";
@@ -283,6 +394,11 @@ global proc liquidShaderNodePreview( string $node )
   float $objectSize = (objExists( ($node+".previewObjectSize") ))? (`getAttr ($node+".previewObjectSize")`):1.0;
   if( $objectSize != 1.0 ) {
     $args = $args + ( " -objectSize " + $objectSize );
+  }
+
+  int $pixelSamples = (objExists( ($node+".previewPixelSamples") ))? (`getAttr ($node+".previewPixelSamples")`):3;
+  if( $pixelSamples != 3 ) {
+    $args = $args + ( " -pixelSamples " + $pixelSamples );
   }
 
   float $shadingRate = (objExists( ($node+".previewShadingRate") ))? (`getAttr ($node+".previewShadingRate")`):1.0;
@@ -813,6 +929,29 @@ global proc liquidAssignSurfaceShaderToSelected( string $node )
   }
 }
 
+global proc liquidAssignVolumeShaderToSelected( string $node )
+{
+  // assign the shader to geometry
+  if ( size(`ls -geometry -dag -sl`) ) hyperShade -assign $node;
+
+  // special case for nodes not supported by the hypershade
+  string $selected[] = `ls  -type "pfxToon"
+                            -type "pfxHair"
+                            -type "locator"
+                            -dag -sl`;
+  //trace (stringArrayToString( $selected, ", "));
+
+  if ( !objExists( ($node+".liqAssignedObjects") ) )
+      addAttr -ln liqAssignedObjects -at message $node;
+
+  for ( $sel in $selected ) {
+    if ( !objExists( ($sel+".liquidVolumeShaderNode") ) )
+      addAttr -ln liquidVolumeShaderNode -at message $sel;
+    if ( !isConnected( ($node+".liqAssignedObjects"), ($sel+".liquidVolumeShaderNode" ) ) )
+      connectAttr -f ($node+".liqAssignedObjects") ($sel+".liquidVolumeShaderNode");
+  }
+}
+
 /**
  *  proc to select the objects assigned to a material or shading group
  */
@@ -861,6 +1000,7 @@ global proc liquidAssignShaderToSelected( string $node )
   string $nodetype = nodeType($node);
   if ( $nodetype == "liquidLight" ) liquidAssignLightShaderToSelected( $node );
   else if ( $nodetype == "liquidSurface" ) liquidAssignSurfaceShaderToSelected( $node );
+  else if ( $nodetype == "liquidVolume" ) liquidAssignVolumeShaderToSelected( $node );
 }
 
 /**

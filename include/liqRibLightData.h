@@ -60,6 +60,7 @@ private:
   RtFloat       decay;
   RtFloat       intensity, coneAngle, penumbraAngle, dropOff;
 
+  // spot lights
   RtFloat       barnDoors;
   RtFloat       leftBarnDoor;
   RtFloat       rightBarnDoor;
@@ -79,6 +80,10 @@ private:
   RtFloat       endDistanceIntensity2;
   RtFloat       startDistanceIntensity3;
   RtFloat       endDistanceIntensity3;
+
+  // Area Lights
+  MString       lightMap;
+  RtFloat       lightMapSaturation;
 
   RtFloat       nonDiffuse;
   RtFloat       nonSpecular;
@@ -117,7 +122,7 @@ private:
   RtColor       shadowColor;
   MString       lightCategory;
   RtFloat       lightID;
-  MString       hitmode;
+  int           hitmode;
 };
 
 

@@ -258,7 +258,14 @@ global proc liquidCreateObjectsAttributesMenu( string $prefix )
       menuItem -label "Read Archive" -command liquidCreateReadArchiveAttribute;
       menuItem -label "Delayed Read Archive" -command liquidCreateDelayedReadArchiveAttribute;
     setParent -menu ..;
+    menuItem -label "Shadow RIB Add" -subMenu true -tearOff true;
+      menuItem -label "Shadow RIB Box" -command liquidCreateShdRIBBoxAttribute;
+      menuItem -label "Shadow RIB Generator" -command liquidCreateShdRIBGeneratorAttribute;
+      menuItem -label "Shadow Read Archive" -command liquidCreateShdReadArchiveAttribute;
+      menuItem -label "Shadow Delayed Read Archive" -command liquidCreateShdDelayedReadArchiveAttribute;
+    setParent -menu ..;
     menuItem -label "Remove RIB Group" -command liquidDeleteRIBAttributes -ann "Remove RIB attributes from selected Transform node(s)";
+    menuItem -label "Remove Shadow RIB Group" -command liquidDeleteShdRIBAttributes -ann "Remove Shadow RIB attributes from selected Transform node(s)";
     menuItem -d true;
     menuItem -label "Add Instancing" -command liquidCreateInstancingAttributes -ann "Add Instancing control to selected node";
     menuItem -label "Delete Instancing" -command liquidDeleteInstancingAttributes -ann "Remove Instancing control from selected Transform node(s)";
@@ -288,6 +295,9 @@ global proc liquidCreateLightsAttributesMenu( string $prefix )
     menuItem -d true;
     menuItem -label "Create Decay Region Attributes" -command liquidCreateDecayRegionAttributes -ann "Add Decay Region attributes to selected Light shape node(s)";
     menuItem -label "Remove Decay Region Attributes" -command liquidDeleteDecayRegionAttributes -ann "Remove Decay Region attributes from selected Light shape node(s)";
+    menuItem -d true;
+    menuItem -label "Create Shadow RIB Attributes" -command liquidCreateLightShadowRIBAttributes -ann "Add Shadow RIB attributes to selected Light shape node(s)";
+    menuItem -label "Remove Shadow RIB Attributes" -command liquidDeleteLightShadowRIBAttributes -ann "Remove Shadow RIB attributes from selected Light shape node(s)";
     menuItem -d true;
     menuItem -label "Create Ray Tracing Group" -command liquidCreateLightRayTracingAttributes -ann "Add Ray Tracing attributes to selected Light Transform node(s)";
     menuItem -label "Ray Tracing Add" -subMenu true -tearOff true;

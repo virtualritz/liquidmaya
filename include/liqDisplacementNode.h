@@ -89,6 +89,7 @@ class liqDisplacementNode : public MPxNode
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
     static MObject aPreviewObjectSize;
+    static MObject aPreviewPixelSamples;
     static MObject aPreviewShadingRate;
     static MObject aPreviewBackplane;
 
@@ -101,6 +102,7 @@ class liqDisplacementNode : public MPxNode
     // Output attributes
     static MObject aDisplacement;
     static MObject aOutColor;
+    static MObject aAssignedObjects;
 
     bool    swatchInit;
 };

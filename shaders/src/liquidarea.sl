@@ -80,6 +80,9 @@ liquidarea(
       uniform color   shadowcolor   = 0;
       uniform string  hitmode       = "primitive";
 
+      uniform string  lightmap      = "";
+      uniform float   lightmapsaturation  = 2.0;
+
       uniform float  lightID        = 0;
       uniform string __category     = "";
 
@@ -120,7 +123,7 @@ liquidarea(
   if ( ysamples == 2 ) xsamples /= 2;
 
   uniform float totalNbrSamples = xsamples * ysamples;
-  color unshadowedC = 0, shadowC = 0;
+  varying color finalcolor = 0, unshadowedC = 0, shadowC = 0;
 
   /* Compute illumination */
   illuminate ( Ps + Ns ) {  /* force execution independent of light location */
@@ -135,6 +138,12 @@ liquidarea(
         /* Compute point p on rectangle */
         p = point "shader" ((x - 0.5) * xsize, (y - 0.5) * ysize, 0);
 
+        /* Texture lookup for light color */
+        //if ( x < 0 || x > 1 ) printf("x = %f   ", x);
+        if ( lightmap != "" ) finalcolor = color texture( lightmap, 1-x, 1-y );
+        else finalcolor = 1.0;
+        finalcolor *= lightcolor;
+
         /* Compute distance from light point p to surface point Ps */
         len = p - Ps;
         dist = length(len);
@@ -148,24 +157,40 @@ liquidarea(
 
         /* Compute light from point p to surface point Ps */
         dot = lnorm.Ns;
-        if ( dot > 0 && orient > 0 ) {
-          c = intensity * lightcolor * orient;
+        if ( orient > 0 ) {
+
+          c = intensity* orient;
+
           /* distance falloff */
           c *= pow(dist , -decay);
+
           /* Lambert's cosine law at the surface */
           c *= dot;
+
+          /* color the light */
+          c *= finalcolor;
+
           /* accumulate unshadowed contribution */
           __unshadowed_Cl += c;
+
           /* raytraced occlusion - only if the point is reasonnably lit */
           if ( shadowname == "raytrace" && (comp(c,0)+comp(c,1)+comp(c,2))>0.005  ) {
             shadowC = transmission(Ps, p, "hitmode", hitmode, "label", "liqAreaLightShad");
             __shadowC += shadowC;
           } else {
             /* No shadowing, so assume visibility for this sample is 1 */
-            __shadowC += lightcolor;
+            __shadowC += finalcolor;
           }
+
         }
       }
+    }
+
+    /* saturation control */
+    if ( lightmapsaturation != 1.0 ) {
+      varying color tmpc = ctransform( "rgb", "hsl", __unshadowed_Cl );
+      setcomp( tmpc, 1, comp(tmpc, 1) * lightmapsaturation );
+      __unshadowed_Cl = ctransform( "hsl", "rgb", tmpc );
     }
     __unshadowed_Cl /= totalNbrSamples;
     __shadowC /= totalNbrSamples;
@@ -181,5 +206,4 @@ liquidarea(
   __shadowF = 1 - ( comp(__shadowC, 0)*0.3 + comp(__shadowC, 1)*0.59 + comp(__shadowC, 2)*0.11);
   __arealightIntensity = intensity;
   __arealightColor     = lightcolor;
-
 }

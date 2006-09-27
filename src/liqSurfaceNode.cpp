@@ -49,6 +49,7 @@
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnEnumAttribute.h>
+#include <maya/MFnMessageAttribute.h>
 #include <maya/MFloatVector.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MSwatchRenderBase.h>
@@ -85,9 +86,11 @@ MObject liqSurfaceNode::aOutputInShadow;
 MObject liqSurfaceNode::aResolution;
 MObject liqSurfaceNode::aRefreshPreview;
 MObject liqSurfaceNode::aPreviewObjectSize;
+MObject liqSurfaceNode::aPreviewPixelSamples;
 MObject liqSurfaceNode::aPreviewShadingRate;
 MObject liqSurfaceNode::aPreviewBackplane;
 MObject liqSurfaceNode::aPreviewIntensity;
+MObject liqSurfaceNode::aGLPreviewTexture;
 MObject liqSurfaceNode::aCi;
 MObject liqSurfaceNode::aOi;
 
@@ -116,6 +119,7 @@ MObject liqSurfaceNode::aLightData;
 
 MObject liqSurfaceNode::aOutColor;
 MObject liqSurfaceNode::aOutTransparency;
+MObject liqSurfaceNode::aAssignedObjects;
 
 #define MAKE_INPUT(attr)		\
     CHECK_MSTATUS(attr.setKeyable(true)); 		\
@@ -171,6 +175,7 @@ MStatus liqSurfaceNode::initialize()
   MFnStringData       tDefault;
   MFnNumericAttribute nAttr;
   MFnEnumAttribute    eAttr;
+  MFnMessageAttribute mAttr;
   MFnLightDataAttribute lAttr;
   MStatus status;
 
@@ -222,6 +227,10 @@ MStatus liqSurfaceNode::initialize()
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setConnectable(false));
 
+  aPreviewPixelSamples = nAttr.create("previewPixelSamples", "pxs",  MFnNumericData::kInt, 3, &status);
+  MAKE_NONKEYABLE_INPUT(nAttr);
+  CHECK_MSTATUS(nAttr.setConnectable(false));
+
   aPreviewShadingRate = nAttr.create("previewShadingRate", "psr", MFnNumericData::kDouble, 1.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setConnectable(false));
@@ -233,6 +242,12 @@ MStatus liqSurfaceNode::initialize()
   aPreviewIntensity = nAttr.create("previewIntensity", "pi", MFnNumericData::kDouble, 1.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
   CHECK_MSTATUS(nAttr.setConnectable(false));
+
+  aGLPreviewTexture = nAttr.createColor("GLPreviewTexture", "gpt");
+  nAttr.setDefault( 0.0, 0.0, 0.0 );
+  nAttr.setDisconnectBehavior( MFnAttribute::kReset );
+  MAKE_INPUT(nAttr);
+
 
 
   aColor = nAttr.createColor("color", "cs");
@@ -257,7 +272,7 @@ MStatus liqSurfaceNode::initialize()
   MAKE_NONKEYABLE_INPUT(nAttr);
 
   // resolution attribute for maya's hardware renderer
-  aResolution = nAttr.create("resolution", "res",  MFnNumericData::kInt, 32, &status);
+  aResolution = nAttr.create("resolution", "res",  MFnNumericData::kInt, 8, &status);
   CHECK_MSTATUS(nAttr.setStorable( true ));
   CHECK_MSTATUS(nAttr.setReadable( true ));
   CHECK_MSTATUS(nAttr.setWritable( true ));
@@ -390,7 +405,7 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( nAttr.setHidden( true ) );
   CHECK_MSTATUS( nAttr.setReadable( false ) );
   CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
-  
+
   #if MAYA_API_VERSION >= 800
   aLightBlindData = nAttr.createAddr( "lightBlindData", "lbld", 0, &status );
   CHECK_MSTATUS( status );
@@ -398,7 +413,7 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( nAttr.setHidden( true ) );
   CHECK_MSTATUS( nAttr.setReadable( false ) );
   CHECK_MSTATUS( nAttr.setDefault( (void*) 0 ) );
-  #else 
+  #else
   aLightBlindData = nAttr.create( "lightBlindData", "lbld", MFnNumericData::kLong, 0, &status );
   CHECK_MSTATUS( status );
   CHECK_MSTATUS( nAttr.setStorable( false ) );
@@ -421,6 +436,9 @@ MStatus liqSurfaceNode::initialize()
   MAKE_OUTPUT(nAttr);
   aOutTransparency = nAttr.createColor("outTransparency", "ot");
   MAKE_OUTPUT(nAttr);
+  aAssignedObjects = mAttr.create("liqAssignedObjects", "ao");
+  MAKE_OUTPUT(mAttr);
+
 
   CHECK_MSTATUS(addAttribute(aRmanShader));
   CHECK_MSTATUS(addAttribute(aRmanShaderLong));
@@ -435,9 +453,11 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
+  CHECK_MSTATUS(addAttribute(aPreviewPixelSamples));
   CHECK_MSTATUS(addAttribute(aPreviewShadingRate));
   CHECK_MSTATUS(addAttribute(aPreviewBackplane));
   CHECK_MSTATUS(addAttribute(aPreviewIntensity));
+  CHECK_MSTATUS(addAttribute(aGLPreviewTexture));
   CHECK_MSTATUS(addAttribute(aCi));
   CHECK_MSTATUS(addAttribute(aOi));
 
@@ -454,11 +474,13 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(addAttribute(aMayaKd));
   CHECK_MSTATUS(addAttribute(aNormalCamera));
   CHECK_MSTATUS(addAttribute(aLightData));
+  CHECK_MSTATUS(addAttribute(aAssignedObjects));
   CHECK_MSTATUS(addAttribute(aOutColor));
   CHECK_MSTATUS(addAttribute(aOutTransparency));
 
   CHECK_MSTATUS(attributeAffects( aColor,               aOutColor ));
   CHECK_MSTATUS(attributeAffects( aOpacity,             aOutColor ));
+  CHECK_MSTATUS(attributeAffects( aGLPreviewTexture,    aOutColor ));
   CHECK_MSTATUS(attributeAffects( aMayaIgnoreLights,    aOutColor ));
   CHECK_MSTATUS(attributeAffects( aMayaKa,              aOutColor ));
   CHECK_MSTATUS(attributeAffects( aMayaKd,              aOutColor ));
@@ -496,6 +518,8 @@ MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
     MStatus status;
     MFloatVector& cColor  = block.inputValue(aColor).asFloatVector();
     MFloatVector& cTrans  = block.inputValue(aOpacity).asFloatVector();
+    MPlug GLtexPlug( thisMObject(), aGLPreviewTexture);
+    if ( GLtexPlug.isConnected() ) cColor = block.inputValue(aGLPreviewTexture).asFloatVector();
     MFloatVector resultColor( 0.0, 0.0, 0.0 );
     MFloatVector resultTrans( cTrans );
 

@@ -45,9 +45,14 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
       editorTemplate -addControl "previewPrimitive";
       editorTemplate -ccu "liquidShaderNodesCustomPrimitiveNew" "liquidShaderNodesCustomPrimitiveReplace" "previewCustomPrimitive";
       editorTemplate -addControl "previewObjectSize";
+      editorTemplate -addControl "previewPixelSamples";
       editorTemplate -addControl "previewShadingRate";
       editorTemplate -addControl "previewBackplane";
       editorTemplate -addControl "previewIntensity";
+      editorTemplate -beginLayout "Open_GL";
+        editorTemplate -label "GL Texture" -addControl "GLPreviewTexture";
+        editorTemplate -label "GL Texture Resolution" -addControl "resolution";
+      editorTemplate -endLayout;
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "RIB";

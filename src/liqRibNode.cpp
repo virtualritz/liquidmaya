@@ -515,15 +515,18 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         nPlug = nodePeeker.findPlug( MString( "liqRIBBox" ), &status );
         if ( status == MS::kSuccess ) {
           nPlug.getValue( ribBoxValue );
-          if ( ribBoxValue.substring(0,2) == "*H*" ) {
-            MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
-            liqglo_preRibBox.append( parseString( parseThis ) );
-          } else if ( ribBoxValue.substring(0,3) == "*SH*" ) {
-            MString parseThis = ribBoxValue.substring(3, ribBoxValue.length() - 1 );
-            liqglo_preRibBoxShadow.append( parseString( parseThis ) );
-          }
         }
         rib.box = (ribBoxValue == "")? "-" : parseString(ribBoxValue);
+      }
+
+      // philippe : we are parsing it but not doing anything with it.
+      if ( rib.generator == "" ) {
+        MString ribgenValue;
+        nPlug = nodePeeker.findPlug( MString( "liqRIBGenerator" ), &status );
+        if ( status == MS::kSuccess ) {
+          nPlug.getValue( ribgenValue );
+        }
+        rib.generator = (ribgenValue == "")? "-" : parseString(ribgenValue);
       }
 
       if ( rib.readArchive == "" ) {
@@ -532,13 +535,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         nPlug = nodePeeker.findPlug( MString( "liqRIBReadArchive" ), &status );
         if ( status == MS::kSuccess ) {
           nPlug.getValue( archiveValue );
-          if ( archiveValue.substring(0,2) == "*H*" ) {
-            MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
-            liqglo_preReadArchive.append( parseString( parseThis ) );
-          } else if ( archiveValue.substring(0,3) == "*SH*" ) {
-            MString parseThis = archiveValue.substring(3, archiveValue.length() - 1 );
-            liqglo_preReadArchiveShadow.append( parseString( parseThis ) );
-          }
         }
         rib.readArchive = (archiveValue == "")? "-" : parseString(archiveValue);
       }
@@ -603,7 +599,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
             }
 
             // transform it to account for flattened transforms
-            //bounding.transformUsing( currentMatrix );
             MPoint bMin = bounding.min() ;
             MPoint bMax = bounding.max() ;
             bound[0] = bMin.x;
@@ -617,6 +612,110 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         rib.delayedReadArchive = ( delayedArchiveString == "" )? "-" : delayedArchiveString ;
       }
 
+      if ( shadowRib.box == "" ) {
+        status.clear();
+        MString ribBoxValue;
+        nPlug = nodePeeker.findPlug( MString( "liqShdRIBBox" ), &status );
+        if ( status == MS::kSuccess ) {
+          nPlug.getValue( ribBoxValue );
+        }
+        shadowRib.box = (ribBoxValue == "")? "-" : parseString(ribBoxValue);
+      }
+
+      // philippe : again, we are parsing it but not doing anything with it.
+      if ( shadowRib.generator == "" ) {
+        MString ribgenValue;
+        nPlug = nodePeeker.findPlug( MString( "liqShdRIBGenerator" ), &status );
+        if ( status == MS::kSuccess ) {
+          nPlug.getValue( ribgenValue );
+        }
+        shadowRib.generator = (ribgenValue == "")? "-" : parseString(ribgenValue);
+      }
+
+      if ( shadowRib.readArchive == "" ) {
+        status.clear();
+        MString archiveValue;
+        nPlug = nodePeeker.findPlug( MString( "liqShdRIBReadArchive" ), &status );
+        if ( status == MS::kSuccess ) {
+          nPlug.getValue( archiveValue );
+        }
+        shadowRib.readArchive = (archiveValue == "")? "-" : parseString(archiveValue);
+      }
+
+      if ( shadowRib.delayedReadArchive == "" ) {
+        status.clear();
+        MString delayedArchiveString, delayedArchiveValue;
+        nPlug = nodePeeker.findPlug( MString( "liqShdRIBDelayedReadArchive" ), &status );
+        if ( status == MS::kSuccess ) {
+          nPlug.getValue( delayedArchiveValue );
+          delayedArchiveString = parseString( delayedArchiveValue );
+
+          MStatus Dstatus;
+          MPlug delayedPlug = fnNode.findPlug( MString( "shdRibDelayedArchiveBBox" ), &Dstatus );
+          if ( ( Dstatus == MS::kSuccess ) && ( delayedPlug.isConnected() ) ) {
+            MPlugArray delayedNodeArray;
+            delayedPlug.connectedTo( delayedNodeArray, true, true );
+            MObject delayedNodeObj;
+            delayedNodeObj = delayedNodeArray[0].node();
+            MFnDagNode delayedfnNode( delayedNodeObj );
+
+            MBoundingBox bounding = delayedfnNode.boundingBox();
+            MPoint bMin = bounding.min();
+            MPoint bMax = bounding.max();
+            shadowBound[0] = bMin.x;
+            shadowBound[1] = bMin.y;
+            shadowBound[2] = bMin.z;
+            shadowBound[3] = bMax.x;
+            shadowBound[4] = bMax.y;
+            shadowBound[5] = bMax.z;
+          } else {
+            // here, we are going to calculate the bounding box of the gprim
+            //
+
+            // get the dagPath
+            MDagPath fullPath( nodePeeker.dagPath() );
+            fullPath.extendToShape();
+            /* cout <<"  + "<<fullPath.fullPathName()<<endl; */
+
+            // get the full transform
+            MMatrix currentMatrix( fullPath.inclusiveMatrixInverse() );
+            /* cout <<"  + got matrix "<<currentMatrix<<endl; */
+
+            // get the bounding box
+            MFnDagNode shapeNode( fullPath );
+            MBoundingBox bounding = shapeNode.boundingBox();
+            /* cout <<"  + got bbox "<<endl; */
+
+            // retrieve the bounding box expansion attribute
+            MPlug expandBBoxPlug = nodePeeker.findPlug( MString( "liqShdRIBDelayedReadArchiveBBoxScale" ), &Dstatus );
+            if ( Dstatus == MS::kSuccess ) {
+              /* cout <<"  + found scale attr"<<endl; */
+              double expansion;
+              expandBBoxPlug.getValue( expansion );
+              if ( expansion != 1.0 ) {
+                /* cout <<"  + expansion = "<<expansion<<endl; */
+                MTransformationMatrix bboxScale;
+                double exp[3] = {expansion, expansion, expansion};
+                bboxScale.setScale( exp, MSpace::kTransform );
+                bounding.transformUsing( bboxScale.asMatrix() );
+              }
+            }
+
+            // transform it to account for flattened transforms
+            MPoint bMin = bounding.min() ;
+            MPoint bMax = bounding.max() ;
+            shadowBound[0] = bMin.x;
+            shadowBound[1] = bMin.y;
+            shadowBound[2] = bMin.z;
+            shadowBound[3] = bMax.x;
+            shadowBound[4] = bMax.y;
+            shadowBound[5] = bMax.z;
+          }
+        }
+        shadowRib.delayedReadArchive = ( delayedArchiveString == "" )? "-" : delayedArchiveString ;
+      }
+
+
       if ( ignoreShapes == false ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqIgnoreShapes" ), &status );
@@ -624,16 +723,9 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( ignoreShapes );
       }
 
-
-      /*MFnDependencyNode nodeFn( nodePeeker );
-      MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
-      MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodeFn );
-      MStringArray vectorAttributesFound = findAttributesByPrefix( "rmanV", nodeFn );
-      MStringArray normalAttributesFound = findAttributesByPrefix( "rmanN", nodeFn );
-      MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodeFn );
-      MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );*/
     } // if ( dagSearcher.apiType( &status ) == MFn::kTransform )
   }
+
 
   while( dagSearcher.length() > 0 );
 

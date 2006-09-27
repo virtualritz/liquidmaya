@@ -685,6 +685,97 @@ global proc liquidCreateDelayedReadArchiveAttribute()
   }
 }
 
+global proc liquidCreateShdRIBAttributes()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBBox"` ) {
+      addAttr -ln "liqShdRIBBox" -dt "string" $currentNode;
+    }
+
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBGenerator"` ) {
+      addAttr -ln "liqShdRIBGenerator" -dt "string" $currentNode;
+    }
+
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBReadArchive"` ) {
+      addAttr -ln "liqShdRIBReadArchive" -dt "string" $currentNode;
+    }
+
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBDelayedReadArchive"` ) {
+      addAttr -ln "liqShdRIBDelayedReadArchive" -dt "string" $currentNode;
+    }
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBDelayedReadArchiveBBoxScale"` ) {
+      addAttr -ln "liqShdRIBDelayedReadArchiveBBoxScale" -at "double" -dv 1.0 -smn 0.0 -smx 2.0 $currentNode;
+    }
+  }
+}
+
+
+global proc liquidDeleteShdRIBAttributes()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  string $attr[]=  {"liqShdRIBBox", "liqShdRIBGenerator", "liqShdRIBReadArchive", "liqShdRIBDelayedReadArchive", "liqShdRIBDelayedReadArchiveBBoxScale"};
+  for ( $currentNode in $nodes ) {
+    for ( $a in $attr ) {
+      if ( `attributeQuery -node $currentNode -ex $a` ) {
+        deleteAttr ( $currentNode + "."+$a );
+      }
+    }
+  }
+}
+
+global proc liquidCreateShdRIBBoxAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBBox"` ) {
+      addAttr -ln "liqShdRIBBox" -dt "string" $currentNode;
+    }
+  }
+}
+
+
+global proc liquidCreateShdRIBGeneratorAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBGenerator"` ) {
+      addAttr -ln "liqShdRIBGenerator" -dt "string" $currentNode;
+    }
+  }
+}
+
+
+global proc liquidCreateShdReadArchiveAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBReadArchive"` ) {
+      addAttr -ln "liqShdRIBReadArchive" -dt "string" $currentNode;
+    }
+  }
+}
+
+
+global proc liquidCreateShdDelayedReadArchiveAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBDelayedReadArchive"` ) {
+      addAttr -ln "liqShdRIBDelayedReadArchive" -dt "string" $currentNode;
+    }
+    if ( !`attributeQuery -node $currentNode -ex "liqShdRIBDelayedReadArchiveBBoxScale"` ) {
+      addAttr -ln "liqShdRIBDelayedReadArchiveBBoxScale" -at "double" -dv 1.0 -smn 0.0 -smx 2.0 $currentNode;
+    }
+  }
+}
+
 
 // Instancing group -----------------------------------------------
 
@@ -978,11 +1069,11 @@ global proc liquidAddZThres() {
   string $selected[] = `ls -dag -sl -lights`;
   string $current;
   for ( $current in $selected ) {
-    if ( !`attributeQuery -node $current -ex "ribOptions"`) {
-      addAttr -ln ribOptions -dt "string" $current;
+    if ( !`attributeQuery -node $current -ex "liqRIBOptions"`) {
+      addAttr -ln liqRIBOptions -dt "string" $current;
     }
-    if ( `attributeQuery -node $current -ex "ribOptions"`) {
-      setAttr ( $current + ".ribOptions" ) -type "string" "Option \"limits\" \"zthreshold\" [ 1.0 1.0 1.0 ]";
+    if ( `attributeQuery -node $current -ex "liqRIBOptions"`) {
+      setAttr ( $current + ".liqRIBOptions" ) -type "string" "Option \"limits\" \"zthreshold\" [ 1.0 1.0 1.0 ]";
     }
   }
 }
@@ -992,8 +1083,8 @@ global proc liquidRemoveZThres() {
   string $selected[] = `ls -dag -sl -lights`;
   string $current;
   for ( $current in $selected ) {
-    if ( `attributeQuery -node $current -ex "ribOptions"`) {
-      deleteAttr ( $current + ".ribOptions" );
+    if ( `attributeQuery -node $current -ex "liqRIBOptions"`) {
+      deleteAttr ( $current + ".liqRIBOptions" );
     }
   }
 }
@@ -1121,6 +1212,15 @@ global proc liquidCreateAreaLightAttributes()
     if ( !objExists( ($currentNode+".liqBothSidesEmit") ) ) {
       addAttr -ln "liqBothSidesEmit" -at bool -dv 0 $currentNode;
     }
+    if ( !objExists( ($currentNode+".liqLightMap") ) ) {
+      addAttr -ln "liqLightMap" -dt "string" $currentNode;
+    }
+    if ( !objExists( ($currentNode+".liqLightMapSaturation") ) ) {
+      addAttr -ln "liqLightMapSaturation" -at "float" -dv 1.0 -min 0 -max 10 $currentNode;
+    }
+    if ( !objExists( ($currentNode+".liqAreaHitmode") ) ) {
+      addAttr -ln "liqAreaHitmode" -at "enum" -en "default:primitive:shader" -dv 1 $currentNode;
+    }
   }
 }
 
@@ -1131,6 +1231,15 @@ global proc liquidDeleteAreaLightAttributes()
   for ( $currentNode in $nodes ) {
     if ( objExists( ($currentNode+".liqBothSidesEmit") ) ) {
       deleteAttr ( $currentNode+".liqBothSidesEmit" );
+    }
+    if ( objExists( ($currentNode+".liqLightMap") ) ) {
+      deleteAttr ( $currentNode+".liqLightMap" );
+    }
+    if ( objExists( ($currentNode+".liqLightMapSaturation") ) ) {
+      deleteAttr ( $currentNode+".liqLightMapSaturation" );
+    }
+    if ( objExists( ($currentNode+".liqAreaHitmode") ) ) {
+      deleteAttr ( $currentNode+".liqAreaHitmode" );
     }
   }
 }
@@ -1211,6 +1320,38 @@ global proc liquidDeleteLightShadowAttributes()
     }
     if ( objExists( ($currentNode+".farClipPlane") ) ) {
       deleteAttr ( $currentNode+".farClipPlane" );
+    }
+  }
+}
+
+global proc liquidCreateLightShadowRIBAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !( nodeType($currentNode) == "spotLight" || nodeType($currentNode) == "pointLight" || nodeType($currentNode) == "directionalLight" ) ) {
+      warning ("These attributes can only be added to spotLights, directionalLights or pointLights !");
+      continue;
+    }
+    if ( !objExists( ($currentNode+".liqRIBOptions") ) ) {
+      addAttr -ln "liqRIBOptions" -dt "string" $currentNode;
+    }
+    if ( !objExists( ($currentNode+".liqRIBFrame") ) ) {
+      addAttr -ln "liqRIBFrame" -dt "string" $currentNode;
+    }
+  }
+}
+
+global proc liquidDeleteLightShadowRIBAttributes()
+{
+  string $nodes[] = `ls -lights -dag -sl`;
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( objExists( ($currentNode+".liqRIBOptions") ) ) {
+      deleteAttr ( $currentNode+".liqRIBOptions" );
+    }
+    if ( objExists( ($currentNode+".liqRIBFrame") ) ) {
+      deleteAttr ( $currentNode+".liqRIBFrame" );
     }
   }
 }

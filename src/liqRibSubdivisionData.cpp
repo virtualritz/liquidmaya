@@ -345,6 +345,11 @@ void liqRibSubdivisionData::write()
   }
 
   RiSubdivisionMeshV( "catmull-clark", numFaces, nverts, verts, ntags, tags, nargs, intargs, floatargs, numTokens, tokenArray, pointerArray );
+
+  if ( tags != NULL )       { lfree(tags);      /*cout <<"freed tags"<<endl;*/}
+  if ( nargs != NULL )      { lfree(nargs);     /*cout <<"freed nargs"<<endl;*/}
+  if ( intargs != NULL )    { lfree(intargs);   /*cout <<"freed intargs"<<endl;*/}
+  if ( floatargs != NULL )  { lfree(floatargs); /*cout <<"freed floatargs"<<endl;*/}
 }
 
 

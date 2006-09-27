@@ -89,6 +89,7 @@ class liqVolumeNode : public MPxNode
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
     static MObject aPreviewObjectSize;
+    static MObject aPreviewPixelSamples;
     static MObject aPreviewShadingRate;
     static MObject aPreviewBackplane;
 
@@ -99,6 +100,7 @@ class liqVolumeNode : public MPxNode
 
     // Output attributes
     static MObject aOutColor;
+    static MObject aAssignedObjects;
 
     bool    swatchInit;
 };

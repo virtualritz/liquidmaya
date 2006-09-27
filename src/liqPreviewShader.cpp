@@ -82,18 +82,19 @@ MSyntax liqPreviewShader::syntax()
 {
   MSyntax syn;
 
-  syn.addFlag("s","shader");
-  syn.addFlag("r","renderer");
-  syn.addFlag("dd","displayDriver");
-  syn.addFlag("dn","displayName");
-  syn.addFlag("ds","displaySize");
+  syn.addFlag("s",    "shader");
+  syn.addFlag("r",    "renderer");
+  syn.addFlag("dd",   "displayDriver");
+  syn.addFlag("dn",   "displayName");
+  syn.addFlag("ds",   "displaySize");
   syn.addFlag("sshn", "shortShaderNames");
-  syn.addFlag("nbp","noBackPlane");
-  syn.addFlag("os","objectSize");
-  syn.addFlag("sr","shadingRate");
-  syn.addFlag("p","pipe");
-  syn.addFlag("t","type");
-  syn.addFlag("pi","previewIntensity");
+  syn.addFlag("nbp",  "noBackPlane");
+  syn.addFlag("os",   "objectSize");
+  syn.addFlag("sr",   "shadingRate");
+  syn.addFlag("pxs",  "pixelSamples");
+  syn.addFlag("p",    "pipe");
+  syn.addFlag("t",    "type");
+  syn.addFlag("pi",   "previewIntensity");
 
   syn.addFlag("sph", "sphere");
   syn.addFlag("tor", "torus");
@@ -126,6 +127,7 @@ typedef struct liqPreviewShoptions
   bool    shortShaderName, backPlane, usePipe;
   int     displaySize;
   int     primitiveType;
+  int     pixelSamples;
   double  objectScale;
   double  shadingRate;
   MString customRibFile;
@@ -202,6 +204,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.backPlane = true;
   preview.displaySize = 128;
   preview.primitiveType = SPHERE;
+  preview.pixelSamples = 3;
   preview.objectScale = 1.0;
   preview.shadingRate = 1.0;
   preview.customRibFile = "";
@@ -249,6 +252,10 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
       i++;
       MString argValue = args.asString( i, &status );
       preview.displaySize = argValue.asInt();
+    } else if ( ( arg == "-pxs" ) || ( arg == "-pixelSamples" ) ) {
+      i++;
+      MString argValue = args.asString( i, &status );
+      preview.pixelSamples = argValue.asInt();
     } else if ( ( arg == "-sshn" ) || ( arg == "-shortShaderNames" ) ) {
       preview.shortShaderName = true;
     } else if ( ( arg == "-p" ) || ( arg == "-pipe" ) ) {
@@ -410,8 +417,9 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
 
   RiFrameBegin( 1 );
   RiShadingRate( ( options->shadingRate ) );
-  RiPixelSamples( 3, 3 );
-  RiPixelFilter( RiCatmullRomFilter, 3.0, 3.0 );
+  RiPixelSamples( (RtInt) options->pixelSamples, (RtInt) options->pixelSamples );
+  if ( liquidRenderer.renderName == "PRMan" ) RiPixelFilter( RiSeparableCatmullRomFilter, 4.0, 4.0 );
+  else RiPixelFilter( RiCatmullRomFilter, 3.0, 3.0 );
   RiFormat( (RtInt) options->displaySize, (RtInt) options->displaySize, 1 );
   if( options->backPlane )
   RiDisplay( const_cast<char *>( options->displayName ), const_cast<char *>( options->displayDriver ), RI_RGB, RI_NULL );
@@ -763,7 +771,10 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
     case CUSTOM: {
       cout <<"custom : "<<options->customRibFile<<endl;
       if ( fileExists( options->customRibFile ) ) {
-        RiArchiveRecord( RI_VERBATIM, "ReadArchive \"%s\"\n", options->customRibFile.asChar() );
+        RiTransformBegin();
+          RiScale( 1.0, 1.0, -1.0 );
+          RiArchiveRecord( RI_VERBATIM, "ReadArchive \"%s\"\n", options->customRibFile.asChar() );
+        RiTransformEnd();
       }
       break;
     }

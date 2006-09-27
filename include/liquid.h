@@ -37,6 +37,10 @@
 #include <string>
 #include <assert.h>
 
+#include <sys/param.h>
+#include <sys/times.h>
+#include <sys/types.h>
+
 #if defined(_WIN32) && !defined(M_PI)
 #  define M_PI 3.1415926535897932384626433832795
 #endif
@@ -65,6 +69,9 @@ extern int debugMode;
 #endif
 
 #define HERE  cout<<"at line "<<__LINE__<<" in "<<__FUNCTION__<<endl<<flush;
+
+#define TIMER_START       struct tms t,u;long r1,r2;r1 = times(&t);
+#define TIMER_STOP(msg)   r2 = times(&u); cout <<"[liquid timer] "<<msg<<" :"<<endl<<"\t  user time = "<<((float)(u.tms_utime-t.tms_utime))/(HZ)<<endl<<"\tsystem time = "<<((float)(u.tms_stime-t.tms_stime))/(HZ)<<endl;
 
 #if !defined(LINUX) && !defined(OSX)
 #  ifndef LIQDEBUGPRINTF
@@ -301,6 +308,8 @@ struct structJob {
   MDagPath              shadowCamPath;
   MString               jobOptions;
   bool                  gotJobOptions;
+  MString               jobFrameRib;
+  bool                  gotJobFrameRib;
   bool                  deepShadows;
   bool                  everyFrame;
   int                   renderFrame;

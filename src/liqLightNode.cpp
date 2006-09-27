@@ -261,7 +261,7 @@ MStatus liqLightNode::initialize()
   MAKE_OUTPUT(nAttr);
   aOutTransparency = nAttr.createColor("outTransparency", "ot");
   MAKE_OUTPUT(nAttr);
-  aAssignedObjects = mAttr.create("assignedObjects", "ao");
+  aAssignedObjects = mAttr.create("liqAssignedObjects", "ao");
   MAKE_OUTPUT(mAttr);
 
 

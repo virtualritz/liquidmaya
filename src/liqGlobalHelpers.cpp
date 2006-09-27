@@ -485,6 +485,9 @@ MString parseString( const MString & inputString )
   int i;
 
   for ( i = 0; i < sLength; i++ ) {
+
+    bool escaped(i ? inputString.substring( i-1, i-1 ) == "\\" : false);
+
     if ( inputString.substring(i, i) == "$" ) {
       tokenString.clear();
       inToken = true;
@@ -510,7 +513,7 @@ MString parseString( const MString & inputString )
         constructedString += liqglo_ribDir;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "OBJ" && inputString.substring(i+1, i+4) != "PATH" ) {
+      } else if ( tokenString == "OBJ" && ( (i+5<sLength) ? inputString.substring(i+1, i+4) != "PATH" : true) ) {
         constructedString += liqglo_currentNodeShortName;
         inToken = false;
         tokenString.clear();
@@ -531,9 +534,9 @@ MString parseString( const MString & inputString )
         inToken = false;
         tokenString.clear();
       }
-    } else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
+    } else if ( !escaped && inputString.substring(i, i) == "@" ) {
       constructedString += (int)liqglo_lframe;
-    } else if ( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
+    } else if ( !escaped && inputString.substring(i, i) == "#" ) {
       int paddingSize = 0;
       while ( inputString.substring(i, i) == "#" ) {
         paddingSize++;
@@ -549,7 +552,7 @@ MString parseString( const MString & inputString )
       char paddedFrame[20];
       sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
       constructedString += paddedFrame;
-    } else if ( inputString.substring(i, i) == "%" && inputString.substring(i - 1, i - 1) != "\\" ) {
+    } else if ( !escaped && inputString.substring(i, i) == "%" ) {
       MString envString;
       char* envVal = NULL;
 
@@ -570,12 +573,12 @@ MString parseString( const MString & inputString )
         // else environment variable doesn't exist.. do nothing
       }
       // else early exit: % was the last character in the string.. do nothing
-    } else if ( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
+    } else if ( escaped && inputString.substring(i + 1, i + 1 ) == "#" ) {
       // do nothing
-    } else if ( inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
+    } else if ( escaped && inputString.substring(i + 1, i + 1 ) == "n" ) {
       constructedString += "\n";
       i++;
-    } else if ( inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" ) {
+    } else if ( escaped && inputString.substring(i + 1, i + 1 ) == "t" ) {
       constructedString += "\t";
       i++;
     } else {
@@ -588,6 +591,7 @@ MString parseString( const MString & inputString )
 
   return constructedString;
 }
+
 
 // Moritz: added below code for simple MEL parameter expression scripting support
 // syntax: `mel commands`
@@ -797,7 +801,7 @@ char * basename( const char *filename ) {
 //  Description:
 //      returns the filename portion of a path
 //
-#ifdef MSVC6	
+#ifdef MSVC6
   char *p = strrchr( filename, '/' );
 #else
   char *p = const_cast<char*>(strrchr( filename, '/' ));
