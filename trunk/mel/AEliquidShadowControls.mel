@@ -35,6 +35,27 @@
 //
 
 
+
+
+global proc liquidLightViewShadowNew( string $nodeDotAttr )
+{
+  string $node = basenameEx($nodeDotAttr);
+  string $ctlname = ("liqViewShad"+nodeType($node));
+  button -l "View Shadow Map" -c ("liquidViewShadowMap "+$node) $ctlname;
+}
+
+global proc liquidLightViewShadowReplace( string $nodeDotAttr )
+{
+  string $node = basenameEx($nodeDotAttr);
+  string $ctlname = ("liqViewShad"+nodeType($node));
+  button -e -c ("liquidViewShadowMap "+$node) $ctlname;
+}
+
+
+
+
+
+
 global proc AEliquidShadowControls( string $node )
 {
   editorTemplate -beginLayout "Liquid" -collapse false;
@@ -45,6 +66,8 @@ global proc AEliquidShadowControls( string $node )
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Shadows" -collapse false;
+
+      editorTemplate -ccu ("liquidLightViewShadowNew ") ("liquidLightViewShadowReplace ") "dummy";
 
       editorTemplate -label "Shadow Map Samples" -addDynamicControl "liqShadowMapSamples";
 
