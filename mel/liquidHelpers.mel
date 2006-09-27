@@ -392,7 +392,7 @@ global proc string liquidVarSubstitute( string $str )
   string $ver = `getAttr liquidGlobals.shotVersion`;
   if ( $ver == "" ) $ver = " ! NOT_SET ! ";
 
-  string $scn = `file -q -sn -shn`;
+  string $scn = basenameEx(`file -q -sn -shn`);
   if ( $scn == "" ) $scn = "untitled";
   string $frame = "0";
   string $padded = "0";
@@ -410,5 +410,57 @@ global proc string liquidVarSubstitute( string $str )
   return $result;
 }
 
+global proc string liquidAutoShadowName( string $lightShape )
+{
+  string $shadowname = "";
+  string $textdir = `getAttr liquidGlobals.textureDirectory`;
+  $textdir = liquidVarSubstitute( $textdir );
+  string $currentWorkspace = `workspace -q -rd`;
+
+  if ( !gmatch( $textdir, "/*") ) $shadowname = ( $currentWorkspace + $textdir );
+  else $shadowname = $textdir;
+
+  if ( !gmatch( $shadowname, "*/") ) $shadowname += "/";
+
+  int $isPointLight = (nodeType($lightShape) == "pointLight")? 1:0;
+  int $shapeOnlyInName = `getAttr liquidGlobals.shapeOnlyInShadowNames`;
+
+  if ( !$shapeOnlyInName ) {
+    $shadowname += basenameEx(`file -q -shn -sn`);
+    $shadowname += "_";
+  }
+
+  $shadowname += $lightShape;
+
+  $shadowname += ( objExists(($lightShape+".deepShadows")) && `getAttr ($lightShape+".deepShadows")`)? "DSH":"SHD";
+
+  if ( $isPointLight ) $shadowname += "_??";
+
+  $shadowname += ".";
+
+  string $geoSet =  ( objExists(($lightShape+".everyFrame")) )? string(`getAttr ($lightShape+".geometrySet")`) : "";
+  if ( $geoSet != "" ) $shadowname += ( $geoSet + "." );
+
+  int $everyFrame = ( objExists(($lightShape+".everyFrame")) && `getAttr ($lightShape+".everyFrame")` == 0 )? 0:1;
+  string $frame;
+  if ( $everyFrame ) $frame = `currentTime -q`;
+  else $frame = `getAttr ($lightShape+".renderAtFrame")`;
+  int $pad = ( `getAttr liquidGlobals.doPadding` )? `getAttr liquidGlobals.padding` : 0;
+  while( size($frame) < $pad ) $frame = ("0"+$frame);
+
+  $shadowname += $frame;
+  $shadowname += ".tex";
+
+  return $shadowname;
+}
+
+global proc liquidViewShadowMap( string $node )
+{
+  string $file = liquidAutoShadowName($node);
+  string $cmd = ( (`getAttr liquidGlobals.viewTexture`) + " " + liquidAutoShadowName($node) + " &" );
+  string $test = (size( match("\?\?", $file) ))? (substitute("\?\?", $file, "PX")) : $file;
+  if ( `filetest -r $test` ) system $cmd;
+  else warning("No shadow map on disk !\n           "+$file+"  ");
+}
 
 
