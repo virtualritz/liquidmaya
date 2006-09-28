@@ -4312,13 +4312,6 @@ MStatus liqRibTranslator::ribPrologue()
         list = const_cast< char* > ( displaySearchPath.asChar() );
         RiArchiveRecord( RI_VERBATIM, "Option \"searchpath\" \"display\" [\"%s\"]\n", list );
       }
-      else {
-        displaySearchPath = ".:@:" + liquidRenderer.renderHome + "/etc:" + liquidSanitizePath( home ) +  "/displayDrivers/" + liquidRenderer.renderName + "/";
-      }
-      list = const_cast< char* > ( displaySearchPath.asChar() );
-      RiArchiveRecord( RI_VERBATIM, "Option \"searchpath\" \"display\" [\"%s\"]\n", list );
-    }
-
 
       RiOrientation( RI_RH ); // Right-hand coordinates
 
