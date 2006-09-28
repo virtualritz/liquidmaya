@@ -857,7 +857,20 @@ global proc liquidAddPresets()
   }
 }
 
-global proc int liquidSaveGlobals( string $name, string $presetType )
+/**
+ *  Save liquidGlobals attributes using maya's preset system.
+ *
+ *  $name : the preset's name, eg. mytest
+ *  $presetType : can have one of the following values :
+ *              "", "all", "global" : will save all static attributes of the liquidGlobals node
+ *                       "renderer" : will save only the attributes pertaining to the renderer description.
+ *                          "local" : save the file to the root of the current maya project.
+ *               "/server/job/shot" : if you pass a qualified path, it will be used to save the preset.
+ *  RETURN : true on success, false otherwise
+ *  NOTE :  the preset command is limited to saving to the current settings directory,
+ *          so the proc will move it in the end to a specific location if need be.
+ */
+global proc int liquidSaveGlobals( string $name, string $presetType, int $forceOverwrite )
 {
   global string $liqRendererOptions[];
 
@@ -865,50 +878,105 @@ global proc int liquidSaveGlobals( string $name, string $presetType )
   string $liquidDirectory = liquidGetUserHomeDir();
   string $mayaPresetsDirectory = `internalVar -userPresetsDir`;
 
+
+  // check what to do based on preset type
+  //
   switch ( $presetType ) {
+
     case "":
+    case "all":
     case "global":
       if ( !liquidCreateUserHomeDir() ) return false;
       break;
+
     case "renderer":
       if ( !liquidCreateUserHomeDir() ) return false;
       $liquidDirectory += "/renderers";
       if ( !`sysFile -makeDir $liquidDirectory` ) {
-        error ( "Can not create dir: " + $liquidDirectory);
+        warning ( "Can not create dir: " + $liquidDirectory);
         return false;
       }
       break;
+
     case "local":
       $liquidDirectory = `workspace -q -rootDirectory`;
       break;
+
+    default:
+
+      if ( size(match("^/", $presetType)) ) {
+        // we might have a qualified path to save the file.
+
+        if ( `filetest -d $presetType` ) {
+          // the path is valid
+          $liquidDirectory = $presetType;
+          if ( size(match("/$", $liquidDirectory)) ) $liquidDirectory = substitute("/$", $liquidDirectory, "" );
+
+        } else {
+          // the path is not valid
+          string $msg = ("liquidSaveGlobals: \""+$presetType+"\" is not a valid path !");
+          trace $msg;
+          warning $msg;
+          return false;
+        }
+      }
+      break;
   }
+
+  // build the preset name
+  //
   string $globalName = ( $liquidDirectory + "/" + $name + ".lg" );
   string $confirm = "Yes";
 
+  // check the name is valid for maya's preset system.
+  //
   if ( !`nodePreset -isValidName $name` ) {
     warning "This name is not valid - it should only contain letters, numbers and underscores.";
     return false;
   }
 
-  if ( `file -q -ex $globalName` ) {
+  // if $forceOverwrite is on, we overwrite
+  // the file without asking anything.
+  //
+  if ( !$forceOverwrite && `file -q -ex $globalName` ) {
     $confirm = `confirmDialog -title "Confirm overwrite" -message "Preset name already exist.\n Do you want overwrite it?"
-      -button "Yes" -button "No" -defaultButton "Yes" -cancelButton "No"
-      -dismissString "No"`;
+                              -button "Yes" -button "No" -defaultButton "Yes" -cancelButton "No"
+                              -dismissString "No"`;
   }
 
   if ( $confirm == "Yes" ) {
 
     if ( $presetType == "renderer" ) {
+      // save renderer description
+      //
       nodePreset  -attributes (stringArrayToString( $liqRendererOptions, " "))
                   -save liquidGlobals $name;
-    } else nodePreset -save liquidGlobals $name;
+    } else {
+      // save all static attributes
+      //
+      nodePreset -save liquidGlobals $name;
+    }
 
+    // make up the name of the preset
+    //
     string $presetFile = ( $mayaPresetsDirectory + "/liquidGlobalsPreset_" + $name + ".mel");
 
+    // move the preset file to its final destination
+    //
     if ( `filetest -w $presetFile` ) {
-      sysFile -rename $globalName $presetFile;
-      $ret = true;
-    } else $ret = false;
+      if ( `sysFile -rename $globalName $presetFile` ) $ret = true;
+      else {
+        string $msg = ("liquidSaveGlobals: \""+$presetFile+"\" could not be moved to \""+$globalName+"\" !");
+        trace $msg;
+        warning $msg;
+        $ret = false;
+      }
+    } else {
+      string $msg = ("liquidSaveGlobals: \""+$presetFile+"\" is not writable !");
+      trace $msg;
+      warning $msg;
+      $ret = false;
+    }
 
   }
 
@@ -916,53 +984,112 @@ global proc int liquidSaveGlobals( string $name, string $presetType )
 }
 
 /**
- * loads a preset file
- * if there is an environment variable called LIQUID_GLOBALS_OVERRIDE, it will use it,
- * otherwise it will look for the user's home directory.
+ *  loads a preset file
+ *
+ *  $name : can be either ;
+ *                   "mypreset" : a preset name without the ".lg". The proc will try to find it.
+ *        "/server/mypreset.lg" : a fully qualified path to the file
+ *  $presetType : if set to "renderer", it will only load renderer settings.
+ *
+ *  RETURN : true on success, false otherwise
+ *
+ *  NOTE :  if the LIQUID_GLOBALS_OVERRIDE environment variable contains a path to a directory,
+ *          this proc will look here first, then in the user's home directory.
+ *          If all fails (and provided you are not in batch mode),
+ *          it will pop-up a dialog for you to choose a file.
  */
-global proc liquidLoadGlobals( string $name, string $presetType ) {
+global proc int liquidLoadGlobals( string $name, string $presetType ) {
 
-  global int $useLocalSettings;
-
+  // check the environment var
+  //
   string $liquidDirectory = getenv( "LIQUID_GLOBALS_OVERRIDE" );
   if ( $liquidDirectory == "" ) $liquidDirectory = liquidGetUserHomeDir();
 
+  // check the preset type
+  //
   if ( $presetType == "renderer") {
     $liquidDirectory = liquidGetHome();
     $liquidDirectory += "/renderers";
   }
 
   // allow the user to pass a qualified path
+  //
   string $globalName = (`filetest -r $name` && `filetest -f $name`)? $name : ( $liquidDirectory + "/" + $name + ".lg" );
 
+  // remember the selection
+  //
   string $oldSel[] = `ls -sl`;
+
   // get the globals selected before applying the presets (setAttr .attr will fail otherwise)
+  //
   select "liquidGlobals";
 
-  if  ( `filetest -r $globalName` ) eval ("source \""+$globalName+"\"");
-  else {
-    // check it is not in the user's home dir
+  // try to read the file
+  if  ( `filetest -r $globalName` ) {
 
+    // the file can be read : do it !
+    eval ("source \""+$globalName+"\"");
+    select $oldSel;
+    return true;
+
+  } else {
+    // the file is not readable !
+
+    // check it is not in the user's home dir
+    //
     $globalName = ( liquidGetUserHomeDir() + "/" + $name + ".lg" );
     string $homeDirRendererPath = ( liquidGetUserHomeDir() + "/renderers/" + $name + ".lg" );
 
-    if  ( `filetest -r $globalName` ) eval ("source \""+$globalName+"\"");
-    else if  ( `filetest -r $homeDirRendererPath` ) eval ("source \""+$homeDirRendererPath+"\"");
-    else {
+    if  ( `filetest -r $globalName` ) {
+
+      // it is in the user's home dir !!
+      eval ("source \""+$globalName+"\"");
+      select $oldSel;
+      return true;
+
+    } else if  ( `filetest -r $homeDirRendererPath` ) {
+
+      // it is in the renderer directory of the user's home dir.
+      eval ("source \""+$homeDirRendererPath+"\"");
+      select $oldSel;
+      return true;
+
+    } else {
+      // we could not find it, so we are going to ask the user...
 
       // if we are in batch mode this will compromise whatever you're trying to achieve...
-      if ( `about -batch` ) error ("Liquid : Preset file " + $name + " not found!");
+      if ( `about -batch` ) {
+        select $oldSel;
+        error ("Liquid : Preset file " + $name + " not found!");
+      }
 
       // everything failed, force the user to select a preset file
       warning ("Preset file " + $name + " not found! : please pick a preset file...");
-      confirmDialog -title "No renderer chosen..." -message ("Preset file " + $name + " not found! : please click OK and pick a preset file\nYou can then save this with the name 'default' in the preset menu...") -button "OK" -defaultButton "OK";
+
+      confirmDialog -title "No renderer chosen..."
+                    -message ("Preset file " + $name + " not found! : please click OK and pick a preset file\n"+
+                              "You can then save this with the name 'default' in the preset menu...")
+                    -button "OK" -defaultButton "OK";
+
       string $thePreset = `fileDialog -dm ($liquidDirectory+"/*.lg")`;
-	  if ( size($thePreset) ) {
-        evalDeferred -lp ("{ select \"liquidGlobals\"; source \""+$thePreset+"\"; if (`window -q -ex \"unifiedRenderGlobalsWindow\"`) { deleteUI \"unifiedRenderGlobalsWindow\"; unifiedRenderGlobalsWindow; } }");
-	  }  else warning ("Preset file not found! : you might not be able to render correctly...");
+
+      if ( size($thePreset) ) {
+          evalDeferred -lp (  "{"+
+                              " select \"liquidGlobals\";"+
+                              " source \""+$thePreset+"\";"+
+                              " select \""+stringArrayToString( $oldSel, "\" \"")+"\";"+
+                              " if (`window -q -ex \"unifiedRenderGlobalsWindow\"`) {"+
+                              "   deleteUI \"unifiedRenderGlobalsWindow\";"+
+                              "   unifiedRenderGlobalsWindow; "+
+                              " }"+
+                              "}");
+          return true;
+      }  else warning ("Preset file not found! : you might not be able to render correctly...");
     }
   }
   select $oldSel;
+
+  return false;
 }
 
 /**
@@ -984,7 +1111,7 @@ global proc liquidSavePresetOk()
 
     if ( $rendererOnly ) $presetType = "renderer";
 
-    if ( liquidSaveGlobals( $presetName, $presetType ) ) {
+    if ( liquidSaveGlobals( $presetName, $presetType, 0 ) ) {
       deleteUI liquidSavePresetWin;
       string $presetName_lower = tolower( $presetName );
       string $i,$ia[] = `menu -q -ia liquidGlobalsPresetMenu`;

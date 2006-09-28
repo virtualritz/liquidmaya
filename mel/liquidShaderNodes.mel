@@ -806,7 +806,7 @@ proc liquidShaderNodesCustomPrimitiveBuildCustomMenu( string $parent, string $no
 
   for ( $f in $files ) {
     string $label = basenameEx( $f );
-    if ( $f == $currentCustomPrimitive ) $currentCustomPrimitiveIsListed = 1;
+    if ( $label == $currentCustomPrimitive ) $currentCustomPrimitiveIsListed = 1;
     menuItem -p ($fullParentPath+"|OptionMenu") -l $label;
     optionVar -sva "liquidCustomPrimitives" ($ribPath+$f);
   }
@@ -814,7 +814,7 @@ proc liquidShaderNodesCustomPrimitiveBuildCustomMenu( string $parent, string $no
   setParent $oldParent;
 
   // set the menu to the attribute's current value
-  if ( $currentCustomPrimitiveIsListed ) optionMenuGrp -e -v (basenameEx($currentCustomPrimitive)) $parent;
+  if ( $currentCustomPrimitiveIsListed ) optionMenuGrp -e -v $currentCustomPrimitive $parent;
   else setAttr -type "string" $nodeDotAttr ($ribPath+$files[0]);
 }
 
@@ -915,6 +915,7 @@ global proc liquidAssignSurfaceShaderToSelected( string $node )
   string $selected[] = `ls  -type "pfxToon"
                             -type "pfxHair"
                             -type "locator"
+                            -type "nurbsCurve"
                             -dag -sl`;
   //trace (stringArrayToString( $selected, ", "));
 
@@ -938,6 +939,7 @@ global proc liquidAssignVolumeShaderToSelected( string $node )
   string $selected[] = `ls  -type "pfxToon"
                             -type "pfxHair"
                             -type "locator"
+                            -type "nurbsCurve"
                             -dag -sl`;
   //trace (stringArrayToString( $selected, ", "));
 

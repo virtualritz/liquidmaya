@@ -788,6 +788,8 @@ global proc liquidAE_LifStringOverrideDisplayAll()
       string $a;
       for ( $a in $userAttr ) {
 
+        if ( !objExists( ($gLiquid_currentAENode+"."+$a) ) ) continue;
+
         // early exit if we have a message or string attr.
         if ( $version >= 8.0 && `attributeQuery -node $gLiquid_currentAENode -message $a` ) continue;
         if ( `getAttr -type ($gLiquid_currentAENode+"."+$a)` != "string" ) continue;
