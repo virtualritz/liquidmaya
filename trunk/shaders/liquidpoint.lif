@@ -86,8 +86,12 @@ group "Shadows";
 	
 	group "AOVs" "close";
 
-		param "__shadow";
-		name "__shadow";
+		param "__shadowC";
+		name "__shadowC";
+		desc "";
+		
+		param "__shadowF";
+		name "__shadowF";
 		desc "";
 
 		param "__unshadowed_Cl";
