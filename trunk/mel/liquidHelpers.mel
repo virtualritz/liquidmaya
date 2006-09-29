@@ -426,7 +426,10 @@ global proc string liquidAutoShadowName( string $lightShape )
   int $shapeOnlyInName = `getAttr liquidGlobals.shapeOnlyInShadowNames`;
 
   if ( !$shapeOnlyInName ) {
-    $shadowname += basenameEx(`file -q -shn -sn`);
+    string $scenename = basenameEx(`file -q -shn -sn`);
+    if ( $scenename == "" ) $scenename = "untitled";
+
+    $shadowname += $scenename;
     $shadowname += "_";
   }
 
