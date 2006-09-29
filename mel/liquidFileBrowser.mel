@@ -81,7 +81,7 @@ proc lfbw_makeShaderPreview()
     warning ("[liquid] preview does not support "+$shaderType+" shader !");
     return;
   }
-  
+
   string  $primitive = `getAttr liquidGlobals.previewPrimitive`;
   string  $primArg = "-sphere";
 
@@ -254,7 +254,13 @@ global proc liquidFileBrowserWindow_updateFinder( int $doLoad, string $filemask,
 
   string $path = dirname( $newPath );
 
+  // when double-clicking an item, the window may be destroyed
+  // before the refresh, so we bail out here if need be...
+  //
+  if ( !`control -q -ex lfb_makePreview` ) return;
+
   // if the directory is not writable, do not allow preview creation
+  //
   if ( `filetest -w $path` ) control -e -en 1 lfb_makePreview;
   else control -e -en 0 lfb_makePreview;
 
@@ -306,15 +312,15 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
 
 		//	On Windows, fileBrowserDialog will return
 		//	false if a system dialog cannot be created
-		//	due to lack of sufficient resources.  In 
+		//	due to lack of sufficient resources.  In
 		//	that case, we will go through the standard
 		//	MEL-based code.
 		//
 		string $cb = ("liquidFileBrowserWindow_wrapCallback \"" + $callback + "\"");
-		
-		int $dialogSuccess = `fileBrowserDialog 
+
+		int $dialogSuccess = `fileBrowserDialog
 									-fc $cb
-									-m 0 
+									-m 0
 									-fl $filemask
 									-an "Choose File"
 									`;
@@ -325,7 +331,7 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
 			return;
 		}
 	}
-	
+
   if ( `window -q -ex liquidFileBrowserWindow` ) deleteUI liquidFileBrowserWindow;
   window -title "Liquid Browser" -menuBar true -width 400 -height 300 liquidFileBrowserWindow;
 
@@ -368,7 +374,7 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
     button -label "Load" -c ("liquidFileBrowserWindow_load $gLiquidFileBrowserWindowFileMask \""+$callback+"\";") lfb_ok;
     button -label "Cancel" -c "deleteUI liquidFileBrowserWindow" lfb_cancel;
     setParent ..;
-	
+
   // setup the layout
   formLayout  -e
               -af  lfb_fileMask       top     5
