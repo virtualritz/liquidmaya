@@ -896,14 +896,14 @@ global proc liquidAssignLightShaderToSelected( string $node )
       addAttr -ln liquidLightShaderNode -at message $sel;
     }
 
-    if ( !isConnected( ($node+".assignedObjects"), ($sel+".liquidLightShaderNode" ) ) )
-      connectAttr -f ($node+".assignedObjects") ($sel+".liquidLightShaderNode");
+    if ( !isConnected( ($node+".liqAssignedObjects"), ($sel+".liquidLightShaderNode" ) ) )
+      connectAttr -f ($node+".liqAssignedObjects") ($sel+".liquidLightShaderNode");
   }
 }
 
 global proc liquidSelectAssignedToLightShader( string $node )
 {
-  select (`listConnections ($node+".assignedObjects")`);
+  select (`listConnections ($node+".liqAssignedObjects")`);
 }
 
 global proc liquidAssignSurfaceShaderToSelected( string $node )

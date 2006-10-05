@@ -647,6 +647,8 @@ global proc liquidAE_LifStringOverride( string $nodeDotAttr, string $ctl )
 global proc liquidAE_LifStringOverrideDisplay( int $override, string $ctl )
 {
   // remember the original parent
+  if ( !objExists( $ctl ) ) return ;
+
   string $originalParent = `setParent -q`;
 
   // compute the font and the full path to the control
