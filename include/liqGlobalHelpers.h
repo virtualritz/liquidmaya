@@ -57,7 +57,7 @@ char * basename( const char *filename );
 // Moritz: this macro is needed to get absolute pathnames for
 // creating RIBs, archives and the renderscript in case the user
 // has choosen to have all paths relative
-#define LIQ_GET_ABS_REL_FILE_NAME(rel, name, dir) ((rel) ? ((dir) + (name)) : (name))
+#define LIQ_GET_ABS_REL_FILE_NAME(rel, name, dir) ( ( rel && name.index('/') != 0 )? ((dir) + (name)) : (name))
 
 
 MStringArray findAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
@@ -87,5 +87,7 @@ liquidlong liquidHash( const char *str );
 MString liquidSanitizePath( MString & inputString );
 MString removeEscapes( const MString & inputString );
 MObject getNodeByName( MString name, MStatus *returnStatus );
+
+
 
 #endif

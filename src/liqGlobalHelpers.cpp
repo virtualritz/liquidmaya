@@ -461,7 +461,7 @@ MString getFullPathFromRelative ( const MString & filename ) {
   MString ret;
   extern MString liqglo_projectDir;
 
-  if( filename.index( 0 ) != '/' ) // relative path, add prefix project folder
+  if( filename.index( '/' ) != '0' ) // relative path, add prefix project folder
     ret = liqglo_projectDir + "/" + filename;
   else
     ret = filename;
@@ -887,4 +887,5 @@ MObject getNodeByName( MString name, MStatus *returnStatus )
 
   return node;
 }
+
 

@@ -244,7 +244,7 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(nAttr.setConnectable(false));
 
   aGLPreviewTexture = nAttr.createColor("GLPreviewTexture", "gpt");
-  nAttr.setDefault( 0.0, 0.0, 0.0 );
+  nAttr.setDefault( -1.0, -1.0, -1.0 );
   nAttr.setDisconnectBehavior( MFnAttribute::kReset );
   MAKE_INPUT(nAttr);
 
@@ -252,6 +252,7 @@ MStatus liqSurfaceNode::initialize()
 
   aColor = nAttr.createColor("color", "cs");
   nAttr.setDefault( 1.0, 1.0, 1.0 );
+  nAttr.setDisconnectBehavior( MFnAttribute::kReset );
   MAKE_INPUT(nAttr);
 
   aOpacity = nAttr.createColor("opacity", "os");
@@ -516,10 +517,15 @@ MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
 
     // init shader
     MStatus status;
+    MFloatVector theColor( 0.0f, 0.0f, 0.0f );
     MFloatVector& cColor  = block.inputValue(aColor).asFloatVector();
     MFloatVector& cTrans  = block.inputValue(aOpacity).asFloatVector();
-    MPlug GLtexPlug( thisMObject(), aGLPreviewTexture);
-    if ( GLtexPlug.isConnected() ) cColor = block.inputValue(aGLPreviewTexture).asFloatVector();
+    MFloatVector& ctex    = block.inputValue(aGLPreviewTexture).asFloatVector();
+
+    // exploit maya's free openGL preview
+    if ( ctex != MFloatVector( -1.0, -1.0, -1.0 ) ) theColor = ctex;
+    else theColor = cColor;
+
     MFloatVector resultColor( 0.0, 0.0, 0.0 );
     MFloatVector resultTrans( cTrans );
 
@@ -540,7 +546,7 @@ MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
       float cosln = cam * surfaceNormal;
       if ( cosln > 0.0f ) {
         float diff = cosln * cosln * Kd + Ka;
-        resultColor = diff * cColor;
+        resultColor = diff * theColor;
       }
 
     } else {
@@ -580,9 +586,9 @@ MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
         }
       }
 
-      resultColor[0] *= cColor[0];
-      resultColor[1] *= cColor[1];
-      resultColor[2] *= cColor[2];
+      resultColor[0] *= theColor[0];
+      resultColor[1] *= theColor[1];
+      resultColor[2] *= theColor[2];
 
     }
 

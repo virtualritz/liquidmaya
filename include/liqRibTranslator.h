@@ -49,6 +49,8 @@
 #include <maya/MArgList.h>
 #include <maya/MFloatArray.h>
 
+#include <map>
+
 
 class liqRibTranslator : public MPxCommand {
 public:
@@ -116,10 +118,10 @@ private: // Data
   std::vector<structJob>  envList;  // environments list
   std::vector<structJob>  txtList;  // make textures list
 
-  MDagPathArray shadowLightArray;
-  MDagPath activeCamera;
+  // MDagPathArray shadowLightArray;            //  UN-USED GLOBAL
+  // MDagPath activeCamera;                     //  UN-USED GLOBAL
 
-  const MString m_default_tmp_dir;
+  // const MString m_default_tmp_dir;           //  UN-USED GLOBAL
   MString m_systemTempDirectory;
 
   liquidlong frameFirst;
@@ -159,66 +161,82 @@ private: // Data
     CLOSE_ON_NEXT_FRAME   = 3
   } shutterConfig;
 
-  bool cleanShadows;
-  bool cleanTextures;
-  liquidlong pixelSamples;
-  float shadingRate;
-  liquidlong bucketSize[2];
-  liquidlong gridSize;
-  liquidlong textureMemory;
-  liquidlong eyeSplits;
-  float othreshold;
-  bool renderAllCameras;   // Render all cameras, or only active ones
-  bool ignoreFilmGate;
-  double fov_ratio;
-  int cam_width, cam_height;
-  float aspectRatio;
-  liquidlong quantValue;
-  MString renderCamera;
-  MString baseShadowName;
-  bool createOutputDirectories;
+  bool        cleanShadows;                // UN-USED GLOBAL
+  bool        cleanTextures;               // UN-USED GLOBAL
+  liquidlong  pixelSamples;
+  float       shadingRate;
+  liquidlong  bucketSize[2];
+  liquidlong  gridSize;
+  liquidlong  textureMemory;
+  liquidlong  eyeSplits;
+  float       othreshold;
+  // bool        renderAllCameras;   // Render all cameras, or only active ones     UN-USED GLOBAL
+  bool        ignoreFilmGate;
+  double      fov_ratio;
+  int         cam_width,
+              cam_height;
+  float       aspectRatio;
+  liquidlong  quantValue;
+  MString     renderCamera;
+  MString     baseShadowName;
+  bool        createOutputDirectories;
 
   static MString magic;
 
   // Data used to construct output file names
-  MString outFormat;
-  MString outFormatString;
-  MString outExt;
-  liquidlong outFormatControl;
-  MString extension;
-  MString imageName;
+  MString       outFormat;
+  MString       outExt;
+  MString       extension;
+  MString       imageName;
+
+  MString       m_beautyRibFile;
+  struct MStringCmp
+  {
+    bool operator() (const MString &a, const MString &b) const
+    {
+      return strcmp( a.asChar(), b.asChar() ) < 0;
+    }
+  };
+  std::map<MString, MString, MStringCmp> m_shadowRibFile;
+
+  // MString     outFormatString;                 // UN-USED GLOBAL
+  // liquidlong  outFormatControl;                // UN-USED GLOBAL
 
   // Data used for choosing output method
-  MString riboutput;
+  // MString riboutput;                           // UN-USED GLOBAL
   bool launchRender;
 
   // Hash table for scene
   liqRibHT *htable;
 
   // Depth in attribute blocking
+  // NOTE : used in liqRibTranslator::doAttributeBlocking,
+  // but this method isn't called anywhere.
   int attributeDepth;
 
 private :
 
   // Old global values
-  int m_errorMode;
-  M3dView m_activeView;
-  MString m_pixDir;
-  MString m_tmpDir;
-  MString m_ribDirG;
-  MString m_texDirG;
-  MString m_tmpDirG;
-  bool m_animation;
-  bool m_useFrameExt;
-  bool m_shadowRibGen;
-  double m_blurTime;
-  MComputation m_escHandler;
-  float m_rgain, m_rgamma;
-  bool m_justRib;
-  liquidlong m_minCPU;
-  liquidlong m_maxCPU;
+  int           m_errorMode;
+  M3dView       m_activeView;
+  MString       m_pixDir;
+  MString       m_tmpDir;
+  bool          m_noDirCheck;
+  bool          m_animation;
+  bool          m_useFrameExt;
+  // bool          m_shadowRibGen;                // UN-USED GLOBAL
+  double        m_blurTime;
+  MComputation  m_escHandler;
+  float         m_rgain,
+                m_rgamma;
+  bool          m_justRib;
+  liquidlong    m_minCPU;
+  liquidlong    m_maxCPU;
 
-  double m_cropX1, m_cropX2, m_cropY1, m_cropY2;
+  double        m_cropX1,
+                m_cropX2,
+                m_cropY1,
+                m_cropY2;
 
 #ifdef _WIN32
   int RiNColorSamples;
@@ -324,11 +342,11 @@ private :
   MString m_postFrameCommand;
 
   MString m_shaderPath;
-  
+
   bool	  m_bakeNonRasterOrient;
   bool	  m_bakeNoCullBackface;
   bool	  m_bakeNoCullHidden;
-  
+
   MString m_preFrameRIB;
   MString m_preWorldRIB;
   MString m_postWorldRIB;

@@ -353,6 +353,8 @@ global proc liquidCropWindowViewer()
 
 global proc liquidTextureViewer( string $file )
 {
+  $file = liquidVarSubstitute( $file );
+
   if ( !`filetest -r $file` ) {
     warning ("liquidTextureViewer: could not open \""+$file+"\".");
     return;
@@ -406,6 +408,13 @@ global proc string liquidVarSubstitute( string $str )
   while (gmatch( $result, "*$SCN*"))    $result = substitute("\$SCN", $result, $scn );
   while (gmatch( $result, "*$F*"))      $result = substitute("\$F", $result, $frame );
   while (gmatch( $result, "*#*"))       $result = substitute("#", $result, $padded );
+  while (gmatch( $result, "*%*%*")) {
+    string $envvar = match("%[A-Za-z0-9_]+%", $result);
+    string $envvalue = substituteAllString( $envvar, "%", "");
+    trace $envvar;
+    $envvalue = getenv($envvalue);
+    $result = substitute($envvar, $result, $envvalue);
+  }
 
   return $result;
 }

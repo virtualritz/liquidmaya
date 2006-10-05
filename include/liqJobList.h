@@ -58,6 +58,9 @@ private:
   bool doShadows;
   bool doSingleShadows;
   bool doCamera;
+  bool doShadowLights;
+  bool maps;
+  bool shorter;
   bool fullPath;
   bool debug;
   MStringArray result;
