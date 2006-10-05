@@ -1,11 +1,14 @@
 light "liquiddistant";
 desc "Standard Maya-Like Distant Light\nPart of Liquid.\n";
 
+
+param "__category";
+name "__category";
+
 param "intensity";
 name "Intensity";
 desc "";
 type "slider";
-range [ 0 1 ];
 
 param "lightcolor";
 name "Light Color";
@@ -20,6 +23,9 @@ param "__nonspecular";
 name "Non Specular";
 desc "";
 type "bool";
+
+param "lightID";
+name "lightID";
 
 group "Shadow";
 
@@ -57,18 +63,18 @@ group "Shadow";
 
 	group "AOVs" "close";
 
-		param "__shadowC";
-		name "__shadowC";
-		desc "";
-		
 		param "__shadowF";
 		name "__shadowF";
+		desc "";
+
+		param "__shadowC";
+		name "__shadowC";
 		desc "";
 
 		param "__unshadowed_Cl";
 		name "__unshadowed_Cl";
 		desc "";
-	
+
 	group "end";
 
 group "end";

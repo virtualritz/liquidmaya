@@ -1,11 +1,12 @@
 light "liquidpoint";
 desc "Standard Maya-Like Point Light\nPart of Liquid.\n";
 
+param "__category";
+name "__category";
+
 param "intensity";
 name "Intensity";
-desc "";
 type "slider";
-range [ 0 1 ];
 
 param "lightcolor";
 name "Light Color";
@@ -26,10 +27,13 @@ desc "";
 type "selector";
 range [ None 0 Linear 1 Quadratic 2 Cubic 3 ];
 
+param "lightID";
+name "lightID";
+
 group "Shadows";
 
 	group "Maps" "close";
-	
+
 		param "shadownamepx";
 		name "shadownamepx";
 		type "shadow";
@@ -53,7 +57,7 @@ group "Shadows";
 		param "shadownamenz";
 		name "shadownamenz";
 		type "shadow";
-		
+
 	group "end";
 
 	param "shadowbias";
@@ -83,21 +87,21 @@ group "Shadows";
 	param "shadowcolor";
 	name "Color";
 	desc "";
-	
+
 	group "AOVs" "close";
+
+		param "__shadowF";
+		name "__shadowF";
+		desc "";
 
 		param "__shadowC";
 		name "__shadowC";
-		desc "";
-		
-		param "__shadowF";
-		name "__shadowF";
 		desc "";
 
 		param "__unshadowed_Cl";
 		name "__unshadowed_Cl";
 		desc "";
-		
+
 	group "end";
 
 group "end";
