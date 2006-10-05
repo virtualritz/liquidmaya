@@ -63,9 +63,12 @@ MSyntax liqJobList::syntax()
 {
   MSyntax syn;
 
+  syn.addFlag("s",   "short");
   syn.addFlag("sh",  "shadows");
   syn.addFlag("ssh", "singleShadows");
+  syn.addFlag("shl", "shadowLights");
   syn.addFlag("cam", "camera");
+  syn.addFlag("m",   "maps");
   syn.addFlag("fp",  "fullPath");
   syn.addFlag("d",   "debug");
 
@@ -96,10 +99,28 @@ MStatus liqJobList::doIt(const MArgList& args)
     doCamera = true;
   }
 
+  doShadowLights = false;
+  flagIndex = args.flagIndex("shl", "shadowLights");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    doShadowLights = true;
+  }
+
   fullPath = false;
   flagIndex = args.flagIndex("fp", "fullPath");
   if (flagIndex != MArgList::kInvalidArgIndex) {
     fullPath = true;
+  }
+
+  maps = false;
+  flagIndex = args.flagIndex("m", "maps");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    maps = true;
+  }
+
+  shorter = false;
+  flagIndex = args.flagIndex("s", "short");
+  if (flagIndex != MArgList::kInvalidArgIndex) {
+    shorter = true;
   }
 
   debug = false;
@@ -108,7 +129,8 @@ MStatus liqJobList::doIt(const MArgList& args)
     debug = true;
   }
 
-  if ( !doShadows && !doSingleShadows && !doCamera ) {
+
+  if ( !doShadows && !doSingleShadows && !doCamera && !doShadowLights ) {
     status = MS::kFailure;
     MString err( "LiquidJobList : Not enough valid flags specified" );
     status.perror( err );
@@ -116,6 +138,19 @@ MStatus liqJobList::doIt(const MArgList& args)
     return status;
   }
 
+  if ( doShadowLights ) {
+    doShadows = false;
+    doSingleShadows = false;
+    doCamera = false;
+  }
+
+  if ( doShadows || doSingleShadows || doCamera ) {
+    doShadowLights = false;
+  }
+
+  if ( shorter ) {
+    fullPath = false;
+  }
 
   result.clear();
 
@@ -188,14 +223,39 @@ MStatus liqJobList::redoIt()
 
     // get the shadows
     //
-    if ( doShadows || doSingleShadows ) {
+    if ( doShadows || doSingleShadows || doShadowLights ) {
       if ( debug ) cout <<"  do shadows..."<<flush;
 
       while ( iterShad != ribTranslator.jobList.end() ) {
-        if ( doShadows && iterShad->isShadow && iterShad->everyFrame ) result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->ribFileName, liqglo_projectDir) );
-        if ( doSingleShadows && iterShad->isShadow && !iterShad->everyFrame ) {
-          result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->ribFileName, liqglo_projectDir) );
+
+        if ( iterShad->isShadow ) {
+
+          if ( doShadows && iterShad->everyFrame ) {
+            if ( maps ) {
+              if ( shorter ) result.append( iterShad->imageName.substring(iterShad->imageName.rindex('/')+1, iterShad->imageName.length()-1) );
+              else result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->imageName, liqglo_textureDir) );
+            } else {
+              if ( shorter ) result.append( iterShad->ribFileName.substring(iterShad->ribFileName.rindex('/')+1, iterShad->ribFileName.length()-1) );
+              else result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->ribFileName, liqglo_projectDir) );
+            }
+          }
+
+          if ( doSingleShadows && !iterShad->everyFrame ) {
+            if ( maps ) {
+              if ( shorter ) result.append( iterShad->imageName.substring(iterShad->imageName.rindex('/')+1, iterShad->imageName.length()-1) );
+              else result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->imageName, liqglo_textureDir) );
+            } else {
+              if ( shorter ) result.append( iterShad->ribFileName.substring(iterShad->ribFileName.rindex('/')+1, iterShad->ribFileName.length()-1) );
+              else result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->ribFileName, liqglo_projectDir) );
+            }
+          }
+
+          if ( doShadowLights ) {
+            result.append(iterShad->name);
+          }
+
         }
+
         ++iterShad;
       }
 

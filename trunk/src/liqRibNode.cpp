@@ -957,7 +957,7 @@ MObject liqRibNode::findShadingGroup( const MDagPath& path )
 {
   LIQDEBUGPRINTF( "-> finding rib node shading group\n");
   MSelectionList objects;
-  objects.add( path );
+  objects.add( path, MObject::kNullObj, false );
   MObjectArray setArray;
 
   // Get all of the sets that this object belongs to

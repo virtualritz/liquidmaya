@@ -94,6 +94,7 @@ static const char *LIQUIDVERSION =
 // Maya headers
 #include <maya/MAnimControl.h>
 #include <maya/MFileIO.h>
+#include <maya/MFileObject.h>
 #include <maya/MFnLight.h>
 #include <maya/MFnTransform.h>
 #include <maya/MGlobal.h>
@@ -214,7 +215,7 @@ void liqRibTranslator::freeShaders( void )
   while ( iter != m_shaders.end() ) {
     int k = 0;
     while ( k < iter->numTPV ) {
-      iter->freeShader( );
+      iter->freeShader();
       k++;
     }
     ++iter;
@@ -491,8 +492,8 @@ liqRibTranslator::liqRibTranslator()
   liqglo_noSingleFrameShadows = false;
   liqglo_singleFrameShadowsOnly = false;
   m_justRib = false;
-  cleanShadows = 0;                 // render shadows
-  cleanTextures = 0;                // render shadows
+  cleanShadows = 0;                 // render shadows     // UN-USED GLOBAL
+  cleanTextures = 0;                // render shadows     // UN-USED GLOBAL
   frameFirst = 1;                   // range
   frameLast = 1;
   frameBy = 1;
@@ -503,7 +504,7 @@ liqRibTranslator::liqRibTranslator()
   m_animation = false;
   m_useFrameExt = true;  // Use frame extensions
   outExt = "tif";
-  riboutput = "liquid.rib";
+  // riboutput = "liquid.rib";                UN-USED GLOBAL
   liqglo_motionSamples = 2;
   liqglo_FPS = 24.0;
   width = 360;
@@ -511,7 +512,7 @@ liqRibTranslator::liqRibTranslator()
   aspectRatio = 1.0;
   liqglo_outPadding = 0;
   ignoreFilmGate = true;
-  renderAllCameras = true;
+  // renderAllCameras = true;               UN-USED GLOBAL
   m_lazyCompute = false;
   m_outputShadersInShadows = false;
   m_outputShadersInDeepShadows = false;
@@ -539,9 +540,9 @@ liqRibTranslator::liqRibTranslator()
   liqglo_projectDir = m_systemTempDirectory;
   m_pixDir = "rmanpix/";
   m_tmpDir = "rmantmp/";
-  m_ribDirG.clear();
-  m_texDirG.clear();
-  m_tmpDirG.clear();
+  //m_ribDirG.clear();
+  //m_texDirG.clear();
+  //m_tmpDirG.clear();
   m_alfredTags.clear();
   m_alfredServices.clear();
   m_defGenKey.clear();
@@ -658,18 +659,16 @@ liqRibTranslator::liqRibTranslator()
   liqglo_hider = htHidden;
 
   liqglo_shaderPath = "&:@:.:~:rmanshader";
-
   liqglo_texturePath = "&:@:.:~:rmantex";
-
   liqglo_archivePath = "&:@:.:~:rib";
-
   liqglo_proceduralPath = "&:@:.:~";
 
-
-
+  m_noDirCheck      = false;
   liqglo_ribDir = "rib";
   liqglo_textureDir = "rmantex";
 
+  m_beautyRibFile.clear();
+  m_shadowRibFile.clear();
 
   MString tmphome( getenv( "LIQUIDHOME" ) );
 
@@ -692,8 +691,19 @@ liqRibTranslator::~liqRibTranslator()
   //#ifdef _WIN32
   // lfree( m_systemTempDirectory );
   //#endif
+  jobList.clear();
+  shadowList.clear();
+  refList.clear();
+  envList.clear();
+  txtList.clear();
+  m_shadowRibFile.clear();
+  m_displays.clear();
+  m_channels.clear();
+  freeShaders();
+
   LIQDEBUGPRINTF( "-> dumping unfreed memory.\n" );
   if ( debugMode ) ldumpUnfreed();
+
 }
 
 /**
@@ -740,51 +750,58 @@ MSyntax liqRibTranslator::syntax()
   syntax.addFlag("nrs",   "noRenderScript");
   syntax.addFlag("err",   "errHandler");
   syntax.addFlag("sdb",   "shaderDebug");
-  syntax.addFlag("n",     "sequence",         MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
-  syntax.addFlag("fl",    "frameList",        MSyntax::kString);
-  syntax.addFlag("m",     "mbSamples",        MSyntax::kLong);
+  syntax.addFlag("n",     "sequence",             MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+  syntax.addFlag("fl",    "frameList",            MSyntax::kString);
+  syntax.addFlag("m",     "mbSamples",            MSyntax::kLong);
   syntax.addFlag("dbs",   "defBlock");
-  syntax.addFlag("cam",   "camera",           MSyntax::kString);
+  syntax.addFlag("cam",   "camera",               MSyntax::kString);
   syntax.addFlag("rcam",  "rotateCamera");
-  syntax.addFlag("s",     "samples",          MSyntax::kLong);
-  syntax.addFlag("rnm",   "ribName",          MSyntax::kString);
-  syntax.addFlag("pd",    "projectDir",       MSyntax::kString);
+  syntax.addFlag("s",     "samples",              MSyntax::kLong);
+  syntax.addFlag("rnm",   "ribName",              MSyntax::kString);
+  syntax.addFlag("pd",    "projectDir",           MSyntax::kString);
   syntax.addFlag("rel",   "relativeDirs");
-  syntax.addFlag("prm",   "preFrameMel",      MSyntax::kString);
-  syntax.addFlag("pom",   "postFrameMel",     MSyntax::kString);
-  syntax.addFlag("rid",   "ribdir",           MSyntax::kString);
-  syntax.addFlag("txd",   "texdir",           MSyntax::kString);
-  syntax.addFlag("tmd",   "tmpdir",           MSyntax::kString);
-  syntax.addFlag("pid",   "picdir",           MSyntax::kString);
-  syntax.addFlag("pec",   "preCommand",       MSyntax::kString);
-  syntax.addFlag("poc",   "postJobCommand",   MSyntax::kString);
-  syntax.addFlag("pof",   "postFrameCommand", MSyntax::kString);
-  syntax.addFlag("prf",   "preFrameCommand",  MSyntax::kString);
-  syntax.addFlag("rec",   "renderCommand",    MSyntax::kString);
-  syntax.addFlag("rgc",   "ribgenCommand",    MSyntax::kString);
-  syntax.addFlag("blt",   "blurTime",         MSyntax::kDouble);
-  syntax.addFlag("sr",    "shadingRate",      MSyntax::kDouble);
-  syntax.addFlag("bs",    "bucketSize",       MSyntax::kLong, MSyntax::kLong);
-  syntax.addFlag("pf",    "pixelFilter",      MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
-  syntax.addFlag("gs",    "gridSize",         MSyntax::kLong);
-  syntax.addFlag("txm",   "texmem",           MSyntax::kLong);
-  syntax.addFlag("es",    "eyeSplits",        MSyntax::kLong);
-  syntax.addFlag("ar",    "aspect",           MSyntax::kDouble);
-  syntax.addFlag("x",     "width",            MSyntax::kLong);
-  syntax.addFlag("y",     "height",           MSyntax::kLong);
-  syntax.addFlag("cw",    "cropWindow",       MSyntax::kLong, MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+  syntax.addFlag("prm",   "preFrameMel",          MSyntax::kString);
+  syntax.addFlag("pom",   "postFrameMel",         MSyntax::kString);
+  syntax.addFlag("rid",   "ribdir",               MSyntax::kString);
+  syntax.addFlag("txd",   "texdir",               MSyntax::kString);
+  syntax.addFlag("tmd",   "tmpdir",               MSyntax::kString);
+  syntax.addFlag("pid",   "picdir",               MSyntax::kString);
+  syntax.addFlag("ssp",   "shaderSearchPath",     MSyntax::kString);
+  syntax.addFlag("tsp",   "textureSearchPath",    MSyntax::kString);
+  syntax.addFlag("asp",   "archiveSearchPath",    MSyntax::kString);
+  syntax.addFlag("psp",   "proceduralSearchPath", MSyntax::kString);
+  syntax.addFlag("ndc",   "noDirCheck");
+  syntax.addFlag("pec",   "preCommand",           MSyntax::kString);
+  syntax.addFlag("poc",   "postJobCommand",       MSyntax::kString);
+  syntax.addFlag("pof",   "postFrameCommand",     MSyntax::kString);
+  syntax.addFlag("prf",   "preFrameCommand",      MSyntax::kString);
+  syntax.addFlag("rec",   "renderCommand",        MSyntax::kString);
+  syntax.addFlag("rgc",   "ribgenCommand",        MSyntax::kString);
+  syntax.addFlag("blt",   "blurTime",             MSyntax::kDouble);
+  syntax.addFlag("sr",    "shadingRate",          MSyntax::kDouble);
+  syntax.addFlag("bs",    "bucketSize",           MSyntax::kLong, MSyntax::kLong);
+  syntax.addFlag("pf",    "pixelFilter",          MSyntax::kLong, MSyntax::kLong, MSyntax::kLong);
+  syntax.addFlag("gs",    "gridSize",             MSyntax::kLong);
+  syntax.addFlag("txm",   "texmem",               MSyntax::kLong);
+  syntax.addFlag("es",    "eyeSplits",            MSyntax::kLong);
+  syntax.addFlag("ar",    "aspect",               MSyntax::kDouble);
+  syntax.addFlag("x",     "width",                MSyntax::kLong);
+  syntax.addFlag("y",     "height",               MSyntax::kLong);
+  syntax.addFlag("cw",    "cropWindow",           MSyntax::kDouble, MSyntax::kDouble, MSyntax::kDouble, MSyntax::kDouble);
   syntax.addFlag("def",   "deferred");
   syntax.addFlag("ndf",   "noDef");
-  syntax.addFlag("pad",   "padding",          MSyntax::kLong);
+  syntax.addFlag("pad",   "padding",              MSyntax::kLong);
   syntax.addFlag("rgo",   "ribGenOnly");
   syntax.addFlag("sfso",  "singleFrameShadowsOnly");
   syntax.addFlag("nsfs",  "noSingleFrameShadows");
   syntax.addFlag("rv",    "renderView");
   syntax.addFlag("rvl",   "renderViewlocal");
-  syntax.addFlag("rvp",   "renderViewPort",  MSyntax::kLong);
-  syntax.addFlag("shn",   "shotName",        MSyntax::kString);
-  syntax.addFlag("shv",   "shotVersion",     MSyntax::kString);
-  syntax.addFlag("lyr",   "layer",           MSyntax::kString);
+  syntax.addFlag("rvp",   "renderViewPort",       MSyntax::kLong);
+  syntax.addFlag("shn",   "shotName",             MSyntax::kString);
+  syntax.addFlag("shv",   "shotVersion",          MSyntax::kString);
+  syntax.addFlag("lyr",   "layer",                MSyntax::kString);
+  syntax.addFlag("btr",   "beautyRib",            MSyntax::kString);
+  syntax.addFlag("shr",   "shadowRib",            MSyntax::kString, MSyntax::kString);
 
   return syntax;
 }
@@ -1145,11 +1162,37 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
     } else if ((arg == "-shv") || (arg == "-shotVersion")) {
       LIQCHECKSTATUS(status, "error in -shotVersion parameter");  i++;
       liqglo_shotVersion = args.asString( i, &status );
+    } else if ((arg == "-ndc") || (arg == "-noDirCheck")) {
+      LIQCHECKSTATUS(status, "error in -noDirCheck parameter");  i++;
+      m_noDirCheck = true;
+    } else if ((arg == "-btr") || (arg == "-beautyRib")) {
+      LIQCHECKSTATUS(status, "error in -beautyRib parameter");  i++;
+      m_beautyRibFile = args.asString( i, &status );
+    } else if ((arg == "-shr") || (arg == "-shadowRib")) {
+      LIQCHECKSTATUS(status, "error in -shadowRib parameter");  i++;
+      MString shape = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -shadowRib parameter : could not get shape argument");  i++;
+      MString ribfile = args.asString( i, &status );
+      LIQCHECKSTATUS(status, "error in -shadowRib parameter : could not get ribfile argument");
+      m_shadowRibFile[shape] = ribfile;
+    } else if ((arg == "-ssp") || (arg == "-shaderSearchPath")) {
+      LIQCHECKSTATUS(status, "error in -shaderSearchPath parameter");  i++;
+      liqglo_shaderPath = args.asString( i, &status );
+      liqglo_shaderPath = removeEscapes( parseString( liqglo_shaderPath ) );
+    } else if ((arg == "-tsp") || (arg == "-textureSearchPath")) {
+      LIQCHECKSTATUS(status, "error in -textureSearchPath parameter");  i++;
+      liqglo_texturePath = args.asString( i, &status );
+      liqglo_texturePath = removeEscapes( parseString( liqglo_texturePath ) );
+    } else if ((arg == "-asp") || (arg == "-archiveSearchPath")) {
+      LIQCHECKSTATUS(status, "error in -archiveSearchPath parameter");  i++;
+      liqglo_archivePath = args.asString( i, &status );
+      liqglo_archivePath = removeEscapes( parseString( liqglo_archivePath ) );
+    } else if ((arg == "-psp") || (arg == "-proceduralSearchPath")) {
+      LIQCHECKSTATUS(status, "error in -proceduralSearchPath parameter");  i++;
+      liqglo_proceduralPath = args.asString( i, &status );
+      liqglo_proceduralPath = removeEscapes( parseString( liqglo_proceduralPath ) );
     }
   }
-
-
-  setSearchPaths();
 
   return MS::kSuccess;
 }
@@ -2087,11 +2130,11 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "cleanRenderScript", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanRenderScript );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "cleanTex", &gStatus );
-  if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanTextures );
+  gPlug = rGlobalNode.findPlug( "cleanTex", &gStatus );           // UN-USED GLOBAL
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanTextures ); // UN-USED GLOBAL
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "cleanShad", &gStatus );
-  if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanShadows );
+  gPlug = rGlobalNode.findPlug( "cleanShad", &gStatus );          // UN-USED GLOBAL
+  if ( gStatus == MS::kSuccess ) gPlug.getValue( cleanShadows );  // UN-USED GLOBAL
   gStatus.clear();
   gPlug = rGlobalNode.findPlug( "justRib", &gStatus );
   if ( gStatus == MS::kSuccess ) gPlug.getValue( m_justRib );
@@ -2214,7 +2257,11 @@ void liqRibTranslator::liquidReadGlobals()
   }
 }
 
-
+/**
+ *  This function builds the output paths, checks they are valid
+ *  and eventually create missing directories if need be.
+ *  If you used the -noDirCheck flag, the validation phase will be skipped.
+ */
 bool liqRibTranslator::verifyOutputDirectories()
 {
 #ifdef _WIN32
@@ -2237,8 +2284,11 @@ bool liqRibTranslator::verifyOutputDirectories()
   chdir(liqglo_projectDir.asChar());
 
   bool problem = false;
+
+  // RIB DIRECTORY
+  //
   MString tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_ribDir, liqglo_projectDir );
-  if ( ( access( tmp_path.asChar(), dirMode )) == -1 ) {
+  if ( !m_noDirCheck && ( access( tmp_path.asChar(), dirMode )) == -1 ) {
     if ( createOutputDirectories ) {
       if ( MKDIR( tmp_path.asChar(), mkdirMode ) != 0 ) {
 
@@ -2253,10 +2303,14 @@ bool liqRibTranslator::verifyOutputDirectories()
     }
   } else LIQ_ADD_SLASH_IF_NEEDED( liqglo_ribDir );
 
+
+  // TEXTURE / SHD DIRECTORY
+  //
   if ( liqglo_textureDir.index( '/' ) == 0 ) {
-    tmp_path = m_pixDir;
+    tmp_path = liqglo_textureDir;
   } else tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_textureDir, liqglo_projectDir );
-  if ( ( access( tmp_path.asChar(), dirMode ) ) == -1 ) {
+
+  if ( !m_noDirCheck && ( access( tmp_path.asChar(), dirMode ) ) == -1 ) {
     if ( createOutputDirectories ) {
       if ( MKDIR( tmp_path.asChar(), mkdirMode ) != 0 ) {
         DIR_CREATION_WARNING( "Texture", tmp_path );
@@ -2270,10 +2324,13 @@ bool liqRibTranslator::verifyOutputDirectories()
     }
   } else LIQ_ADD_SLASH_IF_NEEDED( liqglo_textureDir );
 
+
+  // IMAGE DIRECTORY
+  //
   if ( m_pixDir.index( '/' ) == 0 ) {
     tmp_path = m_pixDir;
   } else tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, m_pixDir, liqglo_projectDir );
-  if ( (access( tmp_path.asChar(), dirMode )) == -1 ) {
+  if ( !m_noDirCheck && (access( tmp_path.asChar(), dirMode )) == -1 ) {
     if ( createOutputDirectories ) {
       if ( MKDIR( tmp_path.asChar(), mkdirMode ) != 0 ) {
         DIR_CREATION_WARNING( "Picture", tmp_path );
@@ -2287,6 +2344,9 @@ bool liqRibTranslator::verifyOutputDirectories()
     }
   } else LIQ_ADD_SLASH_IF_NEEDED( m_pixDir );
 
+
+  // TMP DIRECTORY
+  //
   tmp_path = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, m_tmpDir, liqglo_projectDir );
   if ( (access( tmp_path.asChar(), dirMode )) == -1 ) {
     if ( createOutputDirectories ) {
@@ -2364,10 +2424,34 @@ MString liqRibTranslator::generateTempMayaSceneName() const
 MString liqRibTranslator::generateShadowArchiveName( bool renderAllFrames, long renderAtframe, MString geometrySet )
 {
   MString baseShadowName;
-  baseShadowName = liqglo_ribDir;
-  if ( !liqglo_shapeOnlyInShadowNames ) {
+
+  if ( !m_shadowRibFile.empty() ) {
+
+    // if the file names of the shadows have been overriden,
+    // we must save the archive in the same directory.
+    MStatus stat;
+    MString shadowPath = m_shadowRibFile.begin()->second;
+    MFileObject shadowFO;
+    stat = shadowFO.setFullName(shadowPath);
+    if ( stat == MS::kSuccess ) {
+      baseShadowName = shadowFO.path();
+    } else {
+      MGlobal::displayError("Liquid : could not extract shadow path > defaulting to RIB dir.");
+      baseShadowName = liqglo_ribDir;
+    }
     baseShadowName += liqglo_sceneName + "_";
+
+  } else {
+
+    // Here, the filename is built based on the globals.
+
+    baseShadowName = liqglo_ribDir;
+    if ( !liqglo_shapeOnlyInShadowNames ) {
+      baseShadowName += liqglo_sceneName + "_";
+    }
+
   }
+
   baseShadowName += "SHADOWBODY";
   if ( geometrySet != "" ) baseShadowName += "." + geometrySet.substring(0, 99);
   baseShadowName += LIQ_ANIM_EXT;
@@ -2385,8 +2469,29 @@ MString liqRibTranslator::generateShadowArchiveName( bool renderAllFrames, long 
 
 MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& job )
 {
-  MString filename;
+  MString filename("");
+  MString pointDirExt("");
+  bool ribOverride = false;
   MString debug;
+
+      if ( job.isPoint ) {
+        switch( job.pointDir )
+        {
+          case pPX:
+        pointDirExt = "_PX";break;
+          case pPY:
+        pointDirExt = "_PY";break;
+          case pPZ:
+        pointDirExt = "_PZ";break;
+          case pNX:
+        pointDirExt = "_NX";break;
+          case pNY:
+        pointDirExt = "_NY";break;
+          case pNZ:
+        pointDirExt = "_NZ";break;
+        }
+        }
+
   switch( mode )
   {
     case fgm_shadow_tex:
@@ -2398,23 +2503,7 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
       }
       filename += job.name;
       filename += job.deepShadows ? "DSH" : "SHD";
-      if ( job.isPoint ) {
-        switch( job.pointDir )
-        {
-          case pPX:
-            filename += "_PX";break;
-          case pPY:
-            filename += "_PY";break;
-          case pPZ:
-            filename += "_PZ";break;
-          case pNX:
-            filename += "_NX";break;
-          case pNY:
-            filename += "_NY";break;
-          case pNZ:
-            filename += "_NZ";break;
-        }
-      }
+      filename += pointDirExt;
       if ( job.shadowObjectSet != "" ) filename += "." + job.shadowObjectSet.substring(0, 99);
       if( m_animation || m_useFrameExt ) filename += LIQ_ANIM_EXT;
       filename += ".tex";
@@ -2422,6 +2511,20 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
 
     case fgm_shadow_rib:
       debug = "fgm_shadow_rib";
+      if ( !m_shadowRibFile.empty() ) {
+        MString shdRib = m_shadowRibFile[job.name];
+        if ( shdRib != "" ) {
+          // here we use the full qualified path passed through
+          // the -shadowRib <lightShape> <ribfullpath> command flag.
+          // we do not check if the path is valid, because it may only
+          // become valid later down the pipeline.
+          int firstDot = shdRib.index('.');
+          filename = shdRib.substring(0,firstDot-1) + pointDirExt + shdRib.substring(firstDot, shdRib.length()-1 );
+          filename = parseString(filename);
+          ribOverride = true;
+        }
+      }
+      if ( !ribOverride ) {
       filename = liqglo_ribDir;
       if ( !liqglo_shapeOnlyInShadowNames ) {
         filename += liqglo_sceneName;
@@ -2429,30 +2532,23 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
       }
       filename += job.name;
       filename += job.deepShadows ? "DSH" : "SHD";
-      if ( job.isPoint ) {
-        switch( job.pointDir )
-        {
-          case pPX:
-            filename += "_PX";break;
-          case pPY:
-            filename += "_PY";break;
-          case pPZ:
-            filename += "_PZ";break;
-          case pNX:
-            filename += "_NX";break;
-          case pNY:
-            filename += "_NY";break;
-          case pNZ:
-            filename += "_NZ";break;
-        }
-      }
+        filename += pointDirExt;
       if ( job.shadowObjectSet != "" ) filename += "." + job.shadowObjectSet.substring(0, 99);
       if( m_animation || m_useFrameExt ) filename += LIQ_ANIM_EXT;
       filename += ".rib";
+      }
       break;
 
     case fgm_beauty_rib:
       debug = "fgm_beauty_rib";
+      if ( m_beautyRibFile.index('/') == 0 ) {
+        // here we use the full qualified path passed through
+        // the -beautyRib command flag.
+        // we do not check if the path is valid, because it may only
+        // become valid later down the pipeline.
+        filename = parseString(m_beautyRibFile);
+        ribOverride = true;
+      } else {
       filename = liqglo_ribDir;
       filename += liqglo_sceneName;
       if ( liqglo_beautyRibHasCameraName ) {
@@ -2461,6 +2557,7 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
       }
       if( m_animation || m_useFrameExt ) filename += LIQ_ANIM_EXT;
       filename += ".rib";
+      }
       break;
 
     case fgm_image:
@@ -2479,6 +2576,7 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
       cout <<"liqRibTranslator::generateFileName -> unknown case"<<endl;
   }
 
+  if ( !ribOverride ) {
   size_t filenameLength = filename.length() + 1;
   filenameLength += 10;
   char *tmp;
@@ -2486,6 +2584,7 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
   long frame = job.renderFrame;
   sprintf(tmp, filename.asChar(), liqglo_doExtensionPadding ? liqglo_outPadding : 0, frame );
   filename = tmp;
+  }
 
   //cout <<"liqRibTranslator::generateFileName( "<<debug<<" ) -> "<<filename<<endl;
 
@@ -2534,9 +2633,13 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     liqglo_layer = originalLayer;
   }
 
+  // read the renderer definition
+  //
   liquidRenderer.setRenderer();
   m_renderCommand = liquidRenderer.renderCommand;
 
+  // parse the globals and command arguments
+  //
   status = liquidDoArgs( args );
   if (!status) {
     return MS::kFailure;
@@ -2720,7 +2823,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
       liqRenderScript::Job frameScriptJob;
 
-      m_shadowRibGen = false;
+      //m_shadowRibGen = false;     // UN-USED
       m_alfShadowRibGen = false;
 
       // make sure all the global strings are parsed for this frame
@@ -2894,7 +2997,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           // start scene parsing ------------------------------------------------------------------
           //
 
-          activeCamera = liqglo_currentJob.path;
+          // activeCamera = liqglo_currentJob.path;     // UN-USED
           if ( liqglo_currentJob.isShadowPass ) {
             liqglo_isShadowPass = true;
           } else {
@@ -2961,7 +3064,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             fclose( liqglo_ribFP );
 #endif
             liqglo_ribFP = NULL;
-            //m_shadowRibGen = true;
+            //m_shadowRibGen = true;      // UN-USED
 
             // mark all other jobs with the same set as done
             std::vector<structJob>::iterator iterCheck = jobList.begin();
@@ -2994,7 +3097,13 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             RtInt ribFD = fileno( liqglo_ribFP );
             RiOption( ( RtToken )"rib", ( RtToken )"pipe", &ribFD, RI_NULL );
           } else {
-            cerr << ( "Error opening rib - writing to stdout.\n" );
+
+            // if this happens in interactive mode, Maya will crash !
+            // I completely removed the possibility to inadvertently output
+            // to stdout. if you want to do so, pass "-" as your RIB name.
+            MString error( "Error opening rib !" );
+            throw error;
+
           }
           RiBegin( RI_NULL );
 #endif
@@ -3049,7 +3158,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
       // set the rib file for the 'view last rib' menu command
       // NOTE: this may be overridden later on in certain code paths
       if ( !m_deferredGen ) {
-        lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_currentJob.ribFileName.asChar(), liqglo_projectDir );
+        lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_currentJob.ribFileName, liqglo_projectDir );
       }
 
       // now we re-iterate through the job list to write out the alfred file if we are using it
@@ -3330,9 +3439,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           frameScriptJob.chaserCommand = (std::string( "sho \"" ) + shadowPassJob->imageName.asChar() + "\"" );
         }
         if ( m_outputShadowPass && !m_outputHeroPass ) {
-          lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, shadowPassJob->ribFileName.asChar(), liqglo_projectDir );
+          lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, shadowPassJob->ribFileName, liqglo_projectDir );
         } else {
-          lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, frameJob->ribFileName.asChar(), liqglo_projectDir );
+          lastRibName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, frameJob->ribFileName, liqglo_projectDir );
         }
       }
 
@@ -4146,8 +4255,11 @@ MStatus liqRibTranslator::buildJobs()
     thisJob = *iter;
 
     MString frameFileName;
-    if ( thisJob.isShadow ) frameFileName = generateFileName( (fileGenMode) fgm_shadow_rib, thisJob );
-    else frameFileName = generateFileName( (fileGenMode) fgm_beauty_rib, thisJob );
+    if ( thisJob.isShadow ) {
+      frameFileName = generateFileName( (fileGenMode) fgm_shadow_rib, thisJob );
+    } else {
+      frameFileName = generateFileName( (fileGenMode) fgm_beauty_rib, thisJob );
+    }
     iter->ribFileName = frameFileName;
 
     // set the skip flag for the job
@@ -4244,9 +4356,9 @@ MStatus liqRibTranslator::ribPrologue()
     RiArchiveRecord( RI_COMMENT, "    Generated by Liquid v%s", LIQUIDVERSION );
     RiArchiveRecord( RI_COMMENT, "    Scene : %s", (liqglo_projectDir + liqglo_sceneName).asChar() );
 #ifndef _WIN32
-    uid_t userId = getuid();
-    struct passwd *userPwd = getpwuid( userId );
-    RiArchiveRecord( RI_COMMENT, "    User  : %s", userPwd->pw_name );
+    char* user = getenv("USER");
+    if (user)
+      RiArchiveRecord( RI_COMMENT, "    User  : %s", user );
 #else
     char* user = getenv("USERNAME");
     if (user)
@@ -4287,16 +4399,15 @@ MStatus liqRibTranslator::ribPrologue()
       RtString list = const_cast< char* > ( liqglo_shaderPath.asChar() );
       RiOption( "searchpath", "shader", &list, RI_NULL );
 
-      MString texturePath = liqglo_texturePath + ":" + liquidSanitizePath( liqglo_textureDir );
-      list = const_cast< char* > ( texturePath.asChar() );
+      list = const_cast< char* > ( liqglo_texturePath.asChar() );
       RiOption( "searchpath", "texture", &list, RI_NULL );
 
-      MString archivePath = liqglo_archivePath + ":" + liquidSanitizePath( liqglo_ribDir );
-      list = const_cast< char* > ( archivePath.asChar() );
+      list = const_cast< char* > ( liqglo_archivePath.asChar() );
       RiOption( "searchpath", "archive", &list, RI_NULL );
 
       list = const_cast< char* > ( liqglo_proceduralPath.asChar() );
       RiOption( "searchpath", "procedural", &list, RI_NULL );
+
 
       // if rendering to the renderview, add a path to the liqmaya display driver
       if ( m_renderView ) {
@@ -6913,7 +7024,10 @@ void liqRibTranslator::setOutDirs()
 
 }
 
-
+/**
+ *  this function read the paths from the liquidGlobals
+ *  node and provide sensible defaults if need be.
+ */
 void liqRibTranslator::setSearchPaths()
 {
   liqglo_shaderPath = "&:@:.:~:rmanshader";

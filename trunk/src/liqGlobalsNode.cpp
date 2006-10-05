@@ -525,7 +525,7 @@ MStatus liqGlobalsNode::initialize()
 
           CREATE_BOOL( nAttr,  aCreateOutputDirectories,    "createOutputDirectories",      "cod",    1     );
           CREATE_BOOL( nAttr,  aExpandShaderArrays,         "expandShaderArrays",           "esa",    1     );
-          
+
 		  CREATE_BOOL( nAttr,  aBakeNonRasterOrient,        "bakeNonRasterOrient",          "nro",    0     );
 		  CREATE_BOOL( nAttr,  aBakeNoCullBackface,         "bakeNoCullBackface",           "ncb",    0     );
 		  CREATE_BOOL( nAttr,  aBakeNoCullHidden,           "bakeNoCullHidden",             "nch",    0     );
@@ -608,8 +608,8 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aLimitsGPrimSplits,          "limitsGPrimSplits",            "lges",   4    );
 
           CREATE_BOOL( nAttr,  aCleanRib,                   "cleanRib",                     "clr",    0     );
-          CREATE_BOOL( nAttr,  aCleanTex,                   "cleanTex",                     "clt",    0     );
-          CREATE_BOOL( nAttr,  aCleanShad,                  "cleanShad",                    "cls",    0     );
+          CREATE_BOOL( nAttr,  aCleanTex,                   "cleanTex",                     "clt",    0     );    // UN-USED GLOBAL
+          CREATE_BOOL( nAttr,  aCleanShad,                  "cleanShad",                    "cls",    0     );    // UN-USED GLOBAL
           CREATE_BOOL( nAttr,  aCleanRenderScript,          "cleanRenderScript",            "clrs",   0     );
           CREATE_BOOL( nAttr,  aJustRib,                    "justRib",                      "jr",     0     );
 

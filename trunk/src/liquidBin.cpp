@@ -89,11 +89,18 @@ Files\n\
 \t-txd    -texdir <path>\n\
 \t-rid    -ribdir <path>\n\
 \t-tmd    -tmpdir <path>\n\
+\t-ssp    -shaderSearchPath <path>\n\
+\t-tsp    -textureSearchPath <path>\n\
+\t-asp    -archiveSearchPath <path>\n\
+\t-psp    -proceduralSearchPath <path>\n\
+\t-btr    -beautyRib <fullpath>\n\
+\t-shr    -shadowRib <fullpath>\n\
 \t-pd     -projectDir <path>\n\
 \t-prm    -preFrameMel <string>\n\
 \t-pom    -postFrameMel <string>\n\
 \t-shn    -shotName <string>\n\
 \t-shv    -shotVersion <string>\n\
+\t-ndc    -noDirCheck\n\
 \n\
 Image\n\
 \t-bs     -bucketSize <x> <y>\n\
