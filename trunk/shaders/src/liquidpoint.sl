@@ -38,7 +38,7 @@ light
 liquidpoint(
       uniform float  intensity              = 1;
       uniform color  lightcolor             = 1;
-      uniform float decay                   = 0;
+      uniform float  decay                  = 0;
 
       uniform string shadownamepx           = "";
       uniform string shadownamenx           = "";
