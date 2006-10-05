@@ -112,7 +112,7 @@ MStatus liqCoordSysNode::compute( const MPlug& /* plug */, MDataBlock& /* data *
 }
 
 void liqCoordSysNode::draw(  M3dView & view, const MDagPath & /*path*/,
-                             M3dView::DisplayStyle displaystyle,
+                             M3dView::DisplayStyle /*displayStyle*/,
                              M3dView::DisplayStatus displaystatus )
 {
   // Get the type

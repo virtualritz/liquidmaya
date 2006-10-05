@@ -388,7 +388,6 @@ static	RtToken				*tokens				=	NULL;
 static	RtPointer			*values				=	NULL;
 static	vector<int>			blocks;										// The block stack
 static	int					currentBlock		=	0;
-static	int					raytracingInited	=	FALSE;
 static	int					allowedCommands		=	RENDERMAN_BLOCK	|
 													RENDERMAN_XFORM_BLOCK |
 													RENDERMAN_WORLD_BLOCK |
@@ -821,7 +820,7 @@ RiGaussianFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
 }
 
 EXTERN(RtFloat)
-RiBoxFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+RiBoxFilter (RtFloat /*x*/, RtFloat /*y*/, RtFloat /*xwidth*/, RtFloat /*ywidth*/) {
 	return 1;
 }
 
@@ -843,7 +842,7 @@ RiTriangleFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
 }
 
 EXTERN(RtFloat)
-RiCatmullRomFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+RiCatmullRomFilter (RtFloat x, RtFloat y, RtFloat /*xwidth*/, RtFloat /*ywidth*/) {
    double r2 = (x*x + y*y)*0.5;
    double r = sqrt(r2);
 
@@ -876,27 +875,27 @@ RiSincFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
 }
 
 EXTERN(RtFloat)
-RiBesselFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+RiBesselFilter (RtFloat /*x*/, RtFloat /*y*/, RtFloat /*xwidth*/, RtFloat /*ywidth*/) {
 	return 0;
 }
 
 EXTERN(RtFloat)
-RiDiskFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+RiDiskFilter (RtFloat /*x*/, RtFloat /*y*/, RtFloat /*xwidth*/, RtFloat /*ywidth*/) {
 	return 0;
 }
 
 EXTERN(RtFloat)
-RiLanczosFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+RiLanczosFilter (RtFloat /*x*/, RtFloat /*y*/, RtFloat /*xwidth*/, RtFloat /*ywidth*/) {
 	return 0;
 }
 
 EXTERN(RtFloat)
-RiBlackmanHarrisFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+RiBlackmanHarrisFilter (RtFloat /*x*/, RtFloat /*y*/, RtFloat /*xwidth*/, RtFloat /*ywidth*/) {
 	return 0;
 }
 
 EXTERN(RtFloat)
-RiSeparableCatmullRomFilter (RtFloat x, RtFloat y, RtFloat xwidth, RtFloat ywidth) {
+RiSeparableCatmullRomFilter (RtFloat /*x*/, RtFloat /*y*/, RtFloat /*xwidth*/, RtFloat /*ywidth*/) {
 	return 0;
 }
 
@@ -2099,7 +2098,7 @@ RiErrorHandler (RtErrorHandler handler) {
 }
 
 EXTERN(RtVoid)
-RiErrorIgnore (RtInt code, RtInt severity, char *message) {
+RiErrorIgnore (RtInt code, RtInt severity, char * /*message*/) {
 	if ((severity == RIE_ERROR) || (severity == RIE_SEVERE)) {
 		RiLastError = code;
 	}
@@ -2128,7 +2127,7 @@ RiErrorPrint (RtInt code, RtInt severity, char *message) {
 }
 
 EXTERN(RtVoid)
-RiErrorAbort (RtInt code, RtInt severity, char *message) {
+RiErrorAbort (RtInt code, RtInt severity, char * /*message*/) {
 	if ((severity == RIE_ERROR) || (severity == RIE_SEVERE)) {
 		RiLastError = code;
 

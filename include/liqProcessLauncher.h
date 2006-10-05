@@ -29,7 +29,7 @@ class MString;
 class liqProcessLauncher
 {
 public:
-  static bool liqProcessLauncher::execute(const MString &command, const MString &arguments, const MString &path, const bool wait );
+  static bool execute(const MString &command, const MString &arguments, const MString &path, const bool wait );
 };
 
 

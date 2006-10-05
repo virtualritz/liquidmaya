@@ -625,7 +625,7 @@ void		CRibOut::RiCoordSysTransform(char * space) {
 	out("CoordSysTransform \"%s\"\n",space);
 }
 
-void		CRibOut::RiTransformPoints(char * fromspace,char * tospace,int npoints,float points[][3]) {
+void		CRibOut::RiTransformPoints(char * /*fromspace*/,char * /*tospace*/,int /*npoints*/,float /*points*/ [][3]) {
 	errorHandler(RIE_SYSTEM,RIE_ERROR,"Unable to output TransformPoints\n");
 }
 
@@ -1084,11 +1084,11 @@ void		CRibOut::RiTorusV(float majorrad,float minorrad,float phimin,float phimax,
 	writePL(4,4,4,1,n,tokens,params);
 }
 
-void		CRibOut::RiProcedural(void * data,float *bound,void (*subdivfunc)(void *,float),void (*freefunc)(void *)) {
+void		CRibOut::RiProcedural(void * /*data*/,float * /*bound*/,void (* /*subdivfunc*/)(void *,float),void (* /*freefunc*/)(void *)) {
 	errorHandler(RIE_UNIMPLEMENT,RIE_ERROR,"Unable to output procedural geometry\n");
 }
 
-void		CRibOut::RiGeometryV(char * type,int n,char *tokens[],void *params[]) {
+void		CRibOut::RiGeometryV(char * /*type*/,int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {
 	errorHandler(RIE_UNIMPLEMENT,RIE_ERROR,"Unable to output optional geometry\n");
 }
 
@@ -1185,17 +1185,17 @@ void		CRibOut::RiSubdivisionMeshV(char * scheme,int nfaces,int nvertices[],int v
 	writePL(numVertices,numVertices,numFacevaryings,nfaces,n,tokens,params);
 }
 
-void		CRibOut::RiBlobbyV(int nleaf,int ncode,int code[],int nflt,float flt[],int nstr,char *str[],int n,char *tokens[],void *params[]) {
+void		CRibOut::RiBlobbyV(int /*nleaf*/,int /*ncode*/,int /*code*/ [],int /*nflt*/,float /*flt*/ [],int /*nstr*/,char * /*str*/ [],int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {
 	errorHandler(RIE_UNIMPLEMENT,RIE_ERROR,"Blobby primitive is not implemented\n");
 }
 
-void		CRibOut::RiProcDelayedReadArchive(char * data,float detail) {
+void		CRibOut::RiProcDelayedReadArchive(char * /*data*/,float /*detail*/) {
 }
 
-void		CRibOut::RiProcRunProgram(char * data,float detail) {
+void		CRibOut::RiProcRunProgram(char * /*data*/,float /*detail*/) {
 }
 
-void		CRibOut::RiProcDynamicLoad(char * data,float detail) {
+void		CRibOut::RiProcDynamicLoad(char * /*data*/,float /*detail*/) {
 }
 
 void		CRibOut::RiProcFree(char *) {
@@ -1282,7 +1282,7 @@ void		CRibOut::RiArchiveRecord(char * type,char *format,va_list args) {
 	}
 }
 
-void		CRibOut::RiReadArchiveV(char *filename,void (*callback)(const char *),int n,char *tokens[],void *params[]) {
+void		CRibOut::RiReadArchiveV(char *filename,void (* /*callback*/)(const char *),int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {
 	out("ReadArchive \"%s\"\n",filename);
 }
 
@@ -1512,7 +1512,6 @@ void		CRibOut::declareVariable(char *name,char *decl) {
 
 	if (parseVariable(&cVariable,name,decl) == TRUE) {
 		// Parse successful, insert the variable into the dictionary
-		CVariable	*oVariable;
 
 		map<string,CVariable*>::iterator it;
 		if ((it = declaredVariables->find(cVariable.name)) != declaredVariables->end()) {
