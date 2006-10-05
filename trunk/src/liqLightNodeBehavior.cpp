@@ -59,7 +59,7 @@ void *liqLightNodeBehavior::creator()
  *	between the two nodes given.
  */
 
-bool liqLightNodeBehavior::shouldBeUsedFor( MObject &sourceNode, MObject &destinationNode, MPlug &sourcePlug, MPlug &destinationPlug)
+bool liqLightNodeBehavior::shouldBeUsedFor( MObject &sourceNode, MObject &destinationNode, MPlug & /*sourcePlug*/, MPlug & /*destinationPlug*/ )
 {
   bool result = false;
 

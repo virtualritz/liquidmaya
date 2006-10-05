@@ -52,6 +52,7 @@
 
 class liqCustomNode {
 public:
+  virtual ~liqCustomNode() {}
   virtual void liquidWrite() = 0;
   virtual bool liquidCompare(const liqRibData &other) = 0;
 };

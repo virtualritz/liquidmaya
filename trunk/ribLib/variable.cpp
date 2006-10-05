@@ -1488,7 +1488,7 @@ yyreturn:
 
 static	int	numErrors	=	0;
 
-void	varerror(char *str) {
+void	varerror(char * /*str*/) {
 	//error(CODE_BADTOKEN,"Variable decleration error \"%s\" \"%s\"\n",(currentName == NULL ? "NULL" : currentName),currentDecl);
 	numErrors++;
 }

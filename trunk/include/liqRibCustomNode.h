@@ -47,7 +47,7 @@
 
 class liqRibCustomNode : public liqRibData {
 public:
-  liqRibCustomNode(MObject obj, liqCustomNode *node)
+  liqRibCustomNode(MObject /*obj*/, liqCustomNode *node)
     : customNode(node)
   {
     if ( debugMode ) { printf("-> creating custom node object\n"); }

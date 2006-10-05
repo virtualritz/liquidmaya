@@ -57,15 +57,15 @@ int sendSockData(int s,char * data,int n);
 
 PtDspyError
 DspyImageOpen(PtDspyImageHandle *pvImage,
-              const char *drivername,
-              const char *filename,
+              const char * /*drivername*/,
+              const char * /*filename*/,
               int width,
               int height,
               int paramCount,
               const UserParameter *parameters,
               int formatCount,
               PtDspyDevFormat *format,
-              PtFlagStuff *flagstuff) {
+              PtFlagStuff * /*flagstuff*/) {
 	int i,origin[2],originalSize[2],rc;
 
 	int status =0;
@@ -163,7 +163,7 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 
 
 PtDspyError
-DspyImageQuery(PtDspyImageHandle pvImage,
+DspyImageQuery(PtDspyImageHandle /*pvImage*/,
                PtDspyQueryType querytype,
                int datalen,
                void *data) {
@@ -247,7 +247,7 @@ PtDspyError DspyImageData(PtDspyImageHandle pvImage,
 }
 
 
-PtDspyError DspyImageClose(PtDspyImageHandle pvImage) {
+PtDspyError DspyImageClose(PtDspyImageHandle /*pvImage*/) {
 	bucket::bucketInfo binfo;
 #ifdef _WIN32
 	memset(&binfo,0,sizeof(bucket::bucketInfo));
@@ -270,7 +270,7 @@ PtDspyError sendData(const int socket,
 			 const int xmax_plusone,
 			 const int ymin,
 			 const int ymax_plusone,
-			 const int entrysize,
+			 const int /*entrysize*/,
 			 const int numChannels,
 			 const BUCKETDATATYPE *data) {
 	int status =0;

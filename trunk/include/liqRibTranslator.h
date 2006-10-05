@@ -438,7 +438,7 @@ private :
   void freeShaders( void );
 
   void scanExpressions( liqShader & currentShader );
-  void liqRibTranslator::scanExpressions( liqRibLightData *light );
+  void scanExpressions( liqRibLightData *light );
   void processExpression( liqTokenPointer *token, liqRibLightData *light = NULL );
 };
 

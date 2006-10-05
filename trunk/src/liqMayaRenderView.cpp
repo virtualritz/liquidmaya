@@ -117,7 +117,6 @@ liqMayaRenderCmd::~liqMayaRenderCmd()
 MStatus liqMayaRenderCmd::doIt( const MArgList& args)
 
 {
-    MStatus stat = MS::kSuccess;
     MArgDatabase argData(syntax(), args);
 
 	if(argData.isFlagSet( "-lastRenderFiles")){

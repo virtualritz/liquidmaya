@@ -48,6 +48,7 @@ extern "C" void RiFlush( void );
 class liqRibGen
 {
 public:
+    virtual ~liqRibGen() {}
 //    virtual int SetArgs( int n, RtToken tokens[], RtPointer values[] ) = 0;
 //    virtual void Bound( liqRibStatus *, RtBound b ) = 0;
     virtual int GenRIB( liqRibStatus * ) = 0;

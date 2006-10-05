@@ -161,7 +161,6 @@ MStatus liqJobList::redoIt()
 {
   if ( debug ) cout <<"redoIt"<<endl;
   clearResult();
-  MStatus status;
   MObject cameraNode;
   MDagPath lightPath;
 
