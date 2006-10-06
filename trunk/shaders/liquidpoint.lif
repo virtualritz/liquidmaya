@@ -92,7 +92,7 @@ group "Shadows";
 
 		param "__shadowF";
 		name "__shadowF";
-		desc "";
+		desc "shadow fraction";
 
 		param "__shadowC";
 		name "__shadowC";
