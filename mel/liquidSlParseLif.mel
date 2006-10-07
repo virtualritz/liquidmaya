@@ -174,6 +174,9 @@ proc string getRange( string $line )
   string $tmp = match("\\[.+\\]", $line);
   $tmp = strip( substring( $tmp , 2 , size($tmp)-1 ) );
 
+  // strip potential leading spaces/tabs
+  $tmp = `substitute "^[ \t]*" $tmp ""`;
+  
   // tokenize based on space
   string $tokens[] = stringToStringArray( $tmp, " ");
 
@@ -397,7 +400,8 @@ global proc liquidSlParseLif( string $shaderFile )
   // start parsing
   while ( $gLifLineNumber <= $numLines ) {
 
-    string $key = match("^[a-z]+", $line);
+    string $key = match("^[\ta-z]+", $line);
+    $key = `substituteAllString $key "\t" ""`;
 
     switch( $key ) {
 
