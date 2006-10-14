@@ -82,19 +82,19 @@ MSyntax liqPreviewShader::syntax()
 {
   MSyntax syn;
 
-  syn.addFlag("s",    "shader");
-  syn.addFlag("r",    "renderer");
-  syn.addFlag("dd",   "displayDriver");
-  syn.addFlag("dn",   "displayName");
-  syn.addFlag("ds",   "displaySize");
+  syn.addFlag("s",    "shader",           MSyntax::kString );
+  syn.addFlag("r",    "renderer",         MSyntax::kString );
+  syn.addFlag("dd",   "displayDriver",    MSyntax::kString );
+  syn.addFlag("dn",   "displayName",      MSyntax::kString );
+  syn.addFlag("ds",   "displaySize",      MSyntax::kLong );
   syn.addFlag("sshn", "shortShaderNames");
   syn.addFlag("nbp",  "noBackPlane");
-  syn.addFlag("os",   "objectSize");
-  syn.addFlag("sr",   "shadingRate");
-  syn.addFlag("pxs",  "pixelSamples");
+  syn.addFlag("os",   "objectSize",       MSyntax::kDouble );
+  syn.addFlag("sr",   "shadingRate",      MSyntax::kDouble );
+  syn.addFlag("pxs",  "pixelSamples",     MSyntax::kLong );
   syn.addFlag("p",    "pipe");
   syn.addFlag("t",    "type");
-  syn.addFlag("pi",   "previewIntensity");
+  syn.addFlag("pi",   "previewIntensity", MSyntax::kDouble );
 
   syn.addFlag("sph", "sphere");
   syn.addFlag("tor", "torus");
@@ -102,7 +102,9 @@ MSyntax liqPreviewShader::syntax()
   syn.addFlag("cub", "cube");
   syn.addFlag("pla", "plane");
   syn.addFlag("tea", "teapot");
-  syn.addFlag("cst", "custom");
+  syn.addFlag("cst", "custom",            MSyntax::kString );
+
+  syn.addFlag("cbk", "customBackPlane",   MSyntax::kString );
 
   return syn;
 }
@@ -133,7 +135,8 @@ typedef struct liqPreviewShoptions
   MString customRibFile;
   bool    fullShaderPath;
   MString type;
-  double   previewIntensity;
+  double  previewIntensity;
+  MString customBackplane;
 } liqPreviewShoptions;
 
 int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *options );
@@ -211,6 +214,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.fullShaderPath = false;
   preview.type = "";
   preview.previewIntensity = 1.0;
+  preview.customBackplane = "";
 
   MString displayDriver( "framebuffer" );
   MString displayName( "liqPreviewShader" );
@@ -277,6 +281,9 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
       i++;
       MString argValue = args.asString( i, &status );
       preview.previewIntensity = argValue.asDouble();
+    } else if ( arg == "-cbk" || arg == "-customBackPlane" )  {
+      i++;
+      preview.customBackplane = args.asString( i, &status );
     }
   }
 
@@ -769,7 +776,7 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
       break;
     }
     case CUSTOM: {
-      cout <<"custom : "<<options->customRibFile<<endl;
+      //cout <<"custom : "<<options->customRibFile<<endl;
       if ( fileExists( options->customRibFile ) ) {
         RiTransformBegin();
           RiScale( 1.0, 1.0, -1.0 );
@@ -793,21 +800,31 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
    * Backplane
    */
   if( options->backPlane ) {
-    RiAttributeBegin();
-    RiScale( 0.91, 0.91, 0.91 );
-    RiSurface( ( RtToken ) options->backPlaneShader, RI_NULL );
-    RtInt visible = 1;
-    RtString transmission = "transparent";
 
-    RiAttribute( "visibility", ( RtToken ) "camera", &visible, ( RtToken ) "trace", &visible, ( RtToken ) "transmission", ( RtPointer ) &transmission, RI_NULL );
-    static RtPoint backplane[4] = {
-      { -1.0,  1.0,  2.0 },
-      {  1.0,  1.0,  2.0 },
-      { -1.0, -1.0,  2.0 },
-      {  1.0, -1.0,  2.0 }
-    };
-    RiPatch( RI_BILINEAR, RI_P, (RtPointer) backplane, RI_NULL );
-    RiAttributeEnd();
+    if ( options->customBackplane == "" ) {
+      RiAttributeBegin();
+      RiScale( 0.91, 0.91, 0.91 );
+      RiSurface( ( RtToken ) options->backPlaneShader, RI_NULL );
+      RtInt visible = 1;
+      RtString transmission = "transparent";
+
+      RiAttribute( "visibility", ( RtToken ) "camera", &visible, ( RtToken ) "trace", &visible, ( RtToken ) "transmission", ( RtPointer ) &transmission, RI_NULL );
+      static RtPoint backplane[4] = {
+        { -1.0,  1.0,  2.0 },
+        {  1.0,  1.0,  2.0 },
+        { -1.0, -1.0,  2.0 },
+        {  1.0, -1.0,  2.0 }
+      };
+      RiPatch( RI_BILINEAR, RI_P, (RtPointer) backplane, RI_NULL );
+      RiAttributeEnd();
+    } else {
+      if ( fileExists( options->customBackplane ) ) {
+        RiTransformBegin();
+          RiScale( 1.0, 1.0, -1.0 );
+          RiArchiveRecord( RI_VERBATIM, "ReadArchive \"%s\"\n", options->customBackplane.asChar() );
+        RiTransformEnd();
+      }
+    }
   }
 
   RiWorldEnd();

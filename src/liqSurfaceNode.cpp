@@ -77,6 +77,8 @@ MObject liqSurfaceNode::aRmanLifCmds;
 
 MObject liqSurfaceNode::aPreviewPrimitive;
 MObject liqSurfaceNode::aPreviewCustomPrimitive;
+MObject liqSurfaceNode::aPreviewCustomBackplane;
+MObject liqSurfaceNode::aPreviewCustomLightRig;
 MObject liqSurfaceNode::aColor;
 MObject liqSurfaceNode::aOpacity;
 MObject liqSurfaceNode::aShaderSpace;
@@ -221,6 +223,12 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(eAttr.setConnectable(false));
 
   aPreviewCustomPrimitive = tAttr.create(  MString("previewCustomPrimitive"),  MString("pcp"), MFnData::kString, aPreviewCustomPrimitive, &status );
+  MAKE_INPUT(tAttr);
+
+  aPreviewCustomBackplane = tAttr.create(  MString("previewCustomBackplane"),  MString("pcb"), MFnData::kString, aPreviewCustomBackplane, &status );
+  MAKE_INPUT(tAttr);
+
+  aPreviewCustomLightRig = tAttr.create(  MString("previewCustomLights"),  MString("pcl"), MFnData::kString, aPreviewCustomLightRig, &status );
   MAKE_INPUT(tAttr);
 
   aPreviewObjectSize = nAttr.create("previewObjectSize", "pos", MFnNumericData::kDouble, 1.0, &status);
@@ -453,6 +461,8 @@ MStatus liqSurfaceNode::initialize()
 
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));
+  CHECK_MSTATUS(addAttribute(aPreviewCustomBackplane));
+  CHECK_MSTATUS(addAttribute(aPreviewCustomLightRig));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
   CHECK_MSTATUS(addAttribute(aPreviewPixelSamples));
   CHECK_MSTATUS(addAttribute(aPreviewShadingRate));

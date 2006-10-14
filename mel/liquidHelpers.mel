@@ -354,15 +354,27 @@ global proc liquidCropWindowViewer()
 global proc liquidTextureViewer( string $file )
 {
   $file = liquidVarSubstitute( $file );
+  if ( gmatch( $file, "`*`") ) $file = eval($file);
 
   if ( !`filetest -r $file` ) {
     warning ("liquidTextureViewer: could not open \""+$file+"\".");
     return;
   }
 
-  string $viewer = `getAttr liquidGlobals.viewTexture`;
+  string $viewer = "";
+  string $viewers[] = `getAttr liquidGlobals.viewTextureCommand`;
+  string $ext[]     = `getAttr liquidGlobals.viewTextureFilter`;
+
+  for ( $i=0; $i<size($ext); $i++ ) {
+    if ( gmatch($file, $ext[$i]) ) {
+      $viewer = $viewers[$i];
+      break;
+    }
+  }
+
   if ( $viewer == "" ) {
-    warning ("liquidTextureViewer: the texture viewer is undefined.");
+    warning ("liquidTextureViewer: using the default texture viewer.");
+    $viewer = `getAttr liquidGlobals.viewTexture`;
     return;
   }
 
@@ -469,9 +481,8 @@ global proc string liquidAutoShadowName( string $lightShape )
 global proc liquidViewShadowMap( string $node )
 {
   string $file = liquidAutoShadowName($node);
-  string $cmd = ( (`getAttr liquidGlobals.viewTexture`) + " " + liquidAutoShadowName($node) + " &" );
   string $test = (size( match("\?\?", $file) ))? (substitute("\?\?", $file, "PX")) : $file;
-  if ( `filetest -r $test` ) system $cmd;
+  if ( `filetest -r $test` ) liquidTextureViewer($file);
   else warning("No shadow map on disk !\n           "+$file+"  ");
 }
 

@@ -366,6 +366,11 @@ global proc liquidShaderNodePreview( string $node )
     $args += ( " \""+$customRibFile+"\"");
   }
 
+  string $customBg = `getAttr ($node+".previewCustomBackplane")`;
+  if ( $customBg != "" && !gmatch( $customBg, "*/")) {
+    $args += (" -cbk \"" + $customBg + "\"");
+  }
+
   string $driver = ($previewType)? `getAttr liquidGlobals.previewDisplayDriver`:"tiff";
   if( $driver != "" ) {
     $args += " -dd " + $driver;
@@ -786,12 +791,38 @@ global proc liquidShaderNode_loadCMD( string $nodeDotAttr, string $longShaderNam
  */
 proc liquidShaderNodesCustomPrimitiveBuildCustomMenu( string $parent, string $nodeDotAttr )
 {
-  // get the list of available rib files in $LIQUIDHOME/previewRibFiles
-  string $ribPath = liquidGetHome() + "/previewRibFiles/";
-  string $files[] = `getFileList -fld $ribPath -fs "*.rib"`;
+  //trace ($parent+"  "+$nodeDotAttr);
+  string $attr = fileExtension($nodeDotAttr);
+  string $ribPath;
+  string $files[];
+
+  switch( $attr ) {
+    case "previewCustomPrimitive":
+      //trace "prim";
+      // get the list of available rib files in $LIQUIDHOME/previewRibFiles
+      $ribPath = ( liquidGetHome() + "/previewRibFiles/" );
+      $files = `getFileList -fld $ribPath -fs "*.rib"`;
+      break;
+    case "previewCustomBackplane":
+      //trace "back";
+      // get the list of available rib files in $LIQUIDHOME/previewRibFiles/backgrounds
+      $ribPath = liquidGetHome() + "/previewRibFiles/backgrounds/";
+      $files = `getFileList -fld $ribPath -fs "*.rib"`;
+      break;
+    case "previewCustomLights":
+      //trace "light";
+      // get the list of available rib files in $LIQUIDHOME/previewRibFiles/lights
+      $ribPath = liquidGetHome() + "/previewRibFiles/lights/";
+      $files = `getFileList -fld $ribPath -fs "*.rib"`;
+      break;
+    default:
+      break;
+  }
+  //trace ("+ got "+size( $files )+" files" );
 
   // remove previous menu items
   string $items[] = `optionMenuGrp -q -ill ($parent)`;
+  //trace ("+ got "+size( $items )+" items" );
   for ( $it in $items ) deleteUI $it;
 
   // build the menu
@@ -802,55 +833,62 @@ proc liquidShaderNodesCustomPrimitiveBuildCustomMenu( string $parent, string $no
   int $currentCustomPrimitiveIsListed = 0;
 
   // the list of rib files is stored in optionVars
-  if ( `optionVar -ex "liquidCustomPrimitives"` ) optionVar -clearArray "liquidCustomPrimitives";
+  if ( `optionVar -ex ("liquid"+$attr)` ) optionVar -clearArray ("liquid"+$attr);
 
+  menuItem -p ($fullParentPath+"|OptionMenu") -l "none";
   for ( $f in $files ) {
     string $label = basenameEx( $f );
     if ( $label == $currentCustomPrimitive ) $currentCustomPrimitiveIsListed = 1;
     menuItem -p ($fullParentPath+"|OptionMenu") -l $label;
-    optionVar -sva "liquidCustomPrimitives" ($ribPath+$f);
+    optionVar -sva ("liquid"+$attr) ($ribPath+$f);
   }
-  if ( !size( $files ) ) menuItem -p ($fullParentPath+"|OptionMenu") -l "none";
   setParent $oldParent;
 
   // set the menu to the attribute's current value
   if ( $currentCustomPrimitiveIsListed ) optionMenuGrp -e -v $currentCustomPrimitive $parent;
-  else setAttr -type "string" $nodeDotAttr ($ribPath+$files[0]);
+  else setAttr -type "string" $nodeDotAttr "";
 }
 
 
-global proc liquidShaderNodesCustomPrimitiveNew( string $nodeDotAttr )
+global proc liquidShaderNodesCustomPrimitiveNew( string $label, string $nodeDotAttr )
 {
   string $nodeType = nodeType( $nodeDotAttr );
-  string $cltName = ($nodeType+"_previewCustomPrimitive");
+  string $tokenized[] = stringToStringArray( $nodeDotAttr, ".");
+  string $cltName = ($nodeType+"_"+$tokenized[1]);
 
   if ( !`optionMenuGrp -q -ex $cltName` ) {
 
     setUITemplate -pst attributeEditorTemplate;
-    optionMenuGrp -l "Custom Primitive" $cltName;
+    optionMenuGrp -l $label $cltName;
     setUITemplate -ppt;
 
   }
 
-  liquidShaderNodesCustomPrimitiveReplace( $nodeDotAttr );
+  liquidShaderNodesCustomPrimitiveReplace( $label, $nodeDotAttr );
 }
 
 
-global proc liquidShaderNodesCustomPrimitiveReplace( string $nodeDotAttr )
+global proc liquidShaderNodesCustomPrimitiveReplace( string $label, string $nodeDotAttr )
 {
   string $nodeType = nodeType( $nodeDotAttr );
-  string $cltName = ($nodeType+"_previewCustomPrimitive");
+  string $tokenized[] = stringToStringArray( $nodeDotAttr, ".");
+  string $cltName = ($nodeType+"_"+$tokenized[1]);
 
   if ( `optionMenuGrp -q -ex $cltName` ) {
 
-    liquidShaderNodesCustomPrimitiveBuildCustomMenu( $cltName, $nodeDotAttr );
 
     string $node[];
     tokenize $nodeDotAttr "." $node;
-    string $cmd = ( "{string $files[] = `optionVar -q liquidCustomPrimitives`;"+
-                    "int $sel = `optionMenuGrp -q -sl "+$cltName+"`;"+
-                    "setAttr -type \"string\" "+$nodeDotAttr+" $files[$sel-1];}");
+    string $cmd = ( "{"+
+                    "   string $files[] = `optionVar -q liquid"+$tokenized[1]+"`;"+
+                    "   int $sel = `optionMenuGrp -q -sl "+$cltName+"`;"+
+                    "   trace (\">>>> \"+$sel);"+
+                    "   if ( $sel > 1 ) setAttr -type \"string\" "+$nodeDotAttr+" $files[$sel-2];"+
+                    "   else setAttr -type \"string\" "+$nodeDotAttr+" \"\";"+
+                    "}");
     optionMenuGrp -e -cc $cmd $cltName;
+
+    liquidShaderNodesCustomPrimitiveBuildCustomMenu( $cltName, $nodeDotAttr );
   }
   //trace ("liquidShaderNodesCustomPrimitiveReplace( "+ $nodeDotAttr +" )");
 }
@@ -930,6 +968,30 @@ global proc liquidAssignSurfaceShaderToSelected( string $node )
   }
 }
 
+global proc liquidAssignDisplacementShaderToSelected( string $node )
+{
+  // assign the shader to geometry
+  if ( size(`ls -geometry -dag -sl`) ) hyperShade -assign $node;
+
+  // special case for nodes not supported by the hypershade
+  string $selected[] = `ls  -type "pfxToon"
+                            -type "pfxHair"
+                            -type "locator"
+                            -type "nurbsCurve"
+                            -dag -sl`;
+  //trace (stringArrayToString( $selected, ", "));
+
+  if ( !objExists( ($node+".liqAssignedObjects") ) )
+      addAttr -ln liqAssignedObjects -at message $node;
+
+  for ( $sel in $selected ) {
+    if ( !objExists( ($sel+".liquidDispShaderNode") ) )
+      addAttr -ln liquidSurfaceShaderNode -at message $sel;
+    if ( !isConnected( ($node+".liqAssignedObjects"), ($sel+".liquidDispShaderNode" ) ) )
+      connectAttr -f ($node+".liqAssignedObjects") ($sel+".liquidDispShaderNode");
+  }
+}
+
 global proc liquidAssignVolumeShaderToSelected( string $node )
 {
   // assign the shader to geometry
@@ -1002,6 +1064,7 @@ global proc liquidAssignShaderToSelected( string $node )
   string $nodetype = nodeType($node);
   if ( $nodetype == "liquidLight" ) liquidAssignLightShaderToSelected( $node );
   else if ( $nodetype == "liquidSurface" ) liquidAssignSurfaceShaderToSelected( $node );
+  else if ( $nodetype == "liquidDisplacement" ) liquidAssignDisplacementShaderToSelected( $node );
   else if ( $nodetype == "liquidVolume" ) liquidAssignVolumeShaderToSelected( $node );
 }
 

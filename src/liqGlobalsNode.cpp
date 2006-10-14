@@ -292,6 +292,8 @@ MObject liqGlobalsNode::aShaderComp;
 MObject liqGlobalsNode::aShaderExt;
 MObject liqGlobalsNode::aMakeTexture;
 MObject liqGlobalsNode::aViewTexture;
+MObject liqGlobalsNode::aViewTextureCmd;
+MObject liqGlobalsNode::aViewTextureFilt;
 
 MObject liqGlobalsNode::aBits_hiders;
 MObject liqGlobalsNode::aBits_hiders_0;
@@ -467,6 +469,15 @@ MObject liqGlobalsNode::aShadersMaxCachedAELayouts;
     CHECK_MSTATUS(attr.setHidden(true));      \
     CHECK_MSTATUS(addAttribute(obj));
 
+#define CREATE_STR_ARRAY(attr, obj, name, shortName)    \
+    obj = attr.create( name, shortName, MFnData::kStringArray, obj, &status); \
+    CHECK_MSTATUS(attr.setKeyable(true));     \
+    CHECK_MSTATUS(attr.setStorable(true));    \
+    CHECK_MSTATUS(attr.setReadable(true));    \
+    CHECK_MSTATUS(attr.setWritable(true));    \
+    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(addAttribute(obj));
+
 
 
 liqGlobalsNode::liqGlobalsNode()
@@ -526,9 +537,9 @@ MStatus liqGlobalsNode::initialize()
           CREATE_BOOL( nAttr,  aCreateOutputDirectories,    "createOutputDirectories",      "cod",    1     );
           CREATE_BOOL( nAttr,  aExpandShaderArrays,         "expandShaderArrays",           "esa",    1     );
 
-		  CREATE_BOOL( nAttr,  aBakeNonRasterOrient,        "bakeNonRasterOrient",          "nro",    0     );
-		  CREATE_BOOL( nAttr,  aBakeNoCullBackface,         "bakeNoCullBackface",           "ncb",    0     );
-		  CREATE_BOOL( nAttr,  aBakeNoCullHidden,           "bakeNoCullHidden",             "nch",    0     );
+          CREATE_BOOL( nAttr,  aBakeNonRasterOrient,        "bakeNonRasterOrient",          "nro",    0     );
+          CREATE_BOOL( nAttr,  aBakeNoCullBackface,         "bakeNoCullBackface",           "ncb",    0     );
+          CREATE_BOOL( nAttr,  aBakeNoCullHidden,           "bakeNoCullHidden",             "nch",    0     );
 
         CREATE_STRING( tAttr,  aShaderPath,                 "shaderPath",                   "spth",   ""    );
         CREATE_STRING( tAttr,  aTexturePath,                "texturePath",                  "tpth",   ""    );
@@ -721,6 +732,9 @@ MStatus liqGlobalsNode::initialize()
         CREATE_STRING( tAttr,  aShaderExt,                  "shaderExt",                    "she",    ""    );
         CREATE_STRING( tAttr,  aMakeTexture,                "makeTexture",                  "mtx",    ""    );
         CREATE_STRING( tAttr,  aViewTexture,                "viewTexture",                  "vtx",    ""    );
+
+     CREATE_STR_ARRAY( tAttr,  aViewTextureCmd,             "viewTextureCommand",           "vtc"           );
+     CREATE_STR_ARRAY( tAttr,  aViewTextureFilt,            "viewTextureFilter",            "vtf"           );
 
         CREATE_STRING( tAttr,  aDshDisplayName,             "dshDisplayName",               "dsdn",   ""    );
         CREATE_STRING( tAttr,  aDshImageMode,               "dshImageMode",                 "dsim",   ""    );
