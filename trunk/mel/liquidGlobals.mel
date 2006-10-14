@@ -158,6 +158,69 @@ proc liquidShowBitFieldGlobal( string $attr )
   }
 }
 
+global proc liquidShowViewerDefinition()
+{
+  string $attrExt = "liquidGlobals.viewTextureFilter";
+  string $attrCmd = "liquidGlobals.viewTextureCommand";
+  string $parent = `setParent -q`;
+
+  if ( !objExists( $attrExt ) || !objExists( $attrCmd ) ) {
+    return;
+  }
+  string $ext[] = `getAttr $attrExt`;
+  string $cmd[] = `getAttr $attrCmd`;
+
+  rowColumnLayout -numberOfColumns 3
+                  -columnAttach 1 "right" 5
+                  -columnWidth 1 145
+                  -columnWidth 2 80
+                  -columnWidth 3 130
+                  ("viewerDef_Layout");
+
+  text -l "";
+  text -fn "smallPlainLabelFont" -l "Filter";
+  text -fn "smallPlainLabelFont" -l "Command";
+
+  for ( $i=0; $i<size( $ext ); $i++ ) {
+      text -l ("Viewer "+$i) -al "right" ("viewerDef_"+$i+"_Label");
+      textField -tx $ext[$i] -cc ("liquidChangeViewerDefinition("+$i+")") ("viewerDef_"+$i+"_Ext");
+      textField -tx $cmd[$i] -cc ("liquidChangeViewerDefinition("+$i+")") ("viewerDef_"+$i+"_Cmd");
+  }
+
+  if ( $i == 0 || ( $ext[$i-1] != "" && $cmd[$i-1] != "" ) ) {
+    text -l ("Viewer "+$i) -al "right" ("viewerDef_"+$i+"_Label");
+    textField -tx $ext[$i] -cc ("liquidChangeViewerDefinition("+$i+")") ("viewerDef_"+$i+"_Ext");
+    textField -tx $cmd[$i] -cc ("liquidChangeViewerDefinition("+$i+")") ("viewerDef_"+$i+"_Cmd");
+  }
+
+  setParent $parent;
+}
+
+global proc liquidChangeViewerDefinition( int $index )
+{
+  string $extCtl = ("viewerDef_"+$index+"_Ext");
+  string $cmdCtl = ("viewerDef_"+$index+"_Cmd");
+  if ( `control -q -ex $extCtl` && `control -q -ex $cmdCtl` ) {
+
+    string $extVal[] = `getAttr liquidGlobals.viewTextureFilter`;
+    string $cmdVal[] = `getAttr liquidGlobals.viewTextureCommand`;
+
+    $extVal[$index] = `textField -q -tx $extCtl`;
+    $cmdVal[$index] = `textField -q -tx $cmdCtl`;
+
+    string $cmd = ( "setAttr -type \"stringArray\" liquidGlobals.viewTextureFilter "+
+                   (size( $extVal ))+" \""+
+                   stringArrayToString( $extVal, "\" \"")+"\"");
+    eval $cmd;
+
+    string $cmd = ( "setAttr -type \"stringArray\" liquidGlobals.viewTextureCommand "+
+                   (size( $cmdVal ))+" \""+
+                   stringArrayToString( $cmdVal, "\" \"")+"\"");
+    eval $cmd;
+
+  } else error("liquidChangeViewerDefinition: got bad index !");
+}
+
 global proc liquidShowStringGlobalPlus( string $name, string $label, string $info, string $prefix )
 {
   if ( `objExists ("liquidGlobals."+$name)` ) {
@@ -370,9 +433,9 @@ global proc liquidInitGlobalVals()
     ,"createOutputDirectories",     "bool",   true
     ,"expandShaderArrays",          "bool",   false
 
-	,"bakeNonRasterOrient",			"bool",   false
-	,"bakeNoCullBackface",			"bool",   false
-	,"bakeNoCullHidden",			"bool",   true
+    ,"bakeNonRasterOrient",         "bool",   false
+    ,"bakeNoCullBackface",          "bool",   false
+    ,"bakeNoCullHidden",            "bool",   true
 
     ,"shaderPath",                  "string", ""
     ,"texturePath",                 "string", ""
@@ -533,11 +596,14 @@ global proc liquidInitGlobalVals()
     ,"jitter",                      "long",   "1"
     ,"renderCmdFlags",              "string", ""                  // Render Command line flags e.g. -radio 5 for BMRT
 
-    ,"shaderInfo",                  "string",     "shaderinfo"    // shader info utility
-    ,"shaderComp",                  "string",     "shader"        // shader compiler
-    ,"shaderExt",                   "string",     "sdl"           // shader extension
-    ,"makeTexture",                 "string",     "tdlmake"       // texture make utility
-    ,"viewTexture",                 "string",     "i-display"     // texture viewer utility
+    ,"shaderInfo",                  "string",       "shaderinfo"    // shader info utility
+    ,"shaderComp",                  "string",       "shader"        // shader compiler
+    ,"shaderExt",                   "string",       "sdl"           // shader extension
+    ,"makeTexture",                 "string",       "tdlmake"       // texture make utility
+    ,"viewTexture",                 "string",       "i-display"     // default texture viewer
+
+    ,"viewTextureCommand",          "stringArray",  "i-display"     // texture viewer Command
+    ,"viewTextureFilter",           "stringArray",  "*.tdl"           // texture viewer file filter
 
     // This is the list of filters supported by the renderer
     ,"bits_hiders",                 "boolArray",  "Hidden Photon ZBuffer Raytrace OpenGL DepthMask"
@@ -591,6 +657,8 @@ global proc liquidInitGlobalVals()
     "shaderExt",
     "makeTexture",
     "viewTexture",
+    "viewTextureCommand",
+    "viewTextureFilter",
     "bits_hiders",
     "bits_filters",
     "bits_features",
@@ -745,6 +813,17 @@ global proc liquidAddGlobals()
         case "string":
           addAttr -ln $name -dt "string" -hidden true liquidGlobals;
           setAttr ( "liquidGlobals."+$name ) -type "string" $val;
+          break;
+
+        case "stringArray":
+          string $tmp[] = stringToStringArray( $val, ":");
+          int $arraySize = size( $tmp );
+          addAttr -ln $name -dt "stringArray" -hidden true liquidGlobals;
+          string $cmd = ("setAttr liquidGlobals."+$name+" -type \"stringArray\" "+$arraySize);
+          for ( $i=0; $i<$arraySize; $i++ ) {
+            $cmd += (" \""+$tmp[$i]+"\"");
+          }
+          eval $cmd;
           break;
 
         case "bool":
@@ -2863,7 +2942,9 @@ global proc liquidGlobalsRendererTab_buildIt( string $prefix )
         liquidShowStringGlobal "shaderInfo" "Shader Info" $prefix;
         liquidShowStringGlobal "shaderComp" "Shader Compiler" $prefix;
         liquidShowStringGlobal "makeTexture" "Make Texture" $prefix;
-        liquidShowStringGlobal "viewTexture" "Texture Viewer" $prefix;
+        liquidShowStringGlobal "viewTexture" "Default Texture Viewer" $prefix;
+        separator;
+        liquidShowViewerDefinition();
 
         separator;
         liquidShowStringGlobal "shaderExt" "Shader Extension" $prefix;

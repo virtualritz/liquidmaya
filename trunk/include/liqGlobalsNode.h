@@ -107,9 +107,9 @@ class liqGlobalsNode : public MPxNode
     static MObject aCreateOutputDirectories;
     static MObject aExpandShaderArrays;
 
-	static MObject aBakeNonRasterOrient;
-	static MObject aBakeNoCullBackface;
-	static MObject aBakeNoCullHidden;
+    static MObject aBakeNonRasterOrient;
+    static MObject aBakeNoCullBackface;
+    static MObject aBakeNoCullHidden;
 
     static MObject aShaderPath;
     static MObject aTexturePath;
@@ -273,6 +273,8 @@ class liqGlobalsNode : public MPxNode
     static MObject aShaderExt;
     static MObject aMakeTexture;
     static MObject aViewTexture;
+    static MObject aViewTextureCmd;
+    static MObject aViewTextureFilt;
 
     static MObject aBits_hiders;
     static MObject aBits_hiders_0;
