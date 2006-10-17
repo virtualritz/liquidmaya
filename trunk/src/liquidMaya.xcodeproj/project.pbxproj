@@ -480,32 +480,6 @@
 		};
 /* End PBXBuildRule section */
 
-/* Begin PBXBuildStyle section */
-		014CEA460018CE2711CA2923 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		014CEA470018CE2711CA2923 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXFileReference section */
 		0249A663FF388D9811CA2CEA /* libstdc++.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libstdc++.a"; path = "/usr/lib/libstdc++.a"; sourceTree = "<absolute>"; };
 		1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = liqRibPfxHairData.h; path = ../include/liqRibPfxHairData.h; sourceTree = SOURCE_ROOT; };
@@ -1026,98 +1000,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					OSX,
-					MAC_PLUGIN,
-					OSMac_,
-					_BOOL,
-					OSMac_MachO_,
-					PIXIE,
-					"LIQUIDVERSION=1.6.7",
-					"REQUIRE_IOSTREAM=1",
-				);
-				HEADER_SEARCH_PATHS = (
-					../include/,
-					"$(MAYA_LOCATION)../../devkit/include",
-					"$(PIXIEHOME)/include",
-					/Users/geohar/Desktop/pixie/Pixie.1.4.1/src/,
-				);
-				INSTALL_PATH = ../bin/OSX/;
-				LIBRARY_SEARCH_PATHS = (
-					"$(PIXIEHOME)/lib",
-					"$(MAYA_LOCATION)/MacOS",
-					"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib",
-					"$(SYSTEM_APPS_DIR)/Graphics/MacAqsis.0.9.1/lib",
-				);
-				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-					"-lFoundation",
-					"-lOpenMaya",
-					"-lOpenMayaRender",
-					"-lOpenMayaUI",
-					"-lOpenMayaAnim",
-					"-lOpenMayaFX",
-					"-lAnimSlice",
-					"-lDeformSlice",
-					"-lDynSlice",
-					"-lKinSlice",
-					"-lModelSlice",
-					"-lNurbsSlice",
-					"-lPolySlice",
-					"-lProjectSlice",
-					"-lImage",
-					"-lShared",
-					"-lTranslators",
-					"-lDataModel",
-					"-lRenderModel",
-					"-lNurbsEngine",
-					"-lDependEngine",
-					"-lCommandEngine",
-					"-lFoundation",
-					"-lAppVersion",
-					"-lUrchinSlice",
-					"-lAG",
-					"-lGeometryEngine",
-					"-lNurbs",
-					"-lAnimEngine",
-					"-lPolyEngine",
-					"-lDeformSlice",
-					"-lPoly",
-					"-lDependCommand",
-					"-lExtensionLayer",
-					"-l3dGraphics",
-					"-lSharedUI",
-					"-lBase",
-					"-lIMF",
-					"-lxpcom",
-					"-lnspr4",
-					"-lplds4",
-					"-lHWRender",
-					"-lHWFoundation",
-					"-lHWGL",
-					"-lManips",
-					"-lModelUISlice",
-					"-lplc4",
-					"-lSubdivEngine",
-					"-lSubdiv",
-					"-lImageUI",
-					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "liquidbin-pixie";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			dependencies = (
 			);
 			name = "liquidbin-pixie maya7.0";
@@ -1135,98 +1017,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					OSX,
-					MAC_PLUGIN,
-					OSMac_,
-					_BOOL,
-					OSMac_MachO_,
-					PIXIE,
-					"LIQUIDVERSION=1.6.7",
-					"REQUIRE_IOSTREAM=1",
-				);
-				HEADER_SEARCH_PATHS = (
-					../include/,
-					"$(MAYA_LOCATION)../../devkit/include",
-					"$(PIXIEHOME)/include",
-					/Users/geohar/Desktop/pixie/Pixie.1.4.1/src/,
-				);
-				INSTALL_PATH = ../bin/OSX/;
-				LIBRARY_SEARCH_PATHS = (
-					"$(PIXIEHOME)/lib",
-					"$(MAYA_LOCATION)/MacOS",
-					"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib",
-					"$(SYSTEM_APPS_DIR)/Graphics/MacAqsis.0.9.1/lib",
-				);
-				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-					"-lFoundation",
-					"-lOpenMaya",
-					"-lOpenMayaRender",
-					"-lOpenMayaUI",
-					"-lOpenMayaAnim",
-					"-lOpenMayaFX",
-					"-lAnimSlice",
-					"-lDeformSlice",
-					"-lDynSlice",
-					"-lKinSlice",
-					"-lModelSlice",
-					"-lNurbsSlice",
-					"-lPolySlice",
-					"-lProjectSlice",
-					"-lImage",
-					"-lShared",
-					"-lTranslators",
-					"-lDataModel",
-					"-lRenderModel",
-					"-lNurbsEngine",
-					"-lDependEngine",
-					"-lCommandEngine",
-					"-lFoundation",
-					"-lAppVersion",
-					"-lUrchinSlice",
-					"-lAG",
-					"-lGeometryEngine",
-					"-lNurbs",
-					"-lAnimEngine",
-					"-lPolyEngine",
-					"-lDeformSlice",
-					"-lPoly",
-					"-lDependCommand",
-					"-lExtensionLayer",
-					"-l3dGraphics",
-					"-lSharedUI",
-					"-lBase",
-					"-lIMF",
-					"-lxpcom",
-					"-lnspr4",
-					"-lplds4",
-					"-lHWRender",
-					"-lHWFoundation",
-					"-lHWGL",
-					"-lManips",
-					"-lModelUISlice",
-					"-lplc4",
-					"-lSubdivEngine",
-					"-lSubdiv",
-					"-lImageUI",
-					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "liquidbin-pixie";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			dependencies = (
 			);
 			name = "liquidbin-pixie maya8.0";
@@ -1247,103 +1037,6 @@
 				1F8EBC430A9C3E9300B6C156 /* PBXBuildRule */,
 				1F8EBC440A9C3E9300B6C156 /* PBXBuildRule */,
 			);
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					OSX,
-					MAC_PLUGIN,
-					OSMac_,
-					_BOOL,
-					OSMac_MachO_,
-					PIXIE,
-					"LIQUIDVERSION=1.6.7",
-					"REQUIRE_IOSTREAM=1",
-				);
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../include/,
-					"$(MAYA_LOCATION)../../devkit/include",
-					"$(PIXIEHOME)/include",
-					/Users/geohar/Desktop/pixie/Pixie.1.4.2/src/,
-				);
-				INSTALL_PATH = ../bin/OSX/;
-				LIBRARY_SEARCH_PATHS = (
-					"$(PIXIEHOME)/lib",
-					"$(MAYA_LOCATION)/MacOS",
-					"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib",
-				);
-				LIBRARY_STYLE = DYNAMIC;
-				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-					"-lFoundation",
-					"-lOpenMaya",
-					"-lOpenMayaRender",
-					"-lOpenMayaUI",
-					"-lOpenMayaAnim",
-					"-lOpenMayaFX",
-					"-lAnimSlice",
-					"-lDeformSlice",
-					"-lDynSlice",
-					"-lKinSlice",
-					"-lModelSlice",
-					"-lNurbsSlice",
-					"-lPolySlice",
-					"-lProjectSlice",
-					"-lImage",
-					"-lShared",
-					"-lTranslators",
-					"-lDataModel",
-					"-lRenderModel",
-					"-lNurbsEngine",
-					"-lDependEngine",
-					"-lCommandEngine",
-					"-lFoundation",
-					"-lAppVersion",
-					"-lUrchinSlice",
-					"-lAG",
-					"-lGeometryEngine",
-					"-lNurbs",
-					"-lAnimEngine",
-					"-lPolyEngine",
-					"-lDeformSlice",
-					"-lPoly",
-					"-lDependCommand",
-					"-lExtensionLayer",
-					"-l3dGraphics",
-					"-lSharedUI",
-					"-lBase",
-					"-lIMF",
-					"-lxpcom",
-					"-lnspr4",
-					"-lplds4",
-					"-lHWRender",
-					"-lHWFoundation",
-					"-lHWGL",
-					"-lManips",
-					"-lModelUISlice",
-					"-lplc4",
-					"-lSubdivEngine",
-					"-lSubdiv",
-					"-lImageUI",
-					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
-				);
-				OTHER_REZFLAGS = "";
-				PIXIEHOME = /Applications/Graphics/Pixie;
-				PREBINDING = YES;
-				PRODUCT_NAME = liquid_pixie.lib;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
 			dependencies = (
 			);
 			name = "liquid-pixie maya8.0";
@@ -1364,101 +1057,6 @@
 				1F074609087E561C00EBD2F1 /* PBXBuildRule */,
 				1F074608087E561900EBD2F1 /* PBXBuildRule */,
 			);
-			buildSettings = {
-				DELIGHT = "/Applications/Graphics/3Delight-4.0.1";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					OSX,
-					MAC_PLUGIN,
-					OSMac_,
-					_BOOL,
-					OSMac_MachO_,
-					DELIGHT,
-					"LIQUIDVERSION=1.6.7",
-					"REQUIRE_IOSTREAM=1",
-				);
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../include/,
-					"$(MAYA_LOCATION)../../devkit/include",
-					"$(DELIGHT)/include",
-				);
-				INSTALL_PATH = ../bin/OSX/;
-				LIBRARY_SEARCH_PATHS = (
-					"$(DELIGHT)/lib",
-					"$(MAYA_LOCATION)/MacOS",
-					"$(SYSTEM_APPS_DIR)/Graphics/3Delight-4.0.1/lib",
-				);
-				LIBRARY_STYLE = DYNAMIC;
-				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-					"-lFoundation",
-					"-lOpenMaya",
-					"-lOpenMayaRender",
-					"-lOpenMayaUI",
-					"-lOpenMayaAnim",
-					"-lOpenMayaFX",
-					"-lAnimSlice",
-					"-lDeformSlice",
-					"-lDynSlice",
-					"-lKinSlice",
-					"-lModelSlice",
-					"-lNurbsSlice",
-					"-lPolySlice",
-					"-lProjectSlice",
-					"-lImage",
-					"-lShared",
-					"-lTranslators",
-					"-lDataModel",
-					"-lRenderModel",
-					"-lNurbsEngine",
-					"-lDependEngine",
-					"-lCommandEngine",
-					"-lFoundation",
-					"-lAppVersion",
-					"-lUrchinSlice",
-					"-lAG",
-					"-lGeometryEngine",
-					"-lNurbs",
-					"-lAnimEngine",
-					"-lPolyEngine",
-					"-lDeformSlice",
-					"-lPoly",
-					"-lDependCommand",
-					"-lExtensionLayer",
-					"-l3dGraphics",
-					"-lSharedUI",
-					"-lBase",
-					"-lIMF",
-					"-lxpcom",
-					"-lnspr4",
-					"-lplds4",
-					"-lHWRender",
-					"-lHWFoundation",
-					"-lHWGL",
-					"-lManips",
-					"-lModelUISlice",
-					"-lplc4",
-					"-lSubdivEngine",
-					"-lSubdiv",
-					"-lImageUI",
-					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
-				);
-				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
-				PRODUCT_NAME = liquid_3delight.lib;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
 			dependencies = (
 			);
 			name = "liquid-3Delight maya7.0";
@@ -1477,104 +1075,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				AQSIS = /Applications/Graphics/MacAqsis.0.9.1;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					OSX,
-					MAC_PLUGIN,
-					OSMac_,
-					_BOOL,
-					OSMac_MachO_,
-					AQSIS,
-					"LIQUIDVERSION=1.6.7",
-					"REQUIRE_IOSTREAM=1",
-				);
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../include/,
-					"$(MAYA_LOCATION)../../devkit/include",
-					"$(AQSIS)/include/aqsis/",
-				);
-				INSTALL_PATH = ../bin/OSX/;
-				LIBRARY_SEARCH_PATHS = (
-					"$(AQSIS)/lib",
-					"$(MAYA_LOCATION)/MacOS",
-					"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib",
-					"$(SYSTEM_APPS_DIR)/Graphics/MacAqsis.0.9.1/lib",
-					/Users/geohar/Development/SVN_Sandbox/LiquidMaya/src,
-				);
-				LIBRARY_STYLE = DYNAMIC;
-				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-					"-lFoundation",
-					"-lOpenMaya",
-					"-lOpenMayaRender",
-					"-lOpenMayaUI",
-					"-lOpenMayaAnim",
-					"-lOpenMayaFX",
-					"-lAnimSlice",
-					"-lDeformSlice",
-					"-lDynSlice",
-					"-lKinSlice",
-					"-lModelSlice",
-					"-lNurbsSlice",
-					"-lPolySlice",
-					"-lProjectSlice",
-					"-lImage",
-					"-lShared",
-					"-lTranslators",
-					"-lDataModel",
-					"-lRenderModel",
-					"-lNurbsEngine",
-					"-lDependEngine",
-					"-lCommandEngine",
-					"-lFoundation",
-					"-lAppVersion",
-					"-lUrchinSlice",
-					"-lAG",
-					"-lGeometryEngine",
-					"-lNurbs",
-					"-lAnimEngine",
-					"-lPolyEngine",
-					"-lDeformSlice",
-					"-lPoly",
-					"-lDependCommand",
-					"-lExtensionLayer",
-					"-l3dGraphics",
-					"-lSharedUI",
-					"-lBase",
-					"-lIMF",
-					"-lxpcom",
-					"-lnspr4",
-					"-lplds4",
-					"-lHWRender",
-					"-lHWFoundation",
-					"-lHWGL",
-					"-lManips",
-					"-lModelUISlice",
-					"-lplc4",
-					"-lSubdivEngine",
-					"-lSubdiv",
-					"-lImageUI",
-					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = liquid_aqsis.lib;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
 			dependencies = (
 			);
 			name = "liquid-aqsis maya7.0";
@@ -1595,103 +1095,6 @@
 				1F96851B086445620054B6CE /* PBXBuildRule */,
 				1F96851A0864455D0054B6CE /* PBXBuildRule */,
 			);
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					OSX,
-					MAC_PLUGIN,
-					OSMac_,
-					_BOOL,
-					OSMac_MachO_,
-					PIXIE,
-					"LIQUIDVERSION=1.6.7",
-					"REQUIRE_IOSTREAM=1",
-				);
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../include/,
-					"$(MAYA_LOCATION)../../devkit/include",
-					"$(PIXIEHOME)/include",
-					/Users/geohar/Desktop/pixie/Pixie.1.4.2/src/,
-				);
-				INSTALL_PATH = ../bin/OSX/;
-				LIBRARY_SEARCH_PATHS = (
-					"$(PIXIEHOME)/lib",
-					"$(MAYA_LOCATION)/MacOS",
-					"$(SYSTEM_APPS_DIR)/Graphics/Pixie/lib",
-				);
-				LIBRARY_STYLE = DYNAMIC;
-				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-					"-lFoundation",
-					"-lOpenMaya",
-					"-lOpenMayaRender",
-					"-lOpenMayaUI",
-					"-lOpenMayaAnim",
-					"-lOpenMayaFX",
-					"-lAnimSlice",
-					"-lDeformSlice",
-					"-lDynSlice",
-					"-lKinSlice",
-					"-lModelSlice",
-					"-lNurbsSlice",
-					"-lPolySlice",
-					"-lProjectSlice",
-					"-lImage",
-					"-lShared",
-					"-lTranslators",
-					"-lDataModel",
-					"-lRenderModel",
-					"-lNurbsEngine",
-					"-lDependEngine",
-					"-lCommandEngine",
-					"-lFoundation",
-					"-lAppVersion",
-					"-lUrchinSlice",
-					"-lAG",
-					"-lGeometryEngine",
-					"-lNurbs",
-					"-lAnimEngine",
-					"-lPolyEngine",
-					"-lDeformSlice",
-					"-lPoly",
-					"-lDependCommand",
-					"-lExtensionLayer",
-					"-l3dGraphics",
-					"-lSharedUI",
-					"-lBase",
-					"-lIMF",
-					"-lxpcom",
-					"-lnspr4",
-					"-lplds4",
-					"-lHWRender",
-					"-lHWFoundation",
-					"-lHWGL",
-					"-lManips",
-					"-lModelUISlice",
-					"-lplc4",
-					"-lSubdivEngine",
-					"-lSubdiv",
-					"-lImageUI",
-					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
-				);
-				OTHER_REZFLAGS = "";
-				PIXIEHOME = /Applications/Graphics/Pixie;
-				PREBINDING = YES;
-				PRODUCT_NAME = liquid_pixie.lib;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
 			dependencies = (
 			);
 			name = "liquid-pixie maya7.0";
@@ -1705,12 +1108,6 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1F21B3DB08C2511D000A819E /* Build configuration list for PBXProject "liquidMaya" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				014CEA460018CE2711CA2923 /* Development */,
-				014CEA470018CE2711CA2923 /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* liquidMaya */;
 			projectDirPath = "";
@@ -2132,9 +1529,10 @@
 					_BOOL,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b23\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -2241,9 +1639,10 @@
 					_BOOL,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b23\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -2348,9 +1747,10 @@
 					_BOOL,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b23\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -2768,9 +2168,10 @@
 					_BOOL,
 					OSMac_MachO_,
 					DELIGHT,
-					"LIQUIDVERSION=\"1.8b23\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -2876,9 +2277,10 @@
 					_BOOL,
 					OSMac_MachO_,
 					DELIGHT,
-					"LIQUIDVERSION=\"1.8b23\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -2981,9 +2383,10 @@
 					_BOOL,
 					OSMac_MachO_,
 					DELIGHT,
-					"LIQUIDVERSION=\"1.8b23\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -3406,9 +2809,10 @@
 					OSMac_,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b30\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					../include/,
@@ -3510,9 +2914,10 @@
 					OSMac_,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b30\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					../include/,
@@ -3611,9 +3016,10 @@
 					OSMac_,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b30\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					../include/,
@@ -3722,9 +3128,10 @@
 					OSMac_,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b30\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -3830,9 +3237,10 @@
 					OSMac_,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b30\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -3936,9 +3344,10 @@
 					OSMac_,
 					OSMac_MachO_,
 					PIXIE,
-					"LIQUIDVERSION=\"1.8b30\"",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GENERATE_MASTER_OBJECT_FILE = YES;
