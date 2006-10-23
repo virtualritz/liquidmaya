@@ -13,6 +13,17 @@
 		1F000F540A867E620015BC04 /* liqRibPfxToonData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F500A867E620015BC04 /* liqRibPfxToonData.h */; };
 		1F000F550A867E620015BC04 /* liqRibPfxHairData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */; };
 		1F000F560A867E620015BC04 /* liqRibPfxToonData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F500A867E620015BC04 /* liqRibPfxToonData.h */; };
+		1F148B3E0AED570E00968DE4 /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B320AED570E00968DE4 /* common.h */; };
+		1F148B3F0AED570E00968DE4 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B330AED570E00968DE4 /* error.cpp */; };
+		1F148B400AED570E00968DE4 /* error.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B340AED570E00968DE4 /* error.h */; };
+		1F148B420AED570E00968DE4 /* ri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B360AED570E00968DE4 /* ri.cpp */; };
+		1F148B430AED570E00968DE4 /* ri.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B370AED570E00968DE4 /* ri.h */; };
+		1F148B440AED570E00968DE4 /* ribOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B380AED570E00968DE4 /* ribOut.cpp */; };
+		1F148B450AED570E00968DE4 /* ribOut.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B390AED570E00968DE4 /* ribOut.h */; };
+		1F148B460AED570E00968DE4 /* riInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B3A0AED570E00968DE4 /* riInterface.cpp */; };
+		1F148B470AED570E00968DE4 /* riInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B3B0AED570E00968DE4 /* riInterface.h */; };
+		1F148B480AED570E00968DE4 /* variable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B3C0AED570E00968DE4 /* variable.cpp */; };
+		1F148B490AED570E00968DE4 /* variable.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B3D0AED570E00968DE4 /* variable.h */; };
 		1F28DDD909D6DF5800D644D1 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
 		1F4D549F09857F5A00787F2E /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
 		1F4D54A009857F5A00787F2E /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
@@ -480,10 +491,39 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXContainerItemProxy section */
+		1F148B760AED58A100968DE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1F148B250AED56C800968DE4 /* ribLib */;
+			remoteInfo = ribLib;
+		};
+		1F148B780AED58A400968DE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1F148B250AED56C800968DE4 /* ribLib */;
+			remoteInfo = ribLib;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0249A663FF388D9811CA2CEA /* libstdc++.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libstdc++.a"; path = "/usr/lib/libstdc++.a"; sourceTree = "<absolute>"; };
 		1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = liqRibPfxHairData.h; path = ../include/liqRibPfxHairData.h; sourceTree = SOURCE_ROOT; };
 		1F000F500A867E620015BC04 /* liqRibPfxToonData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = liqRibPfxToonData.h; path = ../include/liqRibPfxToonData.h; sourceTree = SOURCE_ROOT; };
+		1F148B260AED56C800968DE4 /* librib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = librib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F148B320AED570E00968DE4 /* common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../ribLib/common.h; sourceTree = SOURCE_ROOT; };
+		1F148B330AED570E00968DE4 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = error.cpp; path = ../ribLib/error.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B340AED570E00968DE4 /* error.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = error.h; path = ../ribLib/error.h; sourceTree = SOURCE_ROOT; };
+		1F148B360AED570E00968DE4 /* ri.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ri.cpp; path = ../ribLib/ri.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B370AED570E00968DE4 /* ri.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ri.h; path = ../ribLib/ri.h; sourceTree = SOURCE_ROOT; };
+		1F148B380AED570E00968DE4 /* ribOut.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ribOut.cpp; path = ../ribLib/ribOut.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B390AED570E00968DE4 /* ribOut.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ribOut.h; path = ../ribLib/ribOut.h; sourceTree = SOURCE_ROOT; };
+		1F148B3A0AED570E00968DE4 /* riInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = riInterface.cpp; path = ../ribLib/riInterface.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B3B0AED570E00968DE4 /* riInterface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = riInterface.h; path = ../ribLib/riInterface.h; sourceTree = SOURCE_ROOT; };
+		1F148B3C0AED570E00968DE4 /* variable.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = variable.cpp; path = ../ribLib/variable.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B3D0AED570E00968DE4 /* variable.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = variable.h; path = ../ribLib/variable.h; sourceTree = SOURCE_ROOT; };
 		1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqJobList.cpp; sourceTree = "<group>"; };
 		1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqAttachPrefAttribute.cpp; sourceTree = "<group>"; };
 		1F4D547609857F5A00787F2E /* liqBucket.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqBucket.cpp; sourceTree = "<group>"; };
@@ -581,6 +621,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1F148B240AED56C800968DE4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1F5E729A07E632E0006FAA8F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -647,6 +694,8 @@
 		08FB7794FE84155DC02AAC07 /* liquidMaya */ = {
 			isa = PBXGroup;
 			children = (
+				1F148B750AED587B00968DE4 /* Libs */,
+				1F148B290AED56D800968DE4 /* RibLib */,
 				1FCCD02B079F209C0069EDB7 /* Headers */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E8C029090F304C91782 /* Documentation */,
@@ -719,14 +768,46 @@
 				1F5E729C07E632E0006FAA8F /* liquidbin-pixie */,
 				1F8EBC490A9C3E9300B6C156 /* liquid_pixie.bundle */,
 				1F6E770F0A9CF908009447B2 /* liquidbin-pixie */,
+				1F148B260AED56C800968DE4 /* librib.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1F148B290AED56D800968DE4 /* RibLib */ = {
+			isa = PBXGroup;
+			children = (
+				1F148B320AED570E00968DE4 /* common.h */,
+				1F148B330AED570E00968DE4 /* error.cpp */,
+				1F148B340AED570E00968DE4 /* error.h */,
+				1F148B360AED570E00968DE4 /* ri.cpp */,
+				1F148B370AED570E00968DE4 /* ri.h */,
+				1F148B380AED570E00968DE4 /* ribOut.cpp */,
+				1F148B390AED570E00968DE4 /* ribOut.h */,
+				1F148B3A0AED570E00968DE4 /* riInterface.cpp */,
+				1F148B3B0AED570E00968DE4 /* riInterface.h */,
+				1F148B3C0AED570E00968DE4 /* variable.cpp */,
+				1F148B3D0AED570E00968DE4 /* variable.h */,
+			);
+			name = RibLib;
+			sourceTree = "<group>";
+		};
+		1F148B750AED587B00968DE4 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				1FAC5DDF07BE25F80083A3E5 /* lib3delight.dylib */,
+				1FADF85A07724BC9007DC910 /* libaqsistypes.dylib */,
+				1F6E77380A9CFB6F009447B2 /* libri.dylib */,
+				1FADF85407724773007DC910 /* libri2rib.dylib */,
+				1FDCD16C078A094000E62CC1 /* libshaderexecenv.dylib */,
+				1FADF85607724B45007DC910 /* libshadervm.dylib */,
+				1FADF85207722221007DC910 /* libslxargs.dylib */,
+			);
+			name = Libs;
 			sourceTree = "<group>";
 		};
 		1FAC5DDC07BE25D40083A3E5 /* 3Delight */ = {
 			isa = PBXGroup;
 			children = (
-				1FAC5DDF07BE25F80083A3E5 /* lib3delight.dylib */,
 			);
 			name = 3Delight;
 			sourceTree = "<group>";
@@ -734,7 +815,6 @@
 		1FADF85807724B8A007DC910 /* Pixie */ = {
 			isa = PBXGroup;
 			children = (
-				1F6E77380A9CFB6F009447B2 /* libri.dylib */,
 			);
 			name = Pixie;
 			sourceTree = "<group>";
@@ -742,11 +822,6 @@
 		1FADF85907724B94007DC910 /* Aqsis */ = {
 			isa = PBXGroup;
 			children = (
-				1FADF85207722221007DC910 /* libslxargs.dylib */,
-				1FADF85607724B45007DC910 /* libshadervm.dylib */,
-				1FADF85407724773007DC910 /* libri2rib.dylib */,
-				1FDCD16C078A094000E62CC1 /* libshaderexecenv.dylib */,
-				1FADF85A07724BC9007DC910 /* libaqsistypes.dylib */,
 			);
 			name = Aqsis;
 			sourceTree = "<group>";
@@ -807,6 +882,19 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		1F148B220AED56C800968DE4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F148B3E0AED570E00968DE4 /* common.h in Headers */,
+				1F148B400AED570E00968DE4 /* error.h in Headers */,
+				1F148B430AED570E00968DE4 /* ri.h in Headers */,
+				1F148B450AED570E00968DE4 /* ribOut.h in Headers */,
+				1F148B470AED570E00968DE4 /* riInterface.h in Headers */,
+				1F148B490AED570E00968DE4 /* variable.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1F8EBBED0A9C3E9300B6C156 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -990,6 +1078,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		1F148B250AED56C800968DE4 /* ribLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F148B2A0AED56D900968DE4 /* Build configuration list for PBXNativeTarget "ribLib" */;
+			buildPhases = (
+				1F148B220AED56C800968DE4 /* Headers */,
+				1F148B230AED56C800968DE4 /* Sources */,
+				1F148B240AED56C800968DE4 /* Frameworks */,
+				1F148B670AED57FE00968DE4 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ribLib;
+			productName = ribLib;
+			productReference = 1F148B260AED56C800968DE4 /* librib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		1F5E729B07E632E0006FAA8F /* liquidbin-pixie maya7.0 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1F21B3D708C2511D000A819E /* Build configuration list for PBXNativeTarget "liquidbin-pixie maya7.0" */;
@@ -1018,6 +1124,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				1F148B790AED58A400968DE4 /* PBXTargetDependency */,
 			);
 			name = "liquidbin-pixie maya8.0";
 			productName = "liquidbin-pixie";
@@ -1038,6 +1145,7 @@
 				1F8EBC440A9C3E9300B6C156 /* PBXBuildRule */,
 			);
 			dependencies = (
+				1F148B770AED58A100968DE4 /* PBXTargetDependency */,
 			);
 			name = "liquid-pixie maya8.0";
 			productName = liquid;
@@ -1118,11 +1226,25 @@
 				1F5E729B07E632E0006FAA8F /* liquidbin-pixie maya7.0 */,
 				1F8EBBEC0A9C3E9300B6C156 /* liquid-pixie maya8.0 */,
 				1F6E77040A9CF908009447B2 /* liquidbin-pixie maya8.0 */,
+				1F148B250AED56C800968DE4 /* ribLib */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1F148B670AED57FE00968DE4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp -r ${TARGET_BUILD_DIR}/librib.a ../bin/OSX/librib.a\n";
+		};
 		1F21B3E708C252A8000A819E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1206,6 +1328,18 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1F148B230AED56C800968DE4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F148B3F0AED570E00968DE4 /* error.cpp in Sources */,
+				1F148B420AED570E00968DE4 /* ri.cpp in Sources */,
+				1F148B440AED570E00968DE4 /* ribOut.cpp in Sources */,
+				1F148B460AED570E00968DE4 /* riInterface.cpp in Sources */,
+				1F148B480AED570E00968DE4 /* variable.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1F5E729907E632E0006FAA8F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1508,7 +1642,68 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		1F148B770AED58A100968DE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1F148B250AED56C800968DE4 /* ribLib */;
+			targetProxy = 1F148B760AED58A100968DE4 /* PBXContainerItemProxy */;
+		};
+		1F148B790AED58A400968DE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1F148B250AED56C800968DE4 /* ribLib */;
+			targetProxy = 1F148B780AED58A400968DE4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		1F148B2B0AED56D900968DE4 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_ZLIB;
+				HEADER_SEARCH_PATHS = ../../ribLib;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = rib;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		1F148B2C0AED56D900968DE4 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_ZLIB;
+				HEADER_SEARCH_PATHS = ../../ribLib;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = rib;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		1F148B2D0AED56D900968DE4 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_ZLIB;
+				HEADER_SEARCH_PATHS = ../../ribLib;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = rib;
+				ZERO_LINK = YES;
+			};
+			name = Default;
+		};
 		1F21B3CC08C2511D000A819E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3438,6 +3633,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1F148B2A0AED56D900968DE4 /* Build configuration list for PBXNativeTarget "ribLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F148B2B0AED56D900968DE4 /* Development */,
+				1F148B2C0AED56D900968DE4 /* Deployment */,
+				1F148B2D0AED56D900968DE4 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
 		1F21B3CB08C2511D000A819E /* Build configuration list for PBXNativeTarget "liquid-pixie maya7.0" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
