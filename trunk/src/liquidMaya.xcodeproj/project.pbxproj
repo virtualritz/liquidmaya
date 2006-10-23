@@ -1610,7 +1610,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
@@ -1719,7 +1719,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
@@ -1827,7 +1827,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
@@ -1934,7 +1934,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = liquid_aqsis.lib;
@@ -2036,7 +2036,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = liquid_aqsis.lib;
@@ -2136,7 +2136,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = liquid_aqsis.lib;
@@ -2248,7 +2248,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = YES;
@@ -2356,7 +2356,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = YES;
@@ -2462,7 +2462,7 @@
 					"-lSubdiv",
 					"-lImageUI",
 					"-lSubdivGeom",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = YES;
@@ -2508,7 +2508,7 @@
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 					"-framework",
 					Carbon,
 					"-framework",
@@ -2608,7 +2608,7 @@
 				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 					"-framework",
 					Carbon,
 					"-framework",
@@ -2706,7 +2706,7 @@
 				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 					"-framework",
 					Carbon,
 					"-framework",
@@ -2830,7 +2830,7 @@
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 					"-framework",
 					Carbon,
 					"-framework",
@@ -2934,7 +2934,7 @@
 				MAYA_LOCATION = /Applications/Alias/maya8.0/Maya.app/Contents/;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 					"-framework",
 					Carbon,
 					"-framework",
@@ -3036,7 +3036,7 @@
 				MAYA_LOCATION = /Applications/Alias/maya8.0/Maya.app/Contents/;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 					"-framework",
 					Carbon,
 					"-framework",
@@ -3208,7 +3208,7 @@
 					"-lSubdivGeom",
 					"-liff",
 					"-lawxml2",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
@@ -3316,7 +3316,7 @@
 					"-lSubdivGeom",
 					"-liff",
 					"-lawxml2",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
@@ -3423,7 +3423,7 @@
 					"-lSubdivGeom",
 					"-liff",
 					"-lawxml2",
-					"-Wl,-executable_path,$(MAYA_LOCATION)",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
 				);
 				OTHER_REZFLAGS = "";
 				PIXIEHOME = /Applications/Graphics/Pixie;
