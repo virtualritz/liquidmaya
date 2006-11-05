@@ -138,10 +138,12 @@ MStatus liqWriteArchive::redoIt()
     }
     fclose(f);
 
+#if defined(PRMAN) || defined(3DELIGHT)
     // binary or ascii
     RtString format[1] = {"ascii"};
     if ( binaryRib ) format[0] = "binary";
     RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
+#endif
 
     // write the RIB file
     RiBegin(const_cast<char*>(outputFilename.asChar()));
