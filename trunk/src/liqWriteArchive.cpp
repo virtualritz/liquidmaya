@@ -138,7 +138,7 @@ MStatus liqWriteArchive::redoIt()
     }
     fclose(f);
 
-#if defined(PRMAN) || defined(3DELIGHT)
+#if defined( PRMAN ) || defined( DELIGHT )
     // binary or ascii
     RtString format[1] = {"ascii"};
     if ( binaryRib ) format[0] = "binary";
