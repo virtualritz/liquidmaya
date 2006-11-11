@@ -425,8 +425,11 @@ int liquidOutputPreviewShader( const char *fileName, liqPreviewShoptions *option
   RiFrameBegin( 1 );
   RiShadingRate( ( options->shadingRate ) );
   RiPixelSamples( (RtInt) options->pixelSamples, (RtInt) options->pixelSamples );
+  #ifdef RiSeparableCatmullRomFilter
   if ( liquidRenderer.renderName == "PRMan" ) RiPixelFilter( RiSeparableCatmullRomFilter, 4.0, 4.0 );
-  else RiPixelFilter( RiCatmullRomFilter, 3.0, 3.0 );
+  else 
+  #endif
+  	RiPixelFilter( RiCatmullRomFilter, 3.0, 3.0 );
   RiFormat( (RtInt) options->displaySize, (RtInt) options->displaySize, 1 );
   if( options->backPlane )
   RiDisplay( const_cast<char *>( options->displayName ), const_cast<char *>( options->displayDriver ), RI_RGB, RI_NULL );
