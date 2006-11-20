@@ -484,11 +484,17 @@ MString parseString( const MString & inputString )
   int sLength = inputString.length();
   int i;
 
+  bool escaped = false;
+  
   for ( i = 0; i < sLength; i++ ) {
+	if (inputString.substring(i,i) == "\\") {
+		if(!escaped) {
+			escaped = true;
+			continue;
+		}
+	}
 
-    bool escaped(i ? inputString.substring( i-1, i-1 ) == "\\" : false);
-
-    if ( inputString.substring(i, i) == "$" ) {
+    if ( !escaped && inputString.substring(i, i) == "$" ) {
       tokenString.clear();
       inToken = true;
     } else if ( inToken ) {
@@ -584,6 +590,8 @@ MString parseString( const MString & inputString )
     } else {
       constructedString += inputString.substring(i, i);
     }
+
+	escaped = false;	// clear for next time round
   }
 
   // Moritz: now parse for MEL command sequences
