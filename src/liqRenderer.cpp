@@ -209,9 +209,9 @@ void liqRenderer::setRenderer()
           requiredPlug.getValue( enabled );
           required = required.toLowerCase();
 
-          if ( required == "swap_uv" )     requires_SWAPPED_UVS  = enabled;
-          if ( required == "__pref" )      requires__PREF        = enabled;
-          if ( required == "makeshadow" )  requires_MAKESHADOW   = enabled;
+          if ( required == "Swap_UV" )     requires_SWAPPED_UVS  = enabled;
+          if ( required == "__Pref" )      requires__PREF        = enabled;
+          if ( required == "makeShadow" )  requires_MAKESHADOW   = enabled;
         }
       }
     }
