@@ -5899,7 +5899,7 @@ MStatus liqRibTranslator::objectBlock()
     if ( liqglo_doMotion &&
          ribNode->motion.transformationBlur &&
          ( ribNode->object( 1 ) != NULL ) &&
-         ( ribNode->object(0)->type != MRT_Locator ) &&
+       //  ( ribNode->object(0)->type != MRT_Locator ) &&
          ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
     {
       LIQDEBUGPRINTF( "-> writing matrix motion blur data\n" );
@@ -5919,7 +5919,7 @@ MStatus liqRibTranslator::objectBlock()
     if ( liqglo_doMotion &&
          ribNode->motion.transformationBlur &&
          ( ribNode->object( 1 ) != NULL ) &&
-         ( ribNode->object( 0 )->type != MRT_Locator ) &&
+       //  ( ribNode->object( 0 )->type != MRT_Locator ) &&
          ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
     {
       path = ribNode->path();
@@ -6717,7 +6717,7 @@ MStatus liqRibTranslator::objectBlock()
           ribNode->motion.deformationBlur &&
           ( ribNode->object(1) != NULL ) &&
           ( ribNode->object(0)->type != MRT_RibGen ) &&
-          ( ribNode->object(0)->type != MRT_Locator ) &&
+     //     ( ribNode->object(0)->type != MRT_Locator ) &&
           ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
       {
         // Moritz: replaced RiMotionBegin call with ..V version to allow for more than five motion samples
@@ -6732,7 +6732,7 @@ MStatus liqRibTranslator::objectBlock()
            ribNode->motion.deformationBlur &&
            ( ribNode->object(1) != NULL ) &&
            ( ribNode->object(0)->type != MRT_RibGen ) &&
-           ( ribNode->object(0)->type != MRT_Locator ) &&
+      //     ( ribNode->object(0)->type != MRT_Locator ) &&
            ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) )
       {
         LIQDEBUGPRINTF( "-> writing deformation blur data\n" );
