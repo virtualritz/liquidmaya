@@ -675,12 +675,11 @@ proc convertShadingNetworkToRSL ( string $startingNode, string $assingToNode )
   // Compile the shader with the current renderer's shader compiler
   string $shaderComp = `getAttr "liquidGlobals.shaderComp"`;
   string $shaderdirpath = $shaderdir;
-  if ( !gmatch( $shaderdir, "/*") || !gmatch( $shaderdir, "?:*") )
+  if ( !gmatch( $shaderdir, "/*") && !gmatch( $shaderdir, "?:*") )
     $shaderdirpath = ( workspace( "-q", "-rd" ) + $shaderdir );
   trace ( "cd " + $shaderdirpath );
   trace ( $shaderComp + " " + $startingNode  + ".sl" );
-  system ( "cd " + $shaderdirpath  );
-  system ( $shaderComp + " " + $startingNode + ".sl"  );
+  system ( "cd " + $shaderdirpath  + ";" + $shaderComp + " " + $startingNode + ".sl"  );
 
   string $shaderExt = `getAttr "liquidGlobals.shaderExt"`;
 
