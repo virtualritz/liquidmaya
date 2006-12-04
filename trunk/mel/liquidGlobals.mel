@@ -74,7 +74,7 @@ global proc liquidGlobalsUpdateBitsMenus( string $theAttr )
 global proc liquidGlobalsRenderLayerOverrideUpdateMenu( string $attr, string $prefix )
 {
   int $en = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
-  string $ctl = (gmatch( $attr, "*[*]*"))? substitute( $attr, "s/\\[*\\]*/_/g" ) : $attr;
+  string $ctl = (gmatch( $attr, "*\\[*\\]*"))? substitute( $attr, "s/\\[*\\]*/_/g" ) : $attr;
   string $nodeOverrides = stringArrayToString( editRenderLayerAdjustment( "-q" ,("liquidGlobals."+$attr)), " ");
   string $remove = (gmatch( $nodeOverrides, ("*liquidGlobals."+$attr+"*")))? "-remove":"";
   string $label = ($remove == "")? "Create Layer Override":"Remove Layer Override";
