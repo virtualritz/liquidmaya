@@ -565,7 +565,7 @@
 		1F4D55120985842E00787F2E /* liquidPlug.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liquidPlug.cpp; sourceTree = "<group>"; };
 		1F4D55130985842E00787F2E /* liqVolumeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqVolumeNode.cpp; sourceTree = "<group>"; };
 		1F4D55140985842E00787F2E /* liqWriteArchive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqWriteArchive.cpp; sourceTree = "<group>"; };
-		1F5E729C07E632E0006FAA8F /* liquidbin-pixie */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F5E729C07E632E0006FAA8F /* liquidbin-pixie */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F6E770F0A9CF908009447B2 /* liquidbin-pixie */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F6E77380A9CFB6F009447B2 /* libri.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libri.dylib; path = /Applications/Graphics/Pixie/lib/libri.dylib; sourceTree = "<absolute>"; };
 		1F6E775D0A9CFCB5009447B2 /* liquidBin.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liquidBin.cpp; sourceTree = "<group>"; };
@@ -2973,6 +2973,7 @@
 		1F21B3DC08C2511D000A819E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Development;
@@ -2980,6 +2981,7 @@
 		1F21B3DD08C2511D000A819E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Deployment;
@@ -2987,6 +2989,7 @@
 		1F21B3DE08C2511D000A819E /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Default;
