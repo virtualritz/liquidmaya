@@ -24,6 +24,9 @@
 		1F148B470AED570E00968DE4 /* riInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B3B0AED570E00968DE4 /* riInterface.h */; };
 		1F148B480AED570E00968DE4 /* variable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B3C0AED570E00968DE4 /* variable.cpp */; };
 		1F148B490AED570E00968DE4 /* variable.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B3D0AED570E00968DE4 /* variable.h */; };
+		1F224C4D0B261DE20071B978 /* librib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F148B260AED56C800968DE4 /* librib.a */; };
+		1F224C4F0B261DFE0071B978 /* libri.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6E77380A9CFB6F009447B2 /* libri.dylib */; };
+		1F224C500B261E120071B978 /* librib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F148B260AED56C800968DE4 /* librib.a */; };
 		1F28DDD909D6DF5800D644D1 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
 		1F4D549F09857F5A00787F2E /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
 		1F4D54A009857F5A00787F2E /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
@@ -66,9 +69,6 @@
 		1F4D55160985842E00787F2E /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55130985842E00787F2E /* liqVolumeNode.cpp */; };
 		1F4D55170985842E00787F2E /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55140985842E00787F2E /* liqWriteArchive.cpp */; };
 		1F6E77390A9CFB6F009447B2 /* libri.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6E77380A9CFB6F009447B2 /* libri.dylib */; };
-		1F6E773A0A9CFB6F009447B2 /* libri.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6E77380A9CFB6F009447B2 /* libri.dylib */; };
-		1F6E773B0A9CFB6F009447B2 /* libri.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6E77380A9CFB6F009447B2 /* libri.dylib */; };
-		1F6E773C0A9CFB6F009447B2 /* libri.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6E77380A9CFB6F009447B2 /* libri.dylib */; };
 		1F6E775E0A9CFCB5009447B2 /* liquidBin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F6E775D0A9CFCB5009447B2 /* liquidBin.cpp */; };
 		1F6E775F0A9CFCB5009447B2 /* liquidBin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F6E775D0A9CFCB5009447B2 /* liquidBin.cpp */; };
 		1F6E77620A9CFCBC009447B2 /* liquidPlug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55120985842E00787F2E /* liquidPlug.cpp */; };
@@ -496,14 +496,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 1F148B250AED56C800968DE4 /* ribLib */;
+			remoteGlobalIDString = 1F148B250AED56C800968DE4;
 			remoteInfo = ribLib;
 		};
 		1F148B780AED58A400968DE4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 1F148B250AED56C800968DE4 /* ribLib */;
+			remoteGlobalIDString = 1F148B250AED56C800968DE4;
 			remoteInfo = ribLib;
 		};
 /* End PBXContainerItemProxy section */
@@ -632,7 +632,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F6E773A0A9CFB6F009447B2 /* libri.dylib in Frameworks */,
+				1F224C4F0B261DFE0071B978 /* libri.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,7 +640,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F6E773C0A9CFB6F009447B2 /* libri.dylib in Frameworks */,
+				1F224C500B261E120071B978 /* librib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -648,7 +648,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F6E773B0A9CFB6F009447B2 /* libri.dylib in Frameworks */,
+				1F224C4D0B261DE20071B978 /* librib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2973,18 +2973,21 @@
 		1F21B3DC08C2511D000A819E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Development;
 		};
 		1F21B3DD08C2511D000A819E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Deployment;
 		};
 		1F21B3DE08C2511D000A819E /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Default;
 		};
