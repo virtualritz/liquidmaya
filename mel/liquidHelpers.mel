@@ -55,7 +55,7 @@ global proc liquidViewLastRib()
     if (`about -win`) {
       system ( "start notepad " + $ribFileName );
     } else if(`about -mac`) {
-      system ( "open " + $ribFileName + " & ");
+      system ( "open -t " + $ribFileName + " & ");
     } else {
       system ( "nedit " + $ribFileName + " &");
     }
