@@ -55,7 +55,9 @@ global proc liquidViewLastRib()
     if (`about -win`) {
       system ( "start notepad " + $ribFileName );
     } else if(`about -mac`) {
-      system ( "open -t " + $ribFileName + " & ");
+		if (system ( "open " + $ribFileName + " 2>&1") != "") {	// try user choice first
+			system ( "open -t " + $ribFileName);					// default textedit 2nd
+		}
     } else {
       system ( "nedit " + $ribFileName + " &");
     }
