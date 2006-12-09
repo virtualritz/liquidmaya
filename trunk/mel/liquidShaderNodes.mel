@@ -299,8 +299,8 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
     if ( objExists( $fullattr ) ) {
       string $connections[] = `listConnections -plugs true $fullattr`;
       for ( $c in $connections ) {
-        //trace ("  disconnectAttr "+$c+" "+$fullattr);
-        catch(`disconnectAttr $c $fullattr`);
+        //trace ("  disconnectAttr "+$fullattr+" "+$c);
+        catch(`disconnectAttr $fullattr $c`);
       }
       string $parentAttr[] = `attributeQuery -n $node -listParent $at`;
       if ( !size($parentAttr) ) deleteAttr $fullattr;
@@ -448,9 +448,11 @@ global proc liquidPreviewSwatchNew ( string $nodeName, string $msg )
     text -l $label swatchLabel;
 
     swatchDisplayPort -wh 128 128 -sn $node[0] swatchDisplay;
-    button -w 70 -h 64 -l "preview"  liquidAEswatchRefresh;
+	button -w 70 -h 64 -l "preview"  liquidAEswatchRefresh;
     button -w 70 -h 28 -l "reload"   liquidAEShaderReload;
     button -w 70 -h 28 -l "edit Lif" liquidAEEditLif;
+    button -w 70 -h 28 -l "Instance" liquidAEMakeInstance;
+    button -w 70 -h 28 -l "Unnstance" liquidAEUninstance;
 
     setParent ..;
   formLayout -e
@@ -472,7 +474,13 @@ global proc liquidPreviewSwatchNew ( string $nodeName, string $msg )
     -af  liquidAEEditLif       top     76
     -ac  liquidAEEditLif       left    5   swatchDisplay
 
-    swatchDisplayForm;
+    -aoc liquidAEMakeInstance    top     0    liquidAEEditLif 
+    -aoc liquidAEMakeInstance    left    74  liquidAEEditLif
+    
+    -aoc liquidAEUninstance     top     0    liquidAEShaderReload
+    -aoc liquidAEUninstance     left    74   liquidAEShaderReload
+    
+	swatchDisplayForm;
 
   liquidPreviewSwatchReplace $nodeName $msg;
 }
@@ -497,7 +505,10 @@ global proc liquidPreviewSwatchReplace ( string $nodeName, string $msg )
   button -e -c ("liquidShaderNodePreview "+$node[0])            liquidAEswatchRefresh;
   button -e -c ("liquidShaderNodes_reloadAndRefresh "+$node[0]) liquidAEShaderReload;
   button -e -c ("liquidFluidEditLifFile \""+$node[0]+"\";")     liquidAEEditLif;
-
+  
+  int $enable = `objExists($node[0]+".liquidParentShader")`;
+  button -e -c ("liquidShaderNodesMakeInstance\""+$node[0]+"\";") liquidAEMakeInstance;
+  button -e -c ("liquidShaderNodesUninstance\""+$node[0]+"\";") -en ($enable)   liquidAEUninstance;
 }
 
 
@@ -686,12 +697,176 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
 }
 
 
+global proc liquidShaderNodesMakeInstance( string $node )
+{
+  string $nodeType = nodeType( $node );
+  string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
+
+  string $prevSel[] = `ls -sl`;
+
+  // grab the objects shader is assigned to
+  liquidSelectShaderAssignedTo $node;
+
+  // Create and instance a new node
+  string $newNode  = `createNode $nodeType`;
+  setAttr -type "string" ($newNode+".rmanShaderLong") $longShaderName;
+  liquidShaderNodes_initParams($newNode);			// Is that right?
+  
+  print("attaching " + $newNode + " to selection\n");
+  
+  if ( ! gmatch($nodeType,"liquid*") ) {
+  	print "Unknown parent shader type\n";
+  	return;
+  }
+  
+  string $shortType = substitute("liquid",$nodeType,"");
+  string $cmd = "liquidAssign"+$shortType+"ShaderToSelected(\""+$newNode+"\")";
+  
+  select $prevSel;
+  eval($cmd);
+
+  // connect the shader attributes back
+  string $params[] = `getAttr ($newNode+".rmanParams")`;
+  for($i = 0; $i < size($params); $i++){
+  		print("attaching " +($node+"."+$params[$i]) + " to " + ($newNode+"."+$params[$i]) + "\n");
+		connectAttr ($node+"."+$params[$i]) ($newNode+"."+$params[$i]);
+  }
+  // connect the standard attributes back
+  connectAttr ($node+".color") ($newNode+".color");
+  connectAttr ($node+".opacity") ($newNode+".opacity");
+  
+  // manage parent-child connectivity
+  addAttr -ln "liquidParentShader" -at message $newNode;
+
+  if (!objExists($node+".liquidChildShaders")) {
+	 addAttr -m -im 0 -ln "liquidChildShaders" -at message $node;
+  }
+  connectAttr -na ($newNode+".liquidParentShader") ($node+".liquidChildShaders");
+}
+
+global proc liquidShaderNodesUninstance( string $node )
+{
+  string $nodeType = nodeType( $node );
+  string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
+  string $parentShader[] = `listConnections ($node+".liquidParentShader")`;
+  
+  if (size($parentShader) <= 0) return;
+
+  string $params[] = `getAttr ($node+".rmanParams")`;
+  for($i = 0; $i < size($params); $i++){
+  		print("detaching " +($node+"."+$params[$i]) + "\n");
+		if(`isConnected  ($parentShader[0]+"."+$params[$i]) ($node+"."+$params[$i])`) {
+			disconnectAttr ($parentShader[0]+"."+$params[$i]) ($node+"."+$params[$i]);
+		}
+  }
+  // the standard ones
+  disconnectAttr ($parentShader[0]+".color") ($node+".color");
+  disconnectAttr ($parentShader[0]+".opacity") ($node+".opacity");
+
+  // find which element of the child array we were before we delete our source
+  
+  $parentShader = `listConnections -p 1 ($node+".liquidParentShader")`;
+  
+  // disconnect
+  disconnectAttr ($node+".liquidParentShader") ($parentShader[0]);
+  deleteAttr  ($node+".liquidParentShader");
+}
+
+/**
+ * This proc will update the shader parameters of all children of a master shader
+ * and then delete the corresponding cached layout to rebuild it.
+ */
+global proc liquidShaderNodes_reloadRecursive( string $node )
+{
+  string $oldParams[];
+  string $newParams[];
+  string $parentShader[];
+  
+  // If we are an instance, then either we should no longer be, or we must refresh the master shader
+  if (objExists($node + ".liquidParentShader")) {
+  	 $parentShader = `listConnections ($node+".liquidParentShader")`;
+  	 // remember our old param list
+  	 $oldParams = `getAttr ($node+".rmanParams")`;
+  }
+  
+  liquidShaderNodes_initParams( $node );
+  
+  if (objExists($node + ".liquidParentShader")) {
+  	 // grab any new parameters
+  	 string $curParams[] = `getAttr ($parentShader[0]+".rmanParams")`;
+  	 $newParams = stringArrayRemove ($oldParams,$curParams);
+  	 
+     // connect new parameters
+  	 int $i;
+  	 for($i = 0; $i < size($newParams); $i++) {
+	  	print("attaching new parameter" +($parentShader[0]+"."+$newParams[$i]) + " to " + ($node+"."+$newParams[$i]) + "\n");
+		connectAttr ($parentShader[0]+"."+$newParams[$i]) ($node+"."+$newParams[$i]);
+  	 }
+  }
+  
+  // delete the layouts
+  string $nodeType = nodeType( $node );
+  string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
+  string $cachedLayout = liquidAE_getShaderLayoutName( $nodeType, $longShaderName );
+  if ( `layout -q -ex $cachedLayout` && size(`layout -q -ca $cachedLayout`) ) deleteUI $cachedLayout;
+  
+  // refresh all children
+  if (objExists($node+".liquidChildShaders")) {
+    string $children[] = `listConnections -s 1 -d 0 ($node+".liquidChildShaders")`;
+    string $c;
+    for($c in $children) {
+  	  liquidShaderNodes_reloadRecursive($c);
+  	}
+  }
+}
+
+
 /**
  * This proc will update the shader parameters and then delete the corresponding cached layout to rebuild it.
  */
 global proc liquidShaderNodes_reloadAndRefresh( string $node )
 {
+  string $oldParams[];
+  string $newParams[];
+  string $parentShader[];
+  
+  // If we are an instance, then either we should no longer be, or we must refresh the master shader
+  if (objExists($node + ".liquidParentShader")) {
+  	 $parentShader = `listConnections ($node+".liquidParentShader")`;
+  	 // remember our old param list
+  	 $oldParams = `getAttr ($node+".rmanParams")`;
+  	 
+  	 // Check if we should be disconnecting (ie we now differ from the parent)
+  	 if (`getAttr ($node+".rmanShaderLong")` != `getAttr ($parentShader[0]+".rmanShaderLong")`){
+  	   liquidShaderNodesUninstance($node);
+  	 } else {
+  	 	// otherwise find the root node refresh
+  	 	string $curNode = $parentShader[0];
+  	 	while (objExists($curNode + ".liquidParentShader")) {
+  	 		string $parNode[] = `listConnections ($curNode+".liquidParentShader")`;
+  	 		$curNode = $parNode[0];
+  	 	}
+  	 	
+  	 	liquidShaderNodes_reloadRecursive($curNode);
+  	 }
+  }
+  
   liquidShaderNodes_initParams( $node );
+  
+  if (objExists($node + ".liquidParentShader")) {  
+  	 // grab any new parameters
+  	 string $curParams[] = `getAttr ($parentShader[0]+".rmanParams")`;
+  	 $newParams = stringArrayRemove ($oldParams,$curParams);
+  	 
+     // connect new parameters
+  	 int $i;
+  	 for($i = 0; $i < size($newParams); $i++) {
+	  	print("attaching new parameter" +($parentShader[0]+"."+$newParams[$i]) + " to " + ($node+"."+$newParams[$i]) + "\n");
+		connectAttr ($parentShader[0]+"."+$newParams[$i]) ($node+"."+$newParams[$i]);
+  	 }
+  }
+  
+  // delete the layouts and refresh
   string $nodeType = nodeType( $node );
   string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
   string $cachedLayout = liquidAE_getShaderLayoutName( $nodeType, $longShaderName );
