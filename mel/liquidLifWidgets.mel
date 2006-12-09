@@ -705,6 +705,8 @@ global proc liquidAE_LifStringOverrideDisplayAll()
         if ( !objExists( ($gLiquid_currentAENode+"."+$a) ) ) continue;
 
         // early exit if we have a message or string attr.
+		if ( $a == "liquidParentShader") continue;
+		if ( $a == "liquidChildShaders") continue;
         if ( $version >= 8.0 && `attributeQuery -node $gLiquid_currentAENode -message $a` ) continue;
         if ( `getAttr -type ($gLiquid_currentAENode+"."+$a)` != "string" ) continue;
 
