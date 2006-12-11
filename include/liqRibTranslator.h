@@ -82,7 +82,7 @@ private: // Methods
   MString getHiderOptions( MString rendername, MString hidername );
 
   MStatus buildJobs();
-  MStatus ribPrologue();
+  MStatus ribPrologue( bool isShadow );
   MStatus ribEpilogue();
   MStatus framePrologue( long );
   MStatus worldPrologue();
