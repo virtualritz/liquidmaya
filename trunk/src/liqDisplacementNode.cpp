@@ -76,6 +76,7 @@ MObject liqDisplacementNode::aRmanLifCmds;
 
 MObject liqDisplacementNode::aPreviewPrimitive;
 MObject liqDisplacementNode::aPreviewCustomPrimitive;
+MObject liqDisplacementNode::aPreviewCustomBackplane;
 MObject liqDisplacementNode::aPreviewObjectSize;
 MObject liqDisplacementNode::aPreviewPixelSamples;
 MObject liqDisplacementNode::aPreviewShadingRate;
@@ -190,6 +191,9 @@ MStatus liqDisplacementNode::initialize()
   CHECK_MSTATUS(eAttr.setConnectable(false));
 
   aPreviewCustomPrimitive = tAttr.create(  MString("previewCustomPrimitive"),  MString("pcp"), MFnData::kString, aPreviewCustomPrimitive, &status );
+  MAKE_INPUT(tAttr);
+
+  aPreviewCustomBackplane = tAttr.create(  MString("previewCustomBackplane"),  MString("pcb"), MFnData::kString, aPreviewCustomBackplane, &status );
   MAKE_INPUT(tAttr);
 
   aPreviewObjectSize = nAttr.create("previewObjectSize", "pos", MFnNumericData::kDouble, 1.0, &status);

@@ -88,6 +88,7 @@ class liqDisplacementNode : public MPxNode
 
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
+    static MObject aPreviewCustomBackplane;
     static MObject aPreviewObjectSize;
     static MObject aPreviewPixelSamples;
     static MObject aPreviewShadingRate;
