@@ -521,7 +521,9 @@ MStatus liqSurfaceNode::initialize()
 MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
 {
   // outColor or individual R, G, B channel
-  if( (plug == aOutColor) || (plug.parent() == aOutColor) ) {
+  if( (plug == aOutColor) || (plug.parent() == aOutColor) ||
+	  (plug == aOutTransparency) || (plug.parent() == aOutTransparency)
+  	) {
 
     //cout <<"compute... "<<endl;
 
