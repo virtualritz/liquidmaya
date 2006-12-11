@@ -132,13 +132,13 @@ global proc buildHypergraphNodePopupMenuItems(
 					-label "Assign Material To Selection"
 					-command ("assignOceanShader " + $node);
 			}
-      else if ( isClassified($node, "liq*Swatch" ) )
-      {
-        menuItem
+			else if ( isClassified($node, "liq*Swatch" ) )
+			{
+				menuItem
 					-radialPosition "N"
 					-label "Assign Shader To Selection"
 					-command ("liquidAssignShaderToSelected " + $node);
-      }
+			}
 			else
 			{
 				menuItem
@@ -146,24 +146,28 @@ global proc buildHypergraphNodePopupMenuItems(
 					-label "Assign Material To Selection"
 					-command ("hyperShade -assign " + $node);
 			}
-      if ( nodeType($node) == "liquidLight" )
-      {
-        menuItem
-				-radialPosition "E"
-				-label "Select Lights With Light Shader"
-				-command ("liquidSelectAssignedToLightShader " + $node);
-      }
-      else
-      {
-			menuItem
-				-radialPosition "E"
-				-label "Select Objects With Material"
-				//-command ("hyperShade -objects " + $node);
-        // philippe: this is a workaround as maya selects the shapes connected to the shading group
-        // and as such yields confusing results on instanced geometry.
-        // we select the transforms instead.
-				-command ("liquidSelectShaderAssignedTo " + $node);
-      }
+			if ( nodeType($node) == "liquidLight" )
+			{
+				menuItem
+					-radialPosition "E"
+					-label "Select Lights With Light Shader"
+					-command ("liquidSelectAssignedToLightShader " + $node);
+			}
+			else
+			{
+				menuItem
+					-radialPosition "E"
+					-label "Select Objects With Material"
+					//-command ("hyperShade -objects " + $node);
+						// philippe: this is a workaround as maya selects the shapes connected to the shading group
+						// and as such yields confusing results on instanced geometry.
+						// we select the transforms instead.
+					-command ("liquidSelectShaderAssignedTo " + $node);
+				menuItem
+					-radialPosition "W"
+					-label "Instance Shader"
+				-command ("liquidShaderNodesMakeInstance " + $node);
+			}
 
 			menuItem
 				-label "Frame Objects With Material"
