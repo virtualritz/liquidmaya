@@ -251,6 +251,7 @@ MStatus liqDisplacementNode::initialize()
 
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));
+  CHECK_MSTATUS(addAttribute(aPreviewCustomBackplane));
   CHECK_MSTATUS(addAttribute(aPreviewObjectSize));
   CHECK_MSTATUS(addAttribute(aPreviewPixelSamples));
   CHECK_MSTATUS(addAttribute(aPreviewShadingRate));
