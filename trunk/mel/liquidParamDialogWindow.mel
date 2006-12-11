@@ -45,7 +45,7 @@ global proc liquidAddTextureViewerMenu( string $textFieldGrp, string $nodeDotAtt
   string $viewer = `getAttr liquidGlobals.viewTexture`;
   if ( $viewer != "" ) {
     string $attr = match("[A-Za-z0-9_]+$", $nodeDotAttr);
-    popupMenu -button 3 -postMenuCommand ("liquidAE_LifStringOverrideEnabler ($gLiquid_currentAENode+\"."+$attr+"\") "+$textFieldGrp) ($textFieldGrp+"PopupMenu");
+    popupMenu -button 3 -postMenuCommand ("liquidAE_LifStringPopupEnabler ($gLiquid_currentAENode+\"."+$attr+"\") "+$textFieldGrp) ($textFieldGrp+"PopupMenu");
       menuItem  -l ("View")
                 -c ("{\n"+
                     "  string $file = `textFieldGrp -q -tx "+$textFieldGrp+"`;"+

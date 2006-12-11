@@ -599,24 +599,40 @@ global proc liquidAE_LifFloat2( string $paramName, int $arraySize, string $subty
  *  this proc will update the menuItem's label and command
  *  depending on the override state of the attribute.
  */
-global proc liquidAE_LifStringOverrideEnabler( string $nodeDotAttr, string $ctl )
+global proc liquidAE_LifStringPopupEnabler( string $nodeDotAttr, string $ctl)
 {
-  int    $enable        = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
-  string $nodeOverrides = (" "+stringArrayToString( editRenderLayerAdjustment( "-q" ,$nodeDotAttr), " ")+" ");
-  string $remove        = (gmatch( $nodeOverrides, ("* "+$nodeDotAttr+" *")))? "-remove":"";
-  string $label         = ($remove == "")? "Create Layer Override":"Remove Layer Override";
-  int    $state         = ($remove == "")? 1:0;
   string $ctlShort      = match("[A-Za-z0-9_]+$", $ctl);
 
   //trace (" >> checking "+$nodeDotAttr+" ( "+$ctlShort+" ) :: isRenderLayer : "+$enable+"  overriden : "+(($remove == "")? "no":"yes"));
 
   if ( `menuItem -q -ex ($ctlShort+"PopupMenuOVR")` ) {
-    menuItem -e -l $label
+    int    $enable        = (`editRenderLayerGlobals -q -crl` == "defaultRenderLayer")? 0 : 1;
+    string $nodeOverrides = (" "+stringArrayToString( editRenderLayerAdjustment( "-q" ,$nodeDotAttr), " ")+" ");
+    string $remove        = (gmatch( $nodeOverrides, ("* "+$nodeDotAttr+" *")))? "-remove":"";
+    string $label         = ($remove == "")? "Create Layer Override":"Remove Layer Override";
+    int    $state         = ($remove == "")? 1:0;
+  
+   menuItem -e -l $label
                 -c (  "editRenderLayerAdjustment "+$remove+" "+$nodeDotAttr+";"+
                       "liquidAE_LifStringOverrideDisplay "+$state+" "+$ctlShort+";")
                 -en $enable
                 ($ctlShort+"PopupMenuOVR");
   } else warning ("cannot find "+$ctlShort+"PopupMenuOVR");
+
+  if ( `menuItem -q -ex ($ctlShort+"PopupMenuBreakCon")` ) {
+    string $existingConnections[] = `listConnections -d 1 -c 1 -p 1 $nodeDotAttr`;
+    int $enable			  		  = (size($existingConnections) > 0) ? 1 : 0;
+    menuItem -e -l "Break Connection"
+           -c ("{\n"+
+            "  string $connections[] = `listConnections -d 1 -c 1 -p 1 "+$nodeDotAttr+"`;"+
+  		 	"  if (size($connections) > 0) {"+
+  			"    print (\"disconnect \" + $connections[1] + \" \" + $connections[0] + \"\\n\");"+
+            "    disconnectAttr $connections[1] $connections[0];"+
+  			"  }"+
+            "}")
+            -en $enable
+            ($ctlShort+"PopupMenuBreakCon");
+  } else warning ("cannot find "+$ctlShort+"PopupMenuBreakCon");
 }
 
 
@@ -625,11 +641,12 @@ global proc liquidAE_LifStringOverrideEnabler( string $nodeDotAttr, string $ctl 
  *  it will then create/append a menu item to manage the overrides.
  *  the popupmenu has a postcommand to refresh the state/cmd of the menu item.
  */
-global proc liquidAE_LifStringOverride( string $nodeDotAttr, string $ctl )
+global proc liquidAE_LifStringCreatePopup( string $nodeDotAttr, string $ctl )
 {
   string $parentMenu;
 
-  if ( !`menuItem -q -ex ($ctl+"PopupMenuOVR")` ) {
+  // The menu itself
+  if ( !`menuItem -q -ex ($ctl+"PopupMenuOVR")` || !`menuItem -q -ex ($ctl+"PopupMenuBreakCon")` ) {
     // get the popup menu
     string $menus[] = `control -q -pma $ctl`;
     if ( size( $menus ) ) {
@@ -638,10 +655,20 @@ global proc liquidAE_LifStringOverride( string $nodeDotAttr, string $ctl )
       }
     } else {
       string $attr = match("[A-Za-z0-9_]+$", $nodeDotAttr);
-      $parentMenu = `popupMenu -parent $ctl -button 3 -postMenuCommand ("liquidAE_LifStringOverrideEnabler ($gLiquid_currentAENode+\"."+$attr+"\") "+$ctl) ($ctl+"PopupMenu")`;
+      $parentMenu = `popupMenu -parent $ctl -button 3 -postMenuCommand ("liquidAE_LifStringPopupEnabler ($gLiquid_currentAENode+\"."+$attr+"\") "+$ctl) ($ctl+"PopupMenu")`;
     }
+  }
+
+  // The Override for layers menu item
+  if ( !`menuItem -q -ex ($ctl+"PopupMenuOVR")` ) {
     string $t = `menuItem -parent $parentMenu ($ctl+"PopupMenuOVR")`;
   }
+
+  // The Break Connection menu item
+  if ( !`menuItem -q -ex ($ctl+"PopupMenuBreakCon")` ) {
+    string $t = `menuItem -parent $parentMenu ($ctl+"PopupMenuBreakCon")`;
+  }
+
 }
 
 global proc liquidAE_LifStringOverrideDisplay( int $override, string $ctl )
@@ -783,7 +810,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp -e -ann $description $ctlName;
-          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
+          liquidAE_LifStringCreatePopup( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           connectControl -index 2 $ctlName ($gLiquid_currentAENode+"."+$attr);
 
           break;
@@ -817,7 +844,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp -e -ann $description $ctlName;
-          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
+          liquidAE_LifStringCreatePopup( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           connectControl -index 2 $ctlName ($gLiquid_currentAENode+"."+$attr);
           break;
 
@@ -848,7 +875,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           }
           iconTextButton -e -c $myFileCommand ($ctlName+"_BUT");
           textFieldGrp  -e -ann $description $ctlName;
-          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
+          liquidAE_LifStringCreatePopup( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           connectControl -index 2 $ctlName ($gLiquid_currentAENode+"."+$attr);
           break;
 
@@ -863,13 +890,13 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           }
           string $myCommand = ("setAttr -type \"string\" \""+$gLiquid_currentAENode+"."+$attr+"\" (`optionMenuGrp -q -v "+$ctlName+"`);");
           optionMenuGrp -e -cc $myCommand -ann $description $ctlName;
-          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
+          liquidAE_LifStringCreatePopup( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           break;
 
         default:
           if (  !`control -q -ex $ctlName` ) textFieldGrp -p $gLiquid_currentAEParent -label $theLabel $ctlName;
           textFieldGrp -e -ann $description$ctlName;
-          liquidAE_LifStringOverride( ($gLiquid_currentAENode+"."+$attr), $ctlName );
+          liquidAE_LifStringCreatePopup( ($gLiquid_currentAENode+"."+$attr), $ctlName );
           connectControl -index 2 $ctlName ($gLiquid_currentAENode+"."+$attr);
           break;
       }

@@ -422,7 +422,6 @@ global proc liquidSlParseLif( string $shaderFile )
 	  
 	  case "default":
         string $tmpD[] = getKeyData( $line );
-		print("HHH " + $tmpD[0] + "\n");
 		$gLiquidSlParamDefaults[$paramNum] = $tmpD[0];
 		break;
 
