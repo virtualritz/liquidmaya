@@ -3114,7 +3114,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             // reference the correct shadow archive
             //
             /* cout <<"  * referencing shadow archive "<<baseShadowName.asChar()<<endl; */
-            if ( ribPrologue() == MS::kSuccess ) {
+            if ( ribPrologue( liqglo_currentJob.isShadow ) == MS::kSuccess ) {
               if ( framePrologue( scanTime ) != MS::kSuccess ) break;
               MString realShadowName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, baseShadowName, liqglo_projectDir );
               RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", realShadowName.asChar() );
@@ -3126,7 +3126,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             // full beauty/shadow rib generation
             //
             /* cout <<"  * build full rib"<<endl; */
-            if ( ribPrologue() == MS::kSuccess ) {
+            if ( ribPrologue( liqglo_currentJob.isShadow ) == MS::kSuccess ) {
               if ( framePrologue( scanTime ) != MS::kSuccess ) break;
               if ( worldPrologue() != MS::kSuccess ) break;
               if ( !liqglo_currentJob.isShadow || (liqglo_currentJob.isShadow && liqglo_currentJob.deepShadows && m_outputLightsInDeepShadows) ) {
@@ -4346,7 +4346,7 @@ MStatus liqRibTranslator::buildJobs()
  * Write the prologue for the RIB file.
  * This includes all RI options but not the camera transformation.
  */
-MStatus liqRibTranslator::ribPrologue()
+MStatus liqRibTranslator::ribPrologue( bool isShadow )
 {
   if ( !m_exportReadArchive ) {
     LIQDEBUGPRINTF( "-> beginning to write prologue\n" );
@@ -4423,6 +4423,7 @@ MStatus liqRibTranslator::ribPrologue()
         list = const_cast< char* > ( displaySearchPath.asChar() );
         RiArchiveRecord( RI_VERBATIM, "Option \"searchpath\" \"display\" [\"%s\"]\n", list );
       }
+
 
       RiOrientation( RI_RH ); // Right-hand coordinates
 
@@ -4529,7 +4530,9 @@ MStatus liqRibTranslator::ribPrologue()
       }
 
       // RAYTRACING OPTIONS
-      if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing ) {
+      // Temporary solution exclude ray tracing options for the shadow rib
+
+      if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing && !isShadow ) {
         RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
         RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,          RI_NULL );
 #if defined ( DELIGHT ) || defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
@@ -4546,31 +4549,32 @@ MStatus liqRibTranslator::ribPrologue()
         else RiArchiveRecord( RI_COMMENT, "Ray Tracing : OFF" );
       }
 
-    // CUSTOM OPTIONS
-    if (m_preFrameRIB != "") {
-      RiArchiveRecord(RI_COMMENT,  " Pre-FrameBegin RIB from liquid globals");
-      RiArchiveRecord(RI_VERBATIM, (char*) m_preFrameRIB.asChar());
-      RiArchiveRecord(RI_VERBATIM, "\n");
-    }
+      // CUSTOM OPTIONS
+      if (m_preFrameRIB != "") {
+        RiArchiveRecord(RI_COMMENT,  " Pre-FrameBegin RIB from liquid globals");
+        RiArchiveRecord(RI_VERBATIM, (char*) m_preFrameRIB.asChar());
+        RiArchiveRecord(RI_VERBATIM, "\n");
+      }
 
-    if (m_bakeNonRasterOrient || m_bakeNoCullHidden || m_bakeNoCullBackface) {
-      RiArchiveRecord(RI_COMMENT, "Bake Attributes");
-      int zero = 0;
-      if (m_bakeNonRasterOrient)
-        RiAttribute("dice","int rasterorient",&zero,NULL);
-      if (m_bakeNoCullBackface)
-        RiAttribute("cull","int backfacing",&zero,NULL);
-      if (m_bakeNoCullHidden)
-        RiAttribute("cull","int hidden",&zero,NULL);
-    }
+      if ((m_bakeNonRasterOrient || m_bakeNoCullHidden || m_bakeNoCullBackface) && !isShadow) {
+        RiArchiveRecord(RI_COMMENT, "Bake Attributes");
+        int zero = 0;
+        LIQDEBUGPRINTF( "-> Writing bake culling attributes\n" );
+        if (m_bakeNonRasterOrient)
+          RiAttribute("dice","int rasterorient",&zero,NULL);
+      	if (m_bakeNoCullBackface)
+          RiAttribute("cull","int backfacing",&zero,NULL);
+        if (m_bakeNoCullHidden)
+          RiAttribute("cull","int hidden",&zero,NULL);
+      }
 
-    if ( liqglo_currentJob.gotJobOptions ) {
-      RiArchiveRecord( RI_COMMENT, "jobOptions: \n%s", liqglo_currentJob.jobOptions.asChar() );
-    }
-
-  }
-  ribStatus = kRibBegin;
-  return MS::kSuccess;
+      if ( liqglo_currentJob.gotJobOptions ) {
+        RiArchiveRecord( RI_COMMENT, "jobOptions: \n%s", liqglo_currentJob.jobOptions.asChar() );
+      }
+	}
+    
+	ribStatus = kRibBegin;
+    return MS::kSuccess;
 }
 
 /**
