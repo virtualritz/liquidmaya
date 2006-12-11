@@ -699,6 +699,18 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
 
 global proc liquidShaderNodesMakeInstance( string $node )
 {
+  // globals
+  global string $gLiquidInheritedStandardShaderParams[] = {
+	"color",
+	"opacity",
+	"Ci",
+	"Oi",
+	"shaderSpace",
+	"displacementBound",
+	"displacementBoundSpace",
+	"outputInShadow"
+  };
+
   string $nodeType = nodeType( $node );
   string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
 
@@ -719,6 +731,12 @@ global proc liquidShaderNodesMakeInstance( string $node )
   	return;
   }
   
+  // check if we have any shape selction
+  string $shapeSel[] = `ls -sl -type shape -type transform`;
+  if (size($shapeSel) == 0) {
+  	select $shapeSel;
+  }
+  
   string $shortType = substitute("liquid",$nodeType,"");
   string $cmd = "liquidAssign"+$shortType+"ShaderToSelected(\""+$newNode+"\")";
   
@@ -732,8 +750,11 @@ global proc liquidShaderNodesMakeInstance( string $node )
 		connectAttr ($node+"."+$params[$i]) ($newNode+"."+$params[$i]);
   }
   // connect the standard attributes back
-  connectAttr ($node+".color") ($newNode+".color");
-  connectAttr ($node+".opacity") ($newNode+".opacity");
+  for($i = 0; $i < size($gLiquidInheritedStandardShaderParams); $i++) {
+  	if (objExists($node+"."+$gLiquidInheritedStandardShaderParams[$i])) {
+		connectAttr ($node+"."+$gLiquidInheritedStandardShaderParams[$i]) ($newNode+"."+$gLiquidInheritedStandardShaderParams[$i]);
+  	}
+  }
   
   // manage parent-child connectivity
   addAttr -ln "liquidParentShader" -at message $newNode;
@@ -746,6 +767,8 @@ global proc liquidShaderNodesMakeInstance( string $node )
 
 global proc liquidShaderNodesUninstance( string $node )
 {
+  global string $gLiquidInheritedStandardShaderParams[];
+  
   string $nodeType = nodeType( $node );
   string $longShaderName = `getAttr ($node+".rmanShaderLong")`;
   string $parentShader[] = `listConnections ($node+".liquidParentShader")`;
@@ -760,9 +783,12 @@ global proc liquidShaderNodesUninstance( string $node )
 		}
   }
   // the standard ones
-  disconnectAttr ($parentShader[0]+".color") ($node+".color");
-  disconnectAttr ($parentShader[0]+".opacity") ($node+".opacity");
-
+  for($i = 0; $i < size($gLiquidInheritedStandardShaderParams); $i++) {
+  	if (objExists($node+"."+$gLiquidInheritedStandardShaderParams[$i])) {
+		disconnectAttr ($parentShader[0]+"."+$gLiquidInheritedStandardShaderParams[$i]) ($node+"."+$gLiquidInheritedStandardShaderParams[$i]);
+  	}
+  }
+  
   // find which element of the child array we were before we delete our source
   
   $parentShader = `listConnections -p 1 ($node+".liquidParentShader")`;
