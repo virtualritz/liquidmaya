@@ -1,0 +1,42 @@
+#! /bin/tcsh
+
+setenv RSPOS `uname`
+
+#
+# setup liquid 
+#
+setenv LIQUID_VERSION 2.0.30
+if (! $?MAYA_VERSION) then
+	echo 'Warning enviroment variable MAYA_VERSION is not set'
+	echo "Try 'need maya' first"
+	exit 1
+
+endif
+#
+setenv LIQUID_PATH `pwd`
+setenv LIQUIDHOME ${LIQUID_PATH}
+#
+#
+# Plugin
+if ($?MAYA_PLUG_IN_PATH) then
+        setenv MAYA_PLUG_IN_PATH ${LIQUID_PATH}/bin/redhat/release/3delight/:${MAYA_PLUG_IN_PATH}
+else
+        setenv MAYA_PLUG_IN_PATH ${LIQUID_PATH}/bin/redhat/release/3delight
+endif
+#
+#
+# Mel Scripts
+if ($?MAYA_SCRIPT_PATH) then
+        setenv MAYA_SCRIPT_PATH ${LIQUID_PATH}/mel:${MAYA_SCRIPT_PATH}
+else
+        setenv MAYA_SCRIPT_PATH ${LIQUID_PATH}/mel
+endif
+#
+#
+# Path
+if ($?PATH) then
+	setenv PATH ${LIQUID_PATH}/bin/maya_${MAYA_VERSION}:${PATH}
+else
+	setenv PATH ${LIQUID_PATH}/bin/maya_${MAYA_VERSION}
+endif
+
