@@ -417,7 +417,7 @@ const RtPointer liqTokenPointer::getRtPointer()
 {
   if( m_pType == rString ) {
     m_tokenStringArray = shared_array< RtString >( new RtString[ m_tokenString.size() ] );
-	
+
 	for( unsigned i( 0 ); i < m_tokenString.size(); i++ ) {
 		m_tokenStringArray[ i ] = const_cast< RtString >( m_tokenString[ i ].c_str() );
 	}
@@ -438,7 +438,7 @@ string liqTokenPointer::getRiDeclare() const
     type = " matrix";
     break;
   case rFloat:
-	type = " float";
+    type = " float";
     break;
   case rHpoint:
     type = " hpoint";
@@ -453,19 +453,17 @@ string liqTokenPointer::getRiDeclare() const
     type = " normal";
     break;
   case rColor:
-	type = " color";
+    type = " color";
     break;
   }
 
   if ( m_isUArray ) {
     strstream declare;
-    declare << "[" << m_uArraySize << "]";
-	type += declare.str();
+    declare << "[" << m_uArraySize << "]" << ends;
+    type += declare.str();
   }
 
-  cout << StringDetailType[m_dType] + type << endl;
   return StringDetailType[m_dType] + type;
-  
 }
 
 liqTokenPointer::operator bool() const
