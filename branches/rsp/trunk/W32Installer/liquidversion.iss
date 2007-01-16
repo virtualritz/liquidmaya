@@ -7,4 +7,3 @@ OutputBaseFilename=Liquid-2.1.1-3Delight-Maya-7-Setup
 BeveledLabel=Liquid for 3Delight Setup
 [Files]
 Source: ..\bin\3Delight\win32\release\liquid.mll; DestDir: {app}\bin\maya7\3Delight;
-Source: ..\bin\3Delight\win32\release\liquid.exe; DestDir: {app}\bin\maya7\3Delight;

@@ -25,7 +25,7 @@ NO_TRANS_LINK	=
 VBIN		= redhat
 EXTRA_LIBS	=
 AR		= ar cqs
-CPP		?= gcc
+CPP		= gcc
 
 UX_RELEASE_TEST_FILES = /etc/fedora-release /etc/redhat-release /etc/slackware-version /etc/gentoo-release
 UX_RELEASE_FILE ?= $(foreach FILE, $(UX_RELEASE_TEST_FILES), $(wildcard $(FILE)*))

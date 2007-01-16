@@ -229,13 +229,13 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
 
   // shader does not exist / not readable
   if ( !`filetest -s $shaderPath` ) {
-    warning ("[liquid] "+$shaderPath+" does not exist / is not readable");
+    warning ("[liquid] "+$shaderPath+" does not exist or is not readable");
   }
 
   // invalid path
   if ( !liquidGlobalsExists() ) eval("liquidCreateGlobals();select "+$node+";");
   string $extension = `getAttr "liquidGlobals.shaderExt"`;
-  if ( match("[a-zA-Z]+$", $shaderPath ) != $extension ) {
+  if ( ( match("[a-zA-Z]+$", $shaderPath ) != $extension ) && ( "" != $extension ) ) {
     warning ("[liquid] Shaders must end with "+$extension+" ");
     return;
   }

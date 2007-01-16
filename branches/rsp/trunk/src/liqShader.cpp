@@ -108,7 +108,7 @@ liqShader::liqShader( MObject shaderObj )
   liqGetSloInfo shaderInfo;
   int success( shaderInfo.setShaderNode( shaderNode ) );
   if ( !success ) {
-    fprintf( stderr, "Error using shader '%s'!\n", shaderNode.name().asChar() );
+    cerr << "Error using shader '" << shaderNode.name().asChar() << "'" << endl << flush;
     rmColor[0] = 1.0;
     rmColor[1] = 0.0;
     rmColor[2] = 0.0;
@@ -248,7 +248,7 @@ liqShader::liqShader( MObject shaderObj )
                 // Hmmmmmmm Really a uArray ?
                 tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat, false, true, arraySize );
                 for( unsigned kk( 0 ); kk < arraySize; kk++ ) {
-                  tokenPointerArray.rbegin()->setTokenFloat( kk, doubleArrayData[kk] );
+                  tokenPointerArray.rbegin()->setTokenFloat( kk, ( float )doubleArrayData[ kk ] );
                 }
 
               }

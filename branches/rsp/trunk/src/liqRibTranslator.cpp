@@ -389,7 +389,7 @@ void liqRibTranslator::printProgress( unsigned stat, unsigned numFrames, unsigne
   int progress     = ( int ) progressf;
 
   if ( liquidBin ) {
-    cout << "ALF_PROGRESS " << progress << "%\n" << flush;
+    cout << "ALF_PROGRESS " << progress << "%" << endl << flush;
   } else {
     MString progressOutput = "Progress: ";
     progressOutput += ( int )progress;
@@ -2700,8 +2700,6 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
       liqglo_lframe = frameNumbers[ frameIndex ];
 
       if ( m_showProgress ) printProgress( 1, frameNumbers.size(), frameIndex );
-
-      //cout <<"parsing frame "<<liqglo_lframe<<endl;
 
       liqRenderScript::Job frameScriptJob;
 
@@ -5194,7 +5192,7 @@ void liqRibTranslator::doAttributeBlocking( const MDagPath & newPath, const MDag
   // Write open for new attribute block if necessary
   //
   if ( newDepth >= prevDepth ) {
-    MString name = dagFn.name();
+    MString name( dagFn.name() );
 
     RiAttributeBegin();
     RiAttribute( "identifier", "name", &getLiquidRibName( name.asChar() ), RI_NULL );
@@ -6256,27 +6254,31 @@ MStatus liqRibTranslator::objectBlock()
         RiGeometricApproximation( "motionfactor", ribNode->motion.factor );
       }
 
+      ribNode->writeUserAttributes();
+
     }
 
 
-    bool writeShaders = true;
+    bool writeShaders( true );
 
-    if ( liqglo_currentJob.isShadow &&
+    if( liqglo_currentJob.isShadow &&
          ( ( !liqglo_currentJob.deepShadows && !m_outputShadersInShadows )            ||
            ( liqglo_currentJob.deepShadows && !m_outputShadersInDeepShadows ) )
         )
       writeShaders = false;
 
 
-    if ( writeShaders ) {
+    if( writeShaders ) {
 
-      if ( hasVolumeShader && !m_ignoreVolumes ) {
+      if( hasVolumeShader && !m_ignoreVolumes ) {
 
-        liqShader & currentShader = liqGetShader( ribNode->assignedVolume.object());
+        liqShader& currentShader( liqGetShader( ribNode->assignedVolume.object() ) );
 
         // per shader shadow pass override
         bool outputVolumeShader = true;
-        if ( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) outputVolumeShader = false;
+        if( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) {
+          outputVolumeShader = false;
+        }
 
         if( !currentShader.hasErrors && outputVolumeShader ) {
           scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
@@ -6287,10 +6289,12 @@ MStatus liqRibTranslator::objectBlock()
           // check shader space transformation
           if ( currentShader.shaderSpace != "" ) {
             RiTransformBegin();
-            RiCoordSysTransform( (char*) currentShader.shaderSpace.asChar() );
+            RiCoordSysTransform( ( char* )currentShader.shaderSpace.asChar() );
           }
           RiAtmosphereV ( shaderFileName, currentShader.tokenPointerArray.size(), tokenArray.get(), pointerArray.get() );
-          if ( currentShader.shaderSpace != "" ) RiTransformEnd();
+          if ( currentShader.shaderSpace != "" ) {
+            RiTransformEnd();
+          }
         }
       }
 
@@ -6360,13 +6364,13 @@ MStatus liqRibTranslator::objectBlock()
         RtColor rColor,rOpacity;
         if ( m_shaderDebug ) {
           // shader debug on !! everything goes red and opaque !!!
-          rColor[0] = 1;
-          rColor[1] = 0;
-          rColor[2] = 0;
+          rColor[0] = 1.;
+          rColor[1] = 0.;
+          rColor[2] = 0.;
           RiColor( rColor );
-          rOpacity[0] = 1;
-          rOpacity[1] = 1;
-          rOpacity[1] = 1;
+          rOpacity[0] = 1.;
+          rOpacity[1] = 1.;
+          rOpacity[2] = 1.;
           RiOpacity( rOpacity );
 
         } else {

@@ -36,12 +36,16 @@
 ** ______________________________________________________________________
 */
 
-#include <liqRibData.h>
-#include <liqRibObj.h>
+
 #include <maya/MColor.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MDagPath.h>
 #include <maya/MObjectArray.h>
+
+// Liquid headers
+#include <liqRibData.h>
+#include <liqRibObj.h>
+#include <liqTokenPointer.h>
 
 
 //enum transmissions {TRANS, OPAQUE, OS, SHADER};
@@ -82,6 +86,7 @@ class liqRibNode {
     MFnDependencyNode  assignedDisp;
     MFnDependencyNode  assignedVolume;
 
+    void     writeUserAttributes();
     MObject  findShadingGroup( const MDagPath& path );
     MObject  findShader( MObject& group );
     MObject  findDisp( MObject& group );
@@ -239,6 +244,8 @@ class liqRibNode {
     bool    invisible;
     bool    ignoreShapes;
 
+    vector< liqTokenPointer > tokenPointerArray;
+
 private:
 
     MDagPath    DagPath;
@@ -248,6 +255,8 @@ private:
     MString     ribGenName;
     bool        hasRibGenAttr;
     bool        overrideColor;
+    void        parseVectorAttributes( const MFnDependencyNode&, const MStringArray&, const ParameterType& );
+
 };
 
 #endif

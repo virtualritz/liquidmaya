@@ -65,28 +65,28 @@ proc liquidSl_setShaderName( string $token )
 
 proc string liquidSl_getShaderType( int $fid )
 {
-    string $type = "";
+  string $type = "";
 
-    // The first word on the first non-empty
-    // line is the shader type.
+  // The first word on the first non-empty
+  // line is the shader type.
 
-    string $tokens[];
-    string $tokensquote[];
-    string $line = `fgetline $fid`;
-    while ( ! `feof $fid` )
-    {
-        clear( $tokens );
-        tokenize $line "\"" $tokensquote;
-        tokenize $line $tokens;
-        $type = $tokens[0];
-        if ( $type != "" ) {
-          liquidSl_setShaderName( $tokensquote[1] );
-          break;
-        }
-        $line = `fgetline $fid`;
-    }
+  string $tokens[];
+  string $tokensquote[];
+  string $line = `fgetline $fid`;
+  while ( ! `feof $fid` ) {
+    clear( $tokens );
+    tokenize $line "\"" $tokensquote;
+    tokenize $line $tokens;
+    $type = $tokens[0];
+    if ( $type != "" ) {
+      liquidSl_setShaderName( $tokensquote[1] );
+      break;
+     }
+     $line = `fgetline $fid`;
+  }
 
-    return $type;
+  warning( "shader type is " + $type );
+  return $type;
 }
 
 proc string liquidSl_getParamName( string $line )

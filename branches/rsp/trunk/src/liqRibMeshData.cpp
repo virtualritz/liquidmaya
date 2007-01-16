@@ -106,8 +106,8 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
 
   // UV sets -------------------
   //
-  const unsigned numSTs = fnMesh.numUVs();
-  const unsigned numUVSets = fnMesh.numUVSets();
+  const unsigned numSTs( fnMesh.numUVs() );
+  const unsigned numUVSets( fnMesh.numUVSets() );
   MString currentUVSetName;
   MStringArray extraUVSetNames;
   fnMesh.getCurrentUVSetName( currentUVSetName );
@@ -115,13 +115,13 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
     MStringArray UVSetNames;
     fnMesh.getUVSetNames( UVSetNames );
 
-    for ( unsigned i=0; i<numUVSets; i++ ) {
+    for ( unsigned i( 0 ); i<numUVSets; i++ ) {
       if ( UVSetNames[i] != currentUVSetName ) extraUVSetNames.append( UVSetNames[i] );
     }
   }
 
   numFaces = fnMesh.numPolygons();
-  const unsigned numFaceVertices = fnMesh.numFaceVertices();
+  const unsigned numFaceVertices( fnMesh.numFaceVertices() );
 
   if ( numPoints < 1 ) {
     //cerr <<"Liquid : Could not export degenerate mesh -> "<<fnMesh.fullPathName( &astatus ).asChar()<<endl<<flush;
@@ -219,7 +219,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
         UVSetsArray[0].setTokenFloat( faceVertex, 0, S );
         UVSetsArray[0].setTokenFloat( faceVertex, 1, 1 - T );
 
-        for ( unsigned j=1; j<=extraUVSetNames.length(); j++ ) {
+        for ( unsigned j( 1 ); j<=extraUVSetNames.length(); j++ ) {
           fnMesh.getPolygonUV( face, count, S, T, &extraUVSetNames[j] );
 
           UVSetsArray[j].setTokenFloat( faceVertex, 0, S );
@@ -310,8 +310,7 @@ void liqRibMeshData::write()
  */
 bool liqRibMeshData::compare( const liqRibData & otherObj ) const
 {
-  unsigned i;
-  unsigned numFaceVertices = 0;
+  unsigned numFaceVertices( 0 );
 
   LIQDEBUGPRINTF( "-> comparing mesh\n" );
   if ( otherObj.type() != MRT_Mesh ) return false;
@@ -321,19 +320,19 @@ bool liqRibMeshData::compare( const liqRibData & otherObj ) const
   if ( numPoints != other.numPoints ) return false;
   if ( numNormals != other.numNormals ) return false;
 
-  for ( i = 0; i < numFaces; ++i ) {
+  for ( unsigned i( 0 ); i < numFaces; ++i ) {
     if ( nverts[i] != other.nverts[i] ) return false;
     numFaceVertices += nverts[i];
   }
 
-  for ( i = 0; i < numFaceVertices; ++i ) {
+  for ( unsigned i( 0 ); i < numFaceVertices; ++i ) {
     if ( verts[i] != other.verts[i] ) return false;
   }
 
-  for ( i = 0; i < numPoints; ++i ) {
-    const unsigned a = i * 3;
-    const unsigned b = a + 1;
-    const unsigned c = a + 2;
+  for ( unsigned i( 0 ); i < numPoints; ++i ) {
+    const unsigned a( i * 3 );
+    const unsigned b( a + 1 );
+    const unsigned c( a + 2 );
     if ( !equiv( vertexParam[a], other.vertexParam[a] ) ||
       !equiv( vertexParam[b], other.vertexParam[b] ) ||
       !equiv( vertexParam[c], other.vertexParam[c] ) )
@@ -342,7 +341,7 @@ bool liqRibMeshData::compare( const liqRibData & otherObj ) const
     }
   }
 
-  for ( i = 0; i < numNormals; ++i ) {
+  for ( unsigned i( 0 ); i < numNormals; ++i ) {
     const unsigned a = i * 3;
     const unsigned b = a + 1;
     const unsigned c = a + 2;

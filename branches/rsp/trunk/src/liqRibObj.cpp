@@ -361,7 +361,6 @@ void liqRibObj::setMatrix( int instance, MMatrix matrix )
 }
 
 
-
 /** Bump reference count up by one.
  */
 void liqRibObj::ref()

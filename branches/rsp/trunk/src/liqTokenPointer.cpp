@@ -45,7 +45,7 @@ using namespace boost;
 extern int debugMode;
 
 
-const char* liqTokenPointer::StringDetailType[] = {
+const string liqTokenPointer::detailType[] = {
   "uniform",
   "varying",
   "vertex",
@@ -67,7 +67,7 @@ liqTokenPointer::liqTokenPointer()
   m_eltSize      = 0;
   m_tokenSize    = 0;
   m_stringSize   = 0;
-  m_dType        = rUniform;
+  m_dType        = rUndefined;
 }
 
 liqTokenPointer::liqTokenPointer( const liqTokenPointer &src )
@@ -150,7 +150,7 @@ void liqTokenPointer::reset()
   m_stringSize   = 0;
   m_pType        = rFloat;
   m_tokenName[0] = '\0';
-  m_dType        = rUniform;
+  m_dType        = rUndefined;
 }
 
 bool liqTokenPointer::set( const string& name, ParameterType ptype )
@@ -224,7 +224,7 @@ bool liqTokenPointer::set( const string& name, ParameterType ptype, unsigned int
       m_tokenFloats = shared_array< RtFloat >( new RtFloat[ neededSize ] );
       if( ! m_tokenFloats ) {
         m_tokenSize = 0;
-        printf("Error : liqTokenPointer out of memory for %ld bytes\n", neededSize );
+        cerr << "Error : liqTokenPointer out of memory for " << neededSize << " bytes" << endl;
         return false;
       }
       m_tokenSize = neededSize;
@@ -232,7 +232,7 @@ bool liqTokenPointer::set( const string& name, ParameterType ptype, unsigned int
       LIQDEBUGPRINTF("-> allocating memory 2 for: %s\n", name.c_str() );
       m_tokenFloats = shared_array< RtFloat >( new RtFloat[ neededSize ] );
       if( ! m_tokenFloats ) {
-        printf("Error : liqTokenPointer out of memory for %ld bytes\n", neededSize );
+        cerr << "Error : liqTokenPointer out of memory for " << neededSize << " bytes" << endl;
         return false;
       }
       m_tokenSize = neededSize;
@@ -244,12 +244,7 @@ bool liqTokenPointer::set( const string& name, ParameterType ptype, unsigned int
     // STRINGS ARE A SPECIAL CASE
     // Space is now allocated upfront
 
-    // free mem
-    if( m_tokenFloats ) {
-      m_tokenFloats.reset();
-      //lfree( m_tokenFloats );
-      //m_tokenFloats = NULL;
-    }
+    m_tokenFloats.reset();
     resetTokenString();
 
     m_isUArray = false;
@@ -261,7 +256,7 @@ bool liqTokenPointer::set( const string& name, ParameterType ptype, unsigned int
       m_arraySize = arraySize;
       m_tokenSize = 0;
       // init pointer array
-	  m_tokenString.resize( m_arraySize );
+      m_tokenString.resize( m_arraySize );
 
     } else {
       m_arraySize   = 0; // useless
@@ -432,28 +427,28 @@ string liqTokenPointer::getRiDeclare() const
   string type;
   switch ( m_pType ) {
   case rString:
-    type = " string";
+    type = "string";
     break;
   case rMatrix:
-    type = " matrix";
+    type = "matrix";
     break;
   case rFloat:
-    type = " float";
+    type = "float";
     break;
   case rHpoint:
-    type = " hpoint";
+    type = "hpoint";
     break;
   case rPoint:
-    type = " point";
+    type = "point";
     break;
   case rVector:
-    type = " vector";
+    type = "vector";
     break;
   case rNormal:
-    type = " normal";
+    type = "normal";
     break;
   case rColor:
-    type = " color";
+    type = "color";
     break;
   }
 
@@ -463,7 +458,11 @@ string liqTokenPointer::getRiDeclare() const
     type += declare.str();
   }
 
-  return StringDetailType[m_dType] + type;
+  if( rUndefined != m_dType ) {
+    type = detailType[ m_dType ] + " " + type;
+  }
+
+  return type;
 }
 
 liqTokenPointer::operator bool() const
