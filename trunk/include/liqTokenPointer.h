@@ -50,12 +50,13 @@ enum ParameterType {
 };
 
 enum DetailType {
-  rUniform      = 0,
-  rVarying      = 1,
-  rVertex       = 2,
-  rConstant	    = 3,
-  rFaceVarying  = 4,
-  rFaceVertex   = 5
+  rUndefined    = -1,
+  rUniform      =  0,
+  rVarying      =  1,
+  rVertex       =  2,
+  rConstant	    =  3,
+  rFaceVarying  =  4,
+  rFaceVertex   =  5
 };
 
 class liqTokenPointer
@@ -112,7 +113,7 @@ class liqTokenPointer
     bool m_isUArray;
     bool m_isString;
     bool m_isFull;
-    static const char *StringDetailType[];
+    static const string detailType[];
     int m_stringSize;
     int m_tokenSize;
 };

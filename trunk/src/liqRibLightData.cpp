@@ -123,7 +123,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   //}
 
   status.clear();
-  MPlug userShadowNamePlug = fnLight.findPlug( "liquidShadowName", &status );
+  MPlug userShadowNamePlug( fnLight.findPlug( "liquidShadowName", &status ) );
   if ( MS::kSuccess == status ) {
     MString varVal;
     userShadowNamePlug.getValue( varVal );
@@ -682,7 +682,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       if ( liqglo_doShadows && usingShadow ) {
         if ( !rayTraced ) {
           if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ).toLowerCase() == "autoshadow" ) ) {
-            shadowName       = autoShadowName();
+            shadowName = autoShadowName();
           }
           MPlug samplePlug = lightDepNode.findPlug( "liqShadowMapSamples", &status );
           if ( MS::kSuccess == status ) samplePlug.getValue(shadowSamples);
@@ -775,7 +775,7 @@ void liqRibLightData::write()
     RiConcatTransform( * const_cast< RtMatrix* >( &transformationMatrix ) );
     if ( liqglo_isShadowPass ) {
       if ( usingShadow ) {
-        RtString sName = const_cast< char* >( shadowName.asChar() );
+        RtString sName( const_cast< char* >( shadowName.asChar() ) );
         // Hmmmmm got to set a LIQUIDHOME env var and use it ...
         // May be set relative name shadowPassLight and resolve path with RIB searchpath
         // Moritz: solved through default shader searchpath in liqRibTranslator
@@ -1091,7 +1091,7 @@ MString liqRibLightData::autoShadowName( int PointLightDir ) const
   }
   //cout <<"liqRibLightData::autoShadowName : "<<shadowName.asChar()<<"  ( "<<liqglo_sceneName.asChar()<<" )"<<endl;
 
-  return shadowName;
+  return sanitizeNodeName( shadowName );
 
 }
 
@@ -1167,7 +1167,7 @@ MString liqRibLightData::extraShadowName( const MFnDependencyNode & lightShaderN
 
   //cout <<"liqRibLightData::extraShadowName : "<<shadowName.asChar()<<"  ( "<<liqglo_sceneName.asChar()<<" )"<<endl;
 
-  return shadowName;
+  return sanitizeNodeName( shadowName );
 }
 
 

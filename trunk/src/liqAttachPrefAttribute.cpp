@@ -206,8 +206,8 @@ MStatus	liqAttachPrefAttribute::redoIt()
         if ( numNormals > numPoints ) {
           // if we get more than 1 normal per vertex,
           // force the arraysize to the full facevarying size
-          uint faceVaryingCount = 0;
-          for ( uint pOn = 0; pOn < nodeFn.numPolygons(); pOn++ ) {
+          unsigned faceVaryingCount( 0 );
+          for ( unsigned pOn( 0 ); pOn < nodeFn.numPolygons(); pOn++ ) {
             faceVaryingCount += nodeFn.polygonVertexCount( pOn );
           }
           normalAttArray.setLength( faceVaryingCount );

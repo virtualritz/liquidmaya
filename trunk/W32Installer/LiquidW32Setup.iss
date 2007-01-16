@@ -42,6 +42,8 @@ Source: ..\shaders\compile.cmd; DestDir: {app}\shaders; Flags: deleteafterinstal
 Source: ..\shaders\src\*.sl; DestDir: {app}\shaders\src
 Source: ..\shaders\src\*.h; DestDir: {app}\shaders\src
 Source: ..\icons\*.xpm; DestDir: {app}\icons
+Source: ..\icons\*.iff; DestDir: {app}\icons
+Source: ..\icons\*.jpg; DestDir: {app}\icons
 ;Source: ..\artwork\*.png; DestDir: {app}\artwork
 
 [Tasks]
@@ -122,6 +124,7 @@ begin
   if CurPage = wpFinished then begin
     InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_PLUG_IN_PATH')
     InsertPath_NT(ExpandConstant('{app}\mel'), HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_SCRIPT_PATH')
+    InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PATH')
     SendBroadcastMessage(26, 0, CastStringToInteger(EnvName));
   end;
   Result := True;

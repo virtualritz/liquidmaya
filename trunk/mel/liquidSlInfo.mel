@@ -67,27 +67,27 @@ global proc liquidSlSetShader( string $shaderFile )
     string $ext = `substitute "^.*\\." $shaderFile ""`;
     switch ( $ext )
     {
-    case "slo":
+      case "slo":
         // prman shader
         liquidSlParseSlo( $shaderFile );
         break;
-    case "sdl":
+      case "sdl":
         // 3delight shader
         liquidSlParseSdl( $shaderFile );
         break;
-    case "slx":
+      case "slx":
         // aqsis shader
         liquidSlParseSlx( $shaderFile );
         break;
-    case "sdr":
+      case "sdr":
         // pixie shader
         liquidSlParseSdr( $shaderFile );
         break;
-    case "slb":
+      case "slb":
         // air shader
         liquidSlParseSlb( $shaderFile );
         break;
-    default:
+      default:
         error( "unknown shader extension: " + $ext );
     }
 

@@ -33,12 +33,12 @@
 */
 
 
-// Renderman Headers
+// RenderMan headers
 extern "C" {
 #include <ri.h>
 }
 
-// Maya's Headers
+// Maya headers
 #include <maya/MPlug.h>
 #include <maya/MFnLambertShader.h>
 #include <maya/MFnBlinnShader.h>
@@ -54,10 +54,18 @@ extern "C" {
 #include <maya/MFnParticleSystem.h>
 #include <maya/MVectorArray.h>
 #include <maya/MFnDoubleArrayData.h>
+#include <maya/MFnVectorArrayData.h>
+#include <maya/MFnPointArrayData.h>
+#include <maya/MPointArray.h>
 
+// Liquid headers
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibNode.h>
+
+// Standard/Boost headers
+#include <boost/scoped_array.hpp>
+
 
 #ifdef _WIN32
 #undef min
@@ -626,13 +634,113 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       }
 
 
-      /*MFnDependencyNode nodeFn( nodePeeker );
+      MFnDependencyNode nodeFn( nodePeeker );
+
+      // find the attributes
       MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
       MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodeFn );
       MStringArray vectorAttributesFound = findAttributesByPrefix( "rmanV", nodeFn );
       MStringArray normalAttributesFound = findAttributesByPrefix( "rmanN", nodeFn );
       MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodeFn );
-      MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );*/
+      MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );
+
+      if ( floatAttributesFound.length() > 0 ) {
+        for ( unsigned i( 0 ); i < floatAttributesFound.length(); i++ ) {
+          liqTokenPointer tokenPointerPair;
+          MString cutString( floatAttributesFound[i].substring( 5, floatAttributesFound[i].length() ) );
+          MPlug fPlug( nodeFn.findPlug( floatAttributesFound[i] ) );
+          MObject plugObj;
+          status = fPlug.getValue( plugObj );
+          if ( plugObj.apiType() == MFn::kDoubleArrayData ) {
+            MFnDoubleArrayData fnDoubleArrayData( plugObj );
+            const MDoubleArray& doubleArrayData( fnDoubleArrayData.array( &status ) );
+            tokenPointerPair.set( cutString.asChar(),
+                                  rFloat,
+                                  true,
+                                  false,
+                                  doubleArrayData.length() );
+            for( unsigned kk( 0 ); kk < doubleArrayData.length(); kk++ ) {
+              tokenPointerPair.setTokenFloat( kk, doubleArrayData[kk] );
+            }
+          } else {
+
+            if( fPlug.isArray() ) {
+
+              unsigned nbElts( fPlug.evaluateNumElements() );
+              float floatValue;
+              tokenPointerPair.set( cutString.asChar(),
+                                    rFloat,
+                                    false,
+                                    true, // philippe :passed as uArray, otherwise it will think it is a single float
+                                    nbElts );
+              MPlug elementPlug;
+              for( unsigned kk( 0 ); kk < nbElts; kk++ ) {
+                elementPlug = fPlug.elementByPhysicalIndex(kk);
+                elementPlug.getValue( floatValue );
+                tokenPointerPair.setTokenFloat( kk, floatValue );
+              }
+            } else {
+
+              float floatValue;
+              tokenPointerPair.set( cutString.asChar(), rFloat );
+              fPlug.getValue( floatValue );
+              tokenPointerPair.setTokenFloat( 0, floatValue );
+            }
+          }
+          tokenPointerArray.push_back( tokenPointerPair );
+        }
+      }
+
+      if ( pointAttributesFound.length() > 0 ) {
+        for ( unsigned i( 0 ); i < pointAttributesFound.length(); i++ ) {
+          liqTokenPointer tokenPointerPair;
+          MString cutString( pointAttributesFound[i].substring( 5, pointAttributesFound[i].length() ) );
+          MPlug pPlug( nodeFn.findPlug( pointAttributesFound[i] ) );
+          MObject plugObj;
+          status = pPlug.getValue( plugObj );
+          if ( plugObj.apiType() == MFn::kPointArrayData ) {
+            MFnPointArrayData  fnPointArrayData( plugObj );
+            MPointArray pointArrayData = fnPointArrayData.array( &status );
+            tokenPointerPair.set( cutString.asChar(),
+                                  rPoint,
+                                  //( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
+                                  true,
+                                  false,
+                                  pointArrayData.length() );
+            for ( unsigned kk( 0 ); kk < pointArrayData.length(); kk++ ) {
+              tokenPointerPair.setTokenFloat( kk, pointArrayData[kk].x, pointArrayData[kk].y, pointArrayData[kk].z );
+            }
+          } else {
+            // Hmmmm float ? double ?
+            float x, y, z;
+            tokenPointerPair.set( cutString.asChar(), rPoint );
+            // Hmmm should check as for arrays if we are in nurbs mode : 4 values
+            pPlug.child(0).getValue( x );
+            pPlug.child(1).getValue( y );
+            pPlug.child(2).getValue( z );
+            tokenPointerPair.setTokenFloat( 0, x, y, z );
+          }
+          tokenPointerArray.push_back( tokenPointerPair );
+        }
+      }
+      parseVectorAttributes( nodeFn, vectorAttributesFound, rVector );
+      parseVectorAttributes( nodeFn, normalAttributesFound, rNormal );
+      parseVectorAttributes( nodeFn, colorAttributesFound,  rColor  );
+
+      if ( stringAttributesFound.length() > 0 ) {
+        for ( unsigned i( 0 ); i < stringAttributesFound.length(); i++ ) {
+          liqTokenPointer tokenPointerPair;
+          MString cutString( stringAttributesFound[i].substring( 5, stringAttributesFound[i].length() ) );
+          MPlug sPlug( nodeFn.findPlug( stringAttributesFound[i] ) );
+          MObject plugObj;
+          status = sPlug.getValue( plugObj );
+          tokenPointerPair.set( cutString.asChar(), rString );
+          MString stringVal;
+          sPlug.getValue( stringVal );
+          tokenPointerPair.setTokenString( 0, stringVal.asChar() );
+          tokenPointerArray.push_back( tokenPointerPair );
+        }
+      }
     } // if ( dagSearcher.apiType( &status ) == MFn::kTransform )
   }
 
@@ -663,7 +771,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 
     status.clear();
   }
-
 
   // Get the object's color
   if ( objType != MRT_Shader ) {
@@ -1203,4 +1310,54 @@ bool liqRibNode::hasNObjects( unsigned n )
     }
   }
   return true;
+}
+
+void liqRibNode::parseVectorAttributes( const MFnDependencyNode& nodeFn, const MStringArray& strArray, const ParameterType& pType ) {
+  MStatus status;
+  if ( strArray.length() > 0 ) {
+    for ( unsigned i( 0 ); i < strArray.length(); i++ ) {
+      liqTokenPointer tokenPointerPair;
+      MString cutString( strArray[i].substring(5, strArray[i].length() ) );
+      MPlug vPlug( nodeFn.findPlug( strArray[i] ) );
+      MObject plugObj;
+      status = vPlug.getValue( plugObj );
+      if ( plugObj.apiType() == MFn::kVectorArrayData ) {
+        MFnVectorArrayData  fnVectorArrayData( plugObj );
+        MVectorArray vectorArrayData = fnVectorArrayData.array( &status );
+        tokenPointerPair.set(   cutString.asChar(),
+                                pType,
+                                true,
+                                false,
+                                vectorArrayData.length() );
+        for ( unsigned kk( 0 ); kk < vectorArrayData.length(); kk++ ) {
+          tokenPointerPair.setTokenFloat( kk, vectorArrayData[kk].x, vectorArrayData[kk].y, vectorArrayData[kk].z );
+        }
+
+        // store it all
+        tokenPointerArray.push_back( tokenPointerPair );
+
+      } else {
+        // Hmmmm float ? double ?
+        float x, y, z;
+        tokenPointerPair.set( cutString.asChar(), pType );
+
+        vPlug.child(0).getValue( x );
+        vPlug.child(1).getValue( y );
+        vPlug.child(2).getValue( z );
+        tokenPointerPair.setTokenFloat( 0, x, y, z );
+        tokenPointerArray.push_back( tokenPointerPair );
+      }
+    }
+  }
+}
+
+void liqRibNode::writeUserAttributes() {
+  if( tokenPointerArray.size() ) {
+    unsigned numTokens( tokenPointerArray.size() );
+    scoped_array< RtToken > tokenArray( new RtToken[ numTokens ] );
+    scoped_array< RtPointer > pointerArray( new RtPointer[ numTokens ] );
+    assignTokenArraysV( tokenPointerArray, tokenArray.get(), pointerArray.get() );
+
+    RiAttributeV( "user", numTokens, tokenArray.get(), pointerArray.get() );
+  }
 }
