@@ -950,29 +950,37 @@ bool makeFullPath( const string& name, int mode ) {
   }
 
   while( true ) {
-    struct stat stats;
-
-    if( stat( path.c_str(), &stats ) < 0 ) {
-	  // The path element didn't exist
-      if(
-#ifdef _WIN32
-      _mkdir( path.c_str() )
-#else
-      mkdir( path.c_str(), mode )
-#endif
-      ) return false;
-	}
 
 #ifdef _WIN32
-    WIN32_FIND_DATA FileData;
-    FindFirstFile( path.c_str(), &FileData);
-	if( FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-#else
-    if( !S_ISDIR( stats.st_mode ) )
+    // skip drive letter part of path
+    if( !(  ( 2 == path.length() ) && ( ':' == path[ 1 ] ) ) ) {
 #endif
-	{
-	  return false;
-	}
+      struct stat stats;
+      if( stat( path.c_str(), &stats ) < 0 ) {
+        // The path element didn't exist
+  #ifdef _WIN32
+        if( _mkdir( path.c_str() ) )
+  #else
+        if( mkdir( path.c_str(), mode ) )
+  #endif
+        {
+          return false;
+        }
+      }
+
+  #ifdef _WIN32
+      WIN32_FIND_DATA FileData;
+      FindFirstFile( path.c_str(), &FileData );
+      if( !( FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) )
+  #else
+      if( !S_ISDIR( stats.st_mode ) )
+  #endif
+      {
+        return false;
+      }
+#ifdef _WIN32
+    }  // if( !(  ( 2 == path.length() ) && ( ':' == path[ 1 ] ) ) )
+#endif
 
     // Tokenize
     token = strtok( NULL, "/" );
@@ -982,6 +990,7 @@ bool makeFullPath( const string& name, int mode ) {
 
     path += string( "/" ) + token;
   }
+
   return true;
 }
 

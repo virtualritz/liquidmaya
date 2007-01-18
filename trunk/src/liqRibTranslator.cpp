@@ -65,6 +65,7 @@ extern "C" {
 #include <time.h>
 
 #include <boost/scoped_array.hpp>
+#include <strstream>
 
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
@@ -2235,10 +2236,9 @@ bool liqRibTranslator::verifyOutputDirectories()
   bool problem( false );
   LIQ_ADD_SLASH_IF_NEEDED( liqglo_ribDir );
   MString tmp_path( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_ribDir, liqglo_projectDir ) );
-  if ( ( access( tmp_path.asChar(), dirMode )) == -1 ) {
+  if ( ( access( tmp_path.asChar(), dirMode ) ) == -1 ) {
     if ( createOutputDirectories ) {
       if ( !makeFullPath( tmp_path.asChar(), mkdirMode ) ) {
-
         DIR_CREATION_WARNING( "RIB", tmp_path );
         liqglo_ribDir = m_systemTempDirectory;
         problem = true;
@@ -7053,9 +7053,9 @@ MString liqRibTranslator::getHiderOptions( MString rendername, MString hidername
 
     if ( hidername == "hidden" ) {
       {
-        char tmp[128];
-        sprintf( tmp, "\"int jitter\" [%d] ", m_hiddenJitter );
-        options += tmp;
+        strstream tmp;
+        tmp << "\"int jitter\" [" << m_hiddenJitter << "] " << ends;
+        options += tmp.str();
       }
 
       // PRMAN 13 BEGIN

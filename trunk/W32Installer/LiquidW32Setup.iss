@@ -3,8 +3,8 @@
 [Setup]
 AppPublisher=Liquidmaya at Sourceforge
 AppPublisherURL=http://liquidmaya.sf.net/
-AppSupportURL=http://www.plastickitten.net/liquidwiki/
-AppUpdatesURL=http://www.plastickitten.net/liquidwiki/index.php/Download
+AppSupportURL=http://sourceforge.net/forum/forum.php?forum_id=214928
+AppUpdatesURL=http://www.sf.net/projects/liquidmaya/
 DefaultDirName={pf}\Liquid
 DefaultGroupName=Liquid
 AllowNoIcons=true
@@ -80,8 +80,8 @@ Filename: "{app}\CHANGES.txt"; Description: "View CHANGES.txt"; Flags: postinsta
 Type: files; Name: {app}\Liquid.url
 
 [INI]
-Filename: {app}\Liquid.url; Section: InternetShortcut; Key: URL; String: http://liquid.sf.net/
-Filename: {app}\LiquidWiki.url; Section: InternetShortcut; Key: URL; String: http://www.plastickitten.net/liquidwiki/
+Filename: {app}\Liquid.url; Section: InternetShortcut; Key: URL; String: http://www.sf.net/projects/liquidmaya/
+Filename: {app}\LiquidWiki.url; Section: InternetShortcut; Key: URL; String: http://liquidmaya.sf.net/
 
 [LangOptions]
 WelcomeFontName=Tahoma
