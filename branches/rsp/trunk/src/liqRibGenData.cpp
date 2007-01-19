@@ -76,129 +76,129 @@ extern float liqglo_shutterTime;
 liqRibGenData::liqRibGenData( MObject obj, MDagPath path )
 {
   LIQDEBUGPRINTF( "-> creating ribgen\n" );
-	MFnDependencyNode fnNode( obj );
-	MPlug ribGenNodePlug = fnNode.findPlug( "liquidRibGen" );
-	MObject ribGenObj;
-	/* check the node to make sure it's not using the old ribGen
-	 * assignment method, this is for backwards compatibility.  If it's a
-	 * kTypedAttribute that it's more than likely going to be a string! */
-	if ( ribGenNodePlug.attribute().apiType() == MFn::kTypedAttribute ) {
-		MString ribGenNode;
-		ribGenNodePlug.getValue( ribGenNode );
-		MSelectionList ribGenList;
-		ribGenList.add( ribGenNode );
-		ribGenList.getDependNode( 0, ribGenObj );
-	} else {
-		if ( ribGenNodePlug.isConnected() ) {
-			MPlugArray ribGenNodeArray;
-			ribGenNodePlug.connectedTo( ribGenNodeArray, true, true );
-			ribGenObj = ribGenNodeArray[0].node();
-		}
-	}
-	MFnDependencyNode fnRibGenNode( ribGenObj );
-	MPlug ribGenPlug = fnRibGenNode.findPlug( "RibGenSo" );
-	MString plugVal;
-	ribGenPlug.getValue( plugVal );
-	ribGenSoName = parseString( plugVal );
-	ribStatus.objectName = fnNode.name().asChar();
-	ribStatus.dagPath = path;
+  MFnDependencyNode fnNode( obj );
+  MPlug ribGenNodePlug = fnNode.findPlug( "liquidRibGen" );
+  MObject ribGenObj;
+  /* check the node to make sure it's not using the old ribGen
+   * assignment method, this is for backwards compatibility.  If it's a
+   * kTypedAttribute that it's more than likely going to be a string! */
+  if ( ribGenNodePlug.attribute().apiType() == MFn::kTypedAttribute ) {
+    MString ribGenNode;
+    ribGenNodePlug.getValue( ribGenNode );
+    MSelectionList ribGenList;
+    ribGenList.add( ribGenNode );
+    ribGenList.getDependNode( 0, ribGenObj );
+  } else {
+    if ( ribGenNodePlug.isConnected() ) {
+      MPlugArray ribGenNodeArray;
+      ribGenNodePlug.connectedTo( ribGenNodeArray, true, true );
+      ribGenObj = ribGenNodeArray[0].node();
+    }
+  }
+  MFnDependencyNode fnRibGenNode( ribGenObj );
+  MPlug ribGenPlug = fnRibGenNode.findPlug( "RibGenSo" );
+  MString plugVal;
+  ribGenPlug.getValue( plugVal );
+  ribGenSoName = parseString( plugVal );
+  ribStatus.objectName = fnNode.name().asChar();
+  ribStatus.dagPath = path;
 }
 
 void liqRibGenData::write()
 {
-	LIQDEBUGPRINTF( "-> writing ribgen\n" );
+  LIQDEBUGPRINTF( "-> writing ribgen\n" );
 #if defined( PRMAN ) || defined( DELIGHT )
 #ifndef _WIN32
-	void *handle;
+  void *handle;
 #else
-	HINSTANCE handle;
+  HINSTANCE handle;
 #endif
-	char *dlStatus = NULL;
-	// Hmmmmmm do not really understand what's going on here?
-	ribStatus.ribFP = liqglo_ribFP;
-	ribStatus.frame = liqglo_lframe;
-	if ( liqglo_currentJob.isShadow ) {
-		ribStatus.renderPass = liqRibStatus::rpShadow;
-	} else {
-		ribStatus.renderPass = liqRibStatus::rpFinal;
-	}
-	ribStatus.transBlur = liqglo_doMotion;
-	ribStatus.defBlur = liqglo_doDef;
-	ribStatus.compressed = liqglo_doCompression;
-	ribStatus.binary = liqglo_doBinary;
-	liqglo_currentJob.camera[0].mat.get( ribStatus.cameraMatrix );
-	ribStatus.sampleTimes = liqglo_sampleTimes;
-	if ( liqglo_doMotion || liqglo_doDef ) {
-		if ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) {
-			ribStatus.motionSamples = liqglo_motionSamples;
-		} else {
-			ribStatus.motionSamples = 1;
-		}
-	} else {
-		ribStatus.motionSamples = 1;
-	}
-	ribStatus.shutterAngle = liqglo_shutterTime;
+  char* dlStatus = NULL;
+  // Hmmmmmm do not really understand what's going on here?
+  ribStatus.ribFP = liqglo_ribFP;
+  ribStatus.frame = liqglo_lframe;
+  if ( liqglo_currentJob.isShadow ) {
+    ribStatus.renderPass = liqRibStatus::rpShadow;
+  } else {
+    ribStatus.renderPass = liqRibStatus::rpFinal;
+  }
+  ribStatus.transBlur = liqglo_doMotion;
+  ribStatus.defBlur = liqglo_doDef;
+  ribStatus.compressed = liqglo_doCompression;
+  ribStatus.binary = liqglo_doBinary;
+  liqglo_currentJob.camera[0].mat.get( ribStatus.cameraMatrix );
+  ribStatus.sampleTimes = liqglo_sampleTimes;
+  if ( liqglo_doMotion || liqglo_doDef ) {
+    if ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) {
+      ribStatus.motionSamples = liqglo_motionSamples;
+    } else {
+      ribStatus.motionSamples = 1;
+    }
+  } else {
+    ribStatus.motionSamples = 1;
+  }
+  ribStatus.shutterAngle = liqglo_shutterTime;
 
-	/*
-	* rib stream connection call from the Affine toolkit.
-	* until an equivalent is found in PRMan/3Delight leave commented out.
-	* dan-b 7/2/03
-	*/
-	//ribStatus.RiConnection = RiDetach();
+  /*
+  * rib stream connection call from the Affine toolkit.
+  * until an equivalent is found in PRMan/3Delight leave commented out.
+  * dan-b 7/2/03
+  */
+  //ribStatus.RiConnection = RiDetach();
 
-	typedef liqRibGen *(*createRibGen)();
-	typedef void (*destroyRibGen)( liqRibGen * );
+  typedef liqRibGen *(*createRibGen)();
+  typedef void (*destroyRibGen)( liqRibGen * );
 
-	createRibGen		createRibGenFunc;
-	destroyRibGen		destroyRibGenFunc;
+  createRibGen    createRibGenFunc;
+  destroyRibGen    destroyRibGenFunc;
 
 #ifndef _WIN32
-	handle = dlopen( ribGenSoName.asChar(), RTLD_LAZY );
-	dlStatus = dlerror();
-	if ( dlStatus == NULL ) {
-		createRibGenFunc = (createRibGen)dlsym( handle, "RIBGenCreate" );
-		destroyRibGenFunc = (destroyRibGen)dlsym( handle, "RIBGenDestroy" );
-		dlStatus = dlerror();
-		if ( dlStatus == NULL ) {
+  handle = dlopen( ribGenSoName.asChar(), RTLD_LAZY );
+  dlStatus = dlerror();
+  if ( dlStatus == NULL ) {
+    createRibGenFunc = (createRibGen)dlsym( handle, "RIBGenCreate" );
+    destroyRibGenFunc = (destroyRibGen)dlsym( handle, "RIBGenDestroy" );
+    dlStatus = dlerror();
+    if ( dlStatus == NULL ) {
 #else
-	handle = LoadLibrary( ribGenSoName.asChar() );
-	if ( handle != NULL ) {
-		createRibGenFunc = (createRibGen)GetProcAddress( handle, "RIBGenCreate" );
-		destroyRibGenFunc = (destroyRibGen)GetProcAddress( handle, "RIBGenDestroy" );
-		if ( ( createRibGenFunc != NULL ) && ( destroyRibGenFunc != NULL ) ) {
+  handle = LoadLibrary( ribGenSoName.asChar() );
+  if ( handle != NULL ) {
+    createRibGenFunc = (createRibGen)GetProcAddress( handle, "RIBGenCreate" );
+    destroyRibGenFunc = (destroyRibGen)GetProcAddress( handle, "RIBGenDestroy" );
+    if ( ( createRibGenFunc != NULL ) && ( destroyRibGenFunc != NULL ) ) {
 #endif
-			liqRibGen *ribGen = (*createRibGenFunc)();
-			ribGen->_GenRIB( &ribStatus );
-			(*destroyRibGenFunc)( ribGen );
-		} else {
-			MString errorString = "Error reading RIBGenCreate or RIBGenDestroy in RibGen: ";
-			errorString += ribGenSoName;
-			liquidInfo( errorString );
-		}
+      liqRibGen *ribGen = (*createRibGenFunc)();
+      ribGen->_GenRIB( &ribStatus );
+      (*destroyRibGenFunc)( ribGen );
+    } else {
+      string errorString( "Error reading RIBGenCreate or RIBGenDestroy in RIBGen: " );
+      errorString += ribGenSoName.asChar();
+      liquidMessage( errorString, messageError );
+    }
 #ifndef _WIN32
-		dlclose( handle );
+    dlclose( handle );
 #else
-		FreeLibrary( handle );
+    FreeLibrary( handle );
 #endif
-	} else {
-		MString errorString = "Error opening RibGen: ";
-		errorString += ribGenSoName;
-		errorString += " ";
-		errorString += dlStatus;
-		errorString += " on object: ";
-		errorString += ribStatus.objectName.c_str();;
-		liquidInfo( errorString );
-	}
+  } else {
+    string errorString( "Opening RIBGen '" );
+    errorString += ribGenSoName.asChar();
+    errorString += "'(";
+    errorString += dlStatus;
+    errorString += ") on object '";
+    errorString += ribStatus.objectName + "'";
+    liquidMessage( errorString, messageError );
+  }
 
-	/*
-	* rib stream connection call from the Affine toolkit.
-	* until an equivilent is found in prman leave commented out.
-	* dan-b 7/2/03
-	*/
-	// RiFreeConnection( ( char * )ribStatus.RiConnection );
+  /*
+  * rib stream connection call from the Affine toolkit.
+  * until an equivilent is found in prman leave commented out.
+  * dan-b 7/2/03
+  */
+  // RiFreeConnection( ( char * )ribStatus.RiConnection );
 
 #else
-    liquidInfo( "Sorry : Can't handle Rib Gen ...\n" );
+    liquidMessage( "Can not handle RIBGen", messageError );
 #endif
 }
 
@@ -209,9 +209,9 @@ bool liqRibGenData::compare( const liqRibData & otherObj ) const
 //      if its animated
 //
 {
-	LIQDEBUGPRINTF( "-> comparing RibGen\n" );
-	if ( otherObj.type() != MRT_RibGen ) return false;
-	return true;
+  LIQDEBUGPRINTF( "-> comparing RIBGen\n" );
+  if ( otherObj.type() != MRT_RibGen ) return false;
+  return true;
 }
 
 ObjectType liqRibGenData::type() const
@@ -220,6 +220,6 @@ ObjectType liqRibGenData::type() const
 //      return the geometry type
 //
 {
-	LIQDEBUGPRINTF( "-> returning RibGen type\n" );
-	return MRT_RibGen;
+  LIQDEBUGPRINTF( "-> returning RibGen type\n" );
+  return MRT_RibGen;
 }

@@ -55,10 +55,12 @@ extern "C" {
 
 // Standard/Boost headers
 #include <vector>
+#include <iostream>
 #include <boost/scoped_array.hpp>
 #include <boost/shared_array.hpp>
 
 using namespace boost;
+using namespace std;
 
 extern int debugMode;
 extern bool liqglo_outputMeshUVs;
@@ -124,7 +126,7 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   const unsigned numFaceVertices( fnMesh.numFaceVertices() );
 
   if ( numPoints < 1 ) {
-    //cerr <<"Liquid : Could not export degenerate mesh -> "<<fnMesh.fullPathName( &astatus ).asChar()<<endl<<flush;
+    cerr << "Liquid : Could not export degenerate mesh '"<< fnMesh.fullPathName( &astatus ).asChar() << "'" << endl << flush;
     return;
   }
 
@@ -302,7 +304,9 @@ void liqRibMeshData::write()
       // RiAttributeEnd();
       RiIlluminate( handle, 1 );
     }
-  } else cerr <<"Liquid : skipping degenerate mesh output..." << endl << flush;
+  } else {
+    liquidMessage( "Could not export degenerate mesh", messageError );
+  }
 }
 
 /** Compare this mesh to the other for the purpose of determining

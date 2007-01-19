@@ -1,4 +1,4 @@
-   /*
+/*
 **
 **
 ** The contents of this file are subject to the Mozilla Public License Version
@@ -14,7 +14,7 @@
 ** The Original Code is the Liquid Rendering Toolkit.
 **
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
-** created by Colin Doncaster are Copy right (C) 2002. All Rights Reserved.
+** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
 ** Contributor(s): Berj Bannayan.
 **
@@ -104,6 +104,7 @@ static const char *LIQUIDVERSION =
 
 // Liquid headers
 #include <liquid.h>
+#include <liqRibHT.h>
 #include <liqRenderer.h>
 #include <liqRibTranslator.h>
 #include <liqGlobalHelpers.h>
@@ -121,6 +122,8 @@ typedef int RtError;
 bool liquidBin;
 int  debugMode;
 
+
+liquidVerbosityType liqglo_verbosity( verbosityAll );
 // Kept global for liquidRigGenData and liquidRibParticleData
 FILE        *liqglo_ribFP;
 long         liqglo_lframe;
@@ -392,10 +395,9 @@ void liqRibTranslator::printProgress( unsigned stat, unsigned numFrames, unsigne
   if ( liquidBin ) {
     cout << "ALF_PROGRESS " << progress << "%" << endl << flush;
   } else {
-    MString progressOutput = "Progress: ";
-    progressOutput += ( int )progress;
-    progressOutput += "%";
-    liquidInfo( progressOutput );
+    strstream progressOutput;
+    progressOutput << "Progress: " << progress << "%" << ends;
+    liquidMessage( progressOutput.str(), messageInfo );
   }
 }
 
@@ -682,9 +684,9 @@ liqRibTranslator::~liqRibTranslator()
  * This gets called when the RIB library detects an error.
  */
 #if defined( DELIGHT ) || defined( ENTROPY ) || defined( PIXIE ) || defined( PRMAN ) || defined( AIR ) || defined( GENERIC_RIBLIB )
-void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char * message )
+void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, char* message )
 #else
-void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char * message )
+void liqRibTranslatorErrorHandler( RtInt code, RtInt severity, const char* message )
 #endif
 {
   printf( "The renderman library is reporting and error! Code: %d  Severity: %d", code, severity );
@@ -783,7 +785,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
 
   // Parse the arguments and set the options.
   if ( args.length() == 0 ) {
-    liquidInfo( "Doing nothing, no parameters given." );
+    liquidMessage( "Doing nothing, no parameters given", messageError );
     return MS::kFailure;
   }
 
@@ -799,11 +801,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
   liqglo_projectDir = MELReturn;
 
 
-  LIQDEBUGPRINTF( "-> using path: " );
-
-  LIQDEBUGPRINTF( liqglo_projectDir.asChar() );
-
-  LIQDEBUGPRINTF( "\n" );
+  liquidMessage( "Using project base path '" + string( liqglo_projectDir.asChar() ) + "'", messageInfo );
 
 
   // get the current scene name
@@ -2546,9 +2544,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     return MS::kFailure;
   }
 
-
-
-  if ( !liquidBin && !m_deferredGen ) liquidInfo("Creating RIB <Press ESC To Cancel> ...");
+  if ( !liquidBin && !m_deferredGen ) liquidMessage( "Creating RIB <Press ESC To Cancel> ...", messageInfo );
 
   // Remember the frame the scene was at so we can restore it later.
   MTime originalTime = MAnimControl::currentTime();
@@ -2691,7 +2687,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     //
     // start looping through the frames  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //
-    LIQDEBUGPRINTF( "-> starting to loop through frames\n" );
+    liquidMessage( "Starting to loop through frames", messageInfo );
 
     int currentBlock( 0 );
     unsigned frameIndex( 0 );
@@ -2923,8 +2919,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             //  create the read-archive shadow files
             //
 #if !defined(PRMAN) || defined(GENERIC_RIBLIB)
-            LIQDEBUGPRINTF( "-> beginning rib output\n" );
-            RiBegin( const_cast<char *>( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, baseShadowName, liqglo_projectDir ).asChar() ) );
+            const string ribName( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, baseShadowName, liqglo_projectDir ).asChar() );
+            liquidMessage( "Beginning RIB output to '" + ribName + "'", messageInfo );
+            RiBegin( const_cast< RtToken >( ribName.c_str() ) );
 #else
             liqglo_ribFP = fopen( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, baseShadowName, liqglo_projectDir ).asChar(), "w" );
             if ( liqglo_ribFP ) {
@@ -2932,7 +2929,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
               RtInt ribFD = fileno( liqglo_ribFP );
               RiOption( "rib", "pipe", &ribFD, RI_NULL );
             }
-            LIQDEBUGPRINTF( "-> beginning rib output\n" );
+            liquidMessage( "Beginning RI output directly to renderer", messageInfo );
             RiBegin( RI_NULL );
 #endif
             if ( worldPrologue() != MS::kSuccess ) break;
@@ -2962,7 +2959,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             m_alfShadowRibGen = true;
           }
 #if !defined(PRMAN) || defined(GENERIC_RIBLIB)
-          RiBegin( const_cast<char *>( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_currentJob.ribFileName, liqglo_projectDir ).asChar() ) );
+          const string ribName( LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_currentJob.ribFileName, liqglo_projectDir ).asChar() );
+          liquidMessage( "Beginning RIB output to '" + ribName + "'", messageInfo );
+          RiBegin( const_cast< RtToken >( ribName.c_str() ) );
 
   #ifdef DELIGHT
           LIQDEBUGPRINTF( "-> setting binary option\n" );
@@ -2979,8 +2978,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             RtInt ribFD = fileno( liqglo_ribFP );
             RiOption( ( RtToken )"rib", ( RtToken )"pipe", &ribFD, RI_NULL );
           } else {
-            cerr << ( "Error opening rib - writing to stdout.\n" );
+            cerr << ( "Error opening RIB - writing to stdout.\n" );
           }
+          liquidMessage( "Beginning RI output directly to renderer", messageInfo );
           RiBegin( RI_NULL );
 #endif
           /* cout <<"* outputing "<<liqglo_currentJob.name.asChar()<<endl; */
@@ -3359,7 +3359,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     LIQDEBUGPRINTF( "-> ending escape handler.\n" );
     m_escHandler.endComputation();
 
-    if ( !liquidBin && !m_deferredGen ) liquidInfo("...Finished Creating RIB.");
+    if ( !m_deferredGen ) liquidMessage( "Finished creating RIB", messageInfo );
     LIQDEBUGPRINTF( "-> clearing job list.\n" );
     jobList.clear();
     jobScript.clear();
@@ -4457,7 +4457,7 @@ MStatus liqRibTranslator::ribPrologue()
     }
 
     // RAYTRACING OPTIONS
-  if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing ) {
+    if ( liquidRenderer.supports_RAYTRACE && rt_useRayTracing ) {
     RiArchiveRecord( RI_COMMENT, "Ray Tracing : ON" );
     RiOption( "trace",   "int maxdepth",                ( RtPointer ) &rt_traceMaxDepth,            RI_NULL );
     #if defined ( DELIGHT ) || defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
@@ -4469,7 +4469,7 @@ MStatus liqRibTranslator::ribPrologue()
       RiOption( "user",    "float traceDepthFactor",      ( RtPointer ) &rt_traceDepthFactor,       RI_NULL );
     //}
     #endif
-  } else {
+    } else {
     if ( !liquidRenderer.supports_RAYTRACE ) {
       RiArchiveRecord( RI_COMMENT, "Ray Tracing : NOT SUPPORTED" );
     } else {
@@ -4477,25 +4477,25 @@ MStatus liqRibTranslator::ribPrologue()
       RtInt maxDepth = 0;
       RiOption( "trace",   "int maxdepth",                ( RtPointer ) &maxDepth,                  RI_NULL );
     }
-  }
+    }
 
-  // CUSTOM OPTIONS
-  if (m_preFrameRIB != "") {
+    // CUSTOM OPTIONS
+    if (m_preFrameRIB != "") {
     RiArchiveRecord(RI_COMMENT,  " Pre-FrameBegin RIB from liquid globals" );
     RiArchiveRecord(RI_VERBATIM, ( char* )m_preFrameRIB.asChar() );
     RiArchiveRecord(RI_VERBATIM, "\n");
-  }
+    }
 
-  if ( m_bakeNonRasterOrient || m_bakeNoCullHidden || m_bakeNoCullBackface ) {
+    if ( m_bakeNonRasterOrient || m_bakeNoCullHidden || m_bakeNoCullBackface ) {
       RiArchiveRecord( RI_COMMENT, "Bake Attributes" );
     RtInt zero( 0 );
     if ( m_bakeNonRasterOrient )
-        RiAttribute( "dice","int rasterorient", &zero, RI_NULL );
+      RiAttribute( "dice","int rasterorient", &zero, RI_NULL );
     if ( m_bakeNoCullBackface )
-        RiAttribute( "cull","int backfacing", &zero, RI_NULL );
+      RiAttribute( "cull","int backfacing", &zero, RI_NULL );
     if ( m_bakeNoCullHidden )
-        RiAttribute( "cull","int hidden", &zero, RI_NULL );
-  }
+      RiAttribute( "cull","int hidden", &zero, RI_NULL );
+    }
 
   }
   ribStatus = kRibBegin;
@@ -4517,10 +4517,10 @@ MStatus liqRibTranslator::ribEpilogue()
 MStatus liqRibTranslator::scanScene(float lframe, int sample )
 {
 
-int count =0;
+  int count =0;
 
-  MTime   mt((double)lframe, MTime::uiUnit());
-  if ( MGlobal::viewFrame(mt) == MS::kSuccess) {
+  MTime mt( ( double )lframe, MTime::uiUnit() );
+  if ( MGlobal::viewFrame(mt) == MS::kSuccess ) {
 
     // scanScene: execute pre-frame command
     if ( m_preFrameMel != "" ) {
@@ -4592,9 +4592,9 @@ int count =0;
           }
 
           if ( ( sample > 0 ) && isObjectMotionBlur( path )) {
-            htable->insert(path, lframe, sample, MRT_Light,count++ );
+            htable->insert( path, lframe, sample, MRT_Light,	count++ );
           } else {
-            htable->insert(path, lframe, 0, MRT_Light,count++ );
+            htable->insert( path, lframe, 0, MRT_Light, count++ );
           }
           continue;
         }

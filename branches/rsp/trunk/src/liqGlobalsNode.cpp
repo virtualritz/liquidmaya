@@ -342,7 +342,7 @@ MObject liqGlobalsNode::aShadersIgnoreOutputParams;
 MObject liqGlobalsNode::aShadersOutputParamsFilter;
 MObject liqGlobalsNode::aShadersMaxCachedAELayouts;
 
-
+MObject liqGlobalsNode::aVerbosity;
 
 
 #define CREATE_BOOL(attr, obj, name, shortName, default)    \
@@ -733,6 +733,8 @@ MStatus liqGlobalsNode::initialize()
           CREATE_BOOL( nAttr,  aShadersIgnoreOutputParams,  "shadersIgnoreOutputParams",    "iop",    true  );
         CREATE_STRING( tAttr,  aShadersOutputParamsFilter,  "shadersOutputParamsFilter",    "opf",    "^_*" );
            CREATE_INT( nAttr,  aShadersMaxCachedAELayouts,  "shadersMaxCachedAELayouts",    "mcl",    10    );
+
+           CREATE_INT( nAttr,  aVerbosity,                  "verbosity",                    "vty",    0     );
 
 
 

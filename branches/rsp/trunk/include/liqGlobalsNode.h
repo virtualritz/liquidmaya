@@ -57,7 +57,7 @@
 
 class liqGlobalsNode : public MPxNode
 {
-	public:
+  public:
                       liqGlobalsNode();
     virtual          ~liqGlobalsNode();
 
@@ -67,7 +67,7 @@ class liqGlobalsNode : public MPxNode
     //  Id tag for use with binary file format
     static  MTypeId   id;
 
-	private:
+  private:
 
     // attributes
     static MObject aLaunchRender;
@@ -172,7 +172,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aShutterConfig;
     static MObject aShutterEfficiency;
     static MObject aMotionBlurSamples;
-	static MObject aRelativeMotion;
+    static MObject aRelativeMotion;
     static MObject aMotionFactor;
     static MObject aDepthOfField;
 
@@ -188,7 +188,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aLimitsEyeSplits;
     static MObject aLimitsGPrimSplits;
 
-	static MObject aRibRelativeTransforms;
+    static MObject aRibRelativeTransforms;
 
     static MObject aCleanRib;
     static MObject aCleanTex;
@@ -324,14 +324,14 @@ class liqGlobalsNode : public MPxNode
     static MObject aShadersOutputParamsFilter;
     static MObject aShadersMaxCachedAELayouts;
 
-	// PRMAN 13 BEGIN
+    // PRMAN 13 BEGIN
     static MObject aHiddenApertureNSides;
     static MObject aHiddenApertureAngle;
     static MObject aHiddenApertureRoundness;
     static MObject aHiddenApertureDensity;
     static MObject aHiddenShutterOpeningOpen;
     static MObject aHiddenShutterOpeningClose;
-	// PRMAN 13 END
+    // PRMAN 13 END
     static MObject aHiddenOcclusionBound;
     static MObject aHiddenMpCache;
     static MObject aHiddenMpMemory;
@@ -340,10 +340,10 @@ class liqGlobalsNode : public MPxNode
     static MObject aHiddenSubPixel;
     static MObject aHiddenExtremeMotionDof;
     static MObject aHiddenMaxVPDepth;
-	// PRMAN 13 BEGIN
+    // PRMAN 13 BEGIN
     static MObject aHiddenSigma;
     static MObject aHiddenSigmaBlur;
-	// PRMAN 13 END
+    // PRMAN 13 END
 
     static MObject aRaytraceFalseColor;
 
@@ -353,6 +353,8 @@ class liqGlobalsNode : public MPxNode
     static MObject aDepthMaskZFile;
     static MObject aDepthMaskReverseSign;
     static MObject aDepthMaskDepthBias;
+
+    static MObject aVerbosity;
 };
 
 

@@ -125,7 +125,7 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
     MStringArray UVSetNames;
     fnMesh.getUVSetNames( UVSetNames );
 
-    for ( unsigned i=0; i<numUVSets; i++ ) {
+    for ( unsigned i( 0 ); i < numUVSets; i++ ) {
       if ( UVSetNames[i] != currentUVSetName )
         extraUVSetNames.append( UVSetNames[i] );
     }
@@ -133,9 +133,9 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
   }
 
   numFaces = fnMesh.numPolygons();
-  const unsigned numFaceVertices = fnMesh.numFaceVertices();
-  unsigned face = 0;
-  unsigned faceVertex = 0;
+  const unsigned numFaceVertices( fnMesh.numFaceVertices() );
+  unsigned face( 0 );
+  unsigned faceVertex( 0 );
   unsigned count;
   unsigned vertex;
   float S;
