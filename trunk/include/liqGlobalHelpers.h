@@ -45,9 +45,19 @@
 #include <liqShader.h>
 
 
+typedef enum {
+  verbosityOff = 0,
+  verbosityErrors = 1,
+  messageError = 1,
+  verbosityErrorsWarnings = 2,
+  messageWarning = 2,
+  verbosityAll = 3,
+  messageInfo = 3
+} liquidVerbosityType;
+
 // Moritz: basename() is missing in Windoze, we define our own in liqGlobalHelpers.cpp
 #ifdef _WIN32
-char * basename( const char *filename );
+char* basename( const char* filename );
 #else
 #  include <libgen.h> // for basename()
 #endif
@@ -81,7 +91,6 @@ MString parseString( const MString & inputString );
 MString parseCommandString( const MString & inputString );
 MString liquidTransGetSceneName();
 MString liquidTransGetFullSceneName();
-void liquidInfo( MString info );
 void liquidGetGlobal( MString globalName, double &value, MStatus &returnStatus );
 liquidlong liquidHash( const char *str );
 MString liquidSanitizePath( MString & inputString );
@@ -93,6 +102,7 @@ bool makeFullPath( const string& name, int mode );
 string sanitizeNodeName( const string& name );
 MString sanitizeNodeName( const MString& name );
 RtString& getLiquidRibName( const string& name );
+void liquidMessage( const string& msg, liquidVerbosityType type );
 
 class arrayDeleter // needed to free a shared/scoped/weak_ptr to an array
 {

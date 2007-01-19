@@ -33,6 +33,11 @@
 ** ______________________________________________________________________
 */
 
+#if defined(WIN32) && !defined(DEBUG)
+  // Disable double -> float conversion and signed <> unsigned mismatch warnings
+  #pragma warning( disable : 4244 4305 4018 )
+#endif
+
 #include <math.h>
 #include <string>
 #include <assert.h>

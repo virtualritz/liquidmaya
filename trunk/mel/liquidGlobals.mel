@@ -621,6 +621,7 @@ global proc liquidInitGlobalVals()
     ,"shotVersion",                 "string",     ""
 
     ,"statistics",                  "long",       0
+    ,"verbosity",                   "long",       0
   };
 
 
@@ -2815,6 +2816,7 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
         liquidShowBoolGlobal "renderAllCurves"   "Render All Curves";
         liquidShowBoolGlobal "outputMeshUVs"     "Extra MtoR Mesh UVs";
         liquidShowBoolGlobal "ribRelativeTransforms" "Relative Transforms";
+        liquidShowBoolGlobal "outputComments"    "Detailed Comments";
         frameLayout -bs "etchedIn" -l "Omit Shaders" -cll true -cl false;
           columnLayout -adj true;
             liquidShowBoolGlobal "ignoreSurfaces"      "No Surfaces";
@@ -2866,10 +2868,10 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
     setParent ..;
     frameLayout -bs "etchedIn" -l "Feedback" -cll true -cl false;
       columnLayout -adj true;
+        liquidShowIntGlobalMenu "verbosity"  "Verbosity" {"Sewn-Up Lips","Errors Only","Warnings & Errors","Aunt Carla"} $prefix;
         liquidShowIntGlobalMenu "statistics"  "Statistics" {"None","Simple","Detailed","Overwhelming", "XML"} $prefix;
         liquidShowStringGlobalPlus "statisticsFile"  "Statistics File" "enter the full path to the xml statistics file" $prefix;
         liquidShowBoolGlobal "showProgress"   "Show Progress";
-        liquidShowBoolGlobal "outputComments" "Detailed Comments";
         separator;
         liquidShowBoolGlobal "shaderDebug" "Shader Debugging";
       setParent ..;

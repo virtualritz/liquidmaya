@@ -287,12 +287,10 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         }
       }
 
-      if (shading.matte == -1) {
-        status.clear();
-        nPlug = nodePeeker.findPlug( MString( "liqMatte" ), &status );
-        if ( status == MS::kSuccess) {
-          nPlug.getValue( shading.matte );
-        }
+      status.clear();
+      nPlug = nodePeeker.findPlug( MString( "liqMatte" ), &status );
+      if ( status == MS::kSuccess) {
+        nPlug.getValue( shading.matte );
       }
 
       // trace group ----------------------------------------------------------

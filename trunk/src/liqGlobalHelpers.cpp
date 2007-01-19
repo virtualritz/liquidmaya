@@ -72,23 +72,12 @@ extern MString liqglo_shotName;
 extern MString liqglo_shotVersion;
 extern MString liqglo_layer;
 
+extern liquidVerbosityType liqglo_verbosity;
+
 using namespace std;
 
-/** Standard function to send messages to either the
- *  maya console or the shell for user feedback.
- */
-void liquidInfo( MString info )
-{
-  if ( !liquidBin ) {
-    MString infoOutput( "Liquid: " );
-    infoOutput += info;
-    MGlobal::displayInfo( infoOutput );
-  } else {
-    cout << "Liquid: " << info.asChar() << endl << flush;
-  }
-}
 
-/**	Check to see if the node NodeFn has any attributes starting with pPrefix and store those
+/**  Check to see if the node NodeFn has any attributes starting with pPrefix and store those
  *  in Matches to return.
  */
 MStringArray findAttributesByPrefix( const char* pPrefix, MFnDependencyNode& NodeFn )
@@ -401,8 +390,8 @@ MObject findFacetShader( MObject mesh, int polygonIndex ){
  */
 bool fileExists( const MString & filename ) {
 #ifdef _WIN32
-	struct _stat sbuf;
-	int result = _stat( filename.asChar(), &sbuf );
+  struct _stat sbuf;
+  int result = _stat( filename.asChar(), &sbuf );
     // under Win32, stat fails if path is a directory name ending in a slash
     // so we check for DIR/. Which works - go figure
     if( result && ( filename.rindex( '/' ) == filename.length() - 1 ) ) {
@@ -410,7 +399,7 @@ bool fileExists( const MString & filename ) {
     }
 #else
     struct stat sbuf;
-	int result = stat( filename.asChar(), &sbuf );
+  int result = stat( filename.asChar(), &sbuf );
 #endif
     return ( result == 0 );
 }
@@ -583,7 +572,7 @@ MString parseCommandString( const MString & inputString )
 
   for ( unsigned i = 0; i < sLength; i++ ) {
     if ( inputString.substring(i, i) == "`" && inputString.substring(i - 1, i - 1) != "\\" ) {
-      MString	melCmdString;
+      MString  melCmdString;
       i++;
 
       // loop through the string looking for the closing %
@@ -774,9 +763,9 @@ char* basename( const char *filename ) {
 #ifdef MSVC6
   char *p = strrchr( filename, '/' );
 #else
-  char *p = const_cast<char*>(strrchr( filename, '/' ));
+  char *p = const_cast< char* >( strrchr( filename, '/' ) );
 #endif
-  return p ? p + 1 : (char *) filename;
+  return p ? p + 1 : ( char* ) filename;
 }
 #endif
 
@@ -996,23 +985,56 @@ bool makeFullPath( const string& name, int mode ) {
 
 
 string sanitizeNodeName( const string& name ) {
-	string newName( name );
-	replace_all( newName, "|", "_" );
-	replace_all( newName, ":", "_" );
-	return newName;
+  string newName( name );
+  replace_all( newName, "|", "_" );
+  replace_all( newName, ":", "_" );
+  return newName;
 }
 
 MString sanitizeNodeName( const MString& name ) {
-	string newName( name.asChar() );
-	replace_all( newName, "|", "_" );
-	replace_all( newName, ":", "_" );
-	return MString( newName.c_str() );
+  string newName( name.asChar() );
+  replace_all( newName, "|", "_" );
+  replace_all( newName, ":", "_" );
+  return MString( newName.c_str() );
 }
 
 RtString& getLiquidRibName( const string& name ) {
-	static string ribName;
-	static RtString tmp;
-	ribName = sanitizeNodeName( name );
-	tmp = const_cast< RtString >( ribName.c_str() );
-	return tmp;
+  static string ribName;
+  static RtString tmp;
+  ribName = sanitizeNodeName( name );
+  tmp = const_cast< RtString >( ribName.c_str() );
+  return tmp;
+}
+
+/** Standard function to send messages to either the
+ *  maya console or the shell for user feedback.
+ */
+void liquidMessage( const string& msg, liquidVerbosityType type ) {
+  if( liqglo_verbosity >= type ) {
+    if ( !liquidBin ) {
+      MString infoOutput( "[Liquid] " );
+      infoOutput += msg.c_str();
+      switch( type ) {
+        case messageInfo:
+          MGlobal::displayInfo( infoOutput );
+          break;
+        case messageWarning:
+          MGlobal::displayWarning( infoOutput );
+          break;
+        case messageError:
+          MGlobal::displayError( infoOutput );
+      }
+    } else {
+      string infoOutput( "[Liquid] " );
+      infoOutput += msg;
+      switch( type ) {
+        case messageWarning:
+          cerr << "Warning: ";
+          break;
+        case messageError:
+          cerr << "Error: ";
+      }
+      cerr << infoOutput << endl << flush;
+    }
+  }
 }
