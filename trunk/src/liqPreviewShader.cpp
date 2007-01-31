@@ -586,7 +586,6 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
   RiTransformEnd();
   if ( shadingSpace != "" ) RiTransformEnd();
 
-  cout << options.primitiveType << "!" << endl << flush;
   switch( options.primitiveType ) {
 
     case CYLINDER: {
@@ -819,8 +818,6 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
       break;
     }
   }
-
-  cout << "Hmm" << endl << flush;
 
   RiAttributeEnd();
 
