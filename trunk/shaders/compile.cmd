@@ -1,6 +1,6 @@
 @echo off
 rem 3Delight
-for %%i in (src\*.sl) do shaderdl %%i
+for %%i in (src\*.sl) do shaderdl --embed-source %%i
 rem AIR
 for %%i in (src\*.sl) do shaded %%i
 rem Aqsis

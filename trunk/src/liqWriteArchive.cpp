@@ -131,22 +131,24 @@ MStatus liqWriteArchive::redoIt()
     }
 
     // test that the output file is writable
-    FILE *f = fopen(outputFilename.asChar(), "w");
+    FILE *f = fopen( outputFilename.asChar(), "w" );
     if (!f) {
-      MGlobal::displayError("Error writing to output file " + outputFilename + ". Check file permissions there");
+      MGlobal::displayError( "Error writing to output file " + outputFilename + ". Check file permissions there" );
       return MS::kFailure;
     }
     fclose(f);
 
     // binary or ascii
 #if defined( PRMAN ) || defined( DELIGHT )
-    RtString format[1] = {"ascii"};
-    if ( binaryRib ) format[0] = "binary";
+    RtString format[ 1 ] = { "ascii" };
+    if ( binaryRib ) {
+      format[ 0 ] = "binary";
+    }
     RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
 #endif
 
     // write the RIB file
-    RiBegin(const_cast<char*>(outputFilename.asChar()));
+    RiBegin( const_cast< RtToken >( outputFilename.asChar() ) );
 
     writeObjectToRib(objDagPath, outputRootTransform);
 

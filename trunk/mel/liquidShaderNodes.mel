@@ -322,7 +322,6 @@ global proc liquidShaderNodePreview( string $node )
   // if a a previous .done file exists remove it.
   if ( `filetest -r ($image+"_"+$shader+".done")` ) sysFile -del ($image+"_"+$shader+".done");
 
-
   string $args = ( "liquidPreviewShader -shader " + $node );
   int $previewType  = `getAttr liquidGlobals.previewType`;
 
@@ -330,11 +329,12 @@ global proc liquidShaderNodePreview( string $node )
   if ( objExists( ($node+".previewPrimitive") ) ) {
     $primitive = `getAttr ($node+".previewPrimitive")`;
     if ( $primitive == "(globals)" ) {
-    	$primitive = `getAttr liquidGlobals.previewPrimitive`;
+      $primitive = `getAttr liquidGlobals.previewPrimitive`;
     }
   } else {
     $primitive = `getAttr liquidGlobals.previewPrimitive`;
   }
+
   if( $primitive == 1 ) {
     $args += " -cube";
   } else if( $primitive == 2 ) {
@@ -351,9 +351,11 @@ global proc liquidShaderNodePreview( string $node )
     $args += ( " \""+$customRibFile+"\"");
   }
 
-  string $customBg = `getAttr ($node+".previewCustomBackplane")`;
-  if ( $customBg != "" && !gmatch( $customBg, "*/")) {
-    $args += (" -cbk \"" + $customBg + "\"");
+  if ( $nodetype == "liquidSurface" ) {
+    string $customBg = `getAttr ($node+".previewCustomBackplane")`;
+    if ( $customBg != "" && !gmatch( $customBg, "*/") ) {
+      $args += (" -cbk \"" + $customBg + "\"");
+    }
   }
 
   string $driver = ($previewType)? `getAttr liquidGlobals.previewDisplayDriver`:"tiff";
@@ -396,21 +398,20 @@ global proc liquidShaderNodePreview( string $node )
     $args = $args + ( " -shadingRate " + $shadingRate );
   }
 
-  int $backPlane = (objExists( ($node+".previewBackplane") ))? (`getAttr ($node+".previewBackplane")`):1;
-  if( $backPlane != 1 ) {
-    $args = $args + ( " -noBackPlane" );
-  }
+  // Moritz: me thinks that attribute is only used for a custom backplane -- commented out.
+  //int $backPlane = (objExists( ($node+".previewBackplane") ))? (`getAttr ($node+".previewBackplane")`):1;
+  //if( $backPlane != 1 ) {
+  //  $args = $args + ( " -noBackPlane" );
+  //}
 
   float $intensityScale = (objExists( ($node+".previewIntensity") ))? (`getAttr ($node+".previewIntensity")`):1.0;
   $args = $args + ( " -previewIntensity " + $intensityScale );
 
-
-  // this will tell the node to reload the preview in the swatch
-  setAttr ($node+".refreshPreview") true;
-
   // run the command.
   eval( $args );
 
+  // this will tell the node to reload the preview in the swatch
+  setAttr ($node+".refreshPreview") true;
 }
 
 /**
@@ -694,7 +695,7 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
   setUITemplate -pst attributeEditorTemplate;
   string $fullCtlPath   = `textFieldGrp -label "Shader" $ctlName`;
   connectControl -index 2 $fullCtlPath $msg;
-  string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_button")`;
+  string $button = `iconTextButton -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i (liquidGetHome()+"/icons/lif_shd.xpm") -c $myFileCommand ($ctlName+"_button")`;
   setParent ..;
 
   if (`about -mac`) {

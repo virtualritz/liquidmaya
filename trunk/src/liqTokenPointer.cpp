@@ -72,7 +72,7 @@ liqTokenPointer::liqTokenPointer()
 
 liqTokenPointer::liqTokenPointer( const liqTokenPointer &src )
 {
-  LIQDEBUGPRINTF("-> copy constructing additional ribdata: %s\n", src.m_tokenName.c_str() );
+  LIQDEBUGPRINTF( "-> copy constructing additional ribdata: %s\n", src.m_tokenName.c_str() );
 
   m_isArray       = false;
   m_isUArray      = false;

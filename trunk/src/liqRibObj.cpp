@@ -93,7 +93,7 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
     nodeFn.getAllPaths( instanceArray );
     unsigned last( instanceArray.length() );
     instanceMatrices.resize( last );
-    for ( unsigned i = 0; i < last; i++ ) {
+    for ( unsigned i( 0 ); i < last; i++ ) {
       instanceMatrices[i] = instanceArray[i].inclusiveMatrix();
     }
 

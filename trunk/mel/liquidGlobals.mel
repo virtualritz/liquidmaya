@@ -621,7 +621,7 @@ global proc liquidInitGlobalVals()
     ,"shotVersion",                 "string",     ""
 
     ,"statistics",                  "long",       0
-    ,"verbosity",                   "long",       0
+    ,"verbosity",                   "long",       1
   };
 
 
@@ -2827,7 +2827,7 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
         setParent ..;
         frameLayout -bs "etchedIn" -l "Resource Paths" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowBoolGlobal "relativeFileNames" "Prefix Project Paths";
+            liquidShowBoolGlobal "relativeFileNames" "Project-Relative Paths";
             liquidShowBoolGlobalPlus "shortShaderNames"  "No Shader Paths" "Do not output path names with shaders";
           setParent ..;
         setParent ..;

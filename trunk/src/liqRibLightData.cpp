@@ -127,7 +127,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   if ( MS::kSuccess == status ) {
     MString varVal;
     userShadowNamePlug.getValue( varVal );
-    userShadowName = parseString( varVal );
+    userShadowName = parseString( varVal, false );
   }
 
   // check to see if the light is using raytraced shadows
@@ -267,7 +267,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                           //cout <<"this is an extra shadow call for slot "<<extraShadowSlot<" !!"<<endl;
                           stringPlugVal = extraShadowName( lightDepNode, extraShadowSlot );
                         } else stringPlugVal = autoShadowName();
-                      } else stringPlugVal = parseString( parsingString );
+                      } else stringPlugVal = parseString( parsingString, false );
                       tokenPointerPair.setTokenString( kk, stringPlugVal.asChar() );
                     }
                   }
@@ -286,7 +286,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
                       //cout <<"this is an extra shadow call for slot "<<extraShadowSlot<" !!"<<endl;
                       stringPlugVal = extraShadowName( lightDepNode, extraShadowSlot );
                     } else stringPlugVal = autoShadowName();
-                  } else stringPlugVal = parseString( parsingString );
+                  } else stringPlugVal = parseString( parsingString, false );
                   parsingString = stringPlugVal;
                   parsingString.toLowerCase();
                   tokenPointerPair.set( shaderInfo.getArgName( i ).asChar(), rString );
@@ -751,7 +751,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
       MPlug lightmapPlug( lightDepNode.findPlug( "liqLightMap", &status ) );
       if ( MS::kSuccess == status ) {
         lightmapPlug.getValue( lightMap );
-        lightMap = parseString( lightMap );
+        lightMap = parseString( lightMap, false );
       } else {
         lightMap = "";
       }
@@ -1040,13 +1040,13 @@ MString liqRibLightData::autoShadowName( int PointLightDir ) const
   if( userShadowName.length() ) {
     shadowName = userShadowName;
   } else {
-    shadowName = LIQ_GET_ABS_REL_FILE_NAME( liqglo_relativeFileNames, liqglo_textureDir, liqglo_projectDir );
+    shadowName = liquidGetRelativePath( liqglo_relativeFileNames, liqglo_textureDir, liqglo_projectDir );
     if ( !liqglo_shapeOnlyInShadowNames ) {
       shadowName += liqglo_sceneName;
-      shadowName =  parseString( shadowName );
+      shadowName = parseString( shadowName, false );
       shadowName += "_";
     }
-    shadowName += lightName;
+    shadowName += sanitizeNodeName( lightName );
 
     shadowName += ( shadowType == stDeep )? "DSH": "SHD";
 
@@ -1091,7 +1091,7 @@ MString liqRibLightData::autoShadowName( int PointLightDir ) const
   }
   //cout <<"liqRibLightData::autoShadowName : "<<shadowName.asChar()<<"  ( "<<liqglo_sceneName.asChar()<<" )"<<endl;
 
-  return sanitizeNodeName( shadowName );
+  return shadowName;
 
 }
 
@@ -1129,9 +1129,9 @@ MString liqRibLightData::extraShadowName( const MFnDependencyNode & lightShaderN
       if ( MS::kSuccess == status ) shadowCamParamPlug.getValue( shdCamGeometrySet );
 
       shadowName += liqglo_sceneName;
-      shadowName =  parseString( shadowName );
+      shadowName =  parseString( shadowName, false );
       shadowName += "_";
-      shadowName += shdCamName;
+      shadowName += sanitizeNodeName( shdCamName );
       shadowName += ( shdCamDeepShadows )? "DSH": "SHD";
       shadowName += ".";
       if ( shdCamGeometrySet != "" ) {
@@ -1157,17 +1157,13 @@ MString liqRibLightData::extraShadowName( const MFnDependencyNode & lightShaderN
     }
   } else {
     //error message here !!
-    MString err = "Liquid : could not find a shadowCameras attribute on ";
-    err += lightShaderNode.name();
-    err += " !";
-    status.perror( err );
+    MString err( "Could not find a shadowCameras attribute on '" + lightShaderNode.name() + "'!" );
+    liquidMessage( err.asChar(), messageError );
   }
-
-
 
   //cout <<"liqRibLightData::extraShadowName : "<<shadowName.asChar()<<"  ( "<<liqglo_sceneName.asChar()<<" )"<<endl;
 
-  return sanitizeNodeName( shadowName );
+  return shadowName;
 }
 
 

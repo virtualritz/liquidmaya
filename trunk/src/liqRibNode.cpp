@@ -85,10 +85,9 @@ extern MString      liqglo_currentNodeShortName;
 /**
  * Class constructor.
  */
-liqRibNode::liqRibNode( liqRibNode * instanceOfNode,
+liqRibNode::liqRibNode( liqRibNodePtr instanceOfNode,
                         const MString instanceOfNodeStr )
-  :   next( NULL ),
-      matXForm( MRX_Const ),
+  :   matXForm( MRX_Const ),
       bodyXForm( MRX_Const ),
       instance( instanceOfNode ),
       instanceStr( instanceOfNodeStr ),
@@ -631,8 +630,9 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           nPlug.getValue( ignoreShapes );
       }
 
-
       MFnDependencyNode nodeFn( nodePeeker );
+
+      tokenPointerArray.clear();
 
       // find the attributes
       MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
@@ -652,11 +652,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           if ( plugObj.apiType() == MFn::kDoubleArrayData ) {
             MFnDoubleArrayData fnDoubleArrayData( plugObj );
             const MDoubleArray& doubleArrayData( fnDoubleArrayData.array( &status ) );
-            tokenPointerPair.set( cutString.asChar(),
-                                  rFloat,
-                                  true,
-                                  false,
-                                  doubleArrayData.length() );
+            tokenPointerPair.set( cutString.asChar(), rFloat, doubleArrayData.length() );
             for( unsigned kk( 0 ); kk < doubleArrayData.length(); kk++ ) {
               tokenPointerPair.setTokenFloat( kk, doubleArrayData[kk] );
             }
@@ -699,12 +695,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           if ( plugObj.apiType() == MFn::kPointArrayData ) {
             MFnPointArrayData  fnPointArrayData( plugObj );
             MPointArray pointArrayData = fnPointArrayData.array( &status );
-            tokenPointerPair.set( cutString.asChar(),
-                                  rPoint,
-                                  //( type() == MRT_Nurbs || type() == MRT_NuCurve ) ? true : false,
-                                  true,
-                                  false,
-                                  pointArrayData.length() );
+            tokenPointerPair.set( cutString.asChar(), rPoint, pointArrayData.length() );
             for ( unsigned kk( 0 ); kk < pointArrayData.length(); kk++ ) {
               tokenPointerPair.setTokenFloat( kk, pointArrayData[kk].x, pointArrayData[kk].y, pointArrayData[kk].z );
             }
@@ -1315,18 +1306,14 @@ void liqRibNode::parseVectorAttributes( const MFnDependencyNode& nodeFn, const M
   if ( strArray.length() > 0 ) {
     for ( unsigned i( 0 ); i < strArray.length(); i++ ) {
       liqTokenPointer tokenPointerPair;
-      MString cutString( strArray[i].substring(5, strArray[i].length() ) );
+      MString cutString( strArray[i].substring( 5, strArray[i].length() ) );
       MPlug vPlug( nodeFn.findPlug( strArray[i] ) );
       MObject plugObj;
       status = vPlug.getValue( plugObj );
       if ( plugObj.apiType() == MFn::kVectorArrayData ) {
         MFnVectorArrayData  fnVectorArrayData( plugObj );
         MVectorArray vectorArrayData = fnVectorArrayData.array( &status );
-        tokenPointerPair.set(   cutString.asChar(),
-                                pType,
-                                true,
-                                false,
-                                vectorArrayData.length() );
+        tokenPointerPair.set( cutString.asChar(), pType, vectorArrayData.length() );
         for ( unsigned kk( 0 ); kk < vectorArrayData.length(); kk++ ) {
           tokenPointerPair.setTokenFloat( kk, vectorArrayData[kk].x, vectorArrayData[kk].y, vectorArrayData[kk].z );
         }

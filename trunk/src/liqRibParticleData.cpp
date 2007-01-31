@@ -414,7 +414,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
         codeArray.push_back( floatOn );
 
         if ( haveRadiusArray )
-          radius = (float)radiusArray[ m_validParticles[ part_num ] ];
+          radius = ( float )radiusArray[ m_validParticles[ part_num ] ];
         // else radius was set to either a scalar attribute or 1.0
         // above
 
@@ -461,21 +461,21 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
     case MPTSpheres:
     {
 
-  #ifdef DELIGHT
+#ifdef DELIGHT
 
       liqTokenPointer typeParameter;
       typeParameter.set( "type", rString );
       typeParameter.setTokenString( 0, "sphere" );
       tokenPointerArray.push_back( typeParameter );
 
-  #else // Write real spheres
+#else // Write real spheres
       liqTokenPointer Pparameter;
       liqTokenPointer radiusParameter;
 
       Pparameter.set( "P", rPoint, true, false, m_numValidParticles );
       Pparameter.setDetailType( rVertex );
 
-      radiusParameter.set("radius", rFloat, true, false, m_numValidParticles);
+      radiusParameter.set( "radius", rFloat, true, false, m_numValidParticles );
       radiusParameter.setDetailType( rVertex );
 
       for ( unsigned part_num( 0 ); part_num < m_numValidParticles; part_num++ ) {
@@ -688,6 +688,171 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
 
     case MPTSprites: {
 
+#ifdef DELIGHT
+
+      liqTokenPointer typeParameter;
+      typeParameter.set( "type", rString );
+      typeParameter.setTokenString( 0, "patch" );
+      tokenPointerArray.push_back( typeParameter );
+
+      liqTokenPointer Pparameter;
+      liqTokenPointer spriteNumParameter;
+      liqTokenPointer spriteTwistParameter;
+      liqTokenPointer spriteWidthParameter;
+      liqTokenPointer spriteAspectParameter;
+
+      Pparameter.set( "P", rPoint, m_numValidParticles );
+      Pparameter.setDetailType( rVertex );
+
+      spriteNumParameter.set( "spriteNum", rFloat, m_numValidParticles );
+
+      spriteTwistParameter.set( "patchrotation", rFloat,  m_numValidParticles );
+
+      spriteWidthParameter.set( "width", rFloat, m_numValidParticles );
+
+      spriteAspectParameter.set( "patchaspectratio", rFloat, m_numValidParticles );
+
+      bool haveSpriteNums( false );
+      bool haveSpriteNumsArray( false );
+      MObject spriteNumObject;
+      MFnDoubleArrayData spriteNumArray;
+      float spriteNum;
+      MPlug spriteNumPlug( fnNode.findPlug( "spriteNumPP", &status ) );
+      if ( MS::kSuccess == status ) {
+        haveSpriteNumsArray = true;
+        spriteNumPlug.getValue( spriteNumObject );
+        spriteNumArray.setObject( spriteNumObject );
+        spriteNumParameter.setDetailType( rVarying );
+      } else {
+        spriteNumPlug = fnNode.findPlug( "spriteNum", &status );
+        if ( MS::kSuccess == status ) {
+          haveSpriteNums = true;
+          spriteNumPlug.getValue( spriteNum );
+          spriteNumParameter.setDetailType( rUniform );
+        }
+      }
+
+      bool haveSpriteTwist( false );
+      bool haveSpriteTwistArray( false );
+      MObject spriteTwistObject;
+      MFnDoubleArrayData spriteTwistArray;
+      float spriteTwist;
+      MPlug spriteTwistPlug( fnNode.findPlug( "spriteTwistPP", &status ) );
+      if ( MS::kSuccess == status ) {
+        haveSpriteTwistArray = true;
+        spriteTwistPlug.getValue( spriteTwistObject );
+        spriteTwistArray.setObject( spriteTwistObject );
+        spriteTwistParameter.setDetailType( rVarying );
+      } else {
+        spriteTwistPlug = fnNode.findPlug( "spriteTwist", &status );
+        if ( MS::kSuccess == status ) {
+          haveSpriteTwist = true;
+          spriteTwistPlug.getValue( spriteTwist );
+          spriteTwistParameter.setDetailType( rUniform );
+        }
+      }
+
+      bool haveSpriteScaleX( false );
+      bool haveSpriteScaleXArray( false );
+      MObject spriteScaleXObject;
+      MFnDoubleArrayData spriteScaleXArray;
+      float spriteScaleX;
+      MPlug spriteScaleXPlug( fnNode.findPlug( "spriteScaleXPP", &status ) );
+      if ( MS::kSuccess == status ) {
+        haveSpriteScaleXArray = true;
+        spriteScaleXPlug.getValue( spriteScaleXObject );
+        spriteScaleXArray.setObject( spriteScaleXObject );
+        spriteWidthParameter.setDetailType( rVarying );
+      } else {
+        spriteScaleXPlug = fnNode.findPlug( "spriteScaleX", &status );
+        if ( MS::kSuccess == status ) {
+          haveSpriteScaleX = true;
+          spriteScaleXPlug.getValue( spriteScaleX );
+          spriteWidthParameter.setDetailType( rUniform );
+        }
+      }
+
+      bool haveSpriteScaleY( false );
+      bool haveSpriteScaleYArray( false );
+      MObject spriteScaleYObject;
+      MFnDoubleArrayData spriteScaleYArray;
+      float spriteScaleY;
+      MPlug spriteScaleYPlug( fnNode.findPlug( "spriteScaleYPP", &status ) );
+      if ( MS::kSuccess == status ) {
+        haveSpriteScaleYArray = true;
+        spriteScaleYPlug.getValue( spriteScaleYObject );
+        spriteScaleYArray.setObject( spriteScaleYObject );
+        spriteAspectParameter.setDetailType( rVarying );
+      } else {
+        spriteScaleYPlug = fnNode.findPlug( "spriteScaleY", &status );
+        if ( MS::kSuccess == status ) {
+          haveSpriteScaleY = true;
+          spriteScaleYPlug.getValue( spriteScaleY );
+          spriteAspectParameter.setDetailType( rUniform );
+        }
+      }
+
+      for ( unsigned part_num( 0 ); part_num < m_numValidParticles; part_num++ ) {
+
+        Pparameter.setTokenFloat( part_num,
+                                  posArray[m_validParticles[part_num]].x,
+                                  posArray[m_validParticles[part_num]].y,
+                                  posArray[m_validParticles[part_num]].z );
+        if ( haveSpriteNumsArray ) {
+          spriteNumParameter.setTokenFloat( part_num, spriteNumArray[m_validParticles[part_num]] );
+        } else if ( haveSpriteNums ) {
+          spriteNumParameter.setTokenFloat( part_num, spriteNum );
+        }
+
+        if ( haveSpriteTwistArray ) {
+          spriteTwistParameter.setTokenFloat( part_num, -spriteTwistArray[m_validParticles[part_num]] );
+        }
+        else if ( haveSpriteTwist ) {
+          spriteTwistParameter.setTokenFloat( part_num, -spriteTwist);
+        }
+
+        if ( haveSpriteScaleXArray ) {
+          spriteWidthParameter.setTokenFloat( part_num, spriteScaleXArray[m_validParticles[part_num]] );
+        }
+        else if ( haveSpriteScaleX ) {
+          spriteWidthParameter.setTokenFloat( part_num, spriteScaleX);
+        }
+
+        if ( haveSpriteScaleYArray ) {
+          if ( haveSpriteScaleXArray ) {
+            spriteAspectParameter.setTokenFloat( part_num, spriteScaleXArray[m_validParticles[part_num]] / spriteScaleYArray[m_validParticles[part_num]] );
+          } else if ( haveSpriteScaleX ) {
+            spriteAspectParameter.setTokenFloat( part_num, spriteScaleX / spriteScaleYArray[m_validParticles[part_num]] );
+          } else {
+            spriteAspectParameter.setTokenFloat( part_num, 1. / spriteScaleYArray[m_validParticles[part_num]] );
+          }
+        } else if ( haveSpriteScaleY ) {
+          if ( haveSpriteScaleXArray ) {
+            spriteAspectParameter.setTokenFloat( part_num, spriteScaleXArray[m_validParticles[part_num]] / spriteScaleY );
+          } else if ( haveSpriteScaleX ) {
+            spriteAspectParameter.setTokenFloat( part_num, spriteScaleX / spriteScaleY );
+          } else {
+            spriteAspectParameter.setTokenFloat( part_num, 1. / spriteScaleY );
+          }
+        }
+      }
+
+      tokenPointerArray.push_back( Pparameter );
+      if ( haveSpriteNumsArray || haveSpriteNums ) {
+        tokenPointerArray.push_back( spriteNumParameter );
+      }
+      if ( haveSpriteTwistArray || haveSpriteTwist ) {
+        tokenPointerArray.push_back( spriteTwistParameter );
+      }
+      if ( haveSpriteScaleXArray || haveSpriteScaleX ) {
+        tokenPointerArray.push_back( spriteWidthParameter );
+      }
+      if ( haveSpriteScaleYArray || haveSpriteScaleY ) {
+        tokenPointerArray.push_back( spriteAspectParameter );
+      }
+
+#else // Write real bilinear patches
+
       liqTokenPointer Pparameter;
       liqTokenPointer spriteNumParameter;
       liqTokenPointer spriteTwistParameter;
@@ -697,16 +862,16 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
       Pparameter.set( "P", rPoint, true, false, m_numValidParticles );
       Pparameter.setDetailType( rVertex );
 
-      spriteNumParameter.set("spriteNum", rFloat, true, false, m_numValidParticles);
+      spriteNumParameter.set( "spriteNum", rFloat, true, false, m_numValidParticles );
       spriteNumParameter.setDetailType( rUniform );
 
-      spriteTwistParameter.set("spriteTwist", rFloat, true, false, m_numValidParticles);
+      spriteTwistParameter.set( "spriteTwist", rFloat, true, false, m_numValidParticles );
       spriteTwistParameter.setDetailType( rUniform );
 
-      spriteScaleXParameter.set("spriteScaleX", rFloat, true, false, m_numValidParticles);
+      spriteScaleXParameter.set( "spriteScaleX", rFloat, true, false, m_numValidParticles );
       spriteScaleXParameter.setDetailType( rUniform );
 
-      spriteScaleYParameter.set("spriteScaleY", rFloat, true, false, m_numValidParticles);
+      spriteScaleYParameter.set( "spriteScaleY", rFloat, true, false, m_numValidParticles );
       spriteScaleYParameter.setDetailType( rUniform );
 
       bool haveSpriteNums( false );
@@ -815,7 +980,6 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
         }
       }
 
-
       tokenPointerArray.push_back( Pparameter );
       if ( haveSpriteNumsArray || haveSpriteNums ) {
         tokenPointerArray.push_back( spriteNumParameter );
@@ -829,6 +993,8 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
       if ( haveSpriteScaleYArray || haveSpriteScaleY ) {
         tokenPointerArray.push_back( spriteScaleYParameter );
       }
+
+#endif
 
     } // case MPTSprites
     break;
@@ -844,7 +1010,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
 
   // and we add the Cs Parameter (if needed) after we've done everything
   // else
-  if ( haveRgbArray ) {
+  if( haveRgbArray ) {
     liqTokenPointer CsParameter;
 
     CsParameter.set( "Cs", rColor, true, false, m_numValidParticles * m_multiCount );
@@ -858,9 +1024,9 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
       int part_chunk = part_num / m_multiCount;
 
       CsParameter.setTokenFloat( part_num,
-                                 rgbArray[m_validParticles[part_chunk]].x,
-                                 rgbArray[m_validParticles[part_chunk]].y,
-                                 rgbArray[m_validParticles[part_chunk]].z );
+                                 rgbArray[ m_validParticles[ part_chunk ] ].x,
+                                 rgbArray[ m_validParticles[ part_chunk ] ].y,
+                                 rgbArray[ m_validParticles[ part_chunk ] ].z );
     }
 
     tokenPointerArray.push_back( CsParameter );
@@ -869,8 +1035,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
 
   // And we add the Os Parameter (if needed).
   //
-  if ( haveOpacityArray )
-  {
+  if( haveOpacityArray ) {
     liqTokenPointer OsParameter;
 
     OsParameter.set( "Os", rColor, true, false, m_numValidParticles * m_multiCount );
@@ -944,6 +1109,7 @@ void liqRibParticleData::write()
 #ifdef DELIGHT
 
     case MPTSpheres:
+    case MPTSprites:
 
 #endif
 
@@ -1016,8 +1182,6 @@ void liqRibParticleData::write()
       }
     }
     break;
-#endif // #ifndef DELIGHT
-
 
     case MPTSprites: {
 
@@ -1070,25 +1234,23 @@ void liqRibParticleData::write()
       camRight *= liqglo_currentJob.camera[0].mat.inverse();
       camEye   *= liqglo_currentJob.camera[0].mat.inverse();
 
-      for( unsigned ui = 0; ui < m_numValidParticles; ui++ )
-      {
+      for( unsigned ui( 0 ); ui < m_numValidParticles; ui++ ) {
 
-        MGlobal::displayInfo( MString( "I: " ) + ( ( double ) grain ) );
         MVector up( camUp );
         MVector right( camRight );
 
-        float spriteRadiusX = 0.5;
-        float spriteRadiusY = 0.5;
+        float spriteRadiusX( 0.5 );
+        float spriteRadiusY( 0.5 );
 
-        if ( colAttr != -1 ) {
+        if ( -1 != colAttr ) {
           RiColor( &( ( RtFloat* )pointerArray[ colAttr ] )[ grain * 3 ] );
         }
 
-        if ( opacAttr != -1 ) {
+        if ( -1 != opacAttr ) {
           RiOpacity( &( ( RtFloat* )pointerArray[ opacAttr ] )[ grain * 3 ] );
         }
 
-        if ( twistAttr != -1 ) {
+        if ( -1 != twistAttr ) {
           float twist( -( ( RtFloat* )pointerArray[ twistAttr ] )[ grain ] * M_PI / 180 );
           MQuaternion twistQ( twist, camEye );
           right = camRight.rotateBy( twistQ );
@@ -1132,6 +1294,8 @@ void liqRibParticleData::write()
     }
     break;
 
+#endif // #ifndef DELIGHT
+
     case MPTNumeric:
     case MPTCloudy:
     case MPTTube:
@@ -1148,6 +1312,7 @@ unsigned liqRibParticleData::granularity() const {
     case MPTPoints:
 #ifdef DELIGHT
     case MPTSpheres:
+    case MPTSprites:
 #endif
     case MPTMultiStreak:
     case MPTStreak:
@@ -1155,8 +1320,8 @@ unsigned liqRibParticleData::granularity() const {
 
 #ifndef DELIGHT
     case MPTSpheres:
-#endif // #ifndef DELIGHT
     case MPTSprites:
+#endif // #ifndef DELIGHT
       return m_numValidParticles;
 
     case MPTNumeric:
@@ -1207,6 +1372,7 @@ bool liqRibParticleData::writeNextGrain()
 #ifdef DELIGHT
 
     case MPTSpheres:
+    case MPTSprites:
 
 #endif
 
@@ -1284,8 +1450,6 @@ bool liqRibParticleData::writeNextGrain()
         return false;
       }
     }
-
-#endif // #ifndef DELIGHT
 
     case MPTSprites: {
 
@@ -1398,6 +1562,8 @@ bool liqRibParticleData::writeNextGrain()
       }
     }
 
+#endif // #ifndef DELIGHT
+
     case MPTNumeric:
     case MPTCloudy:
     case MPTTube:
@@ -1449,9 +1615,10 @@ void liqRibParticleData::addAdditionalParticleParameters( MObject node )
   MFnDependencyNode nodeFn( node );
 
   addAdditionalFloatParameters( nodeFn );
-  addAdditionalPointParameters( nodeFn );
-  addAdditionalVectorParameters( nodeFn );
-  addAdditionalColorParameters( nodeFn );
+  addAdditionalVectorParameters( nodeFn, "rmanP", rPoint );
+  addAdditionalVectorParameters( nodeFn, "rmanV", rVector );
+  addAdditionalVectorParameters( nodeFn, "rmanN", rNormal );
+  addAdditionalVectorParameters( nodeFn, "rmanC", rColor );
 }
 
 void liqRibParticleData::addAdditionalFloatParameters( MFnDependencyNode nodeFn )
@@ -1472,11 +1639,7 @@ void liqRibParticleData::addAdditionalFloatParameters( MFnDependencyNode nodeFn 
     if ( plugObj.apiType() == MFn::kDoubleArrayData ) {
       MFnDoubleArrayData attributeData( plugObj );
 
-      floatParameter.set( cutString.asChar(),
-                rFloat,
-                true,
-                false,
-                m_numValidParticles );
+      floatParameter.set( cutString.asChar(), rFloat, m_numValidParticles );
       floatParameter.setDetailType(rVertex);
 
       for ( unsigned part_num( 0 ); part_num < m_numValidParticles; part_num++ ) {
@@ -1488,12 +1651,8 @@ void liqRibParticleData::addAdditionalFloatParameters( MFnDependencyNode nodeFn 
 
       fPlug.getValue( floatValue );
 
-      floatParameter.set( cutString.asChar(),
-                rFloat,
-                false,
-                false,
-                0 );
-      floatParameter.setDetailType(rConstant);
+      floatParameter.set( cutString.asChar(), rFloat );
+      floatParameter.setDetailType( rConstant );
       floatParameter.setTokenFloat( 0, floatValue );
     }
 
@@ -1501,61 +1660,12 @@ void liqRibParticleData::addAdditionalFloatParameters( MFnDependencyNode nodeFn 
   }
 }
 
-void liqRibParticleData::addAdditionalPointParameters( MFnDependencyNode nodeFn )
+void liqRibParticleData::addAdditionalVectorParameters( MFnDependencyNode nodeFn, const string& prefix, ParameterType type )
 {
-  MStringArray foundAttributes = findAttributesByPrefix( "rmanP", nodeFn );
+  MStringArray foundAttributes = findAttributesByPrefix( prefix.c_str(), nodeFn );
   MStatus  status;
 
-  for ( int i = 0; i < foundAttributes.length(); i++ ) {
-    liqTokenPointer pointParameter;
-    MString  currAttribute = foundAttributes[i];
-    MString  cutString = currAttribute.substring(5, currAttribute.length());
-
-    MPlug  pPlug = nodeFn.findPlug( currAttribute );
-    MObject  plugObj;
-
-    status = pPlug.getValue( plugObj );
-
-    if ( plugObj.apiType() == MFn::kVectorArrayData ) {
-      MFnVectorArrayData  attributeData( plugObj );
-
-      pointParameter.set( cutString.asChar(),
-                rPoint,
-                true,
-                false,
-                m_numValidParticles );
-      pointParameter.setDetailType(rVertex);
-
-      for ( unsigned part_num = 0; part_num < m_numValidParticles; part_num++ ) {
-        pointParameter.setTokenFloat( part_num,
-                        attributeData[m_validParticles[part_num]].x,
-                        attributeData[m_validParticles[part_num]].y,
-                        attributeData[m_validParticles[part_num]].z );
-      }
-
-      tokenPointerArray.push_back( pointParameter );
-    } else if (plugObj.apiType() == MFn::kData3Double) {
-      float x, y, z;
-      pPlug.child(0).getValue( x );
-      pPlug.child(1).getValue( y );
-      pPlug.child(2).getValue( z );
-
-      pointParameter.set( cutString.asChar(), rPoint, false, false, 0 );
-      pointParameter.setTokenFloat( 0, x, y, z );
-      pointParameter.setDetailType( rConstant );
-
-      tokenPointerArray.push_back( pointParameter );
-    }
-    // else ignore this attribute
-  }
-}
-
-void liqRibParticleData::addAdditionalVectorParameters( MFnDependencyNode nodeFn )
-{
-  MStringArray foundAttributes = findAttributesByPrefix( "rmanV", nodeFn );
-  MStatus  status;
-
-  for ( int i = 0; i < foundAttributes.length(); i++ ) {
+  for ( unsigned i( 0 ); i < foundAttributes.length(); i++ ) {
     liqTokenPointer vectorParameter;
     MString  currAttribute = foundAttributes[i];
     MString  cutString = currAttribute.substring(5, currAttribute.length());
@@ -1568,14 +1678,10 @@ void liqRibParticleData::addAdditionalVectorParameters( MFnDependencyNode nodeFn
     if ( plugObj.apiType() == MFn::kVectorArrayData ) {
       MFnVectorArrayData  attributeData( plugObj );
 
-      vectorParameter.set( cutString.asChar(),
-                 rVector,
-                 true,
-                 false,
-                 m_numValidParticles );
-      vectorParameter.setDetailType(rVertex);
+      vectorParameter.set( cutString.asChar(), type, m_numValidParticles );
+      vectorParameter.setDetailType( rVertex );
 
-      for ( unsigned part_num = 0; part_num < m_numValidParticles; part_num++ ) {
+      for ( unsigned part_num( 0 ); part_num < m_numValidParticles; part_num++ ) {
         vectorParameter.setTokenFloat( part_num,
                          attributeData[m_validParticles[part_num]].x,
                          attributeData[m_validParticles[part_num]].y,
@@ -1590,60 +1696,11 @@ void liqRibParticleData::addAdditionalVectorParameters( MFnDependencyNode nodeFn
       vPlug.child(1).getValue( y );
       vPlug.child(2).getValue( z );
 
-      vectorParameter.set( cutString.asChar(), rVector, false, false, 0 );
+      vectorParameter.set( cutString.asChar(), type );
       vectorParameter.setTokenFloat( 0, x, y, z );
       vectorParameter.setDetailType( rConstant );
 
       tokenPointerArray.push_back( vectorParameter );
-    }
-    // else ignore this attribute
-  }
-}
-
-void liqRibParticleData::addAdditionalColorParameters( MFnDependencyNode nodeFn )
-{
-  MStringArray foundAttributes = findAttributesByPrefix( "rmanC", nodeFn );
-  MStatus  status;
-
-  for ( int i = 0; i < foundAttributes.length(); i++ ) {
-    liqTokenPointer colorParameter;
-    MString  currAttribute = foundAttributes[i];
-    MString  cutString = currAttribute.substring(5, currAttribute.length());
-
-    MPlug  cPlug = nodeFn.findPlug( currAttribute );
-    MObject  plugObj;
-
-    status = cPlug.getValue( plugObj );
-
-    if ( plugObj.apiType() == MFn::kVectorArrayData ) {
-      MFnVectorArrayData  attributeData( plugObj );
-
-      colorParameter.set( cutString.asChar(),
-                rColor,
-                true,
-                false,
-                m_numValidParticles );
-      colorParameter.setDetailType(rVertex);
-
-      for ( unsigned part_num = 0; part_num < m_numValidParticles; part_num++ ) {
-        colorParameter.setTokenFloat( part_num,
-                        attributeData[m_validParticles[part_num]].x,
-                        attributeData[m_validParticles[part_num]].y,
-                        attributeData[m_validParticles[part_num]].z );
-      }
-
-      tokenPointerArray.push_back( colorParameter );
-    } else if (plugObj.apiType() == MFn::kData3Double) {
-      float r, g, b;
-      cPlug.child(0).getValue( r );
-      cPlug.child(1).getValue( g );
-      cPlug.child(2).getValue( b );
-
-      colorParameter.set( cutString.asChar(), rColor, false, false, 0 );
-      colorParameter.setTokenFloat( 0, r, g, b );
-      colorParameter.setDetailType( rConstant );
-
-      tokenPointerArray.push_back( colorParameter );
     }
     // else ignore this attribute
   }

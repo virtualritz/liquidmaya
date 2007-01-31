@@ -64,11 +64,6 @@ char* basename( const char* filename );
 
 #define LIQ_GET_SHADER_FILE_NAME(a, b, c) if( b ) a = basename( const_cast<char *>(c.file.c_str())); else a = const_cast<char *>(c.file.c_str());
 
-// Moritz: this macro is needed to get absolute pathnames for
-// creating RIBs, archives and the renderscript in case the user
-// has choosen to have all paths relative
-#define LIQ_GET_ABS_REL_FILE_NAME(rel, name, dir) ( ( rel && name.index('/') != 0 )? ((dir) + (name)) : (name))
-
 
 MStringArray findAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
 bool isObjectTwoSided( const MDagPath & path );
@@ -85,15 +80,21 @@ void assignTokenArraysV( const vector<liqTokenPointer>& tokenPointerArray, RtTok
 MObject findFacetShader( MObject mesh, int polygonIndex );
 bool fileExists( const MString & filename );
 bool fileIsNewer( const MString & file1, const MString & file2 );
+bool fileFullyAccessible( const MString& path );
 MString getFullPathFromRelative ( const MString & filename );
 MString getFileName( const MString & fullpath );
-MString parseString( const MString & inputString );
+MString parseString( const MString & inputString, bool doEscaped = true );
 MString parseCommandString( const MString & inputString );
 MString liquidTransGetSceneName();
 MString liquidTransGetFullSceneName();
 void liquidGetGlobal( MString globalName, double &value, MStatus &returnStatus );
 liquidlong liquidHash( const char *str );
-MString liquidSanitizePath( MString & inputString );
+MString liquidSanitizePath( const MString& inputString );
+string liquidSanitizePath( const string& inputString );
+MString liquidSanitizeSearchPath( const MString& inputString );
+string liquidSanitizeSearchPath( const string& inputString );
+string liquidGetRelativePath( bool relative, const string& name, const string& dir );
+MString liquidGetRelativePath( bool relative, const MString& name, const MString& dir );
 MString removeEscapes( const MString & inputString );
 MObject getNodeByName( MString name, MStatus *returnStatus );
 string getEnvironment( const string& envVar );

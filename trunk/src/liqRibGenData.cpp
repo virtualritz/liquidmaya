@@ -99,7 +99,7 @@ liqRibGenData::liqRibGenData( MObject obj, MDagPath path )
   MPlug ribGenPlug = fnRibGenNode.findPlug( "RibGenSo" );
   MString plugVal;
   ribGenPlug.getValue( plugVal );
-  ribGenSoName = parseString( plugVal );
+  ribGenSoName = parseString( plugVal, false );
   ribStatus.objectName = fnNode.name().asChar();
   ribStatus.dagPath = path;
 }

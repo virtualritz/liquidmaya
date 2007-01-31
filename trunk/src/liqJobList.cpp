@@ -192,9 +192,9 @@ MStatus liqJobList::redoIt()
       if ( debug ) cout <<"  do shadows..."<<flush;
 
       while ( iterShad != ribTranslator.jobList.end() ) {
-        if ( doShadows && iterShad->isShadow && iterShad->everyFrame ) result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->ribFileName, liqglo_projectDir) );
+        if ( doShadows && iterShad->isShadow && iterShad->everyFrame ) result.append( liquidGetRelativePath(fullPath, iterShad->ribFileName, liqglo_projectDir) );
         if ( doSingleShadows && iterShad->isShadow && !iterShad->everyFrame ) {
-          result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->ribFileName, liqglo_projectDir) );
+          result.append( liquidGetRelativePath(fullPath, iterShad->ribFileName, liqglo_projectDir) );
         }
         ++iterShad;
       }
@@ -209,7 +209,7 @@ MStatus liqJobList::redoIt()
       if ( debug ) cout <<"  do camera..."<<flush;
       iterShad = ribTranslator.jobList.end();
       --iterShad;
-      result.append( LIQ_GET_ABS_REL_FILE_NAME(fullPath, iterShad->ribFileName, liqglo_projectDir) );
+      result.append( liquidGetRelativePath(fullPath, iterShad->ribFileName, liqglo_projectDir) );
       if ( debug ) cout <<"done !"<<endl;
     }
 

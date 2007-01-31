@@ -68,7 +68,7 @@ liqRibHT::liqRibHT()
 liqRibHT::~liqRibHT()
 {
   LIQDEBUGPRINTF( "-> killing hash table\n" );
-  if ( !RibNodeMap.empty() ) {
+  /*if ( !RibNodeMap.empty() ) {
     LIQDEBUGPRINTF( "-> hash table size is not empty\n" );
     RNMAP::iterator iter;
     for ( iter = RibNodeMap.begin(); iter != RibNodeMap.end(); iter++ )
@@ -81,7 +81,7 @@ liqRibHT::~liqRibHT()
   }
   if ( debugMode ) {
     printf("-> finished killing hash table\n");
-  }
+  }*/
 }
 
 /**
@@ -115,30 +115,30 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   MFnDagNode  fnDagNode( path );
   MStatus    returnStatus;
 
-  MString nodeName = fnDagNode.fullPathName(&returnStatus);
+  MString nodeName = fnDagNode.fullPathName( &returnStatus );
   if ( objType == MRT_RibGen ) nodeName += "RIBGEN";
 
   const char* name = nodeName.asChar();
 
-  ulong hc = hash( name ,CountID);
+  ulong hc = hash( name ,CountID );
 
-  RibHashVec.push_back(nodeName);
+  RibHashVec.push_back( nodeName );
   LIQDEBUGPRINTF( "-> hashed node name: " );
   LIQDEBUGPRINTF( name );
   LIQDEBUGPRINTF( " size: %ld\n", hc );
 
-  liqRibNode * node;
+  liqRibNodePtr  node;
   /*node = find( path.node(), objType );*/
-  node = find( nodeName, path, objType);
-  liqRibNode *     newNode = NULL;
-  liqRibNode *    instance = NULL;
+  node = find( nodeName, path, objType );
+  liqRibNodePtr     newNode;
+  liqRibNodePtr    instance;
 
   // If "node" is non-null then there's already a hash table entry at
   // this point
   //
-  liqRibNode * tail = NULL;
-  if ( NULL != node ) {
-    while(node) {
+  liqRibNodePtr tail;
+  if ( node ) {
+    while( node ) {
       tail = node;
 
       // Break if we've already dealt with this DAG path
@@ -159,18 +159,18 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
       }
       node = node->next;
     }
-    if ( ( NULL == node ) && ( NULL != instance ) ) {
+    if ( ( !node ) && ( instance ) ) {
       // We have not found a node with a matching path, but we have found
       // one with a matching object, so we need to insert a new instance
-      newNode = new liqRibNode( instance, instanceStr );
+      newNode = liqRibNodePtr( new liqRibNode( instance, instanceStr ) );
     }
   }
-  if ( NULL == newNode ) {
+  if ( !newNode ) {
     // We have to make a new node
-    if (node == NULL) {
-      node = new liqRibNode(NULL, instanceStr);
-      if ( NULL != tail ) {
-        assert( NULL == tail->next );
+    if ( !node) {
+      node = liqRibNodePtr( new liqRibNode( liqRibNodePtr(), instanceStr) );
+      if ( tail ) {
+        assert( !tail->next );
         tail->next = node;
         RibNodeMap.insert( RNMAP::value_type( hc, node ) );
       } else {
@@ -178,11 +178,11 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
       }
     }
   } else {
-    assert(NULL==node);
+    assert( !node );
     // Append new instance node onto tail of linked list
     node = newNode;
-    if ( NULL != tail ) {
-      assert( NULL == tail->next );
+    if ( tail ) {
+      assert( !tail->next );
       tail->next = node;
       RibNodeMap.insert( RNMAP::value_type( hc, node ) );
     } else {
@@ -222,23 +222,21 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
 /**
  * Find the hash table entry for the given object.
  */
-liqRibNode* liqRibHT::find( MString nodeName, MDagPath path, ObjectType
+liqRibNodePtr liqRibHT::find( MString nodeName, MDagPath path, ObjectType
                             /*objType = MRT_Unknown*/ )
 {
   LIQDEBUGPRINTF( "-> finding node in hash table using object, %s\n", nodeName.asChar() );
-  liqRibNode * result = NULL;
+  liqRibNodePtr result;
 
   ulong hc;
-  unsigned int indx;
 
-  for (indx = 0; indx < RibHashVec.size(); indx++) {
-    if( RibHashVec[indx] == nodeName.asChar() ) {
-      hc = indx;
+  for( unsigned index( 0 ); index < RibHashVec.size(); index++ ) {
+    if( RibHashVec[ index ] == nodeName.asChar() ) {
+      hc = index;
       break;
     }
 
   }
-
 
   LIQDEBUGPRINTF( "-> Done\n"  );
 

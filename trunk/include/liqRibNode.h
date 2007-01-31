@@ -36,7 +36,10 @@
 ** ______________________________________________________________________
 */
 
+// Boost headers
+#include <boost/shared_ptr.hpp>
 
+// Maya headers
 #include <maya/MColor.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MDagPath.h>
@@ -50,25 +53,31 @@
 
 //enum transmissions {TRANS, OPAQUE, OS, SHADER};
 
+class liqRibNode;
+
+using namespace boost;
+typedef shared_ptr< liqRibNode > liqRibNodePtr;
+
+
 
 class liqRibNode {
   public:
 
 
-    liqRibNode( liqRibNode * instanceOfNode = NULL,
+    liqRibNode( liqRibNodePtr instanceOfNode = liqRibNodePtr(),
                 const MString instanceOfNodeStr = "" );
     ~liqRibNode();
 
     void set( const MDagPath &, int, ObjectType objType, int particleId = -1 );
 
 
-    liqRibNode *       next;
+    liqRibNodePtr      next;
     MString            name;
 
     AnimType           matXForm;
     AnimType           bodyXForm;
 
-    liqRibObj *        object( unsigned );
+    liqRibObj*        object( unsigned );
   //liqRibObj *        no;
 
     MDagPath &         path();
@@ -249,8 +258,8 @@ class liqRibNode {
 private:
 
     MDagPath    DagPath;
-    liqRibObj  *objects[LIQMAXMOTIONSAMPLES];
-    liqRibNode *instance;
+    liqRibObj*  objects[LIQMAXMOTIONSAMPLES];
+    liqRibNodePtr instance;
     MString     instanceStr;
     MString     ribGenName;
     bool        hasRibGenAttr;

@@ -34,13 +34,23 @@
 ** ______________________________________________________________________
 */
 
+// Boost headers
+#include <boost/shared_ptr.hpp>
+
+// Maya headers
 #include <maya/MDagPath.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MStringArray.h>
+
+// Standard headers
 #include <vector>
 #include <liqTokenPointer.h>
 
+using namespace boost;
 using namespace std;
+
+class liqRibData;
+typedef shared_ptr< liqRibData > liqRibDataPtr;
 
 class liqRibData {
 public:

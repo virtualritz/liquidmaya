@@ -251,8 +251,9 @@
 				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,$(DELIGHT)/include"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;DELIGHT;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="2"
 				RuntimeTypeInfo="true"
 				PrecompiledHeaderFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pch"
 				AssemblerListingLocation=".\../../bin/3Delight/win32/Release/Objects/"
@@ -274,7 +275,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="3delight.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib shell32.lib"
+				AdditionalDependencies="3delight.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib ws2_32.lib shell32.lib"
 				OutputFile="../../bin/3delight/win32/Release/liquid.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -288,6 +289,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

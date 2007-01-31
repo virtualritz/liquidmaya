@@ -194,7 +194,9 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     MString tmphome( tmphomeChar );
     sourceLine += "\"" + liquidSanitizePath( tmphome ) + "/mel/" + "liquidStartup.mel\"";
 #else
-	for (int k=0;k<strlen(tmphomeChar);k++)if (tmphomeChar[k]=='\\') tmphomeChar[k]='/';
+	for (unsigned k( 0 );k<strlen(tmphomeChar); k++ ) {
+		if ( tmphomeChar[ k ] == '\\' ) tmphomeChar[ k ] = '/';
+	}
 
 	MString tmphome( tmphomeChar );
 	sourceLine += "\"" + tmphome + "/mel/" + "liquidStartup.mel\"";
@@ -207,7 +209,7 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
 
   status = plugin.registerUI("liquidStartup", "liquidShutdown");
   LIQCHECKSTATUS( status, "Can't register liquidStartup and liquidShutdown interface scripts" );
-  cout << "Liquid Registered --" << LIQUIDVERSION << endl;
+  cout << "Liquid " << LIQUIDVERSION << " registered"<< endl;
   return MS::kSuccess;
 }
 
@@ -275,7 +277,7 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
   status = plugin.deregisterNode( liqGlobalsNode::id );
   LIQCHECKSTATUS( status, "Can't deregister liquidGlobals node" );
 
-  cout <<"Liquid Unregistered - ("<<LIQUIDVERSION<<")"<<endl<<endl;
+  cout <<"Liquid "<< LIQUIDVERSION << " unregistered"<<endl<<endl;
 
   return MS::kSuccess;
 }
