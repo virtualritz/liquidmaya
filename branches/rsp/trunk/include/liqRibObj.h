@@ -38,7 +38,10 @@
 #include <liqRibData.h>
 #include <boost/shared_ptr.hpp>
 
-typedef shared_ptr< liqRibData > liqRibDataPtr;
+using namespace boost;
+
+class liqRibObj;
+typedef shared_ptr< liqRibObj > liqRibObjPtr;
 
 class liqRibObj {
 public:

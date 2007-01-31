@@ -57,16 +57,16 @@ extern liqRenderer liquidRenderer;
 #ifdef DELIGHT
 static bool rendering( false );
 /* Callback function for 3Delight. We don't write RIB but render directly in 3Delight.
- * However, we can't dusplay the resulting image until the renderer is finished.
+ * However, we can't display the resulting image until the renderer is finished.
  * So we use 3Delight's progress callback mechanism to determine if the render's still
  * going.
  */
 void progressCallBack( float done ) {
-	cout << done << endl;
 	if( done < 100. ) {
 		rendering = true;
+		//cout << done << endl << flush;
 	} else {
-		cout << "Done!!!" << endl;
+		//cout << "Done!!!" << endl << flush;
 		rendering = false;
 	}
 }
@@ -106,7 +106,7 @@ MSyntax liqPreviewShader::syntax()
   syn.addFlag( "tea",  "teapot");
   syn.addFlag( "cst",  "custom",           MSyntax::kString );
 
-  syn.addFlag( "cbk", "customBackPlane",   MSyntax::kString );
+  syn.addFlag( "cbk",  "customBackPlane",  MSyntax::kString );
 
   return syn;
 }
@@ -125,11 +125,11 @@ typedef struct liqPreviewShaderOptions
   float   pixelSamples;
   float   objectScale;
   float   shadingRate;
-  MString customRibFile;
+  string  customRibFile;
   bool    fullShaderPath;
-  MString type;
+  string  type;
   float   previewIntensity;
-  MString customBackplane;
+  string  customBackplane;
 } liqPreviewShaderOptions;
 
 int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOptions& options );
@@ -145,7 +145,7 @@ void liquidNewPreview( const liqPreviewShaderOptions& options )
     pthread_exit( ( void * )&val);
   }
 
-  fflush(NULL);
+  fflush( NULL );
   // Open a pipe to a command
   FILE *fp = popen( options.renderCommand.c_str(), "w");
   if( !fp )
@@ -233,7 +233,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
     } else if ( arg == "-custom" )  {
       preview.primitiveType = CUSTOM;
       i++;
-      preview.customRibFile = args.asString( i, &status );
+      preview.customRibFile = args.asString( i, &status ).asChar();
     } else if ( ( arg == "-s" ) || ( arg == "-shader" ) ) {
       i++;
       shaderNodeName = args.asString( i, &status ).asChar();
@@ -266,14 +266,14 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
       preview.shadingRate = ( float )argValue.asDouble();
     } else if ( ( arg == "-t" ) || ( arg == "-type" ) ) {
       i++;
-      preview.type = args.asString( i, &status );
+      preview.type = args.asString( i, &status ).asChar();
     } else if ( ( arg == "-pi" ) || ( arg == "-previewIntensity" ) ) {
       i++;
-      MString argValue = args.asString( i, &status );
+      MString argValue = args.asString( i, &status ).asChar();
       preview.previewIntensity = ( float )argValue.asDouble();
     } else if ( arg == "-cbk" || arg == "-customBackPlane" )  {
       i++;
-      preview.customBackplane = args.asString( i, &status );
+      preview.customBackplane = args.asString( i, &status ).asChar();
     }
   }
 
@@ -299,17 +299,13 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
   preview.renderCommand = renderCommand;
   preview.displayDriver = displayDriver;
   preview.displayName = displayName;
-  cout << "Display: " << displayName << endl;
-
-  string tempString( getEnvironment( "LIQUIDHOME" ) );
+  //cout << "Display: " << displayName << endl;
+  string tempString( liquidSanitizePath( getEnvironment( "LIQUIDHOME" ) ) );
 
   if( tempString.empty() )
     preview.backPlaneShader = "null";
   else {
-    tempString += "/shaders/liquidchecker";
-    MString tmp( tempString.c_str() );
-    tmp = liquidSanitizePath( tmp );
-    preview.backPlaneShader = tmp.asChar();
+    preview.backPlaneShader = tempString + "/shaders/liquidchecker";
   }
 
 #ifdef DELIGHT
@@ -342,7 +338,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
     if( tempString.empty() ) {
       tempString = getEnvironment( "TMP" );
       if( tempString.empty() ) {
-        MGlobal::displayError( "Cannot write preview RIB. Please define either 'TMP' or 'TEMP' environment variables and restart Maya.");
+        liquidMessage( "Cannot write preview RIB. Please define either 'TMP' or 'TEMP' environment variables and restart Maya.", messageError );
         return MS::kFailure;
       }
     }
@@ -366,7 +362,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
 		fclose(fid);
 	}
 #endif
-	
+
 #ifndef _WIN32
     system( string( preview.renderCommand + " " + tempRibName + ";touch " + displayName + ".done&" ).c_str() );
 #endif
@@ -418,25 +414,24 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
   if( fileName.empty() ) {
     RiBegin( NULL );
 #ifdef DELIGHT
-//	RtPointer callBack( progressCallBack );
-//    RiOption( "statistics", "progresscallback", &callBack, RI_NULL );
+    //RtPointer callBack( progressCallBack );
+    //RiOption( "statistics", "progresscallback", &callBack, RI_NULL );
 #endif
   } else {
     RiBegin( const_cast< RtString >( fileName.c_str() ) );
   }
 
-  string shaderPath( "&:@:.:~:" + getEnvironment( "LIQUIDHOME" ) + "/shaders" );
+  string shaderPath( "&:@:.:~:" + liquidSanitizeSearchPath( getEnvironment( "LIQUIDHOME" ) ) + "/shaders" );
   RtString list( const_cast< RtString >( shaderPath.c_str() ) );
   RiOption( "searchpath", "shader", &list, RI_NULL );
-  RtString texPath( const_cast< RtString >( liquidTexturePath.asChar() ) );
+  RtString texPath( const_cast< RtString >( liquidSanitizeSearchPath( liquidTexturePath ).asChar() ) );
   if( texPath[ 0 ] )
-    RiOption( "searchpath","texture", &texPath, NULL);
-  RtString procPath( const_cast< RtString >( liquidProceduralPath.asChar() ) );
+    RiOption( "searchpath","texture", &texPath, RI_NULL );
+  RtString procPath( const_cast< RtString >( liquidSanitizeSearchPath( liquidProceduralPath ).asChar() ) );
   if( procPath[ 0 ] )
-    RiOption( "searchpath","procedural", &procPath, NULL);
+    RiOption( "searchpath","procedural", &procPath, RI_NULL );
 
-  RiFrameBegin( 1 );
-  RiShadingRate( (RtFloat)options.shadingRate );
+  RiShadingRate( ( RtFloat )options.shadingRate );
   RiPixelSamples( options.pixelSamples, options.pixelSamples );
 
 #ifdef PRMAN
@@ -453,9 +448,11 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
 
   RiFormat( ( RtInt )options.displaySize, ( RtInt )options.displaySize, 1 );
   if( options.backPlane ) {
-	RiDisplay( const_cast< RtString >( options.displayName.c_str() ), const_cast< RtString >( options.displayDriver.c_str() ), RI_RGB, RI_NULL );
+    RiDisplay( const_cast< RtString >( options.displayName.c_str() ),
+               const_cast< RtString >( options.displayDriver.c_str() ), RI_RGB, RI_NULL );
   } else { // Alpha might be useful
-	RiDisplay( const_cast< RtString >( options.displayName.c_str() ), const_cast< RtString >( options.displayDriver.c_str() ), RI_RGBA, RI_NULL );
+    RiDisplay( const_cast< RtString >( options.displayName.c_str() ),
+               const_cast< RtString >( options.displayDriver.c_str() ), RI_RGBA, RI_NULL );
   }
   RtFloat fov( 22.5 );
   RiProjection( "perspective", "fov", &fov, RI_NULL );
@@ -468,9 +465,9 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
   RiTransformEnd();
   RtLightHandle ambientLightH, directionalLightH;
   RtFloat intensity;
-  intensity = 0.05f * (RtFloat)options.previewIntensity;
+  intensity = 0.05 * (RtFloat)options.previewIntensity;
   ambientLightH = RiLightSource( "ambientlight", "intensity", &intensity, RI_NULL );
-  intensity = 0.9f * (RtFloat)options.previewIntensity;
+  intensity = 0.9 * (RtFloat)options.previewIntensity;
   RtPoint from;
   RtPoint to;
   from[0] = -1.; from[1] = 1.5; from[2] = -1.;
@@ -492,7 +489,7 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
 
   //cout <<"[liquid]  preview !"<<endl;
 
-  char *shaderFileName;
+  char* shaderFileName;
   liqShader currentShader;
   MObject	shaderObj;
 
@@ -569,7 +566,7 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
   if ( currentShader.shader_type == SHADER_TYPE_SURFACE ) {
     RiColor( currentShader.rmColor );
     RiOpacity( currentShader.rmOpacity );
-	cout << "Shader: " << shaderFileName << endl;
+	//cout << "Shader: " << shaderFileName << endl;
 	if ( options.fullShaderPath ) {
       RiSurface( shaderFileName, RI_NULL );
 	} else {
@@ -589,26 +586,27 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
   RiTransformEnd();
   if ( shadingSpace != "" ) RiTransformEnd();
 
+  cout << options.primitiveType << "!" << endl << flush;
   switch( options.primitiveType ) {
 
     case CYLINDER: {
       RiReverseOrientation();
-      RiScale( 0.95f, 0.95f, 0.95f );
+      RiScale( 0.95, 0.95, 0.95 );
       RiRotate( 60., 1., 0., 0. );
-      RiTranslate( 0., 0., -0.05f );
-      RiCylinder( 0.5f, -0.3f, 0.3f, 360., RI_NULL );
+      RiTranslate( 0., 0., -0.05 );
+      RiCylinder( 0.5, -0.3, 0.3, 360., RI_NULL );
       RiTranslate( 0., 0., 0.3f );
-      RiTorus( 0.485f, 0.015f, 0., 90., 360., RI_NULL );
-      RiDisk( 0.015f, 0.485f, 360., RI_NULL );
-      RiTranslate( 0., 0., -0.6f );
-      RiTorus( 0.485f, 0.015f, 270., 360., 360. );
+      RiTorus( 0.485, 0.015, 0., 90., 360., RI_NULL );
+      RiDisk( 0.015, 0.485, 360., RI_NULL );
+      RiTranslate( 0., 0., -0.6 );
+      RiTorus( 0.485, 0.015, 270., 360., 360., RI_NULL );
       RiReverseOrientation();
-      RiDisk( -0.015f, 0.485f, 360., RI_NULL );
+      RiDisk( -0.015, 0.485, 360., RI_NULL );
       break;
     }
     case TORUS: {
       RiRotate( 45., 1., 0., 0. );
-      RiTranslate( 0., 0., -0.05f );
+      RiTranslate( 0., 0., -0.05 );
       RiReverseOrientation();
       RiTorus( 0.3f, 0.2f, 0., 360., 360., RI_NULL );
       break;
@@ -643,74 +641,74 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
 
       RiReverseOrientation();
 
-      static RtPoint top[ 4 ] = { { -0.95f, 0.95f, -1. }, { 0.95f, 0.95f, -1. }, { -0.95f, -0.95f, -1. },  { 0.95f, -0.95f, -1. } };
+      static RtPoint top[ 4 ] = { { -0.95, 0.95, -1. }, { 0.95, 0.95, -1. }, { -0.95, -0.95, -1. },  { 0.95, -0.95, -1. } };
       RiPatch( RI_BILINEAR, RI_P, ( RtPointer ) top, RI_NULL );
 
-      static RtPoint bottom[ 4 ] = { { 0.95f, 0.95f, 1. }, { -0.95f, 0.95f, 1. }, { 0.95f, -0.95f, 1. }, { -0.95f, -0.95f, 1. } };
+      static RtPoint bottom[ 4 ] = { { 0.95, 0.95, 1. }, { -0.95, 0.95, 1. }, { 0.95, -0.95, 1. }, { -0.95, -0.95, 1. } };
       RiPatch( RI_BILINEAR, RI_P, ( RtPointer ) bottom, RI_NULL );
 
-      static RtPoint right[ 4 ] = { { -0.95f, -1., -0.95f }, { 0.95f, -1., -0.95f }, { -0.95f, -1., 0.95f }, { 0.95f, -1., 0.95f } };
+      static RtPoint right[ 4 ] = { { -0.95, -1., -0.95 }, { 0.95, -1., -0.95 }, { -0.95, -1., 0.95 }, { 0.95, -1., 0.95 } };
       RiPatch( RI_BILINEAR, RI_P, ( RtPointer ) right, RI_NULL );
 
-      static RtPoint left[ 4 ] = { { 0.95f, 1., -0.95f }, { -0.95f, 1., -0.95f }, { 0.95f, 1., 0.95f }, { -0.95f, 1., 0.95f } };
+      static RtPoint left[ 4 ] = { { 0.95, 1., -0.95 }, { -0.95, 1., -0.95 }, { 0.95, 1., 0.95 }, { -0.95, 1., 0.95 } };
       RiPatch( RI_BILINEAR, RI_P, ( RtPointer ) left, RI_NULL );
 
-      static RtPoint front[ 4 ] = { {-1., 0.95f, -0.95f }, { -1., -0.95f, -0.95f }, { -1., 0.95f, 0.95f }, { -1., -0.95f, 0.95f } };
+      static RtPoint front[ 4 ] = { {-1., 0.95, -0.95 }, { -1., -0.95, -0.95 }, { -1., 0.95, 0.95 }, { -1., -0.95, 0.95 } };
       RiPatch( RI_BILINEAR, RI_P, ( RtPointer ) front, RI_NULL );
 
-      static RtPoint back[ 4 ] = { { 1., -0.95f, -0.95f }, { 1., 0.95f, -0.95f }, { 1., -0.95f, 0.95f }, { 1., 0.95f, 0.95f } };
+      static RtPoint back[ 4 ] = { { 1., -0.95, -0.95 }, { 1., 0.95, -0.95 }, { 1., -0.95, 0.95 }, { 1., 0.95, 0.95 } };
       RiPatch( RI_BILINEAR, RI_P, ( RtPointer ) back, RI_NULL );
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0.95f, 0. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiTranslate( 0.95, 0.95, 0. );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( 0.95f, -0.95f, 0. );
+      RiTranslate( 0.95, -0.95, 0. );
       RiRotate( -90., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( -0.95f, 0.95f, 0. );
+      RiTranslate( -0.95, 0.95, 0. );
       RiRotate( 90., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( -0.95f, -0.95f, 0. );
+      RiTranslate( -0.95, -0.95, 0. );
       RiRotate( 180., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( 0., 0., 0.95f );
+      RiTranslate( 0., 0., 0.95 );
 
       RiTransformBegin();
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0.95f, 0. );
-      RiSphere( 0.05f, 0., 0.05f, 90., RI_NULL );
+      RiTranslate( 0.95, 0.95, 0. );
+      RiSphere( 0.05, 0., 0.05, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( 0.95f, -0.95f, 0. );
+      RiTranslate( 0.95, -0.95, 0. );
       RiRotate( -90., 0., 0., 1. );
-      RiSphere( 0.05f, 0., 0.05f, 90., RI_NULL );
+      RiSphere( 0.05, 0., 0.05, 90., RI_NULL );
       RiTransformEnd();
 
       RiRotate( 180., 0., 0., 1. );
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0.95f, 0. );
-      RiSphere( 0.05f, 0., 0.05f, 90., RI_NULL );
+      RiTranslate( 0.95, 0.95, 0. );
+      RiSphere( 0.05, 0., 0.05, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( 0.95f, -0.95f, 0. );
+      RiTranslate( 0.95, -0.95, 0. );
       RiRotate( -90., 0., 0., 1. );
-      RiSphere( 0.05f, 0., 0.05f, 90., RI_NULL );
+      RiSphere( 0.05, 0., 0.05, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformEnd();
@@ -718,58 +716,58 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
       RiRotate( 90., 1., 0., 0. );
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0., 0. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiTranslate( 0.95, 0., 0. );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( -0.95f, 0., 0. );
+      RiTranslate( -0.95, 0., 0. );
       RiRotate( 90., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiRotate( 90., 0., 1., 0. );
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0.,  0. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiTranslate( 0.95, 0.,  0. );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( -0.95f, 0., 0. );
+      RiTranslate( -0.95, 0., 0. );
       RiRotate( 90., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( 0., 0., -0.95f );
+      RiTranslate( 0., 0., -0.95 );
 
       RiTransformBegin();
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0.95f, 0. );
-      RiSphere( 0.05f, -0.05f, 0., 90., RI_NULL );
+      RiTranslate( 0.95, 0.95, 0. );
+      RiSphere( 0.05, -0.05, 0., 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( 0.95f, -0.95f, 0. );
+      RiTranslate( 0.95, -0.95, 0. );
       RiRotate( -90., 0., 0., 1. );
-      RiSphere( 0.05f, -0.05f, 0., 90., RI_NULL );
+      RiSphere( 0.05, -0.05, 0., 90., RI_NULL );
       RiTransformEnd();
 
       RiRotate( 180., 0., 0., 1. );
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0.95f, 0. );
-      RiSphere( 0.05f, -0.05f, 0., 90., RI_NULL );
+      RiTranslate( 0.95, 0.95, 0. );
+      RiSphere( 0.05, -0.05, 0., 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( 0.95f, -0.95f, 0. );
+      RiTranslate( 0.95, -0.95, 0. );
       RiRotate( -90., 0., 0., 1. );
-      RiSphere( 0.05f, -0.05f, 0., 90., RI_NULL );
+      RiSphere( 0.05, -0.05, 0., 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformEnd();
@@ -777,29 +775,29 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
       RiRotate( 90., 1., 0., 0. );
 
       RiTransformBegin();
-      RiTranslate( -0.95f, 0.,  0. );
+      RiTranslate( -0.95, 0.,  0. );
       RiRotate( 180., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0.,  0. );
+      RiTranslate( 0.95, 0.,  0. );
       RiRotate( -90., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiRotate( 90., 0., 1., 0. );
 
       RiTransformBegin();
-      RiTranslate( 0.95f, 0.,  0. );
+      RiTranslate( 0.95, 0.,  0. );
       RiRotate( -90., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformBegin();
-      RiTranslate( -0.95f, 0.,  0. );
+      RiTranslate( -0.95, 0.,  0. );
       RiRotate( 180., 0., 0., 1. );
-      RiCylinder( 0.05f, -0.95f, 0.95f, 90., RI_NULL );
+      RiCylinder( 0.05, -0.95, 0.95, 90., RI_NULL );
       RiTransformEnd();
 
       RiTransformEnd();
@@ -807,9 +805,9 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
       break;
     }
     case CUSTOM: {
-      cout <<"custom : "<<options.customRibFile<<endl;
-      if ( fileExists( options.customRibFile ) ) {
-        RiArchiveRecord( RI_VERBATIM, "ReadArchive \"%s\"\n", options.customRibFile.asChar() );
+      //cout <<"custom : "<<options.customRibFile<<endl;
+      if ( fileExists( options.customRibFile.c_str() ) ) {
+        RiReadArchive( const_cast< RtToken >( options.customRibFile.c_str() ), NULL, RI_NULL );
       }
       break;
     }
@@ -822,6 +820,8 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
     }
   }
 
+  cout << "Hmm" << endl << flush;
+
   RiAttributeEnd();
 
   /*
@@ -829,10 +829,15 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
    */
   if( options.backPlane ) {
 
-    if ( options.customBackplane == "" ) {
+    if ( options.customBackplane.empty() ) {
       RiAttributeBegin();
-      RiScale( 0.91f, 0.91f, 0.91f );
-      RiSurface( const_cast< RtToken >( options.backPlaneShader.c_str() ), RI_NULL );
+      RiScale( 0.91, 0.91, 0.91 );
+      if( SHADER_TYPE_DISPLACEMENT == currentShader.shader_type ) {
+        RtColor bg = { 0.698, 0.698, 0. };
+        RiColor( bg );
+      } else {
+        RiSurface( const_cast< RtToken >( options.backPlaneShader.c_str() ), RI_NULL );
+      }
       RtInt visible = 1;
       RtString transmission = "transparent";
 
@@ -846,26 +851,27 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
       RiPatch( RI_BILINEAR, RI_P, (RtPointer) backplane, RI_NULL );
       RiAttributeEnd();
     } else {
-      if ( fileExists( options.customBackplane ) ) {
-        RiTransformBegin();
+      if ( fileExists( options.customBackplane.c_str() ) ) {
+        RiAttributeBegin();
           RiScale( 1., 1., -1. );
-          RiReadArchive( const_cast< RtString >( options.customBackplane.asChar() ), NULL, RI_NULL );
-        RiTransformEnd();
+          RiReadArchive( const_cast< RtString >( options.customBackplane.c_str() ), NULL, RI_NULL );
+        RiAttributeEnd();
       }
     }
   }
 
   RiWorldEnd();
-  RiFrameEnd();
 
-#ifdef DELIGHT
-  rendering = true;
+#ifdef _WIN32
+  // Wait until the renderer is done
+  while( !fileFullyAccessible( options.displayName.c_str() ) );
 #endif
+
+
   RiEnd();
 
-
-
   fflush( NULL );
+
 
   LIQDEBUGPRINTF("-> Shader Preview RIB output done.\n" );
 

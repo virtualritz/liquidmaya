@@ -46,12 +46,17 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <direct.h> //for _mdir()
+
+//#include <process.h>
+#include <io.h>
+
 #endif
 
 // Boost headers
 #include <boost/tokenizer.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include <liqGlobalHelpers.h>
 
@@ -75,7 +80,7 @@ extern MString liqglo_layer;
 extern liquidVerbosityType liqglo_verbosity;
 
 using namespace std;
-
+using namespace boost;
 
 /**  Check to see if the node NodeFn has any attributes starting with pPrefix and store those
  *  in Matches to return.
@@ -378,7 +383,7 @@ MObject findFacetShader( MObject mesh, int polygonIndex ){
   MDagPath path;
 
   if (!fnMesh.getConnectedShaders( 0, shaders, indices )) {
-    std::cerr << "ERROR: MFnMesh::getConnectedShaders\n" << std::flush;
+    liquidMessage( "MFnMesh::getConnectedShaders", messageError );
   }
 
   MObject shaderNode = shaders[ indices[ polygonIndex ] ];
@@ -388,7 +393,7 @@ MObject findFacetShader( MObject mesh, int polygonIndex ){
 
 /** Checks if a file exists.
  */
-bool fileExists( const MString & filename ) {
+bool fileExists( const MString& filename ) {
 #ifdef _WIN32
   struct _stat sbuf;
   int result = _stat( filename.asChar(), &sbuf );
@@ -406,7 +411,7 @@ bool fileExists( const MString & filename ) {
 
 /** Checks if file1 is newer than file2
  */
-bool fileIsNewer( const MString & file1, const MString & file2 ) {
+bool fileIsNewer( const MString& file1, const MString& file2 ) {
 #ifdef _WIN32
   struct _stat sbuf1, sbuf2;
   _stat( file1.asChar(), &sbuf1 );
@@ -420,11 +425,24 @@ bool fileIsNewer( const MString & file1, const MString & file2 ) {
   return sbuf1.st_mtime > sbuf2.st_mtime;
 }
 
+
+bool fileFullyAccessible( const MString& path ) {
+#ifdef _WIN32
+  // Read & Write
+  //cerr << "Moin " << string( path.asChar() ) << endl;
+  //cerr << "Moin " << _access( path.asChar(), 6 ) << endl;
+  return _access( path.asChar(), 6 ) != -1;
+#else
+  return !access( path.asChar(), R_OK | W_OK | X_OK | F_OK );
+#endif
+
+}
+
 /** If transforms relative into absolute paths.
  *
  *  @return Full path
  */
-MString getFullPathFromRelative ( const MString & filename ) {
+MString getFullPathFromRelative ( const MString& filename ) {
   MString ret;
   extern MString liqglo_projectDir;
 
@@ -436,7 +454,7 @@ MString getFullPathFromRelative ( const MString & filename ) {
   return ret;
 }
 
-MString getFileName ( const MString & fullpath ) {
+MString getFileName ( const MString& fullpath ) {
 
   return fullpath.substring( fullpath.rindex('/') + 1, fullpath.length() - 1 );
 }
@@ -444,7 +462,7 @@ MString getFileName ( const MString & fullpath ) {
 /** Parse strings sent to Liquid to replace defined
  *  characters with specific variables.
  */
-MString parseString( const MString & inputString )
+MString parseString( const MString& inputString, bool doEscaped )
 {
   MString constructedString;
   MString tokenString;
@@ -544,10 +562,10 @@ MString parseString( const MString & inputString )
       // else early exit: % was the last character in the string.. do nothing
     } else if ( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
       // do nothing
-    } else if ( inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
+    } else if ( doEscaped && inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
       constructedString += "\n";
       i++;
-    } else if ( inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" ) {
+    } else if ( doEscaped && inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" ) {
       constructedString += "\t";
       i++;
     } else {
@@ -563,7 +581,7 @@ MString parseString( const MString & inputString )
 
 // Moritz: added below code for simple MEL parameter expression scripting support
 // syntax: `mel commands`
-MString parseCommandString( const MString & inputString )
+MString parseCommandString( const MString& inputString )
 {
   MString constructedString;
   MString tokenString;
@@ -769,37 +787,97 @@ char* basename( const char *filename ) {
 }
 #endif
 
-/** Cnverts '\' into '/' and <driveletter>: into //<driveletter>
+/** Converts '\' into '/'
  */
-MString liquidSanitizePath( MString & inputString )
-{
-  MString constructedString;
+MString liquidSanitizePath( const MString& inputString ) {
+  const string str( inputString.asChar() );
+  string constructedString, buffer;
 
-  const char *str = inputString.asChar();
-  char buffer[ 2 ] = { 0, 0 };
-
-  for ( unsigned i = 0; i < inputString.length(); i++ ) {
-    buffer[ 0 ] = str[ i ];
-    if ( str[ i ] == '\\' ) {
-      buffer[ 0 ] = '/';
-      if ( str[ i + 1 ] == '\\' )
-        ++i; // skip double slashes
+  for( unsigned i( 0 ); i < inputString.length(); i++ ) {
+    if ( '\\' == str[ i ] ) {
+      constructedString += "/";
+    } else {
+      constructedString += str.substr( i, 1 );
     }
-    constructedString += buffer;
   }
+
+  return constructedString.c_str();
+}
+
+/** Convert <driveletter>: into //<driveletter>
+ */
+MString liquidSanitizeSearchPath( const MString& inputString ) {
+  MString constructedString( liquidSanitizePath( inputString ) );
 
 #if defined ( DELIGHT ) || defined ( PRMAN )
   // Convert from "C:/path" into "//C/path"
   if( inputString.substring( 1, 1 ) == ":" )
-    constructedString = "//" + constructedString.substring( 0, 0 ) + constructedString.substring( 2, inputString.length() - 1 );
+    constructedString = "//" + constructedString.substring( 0, 0 ) + constructedString.substring( 2, inputString.length() - 1 ).toLowerCase();
 #endif // defined DELIGHT || PRMAN
 
   return constructedString;
 }
 
 
-MString removeEscapes( const MString & inputString )
-{
+string liquidSanitizePath( const string& inputString ) {
+  string constructedString, buffer;
+
+  for( unsigned i( 0 ); i < inputString.length(); i++ ) {
+    if ( '\\' == inputString[ i ] ) {
+      if ( '\\' == inputString[ i + 1 ] ) {
+        ++i; // skip double slashes
+        buffer = "\\";
+      } else {
+        buffer = "/";
+      }
+  } else {
+      buffer = inputString.substr( i, 1 );
+  }
+    constructedString += buffer;
+  }
+
+  return constructedString;
+}
+
+
+string liquidSanitizeSearchPath( const string& inputString ) {
+  string constructedString( liquidSanitizePath( inputString ) );
+
+#if defined ( DELIGHT ) || defined ( PRMAN )
+  // Convert from "C:/path" into "//C/path"
+  if( inputString[ 1 ] == ':' ) {
+    constructedString = "//" +
+    constructedString.substr( 0, 1 )
+    + to_lower_copy( constructedString.substr( 2 ) );
+  }
+#endif // defined DELIGHT || PRMAN
+
+  return constructedString;
+}
+
+/** Get absolute pathnames for creating RIBs,
+ *  archives and the renderscript in case the user
+ *  has choosen to have all paths to be relative
+ */
+string liquidGetRelativePath( bool relative, const string& name, const string& dir ) {
+  if( !relative && ( string::npos != name.find( '/' ) ) && ( ':' != name[ 1 ] ) ) {
+    return dir + name;
+  } else {
+    return name;
+  }
+}
+
+
+MString liquidGetRelativePath( bool relative, const MString& name, const MString& dir ) {
+  if( !relative && ( 0 != name.index('/') ) && ( name.substring( 1, 1 ) != ":" ) ) {
+    return dir + name;
+  } else {
+    return name;
+  }
+}
+
+
+MString removeEscapes( const MString& inputString ) {
   MString constructedString;
   MString tokenString;
   int sLength = inputString.length();

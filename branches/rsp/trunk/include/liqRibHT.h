@@ -36,21 +36,24 @@
 ** ______________________________________________________________________
 */
 
+
 #include <liqRibNode.h>
 
 #ifdef OSX
-	#ifndef ulong
-		typedef unsigned long ulong;
-	#endif
+  #ifndef ulong
+    typedef unsigned long ulong;
+  #endif
 #endif
 
 #include <map>
 #include <vector>
 
+using namespace boost;
+using namespace std;
 
-typedef multimap<ulong, liqRibNode*> RNMAP;
-typedef vector<MString> str_Vector;
 
+typedef multimap<ulong, liqRibNodePtr > RNMAP;
+typedef vector< MString > str_Vector;
 
 class liqRibHT {
 
@@ -64,7 +67,7 @@ public:
                            const MString instanceStr = "",
                            int particleId = -1 );
 	/*RibNode*	    find( const MObject &, ObjectType objType );*/
-	liqRibNode*    find( MString nodeName, MDagPath  path, ObjectType objType);
+	liqRibNodePtr find( MString nodeName, MDagPath  path, ObjectType objType);
 
 private:
 	str_Vector RibHashVec;

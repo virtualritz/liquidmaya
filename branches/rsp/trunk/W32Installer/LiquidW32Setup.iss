@@ -19,11 +19,12 @@ SolidCompression=yes
 FlatComponentsList=true
 WindowVisible=false
 DisableStartupPrompt=true
-PrivilegesRequired=admin
+;PrivilegesRequired=admin
 ShowTasksTreeLines=yes
 
 [Dirs]
 Name: {app}\bin;
+Name: {app}\display;
 Name: {app}\mel;
 Name: {app}\scripts;
 Name: {app}\renderers;
@@ -47,7 +48,6 @@ Source: ..\icons\*.jpg; DestDir: {app}\icons
 ;Source: ..\artwork\*.png; DestDir: {app}\artwork
 
 [Tasks]
-Name: registry; Description: Create LIQUIDHOME &environment variable; MinVersion: 0,4.0.1381; Check: AdminPrivileges
 Name: shaders; Description: &Compile Liquid shaders; MinVersion: 0,4.0.1381
 
 [Icons]
@@ -63,9 +63,6 @@ ComponentsDiskSpaceMBLabel=The current selection requires at least [mb] MB of di
 FinishedLabel=Setup has finished installing [name] on your computer.%n%nThanks for using [name].%n
 SelectTasksLabel2=Select the additional tasks you would like Setup to perform, then click Next.
 NoIconsCheck=&Suppress creation of a Start Menu folder for Liquid
-
-[Registry]
-Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: LIQUIDHOME; ValueData: {app}; MinVersion: 0,4.00.1381; Flags: uninsdeletevalue; Tasks: registry
 
 [Types]
 Name: full; Description: Full Installation
@@ -122,10 +119,20 @@ var EnvName: String;
 begin
   EnvName := 'Environment';
   if CurPage = wpFinished then begin
-    InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_PLUG_IN_PATH')
-    InsertPath_NT(ExpandConstant('{app}\mel'), HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_SCRIPT_PATH')
-    InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PATH')
-    SendBroadcastMessage(26, 0, CastStringToInteger(EnvName));
+    if IsAdminLoggedOn() then begin
+      InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_PLUG_IN_PATH')
+      InsertPath_NT(ExpandConstant('{app}\mel'), HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_SCRIPT_PATH')
+      InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PATH')
+      RegWriteStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'LIQUIDHOME', ExpandConstant('{app}'))
+      SendBroadcastMessage(26, 0, CastStringToInteger(EnvName));
+    end
+    else begin
+      InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKCU, 'Environment', 'MAYA_PLUG_IN_PATH')
+      InsertPath_NT(ExpandConstant('{app}\mel'), HKCU, 'Environment', 'MAYA_SCRIPT_PATH')
+      InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKCU, 'Environment', 'PATH')
+      RegWriteStringValue(HKCU, 'Environment', 'LIQUIDHOME', ExpandConstant('{app}'))
+      SendBroadcastMessage(26, 0, CastStringToInteger(EnvName));
+    end;
   end;
   Result := True;
 end;

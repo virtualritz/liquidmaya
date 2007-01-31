@@ -403,7 +403,7 @@
 				AdditionalIncludeDirectories="../../../ribLib/,$(MAYA_LOCATION)/include,../../../include"
 				PreprocessorDefinitions="PIXIE;WIN32;_WIN32;_WINDOWS;NDEBUG;_CONSOLE;uint=unsigned int;ulong=unsigned long;_BOOL;REQUIRE_IOSTREAM"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				DefaultCharIsUnsigned="false"
 				TreatWChar_tAsBuiltInType="true"
@@ -428,7 +428,7 @@
 				LinkLibraryDependencies="false"
 				UseLibraryDependencyInputs="false"
 				UseUnicodeResponseFiles="true"
-				AdditionalDependencies="3delight.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib shell32.lib"
+				AdditionalDependencies="3delight.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib ws2_32.lib shell32.lib"
 				OutputFile="../../../bin/3Delight/win32/Release/liquid.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(DELIGHT)/lib"
@@ -445,6 +445,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

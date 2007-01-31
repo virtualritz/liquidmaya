@@ -52,9 +52,23 @@ global proc string liquidFluidGetPreviewDir()
 
   // check the existence of the scene directory
   string $scene = basenameEx(`file -q -sceneName`);
-  if ( !size( $scene ) ) $scene = "Untitled";
+  if ( !size( $scene ) ) {
+    $scene = "Untitled";
+  }
   string $previewSceneDir = ($previewTopDir+"/"+$scene);
-  if ( !`filetest -d $previewSceneDir` ) sysFile -makeDir $previewSceneDir;
+  if ( !`filetest -d $previewSceneDir` ) {
+    sysFile -makeDir $previewSceneDir;
+    // if dir creation failed
+    if ( !`filetest -d $previewSceneDir` ) {
+      string $tmpDir = `getenv( "TEMP" )`;
+      if ( "" == $tmpDir ) {
+        $tmpDir = `getenv( "TMP" )`;
+      }
+      if ( "" != $tmpDir ) {
+        $previewSceneDir = $tmpDir;
+      }
+    }
+  }
 
   return $previewSceneDir;
 }
@@ -226,7 +240,7 @@ global proc liquidFluidUpdateList()
  global string $liquidShaderSpec;
  if ( `textScrollList -exists liquidFluidShaderList` ) {
    textScrollList -e -ra liquidFluidShaderList;
-   
+
    string $shadingNodes[] = `ls -type liquidSurface -type liquidDisplacement -type liquidLight - type liquidVolume -type liquidRibBox`;
    string $shadingNode;
    for ( $shadingNode in $shadingNodes ) {
@@ -315,7 +329,7 @@ global proc liquidFluidEditSelectedObjCMD( string $type )
    if ( $attr == "" ) error ("liquidFluidEditShaderCMD: unknown shader type -> "+$type);
 
    string $tmp[] = `listRelatives -children -s $tr`;
-  
+
    for ( $t in $tmp ) {
 
      if ( !objExists( ($t+$attr) ) ) continue;
@@ -434,40 +448,40 @@ global proc liquidFluidUnAssign( string $selectedShader )
  }
 
  string $type = `liquidGetShaderNodeType $selectedShader`;
- string $currentNode; 
- 
+ string $currentNode;
+
  for ( $currentNode in $selectedNodes ) {
 	switch( $type ){
 			case "Surface":
 				liquidAssignShaderNode( $currentNode, "initialShadingGroup" );
 				break;
-				
+
 			case "Disp":
 				// get the shading group attached to the currentNode and disconnect the displacement shader
 				string $shadingGroupsA[] = liquidGetShadingGroup($currentNode);
 				for( $shadingGroup in $shadingGroupsA )
 				{	disconnectAttr ($selectedShader+".displacement") ($shadingGroup+".displacementShader");	}
 				break;
-				
+
 			case "Light":
 				// disconnect the liquidLightShaderNode attribute on the current node
 				disconnectAttr ($selectedShader+".assignedObjects") ($currentNode+".liquidLightShaderNode");
 				break;
-				
+
 			case "Volume":
 				// get the shading group attached to the currentNode and disconnect the volume shader
 				string $shadingGroupsA[] = liquidGetShadingGroup($currentNode);
 				for( $shadingGroup in $shadingGroupsA )
 				{	disconnectAttr ($selectedShader+".outColor") ($shadingGroup+".volumeShader");	}
 				break;
-				
+
 			case "Ribbox":
 				// disconnect the liqRIBBox attribute on the transform for the shape
 				string $transform = liquidGetTransform($currentNode);
 				disconnectAttr ($selectedShader+".ribbox") ($transform+".liqRIBBox");
-				break;		
-	} 
- } 
+				break;
+	}
+ }
 }
 
 global proc liquidFluidPickObjectsCMD()
@@ -484,7 +498,7 @@ global proc liquidFluidPickObjectsCMD()
 global proc liquidFluidPickObjects( string $selectedNode )
 {
  select -clear;
- 
+
  string $type = `liquidGetShaderNodeType $selectedNode`;
  string $connectedObjsA[];
  switch( $type ){
@@ -519,8 +533,8 @@ global proc liquidFluidPickObjects( string $selectedNode )
 			$connectedObjsA = `listConnections -c false ( $selectedNode+".ribbox")`;
 			for( $obj in $connectedObjsA)
 				{ select -add $obj; }
-			break;		
-	} 			
+			break;
+	}
 }
 
 global proc liquidFluidPickAssignedCMD()
@@ -534,7 +548,7 @@ global proc liquidFluidPickAssignedCMD()
 	string $shadingGroup[] = liquidGetShadingGroup($selectedNode[0]);
 	string $surfaceConnection[] = `listConnections -c false ($shadingGroup[0]+".surfaceShader")`;
 	if( size($surfaceConnection) > 0 ) {
-		$assignedObjects[0] = $surfaceConnection[0]; 
+		$assignedObjects[0] = $surfaceConnection[0];
 	}
 	else
 	{
@@ -542,8 +556,8 @@ global proc liquidFluidPickAssignedCMD()
 		if( size($displacementConnection) > 0 ) {
 			$assignedObjects[0] = $displacementConnection[0];
 		}
-	}	
-	
+	}
+
 	if ( size( $assignedObjects ) > 0 ) {
      textScrollList -e -da liquidFluidShaderList;
      textScrollList -e -si $assignedObjects[0] liquidFluidShaderList;

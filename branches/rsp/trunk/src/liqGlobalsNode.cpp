@@ -687,14 +687,14 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aHider,                      "hider",                        "h",      0     );
            // "hidden" hider advanced options - PRMAN ONLY
            CREATE_INT( nAttr,  aJitter,                     "jitter",                       "j",      0     );
-		// PRMAN 13 BEGIN
+         // PRMAN 13 BEGIN
          CREATE_FLOAT( nAttr,  aHiddenApertureNSides,       "hiddenApertureNSides",         "hans",   0.0   );
          CREATE_FLOAT( nAttr,  aHiddenApertureAngle,        "hiddenApertureAngle",          "haa",    0.0   );
          CREATE_FLOAT( nAttr,  aHiddenApertureRoundness,    "hiddenApertureRoundness",      "har",    0.0   );
          CREATE_FLOAT( nAttr,  aHiddenApertureDensity,      "hiddenApertureDensity",        "had",    0.0   );
          CREATE_FLOAT( nAttr,  aHiddenShutterOpeningOpen,   "hiddenShutterOpeningOpen",     "hsoo",   0.0   );
          CREATE_FLOAT( nAttr,  aHiddenShutterOpeningClose,  "hiddenShutterOpeningClose",    "hsoc",   1.0   );
-		// PRMAN 13 END
+         // PRMAN 13 END
          CREATE_FLOAT( nAttr,  aHiddenOcclusionBound,       "hiddenOcclusionBound",         "hob",    0.0   );
           CREATE_BOOL( nAttr,  aHiddenMpCache,              "hiddenMpCache",                "hmpc",   true  );
            CREATE_INT( nAttr,  aHiddenMpMemory,             "hiddenMpMemory",               "hmpm",   6144  );
@@ -703,10 +703,10 @@ MStatus liqGlobalsNode::initialize()
            CREATE_INT( nAttr,  aHiddenSubPixel,             "hiddenSubPixel",               "hsp",    1     );
           CREATE_BOOL( nAttr,  aHiddenExtremeMotionDof,     "hiddenExtremeMotionDof",       "hemd",   false );
            CREATE_INT( nAttr,  aHiddenMaxVPDepth,           "hiddenMaxVPDepth",             "hmvd",  -1     );
-		// PRMAN 13 BEGIN
+        // PRMAN 13 BEGIN
           CREATE_BOOL( nAttr,  aHiddenSigma,                "hiddenSigmaHiding",            "hsh",    false );
          CREATE_FLOAT( nAttr,  aHiddenSigmaBlur,            "hiddenSigmaBlur",              "hshb",   1.0   );
-		// PRMAN 13 END
+        // PRMAN 13 END
 
            CREATE_INT( nAttr,  aRaytraceFalseColor,         "raytraceFalseColor",            "rfc",   0     );
 
@@ -734,7 +734,7 @@ MStatus liqGlobalsNode::initialize()
         CREATE_STRING( tAttr,  aShadersOutputParamsFilter,  "shadersOutputParamsFilter",    "opf",    "^_*" );
            CREATE_INT( nAttr,  aShadersMaxCachedAELayouts,  "shadersMaxCachedAELayouts",    "mcl",    10    );
 
-           CREATE_INT( nAttr,  aVerbosity,                  "verbosity",                    "vty",    0     );
+           CREATE_INT( nAttr,  aVerbosity,                  "verbosity",                    "vty",    1     );
 
 
 

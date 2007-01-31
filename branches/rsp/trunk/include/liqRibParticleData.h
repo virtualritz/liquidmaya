@@ -50,9 +50,9 @@ public:
   void addAdditionalParticleParameters( MObject node );
 
   void addAdditionalFloatParameters ( MFnDependencyNode nodeFn);
-  void addAdditionalPointParameters ( MFnDependencyNode nodeFn);
-  void addAdditionalVectorParameters( MFnDependencyNode nodeFn);
-  void addAdditionalColorParameters ( MFnDependencyNode nodeFn);
+  //void addAdditionalPointParameters ( MFnDependencyNode nodeFn);
+  void addAdditionalVectorParameters( MFnDependencyNode nodeFn, const string& prefix, ParameterType type );
+  //void addAdditionalColorParameters ( MFnDependencyNode nodeFn);
 
   // pType data type, these values corrospond to the types of
   // particleRenderType in maya!

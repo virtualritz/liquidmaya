@@ -11,7 +11,9 @@ global proc AEliquidVolumeTemplate( string $nodeName )
 
     editorTemplate -beginLayout "Preview";
       editorTemplate -addControl "previewPrimitive";
-      editorTemplate -ccu "liquidShaderNodesCustomPrimitiveNew" "liquidShaderNodesCustomPrimitiveReplace" "previewCustomPrimitive";
+      editorTemplate -ccu "liquidShaderNodesCustomPrimitiveNew \"Custom Primitive\" "
+                          "liquidShaderNodesCustomPrimitiveReplace \"Custom Primitive\" "
+                          "previewCustomPrimitive";
       editorTemplate -addControl "previewObjectSize";
       editorTemplate -addControl "previewShadingRate";
       editorTemplate -addControl "previewShadingRate";
