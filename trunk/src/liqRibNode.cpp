@@ -186,7 +186,7 @@ liqRibNode::~liqRibNode()
  * Get the object referred to by this node.
  * This returns the surface, mesh, light, etc. this node points to.
  */
-liqRibObj * liqRibNode::object( unsigned interval )
+liqRibObj* liqRibNode::object( unsigned interval )
 {
   return objects[ interval ];
 }
@@ -277,7 +277,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         nPlug = nodePeeker.findPlug( MString( "liqOpacity"), &status );
         if ( status == MS::kSuccess) {
         MPlug tmpPlug;
-          tmpPlug = nPlug.child(0,&status);
+        tmpPlug = nPlug.child(0,&status);
         if(status == MS::kSuccess) tmpPlug.getValue( shading.opacity.r );
         tmpPlug = nPlug.child(1,&status);
         if(status == MS::kSuccess) tmpPlug.getValue( shading.opacity.g );
@@ -632,8 +632,6 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 
       MFnDependencyNode nodeFn( nodePeeker );
 
-      tokenPointerArray.clear();
-
       // find the attributes
       MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
       MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodeFn );
@@ -681,7 +679,9 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
               tokenPointerPair.setTokenFloat( 0, floatValue );
             }
           }
-          tokenPointerArray.push_back( tokenPointerPair );
+          if( tokenPointerMap.end() == tokenPointerMap.find( tokenPointerPair.getDetailedTokenName() ) ) {
+            tokenPointerMap[ tokenPointerPair.getDetailedTokenName() ] = tokenPointerPair;
+          }
         }
       }
 
@@ -709,7 +709,9 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
             pPlug.child(2).getValue( z );
             tokenPointerPair.setTokenFloat( 0, x, y, z );
           }
-          tokenPointerArray.push_back( tokenPointerPair );
+          if( tokenPointerMap.end() == tokenPointerMap.find( tokenPointerPair.getDetailedTokenName() ) ) {
+            tokenPointerMap[ tokenPointerPair.getDetailedTokenName() ] = tokenPointerPair;
+          }
         }
       }
       parseVectorAttributes( nodeFn, vectorAttributesFound, rVector );
@@ -727,7 +729,9 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           MString stringVal;
           sPlug.getValue( stringVal );
           tokenPointerPair.setTokenString( 0, stringVal.asChar() );
-          tokenPointerArray.push_back( tokenPointerPair );
+          if( tokenPointerMap.end() == tokenPointerMap.find( tokenPointerPair.getDetailedTokenName() ) ) {
+            tokenPointerMap[ tokenPointerPair.getDetailedTokenName() ] = tokenPointerPair;
+          }
         }
       }
     } // if ( dagSearcher.apiType( &status ) == MFn::kTransform )
@@ -975,7 +979,7 @@ MObject liqRibNode::findShadingGroup( const MDagPath& path )
 
   // Look for a set that is a "shading group"
   //
-  for ( int i=0; i<setArray.length(); i++ )
+  for ( unsigned i( 0 ); i<setArray.length(); i++ )
   {
     mobj = setArray[i];
     MFnSet fnSet( mobj );
@@ -1015,9 +1019,7 @@ MObject liqRibNode::findShader( MObject& group )
 
 
 /**
-
  * Find the displacement node for the given shading group
-
  */
 MObject liqRibNode::findDisp( MObject& group )
 {
@@ -1044,7 +1046,6 @@ MObject liqRibNode::findDisp( MObject& group )
 /**
  * Find the volume shading node for the given shading group.
  */
-
 MObject liqRibNode::findVolume( MObject& group )
 {
   LIQDEBUGPRINTF( "-> finding shader for rib node shading group\n");
@@ -1068,9 +1069,7 @@ MObject liqRibNode::findVolume( MObject& group )
 
 
 /**
-
  * Get the list of all ignored lights for the given shading group.
-
  */
 void liqRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
 {
@@ -1089,7 +1088,7 @@ void liqRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
     if ( !ilPlug.isArray() )
       return;
 
-    for ( unsigned i=0; i<ilPlug.numConnectedElements(); i++ )
+    for ( unsigned i( 0 ); i<ilPlug.numConnectedElements(); i++ )
     {
       MPlug elemPlug = ilPlug.elementByPhysicalIndex( i );
       connectedPlugs.clear();
@@ -1105,9 +1104,7 @@ void liqRibNode::getIgnoredLights( MObject& group, MObjectArray& ignoredLights )
 
 
 /**
-
  * Get the list of all ignored lights for the given for this node.
-
  */
 void liqRibNode::getIgnoredLights( MObjectArray& ignoredLights )
 {
@@ -1160,10 +1157,9 @@ void liqRibNode::getIgnoredLights( MObjectArray& ignoredLights )
   }
 }
 
+
 /**
-
  * Get the color & opacity of the given shading node.
-
  */
 bool liqRibNode::getColor( MObject& shader, MColor& color )
 {
@@ -1206,6 +1202,7 @@ bool liqRibNode::getColor( MObject& shader, MColor& color )
   return true;
 }
 
+
 bool liqRibNode::getOpacity( MObject& shader, MColor& opacity )
 {
   LIQDEBUGPRINTF( "-> getting a shader color\n");
@@ -1216,27 +1213,27 @@ bool liqRibNode::getOpacity( MObject& shader, MColor& opacity )
   {
     MFnLambertShader fnShader( shader );
     opacity = fnShader.transparency();
-    opacity.r = 1.0-opacity.r;
-    opacity.g = 1.0-opacity.g;
-    opacity.b = 1.0-opacity.b;
+    opacity.r = 1. - opacity.r;
+    opacity.g = 1. - opacity.g;
+    opacity.b = 1. - opacity.b;
     break;
   }
   case MFn::kBlinn :
   {
     MFnBlinnShader fnShader( shader );
     color = fnShader.transparency();
-    opacity.r = 1.0-opacity.r;
-    opacity.g = 1.0-opacity.g;
-    opacity.b = 1.0-opacity.b;
+    opacity.r = 1. - opacity.r;
+    opacity.g = 1. - opacity.g;
+    opacity.b = 1. - opacity.b;
     break;
   }
   case MFn::kPhong :
   {
     MFnPhongShader fnShader( shader );
     opacity = fnShader.transparency();
-    opacity.r = 1.0-opacity.r;
-    opacity.g = 1.0-opacity.g;
-    opacity.b = 1.0-opacity.b;
+    opacity.r = 1. - opacity.r;
+    opacity.g = 1. - opacity.g;
+    opacity.b = 1. - opacity.b;
     break;
   }
   default:
@@ -1244,15 +1241,15 @@ bool liqRibNode::getOpacity( MObject& shader, MColor& opacity )
     MFnDependencyNode fnNode( shader );
     MPlug colorPlug = fnNode.findPlug( "outTransparency" );
     MPlug tmpPlug;
-  tmpPlug = colorPlug.child(0,&stat);
-  if(stat == MS::kSuccess) tmpPlug.getValue( opacity.r );
-  tmpPlug = colorPlug.child(1,&stat);
-  if(stat == MS::kSuccess) tmpPlug.getValue( opacity.g );
-  tmpPlug = colorPlug.child(2,&stat);
-  if(stat == MS::kSuccess) tmpPlug.getValue( opacity.b );
-    opacity.r = 1.0-opacity.r;
-    opacity.g = 1.0-opacity.g;
-    opacity.b = 1.0-opacity.b;
+    tmpPlug = colorPlug.child(0,&stat);
+    if(stat == MS::kSuccess) tmpPlug.getValue( opacity.r );
+    tmpPlug = colorPlug.child(1,&stat);
+    if(stat == MS::kSuccess) tmpPlug.getValue( opacity.g );
+    tmpPlug = colorPlug.child(2,&stat);
+    if(stat == MS::kSuccess) tmpPlug.getValue( opacity.b );
+    opacity.r = 1. - opacity.r;
+    opacity.g = 1. - opacity.g;
+    opacity.b = 1. - opacity.b;
     return false;
   }
   }
@@ -1287,9 +1284,7 @@ bool liqRibNode::getMatteMode( MObject& shader )
 
 
 /**
-
  * Checks if this node has at least n objects.
-
  */
 bool liqRibNode::hasNObjects( unsigned n )
 {
@@ -1319,7 +1314,9 @@ void liqRibNode::parseVectorAttributes( const MFnDependencyNode& nodeFn, const M
         }
 
         // store it all
-        tokenPointerArray.push_back( tokenPointerPair );
+        if( tokenPointerMap.end() == tokenPointerMap.find( tokenPointerPair.getDetailedTokenName() ) ) {
+          tokenPointerMap[ tokenPointerPair.getDetailedTokenName() ] = tokenPointerPair;
+        }
 
       } else {
         // Hmmmm float ? double ?
@@ -1330,18 +1327,26 @@ void liqRibNode::parseVectorAttributes( const MFnDependencyNode& nodeFn, const M
         vPlug.child(1).getValue( y );
         vPlug.child(2).getValue( z );
         tokenPointerPair.setTokenFloat( 0, x, y, z );
-        tokenPointerArray.push_back( tokenPointerPair );
+        if( tokenPointerMap.end() == tokenPointerMap.find( tokenPointerPair.getDetailedTokenName() ) ) {
+          tokenPointerMap[ tokenPointerPair.getDetailedTokenName() ] = tokenPointerPair;
+        }
       }
     }
   }
 }
 
+
 void liqRibNode::writeUserAttributes() {
-  if( tokenPointerArray.size() ) {
-    unsigned numTokens( tokenPointerArray.size() );
+  unsigned numTokens( tokenPointerMap.size() );
+  if( numTokens ) {
     scoped_array< RtToken > tokenArray( new RtToken[ numTokens ] );
     scoped_array< RtPointer > pointerArray( new RtPointer[ numTokens ] );
-    assignTokenArraysV( tokenPointerArray, tokenArray.get(), pointerArray.get() );
+    // Can't use assignTokenArraysV() since we're dealing with std::map
+    unsigned i( 0 );
+    for ( map< string, liqTokenPointer >::const_iterator iter( tokenPointerMap.begin() ); iter != tokenPointerMap.end(); iter++, i++ ) {
+      tokenArray[ i ] = const_cast< RtString >( const_cast< liqTokenPointer* >( &( iter->second ) )->getDetailedTokenName().c_str() );
+      pointerArray[ i ] = const_cast< liqTokenPointer* >( &( iter->second ) )->getRtPointer();
+    }
 
     RiAttributeV( "user", numTokens, tokenArray.get(), pointerArray.get() );
   }

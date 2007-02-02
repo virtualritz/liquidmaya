@@ -58,7 +58,7 @@ liqShader::liqShader()
   tokenPointerArray.push_back( liqTokenPointer() ); // ENsure we have a 0 element
 }
 
-liqShader::liqShader( const liqShader & src )
+liqShader::liqShader( const liqShader& src )
 {
   //numTPV               = src.numTPV;
   tokenPointerArray    = src.tokenPointerArray;
@@ -105,13 +105,20 @@ liqShader::liqShader( MObject shaderObj )
   name = shaderNode.name().asChar();
   file = rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar();
 
+  rmColor[0]            = 1.0;
+  rmColor[1]            = 1.0;
+  rmColor[2]            = 1.0;
+  rmOpacity[0]          = 1.0;
+  rmOpacity[1]          = 1.0;
+  rmOpacity[2]          = 1.0;
+
   liqGetSloInfo shaderInfo;
   int success( shaderInfo.setShaderNode( shaderNode ) );
   if ( !success ) {
-    cerr << "Error using shader '" << shaderNode.name().asChar() << "'" << endl << flush;
-    rmColor[0] = 1.0;
-    rmColor[1] = 0.0;
-    rmColor[2] = 0.0;
+    liquidMessage( "Problem using shader '" + string( shaderNode.name().asChar() ) + "'", messageError );
+    //rmColor[0] = 1.0;
+    //rmColor[1] = 0.0;
+    //rmColor[2] = 0.0;
     name = "plastic";
     //numTPV = 0;
     hasErrors = true;
@@ -301,12 +308,12 @@ liqShader::liqShader( MObject shaderObj )
           break;
         }
         case SHADER_TYPE_MATRIX: {
-          cerr << "WHAT IS THE MATRIX!" << endl;
+          liquidMessage( "WHAT IS THE MATRIX!", messageError );
           break;
         }
         case SHADER_TYPE_UNKNOWN :
         default:
-          cerr << "Unknown shader type" << endl;
+          liquidMessage( "Unknown shader type", messageError );
           break;
         }
     }

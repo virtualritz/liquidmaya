@@ -36,6 +36,9 @@
 ** ______________________________________________________________________
 */
 
+// Standard headers
+#include <map>
+
 // Boost headers
 #include <boost/shared_ptr.hpp>
 
@@ -55,6 +58,7 @@
 
 class liqRibNode;
 
+using namespace std;
 using namespace boost;
 typedef shared_ptr< liqRibNode > liqRibNodePtr;
 
@@ -77,7 +81,7 @@ class liqRibNode {
     AnimType           matXForm;
     AnimType           bodyXForm;
 
-    liqRibObj*        object( unsigned );
+    liqRibObj*         object( unsigned );
   //liqRibObj *        no;
 
     MDagPath &         path();
@@ -253,7 +257,8 @@ class liqRibNode {
     bool    invisible;
     bool    ignoreShapes;
 
-    vector< liqTokenPointer > tokenPointerArray;
+    map< string, liqTokenPointer > tokenPointerMap;
+
 
 private:
 

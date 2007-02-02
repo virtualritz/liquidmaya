@@ -6324,7 +6324,7 @@ MStatus liqRibTranslator::objectBlock()
               scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
               assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
 
-              char *shaderFileName;
+              char* shaderFileName;
               LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
 
               // check shader space transformation
@@ -6346,11 +6346,11 @@ MStatus liqRibTranslator::objectBlock()
           rColor[1] = 0.;
           rColor[2] = 0.;
           RiColor( rColor );
+
           rOpacity[0] = 1.;
           rOpacity[1] = 1.;
           rOpacity[2] = 1.;
           RiOpacity( rOpacity );
-
         } else {
 
           if (ribNode->shading.color.r != -1.0) {
