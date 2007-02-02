@@ -230,7 +230,7 @@ int liqGetSloInfo::setShader( MString shaderFileName )
   resetIt();
 
   if ( !fileExists( shaderFileName ) ) {
-    printf( "Error finding shader %s \n", shaderFileName.asChar() );
+    liquidMessage( "Can not find shader '" + string( shaderFileName.asChar() ) + "'", messageError );
     resetIt();
     return 0;
   } else {
@@ -401,7 +401,7 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
 
   //cout <<"checking on "<<shaderName<<endl;
   if ( !fileExists( shaderName ) ) {
-    printf( "Error finding shader %s \n",shaderName.asChar() );
+    liquidMessage( "Can not find shader '" + string( shaderName.asChar() ) + "'", messageError );
     resetIt();
     return 0;
   } else {

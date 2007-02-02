@@ -759,7 +759,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
             string $form          = `formLayout -p $gLiquid_currentAEParent`;
             string $fullCtlPath   = `textFieldGrp -p $form -label $theLabel $ctlName`;
             liquidAddTextureViewerMenu( $fullCtlPath, ($gLiquid_currentAENode+"."+$attr) );
-            string $button = `iconTextButton -p $form -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_tex.xpm" ($ctlName+"_BUT")`;
+            string $button = `iconTextButton -p $form -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i (liquidGetHome()+"/icons/lif_tex.xpm") ($ctlName+"_BUT")`;
             setParent ..;
 
             if (`about -mac`) {
@@ -792,7 +792,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
             string $form = `formLayout -p $gLiquid_currentAEParent`;
             textFieldGrp -p $form -label $theLabel $ctlName;
             liquidAddTextureViewerMenu( $ctlName, ($gLiquid_currentAENode+"."+$attr) );
-            string $button = `iconTextButton -p $form -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_shd.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
+            string $button = `iconTextButton -p $form -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i (liquidGetHome()+"/icons/lif_shd.xpm") -c $myFileCommand ($ctlName+"_BUT")`;
             setParent ..;
 
             if (`about -mac`) {
@@ -824,7 +824,7 @@ global proc liquidAE_LifString2( string $paramName, int $arraySize, string $subt
           if ( !`control -q -ex $ctlName` ) {
             string $form          = `formLayout -p $gLiquid_currentAEParent`;
             textFieldGrp -p $form -label $theLabel $ctlName;
-            string $button = `iconTextButton -p $form -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i "lif_cs.xpm" -c $myFileCommand ($ctlName+"_BUT")`;
+            string $button = `iconTextButton -p $form -style "iconOnly" -w 29 -h 19 -mw 0 -mh 0 -i (liquidGetHome()+"/icons/lif_cs.xpm") -c $myFileCommand ($ctlName+"_BUT")`;
             setParent ..;
 
             if (`about -mac`) {
