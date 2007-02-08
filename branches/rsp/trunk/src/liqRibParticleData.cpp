@@ -175,9 +175,8 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
     MPlug cachePlug( fnNode.findPlug( "cacheData", &status ) );
     cachePlug.getValue( isCaching );
     status.clear();
-    if ( !isCaching && ( exportTime == shutterOpen ) )
-    {
-      MGlobal::displayWarning( fnNode.particleName() + " has Cache Data switched off! Exported motion blur information will likely be wrong." );
+    if ( !isCaching && ( exportTime == shutterOpen ) ) {
+      liquidMessage( string( fnNode.particleName().asChar() ) + " has Cache Data switched off! Exported motion blur information will likely be wrong.", messageWarning );
     }
 
     // Shutter open
@@ -1004,7 +1003,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
     case MPTTube:
       // do nothing. These are not supported
 
-      MGlobal::displayWarning ( "Numeric, Cloudy and Tube particle rendering types are not supported!" );
+      liquidMessage( "Numeric, Cloudy and Tube particle rendering types are not supported!", messageWarning );
       break;
   } // switch ( particleType )
 
@@ -1013,7 +1012,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
   if( haveRgbArray ) {
     liqTokenPointer CsParameter;
 
-    CsParameter.set( "Cs", rColor, true, false, m_numValidParticles * m_multiCount );
+    CsParameter.set( "Cs", rColor, m_numValidParticles * m_multiCount );
     CsParameter.setDetailType( rVertex );
 
     for ( unsigned part_num( 0 ); part_num < m_numValidParticles * m_multiCount; part_num++ ) {
@@ -1021,7 +1020,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
       // For most of our parameters, we only have values for each "chunk"
       // (where a "chunk" is all the particles in a multi block)
       //
-      int part_chunk = part_num / m_multiCount;
+      unsigned part_chunk( part_num / m_multiCount );
 
       CsParameter.setTokenFloat( part_num,
                                  rgbArray[ m_validParticles[ part_chunk ] ].x,
@@ -1038,7 +1037,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
   if( haveOpacityArray ) {
     liqTokenPointer OsParameter;
 
-    OsParameter.set( "Os", rColor, true, false, m_numValidParticles * m_multiCount );
+    OsParameter.set( "Os", rColor, m_numValidParticles * m_multiCount );
     OsParameter.setDetailType( rVarying );
 
     for ( unsigned part_num( 0 ); part_num < m_numValidParticles * m_multiCount; part_num++ ) {
@@ -1046,7 +1045,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
       // For most of our parameters, we only have values for each "chunk"
       // (where a "chunk" is all the particles in a multi block)
       //
-      int part_chunk = part_num / m_multiCount;
+      unsigned part_chunk( part_num / m_multiCount );
 
       // Fade out the even particles (the tails) if streaks.
       //
@@ -1054,21 +1053,37 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
            ( ( part_num & 0x01 ) == 0) )
       {
         OsParameter.setTokenFloat( part_num,
-                                   opacityArray[m_validParticles[part_chunk]] * tailFade,
-                                   opacityArray[m_validParticles[part_chunk]] * tailFade,
-                                   opacityArray[m_validParticles[part_chunk]] * tailFade);
-      }
-      else
-      {
+                                   opacityArray[ m_validParticles[ part_chunk ] ] * tailFade,
+                                   opacityArray[ m_validParticles[ part_chunk ] ] * tailFade,
+                                   opacityArray[ m_validParticles[ part_chunk ] ] * tailFade);
+      } else {
         OsParameter.setTokenFloat( part_num,
-                                   opacityArray[m_validParticles[part_chunk]],
-                                   opacityArray[m_validParticles[part_chunk]],
-                                   opacityArray[m_validParticles[part_chunk]]);
+                                   opacityArray[ m_validParticles[ part_chunk ] ],
+                                   opacityArray[ m_validParticles[ part_chunk ] ],
+                                   opacityArray[ m_validParticles[ part_chunk ] ]);
       }
     }
 
     tokenPointerArray.push_back( OsParameter );
   }
+
+  liqTokenPointer idParameter;
+
+  idParameter.set( "id", rFloat, m_numValidParticles * m_multiCount );
+  idParameter.setDetailType( rVertex );
+
+  for ( unsigned part_num( 0 ); part_num < m_numValidParticles * m_multiCount; part_num++ ) {
+
+    // For most of our parameters, we only have values for each "chunk"
+    // (where a "chunk" is all the particles in a multi block)
+    //
+    unsigned part_chunk( part_num / m_multiCount );
+
+    idParameter.setTokenFloat( part_num, part_chunk );
+  }
+
+  tokenPointerArray.push_back( idParameter );
+
   addAdditionalParticleParameters( partobj );
 }
 
@@ -1498,7 +1513,7 @@ bool liqRibParticleData::writeNextGrain()
         camEye   *= liqglo_currentJob.camera[0].mat.inverse();
 
 
-        MGlobal::displayInfo( MString( "I: " ) + ( ( double ) grain ) );
+        //MGlobal::displayInfo( MString( "I: " ) + ( ( double ) grain ) );
         MVector up( camUp );
         MVector right( camRight );
 

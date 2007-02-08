@@ -95,6 +95,10 @@ liqRibPfxData::liqRibPfxData( MObject pfxGeo )
   /* we have to try and be clever and work out how the lines are connected or else you just end
    * up with ugly line segments, boooo!
    */
+
+  // If there's only main lines, do twist
+  bool doFirstTwist( !lines[ 1 ].length() && !lines[ 2 ].length() );
+
   for( unsigned setOn( 0 ); setOn < MAX_DETAIL; setOn++ ) {
 
     unsigned totalVertex( 0 );
@@ -154,8 +158,7 @@ liqRibPfxData::liqRibPfxData( MObject pfxGeo )
           unsigned pOn( 0 );
           for( ; pOn < pfxVerts.length(); pOn++ ) {
 
-            if( setOn // Add normals only for leaves & flowers, not for main lines
-                && pfxTwist.length() ) {
+            if( setOn || doFirstTwist && pfxTwist.length() ) {
               hasTwist = true;
               *twistPtr++ = pfxTwist[ pOn ].x;
               *twistPtr++ = pfxTwist[ pOn ].y;

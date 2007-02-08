@@ -122,6 +122,7 @@ begin
     if IsAdminLoggedOn() then begin
       InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_PLUG_IN_PATH')
       InsertPath_NT(ExpandConstant('{app}\mel'), HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_SCRIPT_PATH')
+      InsertPath_NT(ExpandConstant('{app}\icons'), HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'XBMLANGPATH')
       InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PATH')
       RegWriteStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'LIQUIDHOME', ExpandConstant('{app}'))
       SendBroadcastMessage(26, 0, CastStringToInteger(EnvName));
@@ -130,6 +131,7 @@ begin
       InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKCU, 'Environment', 'MAYA_PLUG_IN_PATH')
       InsertPath_NT(ExpandConstant('{app}\mel'), HKCU, 'Environment', 'MAYA_SCRIPT_PATH')
       InsertPath_NT(ExpandConstant('{app}\bin\maya7')+GetTargetRenderer, HKCU, 'Environment', 'PATH')
+      InsertPath_NT(ExpandConstant('{app}\icons'), HKCU, 'Environment', 'XBMLANGPATH')
       RegWriteStringValue(HKCU, 'Environment', 'LIQUIDHOME', ExpandConstant('{app}'))
       SendBroadcastMessage(26, 0, CastStringToInteger(EnvName));
     end;

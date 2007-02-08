@@ -123,12 +123,10 @@ bool isObjectReversed( const MDagPath & path )
   MFnDagNode fnDN( path );
   MPlug dPlug = fnDN.findPlug( "opposite", &status );
   MString type = fnDN.typeName( &status );
-  //cout <<"type is "<<type.asChar()<<endl;
   bool reversed = false;
   if ( status == MS::kSuccess ) {
     dPlug.getValue( reversed );
   }
-  if ( type == "nurbsSurface" ) reversed = !reversed;
   return  reversed;
 }
 
