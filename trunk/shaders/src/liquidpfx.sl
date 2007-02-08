@@ -27,15 +27,15 @@ surface liquidpfx(
 	point Pshad = transform( "shader", P );
 	normal Nshad = normalize( ntransform( "shader", N ) );
 
-	uniform float otherside = -1;
+	uniform float otherside = 1;
 	attribute( "user:otherside", otherside );
     Nshad *= otherside;
 
-	P = transform( "shader", "current", Pshad + Nshad * y );
-	normal Nf = normalize( calculatenormal( P ) );
+	point PP = transform( "shader", "current", Pshad + Nshad * y );
+	normal Nf = normalize( calculatenormal( PP ) );
 	Nf = faceforward( Nf, I, Nf );
 
 	vector V = normalize( -I );
-	Oi = 0.5;
+	Oi = Os;
 	Ci = Oi * ( pfxincandescence + Cs * diffuse( Nf ) ) + specular( Nf, V, roughness );
 }

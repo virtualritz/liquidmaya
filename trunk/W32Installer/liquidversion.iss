@@ -1,8 +1,8 @@
 [Setup]
 AppName=Liquid for 3Delight
-AppVersion=2.1.18
+AppVersion=2.1.20
 AppVerName=Liquid for Maya 7
-OutputBaseFilename=Liquid-2.1.18-3Delight-Maya-7-Setup
+OutputBaseFilename=Liquid-2.1.20-3Delight-Maya-7-Setup
 [Messages]
 BeveledLabel=Liquid for 3Delight Setup
 [Files]
