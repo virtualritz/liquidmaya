@@ -370,7 +370,7 @@ string liqTokenPointer::getTokenString() const
 
 void liqTokenPointer::setTokenString( unsigned int i, const string& str )
 {
-  assert( i >= arraySize );
+  assert( i >= m_arraySize );
 
   m_tokenString[ i ] = str;
 }
