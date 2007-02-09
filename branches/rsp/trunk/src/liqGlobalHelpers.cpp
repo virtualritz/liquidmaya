@@ -107,7 +107,7 @@ bool isObjectTwoSided( const MDagPath & path )
   MFnDagNode fnDN( path );
   MPlug dPlug = fnDN.findPlug( "doubleSided", &status );
   bool doubleSided = true;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     dPlug.getValue( doubleSided );
   }
   return  doubleSided;
@@ -124,7 +124,7 @@ bool isObjectReversed( const MDagPath & path )
   MPlug dPlug = fnDN.findPlug( "opposite", &status );
   MString type = fnDN.typeName( &status );
   bool reversed = false;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     dPlug.getValue( reversed );
   }
   return  reversed;
@@ -142,7 +142,7 @@ bool isObjectVisible( const MDagPath & path )
   MPlug vPlug = fnDN.findPlug( "visibility", &status );
   LIQDEBUGPRINTF( "-> checking visibility setting\n");
   bool visible = true;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     vPlug.getValue( visible );
   }
   status.clear();
@@ -153,7 +153,7 @@ bool isObjectVisible( const MDagPath & path )
   // checked to be skipped for Liquid's output
   bool liquidInvisible = false;
   MPlug liPlug = fnDN.findPlug( "liqInvisible", &status );
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     liPlug.getValue( liquidInvisible );
   }
   status.clear();
@@ -165,7 +165,7 @@ bool isObjectVisible( const MDagPath & path )
   LIQDEBUGPRINTF( "-> checking intermediate object\n" );
   MPlug iPlug = fnDN.findPlug( "intermediateObject", &status );
   bool intermediate = false;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     iPlug.getValue( intermediate );
   }
   status.clear();
@@ -185,20 +185,20 @@ bool isObjectPrimaryVisible( const MDagPath & path )
   status.clear();
   MPlug oPlug = fnDN.findPlug( MString( "overrideEnabled" ), &status );
   bool isOver = false;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     oPlug.getValue( isOver );
   }
   LIQDEBUGPRINTF( "-> done checking overrideEnabled\n" );
   status.clear();
   MPlug vPlug = fnDN.findPlug( MString( "primaryVisibility" ), &status );
   bool primaryVisibility = true;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     vPlug.getValue( primaryVisibility );
   }
-  if ( primaryVisibility && isOver ) {
+  if( primaryVisibility && isOver ) {
     status.clear();
     MPlug oPlug = fnDN.findPlug( MString( "overrideVisibility" ), &status );
-    if ( status == MS::kSuccess ) {
+    if( status == MS::kSuccess ) {
       oPlug.getValue( primaryVisibility );
     }
   }
@@ -213,7 +213,7 @@ bool isObjectTemplated( const MDagPath & path )
   MFnDagNode fnDN( path );
   MPlug vPlug = fnDN.findPlug( "template", &status );
   bool templated = false;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     vPlug.getValue( templated );
   }
   status.clear();
@@ -230,19 +230,19 @@ bool isObjectCastsShadows( const MDagPath & path )
   // Check the visibility attribute of the node
   MPlug vPlug( fnDN.findPlug( MString( "castsShadows" ), &status ) );
   bool castsShadows( true );
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     vPlug.getValue( castsShadows );
   }
   status.clear();
   MPlug oPlug( fnDN.findPlug( MString( "overrideEnabled" ), &status ) );
   bool isOver( false );
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     oPlug.getValue( isOver );
   }
   status.clear();
-  if ( castsShadows && isOver ) {
+  if( castsShadows && isOver ) {
     MPlug oPlug( fnDN.findPlug( MString( "overrideVisibility" ), &status ) );
-    if ( status == MS::kSuccess ) {
+    if( status == MS::kSuccess ) {
       oPlug.getValue( castsShadows );
     }
   }
@@ -261,7 +261,7 @@ bool isObjectReceivesShadows( const MDagPath & path )
   // Check the visibility attribute of the node
   MPlug vPlug = fnDN.findPlug( MString( "receivesShadows" ), &status );
   bool receivesShadows = true;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     vPlug.getValue( receivesShadows );
   }
   status.clear();
@@ -277,7 +277,7 @@ bool isObjectMotionBlur( const MDagPath & path )
   MFnDagNode fnDN( path );
   // Check the motionBlur attribute of the node
   MString motionBlurAttr;
-  if ( path.hasFn(MFn::kPfxHair) ||
+  if( path.hasFn(MFn::kPfxHair) ||
        path.hasFn(MFn::kPfxHair)  )
     motionBlurAttr = "motionBlurred";
   else
@@ -285,7 +285,7 @@ bool isObjectMotionBlur( const MDagPath & path )
 
   MPlug vPlug = fnDN.findPlug( motionBlurAttr, &status );
   bool motionBlur = false;
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     vPlug.getValue( motionBlur );
   }
   status.clear();
@@ -313,14 +313,14 @@ bool areObjectAndParentsVisible( const MDagPath & path )
   LIQDEBUGPRINTF( "-> stepping through search path\n" );
   bool searching = true;
   bool isInCurrentRenderLayer = true;
-  while ( searching ) {
+  while( searching ) {
     LIQDEBUGPRINTF( "-> checking visibility\n" );
     isInCurrentRenderLayer = renderLayer.inCurrentRenderLayer( path, &status );
-    if ( !isInCurrentRenderLayer || !isObjectVisible( searchPath ) ) {
+    if( !isInCurrentRenderLayer || !isObjectVisible( searchPath ) ) {
       result = false;
       searching = false;
     }
-    if ( searchPath.length() == 1 ) searching = false;
+    if( searchPath.length() == 1 ) searching = false;
     searchPath.pop();
   }
 
@@ -338,12 +338,12 @@ bool areObjectAndParentsTemplated( const MDagPath & path )
   bool result = true;
   MDagPath searchPath( path );
 
-  while ( true ) {
-    if ( isObjectTemplated( searchPath ) ) {
+  while( true ) {
+    if( isObjectTemplated( searchPath ) ) {
       result = false;
       break;
     }
-    if ( searchPath.length() == 1 ) break;
+    if( searchPath.length() == 1 ) break;
     searchPath.pop();
   }
   return result;
@@ -354,7 +354,7 @@ bool areObjectAndParentsTemplated( const MDagPath & path )
  */
 void assignTokenArrays( unsigned int numTokens, const liqTokenPointer tokenPointerArray[], RtToken tokens[], RtPointer pointers[] )
 {
-  for ( unsigned i( 0 ); i < numTokens; i++ ) {
+  for( unsigned i( 0 ); i < numTokens; i++ ) {
     tokens[i] = const_cast< RtString >( const_cast< liqTokenPointer* >( &tokenPointerArray[i] )->getDetailedTokenName().c_str() );
     pointers[i] = const_cast< liqTokenPointer* >( &tokenPointerArray[i] )->getRtPointer();
   }
@@ -368,7 +368,7 @@ void assignTokenArrays( unsigned int numTokens, const liqTokenPointer tokenPoint
 void assignTokenArraysV( const vector<liqTokenPointer>& tokenPointerArray, RtToken tokens[], RtPointer pointers[] )
 {
   unsigned i( 0 );
-  for ( vector< liqTokenPointer >::const_iterator iter( tokenPointerArray.begin() ); iter != tokenPointerArray.end(); iter++, i++ ) {
+  for( vector< liqTokenPointer >::const_iterator iter( tokenPointerArray.begin() ); iter != tokenPointerArray.end(); iter++, i++ ) {
     tokens[ i ] = const_cast< RtString >( const_cast< liqTokenPointer* >( &( *iter ) )->getDetailedTokenName().c_str() );
     pointers[ i ] = const_cast< liqTokenPointer* >( &( *iter ) )->getRtPointer();
   }
@@ -397,14 +397,14 @@ bool fileExists( const MString& filename ) {
   int result = _stat( filename.asChar(), &sbuf );
     // under Win32, stat fails if path is a directory name ending in a slash
     // so we check for DIR/. Which works - go figure
-    if( result && ( filename.rindex( '/' ) == filename.length() - 1 ) ) {
-      result = _stat( ( filename + "." ).asChar(), &sbuf );
+    if( result &&( filename.rindex( '/' ) == filename.length() - 1 ) ) {
+      result = _stat(( filename + "." ).asChar(), &sbuf );
     }
 #else
     struct stat sbuf;
   int result = stat( filename.asChar(), &sbuf );
 #endif
-    return ( result == 0 );
+    return( result == 0 );
 }
 
 /** Checks if file1 is newer than file2
@@ -440,7 +440,7 @@ bool fileFullyAccessible( const MString& path ) {
  *
  *  @return Full path
  */
-MString getFullPathFromRelative ( const MString& filename ) {
+MString getFullPathFromRelative( const MString& filename ) {
   MString ret;
   extern MString liqglo_projectDir;
 
@@ -452,7 +452,7 @@ MString getFullPathFromRelative ( const MString& filename ) {
   return ret;
 }
 
-MString getFileName ( const MString& fullpath ) {
+MString getFileName( const MString& fullpath ) {
 
   return fullpath.substring( fullpath.rindex('/') + 1, fullpath.length() - 1 );
 }
@@ -468,102 +468,108 @@ MString parseString( const MString& inputString, bool doEscaped )
   int sLength = inputString.length();
   int i;
 
-  for ( i = 0; i < sLength; i++ ) {
-    if ( inputString.substring(i, i) == "$" ) {
+  for( i = 0; i < sLength; i++ ) {
+    if( inputString.substring(i, i) == "$" ) {
       tokenString.clear();
       inToken = true;
-    } else if ( inToken ) {
+    } else if( inToken ) {
       tokenString += inputString.substring(i, i);
-      if ( tokenString == "F" ) {
+      if( tokenString == "F" ) {
         constructedString += (int)liqglo_lframe;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "SCN" ) {
+      } else if( tokenString == "SCN" ) {
         constructedString += liqglo_sceneName;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "IMG" ) {
+      } else if( tokenString == "IMG" ) {
         constructedString += liqglo_DDimageName[0];
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "PDIR" || tokenString == "PROJDIR" ) {
+      } else if( tokenString == "PDIR" || tokenString == "PROJDIR" ) {
         constructedString += liqglo_projectDir;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "RDIR" || tokenString == "RIBDIR" ) {
+      } else if( tokenString == "RDIR" || tokenString == "RIBDIR" ) {
         constructedString += liqglo_ribDir;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "TDIR" || tokenString == "TEXDIR" ) {
+      } else if( tokenString == "TDIR" || tokenString == "TEXDIR" ) {
         constructedString += liqglo_textureDir;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "OBJ" && inputString.substring(i+1, i+4) != "PATH" ) {
+      } else if( tokenString == "OBJ" && inputString.substring(i+1, i+4) != "PATH" ) {
         constructedString += liqglo_currentNodeShortName;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "OBJPATH" ) {
+      } else if( tokenString == "OBJPATH" ) {
         constructedString += liqglo_currentNodeName;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "SHOT" ) {
+      } else if( tokenString == "SHOT" ) {
         constructedString += liqglo_shotName;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "VER" ) {
+      } else if( tokenString == "VER" ) {
         constructedString += liqglo_shotVersion;
         inToken = false;
         tokenString.clear();
-      } else if ( tokenString == "LYR" || tokenString == "LAYER" ) {
+      } else if( tokenString == "LYR" || tokenString == "LAYER" ) {
         constructedString += liqglo_layer;
         inToken = false;
         tokenString.clear();
       }
-    } else if ( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
+    } else if( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
       constructedString += (int)liqglo_lframe;
-    } else if ( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
+    } else if( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
       int paddingSize = 0;
-      while ( inputString.substring(i, i) == "#" ) {
+      while( inputString.substring(i, i) == "#" ) {
         paddingSize++;
         i++;
       }
       i--;
-      if ( paddingSize == 1 ) {
+      if( paddingSize == 1 ) {
         paddingSize = 4;
       }
-      if ( paddingSize > 20 ) {
+      if( paddingSize > 20 ) {
         paddingSize = 20;
       }
       char paddedFrame[20];
       sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
       constructedString += paddedFrame;
-    } else if ( inputString.substring(i, i) == "%" && inputString.substring(i - 1, i - 1) != "\\" ) {
-      MString envString;
-      char* envVal = NULL;
+    } else if( inputString.substring( i + 1, i + 1 ) == "%" ) {
+      if( inputString.substring( i, i ) == "\\" ) {
+        constructedString += "%";
+        i++;
+      } else {
+        constructedString += inputString.substring( i, i );
+        i += 2; // move to 1st character after the '%'
 
-      i++;
+        MString envString;
+        char* envVal( NULL );
 
-      // loop through the string looking for the closing %
-      if (i < sLength) {
-        while ( i < sLength && inputString.substring(i, i) != "%" ) {
-          envString += inputString.substring(i, i);
-          i++;
+        // loop through the string looking for the closing %
+        if( i < sLength ) {
+          while( i < sLength && inputString.substring( i, i ) != "%" ) {
+            envString += inputString.substring( i, i );
+            i++;
+          }
+
+          envVal = getenv( envString.asChar() );
+
+          if( envVal != NULL ) {
+            constructedString += envVal;
+          }
+          // else environment variable doesn't exist.. do nothing
         }
-
-        envVal = getenv( envString.asChar() );
-
-        if (envVal != NULL) {
-          constructedString += envVal;
-        }
-        // else environment variable doesn't exist.. do nothing
       }
       // else early exit: % was the last character in the string.. do nothing
-    } else if ( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
+    } else if( inputString.substring( i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
       // do nothing
-    } else if ( doEscaped && inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
+    } else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
       constructedString += "\n";
       i++;
-    } else if ( doEscaped && inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" ) {
+    } else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" ) {
       constructedString += "\t";
       i++;
     } else {
@@ -586,14 +592,14 @@ MString parseCommandString( const MString& inputString )
   unsigned sLength = inputString.length();
 
 
-  for ( unsigned i = 0; i < sLength; i++ ) {
-    if ( inputString.substring(i, i) == "`" && inputString.substring(i - 1, i - 1) != "\\" ) {
+  for( unsigned i = 0; i < sLength; i++ ) {
+    if( inputString.substring(i, i) == "`" && inputString.substring(i - 1, i - 1) != "\\" ) {
       MString  melCmdString;
       i++;
 
       // loop through the string looking for the closing %
-      if ( i < sLength ) {
-        while ( i < sLength && inputString.substring(i, i) != "`" && inputString.substring(i - 1, i - 1) != "\\" ) {
+      if( i < sLength ) {
+        while( i < sLength && inputString.substring(i, i) != "`" && inputString.substring(i - 1, i - 1) != "\\" ) {
           melCmdString += inputString.substring(i, i);
           i++;
         }
@@ -602,9 +608,9 @@ MString parseCommandString( const MString& inputString )
 
 #ifdef DEBUG
         // Output command to Script window for debugging
-        if ( MS::kSuccess == MGlobal::executeCommand( melCmdString, melCmdResult, true, false ) ) {
+        if( MS::kSuccess == MGlobal::executeCommand( melCmdString, melCmdResult, true, false ) ) {
 #else
-        if ( MS::kSuccess == MGlobal::executeCommand( melCmdString, melCmdResult, false, false ) ) {
+        if( MS::kSuccess == MGlobal::executeCommand( melCmdString, melCmdResult, false, false ) ) {
 #endif
           // convert result to string
           MString tmpStr;
@@ -704,12 +710,12 @@ MString parseCommandString( const MString& inputString )
         // else MEL command contained an error.. do nothing
       }
       // else early exit: ] was the last character in the string.. do nothing
-    } else if ( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
+    } else if( inputString.substring(i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
       // do nothing
-    } else if ( inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
+    } else if( inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
       constructedString += "\n";
       i++;
-    } else if ( inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" ) {
+    } else if( inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" ) {
       constructedString += "\t";
       i++;
     } else {
@@ -734,7 +740,7 @@ MString liquidTransGetSceneName()
   int j = fullName.rindex( '.' );
   // From Maya 6, unsaved files have no extension anymore, we have
   // to account for this here as the ending delimiting '.' is missing
-  if( ( j < i + 2 ) || ( j == -1 ) )
+  if(( j < i + 2 ) ||( j == -1 ) )
     j = fullName.length();
 
   return fullName.substring( i + 1, j - 1 );
@@ -751,7 +757,7 @@ MString liquidTransGetFullSceneName()
 MString liquidResolveWinPaths( MString inPath )
 {
   MString newName;
-  for ( unsigned int i = 0; i < inPath.length(); i++ ) {
+  for( unsigned int i = 0; i < inPath.length(); i++ ) {
   }
   return newName;
 }
@@ -781,7 +787,7 @@ char* basename( const char *filename ) {
 #else
   char *p = const_cast< char* >( strrchr( filename, '/' ) );
 #endif
-  return p ? p + 1 : ( char* ) filename;
+  return p ? p + 1 :( char* ) filename;
 }
 #endif
 
@@ -792,7 +798,7 @@ MString liquidSanitizePath( const MString& inputString ) {
   string constructedString, buffer;
 
   for( unsigned i( 0 ); i < inputString.length(); i++ ) {
-    if ( '\\' == str[ i ] ) {
+    if( '\\' == str[ i ] ) {
       constructedString += "/";
     } else {
       constructedString += str.substr( i, 1 );
@@ -807,7 +813,7 @@ MString liquidSanitizePath( const MString& inputString ) {
 MString liquidSanitizeSearchPath( const MString& inputString ) {
   MString constructedString( liquidSanitizePath( inputString ) );
 
-#if defined ( DELIGHT ) || defined ( PRMAN )
+#if defined( DELIGHT ) || defined( PRMAN )
   // Convert from "C:/path" into "//C/path"
   if( inputString.substring( 1, 1 ) == ":" )
     constructedString = "//" + constructedString.substring( 0, 0 ) + constructedString.substring( 2, inputString.length() - 1 ).toLowerCase();
@@ -821,8 +827,8 @@ string liquidSanitizePath( const string& inputString ) {
   string constructedString, buffer;
 
   for( unsigned i( 0 ); i < inputString.length(); i++ ) {
-    if ( '\\' == inputString[ i ] ) {
-      if ( '\\' == inputString[ i + 1 ] ) {
+    if( '\\' == inputString[ i ] ) {
+      if( '\\' == inputString[ i + 1 ] ) {
         ++i; // skip double slashes
         buffer = "\\";
       } else {
@@ -841,7 +847,7 @@ string liquidSanitizePath( const string& inputString ) {
 string liquidSanitizeSearchPath( const string& inputString ) {
   string constructedString( liquidSanitizePath( inputString ) );
 
-#if defined ( DELIGHT ) || defined ( PRMAN )
+#if defined( DELIGHT ) || defined( PRMAN )
   // Convert from "C:/path" into "//C/path"
   if( inputString[ 1 ] == ':' ) {
     constructedString = "//" +
@@ -858,7 +864,7 @@ string liquidSanitizeSearchPath( const string& inputString ) {
  *  has choosen to have all paths to be relative
  */
 string liquidGetRelativePath( bool relative, const string& name, const string& dir ) {
-  if( !relative && ( string::npos != name.find( '/' ) ) && ( ':' != name[ 1 ] ) ) {
+  if( !relative &&( string::npos != name.find( '/' ) ) &&( ':' != name[ 1 ] ) ) {
     return dir + name;
   } else {
     return name;
@@ -867,7 +873,7 @@ string liquidGetRelativePath( bool relative, const string& name, const string& d
 
 
 MString liquidGetRelativePath( bool relative, const MString& name, const MString& dir ) {
-  if( !relative && ( 0 != name.index('/') ) && ( name.substring( 1, 1 ) != ":" ) ) {
+  if( !relative &&( 0 != name.index('/') ) &&( name.substring( 1, 1 ) != ":" ) ) {
     return dir + name;
   } else {
     return name;
@@ -881,17 +887,17 @@ MString removeEscapes( const MString& inputString ) {
   int sLength = inputString.length();
   int i;
 
-  for ( i = 0; i < sLength; i++ ) {
-    if ( inputString.substring(i, i+1) == "\\@" ) {
+  for( i = 0; i < sLength; i++ ) {
+    if( inputString.substring(i, i+1) == "\\@" ) {
       constructedString += "@";
       i++;
-    } else if ( inputString.substring(i, i+1) == "\\#" ) {
+    } else if( inputString.substring(i, i+1) == "\\#" ) {
       constructedString += "#";
       i++;
-    } else if ( inputString.substring(i, i+1) == "\\[" ) {
+    } else if( inputString.substring(i, i+1) == "\\[" ) {
       constructedString += "[";
       i++;
-    } else if ( inputString.substring(i, i+1) == "\\]" ) {
+    } else if( inputString.substring(i, i+1) == "\\]" ) {
       constructedString += "]";
       i++;
     } else constructedString += inputString.substring(i, i);
@@ -906,14 +912,14 @@ MObject getNodeByName( MString name, MStatus *returnStatus )
 
   *returnStatus = MGlobal::getSelectionListByName( name, list );
 
-  if ( MS::kSuccess != *returnStatus ){
+  if( MS::kSuccess != *returnStatus ){
     MGlobal::displayError( "Cound't get node '" + name + "'. There might be multiple nodes with this name" );
     return node;
   }
 
   *returnStatus=list.getDependNode(0,node);
 
-  if ( MS::kSuccess != *returnStatus ) {
+  if( MS::kSuccess != *returnStatus ) {
     MGlobal::displayError("Cound't get node '"+ name + "'. There might be multiple nodes with this name" );
     return MObject::kNullObj;
   }
@@ -943,13 +949,13 @@ vector< int > generateFrameNumbers( const string& seq ) {
   for( tokenizer::iterator it( frames.begin() ); it != frames.end(); it++ ) {
       size_t pos( it->find( "-" ) );
       if( string::npos == pos ) {
-          float f( ( float )atof( it->c_str() ) );
-          if( theSeq.end() == theSeq.find( ( int )f ) ) {
-              theSeq.insert( ( int )f );
-              theFrames.push_back( ( int )f );
+          float f(( float )atof( it->c_str() ) );
+          if( theSeq.end() == theSeq.find(( int )f ) ) {
+              theSeq.insert(( int )f );
+              theFrames.push_back(( int )f );
           }
       } else {
-          float startFrame( ( float )atof( it->substr( 0, pos ).c_str() ) );
+          float startFrame(( float )atof( it->substr( 0, pos ).c_str() ) );
           float endFrame, frameStep;
           size_t pos2( it->find( "@" ) );
           size_t pos3( it->find( "x" ) );
@@ -960,32 +966,32 @@ vector< int > generateFrameNumbers( const string& seq ) {
           }
           // Support both RSP- & Shake frame sequence syntax
           if( string::npos == pos2 ) {
-              endFrame = ( float )atof( it->substr( pos + 1 ).c_str() );
+              endFrame =( float )atof( it->substr( pos + 1 ).c_str() );
               frameStep = 1;
           }
           else {
-              endFrame = ( float )atof( it->substr( pos + 1, pos2 - pos ).c_str() );
-              frameStep = ( float )fabs( atof( it->substr( pos2 + 1 ).c_str() ) );
+              endFrame =( float )atof( it->substr( pos + 1, pos2 - pos ).c_str() );
+              frameStep =( float )fabs( atof( it->substr( pos2 + 1 ).c_str() ) );
           }
           if( startFrame < endFrame ) {
               for( float f( startFrame ); f <= endFrame; f += frameStep ) {
-                  if( theSeq.end() == theSeq.find( ( int )f ) ) {
-                      theSeq.insert( ( int )f );
-                      theFrames.push_back( ( int )f );
+                  if( theSeq.end() == theSeq.find(( int )f ) ) {
+                      theSeq.insert(( int )f );
+                      theFrames.push_back(( int )f );
                   }
               }
-              if( theSeq.end() == theSeq.find( ( int )endFrame ) )
-                  theFrames.push_back( ( int )endFrame );
+              if( theSeq.end() == theSeq.find(( int )endFrame ) )
+                  theFrames.push_back(( int )endFrame );
           }
           else {
               for( float f( startFrame ); f >= endFrame; f -= frameStep ) {
-                  if( theSeq.end() == theSeq.find( ( int )f ) ) {
-                      theSeq.insert( ( int )f );
-                      theFrames.push_back( ( int )f );
+                  if( theSeq.end() == theSeq.find(( int )f ) ) {
+                      theSeq.insert(( int )f );
+                      theFrames.push_back(( int )f );
                   }
               }
-              if( theSeq.end() == theSeq.find( ( int )endFrame ) )
-                  theFrames.push_back( ( int )endFrame );
+              if( theSeq.end() == theSeq.find(( int )endFrame ) )
+                  theFrames.push_back(( int )endFrame );
           }
       }
   }
@@ -1018,7 +1024,7 @@ bool makeFullPath( const string& name, int mode ) {
 
 #ifdef _WIN32
     // skip drive letter part of path
-    if( !(  ( 2 == path.length() ) && ( ':' == path[ 1 ] ) ) ) {
+    if( !( ( 2 == path.length() ) &&( ':' == path[ 1 ] ) ) ) {
 #endif
       struct stat stats;
       if( stat( path.c_str(), &stats ) < 0 ) {
@@ -1044,7 +1050,7 @@ bool makeFullPath( const string& name, int mode ) {
         return false;
       }
 #ifdef _WIN32
-    }  // if( !(  ( 2 == path.length() ) && ( ':' == path[ 1 ] ) ) )
+    }  // if( !( ( 2 == path.length() ) &&( ':' == path[ 1 ] ) ) )
 #endif
 
     // Tokenize
@@ -1087,7 +1093,7 @@ RtString& getLiquidRibName( const string& name ) {
  */
 void liquidMessage( const string& msg, liquidVerbosityType type ) {
   if( liqglo_verbosity >= type ) {
-    if ( !liquidBin ) {
+    if( !liquidBin ) {
       MString infoOutput( "[Liquid] " );
       infoOutput += msg.c_str();
       switch( type ) {
