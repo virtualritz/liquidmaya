@@ -59,12 +59,6 @@ extern "C" {
 #include <boost/shared_array.hpp>
 
 
-#if defined( AIR ) || defined( DELIGHT )
-  #define PERPIECE rFaceVertex
-#else
-  #define PERPIECE rFaceVarying
-#endif
-
 using namespace boost;
 
 extern int debugMode;
@@ -79,36 +73,13 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
     nverts(),
     verts(),
     vertexParam( NULL ),
-    interpolateBoundary( false )
+    interpolateBoundary( 0 ),
+    uvDetail( rFaceVarying ),
+    trueFacevarying( false )
 {
   LIQDEBUGPRINTF( "-> creating subdivision surface\n" );
   MFnMesh fnMesh( mesh );
   name = fnMesh.name();
-
-  /*
-  MStatus status;
-
-  MPlug interpolateBoundaryPlug = fnMesh.findPlug( "liqSubdivInterpolateBoundary", &status );
-  if ( status == MS::kSuccess ) {
-    interpolateBoundaryPlug.getValue( interpolateBoundary );
-  }
-
-  bool interpolateBoundaryOld = false;
-  MPlug oldinterpolateBoundaryPlug = fnMesh.findPlug( "interpBoundary", &status );
-  if ( status == MS::kSuccess ) {
-    interpolateBoundaryPlug.getValue( interpolateBoundaryOld );
-  }
-
-  bool interpolateBoundaryMtor = false;
-  if ( liqglo_useMtorSubdiv ) {
-    MPlug mtor_interpolateBoundaryPlug = fnMesh.findPlug( "mtorSubdivInterp", &status );
-    if ( status == MS::kSuccess ) {
-      mtor_interpolateBoundaryPlug.getValue( interpolateBoundaryMtor );
-    }
-  }
-
-  interpolateBoundary |= interpolateBoundaryMtor | interpolateBoundaryOld;
-  */
 
   checkExtraTags( mesh );
 
@@ -126,7 +97,7 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
     fnMesh.getUVSetNames( UVSetNames );
 
     for ( unsigned i( 0 ); i < numUVSets; i++ ) {
-      if ( UVSetNames[i] != currentUVSetName )
+      if( UVSetNames[i] != currentUVSetName )
         extraUVSetNames.append( UVSetNames[i] );
     }
     //cout <<UVSetNames<<endl;
@@ -156,11 +127,11 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
   std::vector<liqTokenPointer> UVSetsArray;
   UVSetsArray.reserve( 1 + extraUVSetNames.length() );
 
-  if ( numSTs > 0 ) {
+  if( numSTs > 0 ) {
     liqTokenPointer pFaceVertexPointerPair;
 
     pFaceVertexPointerPair.set( "st", rFloat, numFaceVertices, 2 );
-    pFaceVertexPointerPair.setDetailType( PERPIECE );
+    pFaceVertexPointerPair.setDetailType( uvDetail );
 
     UVSetsArray.push_back( pFaceVertexPointerPair );
 
@@ -168,7 +139,7 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
       liqTokenPointer pFaceVertexPointerPair;
 
       pFaceVertexPointerPair.set( extraUVSetNames[j].asChar(), rFloat, numFaceVertices, 2 );
-      pFaceVertexPointerPair.setDetailType( PERPIECE );
+      pFaceVertexPointerPair.setDetailType( uvDetail );
 
       UVSetsArray.push_back( pFaceVertexPointerPair );
     }
@@ -177,10 +148,10 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
       // Match MTOR, which also outputs face-varying STs as well for some reason - Paul
       // not anymore - Philippe
       pFaceVertexSPointer.set( "u", rFloat, numFaceVertices );
-      pFaceVertexSPointer.setDetailType( PERPIECE );
+      pFaceVertexSPointer.setDetailType( uvDetail );
 
       pFaceVertexTPointer.set( "v", rFloat, numFaceVertices );
-      pFaceVertexTPointer.setDetailType( PERPIECE );
+      pFaceVertexTPointer.setDetailType( uvDetail );
     }
   }
 
@@ -198,7 +169,7 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
       point = polyIt.point( count, MSpace::kObject );
       pointsPointerPair.setTokenFloat( vertex, point.x, point.y, point.z );
 
-      if ( UVSetsArray.size() ) {
+      if( UVSetsArray.size() ) {
         fnMesh.getPolygonUV( face, count, S, T );
 
         UVSetsArray[0].setTokenFloat( faceVertex, 0, S );
@@ -269,26 +240,26 @@ bool liqRibSubdivisionData::compare( const liqRibData & otherObj ) const
   unsigned numFaceVertices = 0;
 
   LIQDEBUGPRINTF( "-> comparing mesh\n" );
-  if ( otherObj.type() != MRT_Subdivision ) return false;
+  if( otherObj.type() != MRT_Subdivision ) return false;
   const liqRibSubdivisionData & other = (liqRibSubdivisionData&)otherObj;
 
-  if ( numFaces != other.numFaces ) return false;
-  if ( numPoints != other.numPoints ) return false;
+  if( numFaces != other.numFaces ) return false;
+  if( numPoints != other.numPoints ) return false;
 
   for ( i = 0; i < numFaces; ++i ) {
-    if ( nverts[i] != other.nverts[i] ) return false;
+    if( nverts[i] != other.nverts[i] ) return false;
     numFaceVertices += nverts[i];
   }
 
   for ( i = 0; i < numFaceVertices; ++i ) {
-    if ( verts[i] != other.verts[i] ) return false;
+    if( verts[i] != other.verts[i] ) return false;
   }
 
   for ( i = 0; i < numPoints; ++i ) {
     const unsigned a = i * 3;
     const unsigned b = a + 1;
     const unsigned c = a + 2;
-    if ( !equiv( vertexParam[a], other.vertexParam[a] ) ||
+    if( !equiv( vertexParam[a], other.vertexParam[a] ) ||
       !equiv( vertexParam[b], other.vertexParam[b] ) ||
       !equiv( vertexParam[c], other.vertexParam[c] ) )
     {
@@ -328,63 +299,63 @@ void liqRibSubdivisionData::checkExtraTags( MObject &mesh ) {
     MPlugArray connections;
     MPlug curPlug = array[i];
 
-    if ( !curPlug.connectedTo( connections, false, true ) )
+    if( !curPlug.connectedTo( connections, false, true ) )
       continue; /* look only for plugs connected as dst (src = false) */
 
     for ( unsigned i = 0 ; i < connections.length() ; i++ ) {
       MPlug dstPlug = connections[i];
       MObject dstNode = dstPlug.node();
 
-      if ( dstNode.hasFn( MFn::kSet ) ) {	/* if connected to set */
+      if( dstNode.hasFn( MFn::kSet ) ) {	/* if connected to set */
         float extraTagValue;
         MFnDependencyNode setNode( dstNode, &status );
-        if ( status != MS::kSuccess )
+        if( status != MS::kSuccess )
           continue;
         MPlug extraTagPlug = setNode.findPlug( "liqSubdivCrease", &status );
-        if ( status == MS::kSuccess ) {
+        if( status == MS::kSuccess ) {
           extraTagPlug.getValue( extraTagValue );
-          if ( extraTagValue ) // skip zero values
+          if( extraTagValue ) // skip zero values
             addExtraTags( dstNode, extraTagValue, TAG_CREASE );
         } else {
           MPlug extraTagPlug = setNode.findPlug( "liqSubdivCorner", &status );
-          if ( status == MS::kSuccess ) {
+          if( status == MS::kSuccess ) {
             extraTagPlug.getValue( extraTagValue );
-            if ( extraTagValue ) // skip zero values
+            if( extraTagValue ) // skip zero values
               addExtraTags( dstNode, extraTagValue, TAG_CORNER );
           } else {
             MPlug extraTagPlug = setNode.findPlug( "liqSubdivHole", &status );
-            if ( status == MS::kSuccess ) {
+            if( status == MS::kSuccess ) {
               extraTagPlug.getValue( extraTagValue );
-              if ( extraTagValue ) // skip zero values
+              if( extraTagValue ) // skip zero values
                 addExtraTags( dstNode, extraTagValue, TAG_HOLE );
             } else {
               MPlug extraTagPlug = setNode.findPlug( "liqSubdivStitch", &status );
-              if ( status == MS::kSuccess ) {
+              if( status == MS::kSuccess ) {
                 extraTagPlug.getValue( extraTagValue );
-                if ( extraTagValue ) // skip zero values
+                if( extraTagValue ) // skip zero values
                   addExtraTags( dstNode, extraTagValue, TAG_STITCH );
               }
             }
           }
         }
-        if ( liqglo_useMtorSubdiv ) {	// check mtor subdivisions extra tag
+        if( liqglo_useMtorSubdiv ) {	// check mtor subdivisions extra tag
           MPlug extraTagPlug = setNode.findPlug( "mtorSubdivCrease", &status );
-          if ( status == MS::kSuccess ) {
+          if( status == MS::kSuccess ) {
             extraTagPlug.getValue( extraTagValue );
-            if ( extraTagValue ) // skip zero values
+            if( extraTagValue ) // skip zero values
               addExtraTags( dstNode, extraTagValue, TAG_CREASE );
           } else {
             MPlug extraTagPlug = setNode.findPlug( "mtorSubdivCorner", &status );
-            if ( status == MS::kSuccess ) {
+            if( status == MS::kSuccess ) {
               extraTagPlug.getValue( extraTagValue );
-              if ( extraTagValue ) // skip zero values
+              if( extraTagValue ) // skip zero values
                 addExtraTags( dstNode, extraTagValue, TAG_CORNER );
             } else {
               MPlug extraTagPlug = setNode.findPlug( "mtorSubdivHole", &status );
-              if ( status == MS::kSuccess ) {
+              if( status == MS::kSuccess ) {
                 extraTagPlug.getValue( extraTagValue );
-                // if ( debugMode ) { printf("==> %s has mtorSubdivHole [%d]\n",depNode.name().asChar(), extraTagValue ); }
-                if ( extraTagValue ) // skip zero values
+                // if( debugMode ) { printf("==> %s has mtorSubdivHole [%d]\n",depNode.name().asChar(), extraTagValue ); }
+                if( extraTagValue ) // skip zero values
                   addExtraTags( dstNode, extraTagValue, TAG_HOLE );
               }
             }
@@ -396,46 +367,77 @@ void liqRibSubdivisionData::checkExtraTags( MObject &mesh ) {
   } // for
 
   MPlug interpolateBoundaryPlug = fnMesh.findPlug( "liqSubdivInterpolateBoundary", &status );
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     interpolateBoundaryPlug.getValue( interpolateBoundary );
   }
 
   bool interpolateBoundaryOld = false;
   MPlug oldinterpolateBoundaryPlug = fnMesh.findPlug( "interpBoundary", &status );
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     interpolateBoundaryPlug.getValue( interpolateBoundaryOld );
   }
 
   bool mtor_interpolateBoundary = false;
-  if ( liqglo_useMtorSubdiv ) {
+  if( liqglo_useMtorSubdiv ) {
     MPlug mtor_interpolateBoundaryPlug = fnMesh.findPlug( "mtorSubdivInterp", &status );
-    if ( status == MS::kSuccess ) {
+    if( status == MS::kSuccess ) {
       mtor_interpolateBoundaryPlug.getValue( mtor_interpolateBoundary );
     }
   }
 
-  interpolateBoundary |= mtor_interpolateBoundary | interpolateBoundaryOld;
+  MPlug liqSubdivUVInterpolationPlug = fnMesh.findPlug( "liqSubdivUVInterpolation", &status );
+  if( status == MS::kSuccess ) {
+    int liqSubdivUVInterpolation;
+    liqSubdivUVInterpolationPlug.getValue( liqSubdivUVInterpolation );
+    switch( liqSubdivUVInterpolation ) {
+      case 0: // true facevarying
+        trueFacevarying = true;
+      case 1: //
+        uvDetail = rFaceVarying;
+        break;
+      case 2:
+        uvDetail = rFaceVertex;
+        break;
+    }
+  }
 
-  if ( interpolateBoundary )
-    addExtraTags( mesh, 0, TAG_BOUNDARY );
+  if( mtor_interpolateBoundary || interpolateBoundaryOld ) {
+    interpolateBoundary = 2; // Old School
+  }
 
+  if( interpolateBoundary ) {
+    addExtraTags( mesh, interpolateBoundary - 1, TAG_BOUNDARY );
+  }
+
+  if( trueFacevarying ) {
+    addExtraTags( mesh, 0, TAG_FACEVARYINGBOUNDARY );
+  }
 }
+
 
 void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue, SBD_EXTRA_TAG extraTag ) {
 
-  if ( extraTag == TAG_BOUNDARY ) {
+  if( TAG_BOUNDARY == extraTag ) {
     v_tags.push_back( "interpolateboundary" );
-    v_nargs.push_back( 0 );		// 0 intargs
+    v_nargs.push_back( 1 );		// 0 intargs
     v_nargs.push_back( 0 );		// 0 floatargs
+    v_intargs.push_back( extraTagValue );
     return;
+  }
+
+  if( TAG_FACEVARYINGBOUNDARY == extraTag ) {
+    v_tags.push_back( "facevaryinginterpolateboundary" );
+    v_nargs.push_back( 1 );		// 1 intarg
+    v_nargs.push_back( 0 );		// 0 floatargs
+    v_intargs.push_back( extraTagValue );
   }
 
   MStatus status = MS::kSuccess;
   MFnSet elemSet( dstNode, &status ); // dstNode is maya components set
-  if ( status == MS::kSuccess ) {
+  if( status == MS::kSuccess ) {
     MSelectionList members;
     status = elemSet.getMembers( members, true ); // get flatten members list
-    if ( status == MS::kSuccess ) {
+    if( status == MS::kSuccess ) {
       for ( unsigned i = 0 ; i < members.length() ; i++ ) {
         MObject component;
         MDagPath dagPath;
@@ -445,7 +447,7 @@ void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue,
 
         case TAG_CREASE:
 
-          if ( !component.isNull() && component.hasFn( MFn::kMeshEdgeComponent ) ) {
+          if( !component.isNull() && component.hasFn( MFn::kMeshEdgeComponent ) ) {
             MItMeshEdge edgeIter( dagPath, component );
             for(  ; !edgeIter.isDone(); edgeIter.next() ) {
               v_tags.push_back( "crease" );
@@ -460,7 +462,7 @@ void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue,
 
         case TAG_CORNER:
 
-          if ( !component.isNull() && component.hasFn( MFn::kMeshVertComponent ) ) {
+          if( !component.isNull() && component.hasFn( MFn::kMeshVertComponent ) ) {
             MItMeshVertex  vertexIter( dagPath, component );
             for(  ; !vertexIter.isDone(); vertexIter.next() ) {
               v_tags.push_back( "corner" );
@@ -474,7 +476,7 @@ void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue,
 
         case TAG_HOLE:
 
-          if ( !component.isNull() && component.hasFn( MFn::kMeshPolygonComponent ) ) {
+          if( !component.isNull() && component.hasFn( MFn::kMeshPolygonComponent ) ) {
             MItMeshPolygon  faceIter( dagPath, component );
             for(  ; !faceIter.isDone(); faceIter.next() ) {
               v_tags.push_back( "hole" );
@@ -487,7 +489,7 @@ void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue,
 
         case TAG_STITCH:
 
-          if ( !component.isNull() && component.hasFn( MFn::kMeshVertComponent ) ) {
+          if( !component.isNull() && component.hasFn( MFn::kMeshVertComponent ) ) {
             MItMeshVertex vertexIter( dagPath, component );
             v_tags.push_back( "stitch" );
             v_nargs.push_back( vertexIter.count() + 1 ); // vertex count in chain + 1 integer identifier

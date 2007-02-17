@@ -50,6 +50,7 @@ extern "C" {
 #include <liquid.h>
 #include <liqRibNode.h>
 #include <liqRibHT.h>
+#include <liqGlobalHelpers.h>
 
 extern int debugMode;
 
@@ -118,7 +119,7 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   MString nodeName = fnDagNode.fullPathName( &returnStatus );
   if ( objType == MRT_RibGen ) nodeName += "RIBGEN";
 
-  const char* name = nodeName.asChar();
+  const char* name( nodeName.asChar() );
 
   ulong hc = hash( name ,CountID );
 
@@ -137,7 +138,7 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   // this point
   //
   liqRibNodePtr tail;
-  if ( node ) {
+  if( node ) {
     while( node ) {
       tail = node;
 
@@ -165,7 +166,7 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
       newNode = liqRibNodePtr( new liqRibNode( instance, instanceStr ) );
     }
   }
-  if ( !newNode ) {
+  if( !newNode ) {
     // We have to make a new node
     if ( !node) {
       node = liqRibNodePtr( new liqRibNode( liqRibNodePtr(), instanceStr) );
@@ -181,7 +182,7 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
     assert( !node );
     // Append new instance node onto tail of linked list
     node = newNode;
-    if ( tail ) {
+    if( tail ) {
       assert( !tail->next );
       tail->next = node;
       RibNodeMap.insert( RNMAP::value_type( hc, node ) );
@@ -192,17 +193,18 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
 
   node->set( path, sample, objType, particleId );
 
+
   // If we were given a specific matrix to use (this only
   // happens when we've got particle-instancing.
   //
-  if ( matrix != NULL )
+  if( matrix != NULL )
   {
     // Calculate the inclusive matrix for the instanced
     // object (as a product of the original object's
     // exclusive matrix - see Maya docs - and the given
     // matrix).
     //
-    MMatrix inclusiveMatrix = path.exclusiveMatrix() * (*matrix);
+    MMatrix inclusiveMatrix = path.exclusiveMatrix() * ( *matrix );
     node->object( sample )->setMatrix( 0, inclusiveMatrix );
   }
 
@@ -210,7 +212,7 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   // since there's no way to guarantee that the objects are
   // topologically identical over the sample range.
   //
-  if ( instanceStr != "" )
+  if( instanceStr != "" )
   {
     node->motion.deformationBlur = false;
   }
@@ -240,9 +242,9 @@ liqRibNodePtr liqRibHT::find( MString nodeName, MDagPath path, ObjectType
 
   LIQDEBUGPRINTF( "-> Done\n"  );
 
-  RNMAP::iterator iter = RibNodeMap.find( hc );
-  while ( ( iter != RibNodeMap.end() ) && ( (*iter).first == hc ) ) {
-    if ( (*iter).second->path() == path ) {
+  RNMAP::iterator iter( RibNodeMap.find( hc ) );
+  while( ( iter != RibNodeMap.end() ) && ( (*iter).first == hc ) ) {
+    if( (*iter).second->path() == path ) {
       result = (*iter).second;
       iter = RibNodeMap.end();
     } else {

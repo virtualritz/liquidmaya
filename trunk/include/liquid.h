@@ -159,7 +159,8 @@ enum ObjectType {
   MRT_ClipPlane       = 14,
   MRT_PfxToon         = 15,
   MRT_PfxHair         = 16,
-  MRT_Pfx             = 17
+  MRT_Pfx             = 17,
+  MRT_ImplicitSphere  = 18
 };
 
 enum LightType {
@@ -333,7 +334,8 @@ typedef enum {
   TAG_HOLE,
   TAG_CORNER,
   TAG_BOUNDARY,
-  TAG_STITCH
+  TAG_STITCH,
+  TAG_FACEVARYINGBOUNDARY
 } SBD_EXTRA_TAG;
 
 

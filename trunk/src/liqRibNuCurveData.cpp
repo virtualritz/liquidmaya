@@ -37,18 +37,20 @@ extern "C" {
 #include <ri.h>
 }
 
-// Maya's Headers
+// Maya headers
 #include <maya/MDoubleArray.h>
 #include <maya/MItCurveCV.h>
 #include <maya/MPoint.h>
 #include <maya/MFnNurbsCurve.h>
 #include <maya/MPlug.h>
 
+// Liquid headers
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibData.h>
 #include <liqRibNuCurveData.h>
 
+// Boost headers
 #include <boost/scoped_array.hpp>
 #include <boost/shared_array.hpp>
 
@@ -67,9 +69,9 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
   NuCurveWidth()
 {
   LIQDEBUGPRINTF( "-> creating nurbs curve\n" );
-  MStatus status = MS::kSuccess;
+  MStatus status( MS::kSuccess );
   MFnNurbsCurve nurbs( curve, &status );
-  assert(status==MS::kSuccess);
+  assert( status == MS::kSuccess );
 
   // Extract the order and number of CVs in the surface keeping
   // in mind that UV order is switched between Renderman and Maya

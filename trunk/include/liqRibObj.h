@@ -47,8 +47,8 @@ class liqRibObj {
 public:
              liqRibObj( const MDagPath &, ObjectType objType );
 
-    AnimType compareMatrix( const liqRibObj*, int instance ) const;
-    AnimType compareBody( const liqRibObj* ) const;
+    AnimType compareMatrix( const liqRibObjPtr, int instance ) const;
+    AnimType compareBody( const liqRibObjPtr ) const;
     void     writeObject() const; // write geometry directly
     unsigned granularity() const; // get granularity
     bool     writeNextObjectGrain() const; // write next geometry grain directly

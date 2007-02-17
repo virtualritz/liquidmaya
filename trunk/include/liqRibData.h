@@ -59,7 +59,7 @@ public:
     virtual unsigned   granularity() const;
     virtual bool       writeNextGrain();
     virtual bool       isNextGrainAnimated() const;
-    virtual bool       compare( const liqRibData & other ) const = 0;
+    virtual bool       compare( const liqRibData& other ) const = 0;
     virtual ObjectType type() const = 0;
     virtual void       addAdditionalSurfaceParameters( MObject node );
 

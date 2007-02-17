@@ -72,12 +72,16 @@ private: // Data
   RtInt     numPoints;
   shared_array< RtInt > nverts;
   shared_array< RtInt > verts;
-  const RtFloat * vertexParam;
+  const RtFloat* vertexParam;
+
+  DetailType uvDetail;
+  bool trueFacevarying;
 
   MString   name;
   RtMatrix  transformationMatrix;
 
-  bool      interpolateBoundary;
+  int  interpolateBoundary; // Now an integer from PRMan 12/3Delight 6
+
 
   std::vector <RtToken> v_tags;
   std::vector <RtInt>   v_nargs;
