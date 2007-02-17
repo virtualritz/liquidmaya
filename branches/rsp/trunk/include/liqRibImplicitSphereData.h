@@ -24,58 +24,30 @@
 **
 **
 ** RenderMan (R) is a registered trademark of Pixar
-**
 */
 
-#ifndef liqRibHT_H
-#define liqRibHT_H
+#ifndef liqRibImplicitSphereData_H
+#define liqRibImplicitSphereData_H
 
 /* ______________________________________________________________________
 **
-** Liquid Rib Hash Table Header File
+** Liquid Rib Locator Data Header File
 ** ______________________________________________________________________
 */
 
+#include <liqRibData.h>
 
-#include <liqRibNode.h>
+class liqRibImplicitSphereData : public liqRibData {
+public: // Methods
 
-#ifdef OSX
-  #ifndef ulong
-    typedef unsigned long ulong;
-  #endif
-#endif
+            liqRibImplicitSphereData( MObject sphere );
 
-#include <map>
-#include <vector>
+    virtual void       write();
+    virtual bool       compare( const liqRibData & other ) const;
+    virtual ObjectType type() const;
 
-using namespace boost;
-using namespace std;
-
-
-typedef multimap< ulong, liqRibNodePtr > RNMAP;
-typedef vector< MString > str_Vector;
-
-class liqRibHT {
-
-public:
-	liqRibHT();
-	~liqRibHT();
-
-    int           insert( MDagPath &, double, int,
-                          ObjectType objType,int CountID,
-                          MMatrix *matrix = NULL,
-                          const MString instanceStr = "",
-                          int particleId = -1 );
-	/*RibNode*	    find( const MObject &, ObjectType objType );*/
-	liqRibNodePtr find( MString nodeName, MDagPath  path, ObjectType objType);
-
-private:
-	str_Vector RibHashVec;
-	RNMAP	RibNodeMap;
-	ulong	hash( const char*, int ID );
-	friend class liqRibTranslator;
+private: // Data
+	float radius;
 };
-
-static const uint MR_HASHSIZE = 65536;
 
 #endif

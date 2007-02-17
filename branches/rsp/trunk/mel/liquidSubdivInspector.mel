@@ -125,24 +125,36 @@ global proc liq_sbd_insp_dispAttributes( string $shape ) {
 
   if ( `attributeQuery -node $shape -ex "liqSubdivInterpolateBoundary"`) {
     $attr = $shape + ".liqSubdivInterpolateBoundary";
-    $ck = `getAttr $attr`;
-    $onCommand = ( "setAttr " + $attr + " true; " );
-    $offCommand = ( "setAttr " + $attr + " false; " );
-    checkBoxGrp -label "Interpolate Boundary" -l1 "" -v1 $ck -on1 $onCommand -of1 $offCommand interp;
+
+    string $liqUVinterpModes[];
+
+    $liqUVinterpModes = {
+      "Off",
+      "Sharp",
+      "Smooth"
+    };
+
+    string $menu = `optionMenuGrp -cal 1 "right" -label "Interpolate Boundary"`;
+    int $i;
+    for( $i = 0; $i < 3; ++$i ) {
+      menuItem -data $i -label $liqUVinterpModes[ $i ];
+    }
+
+    connectControl -index 2 $menu ( $attr );
   }
+
   if ( `attributeQuery -node $shape -ex "liqSubdivUVInterpolation"`) {
     $attr = $shape + ".liqSubdivUVInterpolation";
-    $val = `getAttr $attr`;
 
     string $liqUVinterpModes[];
 
     $liqUVinterpModes = {
       "True Facevarying",
-      "PRMan Facevarying",
+      "New Facevarying",
       "Facevertex"
     };
 
-    string $menu = `optionMenuGrp -cal 1 "right" -label "UV Intepolation"`;
+    string $menu = `optionMenuGrp -cal 1 "right" -label "UV Interpolation"`;
     int $i;
     for( $i = 0; $i < 3; ++$i ) {
       menuItem -data $i -label $liqUVinterpModes[ $i ];

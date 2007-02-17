@@ -44,7 +44,39 @@ global proc liquidMakeSubdivUI() {
       checkBoxGrp -label "Subdivison Mesh" -l1 "" -v1 $ck liqSubdiv;
 
       $ck = `optionVar -q liqSubdivInterpolateBoundary`;
-      checkBoxGrp -label "Interpolate Boundary" -l1 "" -v1 $ck liqSubdivInterpolate;
+      string $liqBoundaryModes[];
+
+      $liqBoundaryModes = {
+        "Off",
+        "Sharp",
+        "Smooth"
+      };
+
+      string $menu = `optionMenuGrp -cal 1 "right" -label "Interpolate Boundary" liqSubdivInterpolate`;
+      int $i;
+      for( $i = 0; $i < 3; ++$i ) {
+        menuItem -data $i -label $liqBoundaryModes[ $i ];
+      }
+      $ck += 1; // wtf -v doesn't work -- have to go through the selection
+      optionMenuGrp -e -sl $ck liqSubdivInterpolate;
+
+
+      $ck = `optionVar -q liqSubdivUVInterpolation`;
+      string $liqUVinterpModes[];
+
+      $liqUVinterpModes = {
+        "True Facevarying",
+        "New Facevarying",
+        "Facevertex"
+      };
+
+      string $menu = `optionMenuGrp -cal 1 "right" -label "UV Interpolation" liqSubdivUV`;
+      int $i;
+      for( $i = 0; $i < 3; ++$i ) {
+        menuItem -data $i -label $liqUVinterpModes[ $i ];
+      }
+      $ck += 1; // wtf -v doesn't work -- have to go through the selection
+      optionMenuGrp -e -sl $ck liqSubdivUV;
 
     setParent ..;
     separator;
@@ -60,14 +92,17 @@ global proc liquidMakeSubdivUI() {
 
 global proc liquidMakeSubdivDoIt()
 {
-    int $r  = `checkBoxGrp -q -v1 "liqSubdivWindow|c1|parameters|liqSubdiv"`;
-    optionVar -iv "liqSubdiv" $r;
+  int $r = `checkBoxGrp -q -v1 "liqSubdivWindow|c1|parameters|liqSubdiv"`;
+  optionVar -iv "liqSubdiv" $r;
 
-    $r = `checkBoxGrp -q -v1 "liqSubdivWindow|c1|parameters|liqSubdivInterpolate"`;
-    optionVar -iv "liqSubdivInterpolateBoundary" $r;
+  $r = `optionMenuGrp -q -sl "liqSubdivWindow|c1|parameters|liqSubdivInterpolate"` - 1;
+  optionVar -iv "liqSubdivInterpolateBoundary" $r;
 
-    deleteUI liqSubdivWindow;
-    liquidMakeSubdiv();
+  $r = `optionMenuGrp -q -sl "liqSubdivWindow|c1|parameters|liqSubdivUV"` - 1;
+  optionVar -iv "liqSubdivUVInterpolation" $r;
+
+  deleteUI liqSubdivWindow;
+  liquidMakeSubdiv();
 }
 
 global proc liquidMakeSubdiv() {
@@ -89,11 +124,14 @@ global proc liquidMakeSubdiv() {
     if ( `attributeQuery -node $current -ex "mtorSubdiv"` ) {
       setAttr ( $current + ".mtorSubdiv" ) true;
     }
+    if ( !`attributeQuery -node $current -ex "liqSubdivUVInterpolation"`) {
+      addAttr -ln liqSubdivUVInterpolation -at short $current;
+    }
     if ( `attributeQuery -node $current -ex "liqSubdivUVInterpolation"`) {
       setAttr ( $current + ".liqSubdivUVInterpolation" ) $fv;
     }
     if ( !`attributeQuery -node $current -ex "liqSubdivInterpolateBoundary"`) {
-      addAttr -ln liqSubdivInterpolateBoundary -at bool $current;
+      addAttr -ln liqSubdivInterpolateBoundary -at short $current;
     }
     if ( `attributeQuery -node $current -ex "liqSubdivInterpolateBoundary"`) {
       setAttr ( $current + ".liqSubdivInterpolateBoundary" ) $interp;
@@ -114,7 +152,6 @@ global proc liquidUnMakeSubdiv() {
 
     if ( `attributeQuery -node $current -ex "liqSubdivInterpolateBoundary"`)
       deleteAttr ( $current + ".liqSubdivInterpolateBoundary" );
-
   }
 }
 

@@ -81,10 +81,10 @@ class liqRibNode {
     AnimType           matXForm;
     AnimType           bodyXForm;
 
-    liqRibObj*         object( unsigned );
+    liqRibObjPtr       object( unsigned );
   //liqRibObj *        no;
 
-    MDagPath &         path();
+    MDagPath&          path();
 
     MColor             color;
     MColor             opacity;
@@ -263,7 +263,7 @@ class liqRibNode {
 private:
 
     MDagPath    DagPath;
-    liqRibObj*  objects[LIQMAXMOTIONSAMPLES];
+    vector< liqRibObjPtr > objects;
     liqRibNodePtr instance;
     MString     instanceStr;
     MString     ribGenName;

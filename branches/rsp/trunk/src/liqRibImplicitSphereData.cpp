@@ -37,49 +37,73 @@ extern "C" {
 #include <ri.h>
 }
 
-// Maya's Headers
-#include <maya/MPoint.h>
-#include <maya/MBoundingBox.h>
-#include <maya/MPlug.h>
-#include <maya/MFnDependencyNode.h>
-#include <maya/MFnDagNode.h>
-#include <maya/MStringArray.h>
+// Boost headers
+#include <boost/scoped_array.hpp>
 
+// Maya headers
+//#include <maya/MPoint.h>
+//#include <maya/MBoundingBox.h>
+#include <maya/MPlug.h>
+#include <maya/MFnDagNode.h>
+//#include <maya/MFnDagNode.h>
+//#include <maya/MStringArray.h>
+
+// Liquid headers
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
-#include <liqRibLocatorData.h>
+#include <liqRibImplicitSphereData.h>
 
 extern int debugMode;
 
 /** Create a RIB compatible representation of a Maya locator.
  */
-liqRibLocatorData::liqRibLocatorData( MObject /*locator*/ )
+liqRibImplicitSphereData::liqRibImplicitSphereData( MObject daSphere )
 {
-  LIQDEBUGPRINTF( "-> creating locator\n" );
+  LIQDEBUGPRINTF( "-> creating implicit sphere\n" );
+  MStatus status( MS::kSuccess );
+  MFnDagNode sphere( daSphere );
+  MPlug radiusPlug( sphere.findPlug( "radius", &status ) );
+
+  if( MS::kSuccess == status ) {
+    radiusPlug.getValue( radius );
+  } else {
+    radius = 1.;
+  }
+
+  addAdditionalSurfaceParameters( daSphere );
 }
 
 /** Write the RIB for this locator.
  */
-void liqRibLocatorData::write()
+void liqRibImplicitSphereData::write()
 {
-  RiTranslate( 0., 0., 0. );
+  unsigned numTokens( tokenPointerArray.size() );
+  scoped_array< RtToken > tokenArray( new RtToken[ numTokens ] );
+  scoped_array< RtPointer > pointerArray( new RtPointer[ numTokens ] );
+  assignTokenArraysV( tokenPointerArray, tokenArray.get(), pointerArray.get() );
+
+  RiSphereV( radius, -radius, radius, 360, numTokens, tokenArray.get(), pointerArray.get() );
   LIQDEBUGPRINTF( "-> writing locator" );
 }
 
 /** Compare this locator to the other for the purpose of determining
  *  if its animated.
  */
-bool liqRibLocatorData::compare( const liqRibData & otherObj ) const
+bool liqRibImplicitSphereData::compare( const liqRibData& otherObj ) const
 {
   LIQDEBUGPRINTF( "-> comparing locator\n" );
-  if ( otherObj.type() != MRT_Locator ) return false;
-  return true;
+  if( otherObj.type() == MRT_ImplicitSphere ) {
+    return ( ( liqRibImplicitSphereData* )&otherObj )->radius == radius;
+    //return true;
+  } else {
+	return false;
+  }
 }
 
 /** Return the geometry type.
  */
-ObjectType liqRibLocatorData::type() const
+ObjectType liqRibImplicitSphereData::type() const
 {
   LIQDEBUGPRINTF( "-> returning locator type\n" );
-  return MRT_Locator;
+  return MRT_ImplicitSphere;
 }

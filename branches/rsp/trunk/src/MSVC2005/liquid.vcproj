@@ -2954,6 +2954,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\liqRibImplicitSphereData.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\liqRibLightData.cpp"
 				>
 				<FileConfiguration
@@ -4695,6 +4699,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\liqRibHT.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\liqRibImplicitSphereData.h"
 				>
 			</File>
 			<File
