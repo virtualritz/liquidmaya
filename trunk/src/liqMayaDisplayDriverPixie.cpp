@@ -37,8 +37,9 @@
 
 #include "liqMayaDisplayDriverPixie.h"
 #include <errno.h>
-
 #include <iostream>
+#include "os.h"
+
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -48,6 +49,8 @@ using namespace std;
 int timeout = 30;
 static int recoverFlag=0;
 static int socketId = -1;
+
+TMutex display_mutex;
 
 int sendSockData(int s,char * data,int n);
 
@@ -74,7 +77,9 @@ void	*displayStart(const char *name,int width,int height,int numSamples,const ch
 		return NULL;
 	}
 #endif
-
+	
+	osCreateMutex(display_mutex);
+	
 	if (0 == width)
 		width = 640;
 	if (0 == height)
@@ -154,10 +159,16 @@ void	*displayStart(const char *name,int width,int height,int numSamples,const ch
 
 int		displayData(void *im,int x,int y,int w,int h,float *data) {
 	imageInfo *spec = (imageInfo*)im;
+	
+	osLock(display_mutex);
+	
 	PtDspyError status = sendData(socketId,x,x+w,y,y+h,spec->channels*sizeof(float),spec->channels,(BUCKETDATATYPE*)data);
 	if(!status){
 		displayFinish(im);
 	}
+	
+	osUnlock(display_mutex);
+	
 	return status;
 
 }
@@ -209,6 +220,8 @@ void	displayFinish(void *im) {
 	WSACleanup();
 #endif
 	closesocket(socketId);
+	
+	osCreateMutex(display_mutex);
 }
 
 
