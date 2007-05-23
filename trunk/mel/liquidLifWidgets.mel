@@ -337,8 +337,9 @@ global proc liquidAE_LifGrp2( string $label )
 
     switch( $label ) {
       case "end":
-        $gLiquid_currentAEParent = substitute("|[A-Za-z0-9_]+$", $gLiquid_currentAEParent, "" );
-        $gLiquid_currentAEParent = substitute("|[A-Za-z0-9_]+$", $gLiquid_currentAEParent, "" );
+      	$gLiquid_currentAEParent = substitute("|[A-Za-z0-9_\:]+$", $gLiquid_currentAEParent, "" );
+        $gLiquid_currentAEParent = substitute("|[A-Za-z0-9_\:]+$", $gLiquid_currentAEParent, "" );
+        
         // maybe add a test here to check we are still in the cache layout
         setParent $gLiquid_currentAEParent;
         break;
