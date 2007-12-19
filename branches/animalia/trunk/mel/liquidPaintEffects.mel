@@ -1,0 +1,93 @@
+//
+//
+// The contents of this file are subject to the Mozilla Public License Version 1.1 (the 
+// "License"); you may not use this file except in compliance with the License. You may 
+// obtain a copy of the License at http://www.mozilla.org/MPL/ 
+// 
+// Software distributed under the License is distributed on an "AS IS" basis, WITHOUT 
+// WARRANTY OF ANY KIND, either express or implied. See the License for the specific 
+// language governing rights and limitations under the License. 
+//
+// The Original Code is the Liquid Rendering Toolkit. 
+// 
+// The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
+// Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
+// 
+// Contributor(s): Berj Bannayan. 
+//
+// 
+// The RenderMan (R) Interface Procedures and Protocol are:
+// Copyright 1988, 1989, Pixar
+// All Rights Reserved
+//
+//
+// RenderMan (R) is a registered trademark of Pixar
+//
+//  Creation Date:    January 18th, 2001
+//
+//  Description:
+//  An interface for working with Renderable Curves with Liquid
+//
+
+global proc liquidAddPFXAttributes()
+{
+	string $list[] = `ls -dag -type "stroke" -sl`;
+	for( $s in $list )
+	{
+		if( !attributeExists( "tubeShader", $s ) )
+			addAttr -ln tubeShader -dt "string" $s;
+		if( !attributeExists( "leafShader", $s ) )
+			addAttr -ln leafShader -dt "string" $s;
+		if( !attributeExists( "petalShader", $s ) )
+			addAttr -ln petalShader -dt "string" $s;
+			
+		if( !attributeExists( "tubeCameraFacing", $s ) )
+			addAttr -ln tubeCameraFacing -at bool -dv true $s;
+		if( !attributeExists( "leafCameraFacing", $s ) )
+			addAttr -ln leafCameraFacing -at bool -dv true $s;
+		if( !attributeExists( "petalCameraFacing", $s ) )
+			addAttr -ln petalCameraFacing -at bool -dv true $s;
+			
+		if( !attributeExists( "tubeUniformWidth", $s ) )
+			addAttr -ln tubeUniformWidth -at bool -dv true $s;
+		if( !attributeExists( "leafUniformWidth", $s ) )
+			addAttr -ln leafUniformWidth -at bool -dv true $s;
+		if( !attributeExists( "petalUniformWidth", $s ) )
+			addAttr -ln petalUniformWidth -at bool -dv true $s;
+
+		if( !attributeExists( "curveID", $s ) )
+			addAttr -ln curveID -at bool -dv true $s;
+	}
+}
+
+global proc liquidRemovePFXAttributes()
+{
+	string $list[] = `ls -dag -type "stroke" -sl`;
+	for( $s in $list )
+	{
+		if( attributeExists( "tubeShader", $s ) )
+			deleteAttr -at tubeShader $s;
+		if( attributeExists( "leafShader", $s ) )
+			deleteAttr -at leafShader $s;
+		if( attributeExists( "petalShader", $s ) )
+			deleteAttr -at petalShader $s;
+			
+		if( attributeExists( "tubeCameraFacing", $s ) )
+			deleteAttr -at tubeCameraFacing $s;
+		if( attributeExists( "leafCameraFacing", $s ) )
+			deleteAttr -at leafCameraFacing $s;
+		if( attributeExists( "petalCameraFacing", $s ) )
+			deleteAttr -at petalCameraFacing $s;
+			
+		if( attributeExists( "tubeUniformWidth", $s ) )
+			deleteAttr -at tubeUniformWidth $s;
+		if( attributeExists( "leafUniformWidth", $s ) )
+			deleteAttr -at leafUniformWidth $s;
+		if( attributeExists( "petalUniformWidth", $s ) )
+			deleteAttr -at petalUniformWidth $s;
+
+		if( attributeExists( "curveID", $s ) )
+			deleteAttr -at curveID $s;
+	}
+}
+
