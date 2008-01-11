@@ -153,6 +153,18 @@ liqRibNode::liqRibNode( liqRibNodePtr instanceOfNode,
   rib.readArchive           = "";
   rib.delayedReadArchive    = "";
 
+  delightSSS.doScatter = false;
+  delightSSS.shadingRate = 1.0;
+  delightSSS.groupName = "";
+  delightSSS.scattering.r = 0.0;
+  delightSSS.scattering.g = 0.0;
+  delightSSS.scattering.b = 0.0;
+  delightSSS.absorption.r = 0.0;
+  delightSSS.absorption.g = 0.0;
+  delightSSS.absorption.b = 0.0;
+  delightSSS.refraction = 0.0;
+  delightSSS.scale = 1.0;
+
   invisible                 = false;
   ignoreShapes              = false;
 }
@@ -513,6 +525,46 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         if( status == MS::kSuccess )
           nPlug.getValue( motion.factor );
       }
+
+		// 3Delight sss group ---------------------------------------------------------
+		nPlug = nodePeeker.findPlug( MString( "liqDelightSSShadingRate" ), &status );
+		if( status == MS::kSuccess )
+		{
+			nPlug.getValue( delightSSS.shadingRate );
+			delightSSS.doScatter = true;
+		}
+
+		nPlug = nodePeeker.findPlug( MString( "liqDelightSSGroupName" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.groupName );
+
+		nPlug = nodePeeker.findPlug( MString( "SSScattering1" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.scattering.r );
+		nPlug = nodePeeker.findPlug( MString( "SSScattering2" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.scattering.g );
+		nPlug = nodePeeker.findPlug( MString( "SSScattering3" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.scattering.b );
+
+		nPlug = nodePeeker.findPlug( MString( "SSAbsorption1" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.absorption.r );
+		nPlug = nodePeeker.findPlug( MString( "SSAbsorption2" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.absorption.g );
+		nPlug = nodePeeker.findPlug( MString( "SSAbsorption3" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.absorption.b );
+
+		nPlug = nodePeeker.findPlug( MString( "liqDelightSSRefraction" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.refraction );
+
+		nPlug = nodePeeker.findPlug( MString( "liqDelightSSScale" ), &status );
+		if( status == MS::kSuccess )
+			nPlug.getValue( delightSSS.scale );
 
       // RIB group ---------------------------------------------------------
 

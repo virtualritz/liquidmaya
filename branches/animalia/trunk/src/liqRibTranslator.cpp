@@ -6215,12 +6215,12 @@ MStatus liqRibTranslator::objectBlock()
 
       // philippe : prman 12.5 visibility support
 
-      if( liquidRenderer.supports_RAYTRACE && liquidRenderer.supports_ADVANCED_VISIBILITY ) {
+	  if( liquidRenderer.supports_RAYTRACE && liquidRenderer.supports_ADVANCED_VISIBILITY ) {
 
         if( rt_useRayTracing && ribNode->visibility.diffuse ) {
           RtInt on( 1 );
           RiAttribute( "visibility", (RtToken) "int diffuse", &on, RI_NULL );
-        }
+		}
 
         if( rt_useRayTracing && ribNode->visibility.specular ) {
           RtInt on( 1 );
@@ -6236,7 +6236,6 @@ MStatus liqRibTranslator::objectBlock()
           RtInt on( 1 );
           RiAttribute( "visibility", (RtToken) "int camera", &on, RI_NULL );
         }
-
 
         if( rt_useRayTracing && ribNode->hitmode.diffuse != liqRibNode::hitmode::DIFFUSE_HITMODE_PRIMITIVE ) {
           RtString mode;
@@ -6292,7 +6291,7 @@ MStatus liqRibTranslator::objectBlock()
 
       }
 
-      if( liquidRenderer.supports_RAYTRACE ) {
+	  if( liquidRenderer.supports_RAYTRACE ) {
 
         if( ribNode->irradiance.shadingRate != 1.0f ) {
           RtFloat rate = ribNode->irradiance.shadingRate;
@@ -6376,6 +6375,34 @@ MStatus liqRibTranslator::objectBlock()
         }
 
       }
+
+		// 3Delight sss group
+		if( ribNode->delightSSS.doScatter )
+		{
+			RtString groupName = const_cast< char* >( ribNode->delightSSS.groupName.asChar() );
+			RiAttribute( "visibility", (RtToken) "string subsurface", &groupName, RI_NULL );
+
+			RtColor scattering, absorption;
+			scattering[0] = ribNode->delightSSS.scattering.r;
+			scattering[1] = ribNode->delightSSS.scattering.g;
+			scattering[2] = ribNode->delightSSS.scattering.b;
+
+			absorption[0] = ribNode->delightSSS.absorption.r;
+			absorption[1] = ribNode->delightSSS.absorption.g;
+			absorption[2] = ribNode->delightSSS.absorption.b;
+
+			RtFloat refractionindex = ribNode->delightSSS.refraction;
+			RtFloat shadingrate = ribNode->delightSSS.shadingRate;
+			RtFloat scale = ribNode->delightSSS.scale;
+
+			RiAttribute( "subsurface",
+				(RtToken) "scattering", &scattering,
+				(RtToken) "absorption", &absorption,
+				(RtToken) "refractionindex", &refractionindex,
+				(RtToken) "shadingrate", &shadingrate,
+				(RtToken) "scale", &scale, RI_NULL );
+		}
+
 
       if( ribNode->motion.deformationBlur || ribNode->motion.transformationBlur
           && ribNode->motion.factor != 1.0f ) {
