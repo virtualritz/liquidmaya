@@ -232,16 +232,15 @@ class liqRibNode {
       string membership;
     } grouping;
 
-    struct delight {
-      struct subSurface{
+	struct delightSSS {
+		bool doScatter;
+		float  shadingRate;
         MString groupName;
         MColor  scattering;
         MColor  absorption;
         float  refraction;
         float  scale;
-        float  shadingRate;
-      } subSurface;
-    } delight;
+    } delightSSS;
 
     struct subdivMesh {
       bool  render;
