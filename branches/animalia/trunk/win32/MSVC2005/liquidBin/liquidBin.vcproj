@@ -158,7 +158,7 @@
 				LinkLibraryDependencies="false"
 				UseLibraryDependencyInputs="false"
 				UseUnicodeResponseFiles="true"
-				AdditionalDependencies="ri.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib ws2_32.lib shell32.lib"
+				AdditionalDependencies="sdr.lib ri.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib ws2_32.lib shell32.lib"
 				OutputFile="../../bin/maya7/Pixie/liquid.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION)/lib&quot;;&quot;$(PIXIEHOME)/lib&quot;;&quot;$(INCLUDE)/../lib&quot;"

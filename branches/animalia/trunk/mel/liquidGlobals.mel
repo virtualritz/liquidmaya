@@ -467,7 +467,7 @@ global proc liquidInitGlobalVals()
     ,"binaryOutput",                "bool",   false
     ,"compressedOutput",            "bool",   false
     ,"renderAllCurves",             "bool",   false
-    ,"exclusiveLightLinking",       "bool",   false
+    ,"illuminateByDefault",			"bool",   false
     ,"liquidSetLightLinking",       "bool",   false
     ,"outputMeshUVs",               "bool",   false
     ,"ignoreSurfaces",              "bool",   false
@@ -2821,7 +2821,7 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
         liquidShowBoolGlobal "outputComments"    "Detailed Comments";
         frameLayout -bs "etchedIn" -l "Light Linking" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowBoolGlobal "exclusiveLightLinking" "Exclusive Light Linking";
+            liquidShowBoolGlobal "illuminateByDefault" "Illuminate By Default";
             liquidShowBoolGlobal "liquidSetLightLinking" "Liquid Set Light Linking";
           setParent ..;
         setParent ..;

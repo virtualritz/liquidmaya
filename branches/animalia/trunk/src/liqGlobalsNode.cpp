@@ -134,7 +134,7 @@ MObject liqGlobalsNode::aBinaryOutput;
 MObject liqGlobalsNode::aCompressedOutput;
 MObject liqGlobalsNode::aRenderAllCurves;
 MObject liqGlobalsNode::aOutputMeshUVs;
-MObject liqGlobalsNode::aExclusiveLightLinking;
+MObject liqGlobalsNode::aIlluminateByDefault;
 MObject liqGlobalsNode::aLiquidSetLightLinking;
 MObject liqGlobalsNode::aIgnoreSurfaces;
 MObject liqGlobalsNode::aIgnoreDisplacements;
@@ -564,7 +564,7 @@ MStatus liqGlobalsNode::initialize()
           CREATE_BOOL( nAttr,  aRenderAllCurves,            "renderAllCurves",              "rac",    false );
           CREATE_BOOL( nAttr,  aOutputMeshUVs,              "outputMeshUVs",                "muv",    false );
  
-		  CREATE_BOOL( nAttr,  aExclusiveLightLinking,      "exclusiveLightLinking",        "exll",   true );
+		  CREATE_BOOL( nAttr,  aIlluminateByDefault,      "illuminateByDefault",        "ilbd",   true );
 		  CREATE_BOOL( nAttr,  aLiquidSetLightLinking,      "liquidSetLightLinking",        "setll",   false );
 		  CREATE_BOOL( nAttr,  aIgnoreSurfaces,             "ignoreSurfaces",               "isrf",   false );
           CREATE_BOOL( nAttr,  aIgnoreDisplacements,        "ignoreDisplacements",          "idsp",   false );
