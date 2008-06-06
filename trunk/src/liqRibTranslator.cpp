@@ -457,7 +457,7 @@ liqRibTranslator::liqRibTranslator()
   m_rgamma = 1.0;
   m_outputHeroPass = true;
   m_outputShadowPass = false;
-  m_exclusiveLightLinking = false;
+  m_illuminateByDefault = false;
   m_liquidSetLightLinking = false;
   m_ignoreLights = false;
   m_ignoreSurfaces = false;
@@ -568,7 +568,7 @@ liqRibTranslator::liqRibTranslator()
 #elif defined( DELIGHT )
   m_renderCommand = "renderdl";
 #elif defined( PIXIE )
-//  m_renderCommand = "rndr";
+  m_renderCommand = "rndr";
 #elif defined( PRMAN )
   #ifdef _WIN32
   m_renderCommand = "prman";
@@ -1937,8 +1937,8 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "renderAllCurves", &gStatus );
   if( gStatus == MS::kSuccess ) gPlug.getValue( m_renderAllCurves );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "exclusiveLightLinking", &gStatus );
-  if( gStatus == MS::kSuccess ) gPlug.getValue( m_exclusiveLightLinking );
+  gPlug = rGlobalNode.findPlug( "illuminateByDefault", &gStatus );
+  if( gStatus == MS::kSuccess ) gPlug.getValue( m_illuminateByDefault );
   gStatus.clear();
   gPlug = rGlobalNode.findPlug( "liquidSetLightLinking", &gStatus );
   if( gStatus == MS::kSuccess ) gPlug.getValue( m_liquidSetLightLinking );
@@ -5937,7 +5937,7 @@ MStatus liqRibTranslator::objectBlock()
 			ribNode->getSetLights( linkLights );
 		}
 		else
-			ribNode->getLinkLights( linkLights, m_exclusiveLightLinking );
+			ribNode->getLinkLights( linkLights, m_illuminateByDefault );
 		
 		for( unsigned i( 0 ); i < linkLights.length(); i++ )
 		{
@@ -5951,7 +5951,7 @@ MStatus liqRibTranslator::objectBlock()
 				liqRibNodePtr  ln( htable->find( lightFnDag.fullPathName(), nodeDagPath, MRT_Light ) );
 				if( NULL != ln )
 				{
-					if( m_exclusiveLightLinking )
+					if( m_illuminateByDefault )
 						RiIlluminate( ln->object(0)->lightHandle(), RI_FALSE );
 					else
 						RiIlluminate( ln->object(0)->lightHandle(), RI_TRUE );
@@ -7110,7 +7110,7 @@ MStatus liqRibTranslator::lightBlock()
 
 			// ...so we have to switch it on again explicitly
 			// if exclusive Lightlinking is set
-			if( m_exclusiveLightLinking )
+			if( m_illuminateByDefault )
 				RiIlluminate( ribNode->object(0)->lightHandle(), 1 );
 			else
 				RiIlluminate( ribNode->object(0)->lightHandle(), 0 );

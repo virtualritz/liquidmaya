@@ -141,7 +141,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aCompressedOutput;
     static MObject aRenderAllCurves;
     static MObject aOutputMeshUVs;
-	static MObject aExclusiveLightLinking;
+	static MObject aIlluminateByDefault;
 	static MObject aLiquidSetLightLinking;
 	static MObject aIgnoreSurfaces;
     static MObject aIgnoreDisplacements;

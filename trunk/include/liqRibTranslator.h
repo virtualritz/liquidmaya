@@ -310,7 +310,7 @@ private :
   bool m_renderSelected;
   bool m_exportReadArchive;
   bool m_renderAllCurves;
-  bool m_exclusiveLightLinking;
+  bool m_illuminateByDefault;
   bool m_liquidSetLightLinking;
   bool m_ignoreLights;
   bool m_ignoreSurfaces;
