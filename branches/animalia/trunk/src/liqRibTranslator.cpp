@@ -568,7 +568,7 @@ liqRibTranslator::liqRibTranslator()
 #elif defined( DELIGHT )
   m_renderCommand = "renderdl";
 #elif defined( PIXIE )
-  m_renderCommand = "rndr";
+//  m_renderCommand = "rndr";
 #elif defined( PRMAN )
   #ifdef _WIN32
   m_renderCommand = "prman";
@@ -4513,7 +4513,7 @@ MStatus liqRibTranslator::ribPrologue()
         case pfSincFilter:
           RiPixelFilter( RiSincFilter, m_rFilterX, m_rFilterY );
           break;
-#if defined ( DELIGHT ) || defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
+#if defined ( DELIGHT ) || defined ( PRMAN )
         case pfBlackmanHarrisFilter:
           RiArchiveRecord( RI_VERBATIM, "PixelFilter \"blackman-harris\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
@@ -4524,15 +4524,15 @@ MStatus liqRibTranslator::ribPrologue()
           RiArchiveRecord( RI_VERBATIM, "PixelFilter \"separable-catmull-rom\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
         case pfBesselFilter:
-          RiPixelFilter( RiBesselFilter, m_rFilterX, m_rFilterY );
+          RiArchiveRecord( RI_VERBATIM, "PixelFilter \"bessel\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
 #endif
-#if defined ( PRMAN ) || defined ( GENERIC_RIBLIB )
+#if defined ( PRMAN )
         case pfLanczosFilter:
-          RiPixelFilter( RiLanczosFilter, m_rFilterX, m_rFilterY );
+          RiArchiveRecord( RI_VERBATIM, "PixelFilter \"lanczos\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
         case pfDiskFilter:
-          RiPixelFilter( RiDiskFilter, m_rFilterX, m_rFilterY );
+          RiArchiveRecord( RI_VERBATIM, "PixelFilter \"disk\" %g %g\n", m_rFilterX, m_rFilterY);
           break;
 #endif
         default:

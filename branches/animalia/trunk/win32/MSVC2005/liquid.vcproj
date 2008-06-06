@@ -149,11 +149,12 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;PIXIE;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION)/include&quot;;&quot;$(PIXIEHOME)/include&quot;;&quot;$(INCLUDE)&quot;"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="2"
 				RuntimeTypeInfo="true"
 				PrecompiledHeaderFile="../bin/maya7/Pixie/win32/Release/Objects/liquid.pch"
 				AssemblerListingLocation="../bin/maya7/Pixie/win32/Release/Objects/"
@@ -175,12 +176,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				AdditionalDependencies="ri.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib ws2_32.lib shell32.lib"
 				OutputFile="../bin/maya7/Pixie/liquid.mll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="../bin/maya7/win32lib"
-				IgnoreDefaultLibraryNames=""
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION)/lib&quot;;&quot;$(PIXIEHOME)/lib&quot;;&quot;$(INCLUDE)/../lib&quot;"
 				ProgramDatabaseFile="../bin/maya7/Pixie/win32/Release/Objects/liquid.pdb"
 				ImportLibrary="../bin/maya7/Pixie/win32/Release/Objects/liquid.lib"
 				TargetMachine="1"
@@ -190,6 +190,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -546,11 +547,12 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,$(PIXIEHOME)/include"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;PIXIE;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION)/include&quot;;&quot;$(PIXIEHOME)/include&quot;;&quot;$(INCLUDE)&quot;"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="2"
 				RuntimeTypeInfo="true"
 				PrecompiledHeaderFile="../bin/maya7/Pixie/win32/Release/Objects/liquid.pch"
 				AssemblerListingLocation="../bin/maya7/Pixie/win32/Release/Objects/"
@@ -572,11 +574,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ri.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				AdditionalDependencies="ri.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib ws2_32.lib shell32.lib"
 				OutputFile="../bin/maya7/Pixie/liquid.mll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(PIXIEHOME)/lib"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION)/lib&quot;;&quot;$(PIXIEHOME)/lib&quot;;&quot;$(INCLUDE)/../lib&quot;"
 				ProgramDatabaseFile="../bin/maya7/Pixie/win32/Release/Objects/liquid.pdb"
 				ImportLibrary="../bin/maya7/Pixie/win32/Release/Objects/liquid.lib"
 				TargetMachine="1"
@@ -586,6 +588,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

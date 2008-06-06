@@ -192,8 +192,8 @@ Global
 		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Debug|Win32.Build.0 = 3Delight Release 2|Win32
 		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Generic ribLib Release|Win32.ActiveCfg = Pixie Generic ribLib Release|Win32
 		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Generic ribLib Release|Win32.Build.0 = Pixie Generic ribLib Release|Win32
-		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Release|Win32.ActiveCfg = Pixie Generic ribLib Release|Win32
-		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Release|Win32.Build.0 = Pixie Generic ribLib Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Release|Win32.ActiveCfg = Pixie Release|Win32
+		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Pixie Release|Win32.Build.0 = Pixie Release|Win32
 		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Prman Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
 		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Prman Release|Win32.Build.0 = Air Generic ribLib Release|Win32
 		{C72B3D60-A418-41EF-9B83-0F16430BC6CF}.Release|Win32.ActiveCfg = Air Generic ribLib Release|Win32
