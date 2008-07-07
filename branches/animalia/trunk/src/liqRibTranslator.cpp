@@ -2439,9 +2439,6 @@ MString liqRibTranslator::generateFileName( fileGenMode mode, const structJob& j
 		else
 			filename += sanitizeNodeName( job.name );
 
-//		MGlobal::displayInfo( MString( "name: " ) + job.name );
-//		MGlobal::displayInfo( MString( "texName: " ) + job.texName );
-
 		filename += job.deepShadows ? "DSH" : "SHD";
 		if( job.isPoint && ( job.deepShadows || !job.shadowAggregation ) )
 		{
@@ -5406,9 +5403,6 @@ MStatus liqRibTranslator::framePrologue( long lframe )
 				}
 				else
 				{
-			//		MGlobal::displayInfo( MString( "imageName: " ) + liqglo_currentJob.imageName.asChar() );
-			//		MGlobal::displayInfo( MString( "texName: " ) + liqglo_currentJob.texName.asChar() );
-			//		MGlobal::displayInfo( MString( "aggr: " ) + liqglo_currentJob.shadowAggregation );
 					RtInt aggregate( liqglo_currentJob.shadowAggregation );
 					RiDisplay( const_cast< char* >( liqglo_currentJob.imageName.asChar() ),
 						const_cast< char* >( liqglo_currentJob.format.asChar() ),
@@ -6497,19 +6491,20 @@ MStatus liqRibTranslator::objectBlock()
             }
 
             if( outputSurfaceShader ) {
-              scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
-              scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
-              assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
 
-              char* shaderFileName;
-              LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
+				scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
+				scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
+				assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
 
-              // check shader space transformation
-              if( currentShader.shaderSpace != "" ) {
-                RiTransformBegin();
-                RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
-              }
+				char* shaderFileName;
+				LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
 
+				// check shader space transformation
+				if( currentShader.shaderSpace != "" )
+				{
+					RiTransformBegin();
+					RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
+				}
 				// increment shader name if output index is set - Alf
 				if( shaderFileName != "" )
 				{
@@ -6526,10 +6521,11 @@ MStatus liqRibTranslator::objectBlock()
 						shaderFileName = ( char* )incrName.asChar();
 					}
 				}
-
-              // output shader
-              RiSurfaceV ( shaderFileName, currentShader.tokenPointerArray.size(), tokenArray.get(), pointerArray.get() );
-              if( currentShader.shaderSpace != "" ) RiTransformEnd();
+				// output shader
+				// its one less as the tokenPointerArray has a preset size of 1 not 0
+				int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
+				RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+				if( currentShader.shaderSpace != "" ) RiTransformEnd();
             }
         }
 
@@ -6783,7 +6779,8 @@ MStatus liqRibTranslator::objectBlock()
             RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
         }
         // output shader
-        RiDisplacementV ( shaderFileName, currentShader.tokenPointerArray.size(), tokenArray.get(), pointerArray.get() );
+		int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
+        RiDisplacementV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
         if( currentShader.shaderSpace != "" ) RiTransformEnd();
       }
     }

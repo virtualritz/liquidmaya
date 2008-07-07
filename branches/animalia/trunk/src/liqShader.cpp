@@ -35,7 +35,6 @@
 
 extern int debugMode;
 
-
 liqShader::liqShader()
 {
   //numTPV                = 0;
@@ -83,262 +82,298 @@ liqShader::liqShader( const liqShader& src )
 
 liqShader::liqShader( MObject shaderObj )
 {
-  MString rmShaderStr;
-  MStatus status;
+	MString rmShaderStr;
+	MStatus status;
 
-  MFnDependencyNode shaderNode( shaderObj );
-  MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
-  rmanShaderNamePlug.getValue( rmShaderStr );
+	MFnDependencyNode shaderNode( shaderObj );
+	MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
+	rmanShaderNamePlug.getValue( rmShaderStr );
 
-  LIQDEBUGPRINTF( "-> Using Renderman Shader %s. \n", rmShaderStr.asChar() );
+	LIQDEBUGPRINTF( "-> Using Renderman Shader %s. \n", rmShaderStr.asChar() );
 
-  unsigned numArgs;
-  //numTPV = 0;
-  hasShadingRate = false;
-  hasDisplacementBound = false;
-  outputInShadow = false;
-  hasErrors = false;
-  tokenPointerArray.push_back( liqTokenPointer() );
+	unsigned numArgs;
+	//numTPV = 0;
+	hasShadingRate = false;
+	hasDisplacementBound = false;
+	outputInShadow = false;
+	hasErrors = false;
+	tokenPointerArray.push_back( liqTokenPointer() );
 
-  // if this shader instance isn't currently used already then load it into the
-  // lookup set it as my slo lookup
-  name = shaderNode.name().asChar();
-  file = rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar();
+	// if this shader instance isn't currently used already then load it into the
+	// lookup set it as my slo lookup
+	name = shaderNode.name().asChar();
+	file = rmShaderStr.substring( 0, rmShaderStr.length() - 5 ).asChar();
 
-  rmColor[0]            = 1.0;
-  rmColor[1]            = 1.0;
-  rmColor[2]            = 1.0;
-  rmOpacity[0]          = 1.0;
-  rmOpacity[1]          = 1.0;
-  rmOpacity[2]          = 1.0;
+	rmColor[0]            = 1.0;
+	rmColor[1]            = 1.0;
+	rmColor[2]            = 1.0;
+	rmOpacity[0]          = 1.0;
+	rmOpacity[1]          = 1.0;
+	rmOpacity[2]          = 1.0;
 
-  liqGetSloInfo shaderInfo;
+	liqGetSloInfo shaderInfo;
 
-// commented out for it generates wrong errors - Alf
-  int success = ( shaderInfo.setShaderNode( shaderNode ) );
-  if ( !success ) {
-//  liquidMessage( "Problem using shader '" + string( shaderNode.name().asChar() ) + "'", messageError );
-    //rmColor[0] = 1.0;
-    //rmColor[1] = 0.0;
-    //rmColor[2] = 0.0;
-//  name = "plastic";
-    //numTPV = 0;
-//  hasErrors = true;
-  } else {
-    /* Used to handling shading rates set in the surface shader,
-    this is a useful way for shader writers to ensure that their
-    shaders are always rendered as they were designed.  This value
-    overrides the global shading rate but gets overridden with the
-    node specific shading rate. */
+// commented out for it generates errors - Alf
+	int success = ( shaderInfo.setShaderNode( shaderNode ) );
+	if ( !success )
+	{
+		liquidMessage( "Problem using shader '" + string( shaderNode.name().asChar() ) + "'", messageError );
+		rmColor[0] = 1.0;
+		rmColor[1] = 0.0;
+		rmColor[2] = 0.0;
+		name = "plastic";
+//		numTPV = 0;
+		hasErrors = true;
+	}
+	else
+	{
+		/* Used to handling shading rates set in the surface shader,
+		this is a useful way for shader writers to ensure that their
+		shaders are always rendered as they were designed.  This value
+		overrides the global shading rate but gets overridden with the
+		node specific shading rate. */
 
-    shader_type = shaderInfo.getType();
+		shader_type = shaderInfo.getType();
 
-    // Set RiColor and RiOpacity
-    status.clear();
-    MPlug colorPlug = shaderNode.findPlug( "color" );
-    if ( MS::kSuccess == status ) {
-      colorPlug.child(0).getValue( rmColor[0] );
-      colorPlug.child(1).getValue( rmColor[1] );
-      colorPlug.child(2).getValue( rmColor[2] );
-    }
+		// Set RiColor and RiOpacity
+		status.clear();
+		MPlug colorPlug = shaderNode.findPlug( "color" );
+		if ( MS::kSuccess == status )
+		{
+			colorPlug.child(0).getValue( rmColor[0] );
+			colorPlug.child(1).getValue( rmColor[1] );
+			colorPlug.child(2).getValue( rmColor[2] );
+		}
 
-    status.clear();
-    MPlug opacityPlug( shaderNode.findPlug( "opacity" ) );
-    // Moritz: changed opacity from float to color in MEL
-    if ( MS::kSuccess == status ) {
-      opacityPlug.child(0).getValue( rmOpacity[0] );
-      opacityPlug.child(1).getValue( rmOpacity[1] );
-      opacityPlug.child(2).getValue( rmOpacity[2] );
-    }
+		status.clear();
+		MPlug opacityPlug( shaderNode.findPlug( "opacity" ) );
+		// Moritz: changed opacity from float to color in MEL
+		if ( MS::kSuccess == status )
+		{
+		  opacityPlug.child(0).getValue( rmOpacity[0] );
+		  opacityPlug.child(1).getValue( rmOpacity[1] );
+		  opacityPlug.child(2).getValue( rmOpacity[2] );
+		}
 
-    status.clear();
-    MPlug shaderSpacePlug( shaderNode.findPlug( "shaderSpace" ) );
-    if ( MS::kSuccess == status ) {
-      shaderSpacePlug.getValue( shaderSpace );
-    }
+		status.clear();
+		MPlug shaderSpacePlug( shaderNode.findPlug( "shaderSpace" ) );
+		if ( MS::kSuccess == status )
+		{
+			shaderSpacePlug.getValue( shaderSpace );
+		}
 
-    status.clear();
-    MPlug outputInShadowPlug( shaderNode.findPlug( "outputInShadow" ) );
-    if ( MS::kSuccess == status ) {
-      outputInShadowPlug.getValue( outputInShadow );
-    }
+		status.clear();
+		MPlug outputInShadowPlug( shaderNode.findPlug( "outputInShadow" ) );
+		if ( MS::kSuccess == status )
+		{
+			outputInShadowPlug.getValue( outputInShadow );
+		}
 
-    // find the parameter details and declare them in the rib stream
-    numArgs = shaderInfo.getNumParam();
-    for (unsigned int i( 0 ); i < numArgs; i++ ) {
-      if ( shaderInfo.getArgName( i ) == "liquidShadingRate" ) {
-        // BUGFIX: Monday 6th August - fixed shading rate bug where it only accepted the default value
-        MPlug floatPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-        if ( MS::kSuccess == status ) {
-          float floatPlugVal;
-          floatPlug.getValue( floatPlugVal );
-          shadingRate = floatPlugVal;
-        } else {
-          shadingRate = shaderInfo.getArgFloatDefault( i, 0 );
-        }
-        hasShadingRate = true;
-        continue;
-      }
-      switch ( shaderInfo.getArgDetail(i) ) {
-        case SHADER_DETAIL_UNIFORM: {
-          tokenPointerArray.rbegin()->setDetailType( rUniform );
-          break;
-        }
-        case SHADER_DETAIL_VARYING: {
-          tokenPointerArray.rbegin()->setDetailType( rVarying);
-          break;
-        }
-        case SHADER_DETAIL_UNKNOWN:
-          tokenPointerArray.rbegin()->setDetailType( rUniform);
-          break;
-      }
-	  switch ( shaderInfo.getArgType( i ) ) {
-        case SHADER_TYPE_STRING: {
-	      MPlug stringPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
-          if ( MS::kSuccess == status ) {
-            unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-            if ( arraySize > 0 ) {
-              bool isArrayAttr( stringPlug.isArray( &status ) );
-              if ( isArrayAttr ) {
-                MPlug plugObj;
-                tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString, arraySize );
-                for( unsigned int kk( 0 ); kk < arraySize; kk++ ) {
-                  plugObj = stringPlug.elementByLogicalIndex( kk, &status );
-                  if ( MS::kSuccess == status ) {
-                    MString stringPlugVal;
-                    plugObj.getValue( stringPlugVal );
-                    MString stringVal = parseString( stringPlugVal );
-                    tokenPointerArray.rbegin()->setTokenString( kk, stringVal.asChar() );
-                  }
-                }
-                tokenPointerArray.push_back( liqTokenPointer() );
-              }
-            } else {
-              MString stringPlugVal;
-              stringPlug.getValue( stringPlugVal );
-              MString stringDefault( shaderInfo.getArgStringDefault( i, 0 ) );
-              if ( stringPlugVal != stringDefault ) {
-                MString stringVal( parseString( stringPlugVal ) );
-				cerr << stringVal.asChar() << endl;
-                tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString );
-                tokenPointerArray.rbegin()->setTokenString( 0, stringVal.asChar() );
-                tokenPointerArray.push_back( liqTokenPointer() );
-              }
-            }
-          }
-          break;
-        }
-        case SHADER_TYPE_SCALAR: {
-          MPlug floatPlug( shaderNode.findPlug( shaderInfo.getArgName( i ), &status ) );
-          if ( MS::kSuccess == status ) {
-            unsigned arraySize( shaderInfo.getArgArraySize( i ) );
-            if ( arraySize ) {
+		// find the parameter details and declare them in the rib stream
+		numArgs = shaderInfo.getNumParam();
+		for (unsigned int i( 0 ); i < numArgs; i++ )
+		{
+			if ( shaderInfo.getArgName( i ) == "liquidShadingRate" )
+			{
+				// BUGFIX: Monday 6th August - fixed shading rate bug where it only accepted the default value
+				MPlug floatPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
+				if ( MS::kSuccess == status )
+				{
+					float floatPlugVal;
+					floatPlug.getValue( floatPlugVal );
+					shadingRate = floatPlugVal;
+				}
+				else
+					shadingRate = shaderInfo.getArgFloatDefault( i, 0 );
+				
+				hasShadingRate = true;
+				continue;
+			}
+			switch ( shaderInfo.getArgDetail(i) )
+			{
+				case SHADER_DETAIL_UNIFORM:
+				{
+					tokenPointerArray.rbegin()->setDetailType( rUniform );
+					break;
+				}
+				case SHADER_DETAIL_VARYING:
+				{
+					tokenPointerArray.rbegin()->setDetailType( rVarying);
+					break;
+				}
+				case SHADER_DETAIL_UNKNOWN:
+					tokenPointerArray.rbegin()->setDetailType( rUniform);
+					break;
+			}
+			switch ( shaderInfo.getArgType( i ) )
+			{
+				case SHADER_TYPE_STRING:
+				{
+					MPlug stringPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
+					if ( MS::kSuccess == status )
+					{
+						unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
+						if ( arraySize > 0 ) 
+						{
+							bool isArrayAttr( stringPlug.isArray( &status ) );
+							if ( isArrayAttr )
+							{
+								MPlug plugObj;
+								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString, arraySize );
+								for( unsigned int kk( 0 ); kk < arraySize; kk++ )
+								{
+									plugObj = stringPlug.elementByLogicalIndex( kk, &status );
+									if ( MS::kSuccess == status )
+									{
+										MString stringPlugVal;
+										plugObj.getValue( stringPlugVal );
+										MString stringVal = parseString( stringPlugVal );
+										tokenPointerArray.rbegin()->setTokenString( kk, stringVal.asChar() );
+									}
+								}
+								tokenPointerArray.push_back( liqTokenPointer() );
+							}
+						}
+						else
+						{
+							MString stringPlugVal;
+							stringPlug.getValue( stringPlugVal );
+							MString stringDefault( shaderInfo.getArgStringDefault( i, 0 ) );
+							if ( stringPlugVal != stringDefault )
+							{
+								MString stringVal( parseString( stringPlugVal ) );
+								cerr << stringVal.asChar() << endl;
+								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString );
+								tokenPointerArray.rbegin()->setTokenString( 0, stringVal.asChar() );
+								tokenPointerArray.push_back( liqTokenPointer() );
+							}
+						}
+					}
+					break;
+				}
+				case SHADER_TYPE_SCALAR:
+				{
+					MPlug floatPlug( shaderNode.findPlug( shaderInfo.getArgName( i ), &status ) );
+					if ( MS::kSuccess == status )
+					{
+						unsigned arraySize( shaderInfo.getArgArraySize( i ) );
+						if ( arraySize )
+						{
+							bool isArrayAttr( floatPlug.isArray( &status ) );
+							if ( isArrayAttr )
+							{
+								// philippe : new way to store float arrays as multi attr
+								MPlug plugObj;
+								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat, false, true, arraySize );
+								for( unsigned kk( 0 ); kk < arraySize; kk++ )
+								{
+									plugObj = floatPlug.elementByLogicalIndex( kk, &status );
+									if ( MS::kSuccess == status )
+									{
+										float x;
+										plugObj.getValue( x );
+										tokenPointerArray.rbegin()->setTokenFloat( kk, x );
+									}
+								}
+							}
+							else
+							{
+								// philippe : old way to store float arrays as floatArray attr
+								MObject plugObj;
+								floatPlug.getValue( plugObj );
+								MFnDoubleArrayData fnDoubleArrayData( plugObj );
+								const MDoubleArray& doubleArrayData( fnDoubleArrayData.array( &status ) );
+								// Hmmmmmmm Really a uArray ?
+								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat, false, true, arraySize );
+								for( unsigned kk( 0 ); kk < arraySize; kk++ )
+								{
+									tokenPointerArray.rbegin()->setTokenFloat( kk, ( float )doubleArrayData[ kk ] );
+								}
 
-              bool isArrayAttr( floatPlug.isArray( &status ) );
-              if ( isArrayAttr ) {
-
-                // philippe : new way to store float arrays as multi attr
-                MPlug plugObj;
-                tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat, false, true, arraySize );
-                for( unsigned kk( 0 ); kk < arraySize; kk++ ) {
-                  plugObj = floatPlug.elementByLogicalIndex( kk, &status );
-                  if ( MS::kSuccess == status ) {
-                    float x;
-                    plugObj.getValue( x );
-                    tokenPointerArray.rbegin()->setTokenFloat( kk, x );
-                  }
-                }
-              } else {
-                // philippe : old way to store float arrays as floatArray attr
-                MObject plugObj;
-                floatPlug.getValue( plugObj );
-                MFnDoubleArrayData fnDoubleArrayData( plugObj );
-                const MDoubleArray& doubleArrayData( fnDoubleArrayData.array( &status ) );
-                // Hmmmmmmm Really a uArray ?
-                tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat, false, true, arraySize );
-                for( unsigned kk( 0 ); kk < arraySize; kk++ ) {
-                  tokenPointerArray.rbegin()->setTokenFloat( kk, ( float )doubleArrayData[ kk ] );
-                }
-
-              }
-            } else {
-              float floatPlugVal;
-              floatPlug.getValue( floatPlugVal );
-              tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat );
-              tokenPointerArray.rbegin()->setTokenFloat( 0, floatPlugVal );
-            }
-            tokenPointerArray.push_back( liqTokenPointer() );
-          }
-          break;
-        }
-        case SHADER_TYPE_COLOR: {
-          unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-          if ( arraySize > 0 ) {
-            //fprintf( stderr, "Got %i colors in array !\n", arraySize );
-            status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor, arraySize );
-            //fprintf( stderr, "Done with color array !\n", arraySize );
-          } else {
-            status = liqShaderParseVectorAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor );
-          }
-          break;
-        }
-        case SHADER_TYPE_POINT: {
-          unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-          if ( arraySize > 0 ) {
-            status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rPoint, arraySize );
-          } else {
-            status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rPoint );
-          }
-          break;
-        }
-        case SHADER_TYPE_VECTOR: {
-          unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-          if ( arraySize > 0 ) {
-            status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rVector, arraySize );
-          } else {
-            status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rVector );
-          }
-          break;
-        }
-        case SHADER_TYPE_NORMAL: {
-          unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-          if ( arraySize > 0 ) {
-            status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rNormal, arraySize );
-          } else {
-            status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rNormal );
-          }
-          break;
-        }
-        case SHADER_TYPE_MATRIX: {
-          liquidMessage( "WHAT IS THE MATRIX!", messageError );
-          break;
-        }
-        case SHADER_TYPE_UNKNOWN :
-        default:
-          liquidMessage( "Unknown shader type", messageError );
-          break;
-        }
-    }
-  }
-  shaderInfo.resetIt();
+							}
+						}
+						else
+						{
+							float floatPlugVal;
+							floatPlug.getValue( floatPlugVal );
+							tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat );
+							tokenPointerArray.rbegin()->setTokenFloat( 0, floatPlugVal );
+						}
+						tokenPointerArray.push_back( liqTokenPointer() );
+					}
+					break;
+				}
+				case SHADER_TYPE_COLOR:
+				{
+					unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
+					if ( arraySize > 0 )
+					{
+						//fprintf( stderr, "Got %i colors in array !\n", arraySize );
+						status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor, arraySize );
+						//fprintf( stderr, "Done with color array !\n", arraySize );
+					} else
+						status = liqShaderParseVectorAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor );
+					break;
+				}
+				case SHADER_TYPE_POINT:
+				{
+					unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
+					if ( arraySize > 0 )
+						status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rPoint, arraySize );
+					else
+						status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rPoint );
+					break;
+				}
+				case SHADER_TYPE_VECTOR:
+				{
+					unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
+					if ( arraySize > 0 )
+						status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rVector, arraySize );
+					else
+						status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rVector );
+					break;
+				}
+				case SHADER_TYPE_NORMAL:
+				{
+					unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
+					if ( arraySize > 0 )
+						status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rNormal, arraySize );
+					else
+						status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rNormal );
+					break;
+				}
+				case SHADER_TYPE_MATRIX:
+				{
+					liquidMessage( "WHAT IS THE MATRIX!", messageError );
+					break;
+				}
+				case SHADER_TYPE_UNKNOWN :
+				default:
+					liquidMessage( "Unknown shader type", messageError );
+					break;
+			}
+		}
+	}
+	shaderInfo.resetIt();
 }
 
 MStatus liqShader::liqShaderParseVectorAttr ( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType )
 {
-  MStatus status( MS::kSuccess );
+	MStatus status( MS::kSuccess );
 
-  MPlug triplePlug( shaderNode.findPlug( argName.c_str(), &status ) );
+	MPlug triplePlug( shaderNode.findPlug( argName.c_str(), &status ) );
 
-  if ( MS::kSuccess == status ) {
-    float x, y, z;
-    tokenPointerArray.rbegin()->set( argName.c_str(), pType );
-    triplePlug.child( 0 ).getValue( x );
-    triplePlug.child( 1 ).getValue( y );
-    triplePlug.child( 2 ).getValue( z );
-    tokenPointerArray.rbegin()->setTokenFloat( 0, x, y, z );
+	if ( MS::kSuccess == status )
+	{
+		float x, y, z;
+		tokenPointerArray.rbegin()->set( argName.c_str(), pType );
+		triplePlug.child( 0 ).getValue( x );
+		triplePlug.child( 1 ).getValue( y );
+		triplePlug.child( 2 ).getValue( z );
+		tokenPointerArray.rbegin()->setTokenFloat( 0, x, y, z );
 
-    tokenPointerArray.push_back( liqTokenPointer() );
-  }
+		tokenPointerArray.push_back( liqTokenPointer() );
+	}
   return status;
 }
 

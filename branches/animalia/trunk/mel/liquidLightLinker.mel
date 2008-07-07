@@ -29,7 +29,7 @@ global proc string LLL_lightCentricUI()
 	string $toolName = "liquidLightLinker";
     string $windowName = ($toolName+"Window");
     if (`window -q -ex $windowName`) deleteUI $windowName;
-	if (!`objExists "liquidGlobals.exclusiveLightLinking"`) error ("LLL : The attribute exclusiveLightLinking could not be found on node liquidGlobals");
+	if (!`objExists "liquidGlobals.illuminateByDefault"`) error ("LLL : The attribute illuminateByDefault could not be found on node liquidGlobals");
 	string $window = `window -title ("Liquid Light Linker") $windowName`; setParent $window;
 	string $form = `formLayout`;
 	string $menu = `optionMenu -p $form`;
@@ -51,7 +51,7 @@ global proc string LLL_lightCentricUI()
 
 	$form;
 	setParent $frame;
-	if (`getAttr "liquidGlobals.exclusiveLightLinking"`)
+	if (`getAttr "liquidGlobals.illuminateByDefault"`)
 		LLL_exclusiveUI;
 	else
 		LLL_inclusiveUI;
@@ -127,7 +127,7 @@ global proc LLL_inclusiveUI()
 		createNode "liquidGlobals" -n "liquidGlobals";
 
 	if (!`objExists "liquidGlobals.liquidSetLightLinking"`) error ("LLL : The attribute liquidSetLightLinking could not be found on node liquidGlobals");
-	if (!`objExists "liquidGlobals.exclusiveLightLinking"`) error ("LLL : The attribute exclusiveLightLinking could not be found on node liquidGlobals");
+	if (!`objExists "liquidGlobals.illuminateByDefault"`) error ("LLL : The attribute illuminateByDefault could not be found on node liquidGlobals");
 
     string $parent = `setParent -q`;
 	string $children[] = `layout -q -ca $parent`;
@@ -139,7 +139,7 @@ global proc LLL_inclusiveUI()
 	string $topBar = `columnLayout -adj true -h 50`;
 	rowColumnLayout -numberOfRows 1 -rowHeight 1 25 -p $topBar;
 	string $setLinkChk = `checkBox -v 1 -l "Liquid Set Light Linking"`; connectControl $setLinkChk "liquidGlobals.liquidSetLightLinking";
-	string $exclusiveLinkChk = `checkBox -v 0 -l "Exclusive Light Linking"`; connectControl $exclusiveLinkChk "liquidGlobals.exclusiveLightLinking"; checkBox -e -cc ("if (#1) { setParent \""+$parent+"\"; LLL_exclusiveUI; }") $exclusiveLinkChk; setAttr "liquidGlobals.exclusiveLightLinking" 0;
+	string $exclusiveLinkChk = `checkBox -v 0 -l "Illuminate By Default"`; connectControl $exclusiveLinkChk "liquidGlobals.illuminateByDefault"; checkBox -e -cc ("if (#1) { setParent \""+$parent+"\"; LLL_exclusiveUI; }") $exclusiveLinkChk; setAttr "liquidGlobals.illuminateByDefault" 0;
     string $panes = `paneLayout -cn "vertical2" -p $form`;
 
     formLayout -e
@@ -310,7 +310,7 @@ global proc LLL_exclusiveUI()
 		createNode "liquidGlobals" -n "liquidGlobals";
 
 	if (!`objExists "liquidGlobals.liquidSetLightLinking"`) error ("LLL : The attribute liquidSetLightLinking could not be found on node liquidGlobals");
-	if (!`objExists "liquidGlobals.exclusiveLightLinking"`) error ("LLL : The attribute exclusiveLightLinking could not be found on node liquidGlobals");
+	if (!`objExists "liquidGlobals.illuminateByDefault"`) error ("LLL : The attribute illuminateByDefault could not be found on node liquidGlobals");
 
 	string $parent = `setParent -q`;
 	string $children[] = `layout -q -ca $parent`;
@@ -321,7 +321,7 @@ global proc LLL_exclusiveUI()
     string $topBar = `columnLayout -adj true -h 50`;
 	rowColumnLayout -numberOfRows 1 -rowHeight 1 25 -p $topBar;
 	string $setLinkChk = `checkBox -v 1 -l "Liquid Set Light Linking"`; connectControl $setLinkChk "liquidGlobals.liquidSetLightLinking";
-	string $exclusiveLinkChk = `checkBox -v 0 -l "Exclusive Light Linking"`; connectControl $exclusiveLinkChk "liquidGlobals.exclusiveLightLinking"; checkBox -e -cc ("if (!#1) { setParent \""+$parent+"\"; LLL_inclusiveUI; }") $exclusiveLinkChk; setAttr "liquidGlobals.exclusiveLightLinking" 1;
+	string $exclusiveLinkChk = `checkBox -v 0 -l "Illuminate By Default"`; connectControl $exclusiveLinkChk "liquidGlobals.illuminateByDefault"; checkBox -e -cc ("if (!#1) { setParent \""+$parent+"\"; LLL_inclusiveUI; }") $exclusiveLinkChk; setAttr "liquidGlobals.illuminateByDefault" 1;
     string $panes = `paneLayout -cn "vertical2" -p $form`;
 
     formLayout -e
