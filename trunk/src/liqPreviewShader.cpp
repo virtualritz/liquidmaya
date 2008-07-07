@@ -343,7 +343,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
       }
     }
 
-    string tempRibName( tempString + "/" ); // We just add a slash. No need to have nice looking paths here
+    string tempRibName( tempString + "/liqPreviev.rib" ); // We just add a slash. No need to have nice looking paths here
 #endif
 
 #ifndef _WIN32
@@ -435,11 +435,11 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
   RiPixelSamples( options.pixelSamples, options.pixelSamples );
 
 #ifdef PRMAN
-  if ( "PRMan" == liquidRenderer.renderName )
+  if ( MString( "PRMan" ) == liquidRenderer.renderName )
     RiPixelFilter( RiSeparableCatmullRomFilter, 4., 4. );
   else
-#elseif defined( DELIGHT )
-  if ( "3Delight" == liquidRenderer.renderName )
+#elif defined( DELIGHT )
+  if ( MString( "3Delight" ) == liquidRenderer.renderName )
     RiPixelFilter( RiMitchellFilter, 4., 4.);
   else
 #else
@@ -569,8 +569,12 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
 	//cout << "Shader: " << shaderFileName << endl;
 	if ( options.fullShaderPath ) {
       RiSurface( shaderFileName, RI_NULL );
-	} else {
-      RiSurfaceV( shaderFileName, currentShader.tokenPointerArray.size(), tokenArray.get(), pointerArray.get() );
+	}
+	else
+	{
+		// its one less as the tokenPointerArray has a preset size of 1 not 0
+		int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
+		RiSurfaceV( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
 	}
   } else if ( currentShader.shader_type == SHADER_TYPE_DISPLACEMENT ) {
     RtToken Kd( "Kd" );
@@ -579,10 +583,10 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
 	if ( options.fullShaderPath ) {
       RiDisplacement( shaderFileName, RI_NULL );
     } else {
-      RiDisplacementV( shaderFileName, currentShader.tokenPointerArray.size(), tokenArray.get(), pointerArray.get() );
+		int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
+		RiDisplacementV( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
 	}
   }
-
   RiTransformEnd();
   if ( shadingSpace != "" ) RiTransformEnd();
 
