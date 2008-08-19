@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -79,6 +82,97 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Air Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="../../../ribLib/,$(MAYA_LOCATION)/include,../../../include"
+				PreprocessorDefinitions="AIR;WIN32;_WIN32;_WINDOWS;NDEBUG;_CONSOLE;uint=unsigned int;ulong=unsigned long;_BOOL;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				DefaultCharIsUnsigned="false"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				LinkLibraryDependencies="false"
+				UseLibraryDependencyInputs="false"
+				UseUnicodeResponseFiles="true"
+				AdditionalDependencies="glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib zdll.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib"
+				OutputFile="../../../bin/Air/win32/Release/liquid.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="../../../bin/win32lib;$(MAYA_LOCATION)/lib"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="false"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -196,6 +290,97 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Pixie Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="../../../ribLib/,$(MAYA_LOCATION)/include,../../../include"
+				PreprocessorDefinitions="PIXIE;WIN32;_WIN32;_WINDOWS;NDEBUG;_CONSOLE;uint=unsigned int;ulong=unsigned long;_BOOL;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				DefaultCharIsUnsigned="false"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				LinkLibraryDependencies="false"
+				UseLibraryDependencyInputs="false"
+				UseUnicodeResponseFiles="true"
+				AdditionalDependencies="glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib zdll.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib"
+				OutputFile="../../../bin/Pixie/win32/Release/liquid.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="../../../bin/win32lib;$(MAYA_LOCATION)/lib"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="false"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="3Delight Generic ribLib Release|Win32"
 			OutputDirectory="../../../bin/3Delight/win32/Release/objectsBin"
 			IntermediateDirectory="../../../bin/3Delight/win32/Release/objectsBin"
@@ -259,6 +444,97 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="3Delight Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="../../../ribLib/,$(MAYA_LOCATION)/include,../../../include"
+				PreprocessorDefinitions="PIXIE;WIN32;_WIN32;_WINDOWS;NDEBUG;_CONSOLE;uint=unsigned int;ulong=unsigned long;_BOOL;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				DefaultCharIsUnsigned="false"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				LinkLibraryDependencies="false"
+				UseLibraryDependencyInputs="false"
+				UseUnicodeResponseFiles="true"
+				AdditionalDependencies="glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib zdll.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib"
+				OutputFile="../../../bin/3Delight/win32/Release/liquid.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="../../../bin/win32lib;$(MAYA_LOCATION)/lib"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="false"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -376,6 +652,97 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Aqsis Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="../../../ribLib/,$(MAYA_LOCATION)/include,../../../include"
+				PreprocessorDefinitions="AQSIS;WIN32;_WIN32;_WINDOWS;NDEBUG;_CONSOLE;uint=unsigned int;ulong=unsigned long;_BOOL;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				DefaultCharIsUnsigned="false"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				LinkLibraryDependencies="false"
+				UseLibraryDependencyInputs="false"
+				UseUnicodeResponseFiles="true"
+				AdditionalDependencies="glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib zdll.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib"
+				OutputFile="../../../bin/Aqsis/win32/Release/liquid.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="../../../bin/win32lib;$(MAYA_LOCATION)/lib"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="false"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Prman Generic ribLib Release|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
@@ -439,6 +806,97 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Prman Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="../../../ribLib/,$(MAYA_LOCATION_X64)/include,../../../include"
+				PreprocessorDefinitions="GENERIC_RIBLIB;WIN32;_WIN32;_WINDOWS;NDEBUG;_CONSOLE;uint=unsigned int;ulong=unsigned long;_BOOL;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				DefaultCharIsUnsigned="false"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				LinkLibraryDependencies="false"
+				UseLibraryDependencyInputs="false"
+				UseUnicodeResponseFiles="true"
+				AdditionalDependencies="glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib zdll.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib"
+				OutputFile="../../../bin/prman/win64/liquid.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="../../../bin/win64lib;$(MAYA_LOCATION_X64)/lib"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="false"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -555,6 +1013,97 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="3Delight Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="../../../include,$(MAYA_LOCATION_X64)/include,$(DELIGHT_X64)/include"
+				PreprocessorDefinitions="DELIGHT;WIN32;_WIN32;_WINDOWS;NDEBUG;_CONSOLE;uint=unsigned int;ulong=unsigned long;_BOOL;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				DefaultCharIsUnsigned="false"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				LinkLibraryDependencies="false"
+				UseLibraryDependencyInputs="false"
+				UseUnicodeResponseFiles="true"
+				AdditionalDependencies="glu32.lib opengl32.lib netapi32.lib ws2_32.lib 3delight.lib zdll.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib"
+				OutputFile="../../../bin/3delight/win64/liquid.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(DELIGHT_X64)/lib&quot;;&quot;$(MAYA_LOCATION_X64)/lib&quot;"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="false"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -588,7 +1137,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -604,7 +1169,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -620,7 +1201,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -640,7 +1237,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -656,7 +1269,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -672,7 +1301,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -740,7 +1385,31 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UseUnicodeResponseFiles="false"
+						DisableLanguageExtensions="false"
+						TreatWChar_tAsBuiltInType="true"
+						Detect64BitPortabilityProblems="false"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UseUnicodeResponseFiles="false"
+						DisableLanguageExtensions="false"
+						TreatWChar_tAsBuiltInType="true"
+						Detect64BitPortabilityProblems="false"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -764,7 +1433,31 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UseUnicodeResponseFiles="false"
+						DisableLanguageExtensions="false"
+						TreatWChar_tAsBuiltInType="true"
+						Detect64BitPortabilityProblems="false"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UseUnicodeResponseFiles="false"
+						DisableLanguageExtensions="false"
+						TreatWChar_tAsBuiltInType="true"
+						Detect64BitPortabilityProblems="false"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -788,7 +1481,31 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UseUnicodeResponseFiles="false"
+						DisableLanguageExtensions="false"
+						TreatWChar_tAsBuiltInType="true"
+						Detect64BitPortabilityProblems="false"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UseUnicodeResponseFiles="false"
+						DisableLanguageExtensions="false"
+						TreatWChar_tAsBuiltInType="true"
+						Detect64BitPortabilityProblems="false"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -828,7 +1545,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -844,7 +1577,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -860,7 +1609,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -920,7 +1685,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -936,7 +1717,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -952,7 +1749,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DebugInformationFormat="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

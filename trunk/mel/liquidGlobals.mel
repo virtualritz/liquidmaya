@@ -466,6 +466,7 @@ global proc liquidInitGlobalVals()
     ,"fullShadowRibs",              "bool",   false
     ,"binaryOutput",                "bool",   false
     ,"compressedOutput",            "bool",   false
+    ,"outputMayaPolyCreases",       "bool",   false
     ,"renderAllCurves",             "bool",   false
     ,"illuminateByDefault",			"bool",   false
     ,"liquidSetLightLinking",       "bool",   false
@@ -559,6 +560,11 @@ global proc liquidInitGlobalVals()
 
     ,"expandAlfred",                "bool",   false
 
+    ,"preFrameBeginMel",            "string", ""
+    ,"preWorldMel",                 "string", ""
+    ,"postWorldMel",                "string", ""
+    ,"preGeomMel",                  "string", ""
+    ,"preFrameBegin",               "string", ""
     ,"preWorld",                    "string", ""
     ,"postWorld",                   "string", ""
     ,"preGeom",                     "string", ""
@@ -2793,14 +2799,12 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
     frameLayout -bs "etchedIn" -l "Shadow Maps" -cll true -cl false;
       columnLayout -adj true;
         liquidShowBoolGlobal  "ignoreShadows"  "Omit Shadow RIBs";
-        separator;
         liquidShowBoolGlobal  "fullShadowRibs" "Write Full Shadow RIBs";
         liquidShowBoolGlobalPlus  "shapeOnlyInShadowNames"  "MtoR Shadow Names" "Omits the scene name in the shadow file name.";
         liquidShowBoolGlobalPlus  "lazyCompute"             "Lazy Compute"      "If your shadow maps are already available, they will not be recomputed.";
         frameLayout -bs "etchedIn" -l "Depth Shadows" -cll true -cl false;
           columnLayout -adj true;
             liquidShowFloatGlobal "limitsZThreshold"       "Opacity Threshold";
-            separator;
             liquidShowBoolGlobal  "outputShadersInShadows" "Output Tagged Shaders";
           setParent ..;
         setParent ..;
@@ -2815,6 +2819,7 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
     frameLayout -bs "etchedIn" -l "RIB" -cll true -cl false;
       columnLayout -adj true;
         liquidShowBoolGlobal "exportReadArchive" "Read-Archivable RIB";
+        liquidShowBoolGlobal "outputMayaPolyCreases" "Use Maya Poly Creases";
         liquidShowBoolGlobal "renderAllCurves"   "Render All Curves";
         liquidShowBoolGlobal "outputMeshUVs"     "Extra MtoR Mesh UVs";
         liquidShowBoolGlobal "ribRelativeTransforms" "Relative Transforms";
@@ -2851,6 +2856,14 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
 			liquidShowBoolGlobal "bakeCullHidden" "Cull Hidden Grids";
 		  setParent ..;
         setParent ..;
+        frameLayout -bs "etchedIn" -l "PrePosterous MEL Scripts" -cll true -cl false;
+          columnLayout -adj true;
+			liquidShowStringGlobalPlus "preFrameBeginMel"  "Pre Frame Begin Mel" "Enter Mel script to generate RIB calls" $prefix;
+			liquidShowStringGlobalPlus "preWorldMel"  "Pre World Mel" "Enter Mel script to generate RIB calls" $prefix;
+			liquidShowStringGlobalPlus "postWorldMel"  "Post World Mel" "Enter Mel script to generate RIB calls" $prefix;
+			liquidShowStringGlobalPlus "preGeomMel"  "Pre Geom Mel" "Enter Mel script to generate RIB calls" $prefix;
+          setParent ..;
+        setParent ..;
         frameLayout -bs "etchedIn" -l "Before & After RIB Requests" -cll true -cl false;
           columnLayout -adj true;
             liquidShowLargeStringGlobalPlus "preFrameBegin"  "Before FrameBegin" "You must escape # @ if you don't want them to be substituted " $prefix;
@@ -2880,7 +2893,6 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
         liquidShowIntGlobalMenu "statistics"  "Statistics" {"None","Simple","Detailed","Overwhelming", "XML"} $prefix;
         liquidShowStringGlobalPlus "statisticsFile"  "Statistics File" "enter the full path to the xml statistics file" $prefix;
         liquidShowBoolGlobal "showProgress"   "Show Progress";
-        separator;
         liquidShowBoolGlobal "shaderDebug" "Shader Debugging";
       setParent ..;
     setParent ..;

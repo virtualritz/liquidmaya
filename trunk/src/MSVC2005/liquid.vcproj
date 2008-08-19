@@ -10,6 +10,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -85,6 +88,105 @@
 				ProgramDatabaseFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/Aqsis/win32/Release/Objects/liquid.lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Aqsis Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/Aqsis/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;AQSIS;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/Aqsis/win32/Release/Objects/"
+				ObjectFile=".\../../bin/Aqsis/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/Aqsis/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/Aqsis/win32/Release/liquid.mll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				IgnoreDefaultLibraryNames=""
+				ProgramDatabaseFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/Aqsis/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -213,6 +315,105 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Pixie Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/Pixie/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;PIXIE;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/Pixie/win32/Release/Objects/"
+				ObjectFile=".\../../bin/Pixie/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/Pixie/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/Pixie/win32/Release/liquid.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				IgnoreDefaultLibraryNames=""
+				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/Pixie/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="3Delight Release|Win32"
 			OutputDirectory=".\../../bin/3Delight/win32/Release/Objects"
 			IntermediateDirectory=".\../../bin/3Delight/win32/Release/Objects"
@@ -282,6 +483,104 @@
 				ProgramDatabaseFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/3Delight/win32/Release/Objects/liquid.lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/3Delight/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="3Delight Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/3Delight/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION_X64)/include,$(DELIGHT_X64)/include"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;DELIGHT;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/3Delight/win32/Release/Objects/"
+				ObjectFile=".\../../bin/3Delight/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/3Delight/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="3delight.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/3delight/win64/liquid.mll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION_X64)/lib,$(DELIGHT_X64)/lib"
+				ProgramDatabaseFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/3Delight/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -410,6 +709,105 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="3Delight Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/3Delight/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;DELIGHT;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/3Delight/win32/Release/Objects/"
+				ObjectFile=".\../../bin/3Delight/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/3Delight/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib"
+				OutputFile="../../bin/3delight/win32/Release/liquid.mll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				IgnoreDefaultLibraryNames=""
+				ProgramDatabaseFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/3Delight/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/3Delight/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Pixie Release|Win32"
 			OutputDirectory=".\../../bin/Pixie/win32/Release/Objects"
 			IntermediateDirectory=".\../../bin/Pixie/win32/Release/Objects"
@@ -479,6 +877,104 @@
 				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/Pixie/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Pixie Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/Pixie/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,$(PIXIEHOME)/include"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;PIXIE;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/Pixie/win32/Release/Objects/"
+				ObjectFile=".\../../bin/Pixie/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/Pixie/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ri.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/Pixie/win32/Release/liquid.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(PIXIEHOME)/lib"
+				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -607,6 +1103,105 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Aqsis Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/Aqsis/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,$(AQSISHOME)/include"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;AQSIS;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/Aqsis/win32/Release/Objects/"
+				ObjectFile=".\../../bin/Aqsis/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/Aqsis/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ri2rib.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib"
+				OutputFile="../../bin/Aqsis/win32/Release/liquid.mll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(AQSISHOME)/lib"
+				IgnoreDefaultLibraryNames=""
+				ProgramDatabaseFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/Aqsis/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Air Generic ribLib Release|Win32"
 			OutputDirectory=".\../../bin/Air/win32/Release/Objects"
 			IntermediateDirectory=".\../../bin/Air/win32/Release/Objects"
@@ -677,6 +1272,105 @@
 				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/Pixie/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Air Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/Pixie/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;AIR;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=""
+				AssemblerListingLocation=".\../../bin/Air/win32/Release/Objects/"
+				ObjectFile=".\../../bin/Air/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/Air/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/Air/win32/Release/liquid.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				IgnoreDefaultLibraryNames=""
+				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -805,9 +1499,108 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="All renderers with generic RibLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/Pixie/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/Generic/win32/Release/Objects/"
+				ObjectFile=".\../../bin/Generic/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/Generic/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/Generic/win32/Release/liquid.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				IgnoreDefaultLibraryNames=""
+				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/Pixie/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Prman Generic ribLib Release|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory=".\../../bin/3Delight/win32/Release/Objects"
+			IntermediateDirectory=".\../../bin/3Delight/win32/Release/Objects"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -832,7 +1625,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../bin/Pixie/win32/Release/Objects/liquid.tlb"
+				TypeLibraryName=".\../../bin/3Delight/win32/Release/Objects/liquid.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -840,16 +1633,16 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION)/include&quot;;../../riblib"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;PRMAN;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="true"
-				PrecompiledHeaderFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pch"
-				AssemblerListingLocation=".\../../bin/Pixie/win32/Release/Objects/"
-				ObjectFile=".\../../bin/Pixie/win32/Release/Objects/"
-				ProgramDataBaseFileName=".\../../bin/Pixie/win32/Release/Objects/"
+				PrecompiledHeaderFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/3Delight/win32/Release/Objects/"
+				ObjectFile=".\../../bin/3Delight/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/3Delight/win32/Release/Objects/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -866,14 +1659,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib"
-				OutputFile="../../bin/Prman/win32/liquid.mll"
+				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/prman/win32/liquid.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
-				IgnoreDefaultLibraryNames="libcmt.lib,libcpmt.lib"
-				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
-				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION)/lib&quot;;../../bin/win32lib"
+				ProgramDatabaseFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/3Delight/win32/Release/Objects/liquid.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -888,7 +1680,105 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\../../bin/Pixie/win32/Release/Objects/liquid.bsc"
+				OutputFile=".\../../bin/3Delight/win32/Release/Objects/liquid.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Prman Generic ribLib Release|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\../../bin/3Delight/win32/Release/Objects/liquid.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm800 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION_X64)/include&quot;;../../riblib"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pch"
+				AssemblerListingLocation=".\../../bin/3Delight/win32/Release/Objects/"
+				ObjectFile=".\../../bin/3Delight/win32/Release/Objects/"
+				ProgramDataBaseFileName=".\../../bin/3Delight/win32/Release/Objects/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/prman/win64/liquid.mll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION_X64)/lib&quot;;../../bin/win64lib"
+				ProgramDatabaseFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/3Delight/win32/Release/Objects/liquid.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\../../bin/3Delight/win32/Release/Objects/liquid.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -924,7 +1814,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -942,7 +1850,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -960,7 +1886,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -978,6 +1922,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -987,7 +1940,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1009,7 +1980,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1027,7 +2016,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1045,7 +2052,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1063,6 +2088,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1072,7 +2106,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1094,7 +2146,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1112,7 +2182,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1130,7 +2218,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1148,6 +2254,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1157,7 +2272,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1179,7 +2312,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1197,7 +2348,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1215,7 +2384,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1233,6 +2420,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1242,7 +2438,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1264,7 +2478,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1282,7 +2514,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1300,7 +2550,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1318,6 +2586,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1327,7 +2604,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1349,7 +2644,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1367,7 +2680,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1385,7 +2716,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1403,6 +2752,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1412,7 +2770,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1434,7 +2810,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1452,7 +2846,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1470,7 +2882,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1488,6 +2918,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1497,7 +2936,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1519,7 +2976,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1537,7 +3012,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1555,7 +3048,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1573,6 +3084,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1582,7 +3102,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1604,7 +3142,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1622,7 +3178,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1640,7 +3214,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1658,6 +3250,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1667,7 +3268,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1689,7 +3308,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1707,7 +3344,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1725,7 +3380,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1743,6 +3416,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1752,7 +3434,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1774,7 +3474,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1792,7 +3510,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1810,7 +3546,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1828,6 +3582,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1837,7 +3600,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1859,7 +3640,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1877,7 +3676,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1895,7 +3712,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1913,6 +3748,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -1922,7 +3766,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1944,7 +3806,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1962,7 +3842,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1980,7 +3878,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1998,6 +3914,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2007,7 +3932,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2029,7 +3972,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2047,7 +4008,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2065,7 +4044,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2083,6 +4080,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2092,7 +4098,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2114,7 +4138,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2132,7 +4174,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2150,7 +4210,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2168,6 +4246,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2177,7 +4264,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2199,7 +4304,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2217,7 +4340,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2235,7 +4376,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2253,6 +4412,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2262,7 +4430,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2284,7 +4470,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2302,7 +4506,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2320,7 +4542,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2338,6 +4578,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2347,7 +4596,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2369,7 +4636,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2387,7 +4672,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2405,7 +4708,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2423,6 +4744,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2432,7 +4762,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2454,7 +4802,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2472,7 +4838,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2490,7 +4874,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2508,6 +4910,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2517,7 +4928,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2539,7 +4968,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2557,7 +5004,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2575,7 +5040,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2593,6 +5076,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2602,7 +5094,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2624,7 +5134,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2642,7 +5170,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2660,7 +5206,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2678,6 +5242,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2687,7 +5260,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2709,7 +5300,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2727,7 +5336,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2745,7 +5372,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2763,6 +5408,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2772,7 +5426,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2794,7 +5466,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2812,7 +5502,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2830,7 +5538,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2848,6 +5574,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2857,7 +5592,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2879,7 +5632,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2897,7 +5668,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2915,7 +5704,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2933,6 +5740,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -2942,7 +5758,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2968,7 +5802,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2986,7 +5838,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3004,7 +5874,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3022,6 +5910,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3031,7 +5928,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3053,7 +5968,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3071,7 +6004,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3089,7 +6040,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3107,6 +6076,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3116,7 +6094,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3138,7 +6134,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3156,7 +6170,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3174,7 +6206,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3192,6 +6242,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3201,7 +6260,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3223,7 +6300,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3241,7 +6336,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3259,7 +6372,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3277,6 +6408,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3286,7 +6426,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3308,7 +6466,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3326,7 +6502,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3344,7 +6538,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3362,6 +6574,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3371,7 +6592,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3393,7 +6632,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3411,7 +6668,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3429,7 +6704,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3447,6 +6740,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3456,7 +6758,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3478,7 +6798,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3496,7 +6834,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3514,7 +6870,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3532,6 +6906,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3541,7 +6924,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3563,7 +6964,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3581,7 +7000,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3599,7 +7036,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3617,6 +7072,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3626,7 +7090,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3652,7 +7134,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3670,7 +7170,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3688,7 +7206,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3706,6 +7242,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3715,7 +7260,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3737,7 +7300,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3755,7 +7336,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3773,7 +7372,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3791,6 +7408,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3800,7 +7426,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3826,7 +7470,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3844,7 +7506,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3862,7 +7542,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3880,6 +7578,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3889,7 +7596,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3911,7 +7636,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3929,7 +7672,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3947,7 +7708,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3965,6 +7744,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -3974,7 +7762,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3996,7 +7802,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4014,7 +7838,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4032,7 +7874,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4050,7 +7910,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4067,6 +7945,19 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\liqRiCommands.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\liqShader.cpp"
@@ -4081,7 +7972,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4099,7 +8008,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4117,7 +8044,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4135,6 +8080,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -4144,7 +8098,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4166,7 +8138,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4184,7 +8174,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4202,7 +8210,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4220,6 +8246,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -4229,7 +8264,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4251,7 +8304,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4269,7 +8340,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4287,7 +8376,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4305,6 +8412,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -4314,7 +8430,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4336,7 +8470,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4354,7 +8506,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4372,7 +8542,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4390,6 +8578,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -4399,7 +8596,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4421,7 +8636,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4439,7 +8672,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4457,7 +8708,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4475,6 +8744,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -4484,7 +8762,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4506,7 +8802,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Aqsis Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Pixie Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Pixie Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4524,7 +8838,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="3Delight Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="3Delight Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="3Delight Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4542,7 +8874,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Pixie Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Aqsis Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Aqsis Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4560,6 +8910,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Air Generic ribLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="All renderers with generic RibLib Release|Win32"
 					>
 					<Tool
@@ -4569,7 +8928,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="All renderers with generic RibLib Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Prman Generic ribLib Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Prman Generic ribLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4769,6 +9146,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\liqRibTranslator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\liqRiCommands.h"
 				>
 			</File>
 			<File

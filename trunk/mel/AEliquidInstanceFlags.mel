@@ -207,6 +207,15 @@ global proc AEliquidInstanceFlags( string $node )
 
     editorTemplate -endLayout;
 
+    editorTemplate -beginLayout "PrePosterous" -collapse true;
+
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Pre Transform Mel\"") ("liquidSmallFieldReplace "+$node+" \"Pre Transform Mel\"") "liqPreTransformMel";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Post Transform Mel\"") ("liquidSmallFieldReplace "+$node+" \"Post Transform Mel\"") "liqPostTransformMel";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Pre Shape Mel\"") ("liquidSmallFieldReplace "+$node+" \"Pre Shape Mel\"") "liqPreShapeMel";
+      editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Post Shape Mel\"") ("liquidSmallFieldReplace "+$node+" \"Post Shape Mel\"") "liqPostShapeMel";
+
+    editorTemplate -endLayout;
+
     editorTemplate -beginLayout "RIB" -collapse true;
 
       editorTemplate -ccu ("liquidLargeFieldNew "+$node+" \"RIB Box\"") ("liquidLargeFieldReplace "+$node+" \"RIB Box\"") "liqRIBBox";

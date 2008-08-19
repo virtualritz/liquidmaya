@@ -49,6 +49,7 @@ extern "C" {
 #include <maya/MFnSet.h>
 #include <maya/MGlobal.h>
 #include <maya/MSelectionList.h>
+#include <maya/MUintArray.h>
 
 // Liquid headers
 #include <liquid.h>
@@ -64,6 +65,7 @@ using namespace boost;
 
 extern int debugMode;
 extern bool liqglo_outputMeshUVs;
+extern bool liqglo_outputMayaPolyCreases;  // use maya poly creases instead of liquid crease sets
 extern bool liqglo_useMtorSubdiv;  // interpret mtor subdiv attributes
 
 /** Create a RIB compatible subdivision surface representation using a Maya polygon mesh.
@@ -289,131 +291,217 @@ ObjectType liqRibSubdivisionData::type() const
 // for analog mtor attributes
 //
 void liqRibSubdivisionData::checkExtraTags( MObject &mesh ) {
-  MStatus status = MS::kSuccess;
-  MPlugArray array;
-  MFnMesh    fnMesh( mesh );
-  MFnDependencyNode depNode( mesh );
-  depNode.getConnections( array ); // collect all plugs connected to mesh
+	MStatus status = MS::kSuccess;
+	MPlugArray array;
+	MFnMesh    fnMesh( mesh );
+	MFnDependencyNode depNode( mesh );
+	depNode.getConnections( array ); // collect all plugs connected to mesh
 
-  // for each plug check if it is connected as dst to maya set
-  // and this set has attribute for subdiv extra tag with non zero value
-  for ( unsigned i = 0 ; i < array.length() ; i++ ) {
-    MPlugArray connections;
-    MPlug curPlug = array[i];
+	// this is a temporary solution - the maya2008 polycreases are a bit crap in
+	// that they cannot be removed and there is no way at the moment to tag
+	// faces as holes in Maya to we keep the "set" way of doing it - Alf
+	if( liqglo_outputMayaPolyCreases )
+	{
+		// this looks redundant but there is no other way to determine
+		// if the object has creases at all
+		MUintArray ids;
+		MDoubleArray creaseData;
+		status = fnMesh.getCreaseEdges( ids, creaseData );
+		if( status == MS::kSuccess )
+			addExtraTags( mesh, TAG_CREASE );
+		status = fnMesh.getCreaseVertices( ids, creaseData );
+		if( status == MS::kSuccess )
+			addExtraTags( mesh, TAG_CORNER );
+	}
 
-    if( !curPlug.connectedTo( connections, false, true ) )
-      continue; /* look only for plugs connected as dst (src = false) */
+	// for each plug check if it is connected as dst to maya set
+	// and this set has attribute for subdiv extra tag with non zero value
+	for ( unsigned i = 0 ; i < array.length() ; i++ )
+	{
+		MPlugArray connections;
+		MPlug curPlug = array[i];
 
-    for ( unsigned i = 0 ; i < connections.length() ; i++ ) {
-      MPlug dstPlug = connections[i];
-      MObject dstNode = dstPlug.node();
+		if( !curPlug.connectedTo( connections, false, true ) )
+			continue; /* look only for plugs connected as dst (src = false) */
 
-      if( dstNode.hasFn( MFn::kSet ) ) {	/* if connected to set */
-        float extraTagValue;
-        MFnDependencyNode setNode( dstNode, &status );
-        if( status != MS::kSuccess )
-          continue;
-        MPlug extraTagPlug = setNode.findPlug( "liqSubdivCrease", &status );
-        if( status == MS::kSuccess ) {
-          extraTagPlug.getValue( extraTagValue );
-          if( extraTagValue ) // skip zero values
-            addExtraTags( dstNode, extraTagValue, TAG_CREASE );
-        } else {
-          MPlug extraTagPlug = setNode.findPlug( "liqSubdivCorner", &status );
-          if( status == MS::kSuccess ) {
-            extraTagPlug.getValue( extraTagValue );
-            if( extraTagValue ) // skip zero values
-              addExtraTags( dstNode, extraTagValue, TAG_CORNER );
-          } else {
-            MPlug extraTagPlug = setNode.findPlug( "liqSubdivHole", &status );
-            if( status == MS::kSuccess ) {
-              extraTagPlug.getValue( extraTagValue );
-              if( extraTagValue ) // skip zero values
-                addExtraTags( dstNode, extraTagValue, TAG_HOLE );
-            } else {
-              MPlug extraTagPlug = setNode.findPlug( "liqSubdivStitch", &status );
-              if( status == MS::kSuccess ) {
-                extraTagPlug.getValue( extraTagValue );
-                if( extraTagValue ) // skip zero values
-                  addExtraTags( dstNode, extraTagValue, TAG_STITCH );
-              }
-            }
-          }
-        }
-        if( liqglo_useMtorSubdiv ) {	// check mtor subdivisions extra tag
-          MPlug extraTagPlug = setNode.findPlug( "mtorSubdivCrease", &status );
-          if( status == MS::kSuccess ) {
-            extraTagPlug.getValue( extraTagValue );
-            if( extraTagValue ) // skip zero values
-              addExtraTags( dstNode, extraTagValue, TAG_CREASE );
-          } else {
-            MPlug extraTagPlug = setNode.findPlug( "mtorSubdivCorner", &status );
-            if( status == MS::kSuccess ) {
-              extraTagPlug.getValue( extraTagValue );
-              if( extraTagValue ) // skip zero values
-                addExtraTags( dstNode, extraTagValue, TAG_CORNER );
-            } else {
-              MPlug extraTagPlug = setNode.findPlug( "mtorSubdivHole", &status );
-              if( status == MS::kSuccess ) {
-                extraTagPlug.getValue( extraTagValue );
-                // if( debugMode ) { printf("==> %s has mtorSubdivHole [%d]\n",depNode.name().asChar(), extraTagValue ); }
-                if( extraTagValue ) // skip zero values
-                  addExtraTags( dstNode, extraTagValue, TAG_HOLE );
-              }
-            }
-          }
+		for ( unsigned i = 0 ; i < connections.length() ; i++ )
+		{
+			MPlug dstPlug = connections[i];
+			MObject dstNode = dstPlug.node();
 
-        }
-      } // kSet
-    }
-  } // for
+			if( dstNode.hasFn( MFn::kSet ) )
+			{	
+				/* if connected to set */
+				float extraTagValue;
+				MFnDependencyNode setNode( dstNode, &status );
+				if( status != MS::kSuccess )
+					continue;
+				MPlug extraTagPlug = setNode.findPlug( "liqSubdivCrease", &status );
+				if( status == MS::kSuccess )
+				{
+					extraTagPlug.getValue( extraTagValue );
+					if( extraTagValue )// skip zero values
+					{
+						if( !liqglo_outputMayaPolyCreases )
+							addExtraTags( dstNode, extraTagValue, TAG_CREASE );
+					}
+				}
+				else
+				{
+					MPlug extraTagPlug = setNode.findPlug( "liqSubdivCorner", &status );
+					if( status == MS::kSuccess )
+					{
+						extraTagPlug.getValue( extraTagValue );
+						if( extraTagValue ) // skip zero values
+						{
+							if( !liqglo_outputMayaPolyCreases )
+								addExtraTags( dstNode, extraTagValue, TAG_CORNER );
+						}
+					}
+					else
+					{
+						MPlug extraTagPlug = setNode.findPlug( "liqSubdivHole", &status );
+						if( status == MS::kSuccess )
+						{
+							extraTagPlug.getValue( extraTagValue );
+							if( extraTagValue ) // skip zero values
+								addExtraTags( dstNode, extraTagValue, TAG_HOLE );
+						}
+						else
+						{
+							MPlug extraTagPlug = setNode.findPlug( "liqSubdivStitch", &status );
+							if( status == MS::kSuccess )
+							{
+								extraTagPlug.getValue( extraTagValue );
+								if( extraTagValue ) // skip zero values
+									addExtraTags( dstNode, extraTagValue, TAG_STITCH );
+							}
+						}
+					}
+				}
+				if( liqglo_useMtorSubdiv )
+				{
+					// check mtor subdivisions extra tag
+					MPlug extraTagPlug = setNode.findPlug( "mtorSubdivCrease", &status );
+					if( status == MS::kSuccess )
+					{
+						extraTagPlug.getValue( extraTagValue );
+						if( extraTagValue ) // skip zero values
+							addExtraTags( dstNode, extraTagValue, TAG_CREASE );
+					}
+					else
+					{
+						MPlug extraTagPlug = setNode.findPlug( "mtorSubdivCorner", &status );
+						if( status == MS::kSuccess )
+						{
+							extraTagPlug.getValue( extraTagValue );
+							if( extraTagValue ) // skip zero values
+								addExtraTags( dstNode, extraTagValue, TAG_CORNER );
+						}
+						else
+						{
+							MPlug extraTagPlug = setNode.findPlug( "mtorSubdivHole", &status );
+							if( status == MS::kSuccess )
+							{
+								extraTagPlug.getValue( extraTagValue );
+								// if( debugMode ) { printf("==> %s has mtorSubdivHole [%d]\n",depNode.name().asChar(), extraTagValue ); }
+								if( extraTagValue ) // skip zero values
+									addExtraTags( dstNode, extraTagValue, TAG_HOLE );
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-  MPlug interpolateBoundaryPlug = fnMesh.findPlug( "liqSubdivInterpolateBoundary", &status );
-  if( status == MS::kSuccess ) {
-    interpolateBoundaryPlug.getValue( interpolateBoundary );
-  }
+	MPlug interpolateBoundaryPlug = fnMesh.findPlug( "liqSubdivInterpolateBoundary", &status );
+	if( status == MS::kSuccess )
+		interpolateBoundaryPlug.getValue( interpolateBoundary );
 
-  bool interpolateBoundaryOld = false;
-  MPlug oldinterpolateBoundaryPlug = fnMesh.findPlug( "interpBoundary", &status );
-  if( status == MS::kSuccess ) {
-    interpolateBoundaryPlug.getValue( interpolateBoundaryOld );
-  }
+	bool interpolateBoundaryOld = false;
+	MPlug oldinterpolateBoundaryPlug = fnMesh.findPlug( "interpBoundary", &status );
+	if( status == MS::kSuccess )
+		interpolateBoundaryPlug.getValue( interpolateBoundaryOld );
 
-  bool mtor_interpolateBoundary = false;
-  if( liqglo_useMtorSubdiv ) {
-    MPlug mtor_interpolateBoundaryPlug = fnMesh.findPlug( "mtorSubdivInterp", &status );
-    if( status == MS::kSuccess ) {
-      mtor_interpolateBoundaryPlug.getValue( mtor_interpolateBoundary );
-    }
-  }
+	bool mtor_interpolateBoundary = false;
+	if( liqglo_useMtorSubdiv )
+	{
+		MPlug mtor_interpolateBoundaryPlug = fnMesh.findPlug( "mtorSubdivInterp", &status );
+		if( status == MS::kSuccess )
+			mtor_interpolateBoundaryPlug.getValue( mtor_interpolateBoundary );
+	}
 
-  MPlug liqSubdivUVInterpolationPlug = fnMesh.findPlug( "liqSubdivUVInterpolation", &status );
-  if( status == MS::kSuccess ) {
-    int liqSubdivUVInterpolation;
-    liqSubdivUVInterpolationPlug.getValue( liqSubdivUVInterpolation );
-    switch( liqSubdivUVInterpolation ) {
-      case 0: // true facevarying
-        trueFacevarying = true;
-      case 1: //
-        uvDetail = rFaceVarying;
-        break;
-      case 2:
-        uvDetail = rFaceVertex;
-        break;
-    }
-  }
+	MPlug liqSubdivUVInterpolationPlug = fnMesh.findPlug( "liqSubdivUVInterpolation", &status );
+	if( status == MS::kSuccess )
+	{
+		int liqSubdivUVInterpolation;
+		liqSubdivUVInterpolationPlug.getValue( liqSubdivUVInterpolation );
+		switch( liqSubdivUVInterpolation )
+		{
+			case 0: // true facevarying
+			trueFacevarying = true;
+			case 1: //
+			uvDetail = rFaceVarying;
+			break;
+			case 2:
+			uvDetail = rFaceVertex;
+			break;
+		}
+	}
 
-  if( mtor_interpolateBoundary || interpolateBoundaryOld ) {
-    interpolateBoundary = 2; // Old School
-  }
+	if( mtor_interpolateBoundary || interpolateBoundaryOld )
+		interpolateBoundary = 2; // Old School
 
-  if( interpolateBoundary ) {
-    addExtraTags( mesh, interpolateBoundary, TAG_BOUNDARY );
-  }
+	if( interpolateBoundary )
+		addExtraTags( mesh, interpolateBoundary, TAG_BOUNDARY );
 
-  if( trueFacevarying ) {
-    addExtraTags( mesh, 0, TAG_FACEVARYINGBOUNDARY );
-  }
+	if( trueFacevarying )
+		addExtraTags( mesh, 0, TAG_FACEVARYINGBOUNDARY );
+}
+
+void liqRibSubdivisionData::addExtraTags( MObject &mesh, SBD_EXTRA_TAG extraTag )
+{
+	MStatus status;
+	MFnMesh fnMesh( mesh );
+	MUintArray ids;
+	MDoubleArray creaseData;
+
+	if( TAG_CREASE == extraTag )
+	{
+		status = fnMesh.getCreaseEdges( ids, creaseData );
+		if( status == MS::kSuccess )
+		{
+			MItMeshEdge itEdge( mesh );
+			int prevIndex;
+			for( unsigned i( 0 ); i < ids.length(); i++ )
+			{
+				v_tags.push_back( "crease" );
+				v_nargs.push_back( 2 );
+				v_nargs.push_back( 1 );
+				itEdge.setIndex( ids[i], prevIndex );
+				v_intargs.push_back( itEdge.index( 0 ) );
+				v_intargs.push_back( itEdge.index( 1 ) );
+				v_floatargs.push_back( creaseData[i] );
+			}
+		}
+	}
+	if( TAG_CORNER == extraTag )
+	{
+		status = fnMesh.getCreaseVertices( ids, creaseData );
+		if( status == MS::kSuccess )
+		{
+			for( unsigned i( 0 ); i < ids.length(); i++ )
+			{
+				v_tags.push_back( "corner" );
+				v_nargs.push_back( 1 );
+				v_nargs.push_back( 1 );
+				v_intargs.push_back( ids[i] );
+				v_floatargs.push_back( creaseData[i] );
+			}
+		}
+
+	}
 }
 
 void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue, SBD_EXTRA_TAG extraTag )

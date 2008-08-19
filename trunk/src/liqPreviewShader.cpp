@@ -41,6 +41,7 @@ extern "C" {
 #include <maya/MGlobal.h>
 #include <maya/MSelectionList.h>
 #include <maya/MPlug.h>
+#include <maya/MFnMesh.h>
 
 #include <liqRenderer.h>
 #include <liqPreviewShader.h>
@@ -388,6 +389,7 @@ MStatus	liqPreviewShader::doIt( const MArgList& args )
  */
 int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOptions& options )
 {
+
   // Get the Pathes in globals node
   MObject globalObjNode;
   MString liquidShaderPath = "",liquidTexturePath = "",liquidProceduralPath = "";
@@ -410,7 +412,6 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
         shaderPlug.getValue( liquidProceduralPath );
     }
   }
-
   if( fileName.empty() ) {
     RiBegin( NULL );
 #ifdef DELIGHT
@@ -418,7 +419,7 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
     //RiOption( "statistics", "progresscallback", &callBack, RI_NULL );
 #endif
   } else {
-    RiBegin( const_cast< RtString >( fileName.c_str() ) );
+    RiBegin( (RtToken)fileName.c_str() );
   }
 
   string shaderPath( "&:@:.:~:" + liquidSanitizeSearchPath( getEnvironment( "LIQUIDHOME" ) ) + "/shaders" );
@@ -436,17 +437,16 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
 
 #ifdef PRMAN
   if ( MString( "PRMan" ) == liquidRenderer.renderName )
-    RiPixelFilter( RiSeparableCatmullRomFilter, 4., 4. );
-  else
+	RiPixelFilter( RiCatmullRomFilter, 4., 4. );
 #elif defined( DELIGHT )
   if ( MString( "3Delight" ) == liquidRenderer.renderName )
-    RiPixelFilter( RiMitchellFilter, 4., 4.);
-  else
+    RiPixelFilter( RiSeparableCatmullRomFilter, 4., 4. );
+//    RiPixelFilter( RiMitchellFilter, 4., 4.);
 #else
   RiPixelFilter( RiCatmullRomFilter, 4., 4. );
 #endif
 
-  RiFormat( ( RtInt )options.displaySize, ( RtInt )options.displaySize, 1 );
+  RiFormat( ( RtInt )options.displaySize, ( RtInt )options.displaySize, 1.0 );
   if( options.backPlane ) {
     RiDisplay( const_cast< RtString >( options.displayName.c_str() ),
                const_cast< RtString >( options.displayDriver.c_str() ), RI_RGB, RI_NULL );
@@ -526,7 +526,6 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
     currentShader = liqShader( shaderObj );
 
   }
-
   MFnDependencyNode assignedShader( shaderObj );
 
   scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size()] );
@@ -553,8 +552,6 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
     RiTransformBegin();
     RiCoordSysTransform( (char*) shadingSpace.asChar() );
   }
-
-
 
   RiTransformBegin();
   // Rotate shader space to make the preview more interesting
@@ -590,7 +587,7 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
   RiTransformEnd();
   if ( shadingSpace != "" ) RiTransformEnd();
 
-  switch( options.primitiveType ) {
+ switch( options.primitiveType ) {
 
     case CYLINDER: {
       RiReverseOrientation();
@@ -631,7 +628,7 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
       RiRotate( -120., 1., 0., 0. );
       RiRotate( 130., 0., 0., 1. );
       RiScale( 0.2f, 0.2f, 0.2f );
-      RiGeometry( "teapot", RI_NULL );
+	  RiArchiveRecord( RI_VERBATIM, "Geometry \"teapot\"" );
       break;
     }
     case CUBE: {
@@ -824,7 +821,6 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
   }
 
   RiAttributeEnd();
-
   /*
    * Backplane
    */
@@ -863,16 +859,15 @@ int liquidOutputPreviewShader( const string& fileName, const liqPreviewShaderOpt
 
   RiWorldEnd();
 
+/* this caused maya to hang up under windoof - Alf
 #ifdef _WIN32
-  // Wait until the renderer is done
-  while( !fileFullyAccessible( options.displayName.c_str() ) );
+//	Wait until the renderer is done
+	while( !fileFullyAccessible( options.displayName.c_str() ) );
 #endif
-
-
+*/
   RiEnd();
 
   fflush( NULL );
-
 
   LIQDEBUGPRINTF("-> Shader Preview RIB output done.\n" );
 

@@ -1,7 +1,17 @@
+2.3.0
+- added prePosterous group - mel binding for preTransform,
+  postTransform, preShape and postShape scripts
+- 4 Mel insertion points combining with the rib boxes in the globals
+- 60 + Ri commands added
+- Maya2008 edge and corner creases supported
+
+2.2.14
+- 3Delight subsurface scatter group completed
+
 2.2.13
 
-- support for aggregate shadowmaps (Moritz)
-- subdiv surface inspector (Moritz)
+- support for aggregate shadowmaps
+- subdiv surface inspector
 - aggregate shadowmaps using light name when using autoshadow and camera name when using autoshadow 0, 1 etc
 - first shadowcam outputs always with "aggregate" set to 0 to overwrite old map if it exists
 - fixed naming when using shadow sets
