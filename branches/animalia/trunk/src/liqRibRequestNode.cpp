@@ -15,7 +15,7 @@
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
 ** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** Contributor(s): Philippe Leprince.
+** Contributor(s): Alf Kraus.
 **
 **
 ** The RenderMan (R) Interface Procedures and Protocol are:

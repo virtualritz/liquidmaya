@@ -344,6 +344,11 @@ private :
   MString m_preFrameCommand;
   MString m_postFrameCommand;
 
+  MString m_preTransformMel;
+  MString m_postTransformMel;
+  MString m_preShapeMel;
+  MString m_postShapeMel;
+
   MString m_shaderPath;
 
   bool	  m_bakeNonRasterOrient;

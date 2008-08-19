@@ -169,6 +169,7 @@ MString      liqglo_currentNodeName;
 MString      liqglo_currentNodeShortName;
 
 bool         liqglo_useMtorSubdiv;  // use mtor subdiv attributes
+bool         liqglo_outputMayaPolyCreases;  // use mtor subdiv attributes
 HiderType    liqglo_hider;
 
 // Kept global for raytracing
@@ -543,6 +544,10 @@ liqRibTranslator::liqRibTranslator()
   m_postJobCommand.clear();
   m_postFrameCommand.clear();
   m_preFrameCommand.clear();
+  m_preTransformMel.clear();
+  m_postTransformMel.clear();
+  m_preShapeMel.clear();
+  m_postShapeMel.clear();
   m_outputComments = false;
   m_shaderDebug = false;
   // raytracing
@@ -639,12 +644,12 @@ liqRibTranslator::liqRibTranslator()
   m_preFrameRIB.clear();
   m_preWorldRIB.clear();
   m_postWorldRIB.clear();
-
   m_preGeomRIB.clear();
 
   m_renderScriptFormat = XML;
 
   liqglo_useMtorSubdiv = false;
+  liqglo_outputMayaPolyCreases = false;
   liqglo_hider = htHidden;
 
   liqglo_shaderPath = "&:@:.:~:rmanshader";
@@ -1888,7 +1893,9 @@ void liqRibTranslator::liquidReadGlobals()
   if( gStatus == MS::kSuccess ) gPlug.getValue( rt_irradianceMaxPixelDist );
   gStatus.clear();
   // RAYTRACING OPTIONS:END
-
+  gPlug = rGlobalNode.findPlug( "outputMayaPolyCreases", &gStatus );
+  if( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_outputMayaPolyCreases );
+  gStatus.clear();
   gPlug = rGlobalNode.findPlug( "useMtorSubdiv", &gStatus );
   if( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_useMtorSubdiv );
   gStatus.clear();
@@ -2167,10 +2174,11 @@ void liqRibTranslator::liquidReadGlobals()
     gStatus.clear();
   }
 
-	// taking into account liquidRibRequest nodes - Alf
+	// taking into account liquidRibRequest nodes and preposterous mel scripts - Alf
 	{
 		MStringArray requestArray;
 		MString request;
+
 		gPlug = rGlobalNode.findPlug( "preFrameBegin", &gStatus );
 		if( gStatus == MS::kSuccess )
 			gPlug.getValue( request );
@@ -2964,7 +2972,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             //
             //  create the read-archive shadow files
             //
-#if !defined(PRMAN) || defined(GENERIC_RIBLIB)
+#if defined(PRMAN) || defined(GENERIC_RIBLIB) || defined(DELIGHT)
             liquidMessage( "Beginning RIB output to '" + string( baseShadowName.asChar() ) + "'", messageInfo );
             RiBegin( const_cast< RtToken >( baseShadowName.asChar() ) );
 #else
@@ -3003,7 +3011,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
             m_alfShadowRibGen = true;
           }
-#if !defined(PRMAN) || defined(GENERIC_RIBLIB)
+#if defined(PRMAN) || defined(GENERIC_RIBLIB) || defined(DELIGHT) 
           liquidMessage( "Beginning RIB output to '" + string( liqglo_currentJob.ribFileName.asChar() ) + "'", messageInfo );
           RiBegin( const_cast< RtToken >( liqglo_currentJob.ribFileName.asChar() ) );
 
@@ -4565,10 +4573,15 @@ MStatus liqRibTranslator::ribPrologue()
     }
 
     // CUSTOM OPTIONS
-    if(m_preFrameRIB != "") {
-    RiArchiveRecord(RI_COMMENT,  " Pre-FrameBegin RIB from liquid globals" );
-    RiArchiveRecord(RI_VERBATIM, ( char* )m_preFrameRIB.asChar() );
-    RiArchiveRecord(RI_VERBATIM, "\n");
+	MFnDependencyNode globalsNode( rGlobalObj );
+	MPlug prePostplug( globalsNode.findPlug( "preFrameBeginMel" ) );
+	MString melcommand( prePostplug.asString() );
+    if( m_preFrameRIB != "" || melcommand.length() )
+	{
+		RiArchiveRecord(RI_COMMENT,  " Pre-FrameBegin RIB from liquid globals" );
+		MGlobal::executeCommand( melcommand );
+		RiArchiveRecord(RI_VERBATIM, ( char* )m_preFrameRIB.asChar() );
+		RiArchiveRecord(RI_VERBATIM, "\n");
     }
 
     if( m_bakeNonRasterOrient || m_bakeNoCullHidden || m_bakeNoCullBackface ) {
@@ -5216,7 +5229,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
     // post-frame script execution
     if( m_postFrameMel != "" ) {
       MString postFrameMel( parseString( m_postFrameMel, false ) );
-      if( fileExists( postFrameMel  ) ) MGlobal::sourceFile( postFrameMel );
+	  if( fileExists( postFrameMel  ) ) MGlobal::sourceFile( postFrameMel );
       else {
         if( MS::kSuccess == MGlobal::executeCommand( postFrameMel, false, false ) ) {
           cout <<"Liquid -> post-frame script executed successfully."<<endl<<flush;
@@ -5840,12 +5853,18 @@ MStatus liqRibTranslator::objectBlock()
     RiSurface( "matte", RI_NULL );
   }
 
-  // Moritz: Added Pre-Geometry RIB for insertion right before any primitives
-  if( m_preGeomRIB != "" ) {
-    RiArchiveRecord( RI_COMMENT,  " Pre-Geometry RIB from liquid globals");
-    RiArchiveRecord( RI_VERBATIM, ( char* ) m_preGeomRIB.asChar() );
-    RiArchiveRecord( RI_VERBATIM, "\n");
-  }
+
+	// Moritz: Added Pre-Geometry RIB for insertion right before any primitives
+	MFnDependencyNode globalsNode( rGlobalObj );
+	MPlug prePostplug( globalsNode.findPlug( "preGeomMel" ) );
+	MString melcommand( prePostplug.asString() );
+	if( m_preGeomRIB != "" || melcommand.length() )
+	{
+		RiArchiveRecord( RI_COMMENT,  " Pre-Geometry RIB from liquid globals");
+		MGlobal::executeCommand( melcommand );
+		RiArchiveRecord( RI_VERBATIM, ( char* ) m_preGeomRIB.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n");
+	}
 
   // retrieve the shadow set object
   MObject shadowSetObj;
@@ -5874,6 +5893,7 @@ MStatus liqRibTranslator::objectBlock()
     liqRibNodePtr ribNode( rniter->second );
     path = ribNode->path();
     transform = path.transform();
+	
 
     if( ( !ribNode ) || ( ribNode->object(0)->type == MRT_Light ) ) continue;
     if( ribNode->object(0)->type == MRT_Coord || ribNode->object(0)->type == MRT_ClipPlane ) continue;
@@ -5885,14 +5905,20 @@ MStatus liqRibTranslator::objectBlock()
       continue;
     }
 
-    if( m_outputComments ) RiArchiveRecord( RI_COMMENT, "Name: %s", ribNode->name.asChar(), RI_NULL );
+	if( m_outputComments ) RiArchiveRecord( RI_COMMENT, "Name: %s", ribNode->name.asChar(), RI_NULL );
 
     RiAttributeBegin();
 
-
     RiAttribute( "identifier", "name", &getLiquidRibName( ribNode->name.asChar() ), RI_NULL );
 
-    if( !ribNode->grouping.membership.empty() ) {
+ 	// Alf: preTransformMel
+	MFnDagNode fnTransform( transform );
+	MPlug prePostPlug = fnTransform.findPlug( "liqPreTransformMel" );
+	m_preTransformMel = prePostPlug.asString();
+	if( m_preTransformMel != "" )
+		MGlobal::executeCommand( m_preTransformMel );
+
+	if( !ribNode->grouping.membership.empty() ) {
       RtString members( const_cast< char* >( ribNode->grouping.membership.c_str() ) );
       RiAttribute( "grouping", "membership", &members, RI_NULL );
     }
@@ -5991,7 +6017,12 @@ MStatus liqRibTranslator::objectBlock()
       RiMotionEnd();
     }
 
-    MFnDagNode fnDagNode( path );
+	// Alf: postTransformMel
+	prePostPlug = fnTransform.findPlug( "liqPostTransformMel" );
+	m_postTransformMel = prePostPlug.asString();
+	if( m_postTransformMel != "" )
+		MGlobal::executeCommand( m_postTransformMel );
+
     bool hasSurfaceShader( false );
     typedef enum {
         liqRegularShaderNode = 0,     // A regular Liquid node, keep it 0 to evaluate to false in conditions
@@ -6006,6 +6037,7 @@ MStatus liqRibTranslator::objectBlock()
     MPlug rmanShaderPlug;
     // Check for surface shader
     status.clear();
+    MFnDagNode fnDagNode( path );
     rmanShaderPlug = fnDagNode.findPlug( MString( "liquidSurfaceShaderNode" ), &status );
     if( ( status != MS::kSuccess ) || ( !rmanShaderPlug.isConnected() ) ) { status.clear(); rmanShaderPlug = ribNode->assignedShadingGroup.findPlug( MString( "liquidSurfaceShaderNode" ), &status ); }
     if( ( status != MS::kSuccess ) || ( !rmanShaderPlug.isConnected() ) ) { status.clear(); rmanShaderPlug = ribNode->assignedShader.findPlug( MString( "liquidSurfaceShaderNode" ), &status ); }
@@ -6797,7 +6829,7 @@ MStatus liqRibTranslator::objectBlock()
      // RiArchiveRecord( RI_COMMENT, " Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode->rib.delayedReadArchive.asChar(), ribNode->bound[0],ribNode->bound[3],ribNode->bound[1],ribNode->bound[4],ribNode->bound[2],ribNode->bound[5] );
      RiArchiveRecord( RI_VERBATIM, " Procedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ] \n", ribNode->rib.delayedReadArchive.asChar(), ribNode->bound[0],ribNode->bound[3],ribNode->bound[1],ribNode->bound[4],ribNode->bound[2],ribNode->bound[5] );
 
-      /* {
+	/* {
         // this is a visual display of the archive's bounding box
         RiAttributeBegin();
         RtColor debug;
@@ -6825,6 +6857,12 @@ MStatus liqRibTranslator::objectBlock()
       } */
     }
 
+	// Alf: preShapeMel
+	prePostPlug = fnTransform.findPlug( "liqPreShapeMel" );
+	m_preShapeMel = prePostPlug.asString();
+	if( m_preShapeMel != "" )
+		MGlobal::executeCommand( m_preShapeMel );
+
     if( !ribNode->ignoreShapes ) {
 
       // check to see if we are writing a curve to set the proper basis
@@ -6834,7 +6872,7 @@ MStatus liqRibTranslator::objectBlock()
       } else if( ribNode->object(0)->type == MRT_Pfx ) {
         RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
         //RiBasis( RiCatmullRomBasis, 1, RiCatmullRomBasis, 1 );
-      }
+	  }
 
       bool doMotion( liqglo_doDef &&
           ribNode->motion.deformationBlur &&
@@ -6865,8 +6903,14 @@ MStatus liqRibTranslator::objectBlock()
       } else {
         ribNode->object( 0 )->writeObject();
       }
+		// Alf: postShapeMel
+		prePostPlug = fnTransform.findPlug( "liqPostShapeMel" );
+		m_postShapeMel = prePostPlug.asString();
+		if( m_postShapeMel != "" )
+			MGlobal::executeCommand( m_postShapeMel );
 
     } // else RiArchiveRecord( RI_COMMENT, " Shapes Ignored !!" );
+
 
     RiAttributeEnd();
   }
@@ -6891,14 +6935,19 @@ MStatus liqRibTranslator::worldPrologue()
   LIQDEBUGPRINTF( "-> Writing world prologue.\n" );
 
   // if this is a readArchive that we are exporting then ingore this header information
-  if( !m_exportReadArchive ) {
-
-    // put in pre-worldbegin statements
-    if(m_preWorldRIB != "") {
-      RiArchiveRecord(RI_COMMENT,  " Pre-WorldBegin RIB from liquid globals");
-      RiArchiveRecord(RI_VERBATIM, ( char* )m_preWorldRIB.asChar());
-      RiArchiveRecord(RI_VERBATIM, "\n");
-    }
+	if( !m_exportReadArchive )
+	{
+		MFnDependencyNode globalsNode( rGlobalObj );
+		MPlug prePostplug( globalsNode.findPlug( "preWorldMel" ) );
+		MString melcommand( prePostplug.asString() );
+		// put in pre-worldbegin statements
+		if(m_preWorldRIB != "" || melcommand.length() )
+		{
+			RiArchiveRecord(RI_COMMENT,  " Pre-WorldBegin RIB from liquid globals");
+			MGlobal::executeCommand( melcommand );
+			RiArchiveRecord(RI_VERBATIM, ( char* )m_preWorldRIB.asChar());
+			RiArchiveRecord(RI_VERBATIM, "\n");
+		}
 
     // output the arbitrary clipping planes here /////////////
     //
@@ -6953,10 +7002,14 @@ MStatus liqRibTranslator::worldPrologue()
     }
 
     // put in post-worldbegin statements
-    if(m_postWorldRIB != "") {
-      RiArchiveRecord( RI_COMMENT,  " Post-WorldBegin RIB from liquid globals" );
-      RiArchiveRecord( RI_VERBATIM, ( char* )m_postWorldRIB.asChar() );
-      RiArchiveRecord( RI_VERBATIM, "\n");
+	prePostplug = globalsNode.findPlug( "postWorldMel" );
+	melcommand = prePostplug.asString();
+    if(m_postWorldRIB != "" || melcommand.length() )
+	{
+		RiArchiveRecord( RI_COMMENT,  " Post-WorldBegin RIB from liquid globals" );
+		MGlobal::executeCommand( melcommand );
+		RiArchiveRecord( RI_VERBATIM, ( char* )m_postWorldRIB.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n");
     }
 
     RiTransformBegin();

@@ -139,7 +139,8 @@ class liqGlobalsNode : public MPxNode
     static MObject aFullShadowRibs;
     static MObject aBinaryOutput;
     static MObject aCompressedOutput;
-    static MObject aRenderAllCurves;
+	static MObject aOutputMayaPolyCreases;
+	static MObject aRenderAllCurves;
     static MObject aOutputMeshUVs;
 	static MObject aIlluminateByDefault;
 	static MObject aLiquidSetLightLinking;
@@ -227,7 +228,12 @@ class liqGlobalsNode : public MPxNode
 
     static MObject aExpandAlfred;
 
-    static MObject aPreFrameBegin;
+    static MObject aPreFrameBeginMel;
+    static MObject aPreWorldMel;
+    static MObject aPostWorldMel;
+    static MObject aPreGeomMel;
+
+	static MObject aPreFrameBegin;
     static MObject aPreWorld;
     static MObject aPostWorld;
     static MObject aPreGeom;

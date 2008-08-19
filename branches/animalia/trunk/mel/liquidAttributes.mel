@@ -591,6 +591,96 @@ global proc liquidCreateMotionFactorAttribute()
   }
 }
 
+// PrePosterous group -----------------------------------------------
+
+global proc liquidCreatePreTransformMelAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqPreTransformMel"` ) {
+      addAttr -ln "liqPreTransformMel" -dt "string" $currentNode;
+    }
+  }
+}
+
+global proc liquidCreatePostTransformMelAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqPostTransformMel"` ) {
+      addAttr -ln "liqPostTransformMel" -dt "string" $currentNode;
+    }
+  }
+}
+
+global proc liquidCreatePreShapeMelAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqPreShapeMel"` ) {
+      addAttr -ln "liqPreShapeMel" -dt "string" $currentNode;
+    }
+  }
+}
+
+global proc liquidCreatePostShapeMelAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqPostShapeMel"` ) {
+      addAttr -ln "liqPostShapeMel" -dt "string" $currentNode;
+    }
+  }
+}
+
+global proc liquidDeletePreTransformMelAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+  if ( `attributeQuery -node $currentNode -ex "liqPreTransformMel"` ) {
+    deleteAttr ( $currentNode + ".liqPreTransformMel" );
+    }
+  }
+}
+
+global proc liquidDeletePostTransformMelAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+  if ( `attributeQuery -node $currentNode -ex "liqPostTransformMel"` ) {
+    deleteAttr ( $currentNode + ".liqPostTransformMel" );
+    }
+  }
+}
+
+global proc liquidDeletePreShapeMelAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+  if ( `attributeQuery -node $currentNode -ex "liqPreShapeMel"` ) {
+    deleteAttr ( $currentNode + ".liqPreShapeMel" );
+    }
+  }
+}
+
+global proc liquidDeletePostShapeMelAttribute()
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+  if ( `attributeQuery -node $currentNode -ex "liqPostShapeMel"` ) {
+    deleteAttr ( $currentNode + ".liqPostShapeMel" );
+    }
+  }
+}
+
 
 // RIB group -----------------------------------------------
 

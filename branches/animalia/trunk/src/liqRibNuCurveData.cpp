@@ -215,7 +215,8 @@ void liqRibNuCurveData::write()
   assignTokenArraysV( tokenPointerArray, tokenArray.get(), pointerArray.get() );
 
 #if defined(AIR) || defined(DELIGHT)
-  RiNuCurvesV( ncurves, nverts.get(), order.get(), knot.get(), min.get(), max.get(), numTokens, tokenArray.get(), pointerArray.get() );
+  RiCurvesV( "cubic", ncurves, nverts.get(), "nonperiodic", numTokens, tokenArray.get(), pointerArray.get() );
+//  RiNuCurvesV( ncurves, nverts.get(), order.get(), knot.get(), min.get(), max.get(), numTokens, tokenArray.get(), pointerArray.get() );
 #else
   RiCurvesV( "cubic", ncurves, nverts.get(), "nonperiodic", numTokens, tokenArray.get(), pointerArray.get() );
 #endif

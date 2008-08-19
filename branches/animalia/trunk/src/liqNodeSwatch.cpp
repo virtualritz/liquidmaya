@@ -104,7 +104,7 @@ bool liqNodeSwatch::doIteration () {
 
     if ( doneFObj.exists() ) {
 
-      status = img.readFromFile( filePreviewPath );
+	status = img.readFromFile( filePreviewPath );
 
       if ( status == MS::kSuccess ) {
         img.verticalFlip();
