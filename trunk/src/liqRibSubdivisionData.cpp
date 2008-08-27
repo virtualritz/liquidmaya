@@ -166,30 +166,29 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
     count = polyIt.polygonVertexCount();
     nverts[face] = count;
 
-    while ( count > 0 ) {
-      --count;
-      vertex = polyIt.vertexIndex( count );
+	for( unsigned i( 0 ); i < count; i++ ){
+      vertex = polyIt.vertexIndex( i );
       verts[faceVertex] = vertex;
-      point = polyIt.point( count, MSpace::kObject );
+      point = polyIt.point( i, MSpace::kObject );
       pointsPointerPair.setTokenFloat( vertex, point.x, point.y, point.z );
 
       if( UVSetsArray.size() ) {
-        fnMesh.getPolygonUV( face, count, S, T );
+        fnMesh.getPolygonUV( face, i, S, T );
 
         UVSetsArray[0].setTokenFloat( faceVertex, 0, S );
-        UVSetsArray[0].setTokenFloat( faceVertex, 1, 1 - T );
+        UVSetsArray[0].setTokenFloat( faceVertex, 1, T );
 
         for ( unsigned j=1; j<=extraUVSetNames.length(); j++ ) {
-          fnMesh.getPolygonUV( face, count, S, T, &extraUVSetNames[j] );
+          fnMesh.getPolygonUV( face, i, S, T, &extraUVSetNames[j] );
 
           UVSetsArray[j].setTokenFloat( faceVertex, 0, S );
-          UVSetsArray[j].setTokenFloat( faceVertex, 1, 1 - T );
+          UVSetsArray[j].setTokenFloat( faceVertex, 1, T );
         }
 
         if( liqglo_outputMeshUVs ) {
           // Match MTOR, which always outputs face-varying STs as well for some reason - Paul
           pFaceVertexSPointer.setTokenFloat( faceVertex, S );
-          pFaceVertexTPointer.setTokenFloat( faceVertex, 1 - T );
+          pFaceVertexTPointer.setTokenFloat( faceVertex, T );
         }
       }
 

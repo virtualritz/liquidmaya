@@ -27,7 +27,7 @@ proc setAttribute6() {
 }
 
 proc setAttribute7() {
-	setAttr ".viewTexture" -type "string" "";
+	setAttr ".viewTexture" -type "string" "piqsl";
 }
 
 proc setAttribute8() {
@@ -45,7 +45,7 @@ proc setAttribute9() {
 	setAttr ".Gaussian" yes;
 	setAttr ".Sinc" yes;
 	setAttr ".Blackman_Harris" no;
-	setAttr ".Mitchell" no;
+	setAttr ".Mitchell" yes;
 	setAttr ".SeparableCatmull_Rom" no;
 	setAttr ".Lanczos" no;
 	setAttr ".Bessel" yes
@@ -53,7 +53,7 @@ proc setAttribute9() {
 }
 
 proc setAttribute10() {
-	setAttr ".Blobbies" no;
+	setAttr ".Blobbies" yes;
 	setAttr ".Points" yes;
 	setAttr ".Eyesplits" yes;
 	setAttr ".Raytracing" no;
