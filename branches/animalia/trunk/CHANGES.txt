@@ -1,3 +1,7 @@
+2.3.1
+- adapted to maya2008 uvs for polys and subdivs
+- applied patch for Aqsis settings
+
 2.3.0
 - added prePosterous group - mel binding for preTransform,
   postTransform, preShape and postShape scripts

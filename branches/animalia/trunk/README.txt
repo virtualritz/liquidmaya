@@ -56,8 +56,8 @@ To compile :
                       if not set )
       AW_LOCATION   : specify where various versions of maya are installed
                       (/usr/aw if not set )
-      The environment variable used to setup your renderer, e.g. DELIGHT or
-      PIXIEHOME.
+      The environment variable used to setup your renderer, e.g. DELIGHT,
+      AQSISHOME or PIXIEHOME.
   - Type
       make <type>
       where <type> is one of:
@@ -73,8 +73,8 @@ Compiling For Windows
 ---------------------
 
 In the src directory you will find a Microsoft Visual C++ project for compiling
-Liquid. It is currently setup to compile against the PRMan or 3Delight
-libraries, but targets will be added for other renderers.
+Liquid. It is currently setup to compile against the 3Delight, Air, Aqsis, Pixie
+or PRMan libraries, but targets may be added for other renderers.
 To compile:
   - Ensure your MAYA_LOCATION and RMANTREE environment variables are set
     correctly (e.g. c:\aw\maya4.5 and c:\program files\pixar\prman-10)
@@ -85,7 +85,7 @@ To compile:
 
 There also is a GNU make makefile to compile with the Visual C++ Toolkit 2003
 (which is free and includes the Microsoft C++ compiler and linker). You thus
-need to have the Visual C++ Toolkit 2003and Cygwin (for make) installed.
+need to have the Visual C++ Toolkit 2003 and Cygwin (for make) installed.
 The build process is the same as described for Linux above.
 
 
@@ -116,11 +116,13 @@ by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 
 Contributor(s): Dan Bethell, Berj Bannayan, Andrew Chapman, Colin Doncaster,
 Stéphane Deverly, George Harker, Jamie McCarter, Ken McGaugh, Moritz Moeller,
-Michael Duffy, Richard Pickler, Rob Pieke, Paul Scruby, Yuri Meshalkin, Alf Kraus.
+Michael Duffy, Richard Pickler, Rob Pieke, Paul Scruby, Yuri Meshalkin,
+Alf Kraus, Leon Tony Atkinson.
 
 The RenderMan (R) Interface Procedures and Protocol are:
 Copyright 1988, 1989, Pixar
 All Rights Reserved
 
 RenderMan (R) is a registered trademark of Pixar
+
 
