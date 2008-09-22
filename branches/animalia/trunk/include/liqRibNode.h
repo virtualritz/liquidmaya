@@ -100,7 +100,7 @@ class liqRibNode {
     MFnDependencyNode  assignedVolume;
 
     void     writeUserAttributes();
-    MObject  findShadingGroup( const MDagPath& path );
+    MObject  findShadingGroup( const MDagPath& path, ObjectType type );
     MObject  findShader( MObject& group );
     MObject  findDisp( MObject& group );
     MObject  findVolume( MObject& group );

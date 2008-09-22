@@ -212,9 +212,9 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
       normal = polyIt.normalIndex( i );
 
       if( numNormals == numPoints ) {
-        normalsPointerPair.setTokenFloat( vertex, -normals[normal].x, -normals[normal].y, -normals[normal].z );
+        normalsPointerPair.setTokenFloat( vertex, normals[normal].x, normals[normal].y, normals[normal].z );
       } else {
-        normalsPointerPair.setTokenFloat( faceVertex, -normals[normal].x, -normals[normal].y, -normals[normal].z );
+        normalsPointerPair.setTokenFloat( faceVertex, normals[normal].x, normals[normal].y, normals[normal].z );
       }
 
       if ( UVSetsArray.size() ) {
@@ -280,10 +280,10 @@ void liqRibMeshData::write()
 
     // Each loop has one polygon, so we just want an array of 1's of
     // the correct size. Stack version.
-    vector< RtInt > nloops( numFaces, 1 );
+    //vector< RtInt > nloops( numFaces, 1 );
     // Alternatively (heap version):
-    //   scoped_array< RtInt > nloops( new RtInt[ numFaces ] );
-    //   fill( nloops.get(), nloops.get() + numFaces, ( RtInt )1 );
+       scoped_array< RtInt > nloops( new RtInt[ numFaces ] );
+       fill( nloops.get(), nloops.get() + numFaces, ( RtInt )1 );
 
     unsigned numTokens( tokenPointerArray.size() );
     scoped_array< RtToken > tokenArray( new RtToken[ numTokens ] );

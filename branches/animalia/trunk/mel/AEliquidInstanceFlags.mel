@@ -125,9 +125,109 @@ global proc liquidSmallFieldNew( string $nodeName, string $label, string $msg )
   liquidSmallFieldReplace( $nodeName, $label, $msg );
 }
 
+// for shading group connections
+global proc liquidSGCreateMenuItems( string $parent, string $name, string $msg )
+{
+	string $sg[] = `ls -type shadingEngine`;
+	
+	menuItem -label "Create New Shading Group" 
+		-parent $parent
+		-command ( "liquidSGCreateMenuItemsNew " + $msg )
+		liquidSGMessageMenuItemNew;
+	menuItem -divider 1 -p $parent;
 
+	for( $i = 0; $i < size( $sg ); $i++ )
+	{
+		string $item = `menuItem -label $sg[$i] -p $parent ( "liquidSGMessageMenuItem" + $i )`;
+		menuItem -e -c ( "liquidSGCreateMenuItemsConnect " + $item + " " + $msg ) $item;
+	}
+}
+global proc liquidSGCreateMenuItemsNew( string $msg )
+{
+	string $parts[] = stringToStringArray( $msg, ".");
+	string $con[] = `listConnections -p 1 $msg`;
+	string $ctl = ( "liquidSGMessageGrp" + $parts[1] );
+	string $shader = `shadingNode -asShader liquidSurface`;
+	string $sg = `sets -renderable true -noSurfaceShader true -empty -name ( $shader + "SG" )`;
+	connectAttr -f ( $shader + ".outColor" ) ( $sg + ".surfaceShader" );
+	if( !`gmatch $con[0] ""` )
+		disconnectAttr $con[0] $msg;
+	connectAttr ( $sg + ".message " ) $msg;
+	string $con[] = `listConnections $msg`;
+	if( !`gmatch $con[0] ""` )
+		textFieldButtonGrp -e -eb 1 -tx $con[0] $ctl;
+}
+global proc liquidSGCreateMenuItemsConnect( string $item, string $msg )
+{
+	string $parts[] = stringToStringArray( $msg, ".");
+	string $con[] = `listConnections -p 1 $msg`;
+	string $ctl = ( "liquidSGMessageGrp" + $parts[1] );
+	string $sg = `menuItem -q -l $item`;
+	if( !`gmatch $con[0] ""` )
+		disconnectAttr $con[0] $msg;
+	connectAttr ( $sg + ".message " ) $msg;
+	string $con[] = `listConnections $msg`;
+	if( !`gmatch $con[0] ""` )
+		textFieldButtonGrp -e -eb 1 -tx $con[0] $ctl;
+}
 
+global proc liquidSGSelect( string $msg )
+{
+	string $parts[] = stringToStringArray( $msg, ".");
+	string $SG = `textFieldButtonGrp -q -tx ( "liquidSGMessageGrp" + $parts[1] )`;
+	string $shader[] = `listConnections ( $SG + ".surfaceShader" )`;
+	string $displ[] = `listConnections ( $SG + ".displacementShader" )`;
+	string $vol[] = `listConnections ( $SG + ".volumeShader" )`;
+	if( !`gmatch $shader[0] ""` )
+		select $shader[0];
+	else if( !`gmatch $displ[0] ""` )
+		select $displ[0];
+	else if( !`gmatch $vol[0] ""` )
+		select $vol[0];
+}
 
+global proc liquidSGMessageNew( string $nodeName, string $label, string $msg )
+{
+	string $parts[] = stringToStringArray( $msg, ".");
+	setUITemplate -pst attributeEditorTemplate;
+	columnLayout;
+	textFieldButtonGrp
+		-label $label 
+		-editable 0
+		-enableButton 0 
+		-buttonLabel ">"
+		-buttonCommand ( "liquidSGSelect " + $msg )
+		-annotation "right click to connect"
+		-text "[not connected]"
+		( "liquidSGMessageGrp" + $parts[1] );
+	string $popup = `popupMenu -parent ( "liquidSGMessageGrp" + $parts[1] ) ( "liquidSGMessagePopup" + $parts[1] )`;
+	liquidSGCreateMenuItems( $popup, $parts[0], $msg );
+	setUITemplate -ppt;
+	liquidSGMessageReplace( $nodeName, $msg );
+}
+
+global proc liquidSGMessageReplace( string $nodeName, string $msg )
+{
+	string $parts[] = stringToStringArray( $msg, ".");
+	string $ctl = ( "liquidSGMessageGrp" + $parts[1] );
+	
+	if ( !attributeExists( $parts[1], $parts[0] ) )
+	{
+		textFieldButtonGrp -e -m 0 $ctl;
+	}
+	else
+	{
+		textFieldButtonGrp -e -m 1 $ctl;
+		connectControl -index 1 $ctl $msg;
+		string $con[] = `listConnections $msg`;
+		if( !`gmatch $con[0] ""` )
+			textFieldButtonGrp -e -eb 1 -tx $con[0] $ctl;
+		else
+			textFieldButtonGrp -e -eb 0 -tx "[not connected]" $ctl;
+		popupMenu -e -dai ( "liquidSGMessagePopup" + $parts[1] );
+		liquidSGCreateMenuItems( ( "liquidSGMessagePopup" + $parts[1] ), $parts[0], $msg );
+	}
+}
 
 global proc AEliquidInstanceFlags( string $node )
 {
@@ -155,10 +255,12 @@ global proc AEliquidInstanceFlags( string $node )
 
       editorTemplate -label "Shading Rate" -addDynamicControl "liqShadingRate";
       editorTemplate -label "Raster-Oriented Dicing" -addDynamicControl "liqDiceRasterOrient";
+      editorTemplate -label "Double Shaded" -addDynamicControl "liqDoubleShaded";
       editorTemplate -label "Color" -addDynamicControl "liqColor";
       editorTemplate -label "Opacity" -addDynamicControl "liqOpacity";
       editorTemplate -label "Camera Hit-Mode" -addDynamicControl "liqHitModeCamera";
       editorTemplate -label "Alpha Matte" -addDynamicControl "liqMatte";
+      editorTemplate -ccu ("liquidSGMessageNew "+$node+" \"Custom Shading Group\"") ("liquidSGMessageReplace "+$node ) "liquidCustomShadingGroup";
 
     editorTemplate -endLayout;
 

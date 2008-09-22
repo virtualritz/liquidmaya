@@ -116,6 +116,8 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   MFnDagNode  fnDagNode( path );
   MStatus    returnStatus;
 
+  objTypeVec.push_back( objType );
+
   MString nodeName = fnDagNode.fullPathName( &returnStatus );
   if ( objType == MRT_RibGen ) nodeName += "RIBGEN";
 
@@ -224,7 +226,7 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
 /**
  * Find the hash table entry for the given object.
  */
-liqRibNodePtr liqRibHT::find( MString nodeName, MDagPath path, ObjectType
+liqRibNodePtr liqRibHT::find( MString nodeName, MDagPath path, ObjectType objType
                             /*objType = MRT_Unknown*/ )
 {
   LIQDEBUGPRINTF( "-> finding node in hash table using object, %s\n", nodeName.asChar() );
@@ -233,7 +235,7 @@ liqRibNodePtr liqRibHT::find( MString nodeName, MDagPath path, ObjectType
   ulong hc;
 
   for( unsigned index( 0 ); index < RibHashVec.size(); index++ ) {
-    if( RibHashVec[ index ] == nodeName.asChar() ) {
+    if( RibHashVec[ index ] == nodeName.asChar() && objTypeVec[ index ] == objType ) {
       hc = index;
       break;
     }
@@ -242,16 +244,17 @@ liqRibNodePtr liqRibHT::find( MString nodeName, MDagPath path, ObjectType
 
   LIQDEBUGPRINTF( "-> Done\n"  );
 
-  RNMAP::iterator iter( RibNodeMap.find( hc ) );
-  while( ( iter != RibNodeMap.end() ) && ( (*iter).first == hc ) ) {
-    if( (*iter).second->path() == path ) {
-      result = (*iter).second;
-      iter = RibNodeMap.end();
-    } else {
-      iter++;
-    }
-  }
-
-  LIQDEBUGPRINTF( "-> finished finding node in hash table using object\n" );
-  return result;
+	RNMAP::iterator iter( RibNodeMap.find( hc ) );
+	while( ( iter != RibNodeMap.end() ) && ( (*iter).first == hc ) )
+	{
+		if( (*iter).second->path() == path )
+		{
+			result = (*iter).second;
+			iter = RibNodeMap.end();
+		}
+		else
+			iter++;
+	}
+	LIQDEBUGPRINTF( "-> finished finding node in hash table using object\n" );
+	return result;
 }

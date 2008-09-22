@@ -151,8 +151,8 @@ void liquidNewPreview( const liqPreviewShaderOptions& options )
   FILE *fp = popen( options.renderCommand.c_str(), "w");
   if( !fp )
   {
-    string str( "Opening pipe to " + options.renderCommand.c_str() );
-    perror( str );
+    MString str( MString( "Opening pipe to " ) + options.renderCommand.c_str() );
+    perror( str.asChar() );
     pthread_exit( ( void * )&val);
   }
   val = fork();
@@ -174,7 +174,7 @@ void liquidNewPreview( const liqPreviewShaderOptions& options )
     }
     // And output RIB stdout
     cout << "# Outputing " << options.shaderNodeName << endl;
-    liquidOutputPreviewShader( string(), *options );
+    liquidOutputPreviewShader( string(), options );
     _exit( 0 );
   }
   cerr << "Waiting for process" << val << " to finish " << endl;

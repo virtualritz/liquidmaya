@@ -13,7 +13,7 @@
 // The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
 // Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 // 
-// Contributor(s): Berj Bannayan. 
+// Contributor(s): Alf Kraus. 
 //
 // 
 // The RenderMan (R) Interface Procedures and Protocol are:
@@ -34,29 +34,29 @@ global proc liquidAddPFXAttributes()
 	string $list[] = `ls -dag -type "stroke" -sl`;
 	for( $s in $list )
 	{
-		if( !attributeExists( "tubeShader", $s ) )
-			addAttr -ln tubeShader -dt "string" $s;
-		if( !attributeExists( "leafShader", $s ) )
-			addAttr -ln leafShader -dt "string" $s;
-		if( !attributeExists( "petalShader", $s ) )
-			addAttr -ln petalShader -dt "string" $s;
+		if( !attributeExists( "liquidTubeShadingGroup", $s ) )
+			addAttr -ln liquidTubeShadingGroup -at "message" $s;
+		if( !attributeExists( "liquidLeafShadingGroup", $s ) )
+			addAttr -ln liquidLeafShadingGroup -at "message" $s;
+		if( !attributeExists( "liquidPetalShadingGroup", $s ) )
+			addAttr -ln liquidPetalShadingGroup -at "message" $s;
 			
-		if( !attributeExists( "tubeCameraFacing", $s ) )
-			addAttr -ln tubeCameraFacing -at bool -dv true $s;
-		if( !attributeExists( "leafCameraFacing", $s ) )
-			addAttr -ln leafCameraFacing -at bool -dv true $s;
-		if( !attributeExists( "petalCameraFacing", $s ) )
-			addAttr -ln petalCameraFacing -at bool -dv true $s;
+		if( !attributeExists( "liquidTubeCameraFacing", $s ) )
+			addAttr -ln liquidTubeCameraFacing -at bool -dv true $s;
+		if( !attributeExists( "liquidLeafCameraFacing", $s ) )
+			addAttr -ln liquidLeafCameraFacing -at bool -dv false $s;
+		if( !attributeExists( "liquidPetalCameraFacing", $s ) )
+			addAttr -ln liquidPetalCameraFacing -at bool -dv false $s;
 			
-		if( !attributeExists( "tubeUniformWidth", $s ) )
-			addAttr -ln tubeUniformWidth -at bool -dv true $s;
-		if( !attributeExists( "leafUniformWidth", $s ) )
-			addAttr -ln leafUniformWidth -at bool -dv true $s;
-		if( !attributeExists( "petalUniformWidth", $s ) )
-			addAttr -ln petalUniformWidth -at bool -dv true $s;
+		if( !attributeExists( "liquidTubeUniformWidth", $s ) )
+			addAttr -ln liquidTubeUniformWidth -at bool -dv false $s;
+		if( !attributeExists( "liquidLeafUniformWidth", $s ) )
+			addAttr -ln liquidLeafUniformWidth -at bool -dv false $s;
+		if( !attributeExists( "liquidPetalUniformWidth", $s ) )
+			addAttr -ln liquidPetalUniformWidth -at bool -dv false $s;
 
-		if( !attributeExists( "curveID", $s ) )
-			addAttr -ln curveID -at bool -dv true $s;
+		if( !attributeExists( "liquidCurveID", $s ) )
+			addAttr -ln liquidCurveID -at bool -dv false $s;
 	}
 }
 
@@ -65,29 +65,29 @@ global proc liquidRemovePFXAttributes()
 	string $list[] = `ls -dag -type "stroke" -sl`;
 	for( $s in $list )
 	{
-		if( attributeExists( "tubeShader", $s ) )
-			deleteAttr -at tubeShader $s;
-		if( attributeExists( "leafShader", $s ) )
-			deleteAttr -at leafShader $s;
-		if( attributeExists( "petalShader", $s ) )
-			deleteAttr -at petalShader $s;
+		if( attributeExists( "liquidTubeShadingGroup", $s ) )
+			deleteAttr -at liquidTubeShadingGroup $s;
+		if( attributeExists( "liquidLeafShadingGroup", $s ) )
+			deleteAttr -at liquidLeafShadingGroup $s;
+		if( attributeExists( "liquidPetalShadingGroup", $s ) )
+			deleteAttr -at liquidPetalShadingGroup $s;
 			
-		if( attributeExists( "tubeCameraFacing", $s ) )
-			deleteAttr -at tubeCameraFacing $s;
-		if( attributeExists( "leafCameraFacing", $s ) )
-			deleteAttr -at leafCameraFacing $s;
-		if( attributeExists( "petalCameraFacing", $s ) )
-			deleteAttr -at petalCameraFacing $s;
+		if( attributeExists( "liquidTubeCameraFacing", $s ) )
+			deleteAttr -at liquidTubeCameraFacing $s;
+		if( attributeExists( "liquidLeafCameraFacing", $s ) )
+			deleteAttr -at liquidLeafCameraFacing $s;
+		if( attributeExists( "liquidPetalCameraFacing", $s ) )
+			deleteAttr -at liquidPetalCameraFacing $s;
 			
-		if( attributeExists( "tubeUniformWidth", $s ) )
-			deleteAttr -at tubeUniformWidth $s;
-		if( attributeExists( "leafUniformWidth", $s ) )
-			deleteAttr -at leafUniformWidth $s;
-		if( attributeExists( "petalUniformWidth", $s ) )
-			deleteAttr -at petalUniformWidth $s;
+		if( attributeExists( "liquidTubeUniformWidth", $s ) )
+			deleteAttr -at liquidTubeUniformWidth $s;
+		if( attributeExists( "liquidLeafUniformWidth", $s ) )
+			deleteAttr -at liquidLeafUniformWidth $s;
+		if( attributeExists( "liquidPetalUniformWidth", $s ) )
+			deleteAttr -at liquidPetalUniformWidth $s;
 
-		if( attributeExists( "curveID", $s ) )
-			deleteAttr -at curveID $s;
+		if( attributeExists( "liquidCurveID", $s ) )
+			deleteAttr -at liquidCurveID $s;
 	}
 }
 

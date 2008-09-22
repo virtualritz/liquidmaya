@@ -169,9 +169,9 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
         if( !ignoreShapes ) data = liqRibDataPtr( new liqRibNuCurveData( obj ) );
         else data = liqRibDataPtr( new liqRibNuCurveData( skip ) );
       } else if( obj.hasFn(MFn::kPfxGeometry) ) {
-        type = MRT_Pfx;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibPfxData( obj ) );
-        else data = liqRibDataPtr( new liqRibPfxData( skip ) );
+	    type = objType;
+        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibPfxData( obj, objType ) );
+        else data = liqRibDataPtr( new liqRibPfxData( skip, objType ) );
       } else if( obj.hasFn( MFn::kPfxToon ) ) {
         type = MRT_PfxToon;
         if( !ignoreShapes ) data = liqRibDataPtr( new liqRibPfxToonData( obj ) );

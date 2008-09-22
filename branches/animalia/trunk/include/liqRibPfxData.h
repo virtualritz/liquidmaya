@@ -41,7 +41,7 @@
 class liqRibPfxData : public liqRibData {
 public: // Methods
 
-                          liqRibPfxData( MObject pfxGeo );
+                          liqRibPfxData( MObject pfxGeo, ObjectType pfxtype );
 
   virtual void            write();
   virtual unsigned        granularity() const;
@@ -53,10 +53,9 @@ private: // Data
 
   unsigned                grain;
   bool                    hasFeature[ 3 ];
-  bool                    hasShader[ 3 ];
+  ObjectType			  pfxtype;
   vector< RtInt >         nverts[ 3 ];
   shared_array< RtFloat > CVs;
-  MPlug					  pfxShaders[ 3 ];
   liqTokenPointer::array pfxTokenPointerArrays[ 3 ];
 };
 

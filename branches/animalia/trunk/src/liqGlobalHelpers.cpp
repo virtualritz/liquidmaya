@@ -47,7 +47,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <direct.h> //for _mdir()
-#include <list>
+//#include <list>
 
 //#include <process.h>
 #include <io.h>
@@ -1132,6 +1132,7 @@ MString parseLiquidRibRequest( MStringArray requestArray, MString attr )
 	MItDependencyNodes itDep( MFn::kPluginDependNode );
 
 	MObjectArray oaLiquidRibRequest;
+	MString combinedRequest;
 	for( ; !itDep.isDone(); itDep.next() )
 	{
 		// filter out liquidRibRequest nodes
@@ -1150,11 +1151,13 @@ MString parseLiquidRibRequest( MStringArray requestArray, MString attr )
 		MPlug pRequest = fnLiquidRibRequest.findPlug( attr );
 		MString request;
 		pRequest.getValue( request );
-		requestArray.append( request );
+//		requestArray.append( request );
+		combinedRequest += request;
 	}
 	
+	// skipped this as it does not exist in linux - no duplicates are sorted so what?
 	// use list so duplicates can be removed easy - Alf
-	typedef list< MString > MStringList;
+/*	typedef list< MString > MStringList;
 	MStringList preFrameList( requestArray.length() );
 
 	unsigned i( 0 );
@@ -1173,5 +1176,5 @@ MString parseLiquidRibRequest( MStringArray requestArray, MString attr )
 		combinedRequest += ( *itPreFrameList + "\n" );
 	}
 //	MGlobal::displayInfo( MString( "combinedRequest: " ) + combinedRequest );
-	return combinedRequest;
+*/	return combinedRequest;
 }

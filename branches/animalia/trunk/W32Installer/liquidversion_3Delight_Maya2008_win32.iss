@@ -1,8 +1,8 @@
 [Setup]
 AppName=Liquid for 3Delight
-AppVersion=2.3.0
-AppVerName=Liquid for Maya 2008 32bit
-OutputBaseFilename=Liquid_2.3.0_3Delight_Maya2008_win32_Setup
+AppVersion=2.3.1
+AppVerName=Liquid for Maya 2008 SP1 32bit
+OutputBaseFilename=Liquid_2.3.1_3Delight_Maya2008SP1_win32_Setup
 [Messages]
 BeveledLabel=Liquid for 3Delight Setup
 [Files]

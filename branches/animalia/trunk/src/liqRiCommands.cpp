@@ -880,12 +880,12 @@ MStatus RIDetail::doIt( const MArgList &args )
 		MGlobal::displayWarning( MString( "RIDetail: no maxz specified" ) );
 		return MS::kSuccess;
 	}
-	float bb[6] = { (float)minx, (float)maxx, (float)miny, (float)maxy, (float)minz, (float)maxz };
+	MString call = ( MString( "Detail [" )+minx+" "+maxx+" "+miny+" "+maxy+" "+minz+" "+maxx+"]" );
 	bool isTest = argData.isFlagSet( testModeFlag );
 	if( isTest )
-		MGlobal::displayInfo( MString( "RIB output: Detail [" )+minx+" "+maxx+" "+miny+" "+maxy+" "+minz+" "+maxx+"]" );
+		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
-		RiDetail( (RtBound)bb );
+		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
 
 	return redoIt();
 }

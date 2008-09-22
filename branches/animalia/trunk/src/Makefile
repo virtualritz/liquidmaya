@@ -25,8 +25,6 @@ LIQUIDBINLIBS =		$(LIBS) $(MAYALIBS) \
 					-lDependEngine \
 					-lCommandEngine \
 					-lFoundation \
-					-lStringCatalog \
-					-lIMF \
 					-lAG \
 					-lAnimEngine \
 					-lAppVersion \
@@ -57,7 +55,7 @@ LIQUIDBINLIBS =		$(LIBS) $(MAYALIBS) \
 					$(EXTRA_LIBS) \
 					-lm
 
-ifeq "$(MAYA_VERSION)" "8.0"
+ifeq "$(MAYA_VERSION)" "2008"
 LIQUIDBINLIBS +=	-Wl,-rpath -Wl,$(MAYA_LOCATION)/lib \
 					-lawxml2 \
 					-lguide \
@@ -66,7 +64,8 @@ LIQUIDBINLIBS +=	-Wl,-rpath -Wl,$(MAYA_LOCATION)/lib \
 					-lm
 endif
 
-LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
+LIQUIDMAINOBJS = liqShader.$(OBJEXT) \
+					liqMemory.$(OBJEXT) \
 					liqAttachPrefAttribute.$(OBJEXT) \
 					liqRibTranslator.$(OBJEXT) \
 					liqRibParticleData.$(OBJEXT) \
@@ -107,7 +106,10 @@ LIQUIDMAINOBJS = 	liqShader.$(OBJEXT) \
 					liqGlobalsNode.$(OBJEXT) \
 					liqBucket.$(OBJEXT) \
 					liqMayaRenderView.$(OBJEXT) \
-					liqJobList.$(OBJEXT)
+					liqJobList.$(OBJEXT) \
+					liqRibRequestNode.$(OBJEXT) \
+					liqRiCommands.$(OBJEXT) \
+					liqRibImplicitSphereData.$(OBJEXT)
 
 
 LIQUIDOUTMAINOBJS := $(patsubst %,$(VPATH)/%,$(LIQUIDMAINOBJS))

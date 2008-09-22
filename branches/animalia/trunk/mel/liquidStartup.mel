@@ -69,6 +69,7 @@ global proc liquidLoadScripts()
     "AEliquidNurbsCurveShape.mel",
     "AEliquidSetFlags.mel",
     "AEliquidCamera.mel",
+    "AEliquidPaintEffects.mel",
     "AEliquidShadowControls.mel",
     "AEliquidSubdivisionSurfaceShape.mel",
     "AEobjectSetTemplate.mel",
@@ -124,7 +125,8 @@ global proc liquidLoadScripts()
     "registerLiquidRenderer.mel",
     "liquidCreateGlobalsTab.mel",
     "liquidRenderView.mel",
-    "liquidLightLinker.mel"
+    "liquidLightLinker.mel",
+    "liquidGeneratePlace2dTexture.mel"
   };
 
   string $liquidHome = liquidGetHome();
@@ -216,7 +218,9 @@ global proc liquidCreateObjectsAttributesMenu( string $prefix )
       menuItem -label "Opacity"               -command liquidCreateOpacityAttribute;
       menuItem -label "Matte"                 -command liquidCreateMatteAttribute;
       menuItem -label "Camera Hit-Mode"       -command liquidCreateCameraHitModeAttribute;
-      menuItem -label "Rater-Oriented Dicing" -command "liquidCreateRasterOrientedDicingAttribute( 1 )";
+      menuItem -label "Raster-Oriented Dicing" -command "liquidCreateRasterOrientedDicingAttribute( 1 )";
+      menuItem -label "Double Shaded" -command "liquidCreateDoubleShadedAttribute( 0 )";
+      menuItem -label "Custom Shading Group" -command liquidCreateCustomSGAttribute;
     setParent -menu ..;
     menuItem -label "Remove Shading Group" -command liquidDeleteShadingAttributes -ann "Remove Shading attributes from selected Transform node(s)";
     menuItem -d true;

@@ -310,6 +310,23 @@ proc liquidShowFloatGlobal( string $name, string $label )
   liquidShowFloatGlobalPlus( $name, $label, "", "" );
 }
 
+proc liquidShowColorGlobalPlus( string $name, string $label, string $info )
+{
+  if ( objExists( ("liquidGlobals."+$name) ) ) {
+    //setUITemplate -pst attributeEditorTemplate;
+    $spacedlabel = $label + " ";
+    attrColorSliderGrp -label $spacedlabel -sb false -ann $info -attribute ( "liquidGlobals." + $name ) ( "liquidGlobals" + $name + "Field" );
+    //setUITemplate -ppt;
+  } else {
+    warning( "global attribute " + $name + " does not exist\n" );
+  }
+}
+
+proc liquidShowColorGlobal( string $name, string $label )
+{
+  liquidShowColorGlobalPlus( $name, $label, "" );
+}
+
 proc liquidShowIntGlobalMenu( string $name, string $label, string $items[], string $prefix )
 {
   if (size($items) == 0) {
@@ -496,9 +513,9 @@ global proc liquidInitGlobalVals()
     ,"pixelAspectRatio",            "float",  1.0
     ,"imageDriver",                 "string", ""
 
-    ,"cameraBlur",                  "bool",   true
-    ,"transformationBlur",          "bool",   true
-    ,"deformationBlur",             "bool",   true
+    ,"cameraBlur",                  "bool",   false
+    ,"transformationBlur",          "bool",   false
+    ,"deformationBlur",             "bool",   false
     ,"shutterConfig",               "long",   0
     ,"shutterEfficiency",           "float",  1.0
     ,"motionBlurSamples",           "long",   2
@@ -509,8 +526,8 @@ global proc liquidInitGlobalVals()
     ,"pixelSamples",                "long",   3
     ,"shadingRate",                 "float",  1.0
 
-    ,"limitsOThreshold",            "float",  0.996
-    ,"limitsZThreshold",            "float",  1.0
+    ,"limitsOThreshold",            "color",  "0.996 0.996 0.996"
+    ,"limitsZThreshold",            "color",  "0.996 0.996 0.996"
     ,"limitsBucketXSize",           "long",   16
     ,"limitsBucketYSize",           "long",   16
     ,"limitsGridSize",              "long",   256
@@ -827,6 +844,14 @@ global proc liquidAddGlobals()
         case "string":
           addAttr -ln $name -dt "string" -hidden true liquidGlobals;
           setAttr ( "liquidGlobals."+$name ) -type "string" $val;
+          break;
+          
+        case "color":
+          addAttr -ln $name -usedAsColor -hidden true -at float3 liquidGlobals;
+            addAttr -ln ($name+"R") -attributeType "float" -parent $name;
+            addAttr -ln ($name+"R") -attributeType "float" -parent $name;
+            addAttr -ln ($name+"R") -attributeType "float" -parent $name;
+            eval( "setAttr ( \"cameraShape1.\"+$name ) " + $val );
           break;
 
         case "stringArray":
@@ -2613,7 +2638,8 @@ global proc liquidGlobalsImageTab_buildIt( string $prefix )
         liquidShowIntGlobal   "limitsGridSize"      "Grid Size";
         liquidShowIntGlobal   "limitsTextureMemory" "Texture Memory (Kb)";
         separator;
-        liquidShowFloatGlobal "limitsOThreshold"    "Opacity Threshold";
+        liquidShowColorGlobal "limitsOThreshold"    "O Threshold";
+        liquidShowColorGlobal "limitsZThreshold"    "Z Threshold";
       setParent ..;
     setParent ..;
     frameLayout -bs "etchedIn" -l "Image" -cll true -cl false;
@@ -2804,7 +2830,8 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
         liquidShowBoolGlobalPlus  "lazyCompute"             "Lazy Compute"      "If your shadow maps are already available, they will not be recomputed.";
         frameLayout -bs "etchedIn" -l "Depth Shadows" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowFloatGlobal "limitsZThreshold"       "Opacity Threshold";
+            liquidShowColorGlobal "limitsOThreshold"       "O Threshold";
+            liquidShowColorGlobal "limitsZThreshold"       "Z Threshold";
             liquidShowBoolGlobal  "outputShadersInShadows" "Output Tagged Shaders";
           setParent ..;
         setParent ..;

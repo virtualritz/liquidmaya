@@ -305,6 +305,12 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         nPlug.getValue( shading.matte );
       }
 
+ 		status.clear();
+		nPlug = nodePeeker.findPlug( MString( "liqDoubleShaded" ), &status );
+		if( status == MS::kSuccess )
+		  nPlug.getValue( shading.doubleShaded );
+
+
       // trace group ----------------------------------------------------------
       if( trace.sampleMotion == false ) {
         status.clear();
@@ -819,7 +825,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
 
   // Get the object's color
   if( objType != MRT_Shader ) {
-    MObject shadingGroup = findShadingGroup( path );
+    MObject shadingGroup = findShadingGroup( path, objType );
     if( shadingGroup != MObject::kNullObj ) {
       assignedShadingGroup.setObject( shadingGroup );
       MObject surfaceShader = findShader( shadingGroup );
@@ -1013,31 +1019,64 @@ MDagPath & liqRibNode::path()
 /**
  * Find the shading group assigned to the given object.
  */
-MObject liqRibNode::findShadingGroup( const MDagPath& path )
+MObject liqRibNode::findShadingGroup( const MDagPath& path, ObjectType type )
 {
-  LIQDEBUGPRINTF( "-> finding rib node shading group\n");
-  MSelectionList objects;
-  objects.add( path );
-  MObjectArray setArray;
+	LIQDEBUGPRINTF( "-> finding rib node shading group\n");
 
-  // Get all of the sets that this object belongs to
-  //
-  MGlobal::getAssociatedSets( objects, setArray );
-  MObject mobj;
+	// Alf: the case of a custom shading group assigned to the shape directly
+	MStatus status;
+	MFnDagNode fnDagNode( path.transform() );
+	MPlug rmanSGPlug( fnDagNode.findPlug( MString( "liquidCustomShadingGroup" ), &status ) );
+	if( status==MS::kSuccess && rmanSGPlug.isConnected() )
+	{
+		MPlugArray rmSGArray;
+		rmanSGPlug.connectedTo( rmSGArray, true, true );
+		MObject rmSGObj( rmSGArray[0].node() );
+		MFnDependencyNode SGDepNode( rmSGObj );
+		if( SGDepNode.typeName() == "shadingEngine" )
+			return rmSGObj;
+	}
 
-  // Look for a set that is a "shading group"
-  //
-  for ( unsigned i( 0 ); i<setArray.length(); i++ )
-  {
-    mobj = setArray[i];
-    MFnSet fnSet( mobj );
-    MStatus stat;
-    if( MFnSet::kRenderableOnly == fnSet.restriction(&stat) )
-    {
-      return mobj;
-    }
-  }
-  return MObject::kNullObj;
+	// Alf: Paint effects shading group
+	fnDagNode.setObject( path.node() );
+	if( path.hasFn( MFn::kPfxGeometry ) )
+	{
+		if( type == MRT_PfxTube )
+			rmanSGPlug = fnDagNode.findPlug( MString( "liquidTubeShadingGroup" ), &status );
+		if( type == MRT_PfxLeaf )
+			rmanSGPlug = fnDagNode.findPlug( MString( "liquidLeafShadingGroup" ), &status );
+		if( type == MRT_PfxPetal )
+			rmanSGPlug = fnDagNode.findPlug( MString( "liquidPetalShadingGroup" ), &status );
+		if( status == MS::kSuccess && rmanSGPlug.isConnected() )
+		{
+			MPlugArray rmSGArray;
+			rmanSGPlug.connectedTo( rmSGArray, true, true );
+			MObject rmSGObj( rmSGArray[0].node() );
+			MFnDependencyNode SGDepNode( rmSGObj );
+			if( SGDepNode.typeName() == "shadingEngine" )
+				return rmSGObj;
+		}
+	}
+	MSelectionList objects;
+	objects.add( path );
+	MObjectArray setArray;
+
+	// Get all of the sets that this object belongs to
+	//
+	MGlobal::getAssociatedSets( objects, setArray );
+	MObject mobj;
+
+	// Look for a set that is a "shading group"
+	//
+	for ( unsigned i( 0 ); i<setArray.length(); i++ )
+	{
+		mobj = setArray[i];
+		MFnSet fnSet( mobj );
+		MStatus stat;
+		if( MFnSet::kRenderableOnly == fnSet.restriction(&stat) )
+			return mobj;
+	}
+	return MObject::kNullObj;
 }
 
 

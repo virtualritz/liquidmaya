@@ -152,7 +152,7 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION_X64)/include,../../ribLib"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;AQSIS;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -179,10 +179,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
-				OutputFile="../../bin/Aqsis/win32/Release/liquid.mll"
+				OutputFile="../../bin/Aqsis/win64/liquid.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION_X64)/lib,../../bin/win64lib"
 				IgnoreDefaultLibraryNames=""
 				ProgramDatabaseFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/Aqsis/win32/Release/Objects/liquid.lib"
@@ -350,7 +350,7 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION_X64)/include,../../ribLib"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;PIXIE;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -377,10 +377,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
-				OutputFile="../../bin/Pixie/win32/Release/liquid.mll"
+				OutputFile="../../bin/Pixie/win64/liquid.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION_X64)/lib,../../bin/win64lib"
 				IgnoreDefaultLibraryNames=""
 				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
@@ -843,7 +843,7 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,$(PIXIEHOME)/include"
+				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION)/include&quot;;../../ribLib"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;PIXIE;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -1039,7 +1039,7 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,$(AQSISHOME)/include"
+				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION)/include&quot;;&quot;$(AQSISHOME)/include/aqsis/&quot;"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;AQSIS;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -1065,8 +1065,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ri2rib.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib"
-				OutputFile="../../bin/Aqsis/win32/Release/liquid.mll"
+				AdditionalDependencies="ri2rib.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/Aqsis/win32/liquid.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(AQSISHOME)/lib"
@@ -1138,7 +1138,7 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,$(AQSISHOME)/include"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION_X64)/include,$(AQSISHOME)/include/aqsis"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;AQSIS;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -1164,11 +1164,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ri2rib.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib RILIB.lib"
-				OutputFile="../../bin/Aqsis/win32/Release/liquid.mll"
+				AdditionalDependencies="ri2rib.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				OutputFile="../../bin/Aqsis/win64/liquid.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,$(AQSISHOME)/lib"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION_X64)/lib&quot;,&quot;$(AQSISHOME)/lib&quot;"
 				IgnoreDefaultLibraryNames=""
 				ProgramDatabaseFile=".\../../bin/Aqsis/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/Aqsis/win32/Release/Objects/liquid.lib"
@@ -1238,7 +1238,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;AIR;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;AIR;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -1264,10 +1264,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
-				OutputFile="../../bin/Air/win32/Release/liquid.mll"
+				OutputFile="../../bin/Air/win32/liquid.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION)/lib&quot;;../../bin/win32lib"
 				IgnoreDefaultLibraryNames=""
 				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
@@ -1336,7 +1336,7 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION_X64)/include,../../ribLib"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;AIR;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -1363,10 +1363,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
-				OutputFile="../../bin/Air/win32/Release/liquid.mll"
+				OutputFile="../../bin/Air/win64/liquid.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION_X64)/lib,../../bin/win64lib"
 				IgnoreDefaultLibraryNames=""
 				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
@@ -1436,7 +1436,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;PIXIE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -1462,7 +1462,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
-				OutputFile="../../bin/Generic/win32/Release/liquid.mll"
+				OutputFile="../../bin/pixie/win32/liquid.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
@@ -1598,7 +1598,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Prman Generic ribLib Release|Win32"
+			Name="Prman Release|Win32"
 			OutputDirectory=".\../../bin/3Delight/win32/Release/Objects"
 			IntermediateDirectory=".\../../bin/3Delight/win32/Release/Objects"
 			ConfigurationType="2"
@@ -1633,7 +1633,7 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION)/include&quot;;../../riblib"
+				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION)/include&quot;;&quot;$(RMANTREE)/include&quot;"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;PRMAN;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -1659,11 +1659,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				AdditionalDependencies="libprman.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
 				OutputFile="../../bin/prman/win32/liquid.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION)/lib&quot;;../../bin/win32lib"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION)/lib&quot;;&quot;$(RMANTREE)/lib&quot;"
 				ProgramDatabaseFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/3Delight/win32/Release/Objects/liquid.lib"
 				TargetMachine="1"
@@ -1696,7 +1696,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Prman Generic ribLib Release|x64"
+			Name="Prman Release|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
@@ -1731,8 +1731,8 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION_X64)/include&quot;;../../riblib"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				AdditionalIncludeDirectories="../../include;&quot;$(MAYA_LOCATION_X64)/include&quot;;&quot;$(RMANTREE_X64)/include&quot;"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;PRMAN;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -1757,11 +1757,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
+				AdditionalDependencies="libprman.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
 				OutputFile="../../bin/prman/win64/liquid.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION_X64)/lib&quot;;../../bin/win64lib"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION_X64)/lib&quot;;&quot;$(RMANTREE_X64)/lib&quot;"
 				ProgramDatabaseFile=".\../../bin/3Delight/win32/Release/Objects/liquid.pdb"
 				ImportLibrary=".\../../bin/3Delight/win32/Release/Objects/liquid.lib"
 				TargetMachine="17"
@@ -1949,7 +1949,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1958,7 +1958,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2115,7 +2115,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2124,7 +2124,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2281,7 +2281,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2290,7 +2290,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2447,7 +2447,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2456,7 +2456,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2613,7 +2613,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2622,7 +2622,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2779,7 +2779,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2788,7 +2788,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2945,7 +2945,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2954,7 +2954,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3111,7 +3111,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3120,7 +3120,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3277,7 +3277,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3286,7 +3286,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3443,7 +3443,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3452,7 +3452,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3609,7 +3609,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3618,7 +3618,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3775,7 +3775,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3784,7 +3784,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3941,7 +3941,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3950,7 +3950,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4107,7 +4107,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4116,7 +4116,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4273,7 +4273,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4282,7 +4282,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4439,7 +4439,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4448,7 +4448,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4605,7 +4605,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4614,7 +4614,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4771,7 +4771,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4780,7 +4780,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4937,7 +4937,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4946,7 +4946,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5103,7 +5103,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5112,7 +5112,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5269,7 +5269,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5278,7 +5278,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5435,7 +5435,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5444,7 +5444,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5601,7 +5601,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5610,7 +5610,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5767,7 +5767,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5776,7 +5776,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5937,7 +5937,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5946,7 +5946,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6103,7 +6103,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6112,7 +6112,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6269,7 +6269,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6278,7 +6278,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6435,7 +6435,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6444,7 +6444,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6601,7 +6601,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6610,7 +6610,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6767,7 +6767,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6776,7 +6776,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6933,7 +6933,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6942,7 +6942,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7099,7 +7099,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7108,7 +7108,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7269,7 +7269,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7278,7 +7278,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7435,7 +7435,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7444,7 +7444,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7605,7 +7605,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7614,7 +7614,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7771,7 +7771,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7780,7 +7780,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7937,7 +7937,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7946,7 +7946,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8107,7 +8107,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8116,7 +8116,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8273,7 +8273,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8282,7 +8282,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8439,7 +8439,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8448,7 +8448,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8609,7 +8609,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8618,7 +8618,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8775,7 +8775,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8784,7 +8784,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8941,7 +8941,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|Win32"
+					Name="Prman Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8950,7 +8950,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Prman Generic ribLib Release|x64"
+					Name="Prman Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
