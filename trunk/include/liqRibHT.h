@@ -54,6 +54,7 @@ using namespace std;
 
 typedef multimap< ulong, liqRibNodePtr > RNMAP;
 typedef vector< MString > str_Vector;
+typedef vector< ObjectType > type_Vector;
 
 class liqRibHT {
 
@@ -71,6 +72,7 @@ public:
 
 private:
 	str_Vector RibHashVec;
+	type_Vector objTypeVec;
 	RNMAP	RibNodeMap;
 	ulong	hash( const char*, int ID );
 	friend class liqRibTranslator;

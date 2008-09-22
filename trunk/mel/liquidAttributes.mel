@@ -10,19 +10,21 @@ global proc liquidCreateShadingAttributes()
 {
   liquidCreateShadingRateAttribute();
   liquidCreateRasterOrientedDicingAttribute( 1 );
+  liquidCreateDoubleShadedAttribute( 0 );
   liquidCreateColorAttribute();
   liquidCreateOpacityAttribute();
   liquidCreateCameraHitModeAttribute();
   liquidCreateMatteAttribute();
+  liquidCreateCustomSGAttribute();
 }
 
 
 global proc liquidDeleteShadingAttributes()
 {
   string $nodes[] = liquidGetSelection( "-tr" );
-  string $attr[] = {  "liqShadingRate",
+  string $attr[] = {  "liqShadingRate", "liqDoubleShaded",
                       "liqDiceRasterOrient", "liqColor", "liqOpacity",
-                      "liqMatte", "liqHitModeCamera"
+                      "liqMatte", "liqHitModeCamera", "liquidCustomShadingGroup"
                     };
   string $currentNode;
 
@@ -58,6 +60,18 @@ global proc liquidCreateRasterOrientedDicingAttribute( int $val )
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqDiceRasterOrient"` ) {
       addAttr -k true -ln "liqDiceRasterOrient" -at bool -dv $val $currentNode;
+    }
+  }
+}
+
+
+global proc liquidCreateDoubleShadedAttribute( int $val )
+{
+  string $nodes[] = liquidGetSelection( "-tr" );
+  string $currentNode;
+  for ( $currentNode in $nodes ) {
+    if ( !`attributeQuery -node $currentNode -ex "liqDoubleShaded"` ) {
+      addAttr -k true -ln "liqDoubleShaded" -at bool -dv $val $currentNode;
     }
   }
 }
@@ -102,6 +116,17 @@ global proc liquidCreateMatteAttribute()
       addAttr -k true -ln "liqMatte" -at bool -dv 0 $currentNode;
     }
   }
+}
+
+global proc liquidCreateCustomSGAttribute()
+{
+	string $nodes[] = liquidGetSelection( "-tr" );
+	string $currentNode;
+	for ( $currentNode in $nodes )
+	{
+		if ( !`attributeQuery -node $currentNode -ex "liquidCustomShadingGroup"` )
+			addAttr -k true -ln "liquidCustomShadingGroup" -at "message" $currentNode;
+	}
 }
 
 // Ray Tracing group -----------------------------------------------
@@ -551,7 +576,7 @@ global proc liquidCreateTransformationBlurAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqTransformationBlur"` ) {
-      addAttr -ln "liqTransformationBlur" -at bool -dv true $currentNode;
+      addAttr -ln "liqTransformationBlur" -at bool -dv false $currentNode;
     }
   }
 }
@@ -563,7 +588,7 @@ global proc liquidCreateDeformationBlurAttribute()
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( !`attributeQuery -node $currentNode -ex "liqDeformationBlur"` ) {
-      addAttr -ln "liqDeformationBlur" -at bool -dv true $currentNode;
+      addAttr -ln "liqDeformationBlur" -at bool -dv false $currentNode;
     }
   }
 }

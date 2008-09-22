@@ -476,6 +476,15 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setHidden(true));      \
     CHECK_MSTATUS(addAttribute(obj));
 
+#define CREATE_COLOR( attr, obj, name, shortName, default1, default2, default3 )    \
+	obj = attr.createColor( name, shortName, &status ); \
+	CHECK_MSTATUS(attr.setDefault( default1, default2, default3 )); \
+    CHECK_MSTATUS(attr.setKeyable(true));     \
+    CHECK_MSTATUS(attr.setStorable(true));    \
+    CHECK_MSTATUS(attr.setReadable(true));    \
+    CHECK_MSTATUS(attr.setWritable(true));    \
+    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(addAttribute(obj));
 
 
 liqGlobalsNode::liqGlobalsNode()
@@ -496,7 +505,6 @@ MStatus liqGlobalsNode::initialize()
 	MFnTypedAttribute     tAttr;
 	MFnNumericAttribute   nAttr;
 	MFnCompoundAttribute  cAttr;
-
 	MStatus status;
 
 	// Create input attributes
@@ -598,9 +606,9 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_INT( nAttr,  aYResolution,                "yResolution",                  "yres",   768   );
 	CREATE_FLOAT( nAttr,  aPixelAspectRatio,           "pixelAspectRatio",             "par",    1.0   );
 
-	CREATE_BOOL( nAttr,  aCameraBlur,                 "cameraBlur",                   "cb",     true  );
-	CREATE_BOOL( nAttr,  aTransformationBlur,         "transformationBlur",           "tb",     true  );
-	CREATE_BOOL( nAttr,  aDeformationBlur,            "deformationBlur",              "db",     true  );
+	CREATE_BOOL( nAttr,  aCameraBlur,                 "cameraBlur",                   "cb",     false  );
+	CREATE_BOOL( nAttr,  aTransformationBlur,         "transformationBlur",           "tb",     false  );
+	CREATE_BOOL( nAttr,  aDeformationBlur,            "deformationBlur",              "db",     false  );
 	CREATE_INT( nAttr,  aShutterConfig,              "shutterConfig",                "shc",    0     );
 	CREATE_FLOAT( nAttr,  aShutterEfficiency,          "shutterEfficiency",            "shef",   1.0   );
 	CREATE_INT( nAttr,  aMotionBlurSamples,          "motionBlurSamples",            "mbs",    2     );
@@ -611,8 +619,8 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_INT( nAttr,  aPixelSamples,               "pixelSamples",                 "ps",     4     );
 	CREATE_FLOAT( nAttr,  aShadingRate,                "shadingRate",                  "sr",     1.0   );
 
-	CREATE_FLOAT( nAttr,  aLimitsOThreshold,           "limitsOThreshold",             "lot",    0.99  );
-	CREATE_FLOAT( nAttr,  aLimitsZThreshold,           "limitsZThreshold",             "lzt",    1.0   );
+	CREATE_COLOR( nAttr,  aLimitsOThreshold,           "limitsOThreshold",             "lot",    0.996, 0.996, 0.996  );
+	CREATE_COLOR( nAttr,  aLimitsZThreshold,           "limitsZThreshold",             "lzt",    0.996, 0.996, 0.996  );
 	CREATE_INT( nAttr,  aLimitsBucketXSize,          "limitsBucketXSize",            "lbsx",   16    );
 	CREATE_INT( nAttr,  aLimitsBucketYSize,          "limitsBucketYSize",            "lbsy",   16    );
 	CREATE_INT( nAttr,  aLimitsGridSize,             "limitsGridSize",               "lgs",    256   );

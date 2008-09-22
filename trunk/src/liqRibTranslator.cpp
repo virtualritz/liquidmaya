@@ -95,9 +95,11 @@ static const char *LIQUIDVERSION =
 #include <maya/MFnSet.h>
 #include <maya/MFnStringArrayData.h>
 #include <maya/MFnIntArrayData.h>
+#include <maya/MFnPfxGeometry.h>
 #include <maya/MDistance.h>
 #include <maya/MDagModifier.h>
 #include <maya/MPxNode.h>
+#include <maya/MRenderLineArray.h>
 
 // Liquid headers
 #include <liquid.h>
@@ -520,7 +522,8 @@ liqRibTranslator::liqRibTranslator()
   gridSize = 256;
   textureMemory = 2048;
   eyeSplits = 10;
-  othreshold = 0.996;
+  othreshold[0] = 0.996; othreshold[1] = 0.996; othreshold[2] = 0.996;
+  zthreshold[0] = 0.996; zthreshold[1] = 0.996; zthreshold[2] = 0.996;
   liqglo_shutterTime = 0.5;
   liqglo_shutterEfficiency = 1.0;
   shutterConfig = OPEN_ON_FRAME;
@@ -2093,10 +2096,23 @@ void liqRibTranslator::liquidReadGlobals()
   gPlug = rGlobalNode.findPlug( "limitsEyeSplits", &gStatus );
   if( gStatus == MS::kSuccess ) gPlug.getValue( eyeSplits );
   gStatus.clear();
-  gPlug = rGlobalNode.findPlug( "limitsOThreshold", &gStatus );
-  if( gStatus == MS::kSuccess ) gPlug.getValue( othreshold );
-  gStatus.clear();
 
+  gPlug = rGlobalNode.findPlug( "limitsOThreshold", &gStatus );
+  if( gStatus == MS::kSuccess )
+  {
+	  gPlug.child(0).getValue( othreshold[0] );
+	  gPlug.child(1).getValue( othreshold[1] );
+	  gPlug.child(2).getValue( othreshold[2] );
+  }
+  gStatus.clear();
+  gPlug = rGlobalNode.findPlug( "limitsZThreshold", &gStatus );
+  if( gStatus == MS::kSuccess )
+  {
+	  gPlug.child(0).getValue( zthreshold[0] );
+	  gPlug.child(1).getValue( zthreshold[1] );
+	  gPlug.child(2).getValue( zthreshold[2] );
+  }
+  gStatus.clear();
   gPlug = rGlobalNode.findPlug( "cleanRib", &gStatus );
   if( gStatus == MS::kSuccess ) gPlug.getValue( cleanRib );
   gStatus.clear();
@@ -2881,7 +2897,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
             htable = shared_ptr< liqRibHT >( new liqRibHT() );
             hashTableInited = true;
-            LIQDEBUGPRINTF( "Created hash table...\n" );;
+            LIQDEBUGPRINTF( "Created hash table...\n" );
 
             //  calculate sampling time
             //
@@ -2972,7 +2988,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             //
             //  create the read-archive shadow files
             //
-#if defined(PRMAN) || defined(GENERIC_RIBLIB) || defined(DELIGHT)
+#if defined(PRMAN) || defined(GENERIC_RIBLIB) || defined(DELIGHT) || defined (AQSIS)
             liquidMessage( "Beginning RIB output to '" + string( baseShadowName.asChar() ) + "'", messageInfo );
             RiBegin( const_cast< RtToken >( baseShadowName.asChar() ) );
 #else
@@ -3011,7 +3027,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
             m_alfShadowRibGen = true;
           }
-#if defined(PRMAN) || defined(GENERIC_RIBLIB) || defined(DELIGHT) 
+#if defined(PRMAN) || defined(GENERIC_RIBLIB) || defined(DELIGHT) || defined(AQSIS) 
           liquidMessage( "Beginning RIB output to '" + string( liqglo_currentJob.ribFileName.asChar() ) + "'", messageInfo );
           RiBegin( const_cast< RtToken >( liqglo_currentJob.ribFileName.asChar() ) );
 
@@ -4415,8 +4431,10 @@ MStatus liqRibTranslator::ribPrologue()
     }
     {
       if(liquidRenderer.renderName == MString("PRMan") || liquidRenderer.renderName == MString("3Delight") ){
-        RtColor othresholdC = {othreshold, othreshold, othreshold};
+        RtColor othresholdC = {othreshold[0], othreshold[1], othreshold[2]};
         RiOption( "limits", "othreshold", &othresholdC, RI_NULL );
+        RtColor zthresholdC = {zthreshold[0], zthreshold[1], zthreshold[2]};
+        RiOption( "limits", "zthreshold", &zthresholdC, RI_NULL );
       }
     }
 
@@ -4451,8 +4469,7 @@ MStatus liqRibTranslator::ribPrologue()
       RiArchiveRecord( RI_VERBATIM, "Option \"searchpath\" \"display\" [\"%s\"]\n", list );
     }
 
-
-    RiOrientation( RI_RH ); // Right-hand coordinates
+	//RiOrientation( RI_RH ); // Right-hand coordinates
 
     if( liqglo_currentJob.isShadow ) {
 
@@ -4739,183 +4756,267 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
       }
     }
 
-    if( !m_renderSelected ) {
-      MItDag dagIterator( MItDag::kDepthFirst, MFn::kInvalid, &returnStatus);
-      for (; !dagIterator.isDone(); dagIterator.next()) {
-        LIQ_CHECK_CANCEL_REQUEST;
-        MDagPath path;
-        MObject currentNode;
-        currentNode = dagIterator.item();
-        MFnDagNode   dagNode;
-        dagIterator.getPath( path );
-        if(MS::kSuccess != returnStatus) continue;
-        if(!currentNode.hasFn(MFn::kDagNode)) continue;
-        returnStatus = dagNode.setObject( currentNode );
-        if(MS::kSuccess != returnStatus) continue;
+	if( !m_renderSelected )
+	{
+		MItDag dagIterator( MItDag::kDepthFirst, MFn::kInvalid, &returnStatus);
+		for (; !dagIterator.isDone(); dagIterator.next())
+		{
+			LIQ_CHECK_CANCEL_REQUEST;
+			MDagPath path;
+			MObject currentNode;
+			currentNode = dagIterator.item();
+			MFnDagNode   dagNode;
+			dagIterator.getPath( path );
+			if(MS::kSuccess != returnStatus)
+				continue;
+			if(!currentNode.hasFn(MFn::kDagNode))
+				continue;
+			returnStatus = dagNode.setObject( currentNode );
+			if(MS::kSuccess != returnStatus)
+				continue;
 
-        // scanScene: check for a rib generator
-        MStatus plugStatus;
-        MPlug ribGenPlug = dagNode.findPlug( "liquidRibGen", &plugStatus );
-        if( plugStatus == MS::kSuccess ) {
-          // scanScene: check the node to make sure it's not using the old ribGen assignment method, this is for backwards
-          // compatibility.  If it's a kTypedAttribute that it's more than likely going to be a string!
-          if( ribGenPlug.attribute().apiType() == MFn::kTypedAttribute ) {
-            MString ribGenNode;
-            ribGenPlug.getValue( ribGenNode );
-            MSelectionList ribGenList;
-            MStatus ribGenAddStatus = ribGenList.add( ribGenNode );
-            if( ribGenAddStatus == MS::kSuccess ) {
-              htable->insert( path, lframe, sample, MRT_RibGen, count++ );
-            }
-          } else {
-            if( ribGenPlug.isConnected() ) {
-              htable->insert( path, lframe, sample, MRT_RibGen, count++ );
-            }
-          }
+			// scanScene: check for a rib generator
+			MStatus plugStatus;
+			MPlug ribGenPlug = dagNode.findPlug( "liquidRibGen", &plugStatus );
+			if( plugStatus == MS::kSuccess )
+			{
+				// scanScene: check the node to make sure it's not using the old ribGen assignment method, this is for backwards
+				// compatibility.  If it's a kTypedAttribute that it's more than likely going to be a string!
+				if( ribGenPlug.attribute().apiType() == MFn::kTypedAttribute )
+				{
+					MString ribGenNode;
+					ribGenPlug.getValue( ribGenNode );
+					MSelectionList ribGenList;
+					MStatus ribGenAddStatus = ribGenList.add( ribGenNode );
+					if( ribGenAddStatus == MS::kSuccess )
+						htable->insert( path, lframe, sample, MRT_RibGen, count++ );
+				}
+				else
+				{
+					if( ribGenPlug.isConnected() )
+						htable->insert( path, lframe, sample, MRT_RibGen, count++ );
+				}
 
-        }
-        if(    currentNode.hasFn( MFn::kNurbsSurface )
-             || currentNode.hasFn( MFn::kMesh )
-             || currentNode.hasFn( MFn::kParticle )
-             || currentNode.hasFn( MFn::kLocator )
-             || currentNode.hasFn( MFn::kSubdiv )
-             || currentNode.hasFn( MFn::kPfxGeometry )
-             || currentNode.hasFn( MFn::kPfxHair )
-             || currentNode.hasFn( MFn::kPfxToon )
-             || currentNode.hasFn( MFn::kImplicitSphere ) ) {
-          if( ( sample > 0 ) && isObjectMotionBlur( path )){
-            htable->insert( path, lframe, sample, MRT_Unknown, count++ );
-          } else {
-            htable->insert( path, lframe, 0, MRT_Unknown, count++ );
-          }
-        }
-        if( currentNode.hasFn( MFn::kNurbsCurve ) ) {
-          MStatus plugStatus;
-          MPlug renderCurvePlug = dagNode.findPlug( "liquidCurve", &plugStatus );
-          if( m_renderAllCurves || ( plugStatus == MS::kSuccess ) ) {
-            bool renderCurve( false );
-            renderCurvePlug.getValue( renderCurve );
-            if( renderCurve ) {
-              if( ( sample > 0 ) && isObjectMotionBlur( path )){
-                htable->insert( path, lframe, sample, MRT_Unknown, count++ );
-              } else {
-                htable->insert( path, lframe, 0, MRT_Unknown, count++ );
-              }
-            }
-          }
-        }
-      }
+			}
+			if(    currentNode.hasFn( MFn::kNurbsSurface )
+				|| currentNode.hasFn( MFn::kMesh )
+				|| currentNode.hasFn( MFn::kParticle )
+				|| currentNode.hasFn( MFn::kLocator )
+				|| currentNode.hasFn( MFn::kSubdiv )
+				|| currentNode.hasFn( MFn::kPfxHair )
+				|| currentNode.hasFn( MFn::kPfxToon )
+				|| currentNode.hasFn( MFn::kImplicitSphere ) )
+			{
+				if( ( sample > 0 ) && isObjectMotionBlur( path ))
+					htable->insert( path, lframe, sample, MRT_Unknown, count++ );
+				else
+					htable->insert( path, lframe, 0, MRT_Unknown, count++ );
+			}
+			// Alf: treat PFX as three separate entities so a separate shading group can
+			// be assigned to each part
+			if( currentNode.hasFn( MFn::kPfxGeometry ) )
+			{
+				MStatus status;
+				bool hasTube( 0 ), hasLeaf( 0 ), hasPetal( 0 );
+				MFnDagNode pfxNode( currentNode );
+				MPlug brushPlug( pfxNode.findPlug( "brush" ) );
+				MPlugArray brushArray;
+				brushPlug.connectedTo( brushArray, 1, 0 );
+				MFnDependencyNode brushNode( brushArray[0].node() );
+				MPlug brushAttr( brushNode.findPlug( "tubes" ) );
+				hasTube = brushAttr.asBool();
+				brushAttr = brushNode.findPlug( "leaves" );
+				hasLeaf = brushAttr.asBool();
+				brushAttr = brushNode.findPlug( "flowers" );
+				hasPetal = brushAttr.asBool();
+				
+				if( hasTube )
+				{
+					if( ( sample > 0 ) && isObjectMotionBlur( path ))
+						htable->insert( path, lframe, sample, MRT_PfxTube, count++ );
+					else
+						htable->insert( path, lframe, 0, MRT_PfxTube, count++ );
+				}
+				if( hasLeaf )
+				{
+					if( ( sample > 0 ) && isObjectMotionBlur( path ))
+						htable->insert( path, lframe, sample, MRT_PfxLeaf, count++ );
+					else
+						htable->insert( path, lframe, 0, MRT_PfxLeaf, count++ );
+				}
+				if( hasPetal )
+				{
+					if( ( sample > 0 ) && isObjectMotionBlur( path ))
+						htable->insert( path, lframe, sample, MRT_PfxPetal, count++ );
+					else
+						htable->insert( path, lframe, 0, MRT_PfxPetal, count++ );
+				}
+			}
+			if( currentNode.hasFn( MFn::kNurbsCurve ) )
+			{
+				MStatus plugStatus;
+				MPlug renderCurvePlug = dagNode.findPlug( "liquidCurve", &plugStatus );
+				if( m_renderAllCurves || ( plugStatus == MS::kSuccess ) )
+				{
+					bool renderCurve( false );
+					renderCurvePlug.getValue( renderCurve );
+					if( renderCurve )
+					{
+						if( ( sample > 0 ) && isObjectMotionBlur( path ))
+							htable->insert( path, lframe, sample, MRT_Unknown, count++ );
+						else
+							htable->insert( path, lframe, 0, MRT_Unknown, count++ );
+					}
+				}
+			}
+		}
 
-      // scanScene: Now deal with all the particle-instanced objects (where a
-      // particle is replaced by an object or group of objects).
-      //
-      MItInstancer instancerIter;
-      while( ! instancerIter.isDone() )
-      {
-        MDagPath path( instancerIter.path() );
-        MString instanceStr( ( MString )"|INSTANCE_" +
-          instancerIter.instancerId() + (MString)"_" +
-          instancerIter.particleId() + (MString)"_" +
-          instancerIter.pathId() );
+		// scanScene: Now deal with all the particle-instanced objects (where a
+		// particle is replaced by an object or group of objects).
+		//
+		MItInstancer instancerIter;
+		while( ! instancerIter.isDone() )
+		{
+			MDagPath path( instancerIter.path() );
+			MString instanceStr( ( MString )"|INSTANCE_" +
+			instancerIter.instancerId() + (MString)"_" +
+			instancerIter.particleId() + (MString)"_" +
+			instancerIter.pathId() );
 
-        MMatrix instanceMatrix( instancerIter.matrix() );
+			MMatrix instanceMatrix( instancerIter.matrix() );
 
-        if( ( sample > 0 ) && isObjectMotionBlur( path ) ) {
-          htable->insert( path, lframe, sample, MRT_Unknown,count++,
-                          &instanceMatrix, instanceStr, instancerIter.particleId() );
-        } else {
-          htable->insert( path, lframe, 0, MRT_Unknown,count++,
-                          &instanceMatrix, instanceStr, instancerIter.particleId() );
-        }
-        instancerIter.next();
-      }
-    } else {
-      // scanScene: find out the current selection for possible selected object output
-      MSelectionList currentSelection;
-      MGlobal::getActiveSelectionList( currentSelection );
-      MItSelectionList selIterator( currentSelection );
-      MItDag dagIterator( MItDag::kDepthFirst, MFn::kInvalid, &returnStatus);
-      for ( ; !selIterator.isDone(); selIterator.next() )
-      {
-        MDagPath objectPath;
-        selIterator.getDagPath( objectPath );
-        dagIterator.reset (objectPath.node(), MItDag::kDepthFirst, MFn::kInvalid );
-        for (; !dagIterator.isDone(); dagIterator.next()) {
-          LIQ_CHECK_CANCEL_REQUEST;
-          MDagPath path;
-          MObject currentNode;
-          currentNode = dagIterator.item();
-          MFnDagNode   dagNode;
-          dagIterator.getPath( path );
-          if(MS::kSuccess != returnStatus) continue;
-          if(!currentNode.hasFn(MFn::kDagNode)) continue;
-          returnStatus = dagNode.setObject( currentNode );
-          if(MS::kSuccess != returnStatus) continue;
+			if( ( sample > 0 ) && isObjectMotionBlur( path ) )
+				htable->insert( path, lframe, sample, MRT_Unknown,count++,
+				&instanceMatrix, instanceStr, instancerIter.particleId() );
+			else
+				htable->insert( path, lframe, 0, MRT_Unknown,count++,
+				&instanceMatrix, instanceStr, instancerIter.particleId() );
+			instancerIter.next();
+		}
+	}
+	else
+	{
+		// scanScene: find out the current selection for possible selected object output
+		MSelectionList currentSelection;
+		MGlobal::getActiveSelectionList( currentSelection );
+		MItSelectionList selIterator( currentSelection );
+		MItDag dagIterator( MItDag::kDepthFirst, MFn::kInvalid, &returnStatus);
+		for( ; !selIterator.isDone(); selIterator.next() )
+		{
+			MDagPath objectPath;
+			selIterator.getDagPath( objectPath );
+			dagIterator.reset (objectPath.node(), MItDag::kDepthFirst, MFn::kInvalid );
+			for (; !dagIterator.isDone(); dagIterator.next())
+			{
+				LIQ_CHECK_CANCEL_REQUEST;
+				MDagPath path;
+				MObject currentNode;
+				currentNode = dagIterator.item();
+				MFnDagNode   dagNode;
+				dagIterator.getPath( path );
+				if(MS::kSuccess != returnStatus)
+					continue;
+				if(!currentNode.hasFn(MFn::kDagNode))
+					continue;
+				returnStatus = dagNode.setObject( currentNode );
+				if(MS::kSuccess != returnStatus)
+					continue;
 
-          // scanScene: check for a rib generator
-          MStatus plugStatus;
-          MPlug ribGenPlug( dagNode.findPlug( "liquidRibGen", &plugStatus ) );
-          if( plugStatus == MS::kSuccess ) {
-            htable->insert( path, lframe, sample, MRT_RibGen,count++ );
-          }
-          if( currentNode.hasFn( MFn::kNurbsSurface )
-               || currentNode.hasFn( MFn::kMesh )
-               || currentNode.hasFn( MFn::kParticle )
-               || currentNode.hasFn( MFn::kLocator )
-               || currentNode.hasFn( MFn::kSubdiv )
-               || currentNode.hasFn( MFn::kPfxGeometry)
-               || currentNode.hasFn( MFn::kPfxHair )
-               || currentNode.hasFn( MFn::kPfxToon )
-               || currentNode.hasFn( MFn::kImplicitSphere ) ) {
-            if( ( sample > 0 ) && isObjectMotionBlur( path )){
-              htable->insert(path, lframe, sample, MRT_Unknown,count++ );
-            } else {
-              htable->insert(path, lframe, 0, MRT_Unknown,count++ );
-            }
-          }
-          if( currentNode.hasFn(MFn::kNurbsCurve) ) {
-            MStatus plugStatus;
-            MPlug renderCurvePlug = dagNode.findPlug( "liquidCurve", &plugStatus );
-            if( m_renderAllCurves || ( plugStatus == MS::kSuccess ) ) {
-              bool renderCurve = false;
-              renderCurvePlug.getValue( renderCurve );
-              if( renderCurve ) {
-                if( ( sample > 0 ) && isObjectMotionBlur( path )){
-                  htable->insert(path, lframe, sample, MRT_Unknown,count++ );
-                } else {
-                  htable->insert(path, lframe, 0, MRT_Unknown,count++ );
-                }
-              }
-            }
-          }
-        }
-      }
+				// scanScene: check for a rib generator
+				MStatus plugStatus;
+				MPlug ribGenPlug( dagNode.findPlug( "liquidRibGen", &plugStatus ) );
+				if( plugStatus == MS::kSuccess )
+					htable->insert( path, lframe, sample, MRT_RibGen,count++ );
+				if( currentNode.hasFn( MFn::kNurbsSurface )
+					|| currentNode.hasFn( MFn::kMesh )
+					|| currentNode.hasFn( MFn::kParticle )
+					|| currentNode.hasFn( MFn::kLocator )
+					|| currentNode.hasFn( MFn::kSubdiv )
+					|| currentNode.hasFn( MFn::kPfxHair )
+					|| currentNode.hasFn( MFn::kPfxToon )
+					|| currentNode.hasFn( MFn::kImplicitSphere ) )
+				{
+					if( ( sample > 0 ) && isObjectMotionBlur( path ))
+						htable->insert(path, lframe, sample, MRT_Unknown,count++ );
+					else
+						htable->insert(path, lframe, 0, MRT_Unknown,count++ );
+				}
+				// Alf: treat PFX as three separate entities so a separate shading group can
+				// be assigned to each part
+				if( currentNode.hasFn( MFn::kPfxGeometry ) )
+				{
+					MStatus status;
+					MRenderLineArray tube, leaf, petal;
+					MFnPfxGeometry pfx( path, &status );
+					if( status == MS::kSuccess )
+						pfx.getLineData( tube, leaf, petal,1,0,0,0,0,0,0,0,0 );
+					
+					if( tube.length() )
+					{
+						if( ( sample > 0 ) && isObjectMotionBlur( path ))
+							htable->insert( path, lframe, sample, MRT_PfxTube, count++ );
+						else
+							htable->insert( path, lframe, 0, MRT_PfxTube, count++ );
+					}
+					if( leaf.length() )
+					{
+						if( ( sample > 0 ) && isObjectMotionBlur( path ))
+							htable->insert( path, lframe, sample, MRT_PfxLeaf, count++ );
+						else
+							htable->insert( path, lframe, 0, MRT_PfxLeaf, count++ );
+					}
+					if( petal.length() )
+					{
+						if( ( sample > 0 ) && isObjectMotionBlur( path ))
+							htable->insert( path, lframe, sample, MRT_PfxPetal, count++ );
+						else
+							htable->insert( path, lframe, 0, MRT_PfxPetal, count++ );
+					}
+					tube.deleteArray(); leaf.deleteArray(); petal.deleteArray();
+				}
+				if( currentNode.hasFn(MFn::kNurbsCurve) )
+				{
+					MStatus plugStatus;
+					MPlug renderCurvePlug = dagNode.findPlug( "liquidCurve", &plugStatus );
+					if( m_renderAllCurves || ( plugStatus == MS::kSuccess ) )
+					{
+						bool renderCurve = false;
+						renderCurvePlug.getValue( renderCurve );
+						if( renderCurve )
+						{
+							if( ( sample > 0 ) && isObjectMotionBlur( path ))
+								htable->insert(path, lframe, sample, MRT_Unknown,count++ );
+							else
+								htable->insert(path, lframe, 0, MRT_Unknown,count++ );
+						}
+					}
+				}
+			}
+		}
 
-      // scanScene: Now deal with all the particle-instanced objects (where a
-      // particle is replaced by an object or group of objects).
-      //
-      MItInstancer instancerIter;
-      while( ! instancerIter.isDone() )
-      {
-        MDagPath path( instancerIter.path() );
-        MString instanceStr( ( MString )"|INSTANCE_" +
-          instancerIter.instancerId() + (MString)"_" +
-          instancerIter.particleId() + (MString)"_" +
-          instancerIter.pathId() );
+		// scanScene: Now deal with all the particle-instanced objects (where a
+		// particle is replaced by an object or group of objects).
+		//
+		MItInstancer instancerIter;
+		while( ! instancerIter.isDone() )
+		{
+			MDagPath path( instancerIter.path() );
+			MString instanceStr( ( MString )"|INSTANCE_" +
+			instancerIter.instancerId() + (MString)"_" +
+			instancerIter.particleId() + (MString)"_" +
+			instancerIter.pathId() );
 
-        MMatrix instanceMatrix( instancerIter.matrix() );
+			MMatrix instanceMatrix( instancerIter.matrix() );
 
-        if( ( sample > 0 ) && isObjectMotionBlur( path )){
-          htable->insert( path, lframe, sample, MRT_Unknown,count++,
-                          &instanceMatrix, instanceStr, instancerIter.particleId() );
-        } else {
-          htable->insert( path, lframe, 0, MRT_Unknown,count++,
-                          &instanceMatrix, instanceStr, instancerIter.particleId() );
-        }
-        instancerIter.next();
-      }
-    }
-
+			if( ( sample > 0 ) && isObjectMotionBlur( path ))
+				htable->insert( path, lframe, sample, MRT_Unknown,count++,
+				&instanceMatrix, instanceStr, instancerIter.particleId() );
+			else
+				htable->insert( path, lframe, 0, MRT_Unknown,count++,
+				&instanceMatrix, instanceStr, instancerIter.particleId() );
+			instancerIter.next();
+		}
+	}
 
     vector<structJob>::iterator iter = jobList.begin();
     while ( iter != jobList.end() ) {
@@ -5893,7 +5994,6 @@ MStatus liqRibTranslator::objectBlock()
     liqRibNodePtr ribNode( rniter->second );
     path = ribNode->path();
     transform = path.transform();
-	
 
     if( ( !ribNode ) || ( ribNode->object(0)->type == MRT_Light ) ) continue;
     if( ribNode->object(0)->type == MRT_Coord || ribNode->object(0)->type == MRT_ClipPlane ) continue;
@@ -6174,7 +6274,7 @@ MStatus liqRibTranslator::objectBlock()
 
       if( ribNode->shading.doubleShaded ) {
         RtInt on( 1 );
-        RiAttribute( "sides", (RtToken) "doubleshade", &on, RI_NULL );
+        RiAttribute( "sides", (RtToken) "doubleshaded", &on, RI_NULL );
       }
 
       if( liquidRenderer.supports_RAYTRACE ) {
@@ -6479,51 +6579,61 @@ MStatus liqRibTranslator::objectBlock()
         }
       }
 
-      if( hasSurfaceShader && !m_ignoreSurfaces ) {
-        if( hasCustomSurfaceShader ) {
-            if( hasCustomSurfaceShader == liqCustomPxShaderNode ) {  // Just call the write method of the custom shader
-                    MFnDependencyNode customShaderDepNode( ribNode->assignedShader.object() );
-                    MPxNode *mpxNode = customShaderDepNode.userNode();
-                    liqCustomNode *customNode( NULL );
-                    if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>( mpxNode ) ) ) {
-                        customNode->liquidWrite();
-                    } else {
-                            // Should never happen in theory ... but what is the way to report a problem ???
-                    }
-            } else { // Default : just write the contents of the rib box
-                RiArchiveRecord( RI_VERBATIM, ( char* )shaderRibBox.asChar() );
-                RiArchiveRecord( RI_VERBATIM, "\n" );
-            }
-        } else {
-            liqShader& currentShader( liqGetShader( ribNode->assignedShader.object() ) );
+	if( hasSurfaceShader && !m_ignoreSurfaces )
+	{
+		if( hasCustomSurfaceShader )
+		{
+			if( hasCustomSurfaceShader == liqCustomPxShaderNode )
+			{  // Just call the write method of the custom shader
+				MFnDependencyNode customShaderDepNode( ribNode->assignedShader.object() );
+				MPxNode *mpxNode = customShaderDepNode.userNode();
+				liqCustomNode *customNode( NULL );
+				if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>( mpxNode ) ) )
+					customNode->liquidWrite();
+				else
+					;// Should never happen in theory ... but what is the way to report a problem ???
+			}
+			else
+			{ 
+				// Default : just write the contents of the rib box
+				RiArchiveRecord( RI_VERBATIM, ( char* )shaderRibBox.asChar() );
+				RiArchiveRecord( RI_VERBATIM, "\n" );
+			}
+		}
+		else
+		{
+			liqShader& currentShader( liqGetShader( ribNode->assignedShader.object() ) );
 
-            // per shader shadow pass override
-            bool outputSurfaceShader( true );
-            if( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) outputSurfaceShader = false;
+			// per shader shadow pass override
+			bool outputSurfaceShader( true );
+			if( liqglo_currentJob.isShadow && !currentShader.outputInShadow )
+				outputSurfaceShader = false;
 
-            // Output color overrides or color
-            if(ribNode->shading.color.r != -1.0) {
-              RtColor rColor;
-              rColor[0] = ribNode->shading.color[0];
-              rColor[1] = ribNode->shading.color[1];
-              rColor[2] = ribNode->shading.color[2];
-              RiColor( rColor );
-            } else {
-              RiColor( currentShader.rmColor );
-            }
+			// Output color overrides or color
+			if(ribNode->shading.color.r != -1.0)
+			{
+				RtColor rColor;
+				rColor[0] = ribNode->shading.color[0];
+				rColor[1] = ribNode->shading.color[1];
+				rColor[2] = ribNode->shading.color[2];
+				RiColor( rColor );
+			}
+			else
+				RiColor( currentShader.rmColor );
 
-            if(ribNode->shading.opacity.r != -1.0) {
-              RtColor rOpacity;
-              rOpacity[0] = ribNode->shading.opacity[0];
-              rOpacity[1] = ribNode->shading.opacity[1];
-              rOpacity[2] = ribNode->shading.opacity[2];
-              RiOpacity( rOpacity );
-            } else {
-              RiOpacity( currentShader.rmOpacity );
-            }
+			if(ribNode->shading.opacity.r != -1.0)
+			{
+				RtColor rOpacity;
+				rOpacity[0] = ribNode->shading.opacity[0];
+				rOpacity[1] = ribNode->shading.opacity[1];
+				rOpacity[2] = ribNode->shading.opacity[2];
+				RiOpacity( rOpacity );
+			}
+			else
+				RiOpacity( currentShader.rmOpacity );
 
-            if( outputSurfaceShader ) {
-
+			if( outputSurfaceShader )
+			{
 				scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
 				scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
 				assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
@@ -6537,31 +6647,16 @@ MStatus liqRibTranslator::objectBlock()
 					RiTransformBegin();
 					RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
 				}
-				// increment shader name if output index is set - Alf
-				if( shaderFileName != "" )
-				{
-					MPlug pOutputIndex = ribNode->assignedShader.findPlug( "outputIndex" );
-					bool hasIndex = 0;
-					pOutputIndex.getValue( hasIndex );
-					if( hasIndex )
-					{
-						MPlug pShaderIndex = ribNode->assignedShader.findPlug( "shaderIndex" );
-						int shaderIndex = 0;
-						pShaderIndex.getValue( shaderIndex );
-						MString incrName( shaderFileName );
-						incrName += MString( "." ) + shaderIndex;
-						shaderFileName = ( char* )incrName.asChar();
-					}
-				}
 				// output shader
 				// its one less as the tokenPointerArray has a preset size of 1 not 0
 				int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
 				RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
-				if( currentShader.shaderSpace != "" ) RiTransformEnd();
-            }
-        }
+				if( currentShader.shaderSpace != "" )
+					RiTransformEnd();
+			}
+		}
 
-      } else {
+	} else {
         RtColor rColor,rOpacity;
         if( m_shaderDebug ) {
           // shader debug on !! everything goes red and opaque !!!
@@ -6665,16 +6760,7 @@ MStatus liqRibTranslator::objectBlock()
           }
 			else if( path.hasFn( MFn::kPfxGeometry ) )
 			{
-				// check if custom shader exists - Alf
-				status.clear();
-				MFnDependencyNode pfx( path.node() );
-				MPlug pShader( pfx.findPlug( "tubeShader", status ) );
-				MString shaderStr( "" );
-				if( status == MS::kSuccess )
-					pShader.getValue( shaderStr );
-				
-				if( shaderStr == "" )
-					RiSurface( "liquidpfx", RI_NULL );
+				RiSurface( "liquidpfx", RI_NULL );
 			}
 			
 			else {
@@ -6869,7 +6955,7 @@ MStatus liqRibTranslator::objectBlock()
       if(    ribNode->object(0)->type == MRT_NuCurve
            || ribNode->object(0)->type == MRT_PfxHair ) {
         RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
-      } else if( ribNode->object(0)->type == MRT_Pfx ) {
+      } else if( ribNode->object(0)->type == MRT_PfxTube || ribNode->object(0)->type == MRT_PfxLeaf ||ribNode->object(0)->type == MRT_PfxPetal ) {
         RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
         //RiBasis( RiCatmullRomBasis, 1, RiCatmullRomBasis, 1 );
 	  }

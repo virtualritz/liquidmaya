@@ -1,3 +1,10 @@
+2.3.2
+- custom shading group integrated in the shading attributes, you can now connect a shading group to any object, like locators etc
+- liquidGeneratePlace2dTexture.mel to be used in postWorldMel slot/Render Globals will output all pace2dTexure nodes in RIB (for Prman)
+- othreshold and zthreshold as color values in globals
+- Paint Effects group integrated in attribute editor, assignment of individual shading groups to tubes, leafs and petals now possible
+- fixed a bug in the PRMAN build, the Rib output of the "P" parameter got lost if a rib object got used more than once, i.e. for shadows or motionblur
+
 2.3.1
 - adapted to maya2008 uvs for polys and subdivs
 - applied patch for Aqsis settings

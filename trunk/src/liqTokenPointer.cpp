@@ -398,9 +398,12 @@ const string& liqTokenPointer::getDetailedTokenName()
 #ifdef PRMAN
   // Philippe : in PRMAN, declaring P as a vertex point is not necessary and it make riCurves generation fail.
   // so when the token is P, we just skip the type declaration.
-  if ( "P" != m_tokenName ) {
+  if ( "P" != m_tokenName )
+  {
     detailedTokenName = getRiDeclare() + " ";
   }
+  else
+	detailedTokenName = "";
 #else
   detailedTokenName = getRiDeclare() + " ";
 #endif

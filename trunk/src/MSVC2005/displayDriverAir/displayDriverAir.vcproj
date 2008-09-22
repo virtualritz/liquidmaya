@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="displayDriverAir"
 	ProjectGUID="{BAED7037-8C31-41AB-897C-49A07BED17A5}"
+	RootNamespace="displayDriverAir"
 	>
 	<Platforms>
 		<Platform
@@ -77,7 +78,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib ws2_32.lib"
-				OutputFile="../../../bin/Air/win32/Release/d_liqmaya.so"
+				OutputFile="../../../displayDrivers/Air/win32/d_liqmaya.so"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile=".\../../../bin/Air/win32/Release/Objects/d_liqmaya.pdb"
@@ -172,7 +173,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib ws2_32.lib"
-				OutputFile="../../../bin/Air/win32/Release/d_liqmaya.so"
+				OutputFile="../../../displayDrivers/Air/win32/d_liqmaya.so"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile=".\../../../bin/Air/win32/Release/Objects/d_liqmaya.pdb"

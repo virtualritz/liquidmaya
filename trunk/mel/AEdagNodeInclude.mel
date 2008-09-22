@@ -45,6 +45,7 @@ global proc AEdagNodeInclude ( string $nodeName )
   }
 
   if (`objectType $nodeName` == "camera" )    AEliquidCamera          $nodeName;
+  if (`objectType $nodeName` == "stroke" )    AEliquidPaintEffects    $nodeName;
   if (`objectType $nodeName` == "areaLight" ) AEliquidAreaLight       $nodeName;
   if (`objectType $nodeName` == "spotLight" ||
       `objectType $nodeName` == "directionalLight" ||

@@ -159,8 +159,10 @@ enum ObjectType {
   MRT_ClipPlane       = 14,
   MRT_PfxToon         = 15,
   MRT_PfxHair         = 16,
-  MRT_Pfx             = 17,
-  MRT_ImplicitSphere  = 18
+  MRT_PfxTube         = 17,
+  MRT_PfxLeaf         = 18,
+  MRT_PfxPetal        = 19,
+  MRT_ImplicitSphere  = 20
 };
 
 enum LightType {

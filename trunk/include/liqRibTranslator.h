@@ -170,7 +170,8 @@ private: // Data
   liquidlong  gridSize;
   liquidlong  textureMemory;
   liquidlong  eyeSplits;
-  float       othreshold;
+  MVector    othreshold;
+  MVector    zthreshold;
   // bool        renderAllCameras;   // Render all cameras, or only active ones     UN-USED GLOBAL
   bool        ignoreFilmGate;
   double      fov_ratio;

@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="displayDriverAqsis"
 	ProjectGUID="{74E7C4B8-B607-43A9-8CE3-21209CF2DA67}"
+	RootNamespace="displayDriverAqsis"
 	>
 	<Platforms>
 		<Platform
@@ -51,7 +52,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="$(AQSIS)/include,../../../include"
+				AdditionalIncludeDirectories="&quot;$(AQSISHOME)/include/aqsis&quot;;../../../include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DISPLAYDRIVERAQSIS_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -77,10 +78,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib odbc32.lib odbccp32.lib"
-				OutputFile="../../../bin/Aqsis/win32/Release/liqmaya.dll"
+				OutputFile="../../../bin/Aqsis/win32/liqmaya.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(AQSIS)/lib"
+				AdditionalLibraryDirectories="$(AQSISHOME)/lib"
 				ProgramDatabaseFile=".\../../../bin/Aqsis/win32/Release/Objects/liqmaya.pdb"
 				ImportLibrary=".\../../../bin/Aqsis/win32/Release/Objects/liqmaya.lib"
 				TargetMachine="1"
@@ -173,7 +174,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib odbc32.lib odbccp32.lib"
-				OutputFile="../../../bin/Aqsis/win32/Release/liqmaya.dll"
+				OutputFile="../../../bin/Aqsis/win64/liqmaya.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(AQSIS)/lib"

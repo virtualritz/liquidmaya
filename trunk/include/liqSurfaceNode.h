@@ -100,8 +100,6 @@ class liqSurfaceNode : public MPxNode
     static MObject aDisplacementBound;
     static MObject aDisplacementBoundSpace;
     static MObject aOutputInShadow;
-    static MObject aOutputIndex;
-    static MObject aShaderIndex;
     static MObject aShaderSpace;
 
     static MObject aResolution;
