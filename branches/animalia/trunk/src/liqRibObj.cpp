@@ -44,6 +44,7 @@ extern "C" {
 #include <maya/MDagPathArray.h>
 #include <maya/MPlug.h>
 #include <maya/MPxNode.h>
+#include <maya/MGlobal.h>
 
 #include <liquid.h>
 #include <liqGlobalHelpers.h>
@@ -54,6 +55,7 @@ extern "C" {
 #include <liqRibMeshData.h>
 #include <liqRibParticleData.h>
 #include <liqRibNuCurveData.h>
+#include <liqRibCurvesData.h>
 #include <liqRibSubdivisionData.h>
 #include <liqRibMayaSubdivisionData.h>
 #include <liqRibClipPlaneData.h>
@@ -78,178 +80,246 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
   referenceCount( 0 ),
   data()
 {
-  LIQDEBUGPRINTF( "-> creating dag node handle rep\n");
+	LIQDEBUGPRINTF( "-> creating dag node handle rep\n");
 
-  MStatus status;
-  MObject obj( path.node() );
-  MObject skip;
+	MStatus status;
+	MObject obj( path.node() );
+	MObject skip;
 
-  //lightSources = NULL;
-  MFnDagNode nodeFn( obj );
+	//lightSources = NULL;
+	MFnDagNode nodeFn( obj );
 
-  // Store the matrices for all instances of this node at this time
-  // so that they can be used to determine if this node's transformation
-  // is animated.  This information is used for doing motion blur.
-  MDagPathArray instanceArray;
-  nodeFn.getAllPaths( instanceArray );
-  unsigned last( instanceArray.length() );
-  instanceMatrices.resize( last );
-  for( unsigned i( 0 ); i < last; i++ ) {
-    instanceMatrices[ i ] = instanceArray[ i ].inclusiveMatrix();
-  }
+	// Store the matrices for all instances of this node at this time
+	// so that they can be used to determine if this node's transformation
+	// is animated.  This information is used for doing motion blur.
+	MDagPathArray instanceArray;
+	nodeFn.getAllPaths( instanceArray );
+	unsigned last( instanceArray.length() );
+	instanceMatrices.resize( last );
+	for( unsigned i( 0 ); i < last; i++ )
+		instanceMatrices[ i ] = instanceArray[ i ].inclusiveMatrix();
 
-  LIQDEBUGPRINTF( "-> checking handles display status\n");
+	LIQDEBUGPRINTF( "-> checking handles display status\n");
 
-  ignore = !areObjectAndParentsVisible( path );
-  if( !ignore ) {
-    ignore = !areObjectAndParentsTemplated( path );
-  }
-  if( !ignore ) {
-    ignore = !isObjectPrimaryVisible( path );
-  }
+	ignore = !areObjectAndParentsVisible( path );
+	if( !ignore )
+		ignore = !areObjectAndParentsTemplated( path );
+	
+	if( !ignore )
+		ignore = !isObjectPrimaryVisible( path );
+	
 
-  // check that the shape's transform does not a have a liqIgnoreShapes attribute.
-  ignoreShapes = false;
-  {
-    MDagPath searchPath( path );
-    while ( searchPath.apiType() != ( MFn::kTransform ) && searchPath.length() > 1 ) {
-      searchPath.pop();
-    }
-    MFnDagNode transformDN( searchPath );
-    status.clear();
-    MPlug ignorePlug = transformDN.findPlug( "liqIgnoreShapes", &status );
-    if( status == MS::kSuccess ) {
-      //cout <<"found ignoreShapes on "<<path.fullPathName().asChar()<<endl;
-      ignorePlug.getValue( ignoreShapes );
-    }
-  }
+	// check that the shape's transform does not a have a liqIgnoreShapes attribute.
+	ignoreShapes = false;
+	MDagPath searchPath( path );
+	while ( searchPath.apiType() != ( MFn::kTransform ) && searchPath.length() > 1 )
+		searchPath.pop();
 
-  ignoreShadow = !isObjectCastsShadows( path );
-  if( !ignoreShadow ) {
-    ignoreShadow = !areObjectAndParentsVisible( path );
-  }
-  if( !ignoreShadow ) {
-    ignoreShadow = !areObjectAndParentsTemplated( path );
-  }
+	MFnDagNode transformDN( searchPath );
+	status.clear();
+	MPlug ignorePlug = transformDN.findPlug( "liqIgnoreShapes", &status );
+	if( status == MS::kSuccess )
+		ignorePlug.getValue( ignoreShapes );
 
-  // don't bother storing it if it's not going to be visible!
-  LIQDEBUGPRINTF( "-> about to create rep\n");
+	ignoreShadow = !isObjectCastsShadows( path );
+	if( !ignoreShadow )
+		ignoreShadow = !areObjectAndParentsVisible( path );
+	
+	if( !ignoreShadow )
+		ignoreShadow = !areObjectAndParentsTemplated( path );
+	
+	// don't bother storing it if it's not going to be visible!
+	LIQDEBUGPRINTF( "-> about to create rep\n");
 
-  if( !ignore || !ignoreShadow ) {
-    if( objType == MRT_RibGen ) {
-      type = MRT_RibGen;
-      data = liqRibDataPtr( new liqRibGenData( obj, path ) );
-    } else {
+	if( !ignore || !ignoreShadow )
+	{
+		if( objType == MRT_RibGen )
+		{
+			type = MRT_RibGen;
+			data = liqRibDataPtr( new liqRibGenData( obj, path ) );
+		}
+		else
+		{
+			// check to see if object's class is derived from liqCustomNode
+			liqCustomNode *customNode( NULL );
+			MFnDependencyNode mfnDepNode( obj, &status );
+			if( status )
+			{
+				MPxNode *mpxNode( mfnDepNode.userNode() );
+				if(mpxNode)
+					customNode = dynamic_cast< liqCustomNode* >( mpxNode ); // will be NULL if cast is not invalid
+			}
 
-      // check to see if object's class is derived from liqCustomNode
-      liqCustomNode *customNode( NULL );
-      MFnDependencyNode mfnDepNode( obj, &status );
-      if( status ) {
-        MPxNode *mpxNode( mfnDepNode.userNode() );
-        if(mpxNode) {
-          customNode = dynamic_cast< liqCustomNode* >( mpxNode ); // will be NULL if cast is not invalid
-        }
-      }
+			// Store the geometry/light/shader data for this object in RIB format
+			if(customNode)
+			{
+				type = MRT_Custom;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibCustomNode( obj, customNode ) );
+				else
+					data = liqRibDataPtr( new liqRibCustomNode( skip, customNode ) );
+			}
+			else if( obj.hasFn(MFn::kNurbsSurface) )
+			{
+				type = MRT_Nurbs;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibSurfaceData( obj ) );
+				else
+					data = liqRibDataPtr( new liqRibSurfaceData( skip ) );
+			}
+			else if( obj.hasFn(MFn::kSubdiv) )
+			{
+				type = MRT_Subdivision;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibMayaSubdivisionData( obj ) );
+				else
+					data = liqRibDataPtr( new liqRibMayaSubdivisionData( skip ) );
+			}
+			else if( obj.hasFn(MFn::kNurbsCurve) )
+			{
+				type = MRT_NuCurve;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibNuCurveData( obj ) );
+				else
+					data = liqRibDataPtr( new liqRibNuCurveData( skip ) );
+			}
+			else if( obj.hasFn(MFn::kPfxGeometry) )
+			{
+				type = objType;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibPfxData( obj, objType ) );
+				else
+					data = liqRibDataPtr( new liqRibPfxData( skip, objType ) );
+			}
+			else if( obj.hasFn( MFn::kPfxToon ) )
+			{
+				type = MRT_PfxToon;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibPfxToonData( obj ) );
+				else
+					data = liqRibDataPtr( new liqRibPfxToonData( skip ) );
+			}
+			else if( obj.hasFn( MFn::kPfxHair ) )
+			{
+				type = MRT_PfxHair;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibPfxHairData( obj ) );
+				else
+					data = liqRibDataPtr( new liqRibPfxHairData( skip ) );
+			}
+			else if( obj.hasFn( MFn::kParticle ) )
+			{
+				type = MRT_Particles;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibParticleData( obj ) );
+				else
+					data = liqRibDataPtr( new liqRibParticleData( skip ) );
+			}
+			else if( obj.hasFn( MFn::kMesh ) )
+			{
+				// we know we are dealing with a mesh here, now we check to see if it
+				// needs to be handled as a subdivision surface
+				bool usingSubdiv = false;
+				MPlug subdivPlug = nodeFn.findPlug( "liqSubdiv", &status );
+				if( status == MS::kSuccess )
+					subdivPlug.getValue( usingSubdiv );
+			
 
-      // Store the geometry/light/shader data for this object in RIB format
-      if(customNode) {
-        type = MRT_Custom;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibCustomNode( obj, customNode ) );
-        else data = liqRibDataPtr( new liqRibCustomNode( skip, customNode ) );
-      } else if( obj.hasFn(MFn::kNurbsSurface) ) {
-        type = MRT_Nurbs;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibSurfaceData( obj ) );
-        else data = liqRibDataPtr( new liqRibSurfaceData( skip ) );
-      } else if( obj.hasFn(MFn::kSubdiv) ) {
-        type = MRT_Subdivision;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibMayaSubdivisionData( obj ) );
-        else data = liqRibDataPtr( new liqRibMayaSubdivisionData( skip ) );
-      } else if( obj.hasFn(MFn::kNurbsCurve) ) {
-        type = MRT_NuCurve;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibNuCurveData( obj ) );
-        else data = liqRibDataPtr( new liqRibNuCurveData( skip ) );
-      } else if( obj.hasFn(MFn::kPfxGeometry) ) {
-	    type = objType;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibPfxData( obj, objType ) );
-        else data = liqRibDataPtr( new liqRibPfxData( skip, objType ) );
-      } else if( obj.hasFn( MFn::kPfxToon ) ) {
-        type = MRT_PfxToon;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibPfxToonData( obj ) );
-        else data = liqRibDataPtr( new liqRibPfxToonData( skip ) );
-      } else if( obj.hasFn( MFn::kPfxHair ) ) {
-        type = MRT_PfxHair;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibPfxHairData( obj ) );
-        else data = liqRibDataPtr( new liqRibPfxHairData( skip ) );
-      } else if( obj.hasFn( MFn::kParticle ) ) {
-        type = MRT_Particles;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibParticleData( obj ) );
-        else data = liqRibDataPtr( new liqRibParticleData( skip ) );
-      } else if( obj.hasFn( MFn::kMesh ) ) {
-        // we know we are dealing with a mesh here, now we check to see if it
-        // needs to be handled as a subdivision surface
-        bool usingSubdiv = false;
-        MPlug subdivPlug = nodeFn.findPlug( "liqSubdiv", &status );
-        if( status == MS::kSuccess ) {
-          subdivPlug.getValue( usingSubdiv );
-        }
+				bool usingSubdivOld( false );
+				MPlug oldSubdivPlug( nodeFn.findPlug( "subDMesh", &status ) );
+				if( status == MS::kSuccess )
+					oldSubdivPlug.getValue( usingSubdivOld );
 
-        bool usingSubdivOld( false );
-        MPlug oldSubdivPlug( nodeFn.findPlug( "subDMesh", &status ) );
-        if( status == MS::kSuccess ) {
-          oldSubdivPlug.getValue( usingSubdivOld );
-        }
+				// make Liquid understand MTOR subdiv attribute
+				bool usingSubdivMtor( false );
+				if( liqglo_useMtorSubdiv )
+				{
+					MPlug mtorSubdivPlug( nodeFn.findPlug( "mtorSubdiv", &status ) );
+					if( status == MS::kSuccess )
+						mtorSubdivPlug.getValue( usingSubdivMtor );
+				}
 
-        // make Liquid understand MTOR subdiv attribute
-        bool usingSubdivMtor( false );
-        if( liqglo_useMtorSubdiv ) {
-          MPlug mtorSubdivPlug( nodeFn.findPlug( "mtorSubdiv", &status ) );
-          if( status == MS::kSuccess ) {
-            mtorSubdivPlug.getValue( usingSubdivMtor );
-          }
-        }
+				usingSubdiv |= usingSubdivMtor | usingSubdivOld;
 
-        usingSubdiv |= usingSubdivMtor | usingSubdivOld;
-
-        if( usingSubdiv ) {
-          // we've got a subdivision surface
-          type = MRT_Subdivision;
-          if( !ignoreShapes ) data = liqRibDataPtr( new liqRibSubdivisionData( obj ) );
-          else data = liqRibDataPtr( new liqRibSubdivisionData( skip ) );
-          type = data->type();
-        } else {
-          // it's a regular mesh
-          type = MRT_Mesh;
-          if( !ignoreShapes ) data = liqRibDataPtr( new liqRibMeshData( obj ) );
-          else data = liqRibDataPtr( new liqRibMeshData( skip ) );
-          type = data->type();
-        }
-      } else if( obj.hasFn(MFn::kLight)) {
-        type = MRT_Light;
-        data = liqRibDataPtr( new liqRibLightData( path ) );
-      } else if( mfnDepNode.typeName() == "liquidCoordSys" ) {
-        MStatus status;
-        int coordSysType = 0;
-        MPlug typePlug( mfnDepNode.findPlug( "type", &status ) );
-        if( MS::kSuccess == status ) typePlug.getValue( coordSysType );
-        if( coordSysType == 5 ) {
-          type = MRT_ClipPlane;
-          data = liqRibDataPtr( new liqRibClipPlaneData( obj ) );
-        } else {
-          type = MRT_Coord;
-          data = liqRibDataPtr( new liqRibCoordData( obj ) );
-        }
-      } else if( obj.hasFn(MFn::kLocator) && mfnDepNode.typeName() != "liquidCoordSys" ) {
-        type = MRT_Locator;
-        data = liqRibDataPtr( new liqRibLocatorData( obj ) );
-      } else if( obj.hasFn( MFn::kImplicitSphere ) ) {
-        type = MRT_ImplicitSphere;
-        if( !ignoreShapes ) data = liqRibDataPtr( new liqRibImplicitSphereData( obj ) );
-        else data = liqRibDataPtr( new liqRibImplicitSphereData( skip ) );
-      }
-    }
-    data->objDagPath = path;
-  }
-  LIQDEBUGPRINTF( "-> done creating rep\n");
+				if( usingSubdiv )
+				{
+					// we've got a subdivision surface
+					type = MRT_Subdivision;
+					if( !ignoreShapes )
+						data = liqRibDataPtr( new liqRibSubdivisionData( obj ) );
+					else
+						data = liqRibDataPtr( new liqRibSubdivisionData( skip ) );
+					type = data->type();
+				}
+				else
+				{
+					// it's a regular mesh
+					type = MRT_Mesh;
+					if( !ignoreShapes )
+						data = liqRibDataPtr( new liqRibMeshData( obj ) );
+					else
+						data = liqRibDataPtr( new liqRibMeshData( skip ) );
+					type = data->type();
+				}
+			}
+			else if( obj.hasFn(MFn::kLight))
+			{
+				type = MRT_Light;
+				data = liqRibDataPtr( new liqRibLightData( path ) );
+			}
+			else if( mfnDepNode.typeName() == "liquidCoordSys" )
+			{
+				MStatus status;
+				int coordSysType = 0;
+				MPlug typePlug( mfnDepNode.findPlug( "type", &status ) );
+				if( MS::kSuccess == status )
+					typePlug.getValue( coordSysType );
+				if( coordSysType == 5 )
+				{
+					type = MRT_ClipPlane;
+					data = liqRibDataPtr( new liqRibClipPlaneData( obj ) );
+				}
+				else
+				{
+					type = MRT_Coord;
+					data = liqRibDataPtr( new liqRibCoordData( obj ) );
+				}
+			}
+			else if( obj.hasFn(MFn::kLocator) && mfnDepNode.typeName() != "liquidCoordSys" )
+			{
+				bool isCurveGroup( false );
+				if( mfnDepNode.typeName() == "liquidBoundingBox" )
+				{
+					MPlug curveGroupPlug( mfnDepNode.findPlug( "liquidCurveGroup", &status ) );
+					if( status == MS::kSuccess )
+						curveGroupPlug.getValue( isCurveGroup );
+					if( isCurveGroup )
+					{
+						type = MRT_Curves;
+						if( !ignoreShapes )
+							data = liqRibDataPtr( new liqRibCurvesData( obj ) );
+						else
+							data = liqRibDataPtr( new liqRibCurvesData( skip ) );
+					}
+				}
+				if( !isCurveGroup )
+				{
+					type = MRT_Locator;
+					data = liqRibDataPtr( new liqRibLocatorData( obj ) );
+				}
+			}
+			else if( obj.hasFn( MFn::kImplicitSphere ) )
+			{
+				type = MRT_ImplicitSphere;
+				if( !ignoreShapes )
+					data = liqRibDataPtr( new liqRibImplicitSphereData( obj ) );
+				else
+					data = liqRibDataPtr( new liqRibImplicitSphereData( skip ) );
+			}
+		}
+		data->objDagPath = path;
+	}
+	LIQDEBUGPRINTF( "-> done creating rep\n");
 }
 
 

@@ -96,8 +96,10 @@ MStatus RIArchiveBegin::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord( RI_VERBATIM, (char*)call.asChar() );
-
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIArchiveBegin::undoIt() { return dgMod.undoIt(); }
@@ -137,7 +139,7 @@ MStatus RIArchiveEnd::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: ArchiveEnd" ) );
 	else
-		RiArchiveRecord( RI_VERBATIM, "ArchiveEnd" );
+		RiArchiveRecord( RI_VERBATIM, "ArchiveEnd\n" );
 
 	return redoIt();
 }
@@ -194,11 +196,17 @@ MStatus RIArchiveRecord::doIt( const MArgList &args )
 	MString call( "" );
 
 	if( type == "verbatim" )
+	{
 		call = ( value );
+	}
 	else if( type == "comment" )
+	{
 		call = ( "#" + value );
+	}
 	else if( type == "structure" )
+	{
 		call = ( "##" + value );
+	}
 	else
 	{
 		MGlobal::displayError( MString( "RIArchiveRecord: type must be either \"verbatim\", \"structure\" or \"comment\"!" ) );
@@ -298,7 +306,10 @@ MStatus RIAtmosphere::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
-		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+	{
+		RiArchiveRecord( RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIAtmosphere::undoIt() { return dgMod.undoIt(); }
@@ -388,7 +399,10 @@ MStatus RIAttribute::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIAttribute::undoIt() { return dgMod.undoIt(); }
@@ -885,8 +899,10 @@ MStatus RIDetail::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
-
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIDetail::undoIt() { return dgMod.undoIt(); }
@@ -1044,7 +1060,10 @@ MStatus RIDisplacement::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIDisplacement::undoIt() { return dgMod.undoIt(); }
@@ -1146,7 +1165,10 @@ MStatus RIDisplay::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIDisplay::undoIt() { return dgMod.undoIt(); }
@@ -1234,7 +1256,10 @@ MStatus RIDisplayChannel::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIDisplayChannel::undoIt() { return dgMod.undoIt(); }
@@ -1322,7 +1347,10 @@ MStatus RIExterior::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIExterior::undoIt() { return dgMod.undoIt(); }
@@ -1622,7 +1650,10 @@ MStatus RIGeometry::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord( RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIGeometry::undoIt() { return dgMod.undoIt(); }
@@ -1710,7 +1741,10 @@ MStatus RIHider::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIHider::undoIt() { return dgMod.undoIt(); }
@@ -1895,7 +1929,10 @@ MStatus RIInterior::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIInterior::undoIt() { return dgMod.undoIt(); }
@@ -1991,7 +2028,10 @@ MStatus RILightSource::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RILightSource::undoIt() { return dgMod.undoIt(); }
@@ -2376,7 +2416,10 @@ MStatus RIOption::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIOption::undoIt() { return dgMod.undoIt(); }
@@ -2588,8 +2631,10 @@ MStatus RIProcedural::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
-
+		RiArchiveRecord(RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIProcedural::undoIt() { return dgMod.undoIt(); }
@@ -2673,7 +2718,10 @@ MStatus RIProjection::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIProjection::undoIt() { return dgMod.undoIt(); }
@@ -2867,7 +2915,10 @@ MStatus RIResource::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIResource::undoIt() { return dgMod.undoIt(); }
@@ -2907,8 +2958,10 @@ MStatus RIResourceBegin::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: ResourceBegin" ) );
 	else
+	{
 		RiArchiveRecord( RI_VERBATIM, "ResourceBegin" );
-
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIResourceBegin::undoIt() { return dgMod.undoIt(); }
@@ -2948,8 +3001,10 @@ MStatus RIResourceEnd::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: ResourceEnd" ) );
 	else
+	{
 		RiArchiveRecord( RI_VERBATIM, "ResourceEnd" );
-
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RIResourceEnd::undoIt() { return dgMod.undoIt(); }
@@ -3690,7 +3745,10 @@ MStatus RISphere::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RISphere::undoIt() { return dgMod.undoIt(); }
@@ -3778,7 +3836,10 @@ MStatus RISurface::doIt( const MArgList &args )
 	if( isTest )
 		MGlobal::displayInfo( MString( "RIB output: " ) + call );
 	else
+	{
 		RiArchiveRecord(RI_VERBATIM, (char*)call.asChar() );
+		RiArchiveRecord( RI_VERBATIM, "\n" );
+	}
 	return redoIt();
 }
 MStatus RISurface::undoIt() { return dgMod.undoIt(); }

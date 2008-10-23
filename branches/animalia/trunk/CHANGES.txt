@@ -1,3 +1,9 @@
+2.3.3
+- liquidGeneratePlace3dTexture( int scoped ) mel command available - maya 3d textures will be output in RIB as scoped or standard coordinate systems
+- liquid curves can be assigned a base and tip width
+- new liquid curves group creates a single RiCurves primitive for a group of nurbs curves
+- new liquid bounding box locator that resizes automatically to its children used for the curves group
+
 2.3.2
 - custom shading group integrated in the shading attributes, you can now connect a shading group to any object, like locators etc
 - liquidGeneratePlace2dTexture.mel to be used in postWorldMel slot/Render Globals will output all pace2dTexure nodes in RIB (for Prman)

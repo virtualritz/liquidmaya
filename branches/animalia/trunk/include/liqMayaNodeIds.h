@@ -44,6 +44,7 @@
 #define liqGlobalsNodeId		0x00103524
 #define liqCoordSysNodeId		0x00103525
 #define liqRibRequestId			0x0010F6D1
+#define liqBoundingBoxLocatorId	0x0010F6D8
 #endif
 
 #endif // __LIQ_MAYA_NODE_IDS_H__

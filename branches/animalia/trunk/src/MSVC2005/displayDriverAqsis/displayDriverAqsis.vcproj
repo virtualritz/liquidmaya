@@ -52,7 +52,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(AQSISHOME)/include/aqsis&quot;;../../../include"
+				AdditionalIncludeDirectories="$(AQSISHOME)/include/aqsis;$(DELIGHT)/include;../../../include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DISPLAYDRIVERAQSIS_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -78,7 +78,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib odbc32.lib odbccp32.lib"
-				OutputFile="../../../bin/Aqsis/win32/liqmaya.dll"
+				OutputFile="../../../displayDrivers/Aqsis/win32/liqmaya.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(AQSISHOME)/lib"

@@ -63,8 +63,6 @@ extern int debugMode;
  */
 liqRibNuCurveData::liqRibNuCurveData( MObject curve )
 : nverts(),
-  order(),
-  knot(),
   CVs(),
   NuCurveWidth()
 {
@@ -77,67 +75,15 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
   // in mind that UV order is switched between Renderman and Maya
   ncurves = 1;  //RiNuCurves can be passed many curves but right now it only passes one from maya at a time
   nverts = shared_array< RtInt >( new RtInt[ ncurves ] );
-  order = shared_array< RtInt >( new RtInt[ ncurves ] );
-
-  order[0] = nurbs.degree() + 1;
-#ifndef DELIGHT
   nverts[0] = nurbs.numCVs() + 4;
-#else
-  nverts[0] = nurbs.numCVs();
-#endif
 
-  /*if (nverts[0] < 2) {
-  // seems like some ill-defined patches are sometimes
-  // present in the database (cf: test scene)
-  // Might be able to add some sort of throw here where it passes it to RiCurve
-  //
-  MString error("Ill-defined nurbs curve: ");
-  error += nurbs.name();
-  printf( "Bad Curve!" );
-  throw( error );
-}*/
-
-#ifdef DELIGHT
-  min = shared_array< RtFloat >( new RtFloat[ ncurves ] );
-  max = shared_array< RtFloat >( new RtFloat[ ncurves ] );
-  double Min_d, Max_d;
-  nurbs.getKnotDomain(Min_d, Max_d);
-  min[0] = (RtFloat)Min_d;
-  max[0] = (RtFloat)Max_d;
-
-  // Read the knot information
-  //
-  MDoubleArray Knots;
-  nurbs.getKnots(Knots);
-
-  knot = shared_array< RtFloat >( new RtFloat[ Knots.length() + 2 ] );
-
-    unsigned k;
-  for ( k = 0; k < Knots.length(); k++ ) {
-    knot[k+1] = (RtFloat)Knots[k];
-  }
-
-  // Maya doesn't store the first and last knots, so we double them up
-  // manually
-  //
-  knot[0] = knot[1];
-  knot[k+1] = knot[k];
-#endif
-
-  // Read CV information
-  //
-#ifndef DELIGHT
   CVs   = shared_array< RtFloat >( new RtFloat[ nverts[ 0 ] * 3 ] );
-#else
-  CVs   = shared_array< RtFloat >( new RtFloat[ nverts[ 0 ] * 4 ] );
-#endif
   MItCurveCV cvs( curve, &status );
   RtFloat* cvPtr = CVs.get();
 
   // Double up start and end to simulate knot, MToor style (we should really be using RiNuCurves) - Paul
   MPoint pt = cvs.position(MSpace::kObject);
 
-#ifndef DELIGHT
   *cvPtr = (RtFloat)pt.x; cvPtr++;
   *cvPtr = (RtFloat)pt.y; cvPtr++;
   *cvPtr = (RtFloat)pt.z; cvPtr++;
@@ -145,20 +91,15 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
   *cvPtr = (RtFloat)pt.x; cvPtr++;
   *cvPtr = (RtFloat)pt.y; cvPtr++;
   *cvPtr = (RtFloat)pt.z; cvPtr++;
-#endif
 
   while(!cvs.isDone()) {
     pt = cvs.position(MSpace::kObject);
     *cvPtr = (RtFloat)pt.x; cvPtr++;
     *cvPtr = (RtFloat)pt.y; cvPtr++;
     *cvPtr = (RtFloat)pt.z; cvPtr++;
-#ifdef DELIGHT
-    *cvPtr = (RtFloat)pt.w; cvPtr++;
-#endif
     cvs.next();
   }
 
-#ifndef DELIGHT
   *cvPtr = (RtFloat)pt.x; cvPtr++;
   *cvPtr = (RtFloat)pt.y; cvPtr++;
   *cvPtr = (RtFloat)pt.z; cvPtr++;
@@ -166,40 +107,63 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
   *cvPtr = (RtFloat)pt.x; cvPtr++;
   *cvPtr = (RtFloat)pt.y; cvPtr++;
   *cvPtr = (RtFloat)pt.z; cvPtr++;
-#endif
 
   liqTokenPointer pointsPointerPair;
 
-#ifndef DELIGHT
   pointsPointerPair.set( "P", rPoint, nverts[0] );
-#else
-  pointsPointerPair.set( "Pw", rHpoint, nverts[0] );
-#endif
   pointsPointerPair.setDetailType( rVertex );
   pointsPointerPair.setTokenFloats( CVs ); // Warning: CVs shares ownership with of its data with pointsPointerPair now!
                        // Saves us from redundant copying as long as we know what we are doing
   tokenPointerArray.push_back( pointsPointerPair );
 
-  // Constant width, MToor style - Paul
-  MPlug curveWidthPlug( nurbs.findPlug( "liquidCurveWidth", &status ) );
+	// constant width or not
+	float baseWidth( .1 ), tipWidth( .1 );
+	bool constantWidth( false );
+	MPlug pWidth = nurbs.findPlug( "liquidCurveBaseWidth", status );
+	if( status == MS::kSuccess )
+		pWidth.getValue( baseWidth );
+	pWidth = nurbs.findPlug( "liquidCurveTipWidth", status );
+	if( status == MS::kSuccess )
+		pWidth.getValue( tipWidth );
+	if( tipWidth == baseWidth )
+		constantWidth = true;
 
-  if ( MS::kSuccess == status ) {
-    float curveWidth;
-    curveWidthPlug.getValue( curveWidth );
-    liqTokenPointer pConstWidthPointerPair;
-#ifndef DELIGHT
-    pConstWidthPointerPair.set( "constantwidth", rFloat );
-    pConstWidthPointerPair.setDetailType( rUniform );
-    pConstWidthPointerPair.setTokenFloat( 0, curveWidth );
-#else // 3Delight wants "constantwidth" per curve segment so we use "width" where 3Delight automatically does the right thing(tm)
-    pConstWidthPointerPair.set( "width", rFloat );
-    pConstWidthPointerPair.setDetailType( rUniform );
-    pConstWidthPointerPair.setTokenFloat( 0, curveWidth );
-#endif
-    tokenPointerArray.push_back( pConstWidthPointerPair );
-  }
+	if ( constantWidth )
+	{
+		liqTokenPointer pConstWidthPointerPair;
+		pConstWidthPointerPair.set( "constantwidth", rFloat );
+		pConstWidthPointerPair.setDetailType( rConstant );
+		pConstWidthPointerPair.setTokenFloat( 0, baseWidth );
+		tokenPointerArray.push_back( pConstWidthPointerPair );
+	}
+	else
+	{
+		NuCurveWidth = shared_array< RtFloat >( new RtFloat[ nverts[ 0 ] - 2 ] );
+		unsigned k(0);
 
-  addAdditionalSurfaceParameters( curve );
+		// easy way just linear - will have to be refined
+		MItCurveCV itCurve( curve );
+		NuCurveWidth[k++] = baseWidth;
+		NuCurveWidth[k++] = baseWidth;
+		for( unsigned n( 3 ); n < nverts[0] - 3; n++ )
+		{
+			float difference = abs( tipWidth - baseWidth );
+			float basew ( baseWidth );
+			if( baseWidth > tipWidth )
+				NuCurveWidth[k++] = basew - ( n - 2 ) * difference / ( nverts[0] - 5 );
+			else
+				NuCurveWidth[k++] = basew + ( n - 2 ) * difference / ( nverts[0] - 5 );
+		}
+		NuCurveWidth[k++] = tipWidth;
+		NuCurveWidth[k++] = tipWidth;
+		liqTokenPointer widthPointerPair;
+		widthPointerPair.set( "width", rFloat, nverts[ 0 ] - 2 );
+		widthPointerPair.setDetailType( rVarying );
+		widthPointerPair.setTokenFloats( NuCurveWidth );
+		tokenPointerArray.push_back( widthPointerPair );
+	}
+
+	addAdditionalSurfaceParameters( curve );
 }
 
 
@@ -214,12 +178,7 @@ void liqRibNuCurveData::write()
   scoped_array< RtPointer > pointerArray( new RtPointer[ numTokens ] );
   assignTokenArraysV( tokenPointerArray, tokenArray.get(), pointerArray.get() );
 
-#if defined(AIR) || defined(DELIGHT)
   RiCurvesV( "cubic", ncurves, nverts.get(), "nonperiodic", numTokens, tokenArray.get(), pointerArray.get() );
-//  RiNuCurvesV( ncurves, nverts.get(), order.get(), knot.get(), min.get(), max.get(), numTokens, tokenArray.get(), pointerArray.get() );
-#else
-  RiCurvesV( "cubic", ncurves, nverts.get(), "nonperiodic", numTokens, tokenArray.get(), pointerArray.get() );
-#endif
 }
 
 /** Compare this curve to the other for the purpose of determining
@@ -231,27 +190,14 @@ bool liqRibNuCurveData::compare( const liqRibData & otherObj ) const
   if ( otherObj.type() != MRT_NuCurve ) return false;
   const liqRibNuCurveData & other = (liqRibNuCurveData&)otherObj;
 
-  if ( ( nverts[0] != other.nverts[0] ) ||
-       ( order != other.order ) ||
-       !equiv( min[0], other.min[0] ) ||
-       !equiv( max[0], other.max[0] ))
-  {
+  if ( ( nverts[0] != other.nverts[0] ) )
     return false;
-  }
-
-  // Check Knots
-  unsigned i;
-  unsigned last = nverts[0] + order[0];
-  for ( i = 0; i < last; ++i ) {
-    if ( !equiv( knot[i], other.knot[i] ) ) return false;
-  }
 
   // Check CVs
-  last = nverts[0] * 3;
-  for ( i = 0; i < last; ++i ) {
+  unsigned last = nverts[0] * 3;
+  for ( unsigned i = 0; i < last; ++i ) {
       if ( !equiv( CVs[i], other.CVs[i] ) ) return false;
   }
-
   return true;
 }
 

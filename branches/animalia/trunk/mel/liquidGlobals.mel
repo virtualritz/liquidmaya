@@ -2830,8 +2830,8 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
         liquidShowBoolGlobalPlus  "lazyCompute"             "Lazy Compute"      "If your shadow maps are already available, they will not be recomputed.";
         frameLayout -bs "etchedIn" -l "Depth Shadows" -cll true -cl false;
           columnLayout -adj true;
-            liquidShowColorGlobal "limitsOThreshold"       "O Threshold";
-            liquidShowColorGlobal "limitsZThreshold"       "Z Threshold";
+//            liquidShowColorGlobal "limitsOThreshold"       "O Threshold";
+//            liquidShowColorGlobal "limitsZThreshold"       "Z Threshold";
             liquidShowBoolGlobal  "outputShadersInShadows" "Output Tagged Shaders";
           setParent ..;
         setParent ..;
