@@ -15,7 +15,7 @@
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
 ** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** Contributor(s): Berj Bannayan.
+** Contributor(s): Berj Bannayan, Alf Kraus
 **
 **
 ** The RenderMan (R) Interface Procedures and Protocol are:
@@ -27,23 +27,17 @@
 
 */
 
-#ifndef liqRibNuCurveData_H
-#define liqRibNuCurveData_H
-
-/* ______________________________________________________________________
-**
-** Liquid Rib Nurbs Curve Data Header File
-** ______________________________________________________________________
-*/
+#ifndef liqRibCurvesData_H
+#define liqRibCurvesData_H
 
 #include <boost/shared_array.hpp>
 
 using namespace boost;
 
-class liqRibNuCurveData : public liqRibData {
+class liqRibCurvesData : public liqRibData {
 public: // Methods
 
-            liqRibNuCurveData( MObject curve );
+    liqRibCurvesData( MObject curveGroup );
 
     virtual void       write();
     virtual bool       compare( const liqRibData & other ) const;

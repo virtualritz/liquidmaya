@@ -125,8 +125,7 @@ global proc liquidLoadScripts()
     "registerLiquidRenderer.mel",
     "liquidCreateGlobalsTab.mel",
     "liquidRenderView.mel",
-    "liquidLightLinker.mel",
-    "liquidGeneratePlace2dTexture.mel"
+    "liquidLightLinker.mel"
   };
 
   string $liquidHome = liquidGetHome();
@@ -393,6 +392,7 @@ global proc liquidCreateMenus()
       menuItem -label "Curves" -subMenu true -tearOff true;
         menuItem -label "Tag as Render Curve" -command liquidMakeRenderCurve -ann "Tag selected NURBS curve(s) as renderable";
         menuItem -label "Untag as Render Curve" -command liquidUnMakeRenderCurve -ann "Untag renderable tag from selected NURBS curve(s)";
+        menuItem -label "Create Render Curve Group" -command liquidCreateCurveGroup -ann "Group multiple curves";
       setParent -menu ..;
       menuItem -label "Paint Effects" -subMenu true -tearOff true;
         menuItem -label "Add Paint Effects Attributes" -command liquidAddPFXAttributes -ann "Add Paint Effects Attributes Group to Stroke";

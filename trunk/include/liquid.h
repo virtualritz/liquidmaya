@@ -162,7 +162,8 @@ enum ObjectType {
   MRT_PfxTube         = 17,
   MRT_PfxLeaf         = 18,
   MRT_PfxPetal        = 19,
-  MRT_ImplicitSphere  = 20
+  MRT_ImplicitSphere  = 20,
+  MRT_Curves          = 21
 };
 
 enum LightType {

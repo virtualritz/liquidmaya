@@ -1,11 +1,11 @@
-#include "liquidversion_generic_Maya2008_win64.iss"
+#include "liquidversion_prman14_Maya2008SP1_win32.iss"
 
 [Setup]
 AppPublisher=Liquidmaya at Sourceforge
 AppPublisherURL=http://liquidmaya.sf.net/
 AppSupportURL=http://sourceforge.net/forum/forum.php?forum_id=214928
 AppUpdatesURL=http://www.sf.net/projects/liquidmaya/
-DefaultDirName={pf}\Liquid
+DefaultDirName={pf}\Liquid\Liquid_2.3.3_Maya2008SP1
 DefaultGroupName=Liquid
 AllowNoIcons=true
 LicenseFile=mpl.rtf
@@ -90,7 +90,7 @@ EnableISX=true
 [Code]
 function GetTargetRenderer: String;
 begin
-  #include "targetrenderer_generic.iss"
+  #include "targetrenderer_prman.iss"
 end;
 
 function InsertPath_NT(PathToAdd: String; RootKey: Integer; Location: String; PathVar: String): Boolean;
@@ -119,18 +119,18 @@ begin
   EnvName := 'Environment';
   if CurPage = wpFinished then begin
     if IsAdminLoggedOn() then begin
-      InsertPath_NT(ExpandConstant('{app}\bin\maya2008\win64')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_PLUG_IN_PATH')
+      InsertPath_NT(ExpandConstant('{app}\bin')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_PLUG_IN_PATH')
       InsertPath_NT(ExpandConstant('{app}\mel'), HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MAYA_SCRIPT_PATH')
       InsertPath_NT(ExpandConstant('{app}\icons'), HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'XBMLANGPATH')
-      InsertPath_NT(ExpandConstant('{app}\bin\maya2008\win64')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PATH')
+      InsertPath_NT(ExpandConstant('{app}\bin')+GetTargetRenderer, HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PATH')
       RegWriteStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'LIQUID_GLOBALS_OVERRIDE', ExpandConstant('{app}\renderers'))
       RegWriteStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'LIQUIDHOME', ExpandConstant('{app}'))
       SendBroadcastMessage(26, 0, CastStringToInteger(EnvName));
     end
     else begin
-      InsertPath_NT(ExpandConstant('{app}\bin\maya2008\win64')+GetTargetRenderer, HKCU, 'Environment', 'MAYA_PLUG_IN_PATH')
+      InsertPath_NT(ExpandConstant('{app}\bin')+GetTargetRenderer, HKCU, 'Environment', 'MAYA_PLUG_IN_PATH')
       InsertPath_NT(ExpandConstant('{app}\mel'), HKCU, 'Environment', 'MAYA_SCRIPT_PATH')
-      InsertPath_NT(ExpandConstant('{app}\bin\maya2008\win64')+GetTargetRenderer, HKCU, 'Environment', 'PATH')
+      InsertPath_NT(ExpandConstant('{app}\bin')+GetTargetRenderer, HKCU, 'Environment', 'PATH')
       InsertPath_NT(ExpandConstant('{app}\icons'), HKCU, 'Environment', 'XBMLANGPATH')
       RegWriteStringValue(HKCU, 'Environment', 'LIQUID_GLOBALS_OVERRIDE', ExpandConstant('{app}\renderers'))
       RegWriteStringValue(HKCU, 'Environment', 'LIQUIDHOME', ExpandConstant('{app}'))

@@ -244,6 +244,10 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath="..\..\..\include\liqMayaDisplayDriver.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

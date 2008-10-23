@@ -698,7 +698,7 @@ global proc liquidAE_LifStringOverrideDisplayAll()
       string $userAttr[] = `listAttr -ud $gLiquid_currentAENode`;
 
       string $versionString = `about -v`;
-      float $version = match("[0-9]+\\.[0-9]+", $versionString );
+      float $version = catchQuiet( match("[0-9]+\\.[0-9]+", $versionString ) );
       string $a;
       for ( $a in $userAttr ) {
 

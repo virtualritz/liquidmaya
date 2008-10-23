@@ -1,4 +1,4 @@
-#include "liquidversion_3Delight8_Maya2008SP1_win64.iss"
+#include "liquidversion_generic_Maya2008SP1_win64.iss"
 
 [Setup]
 ArchitecturesInstallIn64BitMode=x64
@@ -91,7 +91,7 @@ EnableISX=true
 [Code]
 function GetTargetRenderer: String;
 begin
-  #include "targetrenderer_3Delight.iss"
+  #include "targetrenderer_generic.iss"
 end;
 
 function InsertPath_NT(PathToAdd: String; RootKey: Integer; Location: String; PathVar: String): Boolean;

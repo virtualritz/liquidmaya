@@ -565,6 +565,7 @@ global proc liquidAE_showCachedLayout( string $shaderType, string $rmanShaderLon
   string $baseLayout = ( $shaderType + "CachedLayouts" );
   string $shaderLayout = liquidAE_getShaderLayoutName( $shaderType, $rmanShaderLong );
 
+
   // resize the layout
   string $children[] = `layout -q -ca $shaderLayout`;
   string $child;
@@ -573,7 +574,6 @@ global proc liquidAE_showCachedLayout( string $shaderType, string $rmanShaderLon
     $height += `layout -q -h $child`;
   }
   layout -e -h $height $shaderLayout;
-
 
   // attach it to the $baseLayout
   formLayout -e

@@ -13,7 +13,7 @@
 // The Initial Developer of the Original Code is Colin Doncaster. Portions created by 
 // Colin Doncaster are Copyright (C) 2002. All Rights Reserved. 
 // 
-// Contributor(s): Berj Bannayan. 
+// Contributor(s): Berj Bannayan, Alf Kraus 
 //
 // 
 // The RenderMan (R) Interface Procedures and Protocol are:
@@ -29,35 +29,81 @@
 //  An interface for working with Renderable Curves with Liquid
 //
 
-global proc liquidMakeRenderCurve() {
-  string $selected[] = `ls -dag -type "nurbsCurve" -sl`;
-  string $current;
-  for ( $current in $selected ) {
-    if ( !`attributeQuery -node $current -ex "liquidCurve"`) {
-      addAttr -ln liquidCurve -at bool $current;
-    }
-    if ( `attributeQuery -node $current -ex "liquidCurve"`) {
-      setAttr ( $current + ".liquidCurve" ) true;
-    }
-    if ( !`attributeQuery -node $current -ex "liquidCurveWidth"`) {
-      addAttr -ln liquidCurveWidth -at "float" $current;
-    }
-    if ( `attributeQuery -node $current -ex "liquidCurveWidth"`) {
-      setAttr ( $current + ".liquidCurveWidth" ) 1.0;
-    }
-  }
+global proc liquidMakeRenderCurve()
+{
+	string $selected[] = `ls -dag -type "nurbsCurve" -sl`;
+	string $current;
+	for ( $current in $selected )
+	{
+		if ( !`attributeQuery -node $current -ex "liquidCurve"`)
+			addAttr -ln liquidCurve -at bool $current;
+
+		if ( `attributeQuery -node $current -ex "liquidCurve"`)
+			setAttr ( $current + ".liquidCurve" ) true;
+
+		if ( !`attributeQuery -node $current -ex "liquidCurveBaseWidth"`)
+			addAttr -ln liquidCurveBaseWidth -at "float" $current;
+
+		if ( `attributeQuery -node $current -ex "liquidCurveBaseWidth"`)
+			setAttr ( $current + ".liquidCurveBaseWidth" ) 0.1;
+
+		if ( !`attributeQuery -node $current -ex "liquidCurveTipWidth"`)
+			addAttr -ln liquidCurveTipWidth -at "float" $current;
+
+		if ( `attributeQuery -node $current -ex "liquidCurveTipWidth"`)
+			setAttr ( $current + ".liquidCurveTipWidth" ) 0.1;
+	}
 }
 
-global proc liquidUnMakeRenderCurve() {
-  string $selected[] = `ls -dag -type "nurbsCurve" -sl`;
-  string $current;
-  for ( $current in $selected ) {
-    if ( `attributeQuery -node $current -ex "liquidCurve"`) {
-      deleteAttr ( $current + ".liquidCurve" );
-    }
-    if ( `attributeQuery -node $current -ex "liquidCurveWidth"`) {
-      deleteAttr ( $current + ".liquidCurveWidth" );
-    }
-  }
+global proc liquidUnMakeRenderCurve()
+{
+	string $selected[] = `ls -dag -type "nurbsCurve" -sl`;
+	string $current;
+	for ( $current in $selected )
+	{
+		if ( `attributeQuery -node $current -ex "liquidCurve"`)
+			deleteAttr ( $current + ".liquidCurve" );
+
+		if ( `attributeQuery -node $current -ex "liquidCurveBaseWidth"`)
+			deleteAttr ( $current + ".liquidCurveBaseWidth" );
+
+		if ( `attributeQuery -node $current -ex "liquidCurveTipWidth"`)
+			deleteAttr ( $current + ".liquidCurveTipWidth" );
+	}
 }
 
+
+global proc liquidCreateCurveGroup()
+{
+	// have to do it different to support instances
+	string $selected[] = `ls -dag -type "transform" -sl`;
+	string $curves[];
+	int $k = 0;
+	for ( $s in $selected )
+	{
+		string $shapes[] = `listRelatives -s $s`;
+		if( `objectType -isType "nurbsCurve" $shapes[0]` )
+		{
+			$curves[$k] = $s;
+			$k++;
+		}
+	}
+	string $transform = `createNode transform -n liquidCurveGroup`;
+	string $bb = `createNode liquidBoundingBox -p $transform`;
+	if( size( $curves ) )
+		parent $curves $transform;
+	
+	// custom shading group
+	if ( !`attributeQuery -node $transform -ex "liquidCustomShadingGroup"` )
+		addAttr -k true -ln "liquidCustomShadingGroup" -at "message" $transform;
+		
+	// curve group attributes
+	if ( !`attributeQuery -node $bb -ex "liquidCurveGroup"` )
+		addAttr -k true -dv 1 -ln "liquidCurveGroup" -at bool $bb;
+	if ( !`attributeQuery -node $bb -ex "liquidCurveBaseWidth"` )
+		addAttr -k true -dv .1 -ln "liquidCurveBaseWidth" -at double $bb;
+	if ( !`attributeQuery -node $bb -ex "liquidCurveTipWidth"` )
+		addAttr -k true -dv .1 -ln "liquidCurveTipWidth" -at double $bb;
+		
+	select -r $transform;
+}

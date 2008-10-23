@@ -2979,7 +2979,13 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             RtString comp[ 1 ] = { "gzip" };
             RiOption( "rib", "compression", ( RtPointer )comp, RI_NULL );
           }
-#endif // PRMAN || DELIGHT
+#endif
+#if defined( PRMAN )
+		  RtString style = "indented";
+		  RiOption( "rib", "string asciistyle", &style, RI_NULL );
+#endif
+		  
+			// PRMAN || DELIGHT
 
           // world RiReadArchives and Rib Boxes ************************************************
           //
@@ -4863,9 +4869,9 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 					if( renderCurve )
 					{
 						if( ( sample > 0 ) && isObjectMotionBlur( path ))
-							htable->insert( path, lframe, sample, MRT_Unknown, count++ );
+							htable->insert( path, lframe, sample, MRT_NuCurve, count++ );
 						else
-							htable->insert( path, lframe, 0, MRT_Unknown, count++ );
+							htable->insert( path, lframe, 0, MRT_NuCurve, count++ );
 					}
 				}
 			}
@@ -4985,9 +4991,9 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 						if( renderCurve )
 						{
 							if( ( sample > 0 ) && isObjectMotionBlur( path ))
-								htable->insert(path, lframe, sample, MRT_Unknown,count++ );
+								htable->insert(path, lframe, sample, MRT_NuCurve,count++ );
 							else
-								htable->insert(path, lframe, 0, MRT_Unknown,count++ );
+								htable->insert(path, lframe, 0, MRT_NuCurve,count++ );
 						}
 					}
 				}
@@ -6915,7 +6921,9 @@ MStatus liqRibTranslator::objectBlock()
      // RiArchiveRecord( RI_COMMENT, " Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode->rib.delayedReadArchive.asChar(), ribNode->bound[0],ribNode->bound[3],ribNode->bound[1],ribNode->bound[4],ribNode->bound[2],ribNode->bound[5] );
      RiArchiveRecord( RI_VERBATIM, " Procedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ] \n", ribNode->rib.delayedReadArchive.asChar(), ribNode->bound[0],ribNode->bound[3],ribNode->bound[1],ribNode->bound[4],ribNode->bound[2],ribNode->bound[5] );
 
-	/* {
+	 // should be using the bounding box node - Alf
+
+	 /* {
         // this is a visual display of the archive's bounding box
         RiAttributeBegin();
         RtColor debug;
@@ -6949,64 +6957,68 @@ MStatus liqRibTranslator::objectBlock()
 	if( m_preShapeMel != "" )
 		MGlobal::executeCommand( m_preShapeMel );
 
-    if( !ribNode->ignoreShapes ) {
+	if( !ribNode->ignoreShapes )
+	{
+		// check to see if we are writing a curve to set the proper basis
+		if(	ribNode->object(0)->type == MRT_NuCurve
+			|| ribNode->object(0)->type == MRT_PfxHair
+			|| ribNode->object(0)->type == MRT_PfxTube
+			|| ribNode->object(0)->type == MRT_PfxLeaf
+			|| ribNode->object(0)->type == MRT_PfxPetal
+			|| ribNode->object(0)->type == MRT_Curves )
+		{
+			RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
+		}
 
-      // check to see if we are writing a curve to set the proper basis
-      if(    ribNode->object(0)->type == MRT_NuCurve
-           || ribNode->object(0)->type == MRT_PfxHair ) {
-        RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
-      } else if( ribNode->object(0)->type == MRT_PfxTube || ribNode->object(0)->type == MRT_PfxLeaf ||ribNode->object(0)->type == MRT_PfxPetal ) {
-        RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
-        //RiBasis( RiCatmullRomBasis, 1, RiCatmullRomBasis, 1 );
-	  }
+		bool doMotion( liqglo_doDef &&
+				ribNode->motion.deformationBlur &&
+				( ribNode->object(1) ) &&
+				( ribNode->object(0)->type != MRT_RibGen ) &&
+				//( ribNode->object(0)->type != MRT_Locator ) &&
+				( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) );
 
-      bool doMotion( liqglo_doDef &&
-          ribNode->motion.deformationBlur &&
-          ( ribNode->object(1) ) &&
-          ( ribNode->object(0)->type != MRT_RibGen ) &&
-          //( ribNode->object(0)->type != MRT_Locator ) &&
-          ( !liqglo_currentJob.isShadow || liqglo_currentJob.deepShadows ) );
+		if( doMotion )
+		{
+			// For each grain, open a new motion block...
+			for( unsigned i( 0 ); i < ribNode->object( 0 )->granularity(); i++ )
+			{
+				if( ribNode->object( 0 )->isNextObjectGrainAnimated() )
+				{
+					if(liqglo_relativeMotion)
+						RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
+					else
+						RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
 
-      if( doMotion )
-      {
-        // For each grain, open a new motion block...
-        for( unsigned i( 0 ); i < ribNode->object( 0 )->granularity(); i++ ) {
-          if( ribNode->object( 0 )->isNextObjectGrainAnimated() ) {
-            if(liqglo_relativeMotion)
-              RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimesOffsets );
-            else
-              RiMotionBeginV( liqglo_motionSamples, liqglo_sampleTimes );
+					for( unsigned msampleOn( 0 ); msampleOn < liqglo_motionSamples; msampleOn++ )
+						ribNode->object( msampleOn )->writeNextObjectGrain();
 
-            for ( unsigned msampleOn( 0 ); msampleOn < liqglo_motionSamples; msampleOn++ ) {
-              ribNode->object( msampleOn )->writeNextObjectGrain();
-            }
+					RiMotionEnd();
+				}
+				else
+					ribNode->object( 0 )->writeNextObjectGrain();
+			}
+		}
+		else
+	        ribNode->object( 0 )->writeObject();
 
-            RiMotionEnd();
-          } else {
-            ribNode->object( 0 )->writeNextObjectGrain();
-          }
-        }
-      } else {
-        ribNode->object( 0 )->writeObject();
-      }
 		// Alf: postShapeMel
 		prePostPlug = fnTransform.findPlug( "liqPostShapeMel" );
 		m_postShapeMel = prePostPlug.asString();
 		if( m_postShapeMel != "" )
 			MGlobal::executeCommand( m_postShapeMel );
 
-    } // else RiArchiveRecord( RI_COMMENT, " Shapes Ignored !!" );
+		} // else RiArchiveRecord( RI_COMMENT, " Shapes Ignored !!" );
 
+		RiAttributeEnd();
+	}
 
-    RiAttributeEnd();
-  }
+	while ( attributeDepth > 0 )
+	{
+		RiAttributeEnd();
+		attributeDepth--;
+	}
 
-  while ( attributeDepth > 0 ) {
-    RiAttributeEnd();
-    attributeDepth--;
-  }
-
-  return returnStatus;
+	return returnStatus;
 }
 
 /**

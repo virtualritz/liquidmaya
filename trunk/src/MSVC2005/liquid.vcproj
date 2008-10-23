@@ -1400,7 +1400,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="All renderers with generic RibLib Release|Win32"
+			Name="Generic RibLib Release|Win32"
 			OutputDirectory=".\../../bin/Generic/win32/Release/Objects"
 			IntermediateDirectory=".\../../bin/Generic/win32/Release/Objects"
 			ConfigurationType="2"
@@ -1436,7 +1436,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;PIXIE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -1462,7 +1462,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
-				OutputFile="../../bin/pixie/win32/liquid.mll"
+				OutputFile="../../bin/Generic/win32/liquid.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
@@ -1499,7 +1499,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="All renderers with generic RibLib Release|x64"
+			Name="Generic RibLib Release|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
@@ -1534,13 +1534,13 @@
 				AdditionalOptions="/Zm800 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION)/include,../../ribLib"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
+				AdditionalIncludeDirectories="../../include,$(MAYA_LOCATION_X64)/include,../../ribLib"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;GENERIC_RIBLIB;NDEBUG;WIN32;_WINDOWS;_USRDLL;_BOOL;ulong=unsigned long;uint=unsigned int;_WIN32;REQUIRE_IOSTREAM"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="true"
-				PrecompiledHeaderFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pch"
+				PrecompiledHeaderFile=".\../../bin/Generic/win32/Release/Objects/liquid.pch"
 				AssemblerListingLocation=".\../../bin/Generic/win32/Release/Objects/"
 				ObjectFile=".\../../bin/Generic/win32/Release/Objects/"
 				ProgramDataBaseFileName=".\../../bin/Generic/win32/Release/Objects/"
@@ -1561,13 +1561,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="RILIB.lib zdll.lib image.lib OpenMayaFX.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib glu32.lib opengl32.lib netapi32.lib ws2_32.lib"
-				OutputFile="../../bin/Generic/win32/Release/liquid.mll"
+				OutputFile="../../bin/Generic/win64/liquid.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION)/lib,../../bin/win32lib"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION_X64)/lib,../../bin/win64lib"
 				IgnoreDefaultLibraryNames=""
-				ProgramDatabaseFile=".\../../bin/Pixie/win32/Release/Objects/liquid.pdb"
-				ImportLibrary=".\../../bin/Pixie/win32/Release/Objects/liquid.lib"
+				ProgramDatabaseFile=".\../../bin/Generic/win32/Release/Objects/liquid.pdb"
+				ImportLibrary=".\../../bin/Generic/win32/Release/Objects/liquid.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -1931,7 +1931,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1940,7 +1940,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1966,6 +1966,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\liqBoundingBoxLocator.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\liqBucket.cpp"
@@ -2097,7 +2101,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2106,7 +2110,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2263,7 +2267,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2272,7 +2276,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2429,7 +2433,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2438,7 +2442,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2595,7 +2599,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2604,7 +2608,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2761,7 +2765,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2770,7 +2774,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2927,7 +2931,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2936,7 +2940,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3093,7 +3097,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3102,7 +3106,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3259,7 +3263,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3268,7 +3272,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3425,7 +3429,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3434,7 +3438,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3591,7 +3595,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3600,7 +3604,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3757,7 +3761,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3766,7 +3770,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3923,7 +3927,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3932,7 +3936,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4089,7 +4093,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4098,7 +4102,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4255,7 +4259,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4264,7 +4268,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4421,7 +4425,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4430,7 +4434,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4587,7 +4591,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4596,7 +4600,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4753,7 +4757,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4762,7 +4766,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4919,7 +4923,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4928,7 +4932,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5085,7 +5089,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5094,7 +5098,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5251,7 +5255,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5260,7 +5264,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5286,6 +5290,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\liqRibCurvesData.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\liqRibData.cpp"
@@ -5417,7 +5425,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5426,7 +5434,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5583,7 +5591,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5592,7 +5600,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5749,7 +5757,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5758,7 +5766,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5919,7 +5927,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5928,7 +5936,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6085,7 +6093,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6094,7 +6102,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6251,7 +6259,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6260,7 +6268,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6417,7 +6425,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6426,7 +6434,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6583,7 +6591,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6592,7 +6600,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6749,7 +6757,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6758,7 +6766,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6915,7 +6923,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6924,7 +6932,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7081,7 +7089,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7090,7 +7098,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7251,7 +7259,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7260,7 +7268,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7417,7 +7425,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7426,7 +7434,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7587,7 +7595,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7596,7 +7604,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7753,7 +7761,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7762,7 +7770,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7919,7 +7927,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -7928,7 +7936,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8089,7 +8097,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8098,7 +8106,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8255,7 +8263,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8264,7 +8272,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8421,7 +8429,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8430,7 +8438,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8591,7 +8599,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8600,7 +8608,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8757,7 +8765,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8766,7 +8774,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8923,7 +8931,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|Win32"
+					Name="Generic RibLib Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8932,7 +8940,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="All renderers with generic RibLib Release|x64"
+					Name="Generic RibLib Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -8966,6 +8974,10 @@
 			>
 			<File
 				RelativePath="..\..\include\liqAttachPrefAttribute.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\liqBoundingBoxLocator.h"
 				>
 			</File>
 			<File
@@ -9021,6 +9033,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\liqMayaNodeIds.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\liqMayaRenderView.h"
 				>
 			</File>
@@ -9062,6 +9078,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\liqRibCoordData.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\liqRibCurvesData.h"
 				>
 			</File>
 			<File
