@@ -141,13 +141,16 @@ global proc liquidViewLastRenderScript()
 }
 
 // This delete's any references to liquid in the scene.
-global proc liquidCleanup()
+global proc liquidCleanup( int $showDialog )
 {
-  string $yesno = `confirmDialog -title "Confirm"
+	string $yesno = "Yes";
+	if( $showDialog )
+	{
+		$yesno = `confirmDialog -title "Confirm"
               -message ( "Are you sure you want to remove all references\nto Liquid in this Maya scene?" )
               -button "Yes" -button "No" -defaultButton "No"
               -cancelButton "No" -dismissString "No"`;
-
+	}
   if ( $yesno == "Yes" ) {
     // delete the render globals
     if ( `objExists liquidGlobals` ) {

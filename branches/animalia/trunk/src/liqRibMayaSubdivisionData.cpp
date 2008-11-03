@@ -1,3 +1,4 @@
+
 /*
 **
 ** The contents of this file are subject to the Mozilla Public License Version
@@ -28,7 +29,7 @@
 
 /* ______________________________________________________________________
 **
-** Liquid Rib Maya Style Subdivision Data Source
+** Liquid Rib Subdivision Mesh Data Source
 ** ______________________________________________________________________
 */
 
@@ -39,12 +40,21 @@ extern "C" {
 }
 
 // Maya headers
-#include <maya/MItMeshPolygon.h>
-#include <maya/MDoubleArray.h>
-#include <maya/MFnSubd.h>
+#include <maya/MPlug.h>
+#include <maya/MPlugArray.h>
+#include <maya/MItSubdFace.h>
+#include <maya/MItSubdEdge.h>
 #include <maya/MFnSubdNames.h>
+#include <maya/MUint64Array.h>
+
+#include <maya/MFnSubd.h>
+#include <maya/MFnSet.h>
+#include <maya/MGlobal.h>
+#include <maya/MSelectionList.h>
+#include <maya/MUintArray.h>
 
 // Liquid headers
+#include <liquid.h>
 #include <liqGlobalHelpers.h>
 #include <liqRibMayaSubdivisionData.h>
 
@@ -52,380 +62,331 @@ extern "C" {
 #include <boost/scoped_array.hpp>
 #include <boost/shared_array.hpp>
 
-#if defined(AIR) || defined(DELIGHT)
-  #define PERPIECE rFaceVertex
-#else
-  #define PERPIECE rFaceVarying
-#endif
 
-using namespace std;
 using namespace boost;
 
 extern int debugMode;
 extern bool liqglo_outputMeshUVs;
 
-typedef std::map<MUint64, int> IDMAP;
-
-
-/** Create a RIB compatible subdivision surface representation
- * from Maya's version of subds.
+/** Create a RIB compatible subdivision surface representation using a Maya polygon mesh.
  */
-liqRibMayaSubdivisionData::liqRibMayaSubdivisionData( MObject mesh )
-
-  : npolys(0)
-  , nverts()
-  , verts()
-  , vertexParam()
-  , stTexCordParam()
-  , numtexCords(0)
-  , hasCreases(false)
-  , hasCorners(false)
+liqRibMayaSubdivisionData::liqRibMayaSubdivisionData( MObject subd )
+:	numFaces( 0 ),
+	numPoints ( 0 ),
+	nverts(),
+	verts(),
+	vertexParam( NULL ),
+	interpolateBoundary( 0 ),
+	uvDetail( rFaceVarying ),
+	trueFacevarying( false )
 {
-  LIQDEBUGPRINTF( "-> creating maya style subdivision surface\n" );
-  MStatus status;
-  MFnSubd fnSurf( mesh );
-  name = fnSurf.name();
+	LIQDEBUGPRINTF( "-> creating subdivision surface\n" );
+	MFnSubd fnSubd( subd );
 
-  int level = 0;
+	name = fnSubd.name();
+	longName = fnSubd.fullPathName();
 
+	checkExtraTags( subd );
 
-  ////////////
-  // Initialize the nverts and vertices array
-  npolys = fnSurf.polygonCount( level, &status );
-  nverts.reserve( npolys );
+	int level = 0;
+	numPoints = fnSubd.vertexCount( level );
+	numFaces = fnSubd.polygonCount( level );
 
-  IDMAP idmap;
-  //vector< RtInt > polyvertsIds;
-  MUint64Array children;
-  for( unsigned u = 0; u < npolys; u++ ) {
-    MUint64 index;
-    MFnSubdNames::toMUint64( index, u, 0, 0, 0, 0 );
-    fnSurf.polygonVertices( index, children );
-    nverts.push_back( children.length() );
-    for( unsigned i = 0; i < children.length(); i++ ) {
-      //append vertIds to the 64 bit int array
-      polyvertsIds.push_back( children[i] );
-      // append the verts to a hash
-      idmap[children[i]] = 0;
-    }
-    children.clear();
-  }
+	MItSubdFace itFace( subd );
+	unsigned numFaceVertices( 0 );
+	for( itFace.reset(); !itFace.isDone(); itFace.next() )
+		numFaceVertices += fnSubd.polygonVertexCount( itFace.index() );
 
-  // de 64bit-ize everything
+	liqTokenPointer pointsPointerPair;
+	liqTokenPointer pFaceVertexSPointer;
+	liqTokenPointer pFaceVertexTPointer;
 
+	// Allocate memory and tokens
+	nverts = shared_array< RtInt >( new RtInt[ numFaces ] );
+	verts = shared_array< RtInt >( new RtInt[ numFaceVertices ] );
 
-  IDMAP::iterator mi;
-  {
-  unsigned i( 0 );
-  for( mi = idmap.begin(); mi != idmap.end(); ++mi ) {
-    mi->second = i;
-    i++;
-  }
-  }
-  verts = shared_array< RtInt >( new RtInt[ polyvertsIds.size() ] );
-  for( unsigned i = 0; i < polyvertsIds.size(); i++ ) {
-    verts[i] = idmap[polyvertsIds[i]];
-  }
-  npolys = nverts.size();
-  //nverts = shared_array< RtInt >( new RtInt[ nvertsArray.length() ] );
-  //nvertsArray.get( nverts.get() );
+	pointsPointerPair.set( "P", rPoint, numPoints );
+	pointsPointerPair.setDetailType( rVertex );
 
-  // End nverts and vertices array
-  ////////////
+	std::vector<liqTokenPointer> UVSetsArray;
+	UVSetsArray.reserve( 1 );
 
-  ////////////
-  // Add vertex positions
+	liqTokenPointer pFaceVertexPointerPair;
 
-  // Allocate memory for arrays
-  // Vertices of the mesh or control cage
-  liqTokenPointer vertexPointerPair;
-  vertexPointerPair.set( "P", rPoint, idmap.size() );
-  vertexParam = vertexPointerPair.getTokenFloatArray();
-  vertexPointerPair.setDetailType( rVertex );
-  totalNumOfVertices = idmap.size();
-  MPoint pt;
-  for( mi = idmap.begin(); mi != idmap.end(); ++mi ) {
-    fnSurf.vertexPositionGet( mi->first, pt, MSpace::kObject );
-    vertexPointerPair.setTokenFloat( mi->second, pt.x, pt.y, pt.z );
-  }
+	pFaceVertexPointerPair.set( "st", rFloat, numFaceVertices, 2 );
+	pFaceVertexPointerPair.setDetailType( uvDetail );
 
+	UVSetsArray.push_back( pFaceVertexPointerPair );
 
-  LIQDEBUGPRINTF( "-> adding vertex token\n" );
-  tokenPointerArray.push_back( vertexPointerPair );
-  // End Vertex positions
-  ////////////
+	if( liqglo_outputMeshUVs )
+	{
+		// Match MTOR, which also outputs face-varying STs as well for some reason - Paul
+		// not anymore - Philippe
+		pFaceVertexSPointer.set( "u", rFloat, numFaceVertices );
+		pFaceVertexSPointer.setDetailType( uvDetail );
 
-  ////////////
-  // Add texture coordinates
-  // Aqsis apparently does not support face/vertex format uv's, and I dont
-  // have prman to render against.  Someone will have to patch this to support
-  // the face/vertex uv's
-  // Oh so dirty.  Must wash my hands.  At least there are no mem leaks here
+		pFaceVertexTPointer.set( "v", rFloat, numFaceVertices );
+		pFaceVertexTPointer.setDetailType( uvDetail );
+	}
 
-  liqTokenPointer pFaceVertexSPointer;
-  liqTokenPointer pFaceVertexTPointer;
+	vertexParam = pointsPointerPair.getTokenFloatArray();
 
-#ifndef AQSIS // face/vertex format, which is desireable
-  MDoubleArray uVal, vVal;
-  MDoubleArray uMap, vMap;
-  for( unsigned ii( 0 ); ii < npolys; ii++ ) {
-    MUint64 index;
-    MFnSubdNames::toMUint64( index, ii, 0, 0, 0, 0 );
-    fnSurf.polygonGetVertexUVs( index, uVal, vVal );
-    for( unsigned j( 0 ); j < uVal.length(); j++ ) {
-      uMap.append( uVal[j] );
-      vMap.append( 1 - vVal[j] );
-    }
-    uVal.clear(); vVal.clear();
-  }
+	// Read the subd from Maya
+	unsigned count;
+	unsigned face( 0 );
+	MPoint point;
+	unsigned faceVertex( 0 );
+	unsigned vertex;
+	MUint64Array vertIds;
+	MFnSubdNames subNames;
+	MDoubleArray S, T;
+	for ( itFace.reset(); !itFace.isDone(); itFace.next() )
+	{
+		MUint64 id = itFace.index();
+		fnSubd.polygonVertices( id, vertIds );
+		count = vertIds.length();
+		nverts[face] = count;
+		fnSubd.polygonGetVertexUVs( id, S, T );
 
-  liqTokenPointer stTexCordPair;
-  stTexCordPair.set( "st", rFloat, uMap.length(), 2 );
-  stTexCordPair.setDetailType( PERPIECE );
+		for( unsigned i( 0 ); i < count; i++ )
+		{
+			
+			vertex = fnSubd.vertexBaseIndexFromVertexId( vertIds[i] );
+			verts[faceVertex] = vertex;
+			fnSubd.vertexPositionGet( vertIds[i], point, MSpace::kObject );
+			pointsPointerPair.setTokenFloat( vertex, point.x, point.y, point.z );
 
-  if( liqglo_outputMeshUVs ) {
-    // Match MTOR, which also outputs face-varying STs as well for some reason - Paul
-    // There should be a flag in the globals to disable/enable this as it creates
-    // bloated RIBs for no reason if you're not concerned about MtoR - Moritz
-    pFaceVertexSPointer.set( "u", rFloat, uMap.length() );
-    pFaceVertexSPointer.setDetailType( PERPIECE );
+			if( UVSetsArray.size() )
+			{
+				UVSetsArray[0].setTokenFloat( faceVertex, 0, S[i] );
+				UVSetsArray[0].setTokenFloat( faceVertex, 1, T[i] );
 
-    pFaceVertexTPointer.set( "v", rFloat, uMap.length() );
-    pFaceVertexTPointer.setDetailType( PERPIECE );
-  }
+				if( liqglo_outputMeshUVs )
+				{
+					// Match MTOR, which always outputs face-varying STs as well for some reason - Paul
+					pFaceVertexSPointer.setTokenFloat( faceVertex, S[i] );
+					pFaceVertexTPointer.setTokenFloat( faceVertex, T[i] );
+				}
+			}
+			++faceVertex;
+		}
+		++face;
+		vertIds.clear();
+		S.clear();
+		T.clear();
+	}
 
-  stTexCordParam = stTexCordPair.getTokenFloatArray();
-  for( unsigned k = 0; k < uMap.length(); k++ ) {
-    stTexCordPair.setTokenFloat( k, 0, uMap[ k ] );
-    stTexCordPair.setTokenFloat( k, 1, vMap[ k ] );
+	// Add tokens to array and clean up after
+	tokenPointerArray.push_back( pointsPointerPair );
 
-    if( liqglo_outputMeshUVs ) {
-      pFaceVertexSPointer.setTokenFloat( k, uMap[ k ] );
-      pFaceVertexTPointer.setTokenFloat( k, vMap[ k ] );
-    }
-  }
-#else // #if defined(PRMAN) || defined(DELIGHT)
-  // some renderers don't comprehend the rFaceVarying flag, other is best
-  // this method just has one uv cord for each vertex
-  MDoubleArray uVal; MDoubleArray vVal;
-  typedef std::map<MUint64, double> doubleMap;
-  doubleMap sMap, tMap;
-  children.clear();
-  for( unsigned uu = 0; uu < npolys; uu++ ) {
-    MUint64 index;
-    MFnSubdNames::toMUint64( index, uu, 0, 0, 0, 0 );
-    fnSurf.polygonGetVertexUVs( index, uVal, vVal );
-    fnSurf.polygonVertices( index, children );
-    for( unsigned j = 0; j < children.length(); j++ ) {
-      sMap[children[j]] = uVal[j];
-      tMap[children[j]] = 1 - vVal[j];
-    }
-    uVal.clear(); vVal.clear(); children.clear();
-  }
-  liqTokenPointer stTexCordPair;
-  stTexCordPair.set( "st", rFloat, sMap.size(), 2 );
-  stTexCordPair.setDetailType( rVertex );
+	if( UVSetsArray.size() )
+		tokenPointerArray.insert( tokenPointerArray.end(), UVSetsArray.begin(), UVSetsArray.end() );
+	
+	if( liqglo_outputMeshUVs )
+	{
+		assert( !pFaceVertexSPointer );
+		tokenPointerArray.push_back( pFaceVertexSPointer );
+		assert( !pFaceVertexTPointer );
+		tokenPointerArray.push_back( pFaceVertexTPointer );
+	}
 
-  if( liqglo_outputMeshUVs ) {
-    // Match MTOR, which also outputs face-varying STs as well for some reason - Paul
-    // There should be a flag in the globals to disable/enable this as it creates
-    // bloated RIBs for no reason if you're not concerned about MtoR - Moritz
-    pFaceVertexSPointer.set( "u", rFloat, sMap.size() );
-    pFaceVertexSPointer.setDetailType( rVertex );
-    pFaceVertexTPointer.set( "v", rFloat, tMap.size() );
-    pFaceVertexTPointer.setDetailType( rVertex );
-  }
-
-  numtexCords = sMap.size() * 2;
-  stTexCordParam = stTexCordPair.getTokenFloatArray();
-  doubleMap::iterator di1; doubleMap::iterator di2;
-  for( di1 = sMap.begin(), di2 = tMap.begin();
-       di1 != sMap.end(); ++di1, ++di2 ) {
-    stTexCordPair.setTokenFloat( idmap[di1->first], 0, di1->second );
-    stTexCordPair.setTokenFloat( idmap[di2->first], 1, di2->second );
-
-    if( liqglo_outputMeshUVs ) {
-      pFaceVertexSPointer.setTokenFloat( idmap[di1->first], di1->second );
-      pFaceVertexTPointer.setTokenFloat( idmap[di2->first], di2->second );
-    }
-  }
-#endif // #ifndef AQSIS
-
-  tokenPointerArray.push_back( stTexCordPair );
-
-  if( pFaceVertexSPointer ) {
-    tokenPointerArray.push_back( pFaceVertexSPointer );
-  }
-
-  if( pFaceVertexTPointer ) {
-    tokenPointerArray.push_back( pFaceVertexTPointer );
-  }
-  // End Texture coordinates
-  ////////////
-
-  ////////////
-  // Add vertex creases and corners
-  MUint64Array vertCreases; MUint64Array edgeCreases;
-  fnSurf.creasesGetAll( vertCreases, edgeCreases );
-  creases.clear();
-  if( edgeCreases.length() > 0 ) {
-    hasCreases = true;
-    MUint64 v1; MUint64 v2;
-    for( unsigned i = 0; i < edgeCreases.length(); i++ ) {
-      if( MFnSubdNames::level( edgeCreases[i] ) > 0 ) continue;
-      fnSurf.edgeVertices( edgeCreases[i], v1, v2 );
-      creases.append( idmap[v1] );
-      creases.append( idmap[v2] );
-    }
-  }
-  corners.clear();
-  if( vertCreases.length() > 0 ) {
-    hasCorners = true;
-    for( unsigned i = 0; i < vertCreases.length(); i++ ) {
-      if( MFnSubdNames::level( vertCreases[i] ) > 0 ) continue;
-      corners.append( idmap[vertCreases[i]] );
-    }
-  }
-  // End Vertex Creases
-  ////////////
-
-  addAdditionalSurfaceParameters( mesh );
-
-  LIQDEBUGPRINTF( "-> done creating maya style subdivision surface\n" );
+	addAdditionalSurfaceParameters( subd );
 }
 
 
+/** Write the RIB for this mesh.
+ */
 void liqRibMayaSubdivisionData::write()
-// Description: Write the RIB for this mesh
 {
-  if ( debugMode ) { printf("-> writing maya subdivision surface\n"); }
+	LIQDEBUGPRINTF( "-> writing subdivision surface\n" );
 
-  unsigned numTokens( tokenPointerArray.size() );
-  scoped_array< RtToken > tokenArray( new RtToken[ numTokens ] );
-  scoped_array< RtPointer > pointerArray( new RtPointer[ numTokens ] );
-  assignTokenArraysV( tokenPointerArray, tokenArray.get(), pointerArray.get() );
+	unsigned numTokens( tokenPointerArray.size() );
+	scoped_array< RtToken > tokenArray( new RtToken[ numTokens ] );
+	scoped_array< RtPointer > pointerArray( new RtPointer[ numTokens ] );
+	assignTokenArraysV( tokenPointerArray, tokenArray.get(), pointerArray.get() );
 
-  RtInt ntags( 1 );
-  if( hasCreases ) ntags += ( creases.length() / 2 );
-  if( hasCorners ) ntags++;
-  scoped_array< RtToken > tags( new RtToken[ ntags + 1 ] );
-  tags[ntags] = RI_NULL;
-  tags[0] = "interpolateboundary";
-  scoped_array< RtInt > nargs( new RtInt[ ntags * 2 ] );
-  nargs[0] = 0;
-  nargs[1] = 0;
-  // Can't use scoped_array for the next two since we want to assign to them.
-  // shared_array is overkill, so use a vector and resize it as required
-  vector< RtInt > intargs;
-  vector< RtFloat > floatargs;
-  if( hasCreases && hasCorners ) {
-    int k;
-    int numCreases = creases.length() / 2;
-    for( k = 1; k <= numCreases; k++ ) {
-      tags[k] = "crease";
-      nargs[k*2] = 2;
-      nargs[(k*2)+1] = 1;
-    }
-    tags[k] = "corner";
-    nargs[k*2] = corners.length();
-    nargs[(k*2)+1] = 1;
-    intargs.resize( creases.length() + corners.length() );
-    for( int i = 0; i < creases.length(); i++ ) {
-      intargs[i] = creases[i];
-    }
-    for( int j = 0; j < corners.length(); j++ ) {
-      intargs[j+creases.length()] = corners[j];
-    }
-    floatargs.resize( numCreases + 1 );
-    for( k = 0; k <= numCreases; k++ ) {
-      floatargs[k] = 6; // RI_INFINITY;
-    }
-  }
-  else if( hasCreases && !hasCorners ) {
-    int k;
-    int numCreases = creases.length() / 2;
-    for( k = 1; k <= numCreases; k++ ) {
-      tags[k] = "crease";
-      nargs[k*2] = 2;
-      nargs[(k*2)+1] = 1;
-    }
-    intargs.resize( creases.length() );
-    for( int i = 0; i < creases.length(); i++ ) {
-      intargs[i] = creases[i];
-    }
-    floatargs.resize( numCreases );
-    for( k = 0; k < numCreases; k++ ) {
-      floatargs[k] = 6; // RI_INFINITY;
-    }
-  }
-  else if( hasCorners && !hasCreases ) {
-    tags[1] = "corner";
-    nargs[2] = corners.length();
-    nargs[3] = 1;
-    intargs.resize( corners.length() );
-    for( int i = 0; i < corners.length(); i++ ) {
-      intargs[i] = corners[i];
-    }
-    floatargs.resize( 1 );
-    floatargs[0] = 6; // RI_INFINITY;
-  }
-
-  RiSubdivisionMeshV( "catmull-clark",
-                      npolys,
-                      &nverts[ 0 ],
-                      &polyvertsIds[ 0 ], //verts.get(),
-                      ntags, tags.get(),
-                      nargs.get(),
-                      intargs.size() ? &intargs[ 0 ] : NULL,
-                      floatargs.size() ? &floatargs[ 0 ] : NULL,
+	RiSubdivisionMeshV( "catmull-clark", numFaces, nverts.get(), verts.get(),
+                      v_tags.size(), v_tags.size() ? &v_tags[0] : NULL,
+                      v_nargs.size() ? &v_nargs[0] : NULL,
+                      v_intargs.size() ? &v_intargs[0] : NULL,
+                      v_floatargs.size() ? &v_floatargs[0] : NULL,
                       numTokens, tokenArray.get(), pointerArray.get() );
 }
 
+/** Compare this mesh to the other for the purpose of determining if its animated
+ */
 bool liqRibMayaSubdivisionData::compare( const liqRibData & otherObj ) const
-// Description: Compare this mesh to the other for the purpose of determining if its animated
 {
-  if ( debugMode ) { printf("-> comparing maya subdiv\n"); }
-  if ( otherObj.type() != MRT_MayaSubdivision ) return false;
-  const liqRibMayaSubdivisionData& other( ( liqRibMayaSubdivisionData& )otherObj );
-
-  if ( npolys != other.npolys ) return false;
-  if( hasCreases != other.hasCreases ) return false;
-  if( hasCorners != other.hasCorners ) return false;
-
   unsigned i;
-  unsigned totalPolyVerts = 0;
-  for ( i = 0; i < npolys; ++i ) {
-    if ( nverts[i] != other.nverts[i] ) return false;
-    totalPolyVerts += nverts[i];
+  unsigned numFaceVertices = 0;
+
+  LIQDEBUGPRINTF( "-> comparing mesh\n" );
+  if( otherObj.type() != MRT_Subdivision ) return false;
+  const liqRibMayaSubdivisionData & other = (liqRibMayaSubdivisionData&)otherObj;
+
+  if( numFaces != other.numFaces ) return false;
+  if( numPoints != other.numPoints ) return false;
+
+  for ( i = 0; i < numFaces; ++i ) {
+    if( nverts[i] != other.nverts[i] ) return false;
+    numFaceVertices += nverts[i];
   }
 
-  for ( i = 0; i < totalPolyVerts; ++i ) {
-    if ( verts[i] != other.verts[i] ) return false;
+  for ( i = 0; i < numFaceVertices; ++i ) {
+    if( verts[i] != other.verts[i] ) return false;
   }
 
-  for ( i = 0; i < totalNumOfVertices; ++i ) {
-    unsigned a = i * 3;
-    unsigned b = a + 1;
-    unsigned c = a + 2;
-    if ( !equiv( vertexParam[a], other.vertexParam[a] ) ||
-         !equiv( vertexParam[b], other.vertexParam[b] ) ||
-         !equiv( vertexParam[c], other.vertexParam[c] ) )
+  for ( i = 0; i < numPoints; ++i ) {
+    const unsigned a = i * 3;
+    const unsigned b = a + 1;
+    const unsigned c = a + 2;
+    if( !equiv( vertexParam[a], other.vertexParam[a] ) ||
+      !equiv( vertexParam[b], other.vertexParam[b] ) ||
+      !equiv( vertexParam[c], other.vertexParam[c] ) )
     {
       return false;
     }
   }
 
-  if( numtexCords != other.numtexCords ) return false;
-  for( i = 0; i < numtexCords; ++i ) {
-    if( !equiv( stTexCordParam[i], other.stTexCordParam[i] ) ) return false;
-  }
-
   return true;
 }
 
+/** Return the geometry type.
+ */
 ObjectType liqRibMayaSubdivisionData::type() const
-// Description: return the geometry type
 {
-  if ( debugMode ) { printf("-> returning subdivision surface type\n"); }
+  LIQDEBUGPRINTF( "-> returning subdivision surface type\n" );
   return MRT_MayaSubdivision;
+}
+
+void liqRibMayaSubdivisionData::checkExtraTags( MObject &subd )
+{
+	MStatus status = MS::kSuccess;
+	MFnSubd fnSubd( subd );
+
+	// this looks redundant but there is no other way to determine
+	// if the object has creases at all
+	MUint64Array vertexIds, edgeIds;
+	status = fnSubd.creasesGetAll( vertexIds, edgeIds );
+	if( status == MS::kSuccess )
+	{
+		if( vertexIds.length() )
+			addExtraTags( subd, 0, TAG_CORNER );
+		if( edgeIds.length() )
+			addExtraTags( subd, 0, TAG_CREASE );
+	}
+
+	// set defaults
+	interpolateBoundary = 2;
+	uvDetail = rFaceVarying;
+	trueFacevarying = true;
+
+	MPlug interpolateBoundaryPlug = fnSubd.findPlug( "liqSubdivInterpolateBoundary", &status );
+	if( status == MS::kSuccess )
+		interpolateBoundaryPlug.getValue( interpolateBoundary );
+
+
+	MPlug liqSubdivUVInterpolationPlug = fnSubd.findPlug( "liqSubdivUVInterpolation", &status );
+	if( status == MS::kSuccess )
+	{
+		int liqSubdivUVInterpolation;
+		liqSubdivUVInterpolationPlug.getValue( liqSubdivUVInterpolation );
+		switch( liqSubdivUVInterpolation )
+		{
+			case 0: // true facevarying
+			trueFacevarying = true;
+			case 1: //
+			uvDetail = rFaceVarying;
+			break;
+			case 2:
+			uvDetail = rFaceVertex;
+			break;
+		}
+	}
+
+	if( interpolateBoundary )
+		addExtraTags( subd, interpolateBoundary, TAG_BOUNDARY );
+
+	if( trueFacevarying )
+		addExtraTags( subd, 0, TAG_FACEVARYINGBOUNDARY );
+}
+
+void liqRibMayaSubdivisionData::addExtraTags( MObject &subd, float extraTagValue, SBD_EXTRA_TAG extraTag )
+{
+	MStatus status;
+	MFnSubd fnSubd( subd );
+	MFnSubdNames subNames;
+	MUintArray ids;
+	MDoubleArray creaseData;
+
+	if( TAG_BOUNDARY == extraTag )
+	{
+		v_tags.push_back( "interpolateboundary" );
+		v_nargs.push_back( 1 );		// 0 intargs
+		v_nargs.push_back( 0 );		// 0 floatargs
+		v_intargs.push_back( extraTagValue );
+	}
+
+	if( TAG_FACEVARYINGBOUNDARY == extraTag )
+	{
+		v_tags.push_back( "facevaryinginterpolateboundary" );
+		v_nargs.push_back( 1 );		// 1 intargs
+		v_nargs.push_back( 0 );		// 0 floatargs
+		v_intargs.push_back( extraTagValue );
+	}
+
+	if( TAG_CREASE == extraTag )
+	{
+		MUint64Array vertexIds, edgeIds;
+		status = fnSubd.creasesGetAll( vertexIds, edgeIds );
+		if( status == MS::kSuccess )
+		{
+			MUint64 vert1, vert2;
+			for( unsigned i( 0 ); i < edgeIds.length(); i++ )
+			{
+				fnSubd.edgeVertices( edgeIds[i], vert1, vert2 );
+				int baseVert1 = fnSubd.vertexBaseIndexFromVertexId( vert1, &status );
+				// only base edges
+				if( status != MS::kSuccess )
+					continue;
+
+				int baseVert2 = fnSubd.vertexBaseIndexFromVertexId( vert2, &status );
+				// only base edges
+				if( status != MS::kSuccess )
+					continue;
+				
+				MGlobal::displayInfo( MString( "BASE: " ) + baseVert1 + " " + baseVert2 + " " + i );
+				v_tags.push_back( "crease" );
+				v_nargs.push_back( 2 );
+				v_nargs.push_back( 1 );
+				v_intargs.push_back( baseVert1 );
+				v_intargs.push_back( baseVert2 );
+				v_floatargs.push_back( 7 );
+			}
+		}
+	}
+
+	if( TAG_CORNER == extraTag )
+	{
+		MUint64Array vertexIds, edgeIds;
+		status = fnSubd.creasesGetAll( vertexIds, edgeIds );
+		if( status == MS::kSuccess )
+		{
+			for( unsigned i( 0 ); i < vertexIds.length(); i++ )
+			{
+				int baseId = fnSubd.vertexBaseIndexFromVertexId( vertexIds[i], &status );
+
+				// only base verts
+				if( status != MS::kSuccess )
+					continue;
+
+				v_tags.push_back( "corner" );
+				v_nargs.push_back( 1 );
+				v_nargs.push_back( 1 );
+				v_intargs.push_back( baseId );
+				v_floatargs.push_back( 7 );
+			}
+		}
+
+	}
 }

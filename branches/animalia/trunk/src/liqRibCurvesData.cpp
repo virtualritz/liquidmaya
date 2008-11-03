@@ -59,6 +59,7 @@ extern "C" {
 
 using namespace boost;
 extern int debugMode;
+extern bool liqglo_renderAllCurves;
 
 // Create a RIB compatible representation of a Maya nurbs curve group.
 
@@ -69,9 +70,9 @@ liqRibCurvesData::liqRibCurvesData( MObject curveGroup )
 {
 	LIQDEBUGPRINTF( "-> creating nurbs curve group\n" );
 
-	MFnDagNode fnDag( curveGroup );
-	MFnDagNode fnTrans( fnDag.parent( 0 ) );
 	MStatus status( MS::kSuccess );
+	MFnDagNode fnDag( curveGroup, &status );
+	MFnDagNode fnTrans( fnDag.parent( 0 ) );
 
 	MSelectionList groupList; 
 	groupList.add( fnTrans.partialPathName() );
@@ -102,7 +103,11 @@ liqRibCurvesData::liqRibCurvesData( MObject curveGroup )
 		}
 	}
 
-	ncurves = curveObj.length();
+	if( liqglo_renderAllCurves )
+		ncurves = curveObj.length();
+	else
+		ncurves = 0;
+
 	if( !ncurves )
 		return;
 

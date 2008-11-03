@@ -171,7 +171,8 @@ MString      liqglo_currentNodeName;
 MString      liqglo_currentNodeShortName;
 
 bool         liqglo_useMtorSubdiv;  // use mtor subdiv attributes
-bool         liqglo_outputMayaPolyCreases;  // use mtor subdiv attributes
+bool         liqglo_outputMayaPolyCreases;
+bool         liqglo_renderAllCurves;
 HiderType    liqglo_hider;
 
 // Kept global for raytracing
@@ -466,7 +467,7 @@ liqRibTranslator::liqRibTranslator()
   m_ignoreSurfaces = false;
   m_ignoreDisplacements = false;
   m_ignoreVolumes = false;
-  m_renderAllCurves = false;
+//  m_renderAllCurves = false;
   m_renderSelected = false;
   m_exportReadArchive = false;
   useNetRman = false;
@@ -653,6 +654,7 @@ liqRibTranslator::liqRibTranslator()
 
   liqglo_useMtorSubdiv = false;
   liqglo_outputMayaPolyCreases = false;
+  liqglo_renderAllCurves = false;
   liqglo_hider = htHidden;
 
   liqglo_shaderPath = "&:@:.:~:rmanshader";
@@ -848,7 +850,7 @@ MStatus liqRibTranslator::liquidDoArgs( MArgList args )
       m_exportReadArchive = true;
     } else if((arg == "-acv") || (arg == "-allCurves")) {
       LIQCHECKSTATUS(status, "error in -allCurves parameter" );
-      m_renderAllCurves = true;
+      liqglo_renderAllCurves = true;
     } else if((arg == "-tif") || (arg == "-tiff")) {
       LIQCHECKSTATUS(status, "error in -tiff parameter");
       outFormat = "tiff";
@@ -1945,7 +1947,7 @@ void liqRibTranslator::liquidReadGlobals()
   if( gStatus == MS::kSuccess ) gPlug.getValue( remoteRender );
   gStatus.clear();
   gPlug = rGlobalNode.findPlug( "renderAllCurves", &gStatus );
-  if( gStatus == MS::kSuccess ) gPlug.getValue( m_renderAllCurves );
+  if( gStatus == MS::kSuccess ) gPlug.getValue( liqglo_renderAllCurves );
   gStatus.clear();
   gPlug = rGlobalNode.findPlug( "illuminateByDefault", &gStatus );
   if( gStatus == MS::kSuccess ) gPlug.getValue( m_illuminateByDefault );
@@ -4862,7 +4864,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 			{
 				MStatus plugStatus;
 				MPlug renderCurvePlug = dagNode.findPlug( "liquidCurve", &plugStatus );
-				if( m_renderAllCurves || ( plugStatus == MS::kSuccess ) )
+				if( liqglo_renderAllCurves && ( plugStatus == MS::kSuccess ) )
 				{
 					bool renderCurve( false );
 					renderCurvePlug.getValue( renderCurve );
@@ -4984,7 +4986,7 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 				{
 					MStatus plugStatus;
 					MPlug renderCurvePlug = dagNode.findPlug( "liquidCurve", &plugStatus );
-					if( m_renderAllCurves || ( plugStatus == MS::kSuccess ) )
+					if( liqglo_renderAllCurves && ( plugStatus == MS::kSuccess ) )
 					{
 						bool renderCurve = false;
 						renderCurvePlug.getValue( renderCurve );

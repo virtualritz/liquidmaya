@@ -169,7 +169,7 @@ global proc liquidmayaSetCommonGlobalValue( string $global, string $value )
 global proc liquidRenderLogoCallback()
 {
   string $url = `getenv "LIQUIDHELP"`;
-  if ( $url == "" ) $url = "http://liquidmaya.sourceforge.net/liquidwiki/";
+  if ( $url == "" ) $url = "http://liquidmaya.wiki.sourceforge.net/";
   evalDeferred ("showHelp -absolute \""+$url+"\"" );
 }
 

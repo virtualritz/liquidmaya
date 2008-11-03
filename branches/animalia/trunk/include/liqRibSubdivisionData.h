@@ -83,7 +83,6 @@ private: // Data
 
   int interpolateBoundary; // Now an integer from PRMan 12/3Delight 6
 
-
   std::vector <RtToken> v_tags;
   std::vector <RtInt>   v_nargs;
   std::vector <RtInt>   v_intargs;

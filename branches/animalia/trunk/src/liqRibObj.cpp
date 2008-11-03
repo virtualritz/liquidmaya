@@ -69,6 +69,7 @@ extern "C" {
 
 extern int debugMode;
 extern bool liqglo_useMtorSubdiv;
+extern bool liqglo_renderAllCurves;
 
 /** Create a RIB representation of the given node in the DAG as a ribgen.
  */
@@ -296,7 +297,7 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 					if( isCurveGroup )
 					{
 						type = MRT_Curves;
-						if( !ignoreShapes )
+						if( liqglo_renderAllCurves )
 							data = liqRibDataPtr( new liqRibCurvesData( obj ) );
 						else
 							data = liqRibDataPtr( new liqRibCurvesData( skip ) );

@@ -40,8 +40,10 @@ extern "C" {
 #include <ri.h>
 }
 
+#include <fstream>
 #include <boost/scoped_array.hpp>
 using namespace boost;
+using namespace std;
 
 // flags
 const char *helpFlag = "-h", *helpLongFlag = "-help";
@@ -50,6 +52,7 @@ const char *typeFlag = "-ty", *typeLongFlag = "-type";
 const char *valueFlag = "-v", *valueLongFlag = "-value";
 const char *timeStepFlag = "-ti", *timeStepLongFlag = "-timeStep";
 const char *tokenFlag = "-to", *tokenLongFlag = "-token";
+const char *inlineFlag = "-i", *inlineLongFlag = "-inline";
 
 
 // ++++++++++++++++++++++++++
@@ -2737,6 +2740,7 @@ MSyntax RIReadArchive::newSyntax()
 	MSyntax syntax;
 	syntax.addFlag( helpFlag, helpLongFlag );
 	syntax.addFlag( testModeFlag, testModeLongFlag );
+	syntax.addFlag( inlineFlag, inlineLongFlag );
 	syntax.addArg( MSyntax::kString );
 	return syntax;
 }
@@ -2752,7 +2756,8 @@ MStatus RIReadArchive::doIt( const MArgList &args )
 	{
 		MGlobal::displayInfo( MString( "\n\nSynopsis: RIReadArchive [flags] archivename\nFlags:\n" ) +
 								"   -h -help\n" +
-								"   -t -testMode, prints the RIB output in the script editor\n\n" +
+								"   -t -testMode, prints the RIB output in the script editor\n" +
+								"   -i -inline, inlines the Read Archive into the current RIB\n\n" +
 								"   Example: RIReadArchive \"myArchive\";\n\n\n" );
 		return MS::kSuccess;
 	}
@@ -2761,16 +2766,51 @@ MStatus RIReadArchive::doIt( const MArgList &args )
 	status = argData.getCommandArgument( 0, archiveName );
 	if( status != MS::kSuccess )
 	{
-		MGlobal::displayWarning( MString( "RIReadArchive: no archive name specified" ) );
+		MGlobal::displayError( MString( "RIReadArchive: no archive name specified" ) );
 		return MS::kSuccess;
 	}
 
 	bool isTest = argData.isFlagSet( testModeFlag );
+	bool isInline = argData.isFlagSet( inlineFlag );
 
-	if( isTest )
+	if( isTest && !isInline )
 		MGlobal::displayInfo( MString( "RIB output: ReadArchive \"" ) + archiveName.asChar() + "\"" );
-	else
+	else if( !isInline )
 		RiReadArchive( const_cast< RtToken >( archiveName.asChar() ), NULL, RI_NULL );
+	else
+	{
+		const char *fileName = archiveName.asChar();
+		std::ifstream inFile( fileName, std::ios::in );
+
+		if( !inFile.is_open() )
+		{
+			MGlobal::displayError( MString( "RIReadArchive: Could not open " ) + archiveName );
+			inFile.close();
+			return status;
+		}
+		else
+		{
+			unsigned long length;
+			char * buffer;
+			inFile.seekg( 0, ios::end );
+			length = inFile.tellg();
+			inFile.seekg( 0, ios::beg );
+			buffer = new char[ length + 1 ];
+			inFile.read( buffer, length );
+			buffer[ length ] = '\0';
+			inFile.close();
+			if( isTest )
+				MGlobal::displayInfo( buffer );
+			else
+			{
+				MString inlined( MString( " Inlined Read Archive: " ) + archiveName );
+				RiArchiveRecord( RI_VERBATIM, "\n" );
+				RiArchiveRecord( RI_COMMENT, (char*)inlined.asChar() );
+				RiArchiveRecord( RI_VERBATIM, buffer );
+			}
+			delete buffer;
+		}
+	}
 
 	return redoIt();
 }
