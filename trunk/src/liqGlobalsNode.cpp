@@ -562,25 +562,24 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aTempDirectory,              "tempDirectory",                "tmpd",   ""    );
 
 	CREATE_BOOL( nAttr,  aDeferredGen,                "deferredGen",                  "defg",   false );
-	CREATE_INT( nAttr,  aDeferredBlock,              "deferredBlock",                "defb",   1     );
-	CREATE_STRING( tAttr,  aPreframeMel,                "preframeMel",                  "prfm",   ""    );
-	CREATE_STRING( tAttr,  aPostframeMel,               "postframeMel",                 "pofm",   ""    );
+	CREATE_INT( nAttr,  aDeferredBlock,               "deferredBlock",                "defb",   1     );
+	CREATE_STRING( tAttr,  aPreframeMel,              "preframeMel",                  "prfm",   ""    );
+	CREATE_STRING( tAttr,  aPostframeMel,             "postframeMel",                 "pofm",   ""    );
 	CREATE_BOOL( nAttr,  aUseRenderScript,            "useRenderScript",              "urs",    false );
 	CREATE_BOOL( nAttr,  aRemoteRender,               "remoteRender",                 "rr",     false );
 	CREATE_BOOL( nAttr,  aNetRManRender,              "netRManRender",                "nrr",    false );
-	CREATE_INT( nAttr,  aMinCPU,                     "minCPU",                       "min",    1     );
-	CREATE_INT( nAttr,  aMaxCPU,                     "maxCPU",                       "max",    1     );
+	CREATE_INT( nAttr,  aMinCPU,                      "minCPU",                       "min",    1     );
+	CREATE_INT( nAttr,  aMaxCPU,                      "maxCPU",                       "max",    1     );
 	CREATE_BOOL( nAttr,  aIgnoreShadows,              "ignoreShadows",                "ish",    false );
 	CREATE_BOOL( nAttr,  aShapeOnlyInShadowNames,     "shapeOnlyInShadowNames",       "sosn",   false );
 	CREATE_BOOL( nAttr,  aFullShadowRibs,             "fullShadowRibs",               "fsr",    false );
 	CREATE_BOOL( nAttr,  aBinaryOutput,               "binaryOutput",                 "bin",    false );
 	CREATE_BOOL( nAttr,  aCompressedOutput,           "compressedOutput",             "comp",   false );
 
-	CREATE_BOOL( nAttr,  aOutputMayaPolyCreases,            "outputMayaPolyCreases",              "ompc",    true );
-	CREATE_BOOL( nAttr,  aRenderAllCurves,            "renderAllCurves",              "rac",    false );
+	CREATE_BOOL( nAttr,  aOutputMayaPolyCreases,      "outputMayaPolyCreases",		  "ompc",    true );
+	CREATE_BOOL( nAttr,  aRenderAllCurves,            "renderAllCurves",              "rac",    true );
 	CREATE_BOOL( nAttr,  aOutputMeshUVs,              "outputMeshUVs",                "muv",    false );
-
-	CREATE_BOOL( nAttr,  aIlluminateByDefault,      "illuminateByDefault",        "ilbd",   true );
+	CREATE_BOOL( nAttr,  aIlluminateByDefault,        "illuminateByDefault",        "ilbd",   true );
 	CREATE_BOOL( nAttr,  aLiquidSetLightLinking,      "liquidSetLightLinking",        "setll",   false );
 	CREATE_BOOL( nAttr,  aIgnoreSurfaces,             "ignoreSurfaces",               "isrf",   false );
 	CREATE_BOOL( nAttr,  aIgnoreDisplacements,        "ignoreDisplacements",          "idsp",   false );

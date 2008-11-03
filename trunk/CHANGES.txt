@@ -1,3 +1,13 @@
+2.3.4
+- RIReadArchive Mel command updated, the -inline(i) flag inlines the Read Archive into the RIB
+- liquidCleanup command script modified so confirm dialog can be supressed (to use it in scripts)
+- wiki link changed in globals
+- "Render All Curves" global option fixed, global switch for curve rendering
+- the Maya Subdiv render module is fixed, maya subdivs are now ouput properly, with the following limitations:
+  - only the base mesh (level 0) is output (no hierarchy edits)
+  - level 0 edge/vertex creases are always hard (crease value 7), all other levels are ignored
+ - subdivs can be tagged like polygons through the liquid menu which gives access to the boundary interpolation options
+
 2.3.3
 - liquidGeneratePlace3dTexture( int scoped ) mel command available - maya 3d textures will be output in RIB as scoped or standard coordinate systems
 - liquid curves can be assigned a base and tip width

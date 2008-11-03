@@ -89,39 +89,35 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
 
   numPoints = fnMesh.numVertices();
 
-  // UV sets -----------------
-  //
-  const unsigned numSTs = fnMesh.numUVs();
-  const unsigned numUVSets = fnMesh.numUVSets();
-  MString currentUVSetName;
-  MStringArray extraUVSetNames;
-  fnMesh.getCurrentUVSetName( currentUVSetName );
-  {
-    MStringArray UVSetNames;
-    fnMesh.getUVSetNames( UVSetNames );
+	// UV sets -----------------
+	//
+	const unsigned numSTs = fnMesh.numUVs();
+	const unsigned numUVSets = fnMesh.numUVSets();
+	MString currentUVSetName;
+	MStringArray extraUVSetNames;
+	fnMesh.getCurrentUVSetName( currentUVSetName );
+	MStringArray UVSetNames;
+	fnMesh.getUVSetNames( UVSetNames );
 
-    for ( unsigned i( 0 ); i < numUVSets; i++ ) {
-      if( UVSetNames[i] != currentUVSetName )
-        extraUVSetNames.append( UVSetNames[i] );
-    }
-    //cout <<UVSetNames<<endl;
-  }
+	for ( unsigned i( 0 ); i < numUVSets; i++ ) {
+	  if( UVSetNames[i] != currentUVSetName )
+		extraUVSetNames.append( UVSetNames[i] );
+	}
 
-  numFaces = fnMesh.numPolygons();
-  const unsigned numFaceVertices( fnMesh.numFaceVertices() );
-  unsigned face( 0 );
-  unsigned faceVertex( 0 );
-  unsigned count;
-  unsigned vertex;
-  float S;
-  float T;
-  MPoint point;
-  liqTokenPointer pointsPointerPair;
-  liqTokenPointer pFaceVertexSPointer;
-  liqTokenPointer pFaceVertexTPointer;
+	numFaces = fnMesh.numPolygons();
+	const unsigned numFaceVertices( fnMesh.numFaceVertices() );
+	unsigned face( 0 );
+	unsigned faceVertex( 0 );
+	unsigned count;
+	unsigned vertex;
+	float S;
+	float T;
+	MPoint point;
+	liqTokenPointer pointsPointerPair;
+	liqTokenPointer pFaceVertexSPointer;
+	liqTokenPointer pFaceVertexTPointer;
 
   // Allocate memory and tokens
-  numFaces = numFaces;
   nverts = shared_array< RtInt >( new RtInt[ numFaces ] );
   verts = shared_array< RtInt >( new RtInt[ numFaceVertices ] );
 

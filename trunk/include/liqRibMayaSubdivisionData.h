@@ -32,16 +32,32 @@
 
 /* ______________________________________________________________________
 **
-** Liquid Rib Maya Subdivision Data Header File
+** Liquid Rib Mesh Data Header File
 ** ______________________________________________________________________
 */
-
-#include <maya/MUint64Array.h>
+#include <vector>
 #include <liqRibData.h>
-
 #include <boost/shared_array.hpp>
 
 using namespace boost;
+
+typedef struct tagMayaPolyEdgeIndx {
+    RtInt	vtx0;
+    RtInt	vtx1;
+} PolyMayaEdgeIndx;
+
+typedef RtInt PolyMayaVertexIndx;
+typedef RtInt PolyMayaFaceIndx;
+
+typedef struct tagMayaSbdExtraTag {
+    RtFloat	value;		// hardness for creases and corners
+    RtInt	length;		// number of elements
+    union tagExtraData {
+        PolyMayaEdgeIndx	*edges;
+        PolyMayaVertexIndx	*vertices;
+        PolyMayaFaceIndx	*faces;
+    } ExtraData;
+} MayaSbdExtraTag;
 
 class liqRibMayaSubdivisionData : public liqRibData {
 public: // Methods
@@ -52,29 +68,29 @@ public: // Methods
   virtual ObjectType type() const;
 
 private: // Data
-  int findIndex( MUint64 id, MUint64Array& arr );
-
-  RtInt     npolys;
-  vector< RtInt > nverts;
+  RtInt     numFaces;
+  RtInt     numPoints;
+  shared_array< RtInt > nverts;
   shared_array< RtInt > verts;
-  vector< RtInt > polyvertsIds;
   const RtFloat* vertexParam;
-  const RtFloat* stTexCordParam;
-/*   const RtFloat * normalParam; */
-/*   const RtFloat * polyuvParam; */
 
-  MIntArray creases;
-  MIntArray corners;
+  DetailType uvDetail;
+  bool trueFacevarying;
 
-  unsigned  totalNumOfVertices;
-  unsigned  numtexCords;
-  unsigned  textureindex;
   MString   name;
+  MString   longName;
   RtMatrix  transformationMatrix;
 
-  //  bool interpBoundary; // this is always on for maya subd's
-  bool hasCreases;
-  bool hasCorners;
+  int interpolateBoundary; // Now an integer from PRMan 12/3Delight 6
+
+  std::vector <RtToken> v_tags;
+  std::vector <RtInt>   v_nargs;
+  std::vector <RtInt>   v_intargs;
+  std::vector <RtFloat> v_floatargs;
+
+  void checkExtraTags( MObject &mesh );
+  void addExtraTags( MObject &mesh, SBD_EXTRA_TAG extraTag );
+  void addExtraTags( MObject &mesh, float extraTagValue, SBD_EXTRA_TAG extraTag );
 };
 
 #endif

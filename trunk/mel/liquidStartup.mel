@@ -453,7 +453,7 @@ global proc liquidCreateMenus()
         menuItem -label "Export Selected as RIB Archive Without Shaders" -enable false -ann "Write a RIB file for selected object only without shaders";
       setParent -menu ..;
       menuItem -d true;
-      menuItem -label "Clear Liquid..." -ann "Remove all Liquid nodes from the current scene" -command liquidCleanup;
+      menuItem -label "Clear Liquid..." -ann "Remove all Liquid nodes from the current scene" -command "liquidCleanup( 1 )";
       menuItem -d true;
       menuItem -label "Liquid Light Linker" -ann "Use Liquids Set Light linking" -command LLL_lightCentricUI;
       menuItem -d true;
