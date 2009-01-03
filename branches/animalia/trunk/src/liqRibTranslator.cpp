@@ -64,6 +64,7 @@ extern "C" {
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <strstream>
+#include <strstream>
 
 #if defined(_WIN32) && !defined(DEFINED_LIQUIDVERSION)
 // unix build gets this from the Makefile
@@ -72,6 +73,8 @@ static const char *LIQUIDVERSION =
 ;
 #define DEFINED_LIQUIDVERSION
 #endif
+
+#define LIQUIDVERSION "2.3.5"
 
 #ifdef _WIN32
 #  define RM_CMD "cmd.exe /c del"
@@ -115,7 +118,6 @@ using namespace boost;
 using namespace std;
 
 typedef int RtError;
-
 
 // this get's set if we are running the commandline version of liquid
 bool liquidBin;
@@ -2666,7 +2668,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
   if( m_errorMode ) RiErrorHandler( (void(*)(int,int,char*))liqRibTranslatorErrorHandler );
 #  endif
 #else
-  if( m_errorMode ) RiErrorHandler( liqRibTranslatorErrorHandler );
+  if( m_errorMode ) RiErrorHandler( (void(*)(int,int,char*))liqRibTranslatorErrorHandler );
 #endif
 
   // Setup helper variables for alfred
@@ -4813,13 +4815,16 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 				|| currentNode.hasFn( MFn::kSubdiv )
 				|| currentNode.hasFn( MFn::kPfxHair )
 				|| currentNode.hasFn( MFn::kPfxToon )
-				|| currentNode.hasFn( MFn::kImplicitSphere ) )
+				|| currentNode.hasFn( MFn::kImplicitSphere )
+				|| currentNode.hasFn( MFn::kPluginShape ) ) // include plugin shapes as placeholders
 			{
+//				MGlobal::displayInfo( MString( "NODE: " ) + currentNode.apiTypeStr() );
 				if( ( sample > 0 ) && isObjectMotionBlur( path ))
 					htable->insert( path, lframe, sample, MRT_Unknown, count++ );
 				else
 					htable->insert( path, lframe, 0, MRT_Unknown, count++ );
 			}
+
 			// Alf: treat PFX as three separate entities so a separate shading group can
 			// be assigned to each part
 			if( currentNode.hasFn( MFn::kPfxGeometry ) )
@@ -4942,7 +4947,8 @@ MStatus liqRibTranslator::scanScene(float lframe, int sample )
 					|| currentNode.hasFn( MFn::kSubdiv )
 					|| currentNode.hasFn( MFn::kPfxHair )
 					|| currentNode.hasFn( MFn::kPfxToon )
-					|| currentNode.hasFn( MFn::kImplicitSphere ) )
+					|| currentNode.hasFn( MFn::kImplicitSphere )
+					|| currentNode.hasFn( MFn::kPluginShape ) )
 				{
 					if( ( sample > 0 ) && isObjectMotionBlur( path ))
 						htable->insert(path, lframe, sample, MRT_Unknown,count++ );

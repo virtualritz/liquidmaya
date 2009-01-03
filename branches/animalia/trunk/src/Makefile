@@ -67,6 +67,7 @@ endif
 LIQUIDMAINOBJS = liqShader.$(OBJEXT) \
 					liqMemory.$(OBJEXT) \
 					liqAttachPrefAttribute.$(OBJEXT) \
+					liqBoundingBoxLocator.$(OBJEXT) \
 					liqRibTranslator.$(OBJEXT) \
 					liqRibParticleData.$(OBJEXT) \
 					liqTokenPointer.$(OBJEXT) \
@@ -78,6 +79,7 @@ LIQUIDMAINOBJS = liqShader.$(OBJEXT) \
 					liqRibData.$(OBJEXT) \
 					liqGlobalHelpers.$(OBJEXT) \
 					liqRibNuCurveData.$(OBJEXT) \
+					liqRibCurvesData.$(OBJEXT) \
 					liqRibMeshData.$(OBJEXT) \
 					liqRibLocatorData.$(OBJEXT) \
 					liqRibClipPlaneData.$(OBJEXT) \

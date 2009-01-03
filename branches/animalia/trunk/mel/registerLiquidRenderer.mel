@@ -219,12 +219,21 @@ global proc registerLiquidRenderer()
 
 global proc liquidAddTabs()
 {
-
-  renderer  -edit
-            -addGlobalsTab        "Liquid"
-                                  "liquidCreateGlobalsTab"
-                                  "liquidUpdateMayaGlobals"
-            liquid;
+if ( `renderer -exists "liquid"`)
+{
+     renderer -edit
+              -addGlobalsTab
+                "Common"
+                "createMayaSoftwareCommonGlobalsTab"
+                "updateMayaSoftwareCommonGlobalsTab"
+              liquid;
+                        
+   renderer  -edit
+             -addGlobalsTab        "Liquid"
+                                   "liquidCreateGlobalsTab"
+                                   "liquidUpdateMayaGlobals"
+             liquid;
+                        }
 }
 
 global proc unregisterLiquidRenderer()

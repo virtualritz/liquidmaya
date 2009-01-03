@@ -1,3 +1,8 @@
+2.3.5
+- MEL change for Maya 2009
+- compatibility fixes for linux
+- output of plugin shapes in RIB, so they can be used as placeholders
+
 2.3.4
 - RIReadArchive Mel command updated, the -inline(i) flag inlines the Read Archive into the RIB
 - liquidCleanup command script modified so confirm dialog can be supressed (to use it in scripts)
@@ -6,7 +11,7 @@
 - the Maya Subdiv render module is fixed, maya subdivs are now ouput properly, with the following limitations:
   - only the base mesh (level 0) is output (no hierarchy edits)
   - level 0 edge/vertex creases are always hard (crease value 7), all other levels are ignored
- - subdivs can be tagged like polygons through the liquid menu which gives access to the boundary interpolation options
+ - maya subdivs can be tagged like polygons through the liquid menu which gives access to the boundary interpolation options
 
 2.3.3
 - liquidGeneratePlace3dTexture( int scoped ) mel command available - maya 3d textures will be output in RIB as scoped or standard coordinate systems

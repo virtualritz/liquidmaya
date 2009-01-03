@@ -216,6 +216,14 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 				else
 					data = liqRibDataPtr( new liqRibParticleData( skip ) );
 			}
+
+			// if you want to use plugin shapes as placeholders for example
+			// i.e. you want to use shave & haircut and attach a custom shader to it
+			else if( obj.hasFn( MFn::kPluginShape ) )
+			{
+				type = MRT_Weirdo; // lets use this at least once :)
+				data = liqRibDataPtr( new liqRibSurfaceData( skip ) ); // you could use any here
+			}
 			else if( obj.hasFn( MFn::kMesh ) )
 			{
 				// we know we are dealing with a mesh here, now we check to see if it
