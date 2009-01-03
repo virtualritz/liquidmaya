@@ -506,7 +506,7 @@ void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue,
 		v_tags.push_back( "interpolateboundary" );
 		v_nargs.push_back( 1 );		// 0 intargs
 		v_nargs.push_back( 0 );		// 0 floatargs
-		v_intargs.push_back( extraTagValue );
+		v_intargs.push_back( (int)extraTagValue );
 		return;
 	}
 
@@ -515,7 +515,7 @@ void liqRibSubdivisionData::addExtraTags( MObject &dstNode, float extraTagValue,
 		v_tags.push_back( "facevaryinginterpolateboundary" );
 		v_nargs.push_back( 1 );		// 1 intargs
 		v_nargs.push_back( 0 );		// 0 floatargs
-		v_intargs.push_back( extraTagValue );
+		v_intargs.push_back( (int)extraTagValue );
 	}
 
 	MStatus status = MS::kSuccess;

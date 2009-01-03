@@ -311,7 +311,7 @@ void liqRibMayaSubdivisionData::checkExtraTags( MObject &subd )
 		addExtraTags( subd, 0, TAG_FACEVARYINGBOUNDARY );
 }
 
-void liqRibMayaSubdivisionData::addExtraTags( MObject &subd, float extraTagValue, SBD_EXTRA_TAG extraTag )
+void liqRibMayaSubdivisionData::addExtraTags( MObject &subd, int extraTagValue, SBD_EXTRA_TAG extraTag )
 {
 	MStatus status;
 	MFnSubd fnSubd( subd );
@@ -355,7 +355,6 @@ void liqRibMayaSubdivisionData::addExtraTags( MObject &subd, float extraTagValue
 				if( status != MS::kSuccess )
 					continue;
 				
-				MGlobal::displayInfo( MString( "BASE: " ) + baseVert1 + " " + baseVert2 + " " + i );
 				v_tags.push_back( "crease" );
 				v_nargs.push_back( 2 );
 				v_nargs.push_back( 1 );

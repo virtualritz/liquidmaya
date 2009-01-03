@@ -134,7 +134,8 @@ liqRibCurvesData::liqRibCurvesData( MObject curveGroup )
 		mCurve -= m;
 		mCurve += MMatrix::identity;
 
-		MItCurveCV curveIt( fnCurve.child( 0 ) );
+		MObject oCurveChild( fnCurve.child( 0 ) );
+		MItCurveCV curveIt( oCurveChild );
 		MPoint pt = curveIt.position();
 		pt *= mCurve;
 		CVs[k++] = (float)pt.x;
@@ -200,7 +201,9 @@ liqRibCurvesData::liqRibCurvesData( MObject curveGroup )
 			NuCurveWidth[k++] = baseWidth;
 			for( unsigned n( 3 ); n < nverts[i] - 3; n++ )
 			{
-				float difference = abs( tipWidth - baseWidth );
+				float difference = tipWidth - baseWidth;
+				if( difference < 0 )
+					difference *= -1;
 				float basew ( baseWidth );
 				if( baseWidth > tipWidth )
 					NuCurveWidth[k++] = basew - ( n - 2 ) * difference / ( nverts[i] - 5 );

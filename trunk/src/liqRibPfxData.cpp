@@ -187,7 +187,7 @@ liqRibPfxData::liqRibPfxData( MObject pfxGeo, ObjectType type )
 		shared_array< RtFloat > curveID(			new RtFloat[ numLines ] );
 		shared_array< RtFloat > curveWidth(         new RtFloat[ totalVarying ] );
 		shared_array< RtFloat > curveFlatness(      new RtFloat[ totalVarying ] );
-		//shared_array< RtFloat > curveParameter(     new RtFloat[ totalVarying ] );
+		//shared_array< RtFloat > curveParameter(   new RtFloat[ totalVarying ] );
 		shared_array< RtFloat > curveColor(         new RtFloat[ totalVarying * 3 ] );
 		shared_array< RtFloat > curveIncandescence( new RtFloat[ totalVarying * 3 ] );
 		shared_array< RtFloat > curveOpacity(       new RtFloat[ totalVarying * 3 ] );

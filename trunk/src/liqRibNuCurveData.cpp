@@ -147,7 +147,9 @@ liqRibNuCurveData::liqRibNuCurveData( MObject curve )
 		NuCurveWidth[k++] = baseWidth;
 		for( unsigned n( 3 ); n < nverts[0] - 3; n++ )
 		{
-			float difference = abs( tipWidth - baseWidth );
+			float difference = tipWidth - baseWidth;
+			if( difference < 0 )
+				difference *= -1;
 			float basew ( baseWidth );
 			if( baseWidth > tipWidth )
 				NuCurveWidth[k++] = basew - ( n - 2 ) * difference / ( nverts[0] - 5 );

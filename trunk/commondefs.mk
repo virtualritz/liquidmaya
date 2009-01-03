@@ -4,11 +4,11 @@ SHELL = sh
 # Set default if variables not set
 #********************************************
 
-AW_LOCATION ?= /usr/aw
-MAYA_LOCATION ?= $(AW_LOCATION)/maya
+AW_LOCATION ?= /usr/autodesk
+MAYA_LOCATION ?= $(AW_LOCATION)/maya2008-x64
 MAYA_VERSIONS := $(wildcard $(AW_LOCATION)/maya*)
-MAYA_VERSION ?= 7.0
-LIQRMAN ?= pixie
+MAYA_VERSION ?= 2008
+LIQRMAN ?= prman
 LIQ_OLD_MAYA_IDS ?= 0
 # Os settings
 # What about Suze ?
@@ -19,7 +19,7 @@ ifeq "$(OS_NAME)" "GNU/Linux"
 PLUGSUF		= so
 OBJEXT		= o
 LD		= $(MAYA_LOCATION)/bin/mayald
-LOCFLAGS	= -O3 -funroll-loops -march=pentiumpro -D_BOOL -DLINUX -DLIQ_OLD_MAYA_IDS=$(LIQ_OLD_MAYA_IDS)
+LOCFLAGS	= -fmessage-length=0 -Os -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -DPRMAN -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
 WARNFLAGS	= -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
 NO_TRANS_LINK	=
 VBIN		= redhat
@@ -37,7 +37,7 @@ FLAVORX := $(patsubst /etc/%-version,%,$(FLAVORX))
 #********************************************
 ifeq "$(FLAVORX)" "fedora redhat"
 VBIN	= fedora
-ifneq "$(MAYA_VERSION)" "8.0"
+ifneq "$(MAYA_VERSION)" "2008"
 # Make sure we use gcc 3.3.4 if 3.4.4 is default one
 ifeq "$(shell $(CPP) -dumpversion)" "3.4.4"
 CPP = g++334
@@ -187,13 +187,13 @@ endif
 #********************************************
 ifeq "$(patsubst prman%,prman,$(LIQRMAN))" "prman"
 PRMANVERSION 	= 	$(patsubst prman%,%,$(LIQRMAN))
-LIQRMANPATH 	=	$${RMANTREE:=/usr/local/prman}
+LIQRMANPATH 	=	$${RMANTREE:=/local/pixar/RenderManProServer-14.1}
 LIQUIDDPYLOC	=	displayDrivers/PRMan/
 LIQDPYNAME	=	d_liqmaya.so
 LIQRMANFLAGS	=	-DPRMAN
 USEDVAR 	= 	RMANTREE
 CSL 		= 	$(LIQRMANPATH)/bin/shader
-SLFLAGS 	= 	-DPRMAN
+SLFLAGS 	= 	-DPRMANexx
 SLOEXT		=	slo
 LIQDISPLAYOBJS  = 	liqMayaDisplayDriver
 
@@ -207,8 +207,8 @@ LIQRMANLIBS 	=	-lprmansdk
 LIQWINRMANLIBS	=	prmansdk.lib
 LIQUIDDPYLOC	=	displayDrivers/PRMan/
 else
-LIQRMANLIBS=-lrib -lsloargs -llkm -ltarget -lzip
-LIQWINRMANLIBS	=	rib.lib sloargs.lib
+LIQRMANLIBS		=	
+LIQWINRMANLIBS	=	
 endif
 
 endif
@@ -235,11 +235,11 @@ VPATHMEL 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/mel
 VPATHRENDERS 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/renderers
 VPATHICONS  		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/icons
 CPPFLAGS		= -DLIQUIDVERSION=$(LIQUIDVERSION) $(LOCFLAGS) $(LIQRMANFLAGS) $(WARNFLAGS) $(EXTRAFLAGS) $(NO_TRANS_LINK) -DREQUIRE_IOSTREAM
-LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib
+LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L/usr/lib
 
 ifeq "$(USE_RIBLIB)" "yes"
 INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(DEPTH)/ribLib -I../include
-LIBS			= $(DEPTH)/bin/linux32/librib.a $(MAYALIBS) $(EXTRA_LIBS) -lm -lz
+LIBS			= $(DEPTH)/bin/linux32/librib.a $(MAYALIBS) $(EXTRA_LIBS) 
 CPPFLAGS 		+= -DGENERIC_RIBLIB
 else
 INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(LIQRMANPATH)/include -I../include
@@ -248,10 +248,10 @@ endif
 
 DPYINCLUDES		= -I$(LIQRMANPATH)/include
 
-ifeq "$(MAYA_VERSION)" "8.0"
-MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lGL -lGLU
+ifeq "$(MAYA_VERSION)" "2008"
+MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX
 else
-MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lxpcom -lGL -lGLU
+MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lGL -lGLU
 endif
 
 TARGET  		= $(VPATH)/$(LIQUIDPLUG)
