@@ -172,19 +172,19 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
         fnMesh.getPolygonUV( face, i, S, T );
 
         UVSetsArray[0].setTokenFloat( faceVertex, 0, S );
-        UVSetsArray[0].setTokenFloat( faceVertex, 1, T );
+        UVSetsArray[0].setTokenFloat( faceVertex, 1, 1-T );
 
         for ( unsigned j=1; j<=extraUVSetNames.length(); j++ ) {
           fnMesh.getPolygonUV( face, i, S, T, &extraUVSetNames[j] );
 
           UVSetsArray[j].setTokenFloat( faceVertex, 0, S );
-          UVSetsArray[j].setTokenFloat( faceVertex, 1, T );
+          UVSetsArray[j].setTokenFloat( faceVertex, 1, 1-T );
         }
 
         if( liqglo_outputMeshUVs ) {
           // Match MTOR, which always outputs face-varying STs as well for some reason - Paul
           pFaceVertexSPointer.setTokenFloat( faceVertex, S );
-          pFaceVertexTPointer.setTokenFloat( faceVertex, T );
+          pFaceVertexTPointer.setTokenFloat( faceVertex, 1-T );
         }
       }
 

@@ -2,6 +2,7 @@
 - MEL change for Maya 2009
 - compatibility fixes for linux
 - output of plugin shapes in RIB, so they can be used as placeholders
+- working xcodeproj file for MAC, thanks to Brian Sundman
 
 2.3.4
 - RIReadArchive Mel command updated, the -inline(i) flag inlines the Read Archive into the RIB

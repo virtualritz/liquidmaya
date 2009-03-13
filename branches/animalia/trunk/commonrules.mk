@@ -2,7 +2,7 @@ debug : EXTRAFLAGS=-g -DDEBUG
 debug : BIN_VERSION=debug
 debug : VPATH=$(VPATHDEBUG)
 
-#release : BIN_VERSION=release
+release : BIN_VERSION=release
 newversion release : VPATH:=$(VPATHRELEASE)
 newversion release : $(VPATH)
 

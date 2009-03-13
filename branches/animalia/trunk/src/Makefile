@@ -55,7 +55,7 @@ LIQUIDBINLIBS =		$(LIBS) $(MAYALIBS) \
 					$(EXTRA_LIBS) \
 					-lm
 
-ifeq "$(MAYA_VERSION)" "2008"
+ifeq "$(MAYA_VERSION)" "2009"
 LIQUIDBINLIBS +=	-Wl,-rpath -Wl,$(MAYA_LOCATION)/lib \
 					-lawxml2 \
 					-lguide \

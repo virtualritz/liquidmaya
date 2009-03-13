@@ -41,6 +41,7 @@
 // Standard Headers
 #include <stdlib.h>
 #include <sys/types.h>
+#include <string.h>
 
 // maya headers
 #include <maya/MString.h>

@@ -44,7 +44,8 @@ extern "C" {
 #  include <algorithm>
 #endif
 #else
-#  include <hash_map.h>
+#  include <ext/hash_map>
+using namespace __gnu_cxx;
 #endif
 
 // Maya's Headers
