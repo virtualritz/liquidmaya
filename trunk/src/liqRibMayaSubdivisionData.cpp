@@ -159,13 +159,13 @@ liqRibMayaSubdivisionData::liqRibMayaSubdivisionData( MObject subd )
 			if( UVSetsArray.size() )
 			{
 				UVSetsArray[0].setTokenFloat( faceVertex, 0, S[i] );
-				UVSetsArray[0].setTokenFloat( faceVertex, 1, T[i] );
+				UVSetsArray[0].setTokenFloat( faceVertex, 1, 1-T[i] );
 
 				if( liqglo_outputMeshUVs )
 				{
 					// Match MTOR, which always outputs face-varying STs as well for some reason - Paul
 					pFaceVertexSPointer.setTokenFloat( faceVertex, S[i] );
-					pFaceVertexTPointer.setTokenFloat( faceVertex, T[i] );
+					pFaceVertexTPointer.setTokenFloat( faceVertex, 1-T[i] );
 				}
 			}
 			++faceVertex;

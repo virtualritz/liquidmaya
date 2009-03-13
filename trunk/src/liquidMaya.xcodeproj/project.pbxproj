@@ -71,19 +71,84 @@
 		1FAC5DD407BE25410083A3E5 /* liquidPlug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7A9FA06A0016A00954BD2 /* liquidPlug.cpp */; };
 		1FAC5DD507BE25410083A3E5 /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7A9FB06A0016A00954BD2 /* liqWriteArchive.cpp */; };
 		1FAC5DD707BE25410083A3E5 /* liqExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD593F20794629900F9DE2C /* liqExpression.cpp */; };
-		D4AE85BD09D2B779001A19E4 /* libOpenMayaUI.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AE859B09D2B5BF001A19E4 /* libOpenMayaUI.dylib */; };
-		D4AE85BE09D2B77A001A19E4 /* libOpenMayaRender.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AE859909D2B5BF001A19E4 /* libOpenMayaRender.dylib */; };
-		D4AE85BF09D2B77B001A19E4 /* libOpenMayaFX.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AE859A09D2B5BF001A19E4 /* libOpenMayaFX.dylib */; };
-		D4AE85C009D2B77C001A19E4 /* libOpenMayaAnim.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AE859709D2B5BF001A19E4 /* libOpenMayaAnim.dylib */; };
-		D4AE85C109D2B77D001A19E4 /* libOpenMaya.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AE859809D2B5BF001A19E4 /* libOpenMaya.dylib */; };
-		D4AE85C409D2B792001A19E4 /* lib3delight.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AE857909D2B32D001A19E4 /* lib3delight.dylib */; };
-		D4AE85C709D2B7CC001A19E4 /* libFoundation.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4AE858209D2B587001A19E4 /* libFoundation.dylib */; };
+		D37769100F201E00000E8DC6 /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = D377690A0F201E00000E8DC6 /* common.h */; };
+		D37769110F201E00000E8DC6 /* error.h in Headers */ = {isa = PBXBuildFile; fileRef = D377690B0F201E00000E8DC6 /* error.h */; };
+		D37769120F201E00000E8DC6 /* ri.h in Headers */ = {isa = PBXBuildFile; fileRef = D377690C0F201E00000E8DC6 /* ri.h */; };
+		D37769130F201E00000E8DC6 /* ribOut.h in Headers */ = {isa = PBXBuildFile; fileRef = D377690D0F201E00000E8DC6 /* ribOut.h */; };
+		D37769140F201E00000E8DC6 /* riInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = D377690E0F201E00000E8DC6 /* riInterface.h */; };
+		D37769150F201E00000E8DC6 /* variable.h in Headers */ = {isa = PBXBuildFile; fileRef = D377690F0F201E00000E8DC6 /* variable.h */; };
+		D377691B0F201E19000E8DC6 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769160F201E19000E8DC6 /* error.cpp */; };
+		D377691C0F201E19000E8DC6 /* ri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769170F201E19000E8DC6 /* ri.cpp */; };
+		D377691D0F201E19000E8DC6 /* ribOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769180F201E19000E8DC6 /* ribOut.cpp */; };
+		D377691E0F201E19000E8DC6 /* riInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769190F201E19000E8DC6 /* riInterface.cpp */; };
+		D377691F0F201E19000E8DC6 /* variable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D377691A0F201E19000E8DC6 /* variable.cpp */; };
+		D37769530F202272000E8DC6 /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769520F202272000E8DC6 /* zlib.h */; };
+		D37769560F202903000E8DC6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769550F202903000E8DC6 /* libz.dylib */; };
+		D37769800F202D91000E8DC6 /* liqBoundingBoxLocator.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769620F202D91000E8DC6 /* liqBoundingBoxLocator.h */; };
+		D37769810F202D91000E8DC6 /* liqBucket.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769630F202D91000E8DC6 /* liqBucket.h */; };
+		D37769820F202D91000E8DC6 /* liqCoordSysNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769640F202D91000E8DC6 /* liqCoordSysNode.h */; };
+		D37769830F202D91000E8DC6 /* liqDelightRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769650F202D91000E8DC6 /* liqDelightRenderer.h */; };
+		D37769840F202D91000E8DC6 /* liqDisplacementNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769660F202D91000E8DC6 /* liqDisplacementNode.h */; };
+		D37769850F202D91000E8DC6 /* liqEntropyRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769670F202D91000E8DC6 /* liqEntropyRenderer.h */; };
+		D37769860F202D91000E8DC6 /* liqGlobalsNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769680F202D91000E8DC6 /* liqGlobalsNode.h */; };
+		D37769870F202D91000E8DC6 /* liqJobList.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769690F202D91000E8DC6 /* liqJobList.h */; };
+		D37769880F202D91000E8DC6 /* liqLightNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D377696A0F202D91000E8DC6 /* liqLightNode.h */; };
+		D37769890F202D91000E8DC6 /* liqLightNodeBehavior.h in Headers */ = {isa = PBXBuildFile; fileRef = D377696B0F202D91000E8DC6 /* liqLightNodeBehavior.h */; };
+		D377698A0F202D91000E8DC6 /* liqMayaDisplayDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = D377696C0F202D91000E8DC6 /* liqMayaDisplayDriver.h */; };
+		D377698B0F202D91000E8DC6 /* liqMayaDisplayDriverAir.h in Headers */ = {isa = PBXBuildFile; fileRef = D377696D0F202D91000E8DC6 /* liqMayaDisplayDriverAir.h */; };
+		D377698C0F202D91000E8DC6 /* liqMayaDisplayDriverPixie.h in Headers */ = {isa = PBXBuildFile; fileRef = D377696E0F202D91000E8DC6 /* liqMayaDisplayDriverPixie.h */; };
+		D377698D0F202D91000E8DC6 /* liqMayaNodeIds.h in Headers */ = {isa = PBXBuildFile; fileRef = D377696F0F202D91000E8DC6 /* liqMayaNodeIds.h */; };
+		D377698E0F202D91000E8DC6 /* liqMayaRenderView.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769700F202D91000E8DC6 /* liqMayaRenderView.h */; };
+		D377698F0F202D91000E8DC6 /* liqNodeSwatch.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769710F202D91000E8DC6 /* liqNodeSwatch.h */; };
+		D37769900F202D91000E8DC6 /* liqPixieRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769720F202D91000E8DC6 /* liqPixieRenderer.h */; };
+		D37769910F202D91000E8DC6 /* liqPrmanRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769730F202D91000E8DC6 /* liqPrmanRenderer.h */; };
+		D37769920F202D91000E8DC6 /* liqRibboxNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769740F202D91000E8DC6 /* liqRibboxNode.h */; };
+		D37769930F202D91000E8DC6 /* liqRibClipPlaneData.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769750F202D91000E8DC6 /* liqRibClipPlaneData.h */; };
+		D37769940F202D91000E8DC6 /* liqRibCurvesData.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769760F202D91000E8DC6 /* liqRibCurvesData.h */; };
+		D37769950F202D91000E8DC6 /* liqRibImplicitSphereData.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769770F202D91000E8DC6 /* liqRibImplicitSphereData.h */; };
+		D37769960F202D91000E8DC6 /* liqRibPfxData.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769780F202D91000E8DC6 /* liqRibPfxData.h */; };
+		D37769970F202D91000E8DC6 /* liqRibPfxHairData.h in Headers */ = {isa = PBXBuildFile; fileRef = D37769790F202D91000E8DC6 /* liqRibPfxHairData.h */; };
+		D37769980F202D91000E8DC6 /* liqRibPfxToonData.h in Headers */ = {isa = PBXBuildFile; fileRef = D377697A0F202D91000E8DC6 /* liqRibPfxToonData.h */; };
+		D37769990F202D91000E8DC6 /* liqRibRequestNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D377697B0F202D91000E8DC6 /* liqRibRequestNode.h */; };
+		D377699A0F202D91000E8DC6 /* liqRiCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = D377697C0F202D91000E8DC6 /* liqRiCommands.h */; };
+		D377699B0F202D91000E8DC6 /* liqSurfaceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D377697D0F202D91000E8DC6 /* liqSurfaceNode.h */; };
+		D377699C0F202D91000E8DC6 /* liqVolumeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D377697E0F202D91000E8DC6 /* liqVolumeNode.h */; };
+		D37769B80F202DB5000E8DC6 /* liqBoundingBoxLocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D377699D0F202DB5000E8DC6 /* liqBoundingBoxLocator.cpp */; };
+		D37769B90F202DB5000E8DC6 /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D377699E0F202DB5000E8DC6 /* liqBucket.cpp */; };
+		D37769BA0F202DB5000E8DC6 /* liqCoordSysNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D377699F0F202DB5000E8DC6 /* liqCoordSysNode.cpp */; };
+		D37769BB0F202DB5000E8DC6 /* liqDisplacementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769A00F202DB5000E8DC6 /* liqDisplacementNode.cpp */; };
+		D37769BC0F202DB5000E8DC6 /* liqGlobalsNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769A10F202DB5000E8DC6 /* liqGlobalsNode.cpp */; };
+		D37769BD0F202DB5000E8DC6 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769A20F202DB5000E8DC6 /* liqJobList.cpp */; };
+		D37769BE0F202DB5000E8DC6 /* liqLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769A30F202DB5000E8DC6 /* liqLightNode.cpp */; };
+		D37769BF0F202DB5000E8DC6 /* liqLightNodeBehavior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769A40F202DB5000E8DC6 /* liqLightNodeBehavior.cpp */; };
+		D37769C50F202DB5000E8DC6 /* liqMayaRenderView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769AA0F202DB5000E8DC6 /* liqMayaRenderView.cpp */; };
+		D37769C60F202DB5000E8DC6 /* liqNodeSwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769AB0F202DB5000E8DC6 /* liqNodeSwatch.cpp */; };
+		D37769C70F202DB5000E8DC6 /* liqRibboxNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769AC0F202DB5000E8DC6 /* liqRibboxNode.cpp */; };
+		D37769C80F202DB5000E8DC6 /* liqRibClipPlaneData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769AD0F202DB5000E8DC6 /* liqRibClipPlaneData.cpp */; };
+		D37769C90F202DB5000E8DC6 /* liqRibCurvesData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769AE0F202DB5000E8DC6 /* liqRibCurvesData.cpp */; };
+		D37769CA0F202DB5000E8DC6 /* liqRibImplicitSphereData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769AF0F202DB5000E8DC6 /* liqRibImplicitSphereData.cpp */; };
+		D37769CB0F202DB5000E8DC6 /* liqRibPfxData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769B00F202DB5000E8DC6 /* liqRibPfxData.cpp */; };
+		D37769CC0F202DB5000E8DC6 /* liqRibPfxHairData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769B10F202DB5000E8DC6 /* liqRibPfxHairData.cpp */; };
+		D37769CD0F202DB5000E8DC6 /* liqRibPfxToonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769B20F202DB5000E8DC6 /* liqRibPfxToonData.cpp */; };
+		D37769CE0F202DB5000E8DC6 /* liqRibRequestNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769B30F202DB5000E8DC6 /* liqRibRequestNode.cpp */; };
+		D37769CF0F202DB5000E8DC6 /* liqRiCommands.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769B40F202DB5000E8DC6 /* liqRiCommands.cpp */; };
+		D37769D00F202DB5000E8DC6 /* liqSurfaceNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769B50F202DB5000E8DC6 /* liqSurfaceNode.cpp */; };
+		D37769D20F202DB5000E8DC6 /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769B70F202DB5000E8DC6 /* liqVolumeNode.cpp */; };
+		D37769DB0F202F4B000E8DC6 /* libFoundation.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769D50F202F4B000E8DC6 /* libFoundation.dylib */; };
+		D37769DC0F202F4B000E8DC6 /* libOpenMaya.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769D60F202F4B000E8DC6 /* libOpenMaya.dylib */; };
+		D37769DD0F202F4B000E8DC6 /* libOpenMayaAnim.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769D70F202F4B000E8DC6 /* libOpenMayaAnim.dylib */; };
+		D37769DE0F202F4B000E8DC6 /* libOpenMayaFX.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769D80F202F4B000E8DC6 /* libOpenMayaFX.dylib */; };
+		D37769DF0F202F4B000E8DC6 /* libOpenMayaRender.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769D90F202F4B000E8DC6 /* libOpenMayaRender.dylib */; };
+		D37769E00F202F4B000E8DC6 /* libOpenMayaUI.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769DA0F202F4B000E8DC6 /* libOpenMayaUI.dylib */; };
+		D37769E50F202FB9000E8DC6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769E40F202FB9000E8DC6 /* OpenGL.framework */; };
+		D37769EE0F203050000E8DC6 /* RILIB.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D37769070F201DB7000E8DC6 /* RILIB.dylib */; };
+		D3776B880F203EEC000E8DC6 /* liqMayaDisplayDriver3Delight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D37769A60F202DB5000E8DC6 /* liqMayaDisplayDriver3Delight.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
 		D4AE850A09D29C82001A19E4 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.gcc;
 			fileType = sourcecode.c;
 			isEditable = 1;
 			outputFiles = (
@@ -91,34 +156,8 @@
 		};
 /* End PBXBuildRule section */
 
-/* Begin PBXBuildStyle section */
-		014CEA460018CE2711CA2923 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		014CEA470018CE2711CA2923 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXFileReference section */
-		1FAC5DDB07BE25410083A3E5 /* liquid.lib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liquid.lib; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FAC5DDB07BE25410083A3E5 /* liquid.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liquid.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC7A9DD06A0016A00954BD2 /* liqAttachPrefAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = liqAttachPrefAttribute.cpp; sourceTree = SOURCE_ROOT; tabWidth = 2; };
 		1FC7A9E006A0016A00954BD2 /* liqGetAttr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = liqGetAttr.cpp; sourceTree = SOURCE_ROOT; tabWidth = 2; };
 		1FC7A9E106A0016A00954BD2 /* liqGetSloInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = liqGetSloInfo.cpp; sourceTree = SOURCE_ROOT; tabWidth = 2; };
@@ -183,27 +222,102 @@
 		1FCCD04E079F20B70069EDB7 /* liquid.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liquid.h; path = ../include/liquid.h; sourceTree = SOURCE_ROOT; };
 		1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqWriteArchive.h; path = ../include/liqWriteArchive.h; sourceTree = SOURCE_ROOT; };
 		1FD593F20794629900F9DE2C /* liqExpression.cpp */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = liqExpression.cpp; sourceTree = "<group>"; tabWidth = 2; };
-		D4AE857909D2B32D001A19E4 /* lib3delight.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = lib3delight.dylib; path = "/Applications/Graphics/3Delight-5.0.1/lib/lib3delight.dylib"; sourceTree = "<absolute>"; };
+		D30590ED0F20600C00E89D7C /* libAnimSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libAnimSlice.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libAnimSlice.dylib; sourceTree = "<absolute>"; };
+		D30590EE0F20600C00E89D7C /* libCommandEngine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libCommandEngine.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libCommandEngine.dylib; sourceTree = "<absolute>"; };
+		D30590EF0F20600C00E89D7C /* libDeformSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libDeformSlice.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libDeformSlice.dylib; sourceTree = "<absolute>"; };
+		D30590F00F20600C00E89D7C /* libDynSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libDynSlice.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libDynSlice.dylib; sourceTree = "<absolute>"; };
+		D30590F10F20600C00E89D7C /* libImage.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libImage.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libImage.dylib; sourceTree = "<absolute>"; };
+		D30590F20F20600C00E89D7C /* libKinSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libKinSlice.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libKinSlice.dylib; sourceTree = "<absolute>"; };
+		D30590F30F20600C00E89D7C /* libModelSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libModelSlice.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libModelSlice.dylib; sourceTree = "<absolute>"; };
+		D30590F40F20600C00E89D7C /* libNurbsSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libNurbsSlice.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libNurbsSlice.dylib; sourceTree = "<absolute>"; };
+		D30590F50F20600C00E89D7C /* libPolySlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPolySlice.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libPolySlice.dylib; sourceTree = "<absolute>"; };
+		D30590F60F20600C00E89D7C /* libProjectSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libProjectSlice.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libProjectSlice.dylib; sourceTree = "<absolute>"; };
+		D30590F70F20600C00E89D7C /* libRenderModel.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRenderModel.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libRenderModel.dylib; sourceTree = "<absolute>"; };
+		D30590F80F20600C00E89D7C /* libShared.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libShared.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libShared.dylib; sourceTree = "<absolute>"; };
+		D30590F90F20600C00E89D7C /* libTranslators.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libTranslators.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libTranslators.dylib; sourceTree = "<absolute>"; };
+		D37769070F201DB7000E8DC6 /* RILIB.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = RILIB.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		D377690A0F201E00000E8DC6 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../ribLib/common.h; sourceTree = SOURCE_ROOT; };
+		D377690B0F201E00000E8DC6 /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = error.h; path = ../ribLib/error.h; sourceTree = SOURCE_ROOT; };
+		D377690C0F201E00000E8DC6 /* ri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ri.h; path = ../ribLib/ri.h; sourceTree = SOURCE_ROOT; };
+		D377690D0F201E00000E8DC6 /* ribOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ribOut.h; path = ../ribLib/ribOut.h; sourceTree = SOURCE_ROOT; };
+		D377690E0F201E00000E8DC6 /* riInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = riInterface.h; path = ../ribLib/riInterface.h; sourceTree = SOURCE_ROOT; };
+		D377690F0F201E00000E8DC6 /* variable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = variable.h; path = ../ribLib/variable.h; sourceTree = SOURCE_ROOT; };
+		D37769160F201E19000E8DC6 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = error.cpp; path = ../ribLib/error.cpp; sourceTree = SOURCE_ROOT; };
+		D37769170F201E19000E8DC6 /* ri.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ri.cpp; path = ../ribLib/ri.cpp; sourceTree = SOURCE_ROOT; };
+		D37769180F201E19000E8DC6 /* ribOut.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ribOut.cpp; path = ../ribLib/ribOut.cpp; sourceTree = SOURCE_ROOT; };
+		D37769190F201E19000E8DC6 /* riInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = riInterface.cpp; path = ../ribLib/riInterface.cpp; sourceTree = SOURCE_ROOT; };
+		D377691A0F201E19000E8DC6 /* variable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = variable.cpp; path = ../ribLib/variable.cpp; sourceTree = SOURCE_ROOT; };
+		D37769520F202272000E8DC6 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zlib.h; path = /usr/include/zlib.h; sourceTree = "<absolute>"; };
+		D37769550F202903000E8DC6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		D37769610F202D91000E8DC6 /* liqAqsisRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqAqsisRenderer.h; path = ../include/liqAqsisRenderer.h; sourceTree = SOURCE_ROOT; };
+		D37769620F202D91000E8DC6 /* liqBoundingBoxLocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqBoundingBoxLocator.h; path = ../include/liqBoundingBoxLocator.h; sourceTree = SOURCE_ROOT; };
+		D37769630F202D91000E8DC6 /* liqBucket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqBucket.h; path = ../include/liqBucket.h; sourceTree = SOURCE_ROOT; };
+		D37769640F202D91000E8DC6 /* liqCoordSysNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqCoordSysNode.h; path = ../include/liqCoordSysNode.h; sourceTree = SOURCE_ROOT; };
+		D37769650F202D91000E8DC6 /* liqDelightRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqDelightRenderer.h; path = ../include/liqDelightRenderer.h; sourceTree = SOURCE_ROOT; };
+		D37769660F202D91000E8DC6 /* liqDisplacementNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqDisplacementNode.h; path = ../include/liqDisplacementNode.h; sourceTree = SOURCE_ROOT; };
+		D37769670F202D91000E8DC6 /* liqEntropyRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqEntropyRenderer.h; path = ../include/liqEntropyRenderer.h; sourceTree = SOURCE_ROOT; };
+		D37769680F202D91000E8DC6 /* liqGlobalsNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqGlobalsNode.h; path = ../include/liqGlobalsNode.h; sourceTree = SOURCE_ROOT; };
+		D37769690F202D91000E8DC6 /* liqJobList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqJobList.h; path = ../include/liqJobList.h; sourceTree = SOURCE_ROOT; };
+		D377696A0F202D91000E8DC6 /* liqLightNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqLightNode.h; path = ../include/liqLightNode.h; sourceTree = SOURCE_ROOT; };
+		D377696B0F202D91000E8DC6 /* liqLightNodeBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqLightNodeBehavior.h; path = ../include/liqLightNodeBehavior.h; sourceTree = SOURCE_ROOT; };
+		D377696C0F202D91000E8DC6 /* liqMayaDisplayDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqMayaDisplayDriver.h; path = ../include/liqMayaDisplayDriver.h; sourceTree = SOURCE_ROOT; };
+		D377696D0F202D91000E8DC6 /* liqMayaDisplayDriverAir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqMayaDisplayDriverAir.h; path = ../include/liqMayaDisplayDriverAir.h; sourceTree = SOURCE_ROOT; };
+		D377696E0F202D91000E8DC6 /* liqMayaDisplayDriverPixie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqMayaDisplayDriverPixie.h; path = ../include/liqMayaDisplayDriverPixie.h; sourceTree = SOURCE_ROOT; };
+		D377696F0F202D91000E8DC6 /* liqMayaNodeIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqMayaNodeIds.h; path = ../include/liqMayaNodeIds.h; sourceTree = SOURCE_ROOT; };
+		D37769700F202D91000E8DC6 /* liqMayaRenderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqMayaRenderView.h; path = ../include/liqMayaRenderView.h; sourceTree = SOURCE_ROOT; };
+		D37769710F202D91000E8DC6 /* liqNodeSwatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqNodeSwatch.h; path = ../include/liqNodeSwatch.h; sourceTree = SOURCE_ROOT; };
+		D37769720F202D91000E8DC6 /* liqPixieRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqPixieRenderer.h; path = ../include/liqPixieRenderer.h; sourceTree = SOURCE_ROOT; };
+		D37769730F202D91000E8DC6 /* liqPrmanRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqPrmanRenderer.h; path = ../include/liqPrmanRenderer.h; sourceTree = SOURCE_ROOT; };
+		D37769740F202D91000E8DC6 /* liqRibboxNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRibboxNode.h; path = ../include/liqRibboxNode.h; sourceTree = SOURCE_ROOT; };
+		D37769750F202D91000E8DC6 /* liqRibClipPlaneData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRibClipPlaneData.h; path = ../include/liqRibClipPlaneData.h; sourceTree = SOURCE_ROOT; };
+		D37769760F202D91000E8DC6 /* liqRibCurvesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRibCurvesData.h; path = ../include/liqRibCurvesData.h; sourceTree = SOURCE_ROOT; };
+		D37769770F202D91000E8DC6 /* liqRibImplicitSphereData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRibImplicitSphereData.h; path = ../include/liqRibImplicitSphereData.h; sourceTree = SOURCE_ROOT; };
+		D37769780F202D91000E8DC6 /* liqRibPfxData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRibPfxData.h; path = ../include/liqRibPfxData.h; sourceTree = SOURCE_ROOT; };
+		D37769790F202D91000E8DC6 /* liqRibPfxHairData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRibPfxHairData.h; path = ../include/liqRibPfxHairData.h; sourceTree = SOURCE_ROOT; };
+		D377697A0F202D91000E8DC6 /* liqRibPfxToonData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRibPfxToonData.h; path = ../include/liqRibPfxToonData.h; sourceTree = SOURCE_ROOT; };
+		D377697B0F202D91000E8DC6 /* liqRibRequestNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRibRequestNode.h; path = ../include/liqRibRequestNode.h; sourceTree = SOURCE_ROOT; };
+		D377697C0F202D91000E8DC6 /* liqRiCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqRiCommands.h; path = ../include/liqRiCommands.h; sourceTree = SOURCE_ROOT; };
+		D377697D0F202D91000E8DC6 /* liqSurfaceNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqSurfaceNode.h; path = ../include/liqSurfaceNode.h; sourceTree = SOURCE_ROOT; };
+		D377697E0F202D91000E8DC6 /* liqVolumeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = liqVolumeNode.h; path = ../include/liqVolumeNode.h; sourceTree = SOURCE_ROOT; };
+		D377699D0F202DB5000E8DC6 /* liqBoundingBoxLocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqBoundingBoxLocator.cpp; sourceTree = "<group>"; };
+		D377699E0F202DB5000E8DC6 /* liqBucket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqBucket.cpp; sourceTree = "<group>"; };
+		D377699F0F202DB5000E8DC6 /* liqCoordSysNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqCoordSysNode.cpp; sourceTree = "<group>"; };
+		D37769A00F202DB5000E8DC6 /* liqDisplacementNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqDisplacementNode.cpp; sourceTree = "<group>"; };
+		D37769A10F202DB5000E8DC6 /* liqGlobalsNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqGlobalsNode.cpp; sourceTree = "<group>"; };
+		D37769A20F202DB5000E8DC6 /* liqJobList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqJobList.cpp; sourceTree = "<group>"; };
+		D37769A30F202DB5000E8DC6 /* liqLightNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqLightNode.cpp; sourceTree = "<group>"; };
+		D37769A40F202DB5000E8DC6 /* liqLightNodeBehavior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqLightNodeBehavior.cpp; sourceTree = "<group>"; };
+		D37769A50F202DB5000E8DC6 /* liqMayaDisplayDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqMayaDisplayDriver.cpp; sourceTree = "<group>"; };
+		D37769A60F202DB5000E8DC6 /* liqMayaDisplayDriver3Delight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqMayaDisplayDriver3Delight.cpp; sourceTree = "<group>"; };
+		D37769A70F202DB5000E8DC6 /* liqMayaDisplayDriverAir.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqMayaDisplayDriverAir.cpp; sourceTree = "<group>"; };
+		D37769A80F202DB5000E8DC6 /* liqMayaDisplayDriverAqsis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqMayaDisplayDriverAqsis.cpp; sourceTree = "<group>"; };
+		D37769A90F202DB5000E8DC6 /* liqMayaDisplayDriverPixie.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqMayaDisplayDriverPixie.cpp; sourceTree = "<group>"; };
+		D37769AA0F202DB5000E8DC6 /* liqMayaRenderView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqMayaRenderView.cpp; sourceTree = "<group>"; };
+		D37769AB0F202DB5000E8DC6 /* liqNodeSwatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqNodeSwatch.cpp; sourceTree = "<group>"; };
+		D37769AC0F202DB5000E8DC6 /* liqRibboxNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibboxNode.cpp; sourceTree = "<group>"; };
+		D37769AD0F202DB5000E8DC6 /* liqRibClipPlaneData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibClipPlaneData.cpp; sourceTree = "<group>"; };
+		D37769AE0F202DB5000E8DC6 /* liqRibCurvesData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibCurvesData.cpp; sourceTree = "<group>"; };
+		D37769AF0F202DB5000E8DC6 /* liqRibImplicitSphereData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibImplicitSphereData.cpp; sourceTree = "<group>"; };
+		D37769B00F202DB5000E8DC6 /* liqRibPfxData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibPfxData.cpp; sourceTree = "<group>"; };
+		D37769B10F202DB5000E8DC6 /* liqRibPfxHairData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibPfxHairData.cpp; sourceTree = "<group>"; };
+		D37769B20F202DB5000E8DC6 /* liqRibPfxToonData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibPfxToonData.cpp; sourceTree = "<group>"; };
+		D37769B30F202DB5000E8DC6 /* liqRibRequestNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibRequestNode.cpp; sourceTree = "<group>"; };
+		D37769B40F202DB5000E8DC6 /* liqRiCommands.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqRiCommands.cpp; sourceTree = "<group>"; };
+		D37769B50F202DB5000E8DC6 /* liqSurfaceNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqSurfaceNode.cpp; sourceTree = "<group>"; };
+		D37769B60F202DB5000E8DC6 /* liquidBin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liquidBin.cpp; sourceTree = "<group>"; };
+		D37769B70F202DB5000E8DC6 /* liqVolumeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = liqVolumeNode.cpp; sourceTree = "<group>"; };
+		D37769D50F202F4B000E8DC6 /* libFoundation.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libFoundation.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libFoundation.dylib; sourceTree = "<absolute>"; };
+		D37769D60F202F4B000E8DC6 /* libOpenMaya.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMaya.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libOpenMaya.dylib; sourceTree = "<absolute>"; };
+		D37769D70F202F4B000E8DC6 /* libOpenMayaAnim.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMayaAnim.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libOpenMayaAnim.dylib; sourceTree = "<absolute>"; };
+		D37769D80F202F4B000E8DC6 /* libOpenMayaFX.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMayaFX.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libOpenMayaFX.dylib; sourceTree = "<absolute>"; };
+		D37769D90F202F4B000E8DC6 /* libOpenMayaRender.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMayaRender.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libOpenMayaRender.dylib; sourceTree = "<absolute>"; };
+		D37769DA0F202F4B000E8DC6 /* libOpenMayaUI.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMayaUI.dylib; path = /Applications/Autodesk/maya2009/Maya.app/Contents/MacOS/libOpenMayaUI.dylib; sourceTree = "<absolute>"; };
+		D37769E40F202FB9000E8DC6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		D3776B4A0F20369F000E8DC6 /* libpixiecommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpixiecommon.a; path = /Applications/Graphics/Pixie/lib/libpixiecommon.a; sourceTree = "<absolute>"; };
+		D3776B4E0F20371D000E8DC6 /* libsdr.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsdr.dylib; path = /Applications/Graphics/Pixie/lib/libsdr.dylib; sourceTree = "<absolute>"; };
+		D3776B4F0F20371D000E8DC6 /* libri.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libri.dylib; path = /Applications/Graphics/Pixie/lib/libri.dylib; sourceTree = "<absolute>"; };
+		D3776B870F203E36000E8DC6 /* liqmaya.dpy */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liqmaya.dpy; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4AE857D09D2B55B001A19E4 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		D4AE858209D2B587001A19E4 /* libFoundation.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libFoundation.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libFoundation.dylib; sourceTree = "<absolute>"; };
-		D4AE859709D2B5BF001A19E4 /* libOpenMayaAnim.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMayaAnim.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libOpenMayaAnim.dylib; sourceTree = "<absolute>"; };
-		D4AE859809D2B5BF001A19E4 /* libOpenMaya.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMaya.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libOpenMaya.dylib; sourceTree = "<absolute>"; };
-		D4AE859909D2B5BF001A19E4 /* libOpenMayaRender.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMayaRender.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libOpenMayaRender.dylib; sourceTree = "<absolute>"; };
-		D4AE859A09D2B5BF001A19E4 /* libOpenMayaFX.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMayaFX.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libOpenMayaFX.dylib; sourceTree = "<absolute>"; };
-		D4AE859B09D2B5BF001A19E4 /* libOpenMayaUI.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMayaUI.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libOpenMayaUI.dylib; sourceTree = "<absolute>"; };
-		D4AE85A109D2B6E4001A19E4 /* libDynSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libDynSlice.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libDynSlice.dylib; sourceTree = "<absolute>"; };
-		D4AE85A209D2B6E4001A19E4 /* libImage.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libImage.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libImage.dylib; sourceTree = "<absolute>"; };
-		D4AE85A309D2B6E4001A19E4 /* libNurbsSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libNurbsSlice.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libNurbsSlice.dylib; sourceTree = "<absolute>"; };
-		D4AE85A409D2B6E4001A19E4 /* libDeformSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libDeformSlice.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libDeformSlice.dylib; sourceTree = "<absolute>"; };
-		D4AE85A509D2B6E4001A19E4 /* libModelSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libModelSlice.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libModelSlice.dylib; sourceTree = "<absolute>"; };
-		D4AE85A609D2B6E4001A19E4 /* libKinSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libKinSlice.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libKinSlice.dylib; sourceTree = "<absolute>"; };
-		D4AE85A709D2B6E4001A19E4 /* libTranslators.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libTranslators.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libTranslators.dylib; sourceTree = "<absolute>"; };
-		D4AE85A809D2B6E4001A19E4 /* libRenderModel.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRenderModel.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libRenderModel.dylib; sourceTree = "<absolute>"; };
-		D4AE85A909D2B6E4001A19E4 /* libShared.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libShared.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libShared.dylib; sourceTree = "<absolute>"; };
-		D4AE85AA09D2B6E4001A19E4 /* libProjectSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libProjectSlice.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libProjectSlice.dylib; sourceTree = "<absolute>"; };
-		D4AE85AB09D2B6E4001A19E4 /* libPolySlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPolySlice.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libPolySlice.dylib; sourceTree = "<absolute>"; };
-		D4AE85AC09D2B6E4001A19E4 /* libCommandEngine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libCommandEngine.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libCommandEngine.dylib; sourceTree = "<absolute>"; };
-		D4AE85AD09D2B6E4001A19E4 /* libAnimSlice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libAnimSlice.dylib; path = /Applications/Alias/maya7.0/Maya.app/Contents/MacOS/libAnimSlice.dylib; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,13 +325,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4AE85BD09D2B779001A19E4 /* libOpenMayaUI.dylib in Frameworks */,
-				D4AE85BE09D2B77A001A19E4 /* libOpenMayaRender.dylib in Frameworks */,
-				D4AE85BF09D2B77B001A19E4 /* libOpenMayaFX.dylib in Frameworks */,
-				D4AE85C009D2B77C001A19E4 /* libOpenMayaAnim.dylib in Frameworks */,
-				D4AE85C109D2B77D001A19E4 /* libOpenMaya.dylib in Frameworks */,
-				D4AE85C409D2B792001A19E4 /* lib3delight.dylib in Frameworks */,
-				D4AE85C709D2B7CC001A19E4 /* libFoundation.dylib in Frameworks */,
+				D37769EE0F203050000E8DC6 /* RILIB.dylib in Frameworks */,
+				D37769DB0F202F4B000E8DC6 /* libFoundation.dylib in Frameworks */,
+				D37769DC0F202F4B000E8DC6 /* libOpenMaya.dylib in Frameworks */,
+				D37769DD0F202F4B000E8DC6 /* libOpenMayaAnim.dylib in Frameworks */,
+				D37769DE0F202F4B000E8DC6 /* libOpenMayaFX.dylib in Frameworks */,
+				D37769DF0F202F4B000E8DC6 /* libOpenMayaRender.dylib in Frameworks */,
+				D37769E00F202F4B000E8DC6 /* libOpenMayaUI.dylib in Frameworks */,
+				D37769E50F202FB9000E8DC6 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D37769050F201DB7000E8DC6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D37769560F202903000E8DC6 /* libz.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D3776B840F203E36000E8DC6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,27 +357,31 @@
 		0249A662FF388D9811CA2CEA /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				D4AE85A109D2B6E4001A19E4 /* libDynSlice.dylib */,
-				D4AE85A209D2B6E4001A19E4 /* libImage.dylib */,
-				D4AE85A309D2B6E4001A19E4 /* libNurbsSlice.dylib */,
-				D4AE85A409D2B6E4001A19E4 /* libDeformSlice.dylib */,
-				D4AE85A509D2B6E4001A19E4 /* libModelSlice.dylib */,
-				D4AE85A609D2B6E4001A19E4 /* libKinSlice.dylib */,
-				D4AE85A709D2B6E4001A19E4 /* libTranslators.dylib */,
-				D4AE85A809D2B6E4001A19E4 /* libRenderModel.dylib */,
-				D4AE85A909D2B6E4001A19E4 /* libShared.dylib */,
-				D4AE85AA09D2B6E4001A19E4 /* libProjectSlice.dylib */,
-				D4AE85AB09D2B6E4001A19E4 /* libPolySlice.dylib */,
-				D4AE85AC09D2B6E4001A19E4 /* libCommandEngine.dylib */,
-				D4AE85AD09D2B6E4001A19E4 /* libAnimSlice.dylib */,
-				D4AE859709D2B5BF001A19E4 /* libOpenMayaAnim.dylib */,
-				D4AE859809D2B5BF001A19E4 /* libOpenMaya.dylib */,
-				D4AE859909D2B5BF001A19E4 /* libOpenMayaRender.dylib */,
-				D4AE859A09D2B5BF001A19E4 /* libOpenMayaFX.dylib */,
-				D4AE859B09D2B5BF001A19E4 /* libOpenMayaUI.dylib */,
-				D4AE858209D2B587001A19E4 /* libFoundation.dylib */,
+				D30590ED0F20600C00E89D7C /* libAnimSlice.dylib */,
+				D30590EE0F20600C00E89D7C /* libCommandEngine.dylib */,
+				D30590EF0F20600C00E89D7C /* libDeformSlice.dylib */,
+				D30590F00F20600C00E89D7C /* libDynSlice.dylib */,
+				D30590F10F20600C00E89D7C /* libImage.dylib */,
+				D30590F20F20600C00E89D7C /* libKinSlice.dylib */,
+				D30590F30F20600C00E89D7C /* libModelSlice.dylib */,
+				D30590F40F20600C00E89D7C /* libNurbsSlice.dylib */,
+				D30590F50F20600C00E89D7C /* libPolySlice.dylib */,
+				D30590F60F20600C00E89D7C /* libProjectSlice.dylib */,
+				D30590F70F20600C00E89D7C /* libRenderModel.dylib */,
+				D30590F80F20600C00E89D7C /* libShared.dylib */,
+				D30590F90F20600C00E89D7C /* libTranslators.dylib */,
+				D3776B4E0F20371D000E8DC6 /* libsdr.dylib */,
+				D3776B4F0F20371D000E8DC6 /* libri.dylib */,
+				D3776B4A0F20369F000E8DC6 /* libpixiecommon.a */,
+				D37769E40F202FB9000E8DC6 /* OpenGL.framework */,
+				D37769D50F202F4B000E8DC6 /* libFoundation.dylib */,
+				D37769D60F202F4B000E8DC6 /* libOpenMaya.dylib */,
+				D37769D70F202F4B000E8DC6 /* libOpenMayaAnim.dylib */,
+				D37769D80F202F4B000E8DC6 /* libOpenMayaFX.dylib */,
+				D37769D90F202F4B000E8DC6 /* libOpenMayaRender.dylib */,
+				D37769DA0F202F4B000E8DC6 /* libOpenMayaUI.dylib */,
+				D37769550F202903000E8DC6 /* libz.dylib */,
 				D4AE857D09D2B55B001A19E4 /* Carbon.framework */,
-				D4AE857909D2B32D001A19E4 /* lib3delight.dylib */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -267,6 +401,38 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				D37769A50F202DB5000E8DC6 /* liqMayaDisplayDriver.cpp */,
+				D377699D0F202DB5000E8DC6 /* liqBoundingBoxLocator.cpp */,
+				D377699E0F202DB5000E8DC6 /* liqBucket.cpp */,
+				D377699F0F202DB5000E8DC6 /* liqCoordSysNode.cpp */,
+				D37769A00F202DB5000E8DC6 /* liqDisplacementNode.cpp */,
+				D37769A10F202DB5000E8DC6 /* liqGlobalsNode.cpp */,
+				D37769A20F202DB5000E8DC6 /* liqJobList.cpp */,
+				D37769A30F202DB5000E8DC6 /* liqLightNode.cpp */,
+				D37769A40F202DB5000E8DC6 /* liqLightNodeBehavior.cpp */,
+				D37769A60F202DB5000E8DC6 /* liqMayaDisplayDriver3Delight.cpp */,
+				D37769A70F202DB5000E8DC6 /* liqMayaDisplayDriverAir.cpp */,
+				D37769A80F202DB5000E8DC6 /* liqMayaDisplayDriverAqsis.cpp */,
+				D37769A90F202DB5000E8DC6 /* liqMayaDisplayDriverPixie.cpp */,
+				D37769AA0F202DB5000E8DC6 /* liqMayaRenderView.cpp */,
+				D37769AB0F202DB5000E8DC6 /* liqNodeSwatch.cpp */,
+				D37769AC0F202DB5000E8DC6 /* liqRibboxNode.cpp */,
+				D37769AD0F202DB5000E8DC6 /* liqRibClipPlaneData.cpp */,
+				D37769AE0F202DB5000E8DC6 /* liqRibCurvesData.cpp */,
+				D37769AF0F202DB5000E8DC6 /* liqRibImplicitSphereData.cpp */,
+				D37769B00F202DB5000E8DC6 /* liqRibPfxData.cpp */,
+				D37769B10F202DB5000E8DC6 /* liqRibPfxHairData.cpp */,
+				D37769B20F202DB5000E8DC6 /* liqRibPfxToonData.cpp */,
+				D37769B30F202DB5000E8DC6 /* liqRibRequestNode.cpp */,
+				D37769B40F202DB5000E8DC6 /* liqRiCommands.cpp */,
+				D37769B50F202DB5000E8DC6 /* liqSurfaceNode.cpp */,
+				D37769B60F202DB5000E8DC6 /* liquidBin.cpp */,
+				D37769B70F202DB5000E8DC6 /* liqVolumeNode.cpp */,
+				D37769160F201E19000E8DC6 /* error.cpp */,
+				D37769170F201E19000E8DC6 /* ri.cpp */,
+				D37769180F201E19000E8DC6 /* ribOut.cpp */,
+				D37769190F201E19000E8DC6 /* riInterface.cpp */,
+				D377691A0F201E19000E8DC6 /* variable.cpp */,
 				1FC7A9DD06A0016A00954BD2 /* liqAttachPrefAttribute.cpp */,
 				1FD593F20794629900F9DE2C /* liqExpression.cpp */,
 				1FC7A9E006A0016A00954BD2 /* liqGetAttr.cpp */,
@@ -302,7 +468,9 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1FAC5DDB07BE25410083A3E5 /* liquid.lib */,
+				1FAC5DDB07BE25410083A3E5 /* liquid.bundle */,
+				D37769070F201DB7000E8DC6 /* RILIB.dylib */,
+				D3776B870F203E36000E8DC6 /* liqmaya.dpy */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -310,6 +478,43 @@
 		1FCCD02B079F209C0069EDB7 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				D37769610F202D91000E8DC6 /* liqAqsisRenderer.h */,
+				D37769620F202D91000E8DC6 /* liqBoundingBoxLocator.h */,
+				D37769630F202D91000E8DC6 /* liqBucket.h */,
+				D37769640F202D91000E8DC6 /* liqCoordSysNode.h */,
+				D37769650F202D91000E8DC6 /* liqDelightRenderer.h */,
+				D37769660F202D91000E8DC6 /* liqDisplacementNode.h */,
+				D37769670F202D91000E8DC6 /* liqEntropyRenderer.h */,
+				D37769680F202D91000E8DC6 /* liqGlobalsNode.h */,
+				D37769690F202D91000E8DC6 /* liqJobList.h */,
+				D377696A0F202D91000E8DC6 /* liqLightNode.h */,
+				D377696B0F202D91000E8DC6 /* liqLightNodeBehavior.h */,
+				D377696C0F202D91000E8DC6 /* liqMayaDisplayDriver.h */,
+				D377696D0F202D91000E8DC6 /* liqMayaDisplayDriverAir.h */,
+				D377696E0F202D91000E8DC6 /* liqMayaDisplayDriverPixie.h */,
+				D377696F0F202D91000E8DC6 /* liqMayaNodeIds.h */,
+				D37769700F202D91000E8DC6 /* liqMayaRenderView.h */,
+				D37769710F202D91000E8DC6 /* liqNodeSwatch.h */,
+				D37769720F202D91000E8DC6 /* liqPixieRenderer.h */,
+				D37769730F202D91000E8DC6 /* liqPrmanRenderer.h */,
+				D37769740F202D91000E8DC6 /* liqRibboxNode.h */,
+				D37769750F202D91000E8DC6 /* liqRibClipPlaneData.h */,
+				D37769760F202D91000E8DC6 /* liqRibCurvesData.h */,
+				D37769770F202D91000E8DC6 /* liqRibImplicitSphereData.h */,
+				D37769780F202D91000E8DC6 /* liqRibPfxData.h */,
+				D37769790F202D91000E8DC6 /* liqRibPfxHairData.h */,
+				D377697A0F202D91000E8DC6 /* liqRibPfxToonData.h */,
+				D377697B0F202D91000E8DC6 /* liqRibRequestNode.h */,
+				D377697C0F202D91000E8DC6 /* liqRiCommands.h */,
+				D377697D0F202D91000E8DC6 /* liqSurfaceNode.h */,
+				D377697E0F202D91000E8DC6 /* liqVolumeNode.h */,
+				D37769520F202272000E8DC6 /* zlib.h */,
+				D377690A0F201E00000E8DC6 /* common.h */,
+				D377690B0F201E00000E8DC6 /* error.h */,
+				D377690C0F201E00000E8DC6 /* ri.h */,
+				D377690D0F201E00000E8DC6 /* ribOut.h */,
+				D377690E0F201E00000E8DC6 /* riInterface.h */,
+				D377690F0F201E00000E8DC6 /* variable.h */,
 				1FCCD02C079F20B70069EDB7 /* liqAttachPrefAttribute.h */,
 				1FCCD02D079F20B70069EDB7 /* liqCustomNode.h */,
 				1FCCD02E079F20B70069EDB7 /* liqExpression.h */,
@@ -400,15 +605,65 @@
 				1FAC5DB707BE25410083A3E5 /* liqTokenPointer.h in Headers */,
 				1FAC5DB807BE25410083A3E5 /* liquid.h in Headers */,
 				1FAC5DB907BE25410083A3E5 /* liqWriteArchive.h in Headers */,
+				D37769800F202D91000E8DC6 /* liqBoundingBoxLocator.h in Headers */,
+				D37769810F202D91000E8DC6 /* liqBucket.h in Headers */,
+				D37769820F202D91000E8DC6 /* liqCoordSysNode.h in Headers */,
+				D37769830F202D91000E8DC6 /* liqDelightRenderer.h in Headers */,
+				D37769840F202D91000E8DC6 /* liqDisplacementNode.h in Headers */,
+				D37769850F202D91000E8DC6 /* liqEntropyRenderer.h in Headers */,
+				D37769860F202D91000E8DC6 /* liqGlobalsNode.h in Headers */,
+				D37769870F202D91000E8DC6 /* liqJobList.h in Headers */,
+				D37769880F202D91000E8DC6 /* liqLightNode.h in Headers */,
+				D37769890F202D91000E8DC6 /* liqLightNodeBehavior.h in Headers */,
+				D377698A0F202D91000E8DC6 /* liqMayaDisplayDriver.h in Headers */,
+				D377698B0F202D91000E8DC6 /* liqMayaDisplayDriverAir.h in Headers */,
+				D377698C0F202D91000E8DC6 /* liqMayaDisplayDriverPixie.h in Headers */,
+				D377698D0F202D91000E8DC6 /* liqMayaNodeIds.h in Headers */,
+				D377698E0F202D91000E8DC6 /* liqMayaRenderView.h in Headers */,
+				D377698F0F202D91000E8DC6 /* liqNodeSwatch.h in Headers */,
+				D37769900F202D91000E8DC6 /* liqPixieRenderer.h in Headers */,
+				D37769910F202D91000E8DC6 /* liqPrmanRenderer.h in Headers */,
+				D37769920F202D91000E8DC6 /* liqRibboxNode.h in Headers */,
+				D37769930F202D91000E8DC6 /* liqRibClipPlaneData.h in Headers */,
+				D37769940F202D91000E8DC6 /* liqRibCurvesData.h in Headers */,
+				D37769950F202D91000E8DC6 /* liqRibImplicitSphereData.h in Headers */,
+				D37769960F202D91000E8DC6 /* liqRibPfxData.h in Headers */,
+				D37769970F202D91000E8DC6 /* liqRibPfxHairData.h in Headers */,
+				D37769980F202D91000E8DC6 /* liqRibPfxToonData.h in Headers */,
+				D37769990F202D91000E8DC6 /* liqRibRequestNode.h in Headers */,
+				D377699A0F202D91000E8DC6 /* liqRiCommands.h in Headers */,
+				D377699B0F202D91000E8DC6 /* liqSurfaceNode.h in Headers */,
+				D377699C0F202D91000E8DC6 /* liqVolumeNode.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D37769030F201DB7000E8DC6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D37769100F201E00000E8DC6 /* common.h in Headers */,
+				D37769110F201E00000E8DC6 /* error.h in Headers */,
+				D37769120F201E00000E8DC6 /* ri.h in Headers */,
+				D37769130F201E00000E8DC6 /* ribOut.h in Headers */,
+				D37769140F201E00000E8DC6 /* riInterface.h in Headers */,
+				D37769150F201E00000E8DC6 /* variable.h in Headers */,
+				D37769530F202272000E8DC6 /* zlib.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D3776B800F203E36000E8DC6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1FAC5D9407BE25410083A3E5 /* liquid-3Delight */ = {
+		1FAC5D9407BE25410083A3E5 /* liquid */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D4AE84FD09D29BB0001A19E4 /* Build configuration list for PBXNativeTarget "liquid-3Delight" */;
+			buildConfigurationList = D4AE84FD09D29BB0001A19E4 /* Build configuration list for PBXNativeTarget "liquid" */;
 			buildPhases = (
 				1FAC5D9507BE25410083A3E5 /* Headers */,
 				1FAC5DBA07BE25410083A3E5 /* Sources */,
@@ -418,174 +673,45 @@
 			buildRules = (
 				D4AE850A09D29C82001A19E4 /* PBXBuildRule */,
 			);
-			buildSettings = {
-				DELIGHT = "/Applications/Graphics/3Delight-3.0.0";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = /Applications/Alias/maya6.0/devkit/include/maya/OpenMayaMac.h;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					OSX,
-					MAC_PLUGIN,
-					OSMac_,
-					_BOOL,
-					OSMac_MachO_,
-					DELIGHT,
-					"LIQUIDVERSION=1.6.7",
-				);
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../include/,
-					"$(MAYA_LOCATION)/devkit/include",
-					"$(DELIGHT)/include",
-				);
-				INSTALL_PATH = ../bin/OSX/;
-				LIBRARY_SEARCH_PATHS = (
-					"$(DELIGHT)/lib",
-					"$(MAYA_LOCATION)/MacOS",
-					"$(SYSTEM_APPS_DIR)/Graphics/3Delight-4.0.1/lib",
-				);
-				LIBRARY_STYLE = DYNAMIC;
-				MAYA_LOCATION = /Applications/Alias/maya6.0/Maya.app/Contents/;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-					"-lFoundation",
-					"-lOpenMaya",
-					"-lOpenMayaRender",
-					"-lOpenMayaUI",
-					"-lOpenMayaAnim",
-					"-lOpenMayaFX",
-					"-lAnimSlice",
-					"-lDeformSlice",
-					"-lDynSlice",
-					"-lKinSlice",
-					"-lModelSlice",
-					"-lNurbsSlice",
-					"-lPolySlice",
-					"-lProjectSlice",
-					"-lImage",
-					"-lShared",
-					"-lTranslators",
-					"-lDataModel",
-					"-lRenderModel",
-					"-lNurbsEngine",
-					"-lDependEngine",
-					"-lCommandEngine",
-					"-lFoundation",
-					"-dylib_file",
-					"@executable_path/libBase.dylib:$(MAYA_LOCATION)/MacOS/libBase.dylib",
-					"-dylib_file",
-					"@executable_path/libFoundation.dylib:$(MAYA_LOCATION)/MacOS/libFoundation.dylib",
-					"-dylib_file",
-					"@executable_path/libSubdivEngine.dylib:$(MAYA_LOCATION)/MacOS/libSubdivEngine.dylib",
-					"-dylib_file",
-					"@executable_path/libGeometryEngine.dylib:$(MAYA_LOCATION)/MacOS/libGeometryEngine.dylib",
-					"-dylib_file",
-					"@executable_path/libAG.dylib:$(MAYA_LOCATION)/MacOS/libAG.dylib",
-					"-dylib_file",
-					"@executable_path/libExplorerSlice.dylib:$(MAYA_LOCATION)/MacOS/libExplorerSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libShared.dylib:$(MAYA_LOCATION)/MacOS/libShared.dylib",
-					"-dylib_file",
-					"@executable_path/libNurbsEngine.dylib:$(MAYA_LOCATION)/MacOS/libNurbsEngine.dylib",
-					"-dylib_file",
-					"@executable_path/libSubdiv.dylib:$(MAYA_LOCATION)/MacOS/libSubdiv.dylib",
-					"-dylib_file",
-					"@executable_path/libDataModel.dylib:$(MAYA_LOCATION)/MacOS/libDataModel.dylib",
-					"-dylib_file",
-					"@executable_path/libNurbs.dylib:$(MAYA_LOCATION)/MacOS/libNurbs.dylib",
-					"-dylib_file",
-					"@executable_path/libExtensionLayer.dylib:$(MAYA_LOCATION)/MacOS/libExtensionLayer.dylib",
-					"-dylib_file",
-					"@executable_path/libPolyEngine.dylib:$(MAYA_LOCATION)/MacOS/libPolyEngine.dylib",
-					"-dylib_file",
-					"@executable_path/libCommandEngine.dylib:$(MAYA_LOCATION)/MacOS/libCommandEngine.dylib",
-					"-dylib_file",
-					"@executable_path/libDependEngine.dylib:$(MAYA_LOCATION)/MacOS/libDependEngine.dylib",
-					"-dylib_file",
-					"@executable_path/libPoly.dylib:$(MAYA_LOCATION)/MacOS/libPoly.dylib",
-					"-dylib_file",
-					"@executable_path/libSubdivGeom.dylib:$(MAYA_LOCATION)/MacOS/libSubdivGeom.dylib",
-					"-dylib_file",
-					"@executable_path/libModelSlice.dylib:$(MAYA_LOCATION)/MacOS/libModelSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libRenderModel.dylib:$(MAYA_LOCATION)/MacOS/libRenderModel.dylib",
-					"-dylib_file",
-					"@executable_path/lib3dGraphics.dylib:$(MAYA_LOCATION)/MacOS/lib3dGraphics.dylib",
-					"-dylib_file",
-					"@executable_path/libImage.dylib:$(MAYA_LOCATION)/MacOS/libImage.dylib",
-					"-dylib_file",
-					"@executable_path/libAnimEngine.dylib:$(MAYA_LOCATION)/MacOS/libAnimEngine.dylib",
-					"-dylib_file",
-					"@executable_path/libHWRender.dylib:$(MAYA_LOCATION)/MacOS/libHWRender.dylib",
-					"-dylib_file",
-					"@executable_path/libHWFoundation.dylib:$(MAYA_LOCATION)/MacOS/libHWFoundation.dylib",
-					"-dylib_file",
-					"@executable_path/libHWGL.dylib:$(MAYA_LOCATION)/MacOS/libHWGL.dylib",
-					"-dylib_file",
-					"@executable_path/libNurbsSlice.dylib:$(MAYA_LOCATION)/MacOS/libNurbsSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libDependCommand.dylib:$(MAYA_LOCATION)/MacOS/libDependCommand.dylib",
-					"-dylib_file",
-					"@executable_path/libPolySlice.dylib:$(MAYA_LOCATION)/MacOS/libPolySlice.dylib",
-					"-dylib_file",
-					"@executable_path/libKinSlice.dylib:$(MAYA_LOCATION)/MacOS/libKinSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libDynSlice.dylib:$(MAYA_LOCATION)/MacOS/libDynSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libDeformSlice.dylib:$(MAYA_LOCATION)/MacOS/libDeformSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libAnimSlice.dylib:$(MAYA_LOCATION)/MacOS/libAnimSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libManips.dylib:$(MAYA_LOCATION)/MacOS/libManips.dylib",
-					"-dylib_file",
-					"@executable_path/libModelUISlice.dylib:$(MAYA_LOCATION)/MacOS/libModelUISlice.dylib",
-					"-dylib_file",
-					"@executable_path/libSharedUI.dylib:$(MAYA_LOCATION)/MacOS/libSharedUI.dylib",
-					"-dylib_file",
-					"@executable_path/libImageUI.dylib:$(MAYA_LOCATION)/MacOS/libImageUI.dylib",
-					"-dylib_file",
-					"@executable_path/libRenderSlice.dylib:$(MAYA_LOCATION)/MacOS/libRenderSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libPopLib.dylib:$(MAYA_LOCATION)/MacOS/libPopLib.dylib",
-					"-dylib_file",
-					"@executable_path/libIMF.dylib:$(MAYA_LOCATION)/MacOS/libIMF.dylib",
-					"-dylib_file",
-					"@executable_path/libDynUISlice.dylib:$(MAYA_LOCATION)/MacOS/libDynUISlice.dylib",
-					"-dylib_file",
-					"@executable_path/libOpenMaya.dylib:$(MAYA_LOCATION)/MacOS/libOpenMaya.dylib",
-					"-dylib_file",
-					"@executable_path/libxpcom.dylib:$(MAYA_LOCATION)/MacOS/libxpcom.dylib",
-					"-dylib_file",
-					"@executable_path/libnspr4.dylib:$(MAYA_LOCATION)/MacOS/libnspr4.dylib",
-					"-dylib_file",
-					"@executable_path/libplc4.dylib:$(MAYA_LOCATION)/MacOS/libplc4.dylib",
-					"-dylib_file",
-					"@executable_path/libplds4.dylib:$(MAYA_LOCATION)/MacOS/libplds4.dylib",
-					"-dylib_file",
-					"@executable_path/libAnimUISlice.dylib:$(MAYA_LOCATION)/MacOS/libAnimUISlice.dylib",
-					"-dylib_file",
-					"@executable_path/libDevices.dylib:$(MAYA_LOCATION)/MacOS/libDevices.dylib",
-					"-dylib_file",
-					"@executable_path/libDynSlice.dylib:$(MAYA_LOCATION)/MacOS/libDynSlice.dylib",
-					"-dylib_file",
-					"@executable_path/libOpenMayaFX.dylib:$(MAYA_LOCATION)/MacOS/libOpenMayaFX.dylib",
-				);
-				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
-				PRODUCT_NAME = liquid_3delight.lib;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
 			dependencies = (
 			);
-			name = "liquid-3Delight";
+			name = liquid;
 			productName = liquid;
-			productReference = 1FAC5DDB07BE25410083A3E5 /* liquid.lib */;
+			productReference = 1FAC5DDB07BE25410083A3E5 /* liquid.bundle */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		D37769060F201DB7000E8DC6 /* RILIB */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D37769090F201DD5000E8DC6 /* Build configuration list for PBXNativeTarget "RILIB" */;
+			buildPhases = (
+				D37769030F201DB7000E8DC6 /* Headers */,
+				D37769040F201DB7000E8DC6 /* Sources */,
+				D37769050F201DB7000E8DC6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RILIB;
+			productName = ribLib;
+			productReference = D37769070F201DB7000E8DC6 /* RILIB.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		D3776B7F0F203E36000E8DC6 /* displayDriver-3Delight */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D3776B850F203E36000E8DC6 /* Build configuration list for PBXNativeTarget "displayDriver-3Delight" */;
+			buildPhases = (
+				D3776B800F203E36000E8DC6 /* Headers */,
+				D3776B820F203E36000E8DC6 /* Sources */,
+				D3776B840F203E36000E8DC6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "displayDriver-3Delight";
+			productName = liqmaya;
+			productReference = D3776B870F203E36000E8DC6 /* liqmaya.dpy */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -594,17 +720,15 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = D4AE850109D29BB0001A19E4 /* Build configuration list for PBXProject "liquidMaya" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				014CEA460018CE2711CA2923 /* Development */,
-				014CEA470018CE2711CA2923 /* Deployment */,
-			);
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* liquidMaya */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
-				1FAC5D9407BE25410083A3E5 /* liquid-3Delight */,
+				D3776B7F0F203E36000E8DC6 /* displayDriver-3Delight */,
+				1FAC5D9407BE25410083A3E5 /* liquid */,
+				D37769060F201DB7000E8DC6 /* RILIB */,
 			);
 		};
 /* End PBXProject section */
@@ -659,22 +783,101 @@
 				1FAC5DD407BE25410083A3E5 /* liquidPlug.cpp in Sources */,
 				1FAC5DD507BE25410083A3E5 /* liqWriteArchive.cpp in Sources */,
 				1FAC5DD707BE25410083A3E5 /* liqExpression.cpp in Sources */,
+				D37769B80F202DB5000E8DC6 /* liqBoundingBoxLocator.cpp in Sources */,
+				D37769B90F202DB5000E8DC6 /* liqBucket.cpp in Sources */,
+				D37769BA0F202DB5000E8DC6 /* liqCoordSysNode.cpp in Sources */,
+				D37769BB0F202DB5000E8DC6 /* liqDisplacementNode.cpp in Sources */,
+				D37769BC0F202DB5000E8DC6 /* liqGlobalsNode.cpp in Sources */,
+				D37769BD0F202DB5000E8DC6 /* liqJobList.cpp in Sources */,
+				D37769BE0F202DB5000E8DC6 /* liqLightNode.cpp in Sources */,
+				D37769BF0F202DB5000E8DC6 /* liqLightNodeBehavior.cpp in Sources */,
+				D37769C50F202DB5000E8DC6 /* liqMayaRenderView.cpp in Sources */,
+				D37769C60F202DB5000E8DC6 /* liqNodeSwatch.cpp in Sources */,
+				D37769C70F202DB5000E8DC6 /* liqRibboxNode.cpp in Sources */,
+				D37769C80F202DB5000E8DC6 /* liqRibClipPlaneData.cpp in Sources */,
+				D37769C90F202DB5000E8DC6 /* liqRibCurvesData.cpp in Sources */,
+				D37769CA0F202DB5000E8DC6 /* liqRibImplicitSphereData.cpp in Sources */,
+				D37769CB0F202DB5000E8DC6 /* liqRibPfxData.cpp in Sources */,
+				D37769CC0F202DB5000E8DC6 /* liqRibPfxHairData.cpp in Sources */,
+				D37769CD0F202DB5000E8DC6 /* liqRibPfxToonData.cpp in Sources */,
+				D37769CE0F202DB5000E8DC6 /* liqRibRequestNode.cpp in Sources */,
+				D37769CF0F202DB5000E8DC6 /* liqRiCommands.cpp in Sources */,
+				D37769D00F202DB5000E8DC6 /* liqSurfaceNode.cpp in Sources */,
+				D37769D20F202DB5000E8DC6 /* liqVolumeNode.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D37769040F201DB7000E8DC6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D377691B0F201E19000E8DC6 /* error.cpp in Sources */,
+				D377691C0F201E19000E8DC6 /* ri.cpp in Sources */,
+				D377691D0F201E19000E8DC6 /* ribOut.cpp in Sources */,
+				D377691E0F201E19000E8DC6 /* riInterface.cpp in Sources */,
+				D377691F0F201E19000E8DC6 /* variable.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D3776B820F203E36000E8DC6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D3776B880F203EEC000E8DC6 /* liqMayaDisplayDriver3Delight.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		D37769080F201DB7000E8DC6 /* default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/OSX";
+				EXECUTABLE_PREFIX = "";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_ZLIB;
+				INSTALL_PATH = "$(LIQUIDHOME)/bin";
+				LIQUIDHOME = "/Applications/Graphics/Liquid-2.3.5";
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
+				PRODUCT_NAME = RILIB;
+				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include;
+				SYMROOT = ../bin;
+				ZERO_LINK = YES;
+			};
+			name = default;
+		};
+		D3776B860F203E36000E8DC6 /* default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/3Delight/OSX";
+				DELIGHT = "/Applications/Graphics/3Delight-8.0.1";
+				EXECUTABLE_EXTENSION = dpy;
+				EXECUTABLE_PREFIX = "";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(DELIGHT)/include";
+				INSTALL_PATH = "$(DELIGHT)/displays";
+				LIBRARY_SEARCH_PATHS = "$(DELIGHT)/lib";
+				PREBINDING = NO;
+				PRODUCT_NAME = liqmaya;
+				SYMROOT = ../displayDrivers;
+				ZERO_LINK = YES;
+			};
+			name = default;
+		};
 		D4AE84FE09D29BB0001A19E4 /* default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/OSX";
 				COPY_PHASE_STRIP = NO;
 				DEBUGGING_SYMBOLS = YES;
-				DELIGHT = "/Applications/Graphics/3Delight-5.0.1";
 				DEPLOYMENT_LOCATION = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				EXECUTABLE_EXTENSION = lib;
+				EXECUTABLE_EXTENSION = bundle;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -687,27 +890,27 @@
 					OSMac_,
 					_BOOL,
 					OSMac_MachO_,
-					DELIGHT,
-					"LIQUIDVERSION=\"2.0.16\"",
+					GENERIC_RIBLIB,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"REQUIRE_IOSTREAM=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "LIQUIDVERSION=\\\"2.3.5\\\"";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
 					../include/,
 					"$(MAYA_LOCATION)/../../devkit/include",
-					"$(DELIGHT)/include",
+					../RibLib,
 				);
-				INSTALL_PATH = ../bin/OSX/;
+				INSTALL_PATH = "$(LIQUIDHOME)/bin";
 				LIBRARY_SEARCH_PATHS = (
-					"$(DELIGHT)/lib",
+					../ribLib,
 					"$(MAYA_LOCATION)/MacOS",
-					"$(SYSTEM_APPS_DIR)/Graphics/3Delight-5.0.1/lib",
-					"$(SYSTEM_APPS_DIR)/Alias/maya7.0/Maya.app/Contents/MacOS",
 				);
 				LIBRARY_STYLE = DYNAMIC;
+				LIQUIDHOME = "/Applications/Graphics/Liquid-2.3.5";
 				MACH_O_TYPE = mh_dylib;
-				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents;
+				MAYA_LOCATION = /Applications/Autodesk/maya2009/Maya.app/Contents;
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-Wl,-executable_path,$(MAYA_LOCATION)/MacOS";
@@ -716,6 +919,7 @@
 				PRODUCT_NAME = liquid;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
+				SYMROOT = ../bin;
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = YES;
 			};
@@ -731,7 +935,23 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D4AE84FD09D29BB0001A19E4 /* Build configuration list for PBXNativeTarget "liquid-3Delight" */ = {
+		D37769090F201DD5000E8DC6 /* Build configuration list for PBXNativeTarget "RILIB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D37769080F201DB7000E8DC6 /* default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = default;
+		};
+		D3776B850F203E36000E8DC6 /* Build configuration list for PBXNativeTarget "displayDriver-3Delight" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D3776B860F203E36000E8DC6 /* default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = default;
+		};
+		D4AE84FD09D29BB0001A19E4 /* Build configuration list for PBXNativeTarget "liquid" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D4AE84FE09D29BB0001A19E4 /* default */,

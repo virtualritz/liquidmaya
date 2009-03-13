@@ -5,10 +5,10 @@ SHELL = sh
 #********************************************
 
 AW_LOCATION ?= /usr/autodesk
-MAYA_LOCATION ?= $(AW_LOCATION)/maya2008-x64
+MAYA_LOCATION ?= $(AW_LOCATION)/maya2009-x64
 MAYA_VERSIONS := $(wildcard $(AW_LOCATION)/maya*)
-MAYA_VERSION ?= 2008
-LIQRMAN ?= prman
+MAYA_VERSION ?= 2009
+LIQRMAN ?= 3delight
 LIQ_OLD_MAYA_IDS ?= 0
 # Os settings
 # What about Suze ?
@@ -19,13 +19,13 @@ ifeq "$(OS_NAME)" "GNU/Linux"
 PLUGSUF		= so
 OBJEXT		= o
 LD		= $(MAYA_LOCATION)/bin/mayald
-LOCFLAGS	= -fmessage-length=0 -Os -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -DPRMAN -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
+LOCFLAGS	= -fmessage-length=0 -Os -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -DDELIGHT -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
 WARNFLAGS	= -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
 NO_TRANS_LINK	=
 VBIN		= redhat
 EXTRA_LIBS	=
 AR		= ar cqs
-CPP		= gcc
+CPP		= g++-4.1
 
 UX_RELEASE_TEST_FILES = /etc/fedora-release /etc/redhat-release /etc/slackware-version /etc/gentoo-release
 UX_RELEASE_FILE ?= $(foreach FILE, $(UX_RELEASE_TEST_FILES), $(wildcard $(FILE)*))
@@ -154,11 +154,12 @@ endif
 #********************************************
 ifeq "$(LIQRMAN)" "3delight"
 LIQDISPLAYOBJS  =	liqMayaDisplayDriver3Delight
-LIQRMANPATH 	=	$${DELIGHT:=/usr/local/3delight}
+#LIQRMANPATH 	=	$${DELIGHT:=/usr/local/3delight}
+LIQRMANPATH 	=	$${DELIGHT:=/home/alf/software/3delight-8.0.1/Linux-x86_64}
 LIQUIDDPYLOC	=	displayDrivers/3Delight/
 LIQDPYNAME	=	liqmaya.dpy
 LIQRMANFLAGS	=	-DDELIGHT
-LIQRMANLIBS 	=	-l3delight -lc -ldl -lm
+LIQRMANLIBS 	=	-l:/home/alf/software/3delight-8.0.1/Linux-x86_64/lib/lib3delight.so -lc -ldl -lm
 LIQWINRMANLIBS	=	3delight.lib
 USEDVAR 	=	DELIGHT
 CSL 		= 	$(LIQRMANPATH)/bin/shaderdl
@@ -248,7 +249,7 @@ endif
 
 DPYINCLUDES		= -I$(LIQRMANPATH)/include
 
-ifeq "$(MAYA_VERSION)" "2008"
+ifeq "$(MAYA_VERSION)" "2009"
 MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX
 else
 MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lGL -lGLU

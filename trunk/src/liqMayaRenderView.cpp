@@ -53,8 +53,9 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <iostream.h>
+#include <iostream>
 #include <bzlib.h>
+#include <cstdlib>
 
 #define closesocket close
 

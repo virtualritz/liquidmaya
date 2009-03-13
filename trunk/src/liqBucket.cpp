@@ -34,7 +34,7 @@
 
 
 #include "liqBucket.h"
-
+#include <cstring>
 
 bucket::bucket() {
 
