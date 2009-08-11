@@ -1,0 +1,3725 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1F000F510A867E620015BC04 /* liqRibPfxHairData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */; };
+		1F000F520A867E620015BC04 /* liqRibPfxToonData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F500A867E620015BC04 /* liqRibPfxToonData.h */; };
+		1F000F530A867E620015BC04 /* liqRibPfxHairData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */; };
+		1F000F540A867E620015BC04 /* liqRibPfxToonData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F500A867E620015BC04 /* liqRibPfxToonData.h */; };
+		1F000F550A867E620015BC04 /* liqRibPfxHairData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */; };
+		1F000F560A867E620015BC04 /* liqRibPfxToonData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F500A867E620015BC04 /* liqRibPfxToonData.h */; };
+		1F148B3E0AED570E00968DE4 /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B320AED570E00968DE4 /* common.h */; };
+		1F148B3F0AED570E00968DE4 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B330AED570E00968DE4 /* error.cpp */; };
+		1F148B400AED570E00968DE4 /* error.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B340AED570E00968DE4 /* error.h */; };
+		1F148B420AED570E00968DE4 /* ri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B360AED570E00968DE4 /* ri.cpp */; };
+		1F148B430AED570E00968DE4 /* ri.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B370AED570E00968DE4 /* ri.h */; };
+		1F148B440AED570E00968DE4 /* ribOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B380AED570E00968DE4 /* ribOut.cpp */; };
+		1F148B450AED570E00968DE4 /* ribOut.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B390AED570E00968DE4 /* ribOut.h */; };
+		1F148B460AED570E00968DE4 /* riInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B3A0AED570E00968DE4 /* riInterface.cpp */; };
+		1F148B470AED570E00968DE4 /* riInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B3B0AED570E00968DE4 /* riInterface.h */; };
+		1F148B480AED570E00968DE4 /* variable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F148B3C0AED570E00968DE4 /* variable.cpp */; };
+		1F148B490AED570E00968DE4 /* variable.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F148B3D0AED570E00968DE4 /* variable.h */; };
+		1F224C4D0B261DE20071B978 /* librib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F148B260AED56C800968DE4 /* librib.a */; };
+		1F224C4F0B261DFE0071B978 /* libri.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6E77380A9CFB6F009447B2 /* libri.dylib */; };
+		1F224C500B261E120071B978 /* librib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F148B260AED56C800968DE4 /* librib.a */; };
+		1F28DDD909D6DF5800D644D1 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
+		1F4D549F09857F5A00787F2E /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
+		1F4D54A009857F5A00787F2E /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
+		1F4D54A109857F5A00787F2E /* liqCoordSysNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */; };
+		1F4D54A309857F5A00787F2E /* liqDisplacementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547909857F5A00787F2E /* liqDisplacementNode.cpp */; };
+		1F4D54A509857F5A00787F2E /* liqExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547B09857F5A00787F2E /* liqExpression.cpp */; };
+		1F4D54A609857F5A00787F2E /* liqGetAttr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547C09857F5A00787F2E /* liqGetAttr.cpp */; };
+		1F4D54A709857F5A00787F2E /* liqGetSloInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */; };
+		1F4D54A809857F5A00787F2E /* liqGlobalHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */; };
+		1F4D54A909857F5A00787F2E /* liqGlobalsNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */; };
+		1F4D54AA09857F5A00787F2E /* liqLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548009857F5A00787F2E /* liqLightNode.cpp */; };
+		1F4D54AB09857F5A00787F2E /* liqLightNodeBehavior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */; };
+		1F4D54AD09857F5A00787F2E /* liqMayaRenderView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */; };
+		1F4D54AE09857F5A00787F2E /* liqMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548409857F5A00787F2E /* liqMemory.cpp */; };
+		1F4D54AF09857F5A00787F2E /* liqNodeSwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548509857F5A00787F2E /* liqNodeSwatch.cpp */; };
+		1F4D54B109857F5A00787F2E /* liqPreviewShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548709857F5A00787F2E /* liqPreviewShader.cpp */; };
+		1F4D54B309857F5A00787F2E /* liqProcessLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548909857F5A00787F2E /* liqProcessLauncher.cpp */; };
+		1F4D54B409857F5A00787F2E /* liqRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548A09857F5A00787F2E /* liqRenderer.cpp */; };
+		1F4D54B509857F5A00787F2E /* liqRibboxNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548B09857F5A00787F2E /* liqRibboxNode.cpp */; };
+		1F4D54B609857F5A00787F2E /* liqRibClipPlaneData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548C09857F5A00787F2E /* liqRibClipPlaneData.cpp */; };
+		1F4D54B709857F5A00787F2E /* liqRibCoordData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548D09857F5A00787F2E /* liqRibCoordData.cpp */; };
+		1F4D54B809857F5A00787F2E /* liqRibData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548E09857F5A00787F2E /* liqRibData.cpp */; };
+		1F4D54B909857F5A00787F2E /* liqRibGenData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548F09857F5A00787F2E /* liqRibGenData.cpp */; };
+		1F4D54BA09857F5A00787F2E /* liqRibHT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549009857F5A00787F2E /* liqRibHT.cpp */; };
+		1F4D54BB09857F5A00787F2E /* liqRibLightData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549109857F5A00787F2E /* liqRibLightData.cpp */; };
+		1F4D54BC09857F5A00787F2E /* liqRibLocatorData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549209857F5A00787F2E /* liqRibLocatorData.cpp */; };
+		1F4D54BD09857F5A00787F2E /* liqRibMayaSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549309857F5A00787F2E /* liqRibMayaSubdivisionData.cpp */; };
+		1F4D54BE09857F5A00787F2E /* liqRibMeshData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549409857F5A00787F2E /* liqRibMeshData.cpp */; };
+		1F4D54BF09857F5A00787F2E /* liqRibNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549509857F5A00787F2E /* liqRibNode.cpp */; };
+		1F4D54C009857F5A00787F2E /* liqRibNuCurveData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549609857F5A00787F2E /* liqRibNuCurveData.cpp */; };
+		1F4D54C109857F5A00787F2E /* liqRibObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549709857F5A00787F2E /* liqRibObj.cpp */; };
+		1F4D54C209857F5A00787F2E /* liqRibParticleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549809857F5A00787F2E /* liqRibParticleData.cpp */; };
+		1F4D54C309857F5A00787F2E /* liqRibSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549909857F5A00787F2E /* liqRibSubdivisionData.cpp */; };
+		1F4D54C409857F5A00787F2E /* liqRibSurfaceData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549A09857F5A00787F2E /* liqRibSurfaceData.cpp */; };
+		1F4D54C509857F5A00787F2E /* liqRibTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549B09857F5A00787F2E /* liqRibTranslator.cpp */; };
+		1F4D54C609857F5A00787F2E /* liqShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549C09857F5A00787F2E /* liqShader.cpp */; };
+		1F4D54C709857F5A00787F2E /* liqSurfaceNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549D09857F5A00787F2E /* liqSurfaceNode.cpp */; };
+		1F4D54C809857F5A00787F2E /* liqTokenPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549E09857F5A00787F2E /* liqTokenPointer.cpp */; };
+		1F4D55150985842E00787F2E /* liquidPlug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55120985842E00787F2E /* liquidPlug.cpp */; };
+		1F4D55160985842E00787F2E /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55130985842E00787F2E /* liqVolumeNode.cpp */; };
+		1F4D55170985842E00787F2E /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55140985842E00787F2E /* liqWriteArchive.cpp */; };
+		1F6E77390A9CFB6F009447B2 /* libri.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6E77380A9CFB6F009447B2 /* libri.dylib */; };
+		1F6E775E0A9CFCB5009447B2 /* liquidBin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F6E775D0A9CFCB5009447B2 /* liquidBin.cpp */; };
+		1F6E775F0A9CFCB5009447B2 /* liquidBin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F6E775D0A9CFCB5009447B2 /* liquidBin.cpp */; };
+		1F6E77620A9CFCBC009447B2 /* liquidPlug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55120985842E00787F2E /* liquidPlug.cpp */; };
+		1F6E776F0A9CFD11009447B2 /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
+		1F6E77700A9CFD11009447B2 /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
+		1F6E77710A9CFD11009447B2 /* liqCoordSysNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */; };
+		1F6E77720A9CFD11009447B2 /* liqDisplacementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547909857F5A00787F2E /* liqDisplacementNode.cpp */; };
+		1F6E77730A9CFD11009447B2 /* liqExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547B09857F5A00787F2E /* liqExpression.cpp */; };
+		1F6E77740A9CFD11009447B2 /* liqGetAttr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547C09857F5A00787F2E /* liqGetAttr.cpp */; };
+		1F6E77750A9CFD11009447B2 /* liqGetSloInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */; };
+		1F6E77760A9CFD11009447B2 /* liqGlobalHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */; };
+		1F6E77770A9CFD11009447B2 /* liqGlobalsNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */; };
+		1F6E77780A9CFD11009447B2 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
+		1F6E77790A9CFD11009447B2 /* liqLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548009857F5A00787F2E /* liqLightNode.cpp */; };
+		1F6E777A0A9CFD11009447B2 /* liqLightNodeBehavior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */; };
+		1F6E777B0A9CFD11009447B2 /* liqMayaRenderView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */; };
+		1F6E777C0A9CFD11009447B2 /* liqMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548409857F5A00787F2E /* liqMemory.cpp */; };
+		1F6E777D0A9CFD11009447B2 /* liqNodeSwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548509857F5A00787F2E /* liqNodeSwatch.cpp */; };
+		1F6E777E0A9CFD11009447B2 /* liqPreviewShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548709857F5A00787F2E /* liqPreviewShader.cpp */; };
+		1F6E777F0A9CFD11009447B2 /* liqProcessLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548909857F5A00787F2E /* liqProcessLauncher.cpp */; };
+		1F6E77800A9CFD11009447B2 /* liqRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548A09857F5A00787F2E /* liqRenderer.cpp */; };
+		1F6E77810A9CFD11009447B2 /* liqRibboxNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548B09857F5A00787F2E /* liqRibboxNode.cpp */; };
+		1F6E77820A9CFD11009447B2 /* liqRibClipPlaneData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548C09857F5A00787F2E /* liqRibClipPlaneData.cpp */; };
+		1F6E77830A9CFD11009447B2 /* liqRibCoordData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548D09857F5A00787F2E /* liqRibCoordData.cpp */; };
+		1F6E77840A9CFD11009447B2 /* liqRibData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548E09857F5A00787F2E /* liqRibData.cpp */; };
+		1F6E77870A9CFD11009447B2 /* liqRibGenData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548F09857F5A00787F2E /* liqRibGenData.cpp */; };
+		1F6E77880A9CFD11009447B2 /* liqRibHT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549009857F5A00787F2E /* liqRibHT.cpp */; };
+		1F6E77890A9CFD11009447B2 /* liqRibLightData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549109857F5A00787F2E /* liqRibLightData.cpp */; };
+		1F6E778A0A9CFD11009447B2 /* liqRibLocatorData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549209857F5A00787F2E /* liqRibLocatorData.cpp */; };
+		1F6E778B0A9CFD11009447B2 /* liqRibMayaSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549309857F5A00787F2E /* liqRibMayaSubdivisionData.cpp */; };
+		1F6E778C0A9CFD11009447B2 /* liqRibMeshData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549409857F5A00787F2E /* liqRibMeshData.cpp */; };
+		1F6E778D0A9CFD11009447B2 /* liqRibNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549509857F5A00787F2E /* liqRibNode.cpp */; };
+		1F6E778E0A9CFD11009447B2 /* liqRibNuCurveData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549609857F5A00787F2E /* liqRibNuCurveData.cpp */; };
+		1F6E778F0A9CFD11009447B2 /* liqRibObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549709857F5A00787F2E /* liqRibObj.cpp */; };
+		1F6E77900A9CFD11009447B2 /* liqRibParticleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549809857F5A00787F2E /* liqRibParticleData.cpp */; };
+		1F6E77910A9CFD11009447B2 /* liqRibSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549909857F5A00787F2E /* liqRibSubdivisionData.cpp */; };
+		1F6E77920A9CFD11009447B2 /* liqRibSurfaceData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549A09857F5A00787F2E /* liqRibSurfaceData.cpp */; };
+		1F6E77930A9CFD11009447B2 /* liqRibTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549B09857F5A00787F2E /* liqRibTranslator.cpp */; };
+		1F6E77940A9CFD11009447B2 /* liqShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549C09857F5A00787F2E /* liqShader.cpp */; };
+		1F6E77950A9CFD11009447B2 /* liqSurfaceNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549D09857F5A00787F2E /* liqSurfaceNode.cpp */; };
+		1F6E77960A9CFD11009447B2 /* liqTokenPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549E09857F5A00787F2E /* liqTokenPointer.cpp */; };
+		1F6E77970A9CFD11009447B2 /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55130985842E00787F2E /* liqVolumeNode.cpp */; };
+		1F6E77980A9CFD11009447B2 /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55140985842E00787F2E /* liqWriteArchive.cpp */; };
+		1F6E77990A9CFD13009447B2 /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
+		1F6E779A0A9CFD13009447B2 /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
+		1F6E779B0A9CFD13009447B2 /* liqCoordSysNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */; };
+		1F6E779C0A9CFD13009447B2 /* liqDisplacementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547909857F5A00787F2E /* liqDisplacementNode.cpp */; };
+		1F6E779D0A9CFD13009447B2 /* liqExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547B09857F5A00787F2E /* liqExpression.cpp */; };
+		1F6E779E0A9CFD13009447B2 /* liqGetAttr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547C09857F5A00787F2E /* liqGetAttr.cpp */; };
+		1F6E779F0A9CFD13009447B2 /* liqGetSloInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */; };
+		1F6E77A00A9CFD13009447B2 /* liqGlobalHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */; };
+		1F6E77A10A9CFD13009447B2 /* liqGlobalsNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */; };
+		1F6E77A20A9CFD13009447B2 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
+		1F6E77A30A9CFD13009447B2 /* liqLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548009857F5A00787F2E /* liqLightNode.cpp */; };
+		1F6E77A40A9CFD13009447B2 /* liqLightNodeBehavior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */; };
+		1F6E77A50A9CFD13009447B2 /* liqMayaRenderView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */; };
+		1F6E77A60A9CFD13009447B2 /* liqMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548409857F5A00787F2E /* liqMemory.cpp */; };
+		1F6E77A70A9CFD13009447B2 /* liqNodeSwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548509857F5A00787F2E /* liqNodeSwatch.cpp */; };
+		1F6E77A80A9CFD13009447B2 /* liqPreviewShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548709857F5A00787F2E /* liqPreviewShader.cpp */; };
+		1F6E77A90A9CFD13009447B2 /* liqProcessLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548909857F5A00787F2E /* liqProcessLauncher.cpp */; };
+		1F6E77AA0A9CFD13009447B2 /* liqRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548A09857F5A00787F2E /* liqRenderer.cpp */; };
+		1F6E77AB0A9CFD13009447B2 /* liqRibboxNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548B09857F5A00787F2E /* liqRibboxNode.cpp */; };
+		1F6E77AC0A9CFD13009447B2 /* liqRibClipPlaneData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548C09857F5A00787F2E /* liqRibClipPlaneData.cpp */; };
+		1F6E77AD0A9CFD13009447B2 /* liqRibCoordData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548D09857F5A00787F2E /* liqRibCoordData.cpp */; };
+		1F6E77AE0A9CFD13009447B2 /* liqRibData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548E09857F5A00787F2E /* liqRibData.cpp */; };
+		1F6E77B10A9CFD13009447B2 /* liqRibGenData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548F09857F5A00787F2E /* liqRibGenData.cpp */; };
+		1F6E77B20A9CFD13009447B2 /* liqRibHT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549009857F5A00787F2E /* liqRibHT.cpp */; };
+		1F6E77B30A9CFD13009447B2 /* liqRibLightData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549109857F5A00787F2E /* liqRibLightData.cpp */; };
+		1F6E77B40A9CFD13009447B2 /* liqRibLocatorData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549209857F5A00787F2E /* liqRibLocatorData.cpp */; };
+		1F6E77B50A9CFD13009447B2 /* liqRibMayaSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549309857F5A00787F2E /* liqRibMayaSubdivisionData.cpp */; };
+		1F6E77B60A9CFD13009447B2 /* liqRibMeshData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549409857F5A00787F2E /* liqRibMeshData.cpp */; };
+		1F6E77B70A9CFD13009447B2 /* liqRibNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549509857F5A00787F2E /* liqRibNode.cpp */; };
+		1F6E77B80A9CFD13009447B2 /* liqRibNuCurveData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549609857F5A00787F2E /* liqRibNuCurveData.cpp */; };
+		1F6E77B90A9CFD13009447B2 /* liqRibObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549709857F5A00787F2E /* liqRibObj.cpp */; };
+		1F6E77BA0A9CFD13009447B2 /* liqRibParticleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549809857F5A00787F2E /* liqRibParticleData.cpp */; };
+		1F6E77BB0A9CFD13009447B2 /* liqRibSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549909857F5A00787F2E /* liqRibSubdivisionData.cpp */; };
+		1F6E77BC0A9CFD13009447B2 /* liqRibSurfaceData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549A09857F5A00787F2E /* liqRibSurfaceData.cpp */; };
+		1F6E77BD0A9CFD13009447B2 /* liqRibTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549B09857F5A00787F2E /* liqRibTranslator.cpp */; };
+		1F6E77BE0A9CFD13009447B2 /* liqShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549C09857F5A00787F2E /* liqShader.cpp */; };
+		1F6E77BF0A9CFD13009447B2 /* liqSurfaceNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549D09857F5A00787F2E /* liqSurfaceNode.cpp */; };
+		1F6E77C00A9CFD13009447B2 /* liqTokenPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549E09857F5A00787F2E /* liqTokenPointer.cpp */; };
+		1F6E77C10A9CFD13009447B2 /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55130985842E00787F2E /* liqVolumeNode.cpp */; };
+		1F6E77C20A9CFD13009447B2 /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55140985842E00787F2E /* liqWriteArchive.cpp */; };
+		1F6E77ED0A9CFD17009447B2 /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
+		1F6E77EE0A9CFD17009447B2 /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
+		1F6E77EF0A9CFD17009447B2 /* liqCoordSysNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */; };
+		1F6E77F00A9CFD17009447B2 /* liqDisplacementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547909857F5A00787F2E /* liqDisplacementNode.cpp */; };
+		1F6E77F10A9CFD17009447B2 /* liqExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547B09857F5A00787F2E /* liqExpression.cpp */; };
+		1F6E77F20A9CFD17009447B2 /* liqGetAttr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547C09857F5A00787F2E /* liqGetAttr.cpp */; };
+		1F6E77F30A9CFD17009447B2 /* liqGetSloInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */; };
+		1F6E77F40A9CFD17009447B2 /* liqGlobalHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */; };
+		1F6E77F50A9CFD17009447B2 /* liqGlobalsNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */; };
+		1F6E77F60A9CFD17009447B2 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
+		1F6E77F70A9CFD17009447B2 /* liqLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548009857F5A00787F2E /* liqLightNode.cpp */; };
+		1F6E77F80A9CFD17009447B2 /* liqLightNodeBehavior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */; };
+		1F6E77F90A9CFD17009447B2 /* liqMayaRenderView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */; };
+		1F6E77FA0A9CFD17009447B2 /* liqMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548409857F5A00787F2E /* liqMemory.cpp */; };
+		1F6E77FB0A9CFD17009447B2 /* liqNodeSwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548509857F5A00787F2E /* liqNodeSwatch.cpp */; };
+		1F6E77FC0A9CFD17009447B2 /* liqPreviewShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548709857F5A00787F2E /* liqPreviewShader.cpp */; };
+		1F6E77FD0A9CFD17009447B2 /* liqProcessLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548909857F5A00787F2E /* liqProcessLauncher.cpp */; };
+		1F6E77FE0A9CFD17009447B2 /* liqRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548A09857F5A00787F2E /* liqRenderer.cpp */; };
+		1F6E77FF0A9CFD17009447B2 /* liqRibboxNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548B09857F5A00787F2E /* liqRibboxNode.cpp */; };
+		1F6E78000A9CFD17009447B2 /* liqRibClipPlaneData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548C09857F5A00787F2E /* liqRibClipPlaneData.cpp */; };
+		1F6E78010A9CFD17009447B2 /* liqRibCoordData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548D09857F5A00787F2E /* liqRibCoordData.cpp */; };
+		1F6E78020A9CFD17009447B2 /* liqRibData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548E09857F5A00787F2E /* liqRibData.cpp */; };
+		1F6E78050A9CFD17009447B2 /* liqRibGenData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548F09857F5A00787F2E /* liqRibGenData.cpp */; };
+		1F6E78060A9CFD17009447B2 /* liqRibHT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549009857F5A00787F2E /* liqRibHT.cpp */; };
+		1F6E78070A9CFD17009447B2 /* liqRibLightData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549109857F5A00787F2E /* liqRibLightData.cpp */; };
+		1F6E78080A9CFD17009447B2 /* liqRibLocatorData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549209857F5A00787F2E /* liqRibLocatorData.cpp */; };
+		1F6E78090A9CFD17009447B2 /* liqRibMayaSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549309857F5A00787F2E /* liqRibMayaSubdivisionData.cpp */; };
+		1F6E780A0A9CFD17009447B2 /* liqRibMeshData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549409857F5A00787F2E /* liqRibMeshData.cpp */; };
+		1F6E780B0A9CFD17009447B2 /* liqRibNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549509857F5A00787F2E /* liqRibNode.cpp */; };
+		1F6E780C0A9CFD17009447B2 /* liqRibNuCurveData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549609857F5A00787F2E /* liqRibNuCurveData.cpp */; };
+		1F6E780D0A9CFD17009447B2 /* liqRibObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549709857F5A00787F2E /* liqRibObj.cpp */; };
+		1F6E780E0A9CFD17009447B2 /* liqRibParticleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549809857F5A00787F2E /* liqRibParticleData.cpp */; };
+		1F6E780F0A9CFD17009447B2 /* liqRibSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549909857F5A00787F2E /* liqRibSubdivisionData.cpp */; };
+		1F6E78100A9CFD17009447B2 /* liqRibSurfaceData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549A09857F5A00787F2E /* liqRibSurfaceData.cpp */; };
+		1F6E78110A9CFD17009447B2 /* liqRibTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549B09857F5A00787F2E /* liqRibTranslator.cpp */; };
+		1F6E78120A9CFD17009447B2 /* liqShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549C09857F5A00787F2E /* liqShader.cpp */; };
+		1F6E78130A9CFD17009447B2 /* liqSurfaceNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549D09857F5A00787F2E /* liqSurfaceNode.cpp */; };
+		1F6E78140A9CFD17009447B2 /* liqTokenPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549E09857F5A00787F2E /* liqTokenPointer.cpp */; };
+		1F6E78150A9CFD17009447B2 /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55130985842E00787F2E /* liqVolumeNode.cpp */; };
+		1F6E78160A9CFD17009447B2 /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55140985842E00787F2E /* liqWriteArchive.cpp */; };
+		1F8EBBEE0A9C3E9300B6C156 /* liqAttachPrefAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02C079F20B70069EDB7 /* liqAttachPrefAttribute.h */; };
+		1F8EBBEF0A9C3E9300B6C156 /* liqCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02D079F20B70069EDB7 /* liqCustomNode.h */; };
+		1F8EBBF00A9C3E9300B6C156 /* liqExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02E079F20B70069EDB7 /* liqExpression.h */; };
+		1F8EBBF10A9C3E9300B6C156 /* liqGetAttr.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02F079F20B70069EDB7 /* liqGetAttr.h */; };
+		1F8EBBF20A9C3E9300B6C156 /* liqGetSloInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD030079F20B70069EDB7 /* liqGetSloInfo.h */; };
+		1F8EBBF30A9C3E9300B6C156 /* liqGlobalHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD031079F20B70069EDB7 /* liqGlobalHelpers.h */; };
+		1F8EBBF40A9C3E9300B6C156 /* liqGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD032079F20B70069EDB7 /* liqGlobals.h */; };
+		1F8EBBF50A9C3E9300B6C156 /* liqIOStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD033079F20B70069EDB7 /* liqIOStream.h */; };
+		1F8EBBF60A9C3E9300B6C156 /* liqMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD034079F20B70069EDB7 /* liqMemory.h */; };
+		1F8EBBF70A9C3E9300B6C156 /* liqPreviewShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD035079F20B70069EDB7 /* liqPreviewShader.h */; };
+		1F8EBBF80A9C3E9300B6C156 /* liqProcessLauncher.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD036079F20B70069EDB7 /* liqProcessLauncher.h */; };
+		1F8EBBF90A9C3E9300B6C156 /* liqRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD037079F20B70069EDB7 /* liqRenderer.h */; };
+		1F8EBBFA0A9C3E9300B6C156 /* liqRenderScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD038079F20B70069EDB7 /* liqRenderScript.h */; };
+		1F8EBBFB0A9C3E9300B6C156 /* liqRibBakeSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD039079F20B70069EDB7 /* liqRibBakeSubdivisionData.h */; };
+		1F8EBBFC0A9C3E9300B6C156 /* liqRibCoordData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03A079F20B70069EDB7 /* liqRibCoordData.h */; };
+		1F8EBBFD0A9C3E9300B6C156 /* liqRibCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03B079F20B70069EDB7 /* liqRibCustomNode.h */; };
+		1F8EBBFE0A9C3E9300B6C156 /* liqRibData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03C079F20B70069EDB7 /* liqRibData.h */; };
+		1F8EBBFF0A9C3E9300B6C156 /* liqRibGen.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03D079F20B70069EDB7 /* liqRibGen.h */; };
+		1F8EBC000A9C3E9300B6C156 /* liqRibGenData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03E079F20B70069EDB7 /* liqRibGenData.h */; };
+		1F8EBC010A9C3E9300B6C156 /* liqRibHT.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03F079F20B70069EDB7 /* liqRibHT.h */; };
+		1F8EBC020A9C3E9300B6C156 /* liqRibLightData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD040079F20B70069EDB7 /* liqRibLightData.h */; };
+		1F8EBC030A9C3E9300B6C156 /* liqRibLocatorData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD041079F20B70069EDB7 /* liqRibLocatorData.h */; };
+		1F8EBC040A9C3E9300B6C156 /* liqRibMayaSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD042079F20B70069EDB7 /* liqRibMayaSubdivisionData.h */; };
+		1F8EBC050A9C3E9300B6C156 /* liqRibMeshData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD043079F20B70069EDB7 /* liqRibMeshData.h */; };
+		1F8EBC060A9C3E9300B6C156 /* liqRibNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD044079F20B70069EDB7 /* liqRibNode.h */; };
+		1F8EBC070A9C3E9300B6C156 /* liqRibNuCurveData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD045079F20B70069EDB7 /* liqRibNuCurveData.h */; };
+		1F8EBC080A9C3E9300B6C156 /* liqRibObj.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD046079F20B70069EDB7 /* liqRibObj.h */; };
+		1F8EBC090A9C3E9300B6C156 /* liqRibParticleData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD047079F20B70069EDB7 /* liqRibParticleData.h */; };
+		1F8EBC0A0A9C3E9300B6C156 /* liqRibStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD048079F20B70069EDB7 /* liqRibStatus.h */; };
+		1F8EBC0B0A9C3E9300B6C156 /* liqRibSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD049079F20B70069EDB7 /* liqRibSubdivisionData.h */; };
+		1F8EBC0C0A9C3E9300B6C156 /* liqRibSurfaceData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04A079F20B70069EDB7 /* liqRibSurfaceData.h */; };
+		1F8EBC0D0A9C3E9300B6C156 /* liqRibTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04B079F20B70069EDB7 /* liqRibTranslator.h */; };
+		1F8EBC0E0A9C3E9300B6C156 /* liqShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04C079F20B70069EDB7 /* liqShader.h */; };
+		1F8EBC0F0A9C3E9300B6C156 /* liqTokenPointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04D079F20B70069EDB7 /* liqTokenPointer.h */; };
+		1F8EBC100A9C3E9300B6C156 /* liquid.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04E079F20B70069EDB7 /* liquid.h */; };
+		1F8EBC110A9C3E9300B6C156 /* liqWriteArchive.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */; };
+		1F8EBC120A9C3E9300B6C156 /* liqRibPfxHairData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */; };
+		1F8EBC130A9C3E9300B6C156 /* liqRibPfxToonData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F000F500A867E620015BC04 /* liqRibPfxToonData.h */; };
+		1F8EBC150A9C3E9300B6C156 /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
+		1F8EBC160A9C3E9300B6C156 /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
+		1F8EBC170A9C3E9300B6C156 /* liqCoordSysNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */; };
+		1F8EBC180A9C3E9300B6C156 /* liqDisplacementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547909857F5A00787F2E /* liqDisplacementNode.cpp */; };
+		1F8EBC190A9C3E9300B6C156 /* liqExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547B09857F5A00787F2E /* liqExpression.cpp */; };
+		1F8EBC1A0A9C3E9300B6C156 /* liqGetAttr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547C09857F5A00787F2E /* liqGetAttr.cpp */; };
+		1F8EBC1B0A9C3E9300B6C156 /* liqGetSloInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */; };
+		1F8EBC1C0A9C3E9300B6C156 /* liqGlobalHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */; };
+		1F8EBC1D0A9C3E9300B6C156 /* liqGlobalsNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */; };
+		1F8EBC1E0A9C3E9300B6C156 /* liqLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548009857F5A00787F2E /* liqLightNode.cpp */; };
+		1F8EBC1F0A9C3E9300B6C156 /* liqLightNodeBehavior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */; };
+		1F8EBC200A9C3E9300B6C156 /* liqMayaRenderView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */; };
+		1F8EBC210A9C3E9300B6C156 /* liqMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548409857F5A00787F2E /* liqMemory.cpp */; };
+		1F8EBC220A9C3E9300B6C156 /* liqNodeSwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548509857F5A00787F2E /* liqNodeSwatch.cpp */; };
+		1F8EBC230A9C3E9300B6C156 /* liqPreviewShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548709857F5A00787F2E /* liqPreviewShader.cpp */; };
+		1F8EBC240A9C3E9300B6C156 /* liqProcessLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548909857F5A00787F2E /* liqProcessLauncher.cpp */; };
+		1F8EBC250A9C3E9300B6C156 /* liqRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548A09857F5A00787F2E /* liqRenderer.cpp */; };
+		1F8EBC260A9C3E9300B6C156 /* liqRibboxNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548B09857F5A00787F2E /* liqRibboxNode.cpp */; };
+		1F8EBC270A9C3E9300B6C156 /* liqRibClipPlaneData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548C09857F5A00787F2E /* liqRibClipPlaneData.cpp */; };
+		1F8EBC280A9C3E9300B6C156 /* liqRibCoordData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548D09857F5A00787F2E /* liqRibCoordData.cpp */; };
+		1F8EBC290A9C3E9300B6C156 /* liqRibData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548E09857F5A00787F2E /* liqRibData.cpp */; };
+		1F8EBC2A0A9C3E9300B6C156 /* liqRibGenData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548F09857F5A00787F2E /* liqRibGenData.cpp */; };
+		1F8EBC2B0A9C3E9300B6C156 /* liqRibHT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549009857F5A00787F2E /* liqRibHT.cpp */; };
+		1F8EBC2C0A9C3E9300B6C156 /* liqRibLightData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549109857F5A00787F2E /* liqRibLightData.cpp */; };
+		1F8EBC2D0A9C3E9300B6C156 /* liqRibLocatorData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549209857F5A00787F2E /* liqRibLocatorData.cpp */; };
+		1F8EBC2E0A9C3E9300B6C156 /* liqRibMayaSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549309857F5A00787F2E /* liqRibMayaSubdivisionData.cpp */; };
+		1F8EBC2F0A9C3E9300B6C156 /* liqRibMeshData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549409857F5A00787F2E /* liqRibMeshData.cpp */; };
+		1F8EBC300A9C3E9300B6C156 /* liqRibNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549509857F5A00787F2E /* liqRibNode.cpp */; };
+		1F8EBC310A9C3E9300B6C156 /* liqRibNuCurveData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549609857F5A00787F2E /* liqRibNuCurveData.cpp */; };
+		1F8EBC320A9C3E9300B6C156 /* liqRibObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549709857F5A00787F2E /* liqRibObj.cpp */; };
+		1F8EBC330A9C3E9300B6C156 /* liqRibParticleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549809857F5A00787F2E /* liqRibParticleData.cpp */; };
+		1F8EBC340A9C3E9300B6C156 /* liqRibSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549909857F5A00787F2E /* liqRibSubdivisionData.cpp */; };
+		1F8EBC350A9C3E9300B6C156 /* liqRibSurfaceData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549A09857F5A00787F2E /* liqRibSurfaceData.cpp */; };
+		1F8EBC360A9C3E9300B6C156 /* liqRibTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549B09857F5A00787F2E /* liqRibTranslator.cpp */; };
+		1F8EBC370A9C3E9300B6C156 /* liqShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549C09857F5A00787F2E /* liqShader.cpp */; };
+		1F8EBC380A9C3E9300B6C156 /* liqSurfaceNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549D09857F5A00787F2E /* liqSurfaceNode.cpp */; };
+		1F8EBC390A9C3E9300B6C156 /* liqTokenPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549E09857F5A00787F2E /* liqTokenPointer.cpp */; };
+		1F8EBC3A0A9C3E9300B6C156 /* liquidPlug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55120985842E00787F2E /* liquidPlug.cpp */; };
+		1F8EBC3B0A9C3E9300B6C156 /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55130985842E00787F2E /* liqVolumeNode.cpp */; };
+		1F8EBC3C0A9C3E9300B6C156 /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55140985842E00787F2E /* liqWriteArchive.cpp */; };
+		1F8EBC3D0A9C3E9300B6C156 /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
+		1F97A6430A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6410A9E611E00546274 /* liqRibPfxHairData.cpp */; };
+		1F97A6440A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6420A9E611E00546274 /* liqRibPfxToonData.cpp */; };
+		1F97A6450A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6410A9E611E00546274 /* liqRibPfxHairData.cpp */; };
+		1F97A6460A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6420A9E611E00546274 /* liqRibPfxToonData.cpp */; };
+		1F97A6470A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6410A9E611E00546274 /* liqRibPfxHairData.cpp */; };
+		1F97A6480A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6420A9E611E00546274 /* liqRibPfxToonData.cpp */; };
+		1F97A6490A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6410A9E611E00546274 /* liqRibPfxHairData.cpp */; };
+		1F97A64A0A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6420A9E611E00546274 /* liqRibPfxToonData.cpp */; };
+		1F97A64B0A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6410A9E611E00546274 /* liqRibPfxHairData.cpp */; };
+		1F97A64C0A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6420A9E611E00546274 /* liqRibPfxToonData.cpp */; };
+		1F97A64D0A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6410A9E611E00546274 /* liqRibPfxHairData.cpp */; };
+		1F97A64E0A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F97A6420A9E611E00546274 /* liqRibPfxToonData.cpp */; };
+		1FAC5D9607BE25410083A3E5 /* liqAttachPrefAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02C079F20B70069EDB7 /* liqAttachPrefAttribute.h */; };
+		1FAC5D9707BE25410083A3E5 /* liqCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02D079F20B70069EDB7 /* liqCustomNode.h */; };
+		1FAC5D9807BE25410083A3E5 /* liqExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02E079F20B70069EDB7 /* liqExpression.h */; };
+		1FAC5D9907BE25410083A3E5 /* liqGetAttr.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02F079F20B70069EDB7 /* liqGetAttr.h */; };
+		1FAC5D9A07BE25410083A3E5 /* liqGetSloInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD030079F20B70069EDB7 /* liqGetSloInfo.h */; };
+		1FAC5D9B07BE25410083A3E5 /* liqGlobalHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD031079F20B70069EDB7 /* liqGlobalHelpers.h */; };
+		1FAC5D9C07BE25410083A3E5 /* liqGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD032079F20B70069EDB7 /* liqGlobals.h */; };
+		1FAC5D9D07BE25410083A3E5 /* liqIOStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD033079F20B70069EDB7 /* liqIOStream.h */; };
+		1FAC5D9E07BE25410083A3E5 /* liqMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD034079F20B70069EDB7 /* liqMemory.h */; };
+		1FAC5D9F07BE25410083A3E5 /* liqPreviewShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD035079F20B70069EDB7 /* liqPreviewShader.h */; };
+		1FAC5DA007BE25410083A3E5 /* liqProcessLauncher.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD036079F20B70069EDB7 /* liqProcessLauncher.h */; };
+		1FAC5DA107BE25410083A3E5 /* liqRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD037079F20B70069EDB7 /* liqRenderer.h */; };
+		1FAC5DA207BE25410083A3E5 /* liqRenderScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD038079F20B70069EDB7 /* liqRenderScript.h */; };
+		1FAC5DA307BE25410083A3E5 /* liqRibBakeSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD039079F20B70069EDB7 /* liqRibBakeSubdivisionData.h */; };
+		1FAC5DA407BE25410083A3E5 /* liqRibCoordData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03A079F20B70069EDB7 /* liqRibCoordData.h */; };
+		1FAC5DA507BE25410083A3E5 /* liqRibCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03B079F20B70069EDB7 /* liqRibCustomNode.h */; };
+		1FAC5DA607BE25410083A3E5 /* liqRibData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03C079F20B70069EDB7 /* liqRibData.h */; };
+		1FAC5DA707BE25410083A3E5 /* liqRibGen.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03D079F20B70069EDB7 /* liqRibGen.h */; };
+		1FAC5DA807BE25410083A3E5 /* liqRibGenData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03E079F20B70069EDB7 /* liqRibGenData.h */; };
+		1FAC5DA907BE25410083A3E5 /* liqRibHT.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03F079F20B70069EDB7 /* liqRibHT.h */; };
+		1FAC5DAA07BE25410083A3E5 /* liqRibLightData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD040079F20B70069EDB7 /* liqRibLightData.h */; };
+		1FAC5DAB07BE25410083A3E5 /* liqRibLocatorData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD041079F20B70069EDB7 /* liqRibLocatorData.h */; };
+		1FAC5DAC07BE25410083A3E5 /* liqRibMayaSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD042079F20B70069EDB7 /* liqRibMayaSubdivisionData.h */; };
+		1FAC5DAD07BE25410083A3E5 /* liqRibMeshData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD043079F20B70069EDB7 /* liqRibMeshData.h */; };
+		1FAC5DAE07BE25410083A3E5 /* liqRibNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD044079F20B70069EDB7 /* liqRibNode.h */; };
+		1FAC5DAF07BE25410083A3E5 /* liqRibNuCurveData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD045079F20B70069EDB7 /* liqRibNuCurveData.h */; };
+		1FAC5DB007BE25410083A3E5 /* liqRibObj.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD046079F20B70069EDB7 /* liqRibObj.h */; };
+		1FAC5DB107BE25410083A3E5 /* liqRibParticleData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD047079F20B70069EDB7 /* liqRibParticleData.h */; };
+		1FAC5DB207BE25410083A3E5 /* liqRibStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD048079F20B70069EDB7 /* liqRibStatus.h */; };
+		1FAC5DB307BE25410083A3E5 /* liqRibSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD049079F20B70069EDB7 /* liqRibSubdivisionData.h */; };
+		1FAC5DB407BE25410083A3E5 /* liqRibSurfaceData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04A079F20B70069EDB7 /* liqRibSurfaceData.h */; };
+		1FAC5DB507BE25410083A3E5 /* liqRibTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04B079F20B70069EDB7 /* liqRibTranslator.h */; };
+		1FAC5DB607BE25410083A3E5 /* liqShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04C079F20B70069EDB7 /* liqShader.h */; };
+		1FAC5DB707BE25410083A3E5 /* liqTokenPointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04D079F20B70069EDB7 /* liqTokenPointer.h */; };
+		1FAC5DB807BE25410083A3E5 /* liquid.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04E079F20B70069EDB7 /* liquid.h */; };
+		1FAC5DB907BE25410083A3E5 /* liqWriteArchive.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */; };
+		1FAC5DE007BE25F80083A3E5 /* lib3delight.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAC5DDF07BE25F80083A3E5 /* lib3delight.dylib */; };
+		1FADF85307722221007DC910 /* libslxargs.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FADF85207722221007DC910 /* libslxargs.dylib */; };
+		1FADF85507724773007DC910 /* libri2rib.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FADF85407724773007DC910 /* libri2rib.dylib */; };
+		1FADF85707724B45007DC910 /* libshadervm.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FADF85607724B45007DC910 /* libshadervm.dylib */; };
+		1FADF85B07724BC9007DC910 /* libaqsistypes.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FADF85A07724BC9007DC910 /* libaqsistypes.dylib */; };
+		1FCCD050079F20B70069EDB7 /* liqAttachPrefAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02C079F20B70069EDB7 /* liqAttachPrefAttribute.h */; };
+		1FCCD051079F20B70069EDB7 /* liqCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02D079F20B70069EDB7 /* liqCustomNode.h */; };
+		1FCCD052079F20B70069EDB7 /* liqExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02E079F20B70069EDB7 /* liqExpression.h */; };
+		1FCCD053079F20B70069EDB7 /* liqGetAttr.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02F079F20B70069EDB7 /* liqGetAttr.h */; };
+		1FCCD054079F20B70069EDB7 /* liqGetSloInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD030079F20B70069EDB7 /* liqGetSloInfo.h */; };
+		1FCCD055079F20B70069EDB7 /* liqGlobalHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD031079F20B70069EDB7 /* liqGlobalHelpers.h */; };
+		1FCCD056079F20B70069EDB7 /* liqGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD032079F20B70069EDB7 /* liqGlobals.h */; };
+		1FCCD057079F20B70069EDB7 /* liqIOStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD033079F20B70069EDB7 /* liqIOStream.h */; };
+		1FCCD058079F20B70069EDB7 /* liqMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD034079F20B70069EDB7 /* liqMemory.h */; };
+		1FCCD059079F20B70069EDB7 /* liqPreviewShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD035079F20B70069EDB7 /* liqPreviewShader.h */; };
+		1FCCD05A079F20B70069EDB7 /* liqProcessLauncher.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD036079F20B70069EDB7 /* liqProcessLauncher.h */; };
+		1FCCD05B079F20B70069EDB7 /* liqRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD037079F20B70069EDB7 /* liqRenderer.h */; };
+		1FCCD05C079F20B70069EDB7 /* liqRenderScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD038079F20B70069EDB7 /* liqRenderScript.h */; };
+		1FCCD05D079F20B70069EDB7 /* liqRibBakeSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD039079F20B70069EDB7 /* liqRibBakeSubdivisionData.h */; };
+		1FCCD05E079F20B70069EDB7 /* liqRibCoordData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03A079F20B70069EDB7 /* liqRibCoordData.h */; };
+		1FCCD05F079F20B70069EDB7 /* liqRibCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03B079F20B70069EDB7 /* liqRibCustomNode.h */; };
+		1FCCD060079F20B70069EDB7 /* liqRibData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03C079F20B70069EDB7 /* liqRibData.h */; };
+		1FCCD061079F20B70069EDB7 /* liqRibGen.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03D079F20B70069EDB7 /* liqRibGen.h */; };
+		1FCCD062079F20B70069EDB7 /* liqRibGenData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03E079F20B70069EDB7 /* liqRibGenData.h */; };
+		1FCCD063079F20B70069EDB7 /* liqRibHT.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03F079F20B70069EDB7 /* liqRibHT.h */; };
+		1FCCD064079F20B70069EDB7 /* liqRibLightData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD040079F20B70069EDB7 /* liqRibLightData.h */; };
+		1FCCD065079F20B70069EDB7 /* liqRibLocatorData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD041079F20B70069EDB7 /* liqRibLocatorData.h */; };
+		1FCCD066079F20B70069EDB7 /* liqRibMayaSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD042079F20B70069EDB7 /* liqRibMayaSubdivisionData.h */; };
+		1FCCD067079F20B70069EDB7 /* liqRibMeshData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD043079F20B70069EDB7 /* liqRibMeshData.h */; };
+		1FCCD068079F20B70069EDB7 /* liqRibNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD044079F20B70069EDB7 /* liqRibNode.h */; };
+		1FCCD069079F20B70069EDB7 /* liqRibNuCurveData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD045079F20B70069EDB7 /* liqRibNuCurveData.h */; };
+		1FCCD06A079F20B70069EDB7 /* liqRibObj.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD046079F20B70069EDB7 /* liqRibObj.h */; };
+		1FCCD06B079F20B70069EDB7 /* liqRibParticleData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD047079F20B70069EDB7 /* liqRibParticleData.h */; };
+		1FCCD06C079F20B70069EDB7 /* liqRibStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD048079F20B70069EDB7 /* liqRibStatus.h */; };
+		1FCCD06D079F20B70069EDB7 /* liqRibSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD049079F20B70069EDB7 /* liqRibSubdivisionData.h */; };
+		1FCCD06E079F20B70069EDB7 /* liqRibSurfaceData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04A079F20B70069EDB7 /* liqRibSurfaceData.h */; };
+		1FCCD06F079F20B70069EDB7 /* liqRibTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04B079F20B70069EDB7 /* liqRibTranslator.h */; };
+		1FCCD070079F20B70069EDB7 /* liqShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04C079F20B70069EDB7 /* liqShader.h */; };
+		1FCCD071079F20B70069EDB7 /* liqTokenPointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04D079F20B70069EDB7 /* liqTokenPointer.h */; };
+		1FCCD072079F20B70069EDB7 /* liquid.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04E079F20B70069EDB7 /* liquid.h */; };
+		1FCCD073079F20B70069EDB7 /* liqWriteArchive.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */; };
+		1FCCD074079F20B70069EDB7 /* liqAttachPrefAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02C079F20B70069EDB7 /* liqAttachPrefAttribute.h */; };
+		1FCCD075079F20B70069EDB7 /* liqCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02D079F20B70069EDB7 /* liqCustomNode.h */; };
+		1FCCD076079F20B70069EDB7 /* liqExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02E079F20B70069EDB7 /* liqExpression.h */; };
+		1FCCD077079F20B70069EDB7 /* liqGetAttr.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD02F079F20B70069EDB7 /* liqGetAttr.h */; };
+		1FCCD078079F20B70069EDB7 /* liqGetSloInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD030079F20B70069EDB7 /* liqGetSloInfo.h */; };
+		1FCCD079079F20B70069EDB7 /* liqGlobalHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD031079F20B70069EDB7 /* liqGlobalHelpers.h */; };
+		1FCCD07A079F20B70069EDB7 /* liqGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD032079F20B70069EDB7 /* liqGlobals.h */; };
+		1FCCD07B079F20B70069EDB7 /* liqIOStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD033079F20B70069EDB7 /* liqIOStream.h */; };
+		1FCCD07C079F20B70069EDB7 /* liqMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD034079F20B70069EDB7 /* liqMemory.h */; };
+		1FCCD07D079F20B70069EDB7 /* liqPreviewShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD035079F20B70069EDB7 /* liqPreviewShader.h */; };
+		1FCCD07E079F20B70069EDB7 /* liqProcessLauncher.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD036079F20B70069EDB7 /* liqProcessLauncher.h */; };
+		1FCCD07F079F20B70069EDB7 /* liqRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD037079F20B70069EDB7 /* liqRenderer.h */; };
+		1FCCD080079F20B70069EDB7 /* liqRenderScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD038079F20B70069EDB7 /* liqRenderScript.h */; };
+		1FCCD081079F20B70069EDB7 /* liqRibBakeSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD039079F20B70069EDB7 /* liqRibBakeSubdivisionData.h */; };
+		1FCCD082079F20B70069EDB7 /* liqRibCoordData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03A079F20B70069EDB7 /* liqRibCoordData.h */; };
+		1FCCD083079F20B70069EDB7 /* liqRibCustomNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03B079F20B70069EDB7 /* liqRibCustomNode.h */; };
+		1FCCD084079F20B70069EDB7 /* liqRibData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03C079F20B70069EDB7 /* liqRibData.h */; };
+		1FCCD085079F20B70069EDB7 /* liqRibGen.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03D079F20B70069EDB7 /* liqRibGen.h */; };
+		1FCCD086079F20B70069EDB7 /* liqRibGenData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03E079F20B70069EDB7 /* liqRibGenData.h */; };
+		1FCCD087079F20B70069EDB7 /* liqRibHT.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD03F079F20B70069EDB7 /* liqRibHT.h */; };
+		1FCCD088079F20B70069EDB7 /* liqRibLightData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD040079F20B70069EDB7 /* liqRibLightData.h */; };
+		1FCCD089079F20B70069EDB7 /* liqRibLocatorData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD041079F20B70069EDB7 /* liqRibLocatorData.h */; };
+		1FCCD08A079F20B70069EDB7 /* liqRibMayaSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD042079F20B70069EDB7 /* liqRibMayaSubdivisionData.h */; };
+		1FCCD08B079F20B70069EDB7 /* liqRibMeshData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD043079F20B70069EDB7 /* liqRibMeshData.h */; };
+		1FCCD08C079F20B70069EDB7 /* liqRibNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD044079F20B70069EDB7 /* liqRibNode.h */; };
+		1FCCD08D079F20B70069EDB7 /* liqRibNuCurveData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD045079F20B70069EDB7 /* liqRibNuCurveData.h */; };
+		1FCCD08E079F20B70069EDB7 /* liqRibObj.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD046079F20B70069EDB7 /* liqRibObj.h */; };
+		1FCCD08F079F20B70069EDB7 /* liqRibParticleData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD047079F20B70069EDB7 /* liqRibParticleData.h */; };
+		1FCCD090079F20B70069EDB7 /* liqRibStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD048079F20B70069EDB7 /* liqRibStatus.h */; };
+		1FCCD091079F20B70069EDB7 /* liqRibSubdivisionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD049079F20B70069EDB7 /* liqRibSubdivisionData.h */; };
+		1FCCD092079F20B70069EDB7 /* liqRibSurfaceData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04A079F20B70069EDB7 /* liqRibSurfaceData.h */; };
+		1FCCD093079F20B70069EDB7 /* liqRibTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04B079F20B70069EDB7 /* liqRibTranslator.h */; };
+		1FCCD094079F20B70069EDB7 /* liqShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04C079F20B70069EDB7 /* liqShader.h */; };
+		1FCCD095079F20B70069EDB7 /* liqTokenPointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04D079F20B70069EDB7 /* liqTokenPointer.h */; };
+		1FCCD096079F20B70069EDB7 /* liquid.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04E079F20B70069EDB7 /* liquid.h */; };
+		1FCCD097079F20B70069EDB7 /* liqWriteArchive.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */; };
+		1FDCD16D078A094000E62CC1 /* libshaderexecenv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FDCD16C078A094000E62CC1 /* libshaderexecenv.dylib */; };
+		1FF1A92B0A4B0EEB008815FC /* liqAttachPrefAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */; };
+		1FF1A92C0A4B0EEB008815FC /* liqBucket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547609857F5A00787F2E /* liqBucket.cpp */; };
+		1FF1A92D0A4B0EEB008815FC /* liqCoordSysNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */; };
+		1FF1A92E0A4B0EEB008815FC /* liqDisplacementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547909857F5A00787F2E /* liqDisplacementNode.cpp */; };
+		1FF1A92F0A4B0EEB008815FC /* liqExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547B09857F5A00787F2E /* liqExpression.cpp */; };
+		1FF1A9300A4B0EEB008815FC /* liqGetAttr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547C09857F5A00787F2E /* liqGetAttr.cpp */; };
+		1FF1A9310A4B0EEB008815FC /* liqGetSloInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */; };
+		1FF1A9320A4B0EEB008815FC /* liqGlobalHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */; };
+		1FF1A9330A4B0EEB008815FC /* liqGlobalsNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */; };
+		1FF1A9340A4B0EEB008815FC /* liqJobList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */; };
+		1FF1A9350A4B0EEB008815FC /* liqLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548009857F5A00787F2E /* liqLightNode.cpp */; };
+		1FF1A9360A4B0EEB008815FC /* liqLightNodeBehavior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */; };
+		1FF1A9370A4B0EEB008815FC /* liqMayaRenderView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */; };
+		1FF1A9380A4B0EEB008815FC /* liqMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548409857F5A00787F2E /* liqMemory.cpp */; };
+		1FF1A9390A4B0EEB008815FC /* liqNodeSwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548509857F5A00787F2E /* liqNodeSwatch.cpp */; };
+		1FF1A93A0A4B0EEB008815FC /* liqPreviewShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548709857F5A00787F2E /* liqPreviewShader.cpp */; };
+		1FF1A93B0A4B0EEB008815FC /* liqProcessLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548909857F5A00787F2E /* liqProcessLauncher.cpp */; };
+		1FF1A93C0A4B0EEB008815FC /* liqRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548A09857F5A00787F2E /* liqRenderer.cpp */; };
+		1FF1A93D0A4B0EEB008815FC /* liqRibboxNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548B09857F5A00787F2E /* liqRibboxNode.cpp */; };
+		1FF1A93E0A4B0EEB008815FC /* liqRibClipPlaneData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548C09857F5A00787F2E /* liqRibClipPlaneData.cpp */; };
+		1FF1A93F0A4B0EEB008815FC /* liqRibCoordData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548D09857F5A00787F2E /* liqRibCoordData.cpp */; };
+		1FF1A9400A4B0EEB008815FC /* liqRibData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548E09857F5A00787F2E /* liqRibData.cpp */; };
+		1FF1A9410A4B0EEB008815FC /* liqRibGenData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D548F09857F5A00787F2E /* liqRibGenData.cpp */; };
+		1FF1A9420A4B0EEB008815FC /* liqRibHT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549009857F5A00787F2E /* liqRibHT.cpp */; };
+		1FF1A9430A4B0EEB008815FC /* liqRibLightData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549109857F5A00787F2E /* liqRibLightData.cpp */; };
+		1FF1A9440A4B0EEB008815FC /* liqRibLocatorData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549209857F5A00787F2E /* liqRibLocatorData.cpp */; };
+		1FF1A9450A4B0EEB008815FC /* liqRibMayaSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549309857F5A00787F2E /* liqRibMayaSubdivisionData.cpp */; };
+		1FF1A9460A4B0EEB008815FC /* liqRibMeshData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549409857F5A00787F2E /* liqRibMeshData.cpp */; };
+		1FF1A9470A4B0EEB008815FC /* liqRibNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549509857F5A00787F2E /* liqRibNode.cpp */; };
+		1FF1A9480A4B0EEB008815FC /* liqRibNuCurveData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549609857F5A00787F2E /* liqRibNuCurveData.cpp */; };
+		1FF1A9490A4B0EEB008815FC /* liqRibObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549709857F5A00787F2E /* liqRibObj.cpp */; };
+		1FF1A94A0A4B0EEB008815FC /* liqRibParticleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549809857F5A00787F2E /* liqRibParticleData.cpp */; };
+		1FF1A94B0A4B0EEB008815FC /* liqRibSubdivisionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549909857F5A00787F2E /* liqRibSubdivisionData.cpp */; };
+		1FF1A94C0A4B0EEB008815FC /* liqRibSurfaceData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549A09857F5A00787F2E /* liqRibSurfaceData.cpp */; };
+		1FF1A94D0A4B0EEB008815FC /* liqRibTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549B09857F5A00787F2E /* liqRibTranslator.cpp */; };
+		1FF1A94E0A4B0EEB008815FC /* liqShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549C09857F5A00787F2E /* liqShader.cpp */; };
+		1FF1A94F0A4B0EEB008815FC /* liqSurfaceNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549D09857F5A00787F2E /* liqSurfaceNode.cpp */; };
+		1FF1A9500A4B0EEB008815FC /* liqTokenPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D549E09857F5A00787F2E /* liqTokenPointer.cpp */; };
+		1FF1A9510A4B0EEB008815FC /* liquidPlug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55120985842E00787F2E /* liquidPlug.cpp */; };
+		1FF1A9520A4B0EEB008815FC /* liqVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55130985842E00787F2E /* liqVolumeNode.cpp */; };
+		1FF1A9530A4B0EEB008815FC /* liqWriteArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4D55140985842E00787F2E /* liqWriteArchive.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		1F074608087E561900EBD2F1 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.gcc;
+			fileType = sourcecode.c;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+		1F074609087E561C00EBD2F1 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.gcc.3_3;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+		1F8EBC430A9C3E9300B6C156 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.gcc;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+		1F8EBC440A9C3E9300B6C156 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.gcc;
+			fileType = sourcecode.c;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+		1F96851A0864455D0054B6CE /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.gcc.3_3;
+			fileType = sourcecode.c;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+		1F96851B086445620054B6CE /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.gcc.3_3;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXContainerItemProxy section */
+		1F148B760AED58A100968DE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1F148B250AED56C800968DE4;
+			remoteInfo = ribLib;
+		};
+		1F148B780AED58A400968DE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1F148B250AED56C800968DE4;
+			remoteInfo = ribLib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0249A663FF388D9811CA2CEA /* libstdc++.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libstdc++.a"; path = "/usr/lib/libstdc++.a"; sourceTree = "<absolute>"; };
+		1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = liqRibPfxHairData.h; path = ../include/liqRibPfxHairData.h; sourceTree = SOURCE_ROOT; };
+		1F000F500A867E620015BC04 /* liqRibPfxToonData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = liqRibPfxToonData.h; path = ../include/liqRibPfxToonData.h; sourceTree = SOURCE_ROOT; };
+		1F148B260AED56C800968DE4 /* librib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = librib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F148B320AED570E00968DE4 /* common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../ribLib/common.h; sourceTree = SOURCE_ROOT; };
+		1F148B330AED570E00968DE4 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = error.cpp; path = ../ribLib/error.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B340AED570E00968DE4 /* error.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = error.h; path = ../ribLib/error.h; sourceTree = SOURCE_ROOT; };
+		1F148B360AED570E00968DE4 /* ri.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ri.cpp; path = ../ribLib/ri.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B370AED570E00968DE4 /* ri.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ri.h; path = ../ribLib/ri.h; sourceTree = SOURCE_ROOT; };
+		1F148B380AED570E00968DE4 /* ribOut.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ribOut.cpp; path = ../ribLib/ribOut.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B390AED570E00968DE4 /* ribOut.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ribOut.h; path = ../ribLib/ribOut.h; sourceTree = SOURCE_ROOT; };
+		1F148B3A0AED570E00968DE4 /* riInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = riInterface.cpp; path = ../ribLib/riInterface.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B3B0AED570E00968DE4 /* riInterface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = riInterface.h; path = ../ribLib/riInterface.h; sourceTree = SOURCE_ROOT; };
+		1F148B3C0AED570E00968DE4 /* variable.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = variable.cpp; path = ../ribLib/variable.cpp; sourceTree = SOURCE_ROOT; };
+		1F148B3D0AED570E00968DE4 /* variable.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = variable.h; path = ../ribLib/variable.h; sourceTree = SOURCE_ROOT; };
+		1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqJobList.cpp; sourceTree = "<group>"; };
+		1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqAttachPrefAttribute.cpp; sourceTree = "<group>"; };
+		1F4D547609857F5A00787F2E /* liqBucket.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqBucket.cpp; sourceTree = "<group>"; };
+		1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqCoordSysNode.cpp; sourceTree = "<group>"; };
+		1F4D547909857F5A00787F2E /* liqDisplacementNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqDisplacementNode.cpp; sourceTree = "<group>"; };
+		1F4D547B09857F5A00787F2E /* liqExpression.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqExpression.cpp; sourceTree = "<group>"; };
+		1F4D547C09857F5A00787F2E /* liqGetAttr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqGetAttr.cpp; sourceTree = "<group>"; };
+		1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqGetSloInfo.cpp; sourceTree = "<group>"; };
+		1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqGlobalHelpers.cpp; sourceTree = "<group>"; };
+		1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqGlobalsNode.cpp; sourceTree = "<group>"; };
+		1F4D548009857F5A00787F2E /* liqLightNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqLightNode.cpp; sourceTree = "<group>"; };
+		1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqLightNodeBehavior.cpp; sourceTree = "<group>"; };
+		1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = liqMayaRenderView.cpp; sourceTree = "<group>"; };
+		1F4D548409857F5A00787F2E /* liqMemory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqMemory.cpp; sourceTree = "<group>"; };
+		1F4D548509857F5A00787F2E /* liqNodeSwatch.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqNodeSwatch.cpp; sourceTree = "<group>"; };
+		1F4D548709857F5A00787F2E /* liqPreviewShader.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqPreviewShader.cpp; sourceTree = "<group>"; };
+		1F4D548909857F5A00787F2E /* liqProcessLauncher.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqProcessLauncher.cpp; sourceTree = "<group>"; };
+		1F4D548A09857F5A00787F2E /* liqRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRenderer.cpp; sourceTree = "<group>"; };
+		1F4D548B09857F5A00787F2E /* liqRibboxNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibboxNode.cpp; sourceTree = "<group>"; };
+		1F4D548C09857F5A00787F2E /* liqRibClipPlaneData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibClipPlaneData.cpp; sourceTree = "<group>"; };
+		1F4D548D09857F5A00787F2E /* liqRibCoordData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibCoordData.cpp; sourceTree = "<group>"; };
+		1F4D548E09857F5A00787F2E /* liqRibData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibData.cpp; sourceTree = "<group>"; };
+		1F4D548F09857F5A00787F2E /* liqRibGenData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibGenData.cpp; sourceTree = "<group>"; };
+		1F4D549009857F5A00787F2E /* liqRibHT.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibHT.cpp; sourceTree = "<group>"; };
+		1F4D549109857F5A00787F2E /* liqRibLightData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibLightData.cpp; sourceTree = "<group>"; };
+		1F4D549209857F5A00787F2E /* liqRibLocatorData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibLocatorData.cpp; sourceTree = "<group>"; };
+		1F4D549309857F5A00787F2E /* liqRibMayaSubdivisionData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibMayaSubdivisionData.cpp; sourceTree = "<group>"; };
+		1F4D549409857F5A00787F2E /* liqRibMeshData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibMeshData.cpp; sourceTree = "<group>"; };
+		1F4D549509857F5A00787F2E /* liqRibNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibNode.cpp; sourceTree = "<group>"; };
+		1F4D549609857F5A00787F2E /* liqRibNuCurveData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibNuCurveData.cpp; sourceTree = "<group>"; };
+		1F4D549709857F5A00787F2E /* liqRibObj.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibObj.cpp; sourceTree = "<group>"; };
+		1F4D549809857F5A00787F2E /* liqRibParticleData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibParticleData.cpp; sourceTree = "<group>"; };
+		1F4D549909857F5A00787F2E /* liqRibSubdivisionData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibSubdivisionData.cpp; sourceTree = "<group>"; };
+		1F4D549A09857F5A00787F2E /* liqRibSurfaceData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibSurfaceData.cpp; sourceTree = "<group>"; };
+		1F4D549B09857F5A00787F2E /* liqRibTranslator.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibTranslator.cpp; sourceTree = "<group>"; };
+		1F4D549C09857F5A00787F2E /* liqShader.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqShader.cpp; sourceTree = "<group>"; };
+		1F4D549D09857F5A00787F2E /* liqSurfaceNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqSurfaceNode.cpp; sourceTree = "<group>"; };
+		1F4D549E09857F5A00787F2E /* liqTokenPointer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqTokenPointer.cpp; sourceTree = "<group>"; };
+		1F4D55120985842E00787F2E /* liquidPlug.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liquidPlug.cpp; sourceTree = "<group>"; };
+		1F4D55130985842E00787F2E /* liqVolumeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqVolumeNode.cpp; sourceTree = "<group>"; };
+		1F4D55140985842E00787F2E /* liqWriteArchive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqWriteArchive.cpp; sourceTree = "<group>"; };
+		1F5E729C07E632E0006FAA8F /* liquidbin-pixie */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F6E770F0A9CF908009447B2 /* liquidbin-pixie */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "liquidbin-pixie"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F6E77380A9CFB6F009447B2 /* libri.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libri.dylib; path = /Applications/Graphics/Pixie/lib/libri.dylib; sourceTree = "<absolute>"; };
+		1F6E775D0A9CFCB5009447B2 /* liquidBin.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liquidBin.cpp; sourceTree = "<group>"; };
+		1F8EBC490A9C3E9300B6C156 /* liquid_pixie.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liquid_pixie.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F97A6410A9E611E00546274 /* liqRibPfxHairData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibPfxHairData.cpp; sourceTree = "<group>"; };
+		1F97A6420A9E611E00546274 /* liqRibPfxToonData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = liqRibPfxToonData.cpp; sourceTree = "<group>"; };
+		1FAC5DDB07BE25410083A3E5 /* liquid_3delight.lib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liquid_3delight.lib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FAC5DDF07BE25F80083A3E5 /* lib3delight.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = lib3delight.dylib; path = "/Applications/Graphics/3Delight-5.0.1/lib/lib3delight.dylib"; sourceTree = "<absolute>"; };
+		1FADF84C07721BF5007DC910 /* liquid_aqsis.lib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liquid_aqsis.lib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FADF85207722221007DC910 /* libslxargs.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libslxargs.dylib; path = /Applications/Graphics/MacAqsis.0.9.1/lib/libslxargs.0.dylib; sourceTree = "<absolute>"; };
+		1FADF85407724773007DC910 /* libri2rib.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libri2rib.dylib; path = /Applications/Graphics/MacAqsis.0.9.1/lib/libri2rib.0.dylib; sourceTree = "<absolute>"; };
+		1FADF85607724B45007DC910 /* libshadervm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libshadervm.dylib; path = /Applications/Graphics/MacAqsis.0.9.1/lib/libshadervm.0.dylib; sourceTree = "<absolute>"; };
+		1FADF85A07724BC9007DC910 /* libaqsistypes.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libaqsistypes.dylib; path = /Applications/Graphics/MacAqsis.0.9.1/lib/libaqsistypes.dylib; sourceTree = "<absolute>"; };
+		1FC7AA2406A00A5C00954BD2 /* liquid_pixie.lib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liquid_pixie.lib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FCCD02C079F20B70069EDB7 /* liqAttachPrefAttribute.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqAttachPrefAttribute.h; path = ../include/liqAttachPrefAttribute.h; sourceTree = SOURCE_ROOT; };
+		1FCCD02D079F20B70069EDB7 /* liqCustomNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqCustomNode.h; path = ../include/liqCustomNode.h; sourceTree = SOURCE_ROOT; };
+		1FCCD02E079F20B70069EDB7 /* liqExpression.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqExpression.h; path = ../include/liqExpression.h; sourceTree = SOURCE_ROOT; };
+		1FCCD02F079F20B70069EDB7 /* liqGetAttr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqGetAttr.h; path = ../include/liqGetAttr.h; sourceTree = SOURCE_ROOT; };
+		1FCCD030079F20B70069EDB7 /* liqGetSloInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqGetSloInfo.h; path = ../include/liqGetSloInfo.h; sourceTree = SOURCE_ROOT; };
+		1FCCD031079F20B70069EDB7 /* liqGlobalHelpers.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqGlobalHelpers.h; path = ../include/liqGlobalHelpers.h; sourceTree = SOURCE_ROOT; };
+		1FCCD032079F20B70069EDB7 /* liqGlobals.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqGlobals.h; path = ../include/liqGlobals.h; sourceTree = SOURCE_ROOT; };
+		1FCCD033079F20B70069EDB7 /* liqIOStream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqIOStream.h; path = ../include/liqIOStream.h; sourceTree = SOURCE_ROOT; };
+		1FCCD034079F20B70069EDB7 /* liqMemory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqMemory.h; path = ../include/liqMemory.h; sourceTree = SOURCE_ROOT; };
+		1FCCD035079F20B70069EDB7 /* liqPreviewShader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqPreviewShader.h; path = ../include/liqPreviewShader.h; sourceTree = SOURCE_ROOT; };
+		1FCCD036079F20B70069EDB7 /* liqProcessLauncher.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqProcessLauncher.h; path = ../include/liqProcessLauncher.h; sourceTree = SOURCE_ROOT; };
+		1FCCD037079F20B70069EDB7 /* liqRenderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRenderer.h; path = ../include/liqRenderer.h; sourceTree = SOURCE_ROOT; };
+		1FCCD038079F20B70069EDB7 /* liqRenderScript.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRenderScript.h; path = ../include/liqRenderScript.h; sourceTree = SOURCE_ROOT; };
+		1FCCD039079F20B70069EDB7 /* liqRibBakeSubdivisionData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibBakeSubdivisionData.h; path = ../include/liqRibBakeSubdivisionData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD03A079F20B70069EDB7 /* liqRibCoordData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibCoordData.h; path = ../include/liqRibCoordData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD03B079F20B70069EDB7 /* liqRibCustomNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibCustomNode.h; path = ../include/liqRibCustomNode.h; sourceTree = SOURCE_ROOT; };
+		1FCCD03C079F20B70069EDB7 /* liqRibData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibData.h; path = ../include/liqRibData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD03D079F20B70069EDB7 /* liqRibGen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibGen.h; path = ../include/liqRibGen.h; sourceTree = SOURCE_ROOT; };
+		1FCCD03E079F20B70069EDB7 /* liqRibGenData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibGenData.h; path = ../include/liqRibGenData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD03F079F20B70069EDB7 /* liqRibHT.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibHT.h; path = ../include/liqRibHT.h; sourceTree = SOURCE_ROOT; };
+		1FCCD040079F20B70069EDB7 /* liqRibLightData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibLightData.h; path = ../include/liqRibLightData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD041079F20B70069EDB7 /* liqRibLocatorData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibLocatorData.h; path = ../include/liqRibLocatorData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD042079F20B70069EDB7 /* liqRibMayaSubdivisionData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibMayaSubdivisionData.h; path = ../include/liqRibMayaSubdivisionData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD043079F20B70069EDB7 /* liqRibMeshData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibMeshData.h; path = ../include/liqRibMeshData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD044079F20B70069EDB7 /* liqRibNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibNode.h; path = ../include/liqRibNode.h; sourceTree = SOURCE_ROOT; };
+		1FCCD045079F20B70069EDB7 /* liqRibNuCurveData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibNuCurveData.h; path = ../include/liqRibNuCurveData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD046079F20B70069EDB7 /* liqRibObj.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibObj.h; path = ../include/liqRibObj.h; sourceTree = SOURCE_ROOT; };
+		1FCCD047079F20B70069EDB7 /* liqRibParticleData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibParticleData.h; path = ../include/liqRibParticleData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD048079F20B70069EDB7 /* liqRibStatus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibStatus.h; path = ../include/liqRibStatus.h; sourceTree = SOURCE_ROOT; };
+		1FCCD049079F20B70069EDB7 /* liqRibSubdivisionData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibSubdivisionData.h; path = ../include/liqRibSubdivisionData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD04A079F20B70069EDB7 /* liqRibSurfaceData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibSurfaceData.h; path = ../include/liqRibSurfaceData.h; sourceTree = SOURCE_ROOT; };
+		1FCCD04B079F20B70069EDB7 /* liqRibTranslator.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqRibTranslator.h; path = ../include/liqRibTranslator.h; sourceTree = SOURCE_ROOT; };
+		1FCCD04C079F20B70069EDB7 /* liqShader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqShader.h; path = ../include/liqShader.h; sourceTree = SOURCE_ROOT; };
+		1FCCD04D079F20B70069EDB7 /* liqTokenPointer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqTokenPointer.h; path = ../include/liqTokenPointer.h; sourceTree = SOURCE_ROOT; };
+		1FCCD04E079F20B70069EDB7 /* liquid.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liquid.h; path = ../include/liquid.h; sourceTree = SOURCE_ROOT; };
+		1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = liqWriteArchive.h; path = ../include/liqWriteArchive.h; sourceTree = SOURCE_ROOT; };
+		1FDCD16C078A094000E62CC1 /* libshaderexecenv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libshaderexecenv.dylib; path = /Applications/Graphics/MacAqsis.0.9.1/lib/libshaderexecenv.0.dylib; sourceTree = "<absolute>"; };
+		C6859E8B029090EE04C91782 /* liquidMaya.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = liquidMaya.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1F148B240AED56C800968DE4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F5E729A07E632E0006FAA8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F224C4F0B261DFE0071B978 /* libri.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F6E77080A9CF908009447B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F224C500B261E120071B978 /* librib.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F8EBC400A9C3E9300B6C156 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F224C4D0B261DE20071B978 /* librib.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FAC5DD807BE25410083A3E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FAC5DE007BE25F80083A3E5 /* lib3delight.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FADF84907721BF5007DC910 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FADF85307722221007DC910 /* libslxargs.dylib in Frameworks */,
+				1FADF85507724773007DC910 /* libri2rib.dylib in Frameworks */,
+				1FADF85707724B45007DC910 /* libshadervm.dylib in Frameworks */,
+				1FADF85B07724BC9007DC910 /* libaqsistypes.dylib in Frameworks */,
+				1FDCD16D078A094000E62CC1 /* libshaderexecenv.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FC7AA2206A00A5C00954BD2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F6E77390A9CFB6F009447B2 /* libri.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0249A662FF388D9811CA2CEA /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				0249A663FF388D9811CA2CEA /* libstdc++.a */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		08FB7794FE84155DC02AAC07 /* liquidMaya */ = {
+			isa = PBXGroup;
+			children = (
+				1F148B750AED587B00968DE4 /* Libs */,
+				1F148B290AED56D800968DE4 /* RibLib */,
+				1FCCD02B079F209C0069EDB7 /* Headers */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				0249A662FF388D9811CA2CEA /* External Frameworks and Libraries */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = liquidMaya;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				1FAC5DDC07BE25D40083A3E5 /* 3Delight */,
+				1FADF85907724B94007DC910 /* Aqsis */,
+				1FADF85807724B8A007DC910 /* Pixie */,
+				1F4D547509857F5A00787F2E /* liqAttachPrefAttribute.cpp */,
+				1F4D547609857F5A00787F2E /* liqBucket.cpp */,
+				1F4D547709857F5A00787F2E /* liqCoordSysNode.cpp */,
+				1F4D547909857F5A00787F2E /* liqDisplacementNode.cpp */,
+				1F4D547B09857F5A00787F2E /* liqExpression.cpp */,
+				1F4D547C09857F5A00787F2E /* liqGetAttr.cpp */,
+				1F4D547D09857F5A00787F2E /* liqGetSloInfo.cpp */,
+				1F4D547E09857F5A00787F2E /* liqGlobalHelpers.cpp */,
+				1F4D547F09857F5A00787F2E /* liqGlobalsNode.cpp */,
+				1F28DDD809D6DF5800D644D1 /* liqJobList.cpp */,
+				1F4D548009857F5A00787F2E /* liqLightNode.cpp */,
+				1F4D548109857F5A00787F2E /* liqLightNodeBehavior.cpp */,
+				1F4D548309857F5A00787F2E /* liqMayaRenderView.cpp */,
+				1F4D548409857F5A00787F2E /* liqMemory.cpp */,
+				1F4D548509857F5A00787F2E /* liqNodeSwatch.cpp */,
+				1F4D548709857F5A00787F2E /* liqPreviewShader.cpp */,
+				1F4D548909857F5A00787F2E /* liqProcessLauncher.cpp */,
+				1F4D548A09857F5A00787F2E /* liqRenderer.cpp */,
+				1F4D548B09857F5A00787F2E /* liqRibboxNode.cpp */,
+				1F4D548C09857F5A00787F2E /* liqRibClipPlaneData.cpp */,
+				1F4D548D09857F5A00787F2E /* liqRibCoordData.cpp */,
+				1F4D548E09857F5A00787F2E /* liqRibData.cpp */,
+				1F4D548F09857F5A00787F2E /* liqRibGenData.cpp */,
+				1F4D549009857F5A00787F2E /* liqRibHT.cpp */,
+				1F4D549109857F5A00787F2E /* liqRibLightData.cpp */,
+				1F4D549209857F5A00787F2E /* liqRibLocatorData.cpp */,
+				1F4D549309857F5A00787F2E /* liqRibMayaSubdivisionData.cpp */,
+				1F4D549409857F5A00787F2E /* liqRibMeshData.cpp */,
+				1F4D549509857F5A00787F2E /* liqRibNode.cpp */,
+				1F4D549609857F5A00787F2E /* liqRibNuCurveData.cpp */,
+				1F4D549709857F5A00787F2E /* liqRibObj.cpp */,
+				1F4D549809857F5A00787F2E /* liqRibParticleData.cpp */,
+				1F4D549909857F5A00787F2E /* liqRibSubdivisionData.cpp */,
+				1F4D549A09857F5A00787F2E /* liqRibSurfaceData.cpp */,
+				1F4D549B09857F5A00787F2E /* liqRibTranslator.cpp */,
+				1F4D549C09857F5A00787F2E /* liqShader.cpp */,
+				1F97A6410A9E611E00546274 /* liqRibPfxHairData.cpp */,
+				1F97A6420A9E611E00546274 /* liqRibPfxToonData.cpp */,
+				1F4D549D09857F5A00787F2E /* liqSurfaceNode.cpp */,
+				1F4D549E09857F5A00787F2E /* liqTokenPointer.cpp */,
+				1F4D55130985842E00787F2E /* liqVolumeNode.cpp */,
+				1F4D55140985842E00787F2E /* liqWriteArchive.cpp */,
+				1F4D55120985842E00787F2E /* liquidPlug.cpp */,
+				1F6E775D0A9CFCB5009447B2 /* liquidBin.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1FC7AA2406A00A5C00954BD2 /* liquid_pixie.lib.dylib */,
+				1FADF84C07721BF5007DC910 /* liquid_aqsis.lib.dylib */,
+				1FAC5DDB07BE25410083A3E5 /* liquid_3delight.lib.dylib */,
+				1F5E729C07E632E0006FAA8F /* liquidbin-pixie */,
+				1F8EBC490A9C3E9300B6C156 /* liquid_pixie.bundle */,
+				1F6E770F0A9CF908009447B2 /* liquidbin-pixie */,
+				1F148B260AED56C800968DE4 /* librib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1F148B290AED56D800968DE4 /* RibLib */ = {
+			isa = PBXGroup;
+			children = (
+				1F148B320AED570E00968DE4 /* common.h */,
+				1F148B330AED570E00968DE4 /* error.cpp */,
+				1F148B340AED570E00968DE4 /* error.h */,
+				1F148B360AED570E00968DE4 /* ri.cpp */,
+				1F148B370AED570E00968DE4 /* ri.h */,
+				1F148B380AED570E00968DE4 /* ribOut.cpp */,
+				1F148B390AED570E00968DE4 /* ribOut.h */,
+				1F148B3A0AED570E00968DE4 /* riInterface.cpp */,
+				1F148B3B0AED570E00968DE4 /* riInterface.h */,
+				1F148B3C0AED570E00968DE4 /* variable.cpp */,
+				1F148B3D0AED570E00968DE4 /* variable.h */,
+			);
+			name = RibLib;
+			sourceTree = "<group>";
+		};
+		1F148B750AED587B00968DE4 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				1FAC5DDF07BE25F80083A3E5 /* lib3delight.dylib */,
+				1FADF85A07724BC9007DC910 /* libaqsistypes.dylib */,
+				1F6E77380A9CFB6F009447B2 /* libri.dylib */,
+				1FADF85407724773007DC910 /* libri2rib.dylib */,
+				1FDCD16C078A094000E62CC1 /* libshaderexecenv.dylib */,
+				1FADF85607724B45007DC910 /* libshadervm.dylib */,
+				1FADF85207722221007DC910 /* libslxargs.dylib */,
+			);
+			name = Libs;
+			sourceTree = "<group>";
+		};
+		1FAC5DDC07BE25D40083A3E5 /* 3Delight */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = 3Delight;
+			sourceTree = "<group>";
+		};
+		1FADF85807724B8A007DC910 /* Pixie */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Pixie;
+			sourceTree = "<group>";
+		};
+		1FADF85907724B94007DC910 /* Aqsis */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Aqsis;
+			sourceTree = "<group>";
+		};
+		1FCCD02B079F209C0069EDB7 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				1FCCD02C079F20B70069EDB7 /* liqAttachPrefAttribute.h */,
+				1FCCD02D079F20B70069EDB7 /* liqCustomNode.h */,
+				1FCCD02E079F20B70069EDB7 /* liqExpression.h */,
+				1FCCD02F079F20B70069EDB7 /* liqGetAttr.h */,
+				1FCCD030079F20B70069EDB7 /* liqGetSloInfo.h */,
+				1FCCD031079F20B70069EDB7 /* liqGlobalHelpers.h */,
+				1FCCD032079F20B70069EDB7 /* liqGlobals.h */,
+				1FCCD033079F20B70069EDB7 /* liqIOStream.h */,
+				1FCCD034079F20B70069EDB7 /* liqMemory.h */,
+				1FCCD035079F20B70069EDB7 /* liqPreviewShader.h */,
+				1FCCD036079F20B70069EDB7 /* liqProcessLauncher.h */,
+				1FCCD037079F20B70069EDB7 /* liqRenderer.h */,
+				1FCCD038079F20B70069EDB7 /* liqRenderScript.h */,
+				1FCCD039079F20B70069EDB7 /* liqRibBakeSubdivisionData.h */,
+				1FCCD03A079F20B70069EDB7 /* liqRibCoordData.h */,
+				1FCCD03B079F20B70069EDB7 /* liqRibCustomNode.h */,
+				1FCCD03C079F20B70069EDB7 /* liqRibData.h */,
+				1FCCD03D079F20B70069EDB7 /* liqRibGen.h */,
+				1FCCD03E079F20B70069EDB7 /* liqRibGenData.h */,
+				1FCCD03F079F20B70069EDB7 /* liqRibHT.h */,
+				1FCCD040079F20B70069EDB7 /* liqRibLightData.h */,
+				1FCCD041079F20B70069EDB7 /* liqRibLocatorData.h */,
+				1FCCD042079F20B70069EDB7 /* liqRibMayaSubdivisionData.h */,
+				1FCCD043079F20B70069EDB7 /* liqRibMeshData.h */,
+				1FCCD044079F20B70069EDB7 /* liqRibNode.h */,
+				1FCCD045079F20B70069EDB7 /* liqRibNuCurveData.h */,
+				1FCCD046079F20B70069EDB7 /* liqRibObj.h */,
+				1FCCD047079F20B70069EDB7 /* liqRibParticleData.h */,
+				1F000F4F0A867E620015BC04 /* liqRibPfxHairData.h */,
+				1F000F500A867E620015BC04 /* liqRibPfxToonData.h */,
+				1FCCD048079F20B70069EDB7 /* liqRibStatus.h */,
+				1FCCD049079F20B70069EDB7 /* liqRibSubdivisionData.h */,
+				1FCCD04A079F20B70069EDB7 /* liqRibSurfaceData.h */,
+				1FCCD04B079F20B70069EDB7 /* liqRibTranslator.h */,
+				1FCCD04C079F20B70069EDB7 /* liqShader.h */,
+				1FCCD04D079F20B70069EDB7 /* liqTokenPointer.h */,
+				1FCCD04E079F20B70069EDB7 /* liquid.h */,
+				1FCCD04F079F20B70069EDB7 /* liqWriteArchive.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859E8B029090EE04C91782 /* liquidMaya.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		1F148B220AED56C800968DE4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F148B3E0AED570E00968DE4 /* common.h in Headers */,
+				1F148B400AED570E00968DE4 /* error.h in Headers */,
+				1F148B430AED570E00968DE4 /* ri.h in Headers */,
+				1F148B450AED570E00968DE4 /* ribOut.h in Headers */,
+				1F148B470AED570E00968DE4 /* riInterface.h in Headers */,
+				1F148B490AED570E00968DE4 /* variable.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F8EBBED0A9C3E9300B6C156 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F8EBBEE0A9C3E9300B6C156 /* liqAttachPrefAttribute.h in Headers */,
+				1F8EBBEF0A9C3E9300B6C156 /* liqCustomNode.h in Headers */,
+				1F8EBBF00A9C3E9300B6C156 /* liqExpression.h in Headers */,
+				1F8EBBF10A9C3E9300B6C156 /* liqGetAttr.h in Headers */,
+				1F8EBBF20A9C3E9300B6C156 /* liqGetSloInfo.h in Headers */,
+				1F8EBBF30A9C3E9300B6C156 /* liqGlobalHelpers.h in Headers */,
+				1F8EBBF40A9C3E9300B6C156 /* liqGlobals.h in Headers */,
+				1F8EBBF50A9C3E9300B6C156 /* liqIOStream.h in Headers */,
+				1F8EBBF60A9C3E9300B6C156 /* liqMemory.h in Headers */,
+				1F8EBBF70A9C3E9300B6C156 /* liqPreviewShader.h in Headers */,
+				1F8EBBF80A9C3E9300B6C156 /* liqProcessLauncher.h in Headers */,
+				1F8EBBF90A9C3E9300B6C156 /* liqRenderer.h in Headers */,
+				1F8EBBFA0A9C3E9300B6C156 /* liqRenderScript.h in Headers */,
+				1F8EBBFB0A9C3E9300B6C156 /* liqRibBakeSubdivisionData.h in Headers */,
+				1F8EBBFC0A9C3E9300B6C156 /* liqRibCoordData.h in Headers */,
+				1F8EBBFD0A9C3E9300B6C156 /* liqRibCustomNode.h in Headers */,
+				1F8EBBFE0A9C3E9300B6C156 /* liqRibData.h in Headers */,
+				1F8EBBFF0A9C3E9300B6C156 /* liqRibGen.h in Headers */,
+				1F8EBC000A9C3E9300B6C156 /* liqRibGenData.h in Headers */,
+				1F8EBC010A9C3E9300B6C156 /* liqRibHT.h in Headers */,
+				1F8EBC020A9C3E9300B6C156 /* liqRibLightData.h in Headers */,
+				1F8EBC030A9C3E9300B6C156 /* liqRibLocatorData.h in Headers */,
+				1F8EBC040A9C3E9300B6C156 /* liqRibMayaSubdivisionData.h in Headers */,
+				1F8EBC050A9C3E9300B6C156 /* liqRibMeshData.h in Headers */,
+				1F8EBC060A9C3E9300B6C156 /* liqRibNode.h in Headers */,
+				1F8EBC070A9C3E9300B6C156 /* liqRibNuCurveData.h in Headers */,
+				1F8EBC080A9C3E9300B6C156 /* liqRibObj.h in Headers */,
+				1F8EBC090A9C3E9300B6C156 /* liqRibParticleData.h in Headers */,
+				1F8EBC0A0A9C3E9300B6C156 /* liqRibStatus.h in Headers */,
+				1F8EBC0B0A9C3E9300B6C156 /* liqRibSubdivisionData.h in Headers */,
+				1F8EBC0C0A9C3E9300B6C156 /* liqRibSurfaceData.h in Headers */,
+				1F8EBC0D0A9C3E9300B6C156 /* liqRibTranslator.h in Headers */,
+				1F8EBC0E0A9C3E9300B6C156 /* liqShader.h in Headers */,
+				1F8EBC0F0A9C3E9300B6C156 /* liqTokenPointer.h in Headers */,
+				1F8EBC100A9C3E9300B6C156 /* liquid.h in Headers */,
+				1F8EBC110A9C3E9300B6C156 /* liqWriteArchive.h in Headers */,
+				1F8EBC120A9C3E9300B6C156 /* liqRibPfxHairData.h in Headers */,
+				1F8EBC130A9C3E9300B6C156 /* liqRibPfxToonData.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FAC5D9507BE25410083A3E5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FAC5D9607BE25410083A3E5 /* liqAttachPrefAttribute.h in Headers */,
+				1FAC5D9707BE25410083A3E5 /* liqCustomNode.h in Headers */,
+				1FAC5D9807BE25410083A3E5 /* liqExpression.h in Headers */,
+				1FAC5D9907BE25410083A3E5 /* liqGetAttr.h in Headers */,
+				1FAC5D9A07BE25410083A3E5 /* liqGetSloInfo.h in Headers */,
+				1FAC5D9B07BE25410083A3E5 /* liqGlobalHelpers.h in Headers */,
+				1FAC5D9C07BE25410083A3E5 /* liqGlobals.h in Headers */,
+				1FAC5D9D07BE25410083A3E5 /* liqIOStream.h in Headers */,
+				1FAC5D9E07BE25410083A3E5 /* liqMemory.h in Headers */,
+				1FAC5D9F07BE25410083A3E5 /* liqPreviewShader.h in Headers */,
+				1FAC5DA007BE25410083A3E5 /* liqProcessLauncher.h in Headers */,
+				1FAC5DA107BE25410083A3E5 /* liqRenderer.h in Headers */,
+				1FAC5DA207BE25410083A3E5 /* liqRenderScript.h in Headers */,
+				1FAC5DA307BE25410083A3E5 /* liqRibBakeSubdivisionData.h in Headers */,
+				1FAC5DA407BE25410083A3E5 /* liqRibCoordData.h in Headers */,
+				1FAC5DA507BE25410083A3E5 /* liqRibCustomNode.h in Headers */,
+				1FAC5DA607BE25410083A3E5 /* liqRibData.h in Headers */,
+				1FAC5DA707BE25410083A3E5 /* liqRibGen.h in Headers */,
+				1FAC5DA807BE25410083A3E5 /* liqRibGenData.h in Headers */,
+				1FAC5DA907BE25410083A3E5 /* liqRibHT.h in Headers */,
+				1FAC5DAA07BE25410083A3E5 /* liqRibLightData.h in Headers */,
+				1FAC5DAB07BE25410083A3E5 /* liqRibLocatorData.h in Headers */,
+				1FAC5DAC07BE25410083A3E5 /* liqRibMayaSubdivisionData.h in Headers */,
+				1FAC5DAD07BE25410083A3E5 /* liqRibMeshData.h in Headers */,
+				1FAC5DAE07BE25410083A3E5 /* liqRibNode.h in Headers */,
+				1FAC5DAF07BE25410083A3E5 /* liqRibNuCurveData.h in Headers */,
+				1FAC5DB007BE25410083A3E5 /* liqRibObj.h in Headers */,
+				1FAC5DB107BE25410083A3E5 /* liqRibParticleData.h in Headers */,
+				1FAC5DB207BE25410083A3E5 /* liqRibStatus.h in Headers */,
+				1FAC5DB307BE25410083A3E5 /* liqRibSubdivisionData.h in Headers */,
+				1FAC5DB407BE25410083A3E5 /* liqRibSurfaceData.h in Headers */,
+				1FAC5DB507BE25410083A3E5 /* liqRibTranslator.h in Headers */,
+				1FAC5DB607BE25410083A3E5 /* liqShader.h in Headers */,
+				1FAC5DB707BE25410083A3E5 /* liqTokenPointer.h in Headers */,
+				1FAC5DB807BE25410083A3E5 /* liquid.h in Headers */,
+				1FAC5DB907BE25410083A3E5 /* liqWriteArchive.h in Headers */,
+				1F000F550A867E620015BC04 /* liqRibPfxHairData.h in Headers */,
+				1F000F560A867E620015BC04 /* liqRibPfxToonData.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FADF82707721BF5007DC910 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FCCD074079F20B70069EDB7 /* liqAttachPrefAttribute.h in Headers */,
+				1FCCD075079F20B70069EDB7 /* liqCustomNode.h in Headers */,
+				1FCCD076079F20B70069EDB7 /* liqExpression.h in Headers */,
+				1FCCD077079F20B70069EDB7 /* liqGetAttr.h in Headers */,
+				1FCCD078079F20B70069EDB7 /* liqGetSloInfo.h in Headers */,
+				1FCCD079079F20B70069EDB7 /* liqGlobalHelpers.h in Headers */,
+				1FCCD07A079F20B70069EDB7 /* liqGlobals.h in Headers */,
+				1FCCD07B079F20B70069EDB7 /* liqIOStream.h in Headers */,
+				1FCCD07C079F20B70069EDB7 /* liqMemory.h in Headers */,
+				1FCCD07D079F20B70069EDB7 /* liqPreviewShader.h in Headers */,
+				1FCCD07E079F20B70069EDB7 /* liqProcessLauncher.h in Headers */,
+				1FCCD07F079F20B70069EDB7 /* liqRenderer.h in Headers */,
+				1FCCD080079F20B70069EDB7 /* liqRenderScript.h in Headers */,
+				1FCCD081079F20B70069EDB7 /* liqRibBakeSubdivisionData.h in Headers */,
+				1FCCD082079F20B70069EDB7 /* liqRibCoordData.h in Headers */,
+				1FCCD083079F20B70069EDB7 /* liqRibCustomNode.h in Headers */,
+				1FCCD084079F20B70069EDB7 /* liqRibData.h in Headers */,
+				1FCCD085079F20B70069EDB7 /* liqRibGen.h in Headers */,
+				1FCCD086079F20B70069EDB7 /* liqRibGenData.h in Headers */,
+				1FCCD087079F20B70069EDB7 /* liqRibHT.h in Headers */,
+				1FCCD088079F20B70069EDB7 /* liqRibLightData.h in Headers */,
+				1FCCD089079F20B70069EDB7 /* liqRibLocatorData.h in Headers */,
+				1FCCD08A079F20B70069EDB7 /* liqRibMayaSubdivisionData.h in Headers */,
+				1FCCD08B079F20B70069EDB7 /* liqRibMeshData.h in Headers */,
+				1FCCD08C079F20B70069EDB7 /* liqRibNode.h in Headers */,
+				1FCCD08D079F20B70069EDB7 /* liqRibNuCurveData.h in Headers */,
+				1FCCD08E079F20B70069EDB7 /* liqRibObj.h in Headers */,
+				1FCCD08F079F20B70069EDB7 /* liqRibParticleData.h in Headers */,
+				1FCCD090079F20B70069EDB7 /* liqRibStatus.h in Headers */,
+				1FCCD091079F20B70069EDB7 /* liqRibSubdivisionData.h in Headers */,
+				1FCCD092079F20B70069EDB7 /* liqRibSurfaceData.h in Headers */,
+				1FCCD093079F20B70069EDB7 /* liqRibTranslator.h in Headers */,
+				1FCCD094079F20B70069EDB7 /* liqShader.h in Headers */,
+				1FCCD095079F20B70069EDB7 /* liqTokenPointer.h in Headers */,
+				1FCCD096079F20B70069EDB7 /* liquid.h in Headers */,
+				1FCCD097079F20B70069EDB7 /* liqWriteArchive.h in Headers */,
+				1F000F530A867E620015BC04 /* liqRibPfxHairData.h in Headers */,
+				1F000F540A867E620015BC04 /* liqRibPfxToonData.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FC7AA2006A00A5C00954BD2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FCCD050079F20B70069EDB7 /* liqAttachPrefAttribute.h in Headers */,
+				1FCCD051079F20B70069EDB7 /* liqCustomNode.h in Headers */,
+				1FCCD052079F20B70069EDB7 /* liqExpression.h in Headers */,
+				1FCCD053079F20B70069EDB7 /* liqGetAttr.h in Headers */,
+				1FCCD054079F20B70069EDB7 /* liqGetSloInfo.h in Headers */,
+				1FCCD055079F20B70069EDB7 /* liqGlobalHelpers.h in Headers */,
+				1FCCD056079F20B70069EDB7 /* liqGlobals.h in Headers */,
+				1FCCD057079F20B70069EDB7 /* liqIOStream.h in Headers */,
+				1FCCD058079F20B70069EDB7 /* liqMemory.h in Headers */,
+				1FCCD059079F20B70069EDB7 /* liqPreviewShader.h in Headers */,
+				1FCCD05A079F20B70069EDB7 /* liqProcessLauncher.h in Headers */,
+				1FCCD05B079F20B70069EDB7 /* liqRenderer.h in Headers */,
+				1FCCD05C079F20B70069EDB7 /* liqRenderScript.h in Headers */,
+				1FCCD05D079F20B70069EDB7 /* liqRibBakeSubdivisionData.h in Headers */,
+				1FCCD05E079F20B70069EDB7 /* liqRibCoordData.h in Headers */,
+				1FCCD05F079F20B70069EDB7 /* liqRibCustomNode.h in Headers */,
+				1FCCD060079F20B70069EDB7 /* liqRibData.h in Headers */,
+				1FCCD061079F20B70069EDB7 /* liqRibGen.h in Headers */,
+				1FCCD062079F20B70069EDB7 /* liqRibGenData.h in Headers */,
+				1FCCD063079F20B70069EDB7 /* liqRibHT.h in Headers */,
+				1FCCD064079F20B70069EDB7 /* liqRibLightData.h in Headers */,
+				1FCCD065079F20B70069EDB7 /* liqRibLocatorData.h in Headers */,
+				1FCCD066079F20B70069EDB7 /* liqRibMayaSubdivisionData.h in Headers */,
+				1FCCD067079F20B70069EDB7 /* liqRibMeshData.h in Headers */,
+				1FCCD068079F20B70069EDB7 /* liqRibNode.h in Headers */,
+				1FCCD069079F20B70069EDB7 /* liqRibNuCurveData.h in Headers */,
+				1FCCD06A079F20B70069EDB7 /* liqRibObj.h in Headers */,
+				1FCCD06B079F20B70069EDB7 /* liqRibParticleData.h in Headers */,
+				1FCCD06C079F20B70069EDB7 /* liqRibStatus.h in Headers */,
+				1FCCD06D079F20B70069EDB7 /* liqRibSubdivisionData.h in Headers */,
+				1FCCD06E079F20B70069EDB7 /* liqRibSurfaceData.h in Headers */,
+				1FCCD06F079F20B70069EDB7 /* liqRibTranslator.h in Headers */,
+				1FCCD070079F20B70069EDB7 /* liqShader.h in Headers */,
+				1FCCD071079F20B70069EDB7 /* liqTokenPointer.h in Headers */,
+				1FCCD072079F20B70069EDB7 /* liquid.h in Headers */,
+				1FCCD073079F20B70069EDB7 /* liqWriteArchive.h in Headers */,
+				1F000F510A867E620015BC04 /* liqRibPfxHairData.h in Headers */,
+				1F000F520A867E620015BC04 /* liqRibPfxToonData.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1F148B250AED56C800968DE4 /* ribLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F148B2A0AED56D900968DE4 /* Build configuration list for PBXNativeTarget "ribLib" */;
+			buildPhases = (
+				1F148B220AED56C800968DE4 /* Headers */,
+				1F148B230AED56C800968DE4 /* Sources */,
+				1F148B240AED56C800968DE4 /* Frameworks */,
+				1F148B670AED57FE00968DE4 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ribLib;
+			productName = ribLib;
+			productReference = 1F148B260AED56C800968DE4 /* librib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		1F5E729B07E632E0006FAA8F /* liquidbin-pixie maya7.0 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F21B3D708C2511D000A819E /* Build configuration list for PBXNativeTarget "liquidbin-pixie maya7.0" */;
+			buildPhases = (
+				1F5E729907E632E0006FAA8F /* Sources */,
+				1F5E729A07E632E0006FAA8F /* Frameworks */,
+				1F5E72D807E636BA006FAA8F /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "liquidbin-pixie maya7.0";
+			productName = "liquidbin-pixie";
+			productReference = 1F5E729C07E632E0006FAA8F /* liquidbin-pixie */;
+			productType = "com.apple.product-type.tool";
+		};
+		1F6E77040A9CF908009447B2 /* liquidbin-pixie maya8.0 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F6E770B0A9CF908009447B2 /* Build configuration list for PBXNativeTarget "liquidbin-pixie maya8.0" */;
+			buildPhases = (
+				1F6E77050A9CF908009447B2 /* Sources */,
+				1F6E77080A9CF908009447B2 /* Frameworks */,
+				1F6E770A0A9CF908009447B2 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1F148B790AED58A400968DE4 /* PBXTargetDependency */,
+			);
+			name = "liquidbin-pixie maya8.0";
+			productName = "liquidbin-pixie";
+			productReference = 1F6E770F0A9CF908009447B2 /* liquidbin-pixie */;
+			productType = "com.apple.product-type.tool";
+		};
+		1F8EBBEC0A9C3E9300B6C156 /* liquid-pixie maya8.0 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F8EBC450A9C3E9300B6C156 /* Build configuration list for PBXNativeTarget "liquid-pixie maya8.0" */;
+			buildPhases = (
+				1F8EBBED0A9C3E9300B6C156 /* Headers */,
+				1F8EBC140A9C3E9300B6C156 /* Sources */,
+				1F8EBC400A9C3E9300B6C156 /* Frameworks */,
+				1F8EBC420A9C3E9300B6C156 /* ShellScript */,
+			);
+			buildRules = (
+				1F8EBC430A9C3E9300B6C156 /* PBXBuildRule */,
+				1F8EBC440A9C3E9300B6C156 /* PBXBuildRule */,
+			);
+			dependencies = (
+				1F148B770AED58A100968DE4 /* PBXTargetDependency */,
+			);
+			name = "liquid-pixie maya8.0";
+			productName = liquid;
+			productReference = 1F8EBC490A9C3E9300B6C156 /* liquid_pixie.bundle */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		1FAC5D9407BE25410083A3E5 /* liquid-3Delight maya7.0 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F21B3D308C2511D000A819E /* Build configuration list for PBXNativeTarget "liquid-3Delight maya7.0" */;
+			buildPhases = (
+				1FAC5D9507BE25410083A3E5 /* Headers */,
+				1FAC5DBA07BE25410083A3E5 /* Sources */,
+				1FAC5DD807BE25410083A3E5 /* Frameworks */,
+				1F21B3F008C257D2000A819E /* ShellScript */,
+			);
+			buildRules = (
+				1F074609087E561C00EBD2F1 /* PBXBuildRule */,
+				1F074608087E561900EBD2F1 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = "liquid-3Delight maya7.0";
+			productName = liquid;
+			productReference = 1FAC5DDB07BE25410083A3E5 /* liquid_3delight.lib.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		1FADF82607721BF5007DC910 /* liquid-aqsis maya7.0 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F21B3CF08C2511D000A819E /* Build configuration list for PBXNativeTarget "liquid-aqsis maya7.0" */;
+			buildPhases = (
+				1FADF82707721BF5007DC910 /* Headers */,
+				1FADF82807721BF5007DC910 /* Sources */,
+				1FADF84907721BF5007DC910 /* Frameworks */,
+				1F21B3EC08C257BE000A819E /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "liquid-aqsis maya7.0";
+			productName = liquid;
+			productReference = 1FADF84C07721BF5007DC910 /* liquid_aqsis.lib.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		1FC7AA2306A00A5C00954BD2 /* liquid-pixie maya7.0 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F21B3CB08C2511D000A819E /* Build configuration list for PBXNativeTarget "liquid-pixie maya7.0" */;
+			buildPhases = (
+				1FC7AA2006A00A5C00954BD2 /* Headers */,
+				1FC7AA2106A00A5C00954BD2 /* Sources */,
+				1FC7AA2206A00A5C00954BD2 /* Frameworks */,
+				1F21B3E708C252A8000A819E /* ShellScript */,
+			);
+			buildRules = (
+				1F96851B086445620054B6CE /* PBXBuildRule */,
+				1F96851A0864455D0054B6CE /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = "liquid-pixie maya7.0";
+			productName = liquid;
+			productReference = 1FC7AA2406A00A5C00954BD2 /* liquid_pixie.lib.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1F21B3DB08C2511D000A819E /* Build configuration list for PBXProject "liquidMaya" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* liquidMaya */;
+			projectDirPath = "";
+			targets = (
+				1FC7AA2306A00A5C00954BD2 /* liquid-pixie maya7.0 */,
+				1FADF82607721BF5007DC910 /* liquid-aqsis maya7.0 */,
+				1FAC5D9407BE25410083A3E5 /* liquid-3Delight maya7.0 */,
+				1F5E729B07E632E0006FAA8F /* liquidbin-pixie maya7.0 */,
+				1F8EBBEC0A9C3E9300B6C156 /* liquid-pixie maya8.0 */,
+				1F6E77040A9CF908009447B2 /* liquidbin-pixie maya8.0 */,
+				1F148B250AED56C800968DE4 /* ribLib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1F148B670AED57FE00968DE4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp -r ${TARGET_BUILD_DIR}/librib.a ../bin/OSX/librib.a\n";
+		};
+		1F21B3E708C252A8000A819E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp ${TARGET_BUILD_DIR}/liquid_pixie.lib.dylib ../bin/OSX/liquid_pixie.lib";
+		};
+		1F21B3EC08C257BE000A819E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp ${TARGET_BUILD_DIR}/liquid_aqsis.lib.dylib ../bin/OSX/liquid_aqsis.lib";
+		};
+		1F21B3F008C257D2000A819E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp ${TARGET_BUILD_DIR}/liquid_3delight.lib.dylib ../bin/OSX/liquid_3delight.lib";
+		};
+		1F5E72D807E636BA006FAA8F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+				"liquidbin-pixie",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp ${TARGET_BUILD_DIR}/liquidbin-pixie ../bin/OSX/liquidbin-pixie";
+		};
+		1F6E770A0A9CF908009447B2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+				"liquidbin-pixie",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp ${TARGET_BUILD_DIR}/liquidbin-pixie ../bin/OSX/liquidbin-pixie";
+		};
+		1F8EBC420A9C3E9300B6C156 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p ../bin/OSX/\ncp -r ${TARGET_BUILD_DIR}/liquid_pixie.bundle ../bin/OSX/liquid_pixie.bundle";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1F148B230AED56C800968DE4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F148B3F0AED570E00968DE4 /* error.cpp in Sources */,
+				1F148B420AED570E00968DE4 /* ri.cpp in Sources */,
+				1F148B440AED570E00968DE4 /* ribOut.cpp in Sources */,
+				1F148B460AED570E00968DE4 /* riInterface.cpp in Sources */,
+				1F148B480AED570E00968DE4 /* variable.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F5E729907E632E0006FAA8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F6E775F0A9CFCB5009447B2 /* liquidBin.cpp in Sources */,
+				1F6E77990A9CFD13009447B2 /* liqAttachPrefAttribute.cpp in Sources */,
+				1F6E779A0A9CFD13009447B2 /* liqBucket.cpp in Sources */,
+				1F6E779B0A9CFD13009447B2 /* liqCoordSysNode.cpp in Sources */,
+				1F6E779C0A9CFD13009447B2 /* liqDisplacementNode.cpp in Sources */,
+				1F6E779D0A9CFD13009447B2 /* liqExpression.cpp in Sources */,
+				1F6E779E0A9CFD13009447B2 /* liqGetAttr.cpp in Sources */,
+				1F6E779F0A9CFD13009447B2 /* liqGetSloInfo.cpp in Sources */,
+				1F6E77A00A9CFD13009447B2 /* liqGlobalHelpers.cpp in Sources */,
+				1F6E77A10A9CFD13009447B2 /* liqGlobalsNode.cpp in Sources */,
+				1F6E77A20A9CFD13009447B2 /* liqJobList.cpp in Sources */,
+				1F6E77A30A9CFD13009447B2 /* liqLightNode.cpp in Sources */,
+				1F6E77A40A9CFD13009447B2 /* liqLightNodeBehavior.cpp in Sources */,
+				1F6E77A50A9CFD13009447B2 /* liqMayaRenderView.cpp in Sources */,
+				1F6E77A60A9CFD13009447B2 /* liqMemory.cpp in Sources */,
+				1F6E77A70A9CFD13009447B2 /* liqNodeSwatch.cpp in Sources */,
+				1F6E77A80A9CFD13009447B2 /* liqPreviewShader.cpp in Sources */,
+				1F6E77A90A9CFD13009447B2 /* liqProcessLauncher.cpp in Sources */,
+				1F6E77AA0A9CFD13009447B2 /* liqRenderer.cpp in Sources */,
+				1F6E77AB0A9CFD13009447B2 /* liqRibboxNode.cpp in Sources */,
+				1F6E77AC0A9CFD13009447B2 /* liqRibClipPlaneData.cpp in Sources */,
+				1F6E77AD0A9CFD13009447B2 /* liqRibCoordData.cpp in Sources */,
+				1F6E77AE0A9CFD13009447B2 /* liqRibData.cpp in Sources */,
+				1F6E77B10A9CFD13009447B2 /* liqRibGenData.cpp in Sources */,
+				1F6E77B20A9CFD13009447B2 /* liqRibHT.cpp in Sources */,
+				1F6E77B30A9CFD13009447B2 /* liqRibLightData.cpp in Sources */,
+				1F6E77B40A9CFD13009447B2 /* liqRibLocatorData.cpp in Sources */,
+				1F6E77B50A9CFD13009447B2 /* liqRibMayaSubdivisionData.cpp in Sources */,
+				1F6E77B60A9CFD13009447B2 /* liqRibMeshData.cpp in Sources */,
+				1F6E77B70A9CFD13009447B2 /* liqRibNode.cpp in Sources */,
+				1F6E77B80A9CFD13009447B2 /* liqRibNuCurveData.cpp in Sources */,
+				1F6E77B90A9CFD13009447B2 /* liqRibObj.cpp in Sources */,
+				1F6E77BA0A9CFD13009447B2 /* liqRibParticleData.cpp in Sources */,
+				1F6E77BB0A9CFD13009447B2 /* liqRibSubdivisionData.cpp in Sources */,
+				1F6E77BC0A9CFD13009447B2 /* liqRibSurfaceData.cpp in Sources */,
+				1F6E77BD0A9CFD13009447B2 /* liqRibTranslator.cpp in Sources */,
+				1F6E77BE0A9CFD13009447B2 /* liqShader.cpp in Sources */,
+				1F6E77BF0A9CFD13009447B2 /* liqSurfaceNode.cpp in Sources */,
+				1F6E77C00A9CFD13009447B2 /* liqTokenPointer.cpp in Sources */,
+				1F6E77C10A9CFD13009447B2 /* liqVolumeNode.cpp in Sources */,
+				1F6E77C20A9CFD13009447B2 /* liqWriteArchive.cpp in Sources */,
+				1F97A6450A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */,
+				1F97A6460A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F6E77050A9CF908009447B2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F6E775E0A9CFCB5009447B2 /* liquidBin.cpp in Sources */,
+				1F6E77ED0A9CFD17009447B2 /* liqAttachPrefAttribute.cpp in Sources */,
+				1F6E77EE0A9CFD17009447B2 /* liqBucket.cpp in Sources */,
+				1F6E77EF0A9CFD17009447B2 /* liqCoordSysNode.cpp in Sources */,
+				1F6E77F00A9CFD17009447B2 /* liqDisplacementNode.cpp in Sources */,
+				1F6E77F10A9CFD17009447B2 /* liqExpression.cpp in Sources */,
+				1F6E77F20A9CFD17009447B2 /* liqGetAttr.cpp in Sources */,
+				1F6E77F30A9CFD17009447B2 /* liqGetSloInfo.cpp in Sources */,
+				1F6E77F40A9CFD17009447B2 /* liqGlobalHelpers.cpp in Sources */,
+				1F6E77F50A9CFD17009447B2 /* liqGlobalsNode.cpp in Sources */,
+				1F6E77F60A9CFD17009447B2 /* liqJobList.cpp in Sources */,
+				1F6E77F70A9CFD17009447B2 /* liqLightNode.cpp in Sources */,
+				1F6E77F80A9CFD17009447B2 /* liqLightNodeBehavior.cpp in Sources */,
+				1F6E77F90A9CFD17009447B2 /* liqMayaRenderView.cpp in Sources */,
+				1F6E77FA0A9CFD17009447B2 /* liqMemory.cpp in Sources */,
+				1F6E77FB0A9CFD17009447B2 /* liqNodeSwatch.cpp in Sources */,
+				1F6E77FC0A9CFD17009447B2 /* liqPreviewShader.cpp in Sources */,
+				1F6E77FD0A9CFD17009447B2 /* liqProcessLauncher.cpp in Sources */,
+				1F6E77FE0A9CFD17009447B2 /* liqRenderer.cpp in Sources */,
+				1F6E77FF0A9CFD17009447B2 /* liqRibboxNode.cpp in Sources */,
+				1F6E78000A9CFD17009447B2 /* liqRibClipPlaneData.cpp in Sources */,
+				1F6E78010A9CFD17009447B2 /* liqRibCoordData.cpp in Sources */,
+				1F6E78020A9CFD17009447B2 /* liqRibData.cpp in Sources */,
+				1F6E78050A9CFD17009447B2 /* liqRibGenData.cpp in Sources */,
+				1F6E78060A9CFD17009447B2 /* liqRibHT.cpp in Sources */,
+				1F6E78070A9CFD17009447B2 /* liqRibLightData.cpp in Sources */,
+				1F6E78080A9CFD17009447B2 /* liqRibLocatorData.cpp in Sources */,
+				1F6E78090A9CFD17009447B2 /* liqRibMayaSubdivisionData.cpp in Sources */,
+				1F6E780A0A9CFD17009447B2 /* liqRibMeshData.cpp in Sources */,
+				1F6E780B0A9CFD17009447B2 /* liqRibNode.cpp in Sources */,
+				1F6E780C0A9CFD17009447B2 /* liqRibNuCurveData.cpp in Sources */,
+				1F6E780D0A9CFD17009447B2 /* liqRibObj.cpp in Sources */,
+				1F6E780E0A9CFD17009447B2 /* liqRibParticleData.cpp in Sources */,
+				1F6E780F0A9CFD17009447B2 /* liqRibSubdivisionData.cpp in Sources */,
+				1F6E78100A9CFD17009447B2 /* liqRibSurfaceData.cpp in Sources */,
+				1F6E78110A9CFD17009447B2 /* liqRibTranslator.cpp in Sources */,
+				1F6E78120A9CFD17009447B2 /* liqShader.cpp in Sources */,
+				1F6E78130A9CFD17009447B2 /* liqSurfaceNode.cpp in Sources */,
+				1F6E78140A9CFD17009447B2 /* liqTokenPointer.cpp in Sources */,
+				1F6E78150A9CFD17009447B2 /* liqVolumeNode.cpp in Sources */,
+				1F6E78160A9CFD17009447B2 /* liqWriteArchive.cpp in Sources */,
+				1F97A6430A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */,
+				1F97A6440A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F8EBC140A9C3E9300B6C156 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F8EBC150A9C3E9300B6C156 /* liqAttachPrefAttribute.cpp in Sources */,
+				1F8EBC160A9C3E9300B6C156 /* liqBucket.cpp in Sources */,
+				1F8EBC170A9C3E9300B6C156 /* liqCoordSysNode.cpp in Sources */,
+				1F8EBC180A9C3E9300B6C156 /* liqDisplacementNode.cpp in Sources */,
+				1F8EBC190A9C3E9300B6C156 /* liqExpression.cpp in Sources */,
+				1F8EBC1A0A9C3E9300B6C156 /* liqGetAttr.cpp in Sources */,
+				1F8EBC1B0A9C3E9300B6C156 /* liqGetSloInfo.cpp in Sources */,
+				1F8EBC1C0A9C3E9300B6C156 /* liqGlobalHelpers.cpp in Sources */,
+				1F8EBC1D0A9C3E9300B6C156 /* liqGlobalsNode.cpp in Sources */,
+				1F8EBC1E0A9C3E9300B6C156 /* liqLightNode.cpp in Sources */,
+				1F8EBC1F0A9C3E9300B6C156 /* liqLightNodeBehavior.cpp in Sources */,
+				1F8EBC200A9C3E9300B6C156 /* liqMayaRenderView.cpp in Sources */,
+				1F8EBC210A9C3E9300B6C156 /* liqMemory.cpp in Sources */,
+				1F8EBC220A9C3E9300B6C156 /* liqNodeSwatch.cpp in Sources */,
+				1F8EBC230A9C3E9300B6C156 /* liqPreviewShader.cpp in Sources */,
+				1F8EBC240A9C3E9300B6C156 /* liqProcessLauncher.cpp in Sources */,
+				1F8EBC250A9C3E9300B6C156 /* liqRenderer.cpp in Sources */,
+				1F8EBC260A9C3E9300B6C156 /* liqRibboxNode.cpp in Sources */,
+				1F8EBC270A9C3E9300B6C156 /* liqRibClipPlaneData.cpp in Sources */,
+				1F8EBC280A9C3E9300B6C156 /* liqRibCoordData.cpp in Sources */,
+				1F8EBC290A9C3E9300B6C156 /* liqRibData.cpp in Sources */,
+				1F8EBC2A0A9C3E9300B6C156 /* liqRibGenData.cpp in Sources */,
+				1F8EBC2B0A9C3E9300B6C156 /* liqRibHT.cpp in Sources */,
+				1F8EBC2C0A9C3E9300B6C156 /* liqRibLightData.cpp in Sources */,
+				1F8EBC2D0A9C3E9300B6C156 /* liqRibLocatorData.cpp in Sources */,
+				1F8EBC2E0A9C3E9300B6C156 /* liqRibMayaSubdivisionData.cpp in Sources */,
+				1F8EBC2F0A9C3E9300B6C156 /* liqRibMeshData.cpp in Sources */,
+				1F8EBC300A9C3E9300B6C156 /* liqRibNode.cpp in Sources */,
+				1F8EBC310A9C3E9300B6C156 /* liqRibNuCurveData.cpp in Sources */,
+				1F8EBC320A9C3E9300B6C156 /* liqRibObj.cpp in Sources */,
+				1F8EBC330A9C3E9300B6C156 /* liqRibParticleData.cpp in Sources */,
+				1F8EBC340A9C3E9300B6C156 /* liqRibSubdivisionData.cpp in Sources */,
+				1F8EBC350A9C3E9300B6C156 /* liqRibSurfaceData.cpp in Sources */,
+				1F8EBC360A9C3E9300B6C156 /* liqRibTranslator.cpp in Sources */,
+				1F8EBC370A9C3E9300B6C156 /* liqShader.cpp in Sources */,
+				1F8EBC380A9C3E9300B6C156 /* liqSurfaceNode.cpp in Sources */,
+				1F8EBC390A9C3E9300B6C156 /* liqTokenPointer.cpp in Sources */,
+				1F8EBC3A0A9C3E9300B6C156 /* liquidPlug.cpp in Sources */,
+				1F8EBC3B0A9C3E9300B6C156 /* liqVolumeNode.cpp in Sources */,
+				1F8EBC3C0A9C3E9300B6C156 /* liqWriteArchive.cpp in Sources */,
+				1F8EBC3D0A9C3E9300B6C156 /* liqJobList.cpp in Sources */,
+				1F97A64D0A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */,
+				1F97A64E0A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FAC5DBA07BE25410083A3E5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FF1A92B0A4B0EEB008815FC /* liqAttachPrefAttribute.cpp in Sources */,
+				1FF1A92C0A4B0EEB008815FC /* liqBucket.cpp in Sources */,
+				1FF1A92D0A4B0EEB008815FC /* liqCoordSysNode.cpp in Sources */,
+				1FF1A92E0A4B0EEB008815FC /* liqDisplacementNode.cpp in Sources */,
+				1FF1A92F0A4B0EEB008815FC /* liqExpression.cpp in Sources */,
+				1FF1A9300A4B0EEB008815FC /* liqGetAttr.cpp in Sources */,
+				1FF1A9310A4B0EEB008815FC /* liqGetSloInfo.cpp in Sources */,
+				1FF1A9320A4B0EEB008815FC /* liqGlobalHelpers.cpp in Sources */,
+				1FF1A9330A4B0EEB008815FC /* liqGlobalsNode.cpp in Sources */,
+				1FF1A9340A4B0EEB008815FC /* liqJobList.cpp in Sources */,
+				1FF1A9350A4B0EEB008815FC /* liqLightNode.cpp in Sources */,
+				1FF1A9360A4B0EEB008815FC /* liqLightNodeBehavior.cpp in Sources */,
+				1FF1A9370A4B0EEB008815FC /* liqMayaRenderView.cpp in Sources */,
+				1FF1A9380A4B0EEB008815FC /* liqMemory.cpp in Sources */,
+				1FF1A9390A4B0EEB008815FC /* liqNodeSwatch.cpp in Sources */,
+				1FF1A93A0A4B0EEB008815FC /* liqPreviewShader.cpp in Sources */,
+				1FF1A93B0A4B0EEB008815FC /* liqProcessLauncher.cpp in Sources */,
+				1FF1A93C0A4B0EEB008815FC /* liqRenderer.cpp in Sources */,
+				1FF1A93D0A4B0EEB008815FC /* liqRibboxNode.cpp in Sources */,
+				1FF1A93E0A4B0EEB008815FC /* liqRibClipPlaneData.cpp in Sources */,
+				1FF1A93F0A4B0EEB008815FC /* liqRibCoordData.cpp in Sources */,
+				1FF1A9400A4B0EEB008815FC /* liqRibData.cpp in Sources */,
+				1FF1A9410A4B0EEB008815FC /* liqRibGenData.cpp in Sources */,
+				1FF1A9420A4B0EEB008815FC /* liqRibHT.cpp in Sources */,
+				1FF1A9430A4B0EEB008815FC /* liqRibLightData.cpp in Sources */,
+				1FF1A9440A4B0EEB008815FC /* liqRibLocatorData.cpp in Sources */,
+				1FF1A9450A4B0EEB008815FC /* liqRibMayaSubdivisionData.cpp in Sources */,
+				1FF1A9460A4B0EEB008815FC /* liqRibMeshData.cpp in Sources */,
+				1FF1A9470A4B0EEB008815FC /* liqRibNode.cpp in Sources */,
+				1FF1A9480A4B0EEB008815FC /* liqRibNuCurveData.cpp in Sources */,
+				1FF1A9490A4B0EEB008815FC /* liqRibObj.cpp in Sources */,
+				1FF1A94A0A4B0EEB008815FC /* liqRibParticleData.cpp in Sources */,
+				1FF1A94B0A4B0EEB008815FC /* liqRibSubdivisionData.cpp in Sources */,
+				1FF1A94C0A4B0EEB008815FC /* liqRibSurfaceData.cpp in Sources */,
+				1FF1A94D0A4B0EEB008815FC /* liqRibTranslator.cpp in Sources */,
+				1FF1A94E0A4B0EEB008815FC /* liqShader.cpp in Sources */,
+				1FF1A94F0A4B0EEB008815FC /* liqSurfaceNode.cpp in Sources */,
+				1FF1A9500A4B0EEB008815FC /* liqTokenPointer.cpp in Sources */,
+				1FF1A9510A4B0EEB008815FC /* liquidPlug.cpp in Sources */,
+				1FF1A9520A4B0EEB008815FC /* liqVolumeNode.cpp in Sources */,
+				1FF1A9530A4B0EEB008815FC /* liqWriteArchive.cpp in Sources */,
+				1F97A64B0A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */,
+				1F97A64C0A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FADF82807721BF5007DC910 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F6E77620A9CFCBC009447B2 /* liquidPlug.cpp in Sources */,
+				1F6E776F0A9CFD11009447B2 /* liqAttachPrefAttribute.cpp in Sources */,
+				1F6E77700A9CFD11009447B2 /* liqBucket.cpp in Sources */,
+				1F6E77710A9CFD11009447B2 /* liqCoordSysNode.cpp in Sources */,
+				1F6E77720A9CFD11009447B2 /* liqDisplacementNode.cpp in Sources */,
+				1F6E77730A9CFD11009447B2 /* liqExpression.cpp in Sources */,
+				1F6E77740A9CFD11009447B2 /* liqGetAttr.cpp in Sources */,
+				1F6E77750A9CFD11009447B2 /* liqGetSloInfo.cpp in Sources */,
+				1F6E77760A9CFD11009447B2 /* liqGlobalHelpers.cpp in Sources */,
+				1F6E77770A9CFD11009447B2 /* liqGlobalsNode.cpp in Sources */,
+				1F6E77780A9CFD11009447B2 /* liqJobList.cpp in Sources */,
+				1F6E77790A9CFD11009447B2 /* liqLightNode.cpp in Sources */,
+				1F6E777A0A9CFD11009447B2 /* liqLightNodeBehavior.cpp in Sources */,
+				1F6E777B0A9CFD11009447B2 /* liqMayaRenderView.cpp in Sources */,
+				1F6E777C0A9CFD11009447B2 /* liqMemory.cpp in Sources */,
+				1F6E777D0A9CFD11009447B2 /* liqNodeSwatch.cpp in Sources */,
+				1F6E777E0A9CFD11009447B2 /* liqPreviewShader.cpp in Sources */,
+				1F6E777F0A9CFD11009447B2 /* liqProcessLauncher.cpp in Sources */,
+				1F6E77800A9CFD11009447B2 /* liqRenderer.cpp in Sources */,
+				1F6E77810A9CFD11009447B2 /* liqRibboxNode.cpp in Sources */,
+				1F6E77820A9CFD11009447B2 /* liqRibClipPlaneData.cpp in Sources */,
+				1F6E77830A9CFD11009447B2 /* liqRibCoordData.cpp in Sources */,
+				1F6E77840A9CFD11009447B2 /* liqRibData.cpp in Sources */,
+				1F6E77870A9CFD11009447B2 /* liqRibGenData.cpp in Sources */,
+				1F6E77880A9CFD11009447B2 /* liqRibHT.cpp in Sources */,
+				1F6E77890A9CFD11009447B2 /* liqRibLightData.cpp in Sources */,
+				1F6E778A0A9CFD11009447B2 /* liqRibLocatorData.cpp in Sources */,
+				1F6E778B0A9CFD11009447B2 /* liqRibMayaSubdivisionData.cpp in Sources */,
+				1F6E778C0A9CFD11009447B2 /* liqRibMeshData.cpp in Sources */,
+				1F6E778D0A9CFD11009447B2 /* liqRibNode.cpp in Sources */,
+				1F6E778E0A9CFD11009447B2 /* liqRibNuCurveData.cpp in Sources */,
+				1F6E778F0A9CFD11009447B2 /* liqRibObj.cpp in Sources */,
+				1F6E77900A9CFD11009447B2 /* liqRibParticleData.cpp in Sources */,
+				1F6E77910A9CFD11009447B2 /* liqRibSubdivisionData.cpp in Sources */,
+				1F6E77920A9CFD11009447B2 /* liqRibSurfaceData.cpp in Sources */,
+				1F6E77930A9CFD11009447B2 /* liqRibTranslator.cpp in Sources */,
+				1F6E77940A9CFD11009447B2 /* liqShader.cpp in Sources */,
+				1F6E77950A9CFD11009447B2 /* liqSurfaceNode.cpp in Sources */,
+				1F6E77960A9CFD11009447B2 /* liqTokenPointer.cpp in Sources */,
+				1F6E77970A9CFD11009447B2 /* liqVolumeNode.cpp in Sources */,
+				1F6E77980A9CFD11009447B2 /* liqWriteArchive.cpp in Sources */,
+				1F97A6490A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */,
+				1F97A64A0A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1FC7AA2106A00A5C00954BD2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F4D549F09857F5A00787F2E /* liqAttachPrefAttribute.cpp in Sources */,
+				1F4D54A009857F5A00787F2E /* liqBucket.cpp in Sources */,
+				1F4D54A109857F5A00787F2E /* liqCoordSysNode.cpp in Sources */,
+				1F4D54A309857F5A00787F2E /* liqDisplacementNode.cpp in Sources */,
+				1F4D54A509857F5A00787F2E /* liqExpression.cpp in Sources */,
+				1F4D54A609857F5A00787F2E /* liqGetAttr.cpp in Sources */,
+				1F4D54A709857F5A00787F2E /* liqGetSloInfo.cpp in Sources */,
+				1F4D54A809857F5A00787F2E /* liqGlobalHelpers.cpp in Sources */,
+				1F4D54A909857F5A00787F2E /* liqGlobalsNode.cpp in Sources */,
+				1F4D54AA09857F5A00787F2E /* liqLightNode.cpp in Sources */,
+				1F4D54AB09857F5A00787F2E /* liqLightNodeBehavior.cpp in Sources */,
+				1F4D54AD09857F5A00787F2E /* liqMayaRenderView.cpp in Sources */,
+				1F4D54AE09857F5A00787F2E /* liqMemory.cpp in Sources */,
+				1F4D54AF09857F5A00787F2E /* liqNodeSwatch.cpp in Sources */,
+				1F4D54B109857F5A00787F2E /* liqPreviewShader.cpp in Sources */,
+				1F4D54B309857F5A00787F2E /* liqProcessLauncher.cpp in Sources */,
+				1F4D54B409857F5A00787F2E /* liqRenderer.cpp in Sources */,
+				1F4D54B509857F5A00787F2E /* liqRibboxNode.cpp in Sources */,
+				1F4D54B609857F5A00787F2E /* liqRibClipPlaneData.cpp in Sources */,
+				1F4D54B709857F5A00787F2E /* liqRibCoordData.cpp in Sources */,
+				1F4D54B809857F5A00787F2E /* liqRibData.cpp in Sources */,
+				1F4D54B909857F5A00787F2E /* liqRibGenData.cpp in Sources */,
+				1F4D54BA09857F5A00787F2E /* liqRibHT.cpp in Sources */,
+				1F4D54BB09857F5A00787F2E /* liqRibLightData.cpp in Sources */,
+				1F4D54BC09857F5A00787F2E /* liqRibLocatorData.cpp in Sources */,
+				1F4D54BD09857F5A00787F2E /* liqRibMayaSubdivisionData.cpp in Sources */,
+				1F4D54BE09857F5A00787F2E /* liqRibMeshData.cpp in Sources */,
+				1F4D54BF09857F5A00787F2E /* liqRibNode.cpp in Sources */,
+				1F4D54C009857F5A00787F2E /* liqRibNuCurveData.cpp in Sources */,
+				1F4D54C109857F5A00787F2E /* liqRibObj.cpp in Sources */,
+				1F4D54C209857F5A00787F2E /* liqRibParticleData.cpp in Sources */,
+				1F4D54C309857F5A00787F2E /* liqRibSubdivisionData.cpp in Sources */,
+				1F4D54C409857F5A00787F2E /* liqRibSurfaceData.cpp in Sources */,
+				1F4D54C509857F5A00787F2E /* liqRibTranslator.cpp in Sources */,
+				1F4D54C609857F5A00787F2E /* liqShader.cpp in Sources */,
+				1F4D54C709857F5A00787F2E /* liqSurfaceNode.cpp in Sources */,
+				1F4D54C809857F5A00787F2E /* liqTokenPointer.cpp in Sources */,
+				1F4D55150985842E00787F2E /* liquidPlug.cpp in Sources */,
+				1F4D55160985842E00787F2E /* liqVolumeNode.cpp in Sources */,
+				1F4D55170985842E00787F2E /* liqWriteArchive.cpp in Sources */,
+				1F28DDD909D6DF5800D644D1 /* liqJobList.cpp in Sources */,
+				1F97A6470A9E611E00546274 /* liqRibPfxHairData.cpp in Sources */,
+				1F97A6480A9E611E00546274 /* liqRibPfxToonData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1F148B770AED58A100968DE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1F148B250AED56C800968DE4 /* ribLib */;
+			targetProxy = 1F148B760AED58A100968DE4 /* PBXContainerItemProxy */;
+		};
+		1F148B790AED58A400968DE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1F148B250AED56C800968DE4 /* ribLib */;
+			targetProxy = 1F148B780AED58A400968DE4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1F148B2B0AED56D900968DE4 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_ZLIB;
+				HEADER_SEARCH_PATHS = ../../ribLib;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = rib;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		1F148B2C0AED56D900968DE4 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_ZLIB;
+				HEADER_SEARCH_PATHS = ../../ribLib;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = rib;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		1F148B2D0AED56D900968DE4 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_ZLIB;
+				HEADER_SEARCH_PATHS = ../../ribLib;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = rib;
+				ZERO_LINK = YES;
+			};
+			name = Default;
+		};
+		1F21B3CC08C2511D000A819E /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_pixie.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		1F21B3CD08C2511D000A819E /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_pixie.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		1F21B3CE08C2511D000A819E /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_pixie.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+		1F21B3D008C2511D000A819E /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AQSIS = /Applications/Graphics/MacAqsis.0.9.1;
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					AQSIS,
+					"LIQUIDVERSION=1.8b23",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(AQSIS)/include/aqsis/",
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(AQSIS)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = liquid_aqsis.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		1F21B3D108C2511D000A819E /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AQSIS = /Applications/Graphics/MacAqsis.0.9.1;
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					AQSIS,
+					"LIQUIDVERSION=1.8b23",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(AQSIS)/include/aqsis/",
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(AQSIS)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = liquid_aqsis.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		1F21B3D208C2511D000A819E /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AQSIS = /Applications/Graphics/MacAqsis.0.9.1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					AQSIS,
+					"LIQUIDVERSION=1.8b23",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(AQSIS)/include/aqsis/",
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(AQSIS)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya6.5/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = liquid_aqsis.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Default;
+		};
+		1F21B3D408C2511D000A819E /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DELIGHT = "/Applications/Graphics/3Delight-5.0.1";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					DELIGHT,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(DELIGHT)/include",
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(DELIGHT)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_3delight.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		1F21B3D508C2511D000A819E /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DELIGHT = "/Applications/Graphics/3Delight-5.0.1";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					DELIGHT,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(DELIGHT)/include",
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(DELIGHT)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_3delight.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		1F21B3D608C2511D000A819E /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DELIGHT = "/Applications/Graphics/3Delight-5.0.1";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					DELIGHT,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b23\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(DELIGHT)/include",
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(DELIGHT)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lxpcom",
+					"-lnspr4",
+					"-lplds4",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lplc4",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_3delight.lib;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+		1F21B3D808C2511D000A819E /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					PIXIE,
+					"LIQUIDVERSION=1.6.7",
+					"REQUIRE_IOSTREAM=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "liquidbin-pixie";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		1F21B3D908C2511D000A819E /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					PIXIE,
+					"LIQUIDVERSION=1.6.7",
+					"REQUIRE_IOSTREAM=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "liquidbin-pixie";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		1F21B3DA08C2511D000A819E /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					_BOOL,
+					OSMac_MachO_,
+					PIXIE,
+					"LIQUIDVERSION=1.6.7",
+					"REQUIRE_IOSTREAM=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				MAYA_LOCATION = /Applications/Alias/maya7.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "liquidbin-pixie";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		1F21B3DC08C2511D000A819E /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Development;
+		};
+		1F21B3DD08C2511D000A819E /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Deployment;
+		};
+		1F21B3DE08C2511D000A819E /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Default;
+		};
+		1F6E770C0A9CF908009447B2 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
+				GENERATE_MASTER_OBJECT_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				MACH_O_TYPE = mh_execute;
+				MAYA_LOCATION = /Applications/Alias/maya8.0/Maya.app/Contents/;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = NO;
+				PRODUCT_NAME = "liquidbin-pixie";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		1F6E770D0A9CF908009447B2 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
+				GENERATE_MASTER_OBJECT_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				MACH_O_TYPE = mh_execute;
+				MAYA_LOCATION = /Applications/Alias/maya8.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = NO;
+				PRODUCT_NAME = "liquidbin-pixie";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		1F6E770E0A9CF908009447B2 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
+				GENERATE_MASTER_OBJECT_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				MACH_O_TYPE = mh_execute;
+				MAYA_LOCATION = /Applications/Alias/maya8.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = NO;
+				PRODUCT_NAME = "liquidbin-pixie";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Default;
+		};
+		1F8EBC460A9C3E9300B6C156 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = bundle;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				MAYA_LOCATION = /Applications/Alias/maya8.0/Maya.app/Contents/;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_pixie;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		1F8EBC470A9C3E9300B6C156 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = bundle;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				MAYA_LOCATION = /Applications/Alias/maya8.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_pixie;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		1F8EBC480A9C3E9300B6C156 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = bundle;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_LOCATION)../../devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OSX,
+					MAC_PLUGIN,
+					OSMac_,
+					OSMac_MachO_,
+					PIXIE,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1)",
+					"REQUIRE_IOSTREAM=1",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_1 = "LIQUIDVERSION=\\\"1.8b30\\\"";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					../include/,
+					"$(MAYA_LOCATION)../../devkit/include",
+					"$(PIXIEHOME)/include",
+					/Users/geohar/Desktop/pixie/current/src/,
+				);
+				INSTALL_PATH = ../bin/OSX/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PIXIEHOME)/lib",
+					"$(MAYA_LOCATION)/MacOS",
+				);
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				MAYA_LOCATION = /Applications/Alias/maya8.0/Maya.app/Contents/;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+					"-framework",
+					OpenGL,
+					"-lFoundation",
+					"-lOpenMaya",
+					"-lOpenMayaRender",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lOpenMayaFX",
+					"-lAnimSlice",
+					"-lDeformSlice",
+					"-lDynSlice",
+					"-lKinSlice",
+					"-lModelSlice",
+					"-lNurbsSlice",
+					"-lPolySlice",
+					"-lDynUISlice",
+					"-lRenderSlice",
+					"-lProjectSlice",
+					"-lImage",
+					"-lShared",
+					"-lTranslators",
+					"-lDataModel",
+					"-lRenderModel",
+					"-lNurbsEngine",
+					"-lDependEngine",
+					"-lCommandEngine",
+					"-lFoundation",
+					"-lAppVersion",
+					"-lUrchinSlice",
+					"-lAG",
+					"-lGeometryEngine",
+					"-lNurbs",
+					"-lAnimEngine",
+					"-lPolyEngine",
+					"-lDeformSlice",
+					"-lPoly",
+					"-lDependCommand",
+					"-lExtensionLayer",
+					"-l3dGraphics",
+					"-lSharedUI",
+					"-lBase",
+					"-lIMF",
+					"-lHWRenderMaya",
+					"-lHWRender",
+					"-lHWFoundation",
+					"-lHWGL",
+					"-lManips",
+					"-lModelUISlice",
+					"-lSubdivEngine",
+					"-lSubdiv",
+					"-lImageUI",
+					"-lSubdivGeom",
+					"-liff",
+					"-lawxml2",
+					"-Wl,-executable_path,$(MAYA_LOCATION)/MacOS",
+				);
+				OTHER_REZFLAGS = "";
+				PIXIEHOME = /Applications/Graphics/Pixie;
+				PREBINDING = YES;
+				PRODUCT_NAME = liquid_pixie;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1F148B2A0AED56D900968DE4 /* Build configuration list for PBXNativeTarget "ribLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F148B2B0AED56D900968DE4 /* Development */,
+				1F148B2C0AED56D900968DE4 /* Deployment */,
+				1F148B2D0AED56D900968DE4 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		1F21B3CB08C2511D000A819E /* Build configuration list for PBXNativeTarget "liquid-pixie maya7.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F21B3CC08C2511D000A819E /* Development */,
+				1F21B3CD08C2511D000A819E /* Deployment */,
+				1F21B3CE08C2511D000A819E /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		1F21B3CF08C2511D000A819E /* Build configuration list for PBXNativeTarget "liquid-aqsis maya7.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F21B3D008C2511D000A819E /* Development */,
+				1F21B3D108C2511D000A819E /* Deployment */,
+				1F21B3D208C2511D000A819E /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		1F21B3D308C2511D000A819E /* Build configuration list for PBXNativeTarget "liquid-3Delight maya7.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F21B3D408C2511D000A819E /* Development */,
+				1F21B3D508C2511D000A819E /* Deployment */,
+				1F21B3D608C2511D000A819E /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		1F21B3D708C2511D000A819E /* Build configuration list for PBXNativeTarget "liquidbin-pixie maya7.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F21B3D808C2511D000A819E /* Development */,
+				1F21B3D908C2511D000A819E /* Deployment */,
+				1F21B3DA08C2511D000A819E /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		1F21B3DB08C2511D000A819E /* Build configuration list for PBXProject "liquidMaya" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F21B3DC08C2511D000A819E /* Development */,
+				1F21B3DD08C2511D000A819E /* Deployment */,
+				1F21B3DE08C2511D000A819E /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		1F6E770B0A9CF908009447B2 /* Build configuration list for PBXNativeTarget "liquidbin-pixie maya8.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F6E770C0A9CF908009447B2 /* Development */,
+				1F6E770D0A9CF908009447B2 /* Deployment */,
+				1F6E770E0A9CF908009447B2 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		1F8EBC450A9C3E9300B6C156 /* Build configuration list for PBXNativeTarget "liquid-pixie maya8.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F8EBC460A9C3E9300B6C156 /* Development */,
+				1F8EBC470A9C3E9300B6C156 /* Deployment */,
+				1F8EBC480A9C3E9300B6C156 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
