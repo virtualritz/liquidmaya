@@ -19,7 +19,7 @@ ifeq "$(OS_NAME)" "GNU/Linux"
 PLUGSUF		= so
 OBJEXT		= o
 LD		= $(MAYA_LOCATION)/bin/mayald
-LOCFLAGS	= -fmessage-length=0 -Os -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -DDELIGHT -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
+LOCFLAGS	= -fmessage-length=0 -Os -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
 WARNFLAGS	= -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
 NO_TRANS_LINK	=
 VBIN		= redhat
@@ -27,7 +27,7 @@ EXTRA_LIBS	=
 AR		= ar cqs
 CPP		= g++-4.1
 
-UX_RELEASE_TEST_FILES = /etc/fedora-release /etc/redhat-release /etc/slackware-version /etc/gentoo-release
+UX_RELEASE_TEST_FILES = /etc/fedora-release /etc/redhat-release /etc/slackware-version /etc/gentoo-release /etc/SuSE-release
 UX_RELEASE_FILE ?= $(foreach FILE, $(UX_RELEASE_TEST_FILES), $(wildcard $(FILE)*))
 FLAVORX := $(patsubst /etc/%-release,%,$(UX_RELEASE_FILE))
 FLAVORX := $(patsubst /etc/%-version,%,$(FLAVORX))
@@ -236,7 +236,7 @@ VPATHMEL 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/mel
 VPATHRENDERS 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/renderers
 VPATHICONS  		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/icons
 CPPFLAGS		= -DLIQUIDVERSION=$(LIQUIDVERSION) $(LOCFLAGS) $(LIQRMANFLAGS) $(WARNFLAGS) $(EXTRAFLAGS) $(NO_TRANS_LINK) -DREQUIRE_IOSTREAM
-LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L/usr/lib
+LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib
 
 ifeq "$(USE_RIBLIB)" "yes"
 INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(DEPTH)/ribLib -I../include
