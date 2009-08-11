@@ -1,9 +1,0 @@
-
-global proc AEliquidSetFlags( string $node )
-{
-  editorTemplate -beginLayout "Liquid" -collapse true;
-
-    editorTemplate -label "Trace Set" -addDynamicControl "liqTraceSet";
-
-  editorTemplate -endLayout;
-}

@@ -1,5 +1,0 @@
-global proc mmm.liquidMenu(string $parent)
-{
-    liquidInitCFD;
-    liquidStartup();
-}
