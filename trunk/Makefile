@@ -1,8 +1,8 @@
 DEPTH = .
 include $(DEPTH)/commondefs.mk
 
-MAYA_RELEASES := $(patsubst $(AW_LOCATION)/maya%, %, $(MAYA_VERSIONS) )
-MAYA_RELEASES := 7.0.1
+#MAYA_RELEASES := $(patsubst $(AW_LOCATION)/maya%, %, $(MAYA_VERSIONS) )
+MAYA_RELEASES ?= 2009
 COMPILED_VERSIONS = $(wildcard bin/redhat/*)
 RELEASE_PATH = /net/soft/fscfc/maya
 LIQUID_PLUGS = $(wildcard bin/redhat/*/)
@@ -63,7 +63,7 @@ dist :
 	do \
 		( echo Maya $${vers:=none} ---------------------------------------------; cd src && make MAYA_VERSION=$${vers:=none} BIN_VERSION=$${vers:=none} newversion );\
 	done;
-	@( cd shaders && make newversion );
+#	@( cd shaders && make newversion );
 	@( cd mel && make newversion );
 	@( cd icons && make newversion );
 	@( cd renderers && make newversion );

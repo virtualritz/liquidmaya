@@ -343,7 +343,7 @@ liqRibPfxData::liqRibPfxData( MObject pfxGeo, ObjectType type )
 		}
 
 		LIQDEBUGPRINTF( "-> number of pfx curve CVs: %d\n", totalVertex );
-		LIQDEBUGPRINTF( "-> number of pfx curves: %d\n", nverts[ setOn ].size() );
+		LIQDEBUGPRINTF( "-> number of pfx curves: %ld\n", nverts[ setOn ].size() );
 		LIQDEBUGPRINTF( "-> allocating memory for pfx data\n" );
 
 		LIQDEBUGPRINTF( "-> flowerLine data created\n" );

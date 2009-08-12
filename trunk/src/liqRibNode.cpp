@@ -367,8 +367,11 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if( visibility.transmission == visibility::TRANSMISSION_TRANSPARENT ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqVisibilityTransmission" ), &status );
-        if( status == MS::kSuccess )
-          nPlug.getValue( ( int& ) visibility.transmission );
+        if( status == MS::kSuccess ) {
+		  int tmpInt;
+          nPlug.getValue( tmpInt  );
+		  visibility.transmission = ( visibility::Transmission )tmpInt;
+		}
       }
 
       // philippe : new visibility attributes in prman 12.5
@@ -405,29 +408,41 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if( hitmode.camera == hitmode::CAMERA_HITMODE_SHADER ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqHitModeCamera" ), &status );
-        if( status == MS::kSuccess )
-          nPlug.getValue( ( int& ) hitmode.camera );
+        if( status == MS::kSuccess ) {
+		  int tmpInt;
+          nPlug.getValue( tmpInt  );
+		  hitmode.camera = ( hitmode::Camera ) tmpInt;
+		}
       }
 
       if( hitmode.diffuse == hitmode::DIFFUSE_HITMODE_PRIMITIVE ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqHitModeDiffuse" ), &status );
-        if( status == MS::kSuccess )
-          nPlug.getValue( ( int& ) hitmode.diffuse );
+        if( status == MS::kSuccess ) {
+		  int tmpInt;
+          nPlug.getValue( tmpInt  );
+		  hitmode.diffuse = ( hitmode::Diffuse ) tmpInt;
+		}
       }
 
       if( hitmode.specular == hitmode::SPECULAR_HITMODE_SHADER ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqHitModeSpecular" ), &status );
-        if( status == MS::kSuccess )
-          nPlug.getValue( ( int& ) hitmode.specular );
+        if( status == MS::kSuccess ) {
+		  int tmpInt;
+          nPlug.getValue( tmpInt );
+		   hitmode.specular= ( hitmode::Specular ) tmpInt;
+		}
       }
 
       if( hitmode.transmission == hitmode::TRANSMISSION_HITMODE_SHADER ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqHitModeTransmission" ), &status );
-        if( status == MS::kSuccess )
-          nPlug.getValue( ( int& ) hitmode.transmission );
+        if( status == MS::kSuccess ) {
+		  int tmpInt;
+          nPlug.getValue( tmpInt );
+		  hitmode.transmission = ( hitmode::Transmission )tmpInt;
+		}
       }
 
       // irradiance group -----------------------------------------------------
@@ -470,8 +485,11 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if( irradiance.fileMode == irradiance::FILEMODE_NONE ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqIrradianceFileMode" ), &status );
-        if( status == MS::kSuccess )
-          nPlug.getValue( ( int& ) irradiance.fileMode );
+        if( status == MS::kSuccess ) {
+		  int tmpInt;
+          nPlug.getValue( tmpInt );
+		  irradiance.fileMode = ( irradiance::FileMode )tmpInt;
+		}
       }
 
       // photon group ---------------------------------------------------------
@@ -493,8 +511,11 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if( photon.shadingModel == photon::SHADINGMODEL_MATTE ) {
         status.clear();
         nPlug = nodePeeker.findPlug( MString( "liqPhotonShadingModel" ), &status );
-        if( status == MS::kSuccess )
-          nPlug.getValue( ( int& ) photon.shadingModel );
+        if( status == MS::kSuccess ) {
+		  int tmpInt;
+          nPlug.getValue( tmpInt );
+		  photon.shadingModel = ( photon::ShadingModel ) tmpInt;
+		}
       }
 
       if( photon.estimator == 100 ) {

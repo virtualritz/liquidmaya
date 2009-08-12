@@ -63,8 +63,8 @@ extern liqRenderer liquidRenderer;
 /** Ccreate a RIB compatible representation of a Maya nurbs surface.
  */
 liqRibSurfaceData::liqRibSurfaceData( MObject surface )
-:   hasTrims( false ),
-    grain( 0 ),
+:	grain( 0 ),
+	hasTrims( false ),
     uknot(),
     vknot(),
     CVs(),
