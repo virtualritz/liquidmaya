@@ -76,9 +76,9 @@ liqRibSubdivisionData::liqRibSubdivisionData( MObject mesh )
     nverts(),
     verts(),
     vertexParam( NULL ),
-    interpolateBoundary( 0 ),
     uvDetail( rFaceVarying ),
-    trueFacevarying( false )
+    trueFacevarying( false ),
+    interpolateBoundary( 0 )
 {
   LIQDEBUGPRINTF( "-> creating subdivision surface\n" );
   MFnMesh fnMesh( mesh );

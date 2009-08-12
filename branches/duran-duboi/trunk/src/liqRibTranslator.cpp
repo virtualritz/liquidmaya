@@ -2888,7 +2888,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           //
           if( lastScannedFrame != scanTime ) {
 
-            LIQDEBUGPRINTF( "Scanning at time %f\n", scanTime );
+            LIQDEBUGPRINTF( "Scanning at time %ld\n", scanTime );
 
             // hash table handling
             //

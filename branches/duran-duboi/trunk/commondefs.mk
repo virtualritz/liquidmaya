@@ -6,7 +6,7 @@ SHELL = sh
 
 AW_LOCATION ?= /usr/autodesk
 MAYA_LOCATION ?= $(AW_LOCATION)/maya2009-x64
-MAYA_VERSIONS := $(wildcard $(AW_LOCATION)/maya*)
+MAYA_VERSIONS ?= $(wildcard $(AW_LOCATION)/maya*)
 MAYA_VERSION ?= 2009
 LIQRMAN ?= 3delight
 LIQ_OLD_MAYA_IDS ?= 0

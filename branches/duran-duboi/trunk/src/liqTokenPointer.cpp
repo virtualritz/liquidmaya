@@ -239,7 +239,7 @@ bool liqTokenPointer::set( const string& name, ParameterType ptype, unsigned int
     }
     LIQDEBUGPRINTF( "-> array size: %d\n", arraySize );
 
-    LIQDEBUGPRINTF( "-> needed %ld got %ld\n", neededSize, m_tokenSize );
+    LIQDEBUGPRINTF( "-> needed %ud got %d\n", neededSize, m_tokenSize );
   } else {
     // STRINGS ARE A SPECIAL CASE
     // Space is now allocated upfront
