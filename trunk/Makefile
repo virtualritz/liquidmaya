@@ -46,17 +46,32 @@ realclean :
 ifeq ($(LIQRMAN),3delight)
 install :
 	( cd src && make BIN_VERSION="release" install3delight)
-endif
-
+else
 ifeq ($(LIQRMAN),pixie)
 install :
 	( cd src && make BIN_VERSION="release" installpixie)
-endif
-
+else
 ifeq ($(LIQRMAN),air)
 install :
 	( cd src && make BIN_VERSION="release" installair)
+else
+install : dist
+	@echo "Installing in $(INSTALL_DIR)"
+	@mkdir -p $(INSTALL_DIR)
+	@for vers in $(strip $(MAYA_RELEASES));\
+	do \
+		( echo Maya $${vers:=none} ---------------------------------------------; cd src && make MAYA_VERSION=$${vers:=none} BIN_VERSION=$${vers:=none} INSTALL_DIR=$(INSTALL_DIR) installPlug installBin);\
+	done;
+	@( cd src && make BIN_VERSION=release INSTALL_DIR=$(INSTALL_DIR) installDpy )
+	@( cd mel && make VPATHMEL=$(LIQ_MEL_DIR) newversion );
+	@( cd icons && make VPATHICONS=$(LIQ_ICONS_DIR) newversion );
+	@( cd shaders && make VPATHSHADERS=$(LIQ_SHADERS_DIR) newversion );
+	@( cd renderers && make VPATHRENDERS=$(LIQ_RENDERERS_DIR) newversion );
+
 endif
+endif
+endif
+
 
 dist :
 	@for vers in $(strip $(MAYA_RELEASES));\
