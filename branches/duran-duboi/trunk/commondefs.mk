@@ -218,11 +218,16 @@ endif
 
 
 
-INSTALL_DIR  = /temp/maya$(MAYA_VERSION)/liquid
+#INSTALL_DIR  = /temp/maya$(MAYA_VERSION)/liquid
 #INSTALL_DIR  = /net/soft/fscfc/maya$(MAYA_VERSION)/liquid
-INSTALL_PLUG_DIR = /temp/maya$(MAYA_VERSION)/liquid
 
+# Directories to install stuff
+INSTALL_DIR ?= $(LIQUIDHOME)
+LIQ_PLUG_DIR 		= $(INSTALL_DIR)/plugins
+LIQ_BIN_DIR 		= $(INSTALL_DIR)/bin
+LIQ_DPY_DIR 		= $(INSTALL_DIR)/$(LIQUIDDPYLOC)
 LIQ_ICONS_DIR   	= $(INSTALL_DIR)/icons
+LIQ_MEL_DIR   		= $(INSTALL_DIR)/mel
 LIQ_SHADERS_SRC_DIR = $(INSTALL_DIR)/shaders/src
 LIQ_SHADERS_DIR 	= $(INSTALL_DIR)/shaders
 LIQ_RENDERERS_DIR 	= $(INSTALL_DIR)/renderers

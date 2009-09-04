@@ -255,6 +255,19 @@ installair:
 	@mkdir -p $(DESTDIR)/usr/share/liquid/displayDrivers/Air
 	@cp -rf $(LIQUIDDPY) $(DESTDIR)/usr/share/liquid/displayDrivers/Air/d_liqmaya.so
 
+installPlug :
+	@echo "Installing $(LIQUIDPLUG) in $(LIQ_PLUG_DIR)/$(MAYA_VERSION)"
+	@mkdir -p $(LIQ_PLUG_DIR)/$(MAYA_VERSION)
+	@cp $(LIQUIDPLUG) $(LIQ_PLUG_DIR)/$(MAYA_VERSION)
+installDpy :
+	@echo "Installing $(LIQUIDDPY) in $(LIQ_DPY_DIR)"
+	@mkdir -p $(LIQ_DPY_DIR)
+	@cp $(LIQUIDDPY) $(LIQ_DPY_DIR)
+installBin :
+	@echo "Installing $(LIQUIDBIN) in $(LIQ_BIN_DIR)"
+	@mkdir -p $(LIQ_BIN_DIR)
+	@cp $(LIQUIDBIN) $(LIQ_BIN_DIR)
+
 clean : VPATH?=$(VPATHDEBUG)
 clean :
 	rm -rf $(VPATH)/*.$(PLUGSUF) $(VPATH)/*.$(OBJEXT) $(VPATH)/*.d $(VPATH)/ii_files $(VPATH)/so_locations

@@ -24,5 +24,4 @@ $(VPATHMEL)/%.mel : %.mel
 	@echo $@
 	@$(CP) $< $@
 
-
 include $(DEPTH)/commonrules.mk
