@@ -447,6 +447,7 @@ global proc liquidTextureViewer( string $file )
   switch( $os ) {
 
     case "linux":
+    case "linux64":
       string $cmd = ($viewer+" "+$file+" &");
       system $cmd;
       break;

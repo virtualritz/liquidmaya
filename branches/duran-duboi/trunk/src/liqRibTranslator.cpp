@@ -3020,7 +3020,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             if( worldEpilogue() != MS::kSuccess ) break;
             RiEnd();
 #if defined(PRMAN) && !defined(GENERIC_RIBLIB)
-            fclose( liqglo_ribFP );
+            if( liqglo_ribFP ) {
+              fclose( liqglo_ribFP );
+            }
 #endif
             liqglo_ribFP = NULL;
 
@@ -3099,7 +3101,9 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
           RiEnd();
 #if defined(PRMAN) && !defined(GENERIC_RIBLIB)
-          fclose( liqglo_ribFP );
+          if( liqglo_ribFP ) {
+            fclose( liqglo_ribFP );
+          }
 #endif
           liqglo_ribFP = NULL;
           if( m_showProgress ) printProgress( 3, frameNumbers.size(), frameIndex );

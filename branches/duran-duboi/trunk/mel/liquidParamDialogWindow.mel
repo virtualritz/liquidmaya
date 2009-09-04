@@ -72,7 +72,7 @@ global proc liquidChangeTextFileAttr ( string $selectedObj, string $argName, str
   string $defaultPath = (`getAttr liquidGlobals.textureDirectory`);
 
   string $fileSpec;
-  if ( `about -os` == "linux" ) $fileSpec += "*.tex";
+  if ( `about -os` == "linux" || `about -os` == "linux64" ) $fileSpec += "*.tex";
   else $fileSpec += "*.tex;*.tif;*.dsts";
 
   liquidChangeTextFileAttrPlus ( $selectedObj, $argName, $fieldName, $defaultPath, $fileSpec );
@@ -254,6 +254,7 @@ global proc liquidFluidEditLifFile( string $selectedObj )
 
   switch( $os ) {
     case "linux":
+    case "linux64":
     case "irix":
       string $editor =  getenv( "EDITOR" );
       if ( $editor == "" ) $editor = "nedit";
