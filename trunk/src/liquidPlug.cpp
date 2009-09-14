@@ -574,6 +574,9 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
   status = plugin.deregisterCommand("RIGeometry");
   LIQCHECKSTATUS( status, "Can't deregister RIGeometry command" );
 
+  status = plugin.deregisterCommand("RIHider");
+  LIQCHECKSTATUS( status, "Can't deregister RIHider command" );
+
   status = plugin.deregisterCommand("RIIdentity");
   LIQCHECKSTATUS( status, "Can't deregister RIIdentity command" );
 

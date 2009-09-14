@@ -145,6 +145,8 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 			WSACleanup();
 		#endif
 		cerr<<"[d_liqmaya] Error: timeout"<<endl;
+		closesocket( socketId );
+		socketId = -1;
 		delete imgSpecs;
 		return PkDspyErrorNoResource;
 	}
@@ -332,7 +334,10 @@ int openSocket(const char *host, const int port)
 	memcpy(&serverName.sin_addr,hostPtr->h_addr,hostPtr->h_length);
 	errno =0;
 	int status = connect(clientSocket,(struct sockaddr*) &serverName,sizeof(serverName));
-
+	if (-1 == status ) {
+	  perror("[d_liqmaya] Error: connecting socket");
+	  return -1;
+	}
 	int val = 1;
 	setsockopt(clientSocket,IPPROTO_TCP,TCP_NODELAY,(const char *) &val,sizeof(int));
 	#ifdef SO_NOSIGPIPE
