@@ -329,7 +329,7 @@ MStatus liqMayaRenderCmd::redoIt()
 MStatus liqMayaRenderCmd::getBucket(const int socket,const unsigned int numChannels,bucket* b,bool &theEnd){
 
 	int stat;
-	MStatus status;
+	MStatus status = MS::kSuccess;
 	theEnd = false;
 	errno =0;
 	if(!waitSocket(socket,m_timeout,true)){
@@ -359,33 +359,32 @@ stat = readSockData(socket, (char*)bucketInfo, 5*sizeof(int));
 	info.top		= bucketInfo[3];
 	info.channels = bucketInfo[4];
 
-	const unsigned int size = (info.right-info.left)*labs(info.bottom-info.top)*numChannels*sizeof(BUCKETDATATYPE);
-	if(!size){
+	size_t dataSize = ( size_t) ( ( info.right - info.left ) * ( info.top - info.bottom ) * numChannels * sizeof(BUCKETDATATYPE) );
+	if(!dataSize){
 		theEnd = true;
 		return MS::kFailure;
 	}
+	
 	//get the data
-	BUCKETDATATYPE *data =  new BUCKETDATATYPE[size];
+	BUCKETDATATYPE *data =  ( BUCKETDATATYPE * ) malloc( dataSize );
 	if(!data) {
 		ERROR("[liqMayaRenderView] cannot allocate memory for data");
 		return MS::kInsufficientMemory;
 	}
-	stat = readSockData(socket,(char*) data,  size);
+	stat = readSockData(socket,(char*) data,  dataSize);
 
 	//if (stat <= 0) {
 	if(!stat){
-		perror("[liqMayaRenderView] read()");
-		return MS::kFailure;
+	  perror("[liqMayaRenderView] read()");
+	  status = MS::kFailure;
 	}
-	else
-	{
-		if(b->set(info,data)){
-			cerr<<"[liqMayaRenderView] Error b->set(info,data"<<endl;
-			status = MS::kFailure;
-		}
-		delete[] data;
+	else {
+	  if( b->set(info,data) ){
+		cerr<<"[liqMayaRenderView] Error b->set(info,data"<<endl;
+		status = MS::kFailure;
+	  }
 	}
-
+	free( data );
 
 	return status;
 }
@@ -640,8 +639,8 @@ MStatus liqMayaRenderCmd::readBuckets(const char* file,vector<bucket*> &buckets,
 			status = MS::kFailure;
 			break;
 		}
-		unsigned int datasize = (info.right-info.left)*(info.top-info.bottom)*imgInfo.channels*sizeof(BUCKETDATATYPE);
-		BUCKETDATATYPE *data = new BUCKETDATATYPE[datasize];
+		const size_t datasize = (info.right-info.left)*(info.top-info.bottom)*imgInfo.channels*sizeof(BUCKETDATATYPE);
+		BUCKETDATATYPE *data = ( BUCKETDATATYPE * )malloc( datasize );
 		if(!data){
 			ERROR("[liqMayaRenderCmd] Error: failed reading data from "+file);
 			status = MS::kInsufficientMemory;
@@ -651,13 +650,14 @@ MStatus liqMayaRenderCmd::readBuckets(const char* file,vector<bucket*> &buckets,
 		if(ferror(fh)) {
 			ERROR("[liqMayaRenderCmd] Error: failed reading data from "+file);
 			status = MS::kFailure;
+			free( data );
 			break;
 		}
 		bucket* b = new bucket;
 		if(!b->set(info,data)){
 			buckets.push_back(b);
 		}
-		delete[] data;
+		free( data );
 	}
 	fclose(fh);
 	return status;
