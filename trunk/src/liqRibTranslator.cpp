@@ -2735,6 +2735,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
       }
       jobScript.title = renderJobName.asChar();
 
+
       if( useNetRman ) {
         jobScript.minServers = m_minCPU;
         jobScript.maxServers = m_maxCPU;
@@ -2743,10 +2744,15 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
         jobScript.maxServers = 1;
       }
 
-      if( m_preJobCommand != MString( "" ) ) {
+	  if( m_preJobCommand != MString( "" ) ) {
         liqRenderScript::Job preJob;
         preJob.title = "liquid pre-job";
-        preJob.commands.push_back( liqRenderScript::Cmd( m_preJobCommand.asChar(), ( remoteRender && !useNetRman ) ) );
+        liqRenderScript::Cmd jobCommand( m_preJobCommand.asChar(), ( remoteRender && !useNetRman ) );
+
+		jobCommand.alfredServices = m_alfredServices.asChar();
+		jobCommand.alfredTags = m_alfredTags.asChar();
+
+		preJob.commands.push_back( jobCommand );
         jobScript.addJob( preJob );
       }
     }
@@ -3124,7 +3130,6 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
       }
 
       // now we re-iterate through the job list to write out the alfred file if we are using it
-
       if( useRenderScript && !m_justRib ) {
         bool alf_textures = false;
         bool alf_shadows = false;
@@ -3225,7 +3230,10 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
                 ss << framePreCommand.asChar() << " " << RM_CMD << " " << iter->ribFileName.asChar();
 #endif
 
-                shadowSubtask.cleanupCommands.push_back( liqRenderScript::Cmd( ss.str(), remoteRender ) );
+				liqRenderScript::Cmd jobShdCommand( ss.str(), remoteRender );
+				jobShdCommand.alfredServices = m_alfredServices.asChar();
+				jobShdCommand.alfredTags = m_alfredTags.asChar();
+                shadowSubtask.cleanupCommands.push_back( jobShdCommand );
               }
               shadowSubtask.chaserCommand = ( string( "sho \"" ) + iter->imageName.asChar() + "\"" );
 
@@ -3387,10 +3395,18 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
               ss << framePreCommand.asChar() << " " << RM_CMD << " " << baseShadowName.asChar();
 #endif
             }
-            frameScriptJob.cleanupCommands.push_back(liqRenderScript::Cmd(ss.str(), remoteRender));
+            //frameScriptJob.cleanupCommands.push_back(liqRenderScript::Cmd(ss.str(), remoteRender));
+			liqRenderScript::Cmd jobCleanCommand( ss.str(), remoteRender );
+			jobCleanCommand.alfredServices = m_alfredServices.asChar();
+			jobCleanCommand.alfredTags = m_alfredTags.asChar();
+			frameScriptJob.cleanupCommands.push_back( jobCleanCommand );
+
           }
           if( framePostFrameCommand != MString("") ) {
-            liqRenderScript::Cmd cmd(framePostFrameCommand.asChar(), (remoteRender && !useNetRman));
+            //liqRenderScript::Cmd cmd(framePostFrameCommand.asChar(), (remoteRender && !useNetRman));
+			liqRenderScript::Cmd cmd( framePostFrameCommand.asChar(), (remoteRender && !useNetRman) );
+			cmd.alfredServices = m_alfredServices.asChar();
+			cmd.alfredTags = m_alfredTags.asChar();
             frameScriptJob.cleanupCommands.push_back(cmd);
           }
         }
@@ -3406,7 +3422,6 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
           lastRibName = liquidGetRelativePath( liqglo_relativeFileNames, frameJob->ribFileName, liqglo_projectDir );
         }
       }
-
       jobScript.addJob( frameScriptJob );
 
       if( ( ribStatus != kRibOK ) && !m_deferredGen ) break;
