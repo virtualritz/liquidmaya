@@ -37,6 +37,10 @@ bool liqProcessLauncher::execute( const MString &command, const MString &argumen
   chdir( path.asChar() );
   MString cmd = command + " " + arguments + ( wait ? "" : "&" );
   int returnCode = system( cmd.asChar() );
+  if(returnCode==-1)
+  {
+      printf("Error while executing command '%s'\n", cmd.asChar());
+  }
   return ( returnCode != -1 );
 }
 #endif // LINUX
