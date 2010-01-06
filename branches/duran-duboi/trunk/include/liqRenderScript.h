@@ -67,8 +67,8 @@ public:
   class Cmd
   {
   public:
-    Cmd() : remote(true), alfredExpand(false) {}
-    Cmd(const std::string &c, bool r) : command(c), remote(r), alfredExpand(false) {}
+    Cmd() : command(""), remote(true), alfredExpand(false), alfredTags(""), alfredServices("") {}
+    Cmd(const std::string &c, bool r) : command(c), remote(r), alfredExpand(false), alfredTags(""), alfredServices("") {}
 
     std::string command;
 
@@ -79,26 +79,35 @@ public:
     
     std::string getALF() const
     {
-      std::stringstream ss;
-      
-      if (remote) {
-        ss << "RemoteCmd";
-      } else {
-        ss << "Cmd";
-      }
-      
-      ss << " {" << command << "}";
-      if (alfredExpand) {
-        ss << " -expand 1";
-      }
-      if (alfredServices != "") {
-        ss << " -service {" + alfredServices + "}";
-      }
-      if (alfredTags != "") {
-        ss << " -tags {" + alfredTags + "}";
-      }
-      
-      return ss.str();
+		string result = "";
+		if (remote)
+		{
+			result += "RemoteCmd";
+		}
+		else
+		{
+			result += "Cmd";
+		}
+		result += " {";
+		result += command;
+		result += "}";
+		if (alfredExpand)
+		{
+			result += " -expand 1";
+		}
+		if (alfredServices != "")
+		{
+			result += " -service {";
+			result += alfredServices;
+			result += "}";
+		}
+		if (alfredTags != "")
+		{
+			result += " -tags {";
+			result += alfredTags;
+			result += "}";
+		}
+		return result;
     }
     
     std::string getXML() const
