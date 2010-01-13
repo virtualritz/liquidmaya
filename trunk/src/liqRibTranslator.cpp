@@ -2748,7 +2748,6 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
         liqRenderScript::Job preJob;
         preJob.title = "liquid pre-job";
         liqRenderScript::Cmd jobCommand( m_preJobCommand.asChar(), ( remoteRender && !useNetRman ) );
-
 		jobCommand.alfredServices = m_alfredServices.asChar();
 		jobCommand.alfredTags = m_alfredTags.asChar();
 
@@ -3435,18 +3434,33 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
       // clean up the alfred file in the future
       if( !m_justRib ) {
         if( m_deferredGen ) {
-          stringstream ss;
-          ss << RM_CMD << " " << tempDefname.asChar();
-          jobScript.cleanupCommands.push_back( liqRenderScript::Cmd( ss.str(), remoteRender ) );
+			stringstream ss;
+			ss << RM_CMD << " " << tempDefname.asChar();
+
+			//jobScript.cleanupCommands.push_back( liqRenderScript::Cmd( ss.str(), remoteRender ) );
+
+			liqRenderScript::Cmd jobCleanCmd( ss.str(), 0 );
+			jobCleanCmd.alfredServices = m_alfredServices.asChar();
+			jobCleanCmd.alfredTags = m_alfredTags.asChar();
+			jobScript.cleanupCommands.push_back( jobCleanCmd );
         }
         if( cleanRenderScript ) {
-          stringstream ss;
-          ss << RM_CMD << " " << renderScriptName.asChar();
-          jobScript.cleanupCommands.push_back( liqRenderScript::Cmd( ss.str(), remoteRender ) );
+			stringstream ss;
+			ss << RM_CMD << " " << renderScriptName.asChar();
+			//jobScript.cleanupCommands.push_back( liqRenderScript::Cmd( ss.str(), remoteRender ) );
+			liqRenderScript::Cmd jobCleanCmd( ss.str(), 0 );
+			jobCleanCmd.alfredServices = m_alfredServices.asChar();
+			jobCleanCmd.alfredTags = m_alfredTags.asChar();
+			jobScript.cleanupCommands.push_back( jobCleanCmd );
         }
         if( m_postJobCommand != MString("") ) {
-          jobScript.cleanupCommands.push_back( liqRenderScript::Cmd(m_postJobCommand.asChar(), (remoteRender && !useNetRman) ) );
-        }
+          //jobScript.cleanupCommands.push_back( liqRenderScript::Cmd(m_postJobCommand.asChar(), (remoteRender && !useNetRman) ) );
+
+			liqRenderScript::Cmd jobCleanCmd( m_postJobCommand.asChar(), 0 );
+			jobCleanCmd.alfredServices = m_alfredServices.asChar();
+			jobCleanCmd.alfredTags = m_alfredTags.asChar();
+			jobScript.cleanupCommands.push_back( jobCleanCmd );
+		}
       }
       if( m_renderScriptFormat == ALFRED ) {
         jobScript.writeALF( liquidGetRelativePath( liqglo_relativeFileNames, renderScriptName, liqglo_projectDir ).asChar() );
