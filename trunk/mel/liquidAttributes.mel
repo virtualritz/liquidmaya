@@ -1374,7 +1374,12 @@ global proc liquidCreateLightShadowAttributes()
     if ( !objExists( ($currentNode+".deepShadows") ) ) {
       addAttr -ln "deepShadows" -sn "dsh" -at bool -dv 0 $currentNode;
     }
-    if ( !objExists( ($currentNode+".pixelSamples") ) ) {
+
+	if ( !objExists( ($currentNode+".liqShadowBlur") ) ) {
+	  addAttr -ln "liqShadowBlur" -sn "shb" -at "float" -dv 0.01 $currentNode;
+	}
+
+	if ( !objExists( ($currentNode+".pixelSamples") ) ) {
       addAttr -ln "pixelSamples" -sn "dps" -at "short" -dv 0 $currentNode;
     }
     if ( !objExists( ($currentNode+".volumeInterpretation") ) ) {
@@ -1412,6 +1417,9 @@ global proc liquidDeleteLightShadowAttributes()
     if ( objExists( ($currentNode+".deepShadows") ) ) {
       deleteAttr ( $currentNode+".deepShadows" );
     }
+	if ( objExists( ($currentNode+".liqShadowBlur") ) ) {
+	  deleteAttr ( $currentNode+".liqShadowBlur" );
+	}
     if ( objExists( ($currentNode+".pixelSamples") ) ) {
       deleteAttr ( $currentNode+".pixelSamples" );
     }
