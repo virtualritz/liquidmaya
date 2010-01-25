@@ -61,6 +61,8 @@ private:
   RtFloat       decay;
   RtFloat       intensity, coneAngle, penumbraAngle, dropOff;
 
+  RtFloat       shadowBlur;
+
   // spot lights
   RtFloat       barnDoors;
   RtFloat       leftBarnDoor;
