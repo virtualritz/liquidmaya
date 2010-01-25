@@ -95,6 +95,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
   rayTraced           = false;
   raySamples          = 16;
   shadowRadius        = 0;
+  shadowBlur          = 0;
   excludeFromRib      = false;
   //outputLightInShadow = false;
 
@@ -585,127 +586,250 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 
     // DIRECT MAYA LIGHTS SUPPORT
 
-    if ( light.hasFn( MFn::kAmbientLight ) ) {
-      lightType      = MRLT_Ambient;
-
-    } else if ( light.hasFn( MFn::kDirectionalLight ) ) {
-      MFnNonExtendedLight fnDistantLight( light );
-      lightType      = MRLT_Distant;
-
-      if ( liqglo_doShadows && usingShadow ) {
-        if ( !rayTraced ) {
-          if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ).toLowerCase() == "autoshadow" )) {
-            shadowName = autoShadowName();
-          }
-          MPlug samplePlug( lightDepNode.findPlug( "liqShadowMapSamples", &status ) );
-          if ( MS::kSuccess == status ) samplePlug.getValue(shadowSamples);
-          else shadowSamples = fnDistantLight.numShadowSamples( &status );
-        } else {
-          shadowName = "raytrace";
-          shadowSamples = fnDistantLight.numShadowSamples( &status );
+    if ( light.hasFn( MFn::kAmbientLight ) )
+    {
+        lightType = MRLT_Ambient;
+    }
+    else if ( light.hasFn( MFn::kDirectionalLight ) )
+    {
+        MFnNonExtendedLight fnDistantLight( light );
+        lightType = MRLT_Distant;
+        
+        if ( liqglo_doShadows && usingShadow )
+        {
+            if ( !rayTraced )
+            {
+                if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ).toLowerCase() == "autoshadow" ))
+                {
+                    shadowName = autoShadowName();
+                }
+                MPlug samplePlug( lightDepNode.findPlug( "liqShadowMapSamples", &status ) );
+                if( MS::kSuccess == status )
+                {
+                    samplePlug.getValue(shadowSamples);
+                }
+                else
+                {
+                    shadowSamples = fnDistantLight.numShadowSamples( &status );
+                }
+            }
+            else
+            {
+                shadowName = "raytrace";
+                shadowSamples = fnDistantLight.numShadowSamples( &status );
+            }
+            MPlug blurPlug( lightDepNode.findPlug( "liqShadowBlur", &status ) );
+            if( MS::kSuccess == status )
+            {
+                blurPlug.getValue(shadowBlur);
+            }
+            shadowFilterSize = fnDistantLight.depthMapFilterSize( &status );
+            shadowBias       = fnDistantLight.depthMapBias( &status );
+            // Philippe : on a distant light, it seems that shadow radius always returns 0.
+            shadowRadius     = fnDistantLight.shadowRadius( &status );
+        }
+        
+        MPlug catPlug = lightDepNode.findPlug( "__category", &status );
+        if( MS::kSuccess == status )
+        {
+            catPlug.getValue(lightCategory);
+        }
+        else
+        {
+            lightCategory = "";
+        }
+        MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
+        if( MS::kSuccess == status )
+        {
+            idPlug.getValue(lightID);
+        }
+        else
+        {
+            lightID = 0;
+        }
+    }
+	else if ( light.hasFn( MFn::kPointLight ) )
+	{
+        MFnNonExtendedLight fnPointLight( light );
+        lightType = MRLT_Point;
+        decay = fnPointLight.decayRate();
+        
+        if ( liqglo_doShadows && usingShadow )
+        {
+            shadowFilterSize = fnPointLight.depthMapFilterSize( &status );
+            shadowBias       = fnPointLight.depthMapBias( &status );
+            shadowRadius     = fnPointLight.shadowRadius( &status );
+            if ( !rayTraced )
+            {
+                MPlug samplePlug = lightDepNode.findPlug( "liqShadowMapSamples", &status );
+                if ( MS::kSuccess == status )
+                {
+                    samplePlug.getValue(shadowSamples);
+                }
+                else
+                {
+                    shadowSamples = fnPointLight.numShadowSamples( &status );
+                }
+            }
+            else
+            {
+                shadowSamples = fnPointLight.numShadowSamples( &status );
+            }
+            MPlug blurPlug( lightDepNode.findPlug( "liqShadowBlur", &status ) );
+            if( MS::kSuccess == status )
+            {
+                blurPlug.getValue(shadowBlur);
+            }
+        }
+        
+        MPlug catPlug = lightDepNode.findPlug( "__category", &status );
+        if( MS::kSuccess == status )
+        {
+            catPlug.getValue(lightCategory);
+        }
+        else
+        {
+            lightCategory = "";
+        }
+        MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
+        if( MS::kSuccess == status )
+        {
+            idPlug.getValue(lightID);
+        }
+        else
+        {
+            lightID = 0;
+        }
+    }
+    else if( light.hasFn( MFn::kSpotLight ) )
+    {
+        MFnSpotLight fnSpotLight( light );
+        lightType         = MRLT_Spot;
+        decay             = fnSpotLight.decayRate();
+        coneAngle         = fnSpotLight.coneAngle() / 2.0;
+        penumbraAngle     = fnSpotLight.penumbraAngle();
+        dropOff           = fnSpotLight.dropOff();
+        barnDoors         = fnSpotLight.barnDoors();
+        leftBarnDoor      = fnSpotLight.barnDoorAngle( MFnSpotLight::kLeft   );
+        rightBarnDoor     = fnSpotLight.barnDoorAngle( MFnSpotLight::kRight  );
+        topBarnDoor       = fnSpotLight.barnDoorAngle( MFnSpotLight::kTop    );
+        bottomBarnDoor    = fnSpotLight.barnDoorAngle( MFnSpotLight::kBottom );
+        decayRegions      = fnSpotLight.useDecayRegions();
+        startDistance1    = fnSpotLight.startDistance( MFnSpotLight::kFirst  );
+        endDistance1      = fnSpotLight.endDistance(   MFnSpotLight::kFirst  );
+        startDistance2    = fnSpotLight.startDistance( MFnSpotLight::kSecond );
+        endDistance2      = fnSpotLight.endDistance(   MFnSpotLight::kSecond );
+        startDistance3    = fnSpotLight.startDistance( MFnSpotLight::kThird  );
+        endDistance3      = fnSpotLight.endDistance(   MFnSpotLight::kThird  );
+        MPlug intensityPlug = lightDepNode.findPlug( "startDistanceIntensity1", &status );
+        if( MS::kSuccess == status )
+        {
+            intensityPlug.getValue( startDistanceIntensity1 );
+        }
+        else
+        {
+            startDistanceIntensity1 = 1.0;
+        }
+        intensityPlug = lightDepNode.findPlug( "endDistanceIntensity1", &status );
+        if( MS::kSuccess == status )
+        {
+            intensityPlug.getValue( endDistanceIntensity1 );
+        }
+        else
+        {
+            endDistanceIntensity1 = 1.0;
+        }
+        intensityPlug = lightDepNode.findPlug( "startDistanceIntensity2", &status );
+        if( MS::kSuccess == status )
+        {
+            intensityPlug.getValue( startDistanceIntensity2 );
+        }
+        else
+        {
+            startDistanceIntensity2 = 1.0;
+        }
+        intensityPlug = lightDepNode.findPlug( "endDistanceIntensity2", &status );
+        if( MS::kSuccess == status )
+        {
+            intensityPlug.getValue( endDistanceIntensity2 );
+        }
+        else
+        {
+            endDistanceIntensity2 = 1.0;
+        }
+        intensityPlug = lightDepNode.findPlug( "startDistanceIntensity3", &status );
+        if( MS::kSuccess == status )
+        {
+            intensityPlug.getValue( startDistanceIntensity3 );
+        }
+        else
+        {
+            startDistanceIntensity3 = 1.0;
+        }
+        intensityPlug = lightDepNode.findPlug( "endDistanceIntensity3", &status );
+        if( MS::kSuccess == status )
+        {
+            intensityPlug.getValue( endDistanceIntensity3 );
+        }
+        else
+        {
+            endDistanceIntensity3 = 1.0;
         }
 
-        shadowFilterSize = fnDistantLight.depthMapFilterSize( &status );
-        shadowBias       = fnDistantLight.depthMapBias( &status );
-        // Philippe : on a distant light, it seems that shadow radius always returns 0.
-        shadowRadius     = fnDistantLight.shadowRadius( &status );
-      }
-
-      MPlug catPlug = lightDepNode.findPlug( "__category", &status );
-      if ( MS::kSuccess == status ) catPlug.getValue(lightCategory);
-      else lightCategory = "";
-      MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
-      if ( MS::kSuccess == status ) idPlug.getValue(lightID);
-      else lightID = 0;
-
-    } else if ( light.hasFn( MFn::kPointLight ) ) {
-      MFnNonExtendedLight fnPointLight( light );
-      lightType      = MRLT_Point;
-      decay          = fnPointLight.decayRate();
-
-      if ( liqglo_doShadows && usingShadow ) {
-        shadowFilterSize = fnPointLight.depthMapFilterSize( &status );
-        shadowBias       = fnPointLight.depthMapBias( &status );
-        shadowRadius     = fnPointLight.shadowRadius( &status );
-        if ( !rayTraced ) {
-          MPlug samplePlug = lightDepNode.findPlug( "liqShadowMapSamples", &status );
-          if ( MS::kSuccess == status ) samplePlug.getValue(shadowSamples);
-          else shadowSamples = fnPointLight.numShadowSamples( &status );
-        } else {
-          shadowSamples = fnPointLight.numShadowSamples( &status );
+        if ( liqglo_doShadows && usingShadow )
+        {
+            if ( !rayTraced )
+            {
+                if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ).toLowerCase() == "autoshadow" ) )
+                {
+                    shadowName = autoShadowName();
+                }
+                MPlug samplePlug = lightDepNode.findPlug( "liqShadowMapSamples", &status );
+                if ( MS::kSuccess == status )
+                {
+                    samplePlug.getValue(shadowSamples);
+                }
+                else
+                {
+                    shadowSamples = fnSpotLight.numShadowSamples( &status );
+                }
+            }
+            else
+            {
+                shadowName = "raytrace";
+                shadowSamples    = fnSpotLight.numShadowSamples( &status );
+            }
+            MPlug blurPlug( lightDepNode.findPlug( "liqShadowBlur", &status ) );
+            if( MS::kSuccess == status )
+            {
+                blurPlug.getValue(shadowBlur);
+            }
+            shadowFilterSize = fnSpotLight.depthMapFilterSize( &status );
+            shadowBias       = fnSpotLight.depthMapBias( &status );
+            shadowRadius     = fnSpotLight.shadowRadius( &status );
         }
-      }
-
-      MPlug catPlug = lightDepNode.findPlug( "__category", &status );
-      if ( MS::kSuccess == status ) catPlug.getValue(lightCategory);
-      else lightCategory = "";
-      MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
-      if ( MS::kSuccess == status ) idPlug.getValue(lightID);
-      else lightID = 0;
-
-    } else if ( light.hasFn( MFn::kSpotLight ) ) {
-      MFnSpotLight fnSpotLight( light );
-      lightType         = MRLT_Spot;
-      decay             = fnSpotLight.decayRate();
-      coneAngle         = fnSpotLight.coneAngle() / 2.0;
-      penumbraAngle     = fnSpotLight.penumbraAngle();
-      dropOff           = fnSpotLight.dropOff();
-      barnDoors         = fnSpotLight.barnDoors();
-      leftBarnDoor      = fnSpotLight.barnDoorAngle( MFnSpotLight::kLeft   );
-      rightBarnDoor     = fnSpotLight.barnDoorAngle( MFnSpotLight::kRight  );
-      topBarnDoor       = fnSpotLight.barnDoorAngle( MFnSpotLight::kTop    );
-      bottomBarnDoor    = fnSpotLight.barnDoorAngle( MFnSpotLight::kBottom );
-      decayRegions      = fnSpotLight.useDecayRegions();
-      startDistance1    = fnSpotLight.startDistance( MFnSpotLight::kFirst  );
-      endDistance1      = fnSpotLight.endDistance(   MFnSpotLight::kFirst  );
-      startDistance2    = fnSpotLight.startDistance( MFnSpotLight::kSecond );
-      endDistance2      = fnSpotLight.endDistance(   MFnSpotLight::kSecond );
-      startDistance3    = fnSpotLight.startDistance( MFnSpotLight::kThird  );
-      endDistance3      = fnSpotLight.endDistance(   MFnSpotLight::kThird  );
-      MPlug intensityPlug = lightDepNode.findPlug( "startDistanceIntensity1", &status );
-      if ( MS::kSuccess == status ) intensityPlug.getValue( startDistanceIntensity1 );
-      else startDistanceIntensity1 = 1.0;
-      intensityPlug = lightDepNode.findPlug( "endDistanceIntensity1", &status );
-      if ( MS::kSuccess == status ) intensityPlug.getValue( endDistanceIntensity1 );
-      else endDistanceIntensity1 = 1.0;
-      intensityPlug = lightDepNode.findPlug( "startDistanceIntensity2", &status );
-      if ( MS::kSuccess == status ) intensityPlug.getValue( startDistanceIntensity2 );
-      else startDistanceIntensity2 = 1.0;
-      intensityPlug = lightDepNode.findPlug( "endDistanceIntensity2", &status );
-      if ( MS::kSuccess == status ) intensityPlug.getValue( endDistanceIntensity2 );
-      else endDistanceIntensity2 = 1.0;
-      intensityPlug = lightDepNode.findPlug( "startDistanceIntensity3", &status );
-      if ( MS::kSuccess == status ) intensityPlug.getValue( startDistanceIntensity3 );
-      else startDistanceIntensity3 = 1.0;
-      intensityPlug = lightDepNode.findPlug( "endDistanceIntensity3", &status );
-      if ( MS::kSuccess == status ) intensityPlug.getValue( endDistanceIntensity3 );
-      else endDistanceIntensity3 = 1.0;
-
-      if ( liqglo_doShadows && usingShadow ) {
-        if ( !rayTraced ) {
-          if ( ( shadowName == "" ) || ( shadowName.substring( 0, 9 ).toLowerCase() == "autoshadow" ) ) {
-            shadowName = autoShadowName();
-          }
-          MPlug samplePlug = lightDepNode.findPlug( "liqShadowMapSamples", &status );
-          if ( MS::kSuccess == status ) samplePlug.getValue(shadowSamples);
-          else shadowSamples = fnSpotLight.numShadowSamples( &status );
-        } else {
-          shadowName = "raytrace";
-          shadowSamples    = fnSpotLight.numShadowSamples( &status );
+            
+        MPlug catPlug = lightDepNode.findPlug( "__category", &status );
+        if ( MS::kSuccess == status )
+        {
+            catPlug.getValue(lightCategory);
         }
-        shadowFilterSize = fnSpotLight.depthMapFilterSize( &status );
-        shadowBias       = fnSpotLight.depthMapBias( &status );
-        shadowRadius     = fnSpotLight.shadowRadius( &status );
-      }
-
-      MPlug catPlug = lightDepNode.findPlug( "__category", &status );
-      if ( MS::kSuccess == status ) catPlug.getValue(lightCategory);
-      else lightCategory = "";
-      MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
-      if ( MS::kSuccess == status ) idPlug.getValue(lightID);
-      else lightID = 0;
-
-    } else if ( light.hasFn( MFn::kAreaLight ) ) {
+        else
+        {
+            lightCategory = "";
+        }
+        MPlug idPlug = lightDepNode.findPlug( "lightID", &status );
+        if( MS::kSuccess == status )
+        {
+            idPlug.getValue(lightID);
+        }
+        else
+        {
+            lightID = 0;
+        }
+    }
+    else if ( light.hasFn( MFn::kAreaLight ) )
+    {
       MFnAreaLight fnAreaLight( light );
       lightType      = MRLT_Area;
       decay          = fnAreaLight.decayRate();
@@ -805,6 +929,7 @@ void liqRibLightData::write()
                                     "float shadowfiltersize", rayTraced ? &shadowRadius : &shadowFilterSize,
                                     "float shadowbias",       &shadowBias,
                                     "float shadowsamples",    &shadowSamples,
+                                    "float shadowblur",       &shadowBlur,
                                     "color shadowcolor",      &shadowColor,
                                     "float __nondiffuse",     &nonDiffuse,
                                     "float __nonspecular",    &nonSpecular,
@@ -851,6 +976,7 @@ void liqRibLightData::write()
                                     "float shadowfiltersize",     rayTraced ? &shadowRadius : &shadowFilterSize,
                                     "float shadowbias",           &shadowBias,
                                     "float shadowsamples",        &shadowSamples,
+                                    "float shadowblur",           &shadowBlur,
                                     "color shadowcolor",          &shadowColor,
                                     "float __nondiffuse",         &nonDiffuse,
                                     "float __nonspecular",        &nonSpecular,
@@ -905,6 +1031,7 @@ void liqRibLightData::write()
                                     "float shadowfiltersize",       rayTraced ? &shadowRadius : &shadowFilterSize,
                                     "float shadowbias",             &shadowBias,
                                     "float shadowsamples",          &shadowSamples,
+                                    "float shadowblur",             &shadowBlur,
                                     "color shadowcolor",            &shadowColor,
                                     "float __nondiffuse",           &nonDiffuse,
                                     "float __nonspecular",          &nonSpecular,
