@@ -141,15 +141,25 @@ lib : $(VPATH) $(LIQUIDLIB)
 liquidPlug : $(LIQUIDPLUG)
 
 $(LIQUIDPLUG) : $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDLIB)
+	@echo "-----------------------"
+	@echo "MAKE LIQUID PLUG"
 	@echo $@
-	$(CPP) $(LDFLAGS) -shared -o $(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDLIB) $(LIBS)
+	@echo "-----------------------"
+	$(CPP) $(LDFLAGS) -shared -o $(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDLIB) $(LIBS) -lprman
 
 $(LIQUIDBIN) : $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB)
+	@echo "-----------------------"
+	@echo "MAKE LIQUID BIN"
 	@echo $@
-	@$(CPP) -DLIQUIDBIN $(LDFLAGS) -o $(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB) $(LIQUIDBINLIBS)
+	@echo "-----------------------"
+	$(CPP) -DLIQUIDBIN $(LDFLAGS) -o $(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB) $(LIQUIDBINLIBS) -lprman
 
 $(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
-	@$(AR) $(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
+	@echo "-----------------------"
+	@echo "MAKE LIQUID LIB"
+	@echo $@
+	@echo "-----------------------"
+	$(AR) $(LIQUIDLIB) $(LIQUIDOUTMAINOBJS)
 
 ifneq "$(LIQRMAN)" "GENERIC"
 $(LIQUIDDPY) : $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT)
