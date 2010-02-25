@@ -3004,7 +3004,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             //  create the read-archive shadow files
             //
 #if defined(PRMAN) || defined(GENERIC_RIBLIB) || defined(DELIGHT) || defined (AQSIS)
-            liquidMessage( "Beginning RIB output to '" + string( baseShadowName.asChar() ) + "'", messageInfo );
+            liquidMessage( "Beginning shadow RIB output to '" + string( baseShadowName.asChar() ) + "'", messageInfo );
             RiBegin( const_cast< RtToken >( baseShadowName.asChar() ) );
 #else
             liqglo_ribFP = fopen( baseShadowName.asChar(), "w" );
@@ -3016,14 +3016,36 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
             liquidMessage( "Beginning RI output directly to renderer", messageInfo );
             RiBegin( RI_NULL );
 #endif
-            if( worldPrologue() != MS::kSuccess ) break;
-            if( liqglo_currentJob.isShadow && liqglo_currentJob.deepShadows && m_outputLightsInDeepShadows ) {
-              if( lightBlock() != MS::kSuccess ) break;
-            }
-            if( coordSysBlock() != MS::kSuccess ) break;
-            if( objectBlock() != MS::kSuccess ) break;
-            if( worldEpilogue() != MS::kSuccess ) break;
-            RiEnd();
+			if( worldPrologue() != MS::kSuccess )
+			{
+				liquidMessage( "[liqRibTranslator::doIt] Error while doing worldProlog", messageError );
+				break;
+			}
+			if( liqglo_currentJob.isShadow && liqglo_currentJob.deepShadows && m_outputLightsInDeepShadows )
+			{
+				if( lightBlock() != MS::kSuccess )
+				{
+					liquidMessage( "[liqRibTranslator::doIt] Error while doing lightBlock", messageError );
+					break;
+				}
+			}
+			if( coordSysBlock() != MS::kSuccess )
+			{
+				liquidMessage( "[liqRibTranslator::doIt] Error while doing coordSysBlock", messageError );
+				break;
+			}
+			if( objectBlock() != MS::kSuccess )
+			{
+				liquidMessage( "[liqRibTranslator::doIt] Error while doing objectBlock", messageError );
+				break;
+			}
+			if( worldEpilogue() != MS::kSuccess )
+			{
+				liquidMessage( "[liqRibTranslator::doIt] Error while doing worldEpilog", messageError );
+				break;
+			}
+			RiEnd();
+						
 #if defined(PRMAN) && !defined(GENERIC_RIBLIB)
             if( liqglo_ribFP ) {
               fclose( liqglo_ribFP );
@@ -3490,11 +3512,14 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
     LIQDEBUGPRINTF( "-> spawning command.\n" );
     if( launchRender ) {
-      if( useRenderScript ) {
-        if( m_renderScriptCommand == "" ) {
+      if( useRenderScript )
+      {
+        if( m_renderScriptCommand == "" )
+        {
           m_renderScriptCommand = "alfred";
         }
-        if( m_renderScriptFormat == NONE ) {
+        if( m_renderScriptFormat == NONE )
+        {
           liquidMessage( "No render script format specified to Liquid, and direct render execution not selected.", messageWarning );
         }
 #ifdef _WIN32
@@ -6001,7 +6026,6 @@ MStatus liqRibTranslator::objectBlock()
     RiSurface( "matte", RI_NULL );
   }
 
-
 	// Moritz: Added Pre-Geometry RIB for insertion right before any primitives
 	MFnDependencyNode globalsNode( rGlobalObj );
 	MPlug prePostplug( globalsNode.findPlug( "preGeomMel" ) );
@@ -6014,7 +6038,7 @@ MStatus liqRibTranslator::objectBlock()
 		RiArchiveRecord( RI_VERBATIM, "\n");
 	}
 
-  // retrieve the shadow set object
+  // retrieve the shadow set object  
   MObject shadowSetObj;
   if( liqglo_currentJob.isShadow && liqglo_currentJob.shadowObjectSet != "" ) {
     MObject tmp;
@@ -6303,7 +6327,6 @@ MStatus liqRibTranslator::objectBlock()
       RiAttribute( "displacementbound", (RtToken) "sphere", &surfaceDisplacementBounds, "coordinatesystem", &coordsys, RI_NULL );
     }
 
-
     LIQDEBUGPRINTF( "-> writing node attributes" );
 
     // if the node's shading rate == -1,
@@ -6387,7 +6410,6 @@ MStatus liqRibTranslator::objectBlock()
       }
 
       // philippe : prman 12.5 visibility support
-
 	  if( liquidRenderer.supports_RAYTRACE && liquidRenderer.supports_ADVANCED_VISIBILITY ) {
 
         if( rt_useRayTracing && ribNode->visibility.diffuse ) {
@@ -6998,8 +7020,15 @@ MStatus liqRibTranslator::objectBlock()
 	if( m_preShapeMel != "" )
 		MGlobal::executeCommand( m_preShapeMel );
 
+
 	if( !ribNode->ignoreShapes )
 	{
+		MDagPath obj = ribNode->path();
+		
+		//char tmp[512];
+		//sprintf(tmp, "WRITE OBJ '%s'", obj.fullPathName().asChar());
+		//liquidMessage(tmp, messageInfo);
+
 		// check to see if we are writing a curve to set the proper basis
 		if(	ribNode->object(0)->type == MRT_NuCurve
 			|| ribNode->object(0)->type == MRT_PfxHair
@@ -7040,7 +7069,9 @@ MStatus liqRibTranslator::objectBlock()
 			}
 		}
 		else
+		{
 	        ribNode->object( 0 )->writeObject();
+		}
 
 		// Alf: postShapeMel
 		prePostPlug = fnTransform.findPlug( "liqPostShapeMel" );
@@ -7058,6 +7089,10 @@ MStatus liqRibTranslator::objectBlock()
 		RiAttributeEnd();
 		attributeDepth--;
 	}
+
+
+liquidMessage("[objectBlock] END", messageError);
+//liquidMessage( "[objectBlock] START: returnStatus=%d  success=%d\n", returnStatus, MS::kSuccess);
 
 	return returnStatus;
 }
