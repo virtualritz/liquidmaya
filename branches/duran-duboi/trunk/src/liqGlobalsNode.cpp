@@ -32,7 +32,7 @@
 ** ______________________________________________________________________
 */
 
-#include <liquid.h>
+//#include <liquid.h>
 #include <liqGlobalsNode.h>
 #include <liqMayaNodeIds.h>
 
@@ -56,7 +56,7 @@
 #include <maya/MFnDependencyNode.h>
 
 
-#include <liqIOStream.h>
+//#include <liqIOStream.h>
 
 // static data
 MTypeId liqGlobalsNode::id( liqGlobalsNodeId );
@@ -352,6 +352,7 @@ MObject liqGlobalsNode::aShadersMaxCachedAELayouts;
 
 MObject liqGlobalsNode::aVerbosity;
 
+#define LIQ_GLOBALS_HIDE_ATTRIBUTES false
 
 #define CREATE_BOOL(attr, obj, name, shortName, default)    \
     obj = attr.create( name, shortName, MFnNumericData::kBoolean, default, &status); \
@@ -359,7 +360,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_MULTI_BOOL(attr, obj, name, shortName, default)    \
@@ -369,7 +370,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_INT(attr, obj, name, shortName, default)    \
@@ -378,7 +379,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_MULTI_INT(attr, obj, name, shortName, default)    \
@@ -388,7 +389,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_LONG(attr, obj, name, shortName, default)    \
@@ -397,7 +398,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_MULTI_LONG(attr, obj, name, shortName, default)    \
@@ -407,7 +408,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_FLOAT(attr, obj, name, shortName, default)    \
@@ -416,7 +417,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_MULTI_FLOAT(attr, obj, name, shortName, default)    \
@@ -426,7 +427,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_STRING(attr, obj, name, shortName, default)    \
@@ -435,7 +436,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_MULTI_STRING(attr, obj, name, shortName, default)    \
@@ -445,7 +446,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_COMP(attr, obj, name, shortName)    \
@@ -453,7 +454,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_MULTI_STR_ARRAY(attr, obj, name, shortName)    \
@@ -463,7 +464,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_MULTI_INT_ARRAY(attr, obj, name, shortName)    \
@@ -473,7 +474,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 #define CREATE_COLOR( attr, obj, name, shortName, default1, default2, default3 )    \
@@ -483,7 +484,7 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setStorable(true));    \
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
-    CHECK_MSTATUS(attr.setHidden(true));      \
+    CHECK_MSTATUS(attr.setHidden(LIQ_GLOBALS_HIDE_ATTRIBUTES));      \
     CHECK_MSTATUS(addAttribute(obj));
 
 

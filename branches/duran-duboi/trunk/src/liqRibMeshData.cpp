@@ -259,6 +259,47 @@ liqRibMeshData::liqRibMeshData( MObject mesh )
   addAdditionalSurfaceParameters( mesh );
 }
 
+
+/**      Print data about this mesh.
+ */
+void liqRibMeshData::printMesh()
+{
+	int i;
+    scoped_array< RtInt > nloops( new RtInt[ numFaces ] );
+	unsigned numTokens( tokenPointerArray.size() );
+
+	printf("numFace %d \n", numFaces);
+	printf("nloops (%d) [ ", numFaces);
+	for(i=0; i<numFaces; i++)
+	{
+		printf(" %d", nloops[i]);
+	}
+	printf("]\n");
+
+	int nvertsSize = nverts.use_count();
+	RtInt *nvertsPtr = nverts.get();
+	printf("nverts (%d) [ ", nvertsSize);
+	for(i=0; i<nvertsSize; i++)
+	{
+		printf(" %d", nvertsPtr[i]);
+	}
+	printf("]\n");
+
+
+	int vertsSize = verts.use_count();
+	RtInt *vertsPtr = verts.get();
+	printf("nverts (%d) [ ", vertsSize);
+	for(i=0; i<vertsSize; i++)
+	{
+		printf(" %d", vertsPtr[i]);
+	}
+	printf("]\n");
+
+	printf("numTokens (%d)\n", numTokens);
+	printf("\n");
+	// print tokens & pointers
+}
+
 /**      Write the RIB for this mesh.
  */
 void liqRibMeshData::write()
