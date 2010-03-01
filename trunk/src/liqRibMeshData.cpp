@@ -69,194 +69,218 @@ extern bool liqglo_outputMeshUVs;
 
 /** Create a RIB compatible representation of a Maya polygon mesh.
  */
-liqRibMeshData::liqRibMeshData( MObject mesh )
-: numFaces( 0 ),
-  numPoints ( 0 ),
-  numNormals ( 0 ),
-  nverts(),
-  verts(),
-  vertexParam(),
-  normalParam()
+liqRibMeshData::liqRibMeshData( MObject mesh ): numFaces( 0 ),
+												numPoints ( 0 ),
+												numNormals ( 0 ),
+												nverts(),
+												verts(),
+												vertexParam(),
+												normalParam()
 {
-  areaLight = false;
-  LIQDEBUGPRINTF( "-> creating mesh\n" );
-  MFnMesh fnMesh( mesh );
-  objDagPath = fnMesh.dagPath();
+	unsigned int i;
+	unsigned int j;
+	areaLight = false;
+	LIQDEBUGPRINTF( "-> creating mesh\n" );
+	MFnMesh fnMesh( mesh );
+	objDagPath = fnMesh.dagPath();
 
-  name = fnMesh.name();
+	name = fnMesh.name();
 
-  MStatus astatus;
-  astatus == MS::kFailure;
+	MStatus astatus;
+	astatus == MS::kFailure;
 
-  MPlug areaPlug = fnMesh.findPlug( "areaIntensity", &astatus );
-  if ( astatus == MS::kSuccess ) {
-    areaLight = true;
-  } else {
-    areaLight = false;
-  }
+	MPlug areaPlug = fnMesh.findPlug( "areaIntensity", &astatus );
+	if ( astatus == MS::kSuccess )
+	{
+		areaLight = true;
+	}
+	else
+	{
+		areaLight = false;
+	}
 
-  if ( areaLight ) {
-    MDagPath meshDagPath;
-    meshDagPath = fnMesh.dagPath();
-    MTransformationMatrix worldMatrix = meshDagPath.inclusiveMatrix();
-    MMatrix worldMatrixM = worldMatrix.asMatrix();
-    worldMatrixM.get( transformationMatrix );
-    areaPlug.getValue( areaIntensity );
-  }
+	if ( areaLight )
+	{
+		MDagPath meshDagPath;
+		meshDagPath = fnMesh.dagPath();
+		MTransformationMatrix worldMatrix = meshDagPath.inclusiveMatrix();
+		MMatrix worldMatrixM = worldMatrix.asMatrix();
+		worldMatrixM.get( transformationMatrix );
+		areaPlug.getValue( areaIntensity );
+	}
 
-  numPoints = fnMesh.numVertices();
-  numNormals = fnMesh.numNormals();
+	numPoints = fnMesh.numVertices();
+	numNormals = fnMesh.numNormals();
 
-  // UV sets -------------------
-  //
-  const unsigned numSTs( fnMesh.numUVs() );
-  const unsigned numUVSets( fnMesh.numUVSets() );
-  MString currentUVSetName;
-  MStringArray extraUVSetNames;
-  fnMesh.getCurrentUVSetName( currentUVSetName );
-  {
-    MStringArray UVSetNames;
-    fnMesh.getUVSetNames( UVSetNames );
+	// UV sets -------------------
+	//
+	const unsigned numSTs( fnMesh.numUVs() );
+	const unsigned numUVSets( fnMesh.numUVSets() );
+	// get current uvSet
+	MString currentUVSetName;
+	fnMesh.getCurrentUVSetName( currentUVSetName );
+	// get others uvSets
+	MStringArray extraUVSetNames;
+	MStringArray UVSetNames;
+	fnMesh.getUVSetNames( UVSetNames );
+	for( i=0; i<numUVSets; i++ )
+	{
+		if( UVSetNames[i] != currentUVSetName )
+		{
+			extraUVSetNames.append( UVSetNames[i] );
+		}
+	}
+	//printf("CURRENT UV SET : '%s' \n", currentUVSetName.asChar());
+	//for(i=0; i<extraUVSetNames.length(); i++)
+	//{
+	//	printf("OTHER UV SET %d : '%s' \n", i, extraUVSetNames[i].asChar());
+	//}
 
-    for ( unsigned i( 0 ); i<numUVSets; i++ ) {
-      if ( UVSetNames[i] != currentUVSetName ) extraUVSetNames.append( UVSetNames[i] );
-    }
-  }
-
-  numFaces = fnMesh.numPolygons();
-  const unsigned numFaceVertices( fnMesh.numFaceVertices() );
+	numFaces = fnMesh.numPolygons();
+	const unsigned numFaceVertices( fnMesh.numFaceVertices() );
 
 	if ( numPoints < 1 )
 	{
-//		MGlobal::displayInfo( MString( "fnMesh: " ) + fnMesh.name() );
-//		cerr << "Liquid : Could not export degenerate mesh '"<< fnMesh.fullPathName( &astatus ).asChar() << "'" << endl << flush;
+		//MGlobal::displayInfo( MString( "fnMesh: " ) + fnMesh.name() );
+		//cerr << "Liquid : Could not export degenerate mesh '"<< fnMesh.fullPathName( &astatus ).asChar() << "'" << endl << flush;
 		return;
 	}
+	
+	unsigned face = 0;
+	unsigned faceVertex = 0;
+	unsigned count;
+	unsigned vertex;
+	unsigned normal;
+	float S;
+	float T;
+	MPoint point;
+	liqTokenPointer pointsPointerPair;
+	liqTokenPointer normalsPointerPair;
+	liqTokenPointer pFaceVertexSPointer;
+	liqTokenPointer pFaceVertexTPointer;
 
-  unsigned face = 0;
-  unsigned faceVertex = 0;
-  unsigned count;
-  unsigned vertex;
-  unsigned normal;
-  float S;
-  float T;
-  MPoint point;
-  liqTokenPointer pointsPointerPair;
-  liqTokenPointer normalsPointerPair;
-  liqTokenPointer pFaceVertexSPointer;
-  liqTokenPointer pFaceVertexTPointer;
+	// Allocate memory and tokens
+	numFaces = numFaces;
+	nverts = shared_array< RtInt >( new RtInt[ numFaces ] );
+	verts = shared_array< RtInt >( new RtInt[ numFaceVertices ] );
 
-  // Allocate memory and tokens
-  numFaces = numFaces;
-  nverts = shared_array< RtInt >( new RtInt[ numFaces ] );
-  verts = shared_array< RtInt >( new RtInt[ numFaceVertices ] );
+	pointsPointerPair.set( "P", rPoint, numPoints );
+	pointsPointerPair.setDetailType( rVertex );
 
-  pointsPointerPair.set( "P", rPoint, numPoints );
-  pointsPointerPair.setDetailType( rVertex );
+	if ( numNormals == numPoints )
+	{
+		normalsPointerPair.set( "N", rNormal, numPoints );
+		normalsPointerPair.setDetailType( rVertex );
+	}
+	else
+	{
+		normalsPointerPair.set( "N", rNormal, numFaceVertices );
+		normalsPointerPair.setDetailType( rFaceVarying );
+	}
 
-  if ( numNormals == numPoints ) {
-    normalsPointerPair.set( "N", rNormal, numPoints );
-    normalsPointerPair.setDetailType( rVertex );
-  } else {
-    normalsPointerPair.set( "N", rNormal, numFaceVertices );
-    normalsPointerPair.setDetailType( rFaceVarying );
-  }
+	std::vector<liqTokenPointer> UVSetsArray;
+	UVSetsArray.reserve( 1 + extraUVSetNames.length() );
 
-  std::vector<liqTokenPointer> UVSetsArray;
-  UVSetsArray.reserve( 1 + extraUVSetNames.length() );
+	if ( numSTs > 0 )
+	{
+		liqTokenPointer pFaceVertexPointerPair;
 
-  if ( numSTs > 0 ) {
-    liqTokenPointer pFaceVertexPointerPair;
+		pFaceVertexPointerPair.set( "st", rFloat, numFaceVertices, 2 );
+		pFaceVertexPointerPair.setDetailType( rFaceVarying );
 
-    pFaceVertexPointerPair.set( "st", rFloat, numFaceVertices, 2 );
-    pFaceVertexPointerPair.setDetailType( rFaceVarying );
+		UVSetsArray.push_back( pFaceVertexPointerPair );
 
-    UVSetsArray.push_back( pFaceVertexPointerPair );
+		for( j=0; j<extraUVSetNames.length(); j++)
+		{
+			liqTokenPointer pFaceVertexPointerPair;
 
-    for ( unsigned j( 0 ); j<extraUVSetNames.length(); j++) {
-      liqTokenPointer pFaceVertexPointerPair;
+			pFaceVertexPointerPair.set( extraUVSetNames[j].asChar(), rFloat, numFaceVertices, 2 );
+			pFaceVertexPointerPair.setDetailType( rFaceVarying );
 
-      pFaceVertexPointerPair.set( extraUVSetNames[j].asChar(), rFloat, numFaceVertices, 2 );
-      pFaceVertexPointerPair.setDetailType( rFaceVarying );
+			UVSetsArray.push_back( pFaceVertexPointerPair );
+		}
 
-      UVSetsArray.push_back( pFaceVertexPointerPair );
-    }
+		if( liqglo_outputMeshUVs )
+		{
+			// Match MTOR, which also outputs face-varying STs as well for some reason - Paul
+			// not anymore - Philippe
+			pFaceVertexSPointer.set( "u", rFloat, numFaceVertices );
+			pFaceVertexSPointer.setDetailType( rFaceVarying );
 
-    if( liqglo_outputMeshUVs ) {
-      // Match MTOR, which also outputs face-varying STs as well for some reason - Paul
-      // not anymore - Philippe
-      pFaceVertexSPointer.set( "u", rFloat, numFaceVertices );
-      pFaceVertexSPointer.setDetailType( rFaceVarying );
+			pFaceVertexTPointer.set( "v", rFloat, numFaceVertices );
+			pFaceVertexTPointer.setDetailType( rFaceVarying );
+		}
+	}
 
-      pFaceVertexTPointer.set( "v", rFloat, numFaceVertices );
-      pFaceVertexTPointer.setDetailType( rFaceVarying );
-    }
-  }
+	vertexParam = pointsPointerPair.getTokenFloatArray();
+	normalParam = normalsPointerPair.getTokenFloatArray();
 
-  vertexParam = pointsPointerPair.getTokenFloatArray();
-  normalParam = normalsPointerPair.getTokenFloatArray();
-
-  // Read the mesh from Maya
-  MFloatVectorArray normals;
-  fnMesh.getNormals( normals );
-
-  for ( MItMeshPolygon polyIt ( mesh ); polyIt.isDone() == false; polyIt.next() ) {
-    count = polyIt.polygonVertexCount();
-    nverts[face] = count;
-
-	for( unsigned i( 0 ); i < count; i++ ){
-      vertex = polyIt.vertexIndex( i );
-      verts[faceVertex] = vertex;
-      point = polyIt.point( i, MSpace::kObject );
-      pointsPointerPair.setTokenFloat( vertex, point.x, point.y, point.z );
-      normal = polyIt.normalIndex( i );
-
-      if( numNormals == numPoints ) {
-        normalsPointerPair.setTokenFloat( vertex, normals[normal].x, normals[normal].y, normals[normal].z );
-      } else {
-        normalsPointerPair.setTokenFloat( faceVertex, normals[normal].x, normals[normal].y, normals[normal].z );
-      }
-
-      if ( UVSetsArray.size() ) {
-        fnMesh.getPolygonUV( face, i, S, T );
-
-        UVSetsArray[0].setTokenFloat( faceVertex, 0, S );
-        UVSetsArray[0].setTokenFloat( faceVertex, 1, 1-T );
-
-        for ( unsigned j( 1 ); j<=extraUVSetNames.length(); j++ ) {
-          fnMesh.getPolygonUV( face, i, S, T, &extraUVSetNames[j] );
-
-          UVSetsArray[j].setTokenFloat( faceVertex, 0, S );
-          UVSetsArray[j].setTokenFloat( faceVertex, 1, 1-T );
-        }
-
-        if( liqglo_outputMeshUVs ) {
-          // Match MTOR, which always outputs face-varying STs as well for some reason - Paul
-          pFaceVertexSPointer.setTokenFloat( faceVertex, S );
-          pFaceVertexTPointer.setTokenFloat( faceVertex, 1-T );
-        }
-      }
-
-      ++faceVertex;
-    }
-
-    ++face;
-  }
-
-  // Add tokens to array and clean up after
-  tokenPointerArray.push_back( pointsPointerPair );
-  tokenPointerArray.push_back( normalsPointerPair );
-
-  if( UVSetsArray.size() ) {
-    tokenPointerArray.insert( tokenPointerArray.end(), UVSetsArray.begin(), UVSetsArray.end() );
-  }
-
-  if( liqglo_outputMeshUVs ) {
-    tokenPointerArray.push_back( pFaceVertexSPointer );
-    tokenPointerArray.push_back( pFaceVertexTPointer );
-  }
-
-  addAdditionalSurfaceParameters( mesh );
+	// Read the mesh from Maya
+	MFloatVectorArray normals;
+	fnMesh.getNormals( normals );
+	for( MItMeshPolygon polyIt ( mesh ); polyIt.isDone() == false; polyIt.next() )  // boucle sur les faces
+	{
+		count = polyIt.polygonVertexCount();
+		nverts[face] = count;
+		for( i=0; i<count; i++ )    // boucle sur les vertex de la face
+		{
+			vertex = polyIt.vertexIndex( i );
+			verts[faceVertex] = vertex;
+			point = polyIt.point( i, MSpace::kObject );
+			pointsPointerPair.setTokenFloat( vertex, point.x, point.y, point.z );
+			normal = polyIt.normalIndex( i );
+			if( numNormals == numPoints )
+			{
+				normalsPointerPair.setTokenFloat( vertex, normals[normal].x, normals[normal].y, normals[normal].z );
+			}
+			else
+			{
+				normalsPointerPair.setTokenFloat( faceVertex, normals[normal].x, normals[normal].y, normals[normal].z );
+			}
+			
+			
+			if ( UVSetsArray.size() )
+			{
+				for( j=0; j<UVSetsArray.size(); j++ )
+				{
+					MString uvSetName;
+					if(j==0)
+					{
+						uvSetName = currentUVSetName;
+					}
+					else
+					{
+						uvSetName = extraUVSetNames[j-1];
+					}
+					fnMesh.getPolygonUV( face, i, S, T, &uvSetName );
+					UVSetsArray[j].setTokenFloat( faceVertex, 0, S );
+					UVSetsArray[j].setTokenFloat( faceVertex, 1, 1-T );
+					//printf("V%d  %s : %f %f  =>  %f %f \n", i, uvSetName.asChar(), S, T, S, 1-T);
+				}
+				if( liqglo_outputMeshUVs )
+				{
+					// Match MTOR, which always outputs face-varying STs as well for some reason - Paul
+					pFaceVertexSPointer.setTokenFloat( faceVertex, S );
+					pFaceVertexTPointer.setTokenFloat( faceVertex, 1-T );
+				}
+			}
+			++faceVertex;
+		}
+		++face;
+	}
+	// Add tokens to array and clean up after
+	tokenPointerArray.push_back( pointsPointerPair );
+	tokenPointerArray.push_back( normalsPointerPair );
+	if( UVSetsArray.size() )
+	{
+		tokenPointerArray.insert( tokenPointerArray.end(), UVSetsArray.begin(), UVSetsArray.end() );
+	}
+	if( liqglo_outputMeshUVs )
+	{
+		tokenPointerArray.push_back( pFaceVertexSPointer );
+		tokenPointerArray.push_back( pFaceVertexTPointer );
+	}
+	addAdditionalSurfaceParameters( mesh );
 }
 
 

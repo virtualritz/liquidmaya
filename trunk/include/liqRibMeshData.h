@@ -48,6 +48,7 @@ public: // Methods
           liqRibMeshData( MObject mesh );
 
   virtual void       write();
+  virtual void       printMesh();
   virtual bool       compare( const liqRibData & other ) const;
   virtual ObjectType type() const;
 

@@ -2,7 +2,7 @@ DEPTH = .
 include $(DEPTH)/commondefs.mk
 
 #MAYA_RELEASES := $(patsubst $(AW_LOCATION)/maya%, %, $(MAYA_VERSIONS) )
-MAYA_RELEASES ?= 2009
+MAYA_RELEASES ?= 2010
 COMPILED_VERSIONS = $(wildcard bin/redhat/*)
 RELEASE_PATH = /net/soft/fscfc/maya
 LIQUID_PLUGS = $(wildcard bin/redhat/*/)

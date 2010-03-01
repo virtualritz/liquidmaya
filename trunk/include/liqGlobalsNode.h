@@ -35,7 +35,8 @@
 #ifndef liqGlobalsNode_H
 #define liqGlobalsNode_H
 
-#include <liquid.h>
+//#include <liquid.h>
+//#include <liqNodeSwatch.h>
 
 #include <maya/MPxNode.h>
 #include <maya/MIOStream.h>
@@ -49,8 +50,6 @@
 #include <maya/MImage.h>
 #include <maya/MSwatchRenderBase.h>
 #include <maya/MFnDependencyNode.h>
-
-#include <liqNodeSwatch.h>
 
 
 
