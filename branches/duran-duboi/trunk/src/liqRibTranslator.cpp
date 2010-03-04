@@ -74,7 +74,7 @@ static const char *LIQUIDVERSION =
 #define DEFINED_LIQUIDVERSION
 #endif
 
-#define LIQUIDVERSION "2.3.5"
+//#define LIQUIDVERSION "2.3.5"
 
 #ifdef _WIN32
 #  define RM_CMD "cmd.exe /c del"
@@ -357,10 +357,13 @@ liqShader & liqRibTranslator::liqGetShader( MObject shaderObj )
     string shaderNodeName = shaderNode.name().asChar();
     if( iter->name == shaderNodeName ) {
       // Already got it : nothing to do
+  printf("SHADER EXISTANT \n");
       return *iter;
     }
     ++iter;
   }
+  
+  printf("NOUVEAU SHADER\n");
   liqShader currentShader( shaderObj );
   m_shaders.push_back( currentShader );
   return m_shaders.back();
@@ -2773,7 +2776,24 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 
     int currentBlock( 0 );
     unsigned frameIndex( 0 );
-    for ( ; frameIndex < frameNumbers.size(); frameIndex++ ) {
+    
+    for ( ; frameIndex < frameNumbers.size(); frameIndex++ )
+    {
+		// clean dirty shaders which must be rebuild
+		vector<liqShader>::iterator shaderBegin = m_shaders.begin();
+		vector<liqShader>::iterator shaderEnd = m_shaders.end();
+		vector<liqShader>::iterator shaderIter;
+		vector<liqShader> cleanShaders;
+//ICI
+		for( shaderIter=shaderBegin; shaderIter!=shaderEnd; shaderIter++)
+		{
+			if(!shaderIter->dirtyAtEveryFrame)
+			{
+				cleanShaders.push_back(*shaderIter);
+			}
+		}
+		m_shaders.clear();
+		m_shaders = cleanShaders;
 
       liqglo_lframe = frameNumbers[ frameIndex ];
 
@@ -6647,6 +6667,9 @@ MStatus liqRibTranslator::objectBlock()
           }
         }
       }
+
+
+printf("EXPORT SHADER \n");
 
 	if( hasSurfaceShader && !m_ignoreSurfaces )
 	{

@@ -33,35 +33,40 @@
 */
 
 
+#include <maya/MStatus.h>
 #include <maya/MPxCommand.h>
 #include <maya/MStringArray.h>
 #include <maya/MDagPath.h>
+#include <maya/MSyntax.h>
 
-
-class liqWriteArchive : public MPxCommand {
+class liqWriteArchive : public MPxCommand
+{
 public:
-  liqWriteArchive() : indentLevel(0) {}
-  virtual ~liqWriteArchive() {}
+	liqWriteArchive();
+	virtual ~liqWriteArchive();
 
-  static void* creator();
-  static MSyntax syntax();
+	static void* creator();
+	static MSyntax syntax();
 
-  MStatus doIt(const MArgList& args);
-  MStatus redoIt();
-
-private:
-  void outputIndentation();
-  void outputObjectName(const MDagPath &objDagPath);
-  void writeObjectToRib(const MDagPath &objDagPath, bool writeTransform);
+	MStatus doIt(const MArgList& args);
+	MStatus redoIt();
 
 private:
-  unsigned int indentLevel;
-  MStringArray objectNames;
-  MString outputFilename;
-  bool outputRootTransform;
-  bool outputChildTransforms;
-  bool binaryRib;
-  bool debug;
+	void outputIndentation();
+	void outputObjectName(const MDagPath &objDagPath);
+	void writeObjectToRib(const MDagPath &objDagPath, bool writeTransform);
+	MStringArray stringArrayRemoveDuplicates(MStringArray src);
+
+private:
+	static MSyntax m_syntax;
+	unsigned int   m_indentLevel;
+	MStringArray   m_objectNames;
+	MString        m_outputFilename;
+	//bool           outputRootTransform;
+	//bool           outputChildTransforms;
+	bool           m_exportTransform;
+	bool           m_binaryRib;
+	bool           m_debug;
 };
 
 

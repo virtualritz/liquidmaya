@@ -117,6 +117,8 @@ MObject liqSurfaceNode::aPreShadowIntensity;
 MObject liqSurfaceNode::aLightBlindData;
 MObject liqSurfaceNode::aLightData;
 
+MObject liqSurfaceNode::aDirtyAtEveryFrame;
+
 MObject liqSurfaceNode::aOutColor;
 MObject liqSurfaceNode::aOutTransparency;
 
@@ -425,6 +427,9 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( lAttr.setHidden( true ) );
   CHECK_MSTATUS( lAttr.setDefault( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, true, true, false, 1.0f, 1.0f, 0 ) );
 
+  aDirtyAtEveryFrame = nAttr.create("dirtyAtEveryFrame", "def",  MFnNumericData::kBoolean, 0.0, &status);
+  MAKE_NONKEYABLE_INPUT(nAttr);
+
   // Create output attributes
   aOutColor = nAttr.createColor("outColor", "oc");
   MAKE_OUTPUT(nAttr);
@@ -466,6 +471,9 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( addAttribute( aMayaKd ) );
   CHECK_MSTATUS( addAttribute( aNormalCamera ) );
   CHECK_MSTATUS( addAttribute( aLightData ) );
+
+  CHECK_MSTATUS( addAttribute( aDirtyAtEveryFrame ) );
+
   CHECK_MSTATUS( addAttribute( aOutColor ) );
   CHECK_MSTATUS( addAttribute( aOutTransparency ) );
 

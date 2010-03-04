@@ -70,6 +70,7 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
       editorTemplate -label "Disp. Bound Space" -addControl "displacementBoundSpace";
       editorTemplate -addControl "shaderSpace";
       editorTemplate -addControl "outputInShadow";
+      editorTemplate -addControl "dirtyAtEveryFrame";
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Parameters" -collapse 0;

@@ -470,80 +470,117 @@ MString parseString( const MString& inputString, bool doEscaped )
   int sLength = inputString.length();
   int i;
 
-  for( i = 0; i < sLength; i++ ) {
-    if( inputString.substring(i, i) == "$" ) {
+  for( i = 0; i < sLength; i++ )
+  {
+    if( inputString.substring(i, i) == "$" )
+    {
       tokenString.clear();
       inToken = true;
-    } else if( inToken ) {
+    }
+    else if( inToken )
+    {
       tokenString += inputString.substring(i, i);
-      if( tokenString == "F" ) {
+      if( tokenString == "F" )
+      {
         constructedString += (int)liqglo_lframe;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "SCN" ) {
+      }
+      else if( tokenString == "SCN" )
+      {
         constructedString += liqglo_sceneName;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "IMG" ) {
+      }
+      else if( tokenString == "IMG" )
+      {
         constructedString += liqglo_DDimageName[0];
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "PDIR" || tokenString == "PROJDIR" ) {
+      }
+      else if( tokenString == "PDIR" || tokenString == "PROJDIR" )
+      {
         constructedString += liqglo_projectDir;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "RDIR" || tokenString == "RIBDIR" ) {
+      }
+      else if( tokenString == "RDIR" || tokenString == "RIBDIR" )
+      {
         constructedString += liqglo_ribDir;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "TDIR" || tokenString == "TEXDIR" ) {
+      }
+      else if( tokenString == "TDIR" || tokenString == "TEXDIR" )
+      {
         constructedString += liqglo_textureDir;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "OBJ" && inputString.substring(i+1, i+4) != "PATH" ) {
+      }
+      else if( tokenString == "OBJ" && inputString.substring(i+1, i+4) != "PATH" )
+      {
         constructedString += liqglo_currentNodeShortName;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "OBJPATH" ) {
+      }
+      else if( tokenString == "OBJPATH" )
+      {
         constructedString += liqglo_currentNodeName;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "SHOT" ) {
+      }
+      else if( tokenString == "SHOT" )
+      {
         constructedString += liqglo_shotName;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "VER" ) {
+      }
+      else if( tokenString == "VER" )
+      {
         constructedString += liqglo_shotVersion;
         inToken = false;
         tokenString.clear();
-      } else if( tokenString == "LYR" || tokenString == "LAYER" ) {
+      }
+      else if( tokenString == "LYR" || tokenString == "LAYER" )
+      {
         constructedString += liqglo_layer;
         inToken = false;
         tokenString.clear();
       }
-    } else if( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" ) {
+    }
+    else if( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" )
+    {
       constructedString += (int)liqglo_lframe;
-    } else if( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" ) {
+    }
+    else if( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" )
+    {
       int paddingSize = 0;
-      while( inputString.substring(i, i) == "#" ) {
+      while( inputString.substring(i, i) == "#" )
+      {
         paddingSize++;
         i++;
       }
       i--;
-      if( paddingSize == 1 ) {
+      if( paddingSize == 1 )
+      {
         paddingSize = 4;
       }
-      if( paddingSize > 20 ) {
+      if( paddingSize > 20 )
+      {
         paddingSize = 20;
       }
       char paddedFrame[20];
       sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
       constructedString += paddedFrame;
-    } else if( inputString.substring( i + 1, i + 1 ) == "%" ) {
-      if( inputString.substring( i, i ) == "\\" ) {
+    }
+    else if( inputString.substring( i + 1, i + 1 ) == "%" )
+    {
+      if( inputString.substring( i, i ) == "\\" )
+      {
         constructedString += "%";
         i++;
-      } else {
+      }
+      else
+      {
         constructedString += inputString.substring( i, i );
         i += 2; // move to 1st character after the '%'
 
@@ -566,15 +603,23 @@ MString parseString( const MString& inputString, bool doEscaped )
         }
       }
       // else early exit: % was the last character in the string.. do nothing
-    } else if( inputString.substring( i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" ) {
+    }
+    else if( inputString.substring( i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" )
+    {
       // do nothing
-    } else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" ) {
+    }
+    else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" )
+    {
       constructedString += "\n";
       i++;
-    } else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" ) {
+    }
+    else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" )
+    {
       constructedString += "\t";
       i++;
-    } else {
+    }
+    else
+    {
       constructedString += inputString.substring(i, i);
     }
   }

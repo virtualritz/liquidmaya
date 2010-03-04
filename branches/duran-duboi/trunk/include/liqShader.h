@@ -51,6 +51,8 @@ public :
     liqShader ( MObject shaderObj );
     MStatus liqShaderParseVectorAttr ( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType );
     MStatus liqShaderParseVectorArrayAttr ( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType, unsigned int arraySize );
+    
+    
     // void freeShader( void ); -- not needed anymore. vector calls the dtors itself when going out of scope
     // int numTPV; -- handled by tokenPointerArray.size() now
     vector< liqTokenPointer	> tokenPointerArray;
@@ -66,6 +68,7 @@ public :
     bool        hasErrors;
     SHADER_TYPE shader_type;
     MString     shaderSpace;
+    int         dirtyAtEveryFrame;
 };
 
 
