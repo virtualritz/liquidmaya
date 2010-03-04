@@ -357,13 +357,10 @@ liqShader & liqRibTranslator::liqGetShader( MObject shaderObj )
     string shaderNodeName = shaderNode.name().asChar();
     if( iter->name == shaderNodeName ) {
       // Already got it : nothing to do
-  printf("SHADER EXISTANT \n");
       return *iter;
     }
     ++iter;
   }
-  
-  printf("NOUVEAU SHADER\n");
   liqShader currentShader( shaderObj );
   m_shaders.push_back( currentShader );
   return m_shaders.back();
@@ -2784,7 +2781,6 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 		vector<liqShader>::iterator shaderEnd = m_shaders.end();
 		vector<liqShader>::iterator shaderIter;
 		vector<liqShader> cleanShaders;
-//ICI
 		for( shaderIter=shaderBegin; shaderIter!=shaderEnd; shaderIter++)
 		{
 			if(!shaderIter->dirtyAtEveryFrame)
@@ -2794,6 +2790,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 		}
 		m_shaders.clear();
 		m_shaders = cleanShaders;
+
 
       liqglo_lframe = frameNumbers[ frameIndex ];
 
@@ -6667,9 +6664,6 @@ MStatus liqRibTranslator::objectBlock()
           }
         }
       }
-
-
-printf("EXPORT SHADER \n");
 
 	if( hasSurfaceShader && !m_ignoreSurfaces )
 	{

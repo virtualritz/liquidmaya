@@ -221,6 +221,8 @@ liqShader::liqShader( MObject shaderObj )
 					MPlug stringPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
 					if ( MS::kSuccess == status )
 					{
+						
+
 						unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
 						if ( arraySize > 0 ) 
 						{
@@ -251,7 +253,7 @@ liqShader::liqShader( MObject shaderObj )
 							if ( stringPlugVal != stringDefault )
 							{
 								MString stringVal( parseString( stringPlugVal ) );
-								cerr << stringVal.asChar() << endl;
+								LIQDEBUGPRINTF("[liqShader::liqShader] parsed string for param %s = %s \n", shaderInfo.getArgName( i ).asChar(), stringVal.asChar() );
 								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString );
 								tokenPointerArray.rbegin()->setTokenString( 0, stringVal.asChar() );
 								tokenPointerArray.push_back( liqTokenPointer() );
