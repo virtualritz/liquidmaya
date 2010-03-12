@@ -38,6 +38,7 @@
 #include <maya/MFnDagNode.h>
 #include <maya/MArgParser.h>
 #include <maya/MArgDatabase.h>
+#include <maya/MFnSet.h>
 
 #include <ri.h>
 
@@ -174,8 +175,11 @@ MStatus liqWriteArchive::redoIt()
 {
 	try
 	{
+		MStatus status;
 		unsigned int i;
+		unsigned int j;
 		std::vector<MDagPath> objDb;
+		std::vector<MObject> setsDn;
 		// building an array with the MDagPaths to export
 		for(i=0; i<m_objectNames.length(); i++)
 		{
@@ -183,17 +187,33 @@ MStatus liqWriteArchive::redoIt()
 			MSelectionList selList;
 			selList.add(m_objectNames[i]);
 			MDagPath objDagPath;
-			MStatus status = selList.getDagPath(0, objDagPath);
+			status = selList.getDagPath(0, objDagPath);
 			if(!status)
 			{
-				MGlobal::displayWarning("[liqWriteArchive::redoIt] Error retrieving object " + m_objectNames[i]);
+				MObject depNode;
+				status = selList.getDependNode(0, depNode);
+
+				if(!status)
+				{
+					MGlobal::displayWarning("[liqWriteArchive::redoIt] Error retrieving object " + m_objectNames[i]);
+				}
+				else
+				{
+					MFnDependencyNode fnDepNode(depNode);
+					MString type = fnDepNode.typeName();
+					printf("OBJ %s : type=%s \n", fnDepNode.name().asChar(), type.asChar());
+					if(type=="objectSet")
+					{
+						setsDn.push_back(depNode);
+					}
+				}
 			}
 			else
 			{
 				objDb.push_back(objDagPath);
 			}
 		}
-		if( !objDb.size() )
+		if( !objDb.size() && !setsDn.size() )
 		{
 			MGlobal::displayError("[liqWriteArchive::redoIt] no objetcs to export");
 			return MS::kFailure;
@@ -227,8 +247,27 @@ MStatus liqWriteArchive::redoIt()
 		for(i=0; i<objDb.size(); i++)
 		{
 			printf("EXPORT OBJECT  %s \n", m_objectNames[i].asChar());
-			
 			writeObjectToRib(objDb[i], m_exportTransform);
+		}
+		for(i=0; i<setsDn.size(); i++)
+		{
+			MFnSet fnSet(setsDn[i], &status);
+			if(!status)
+			{
+				MGlobal::displayWarning("[liqWriteArchive::redoIt] Error init fnSet on object " + m_objectNames[i]);
+				continue;
+			}
+			printf("EXPORT SET  %s \n", m_objectNames[i].asChar());
+			
+			MSelectionList memberList;
+			fnSet.getMembers(memberList, true);
+			MDagPath objDagPath;
+			for(j=0; j<memberList.length(); j++)
+			{
+				status = memberList.getDagPath(j, objDagPath);
+				printf("    - EXPORT OBJECT  %s \n", objDagPath.fullPathName().asChar());
+				writeObjectToRib(objDagPath, m_exportTransform);
+			}
 		}
 	
 		RiEnd();

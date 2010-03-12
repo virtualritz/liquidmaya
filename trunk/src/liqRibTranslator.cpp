@@ -2783,7 +2783,7 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
 		vector<liqShader> cleanShaders;
 		for( shaderIter=shaderBegin; shaderIter!=shaderEnd; shaderIter++)
 		{
-			if(!shaderIter->dirtyAtEveryFrame)
+			if(!shaderIter->evaluateAtEveryFrame)
 			{
 				cleanShaders.push_back(*shaderIter);
 			}

@@ -68,7 +68,7 @@ public :
     bool        hasErrors;
     SHADER_TYPE shader_type;
     MString     shaderSpace;
-    int         dirtyAtEveryFrame;
+    int         evaluateAtEveryFrame;
 };
 
 
