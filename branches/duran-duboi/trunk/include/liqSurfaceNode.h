@@ -131,7 +131,7 @@ class liqSurfaceNode : public MPxNode
     static MObject aLightBlindData;
     static MObject aLightData;
 
-    static MObject aDirtyAtEveryFrame;
+    static MObject aEvaluateAtEveryFrame;
 
     // Output attributes
     static MObject aOutColor;

@@ -54,7 +54,7 @@ liqShader::liqShader()
   hasErrors             = false;
   shader_type           = SHADER_TYPE_UNKNOWN;
   shaderSpace           = "";
-  dirtyAtEveryFrame     = 0;
+  evaluateAtEveryFrame     = 0;
   tokenPointerArray.push_back( liqTokenPointer() ); // ENsure we have a 0 element
 }
 
@@ -78,7 +78,7 @@ liqShader::liqShader( const liqShader& src )
   hasErrors            = src.hasErrors;
   shader_type          = src.shader_type;
   shaderSpace          = src.shaderSpace;
-  dirtyAtEveryFrame    = src.dirtyAtEveryFrame;
+  evaluateAtEveryFrame    = src.evaluateAtEveryFrame;
 }
 
 
@@ -172,10 +172,10 @@ liqShader::liqShader( MObject shaderObj )
 		}
 
 		status.clear();
-		MPlug dirtyAtEveryFramePlug( shaderNode.findPlug( "dirtyAtEveryFrame" ) );
+		MPlug evaluateAtEveryFramePlug( shaderNode.findPlug( "evaluateAtEveryFrame" ) );
 		if ( MS::kSuccess == status )
 		{
-			dirtyAtEveryFramePlug.getValue( dirtyAtEveryFrame );
+			evaluateAtEveryFramePlug.getValue( evaluateAtEveryFrame );
 		}
 
 		// find the parameter details and declare them in the rib stream
