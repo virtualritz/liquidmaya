@@ -87,21 +87,77 @@ using namespace std;
 /** Create a RIB compatible representation of a Maya light.
  */
 liqRibLightData::liqRibLightData( const MDagPath & light )
-  : handle( NULL )
 {
-  usingShadow         = false;
-  shadowType          = stStandart;
-  shadowHiderType     = shMin;
-  rayTraced           = false;
-  raySamples          = 16;
-  shadowRadius        = 0;
-  shadowBlur          = 0;
-  excludeFromRib      = false;
-  //outputLightInShadow = false;
+	// Init
+	lightType = MRLT_Unknown;
+	color[0] = 0;
+	color[1] = 0;
+	color[2] = 0;
+	decay = 0;
+	intensity = 0;
+	coneAngle = 0;
+	penumbraAngle = 0;
+	dropOff = 0;
+	shadowBlur = 0;
+	// spot lights
+	barnDoors = 0;
+	leftBarnDoor = 0;
+	rightBarnDoor = 0;
+	topBarnDoor = 0;
+	bottomBarnDoor = 0;
+	decayRegions = 0;
+	startDistance1 = 0;
+	endDistance1 = 0;
+	startDistance2 = 0;
+	endDistance2 = 0;
+	startDistance3 = 0;
+	endDistance3 = 0;
+	startDistanceIntensity1 = 0;
+	endDistanceIntensity1 = 0;
+	startDistanceIntensity2 = 0;
+	endDistanceIntensity2 = 0;
+	startDistanceIntensity3 = 0;
+	endDistanceIntensity3 = 0;
+	// Area Lights
+	lightMap = "";
+	lightMapSaturation = 0;
+	// General
+	nonDiffuse = 0;
+	nonSpecular = 0;
+	RtMatrix transformationMatrixTmp = {{1, 0, 0, 0},  {0, 1, 0, 0},  {0, 0, 1, 0},  {0, 0, 0, 1}};
+	bcopy(transformationMatrixTmp, transformationMatrix, sizeof(RtMatrix));
+	handle = NULL;
+	usingShadow = false;
+	deepShadows = 0;
+	rayTraced = false;
+	raySamples = 16;
+	shadowRadius = 0;
+	excludeFromRib = false;
+	bothSidesEmit = 0;
+	userShadowName = "";
+	lightName = "";
+	shadowType = stStandart;
+	shadowHiderType = shMin;
+	everyFrame = true;
+	renderAtFrame = 0;
+	geometrySet = "";
+	shadowName = "";
+	shadowNamePx = "";
+	shadowNameNx = "";
+	shadowNamePy = "";
+	shadowNameNy = "";
+	shadowNamePz = "";
+	shadowNameNz = "";
+	shadowBias = 0;
+	shadowFilterSize = 0;
+	shadowSamples = 0;
+	shadowColor[0] = 0;
+	shadowColor[1] = 0;
+	shadowColor[2] = 0;
+	lightCategory = "NULL";
+	lightID = 0;
+	hitmode = 0;
 
-  everyFrame          = true;
-  renderAtFrame       = 0;
-  geometrySet         = "";
 
   MStatus status;
   LIQDEBUGPRINTF( "-> creating light\n" );
@@ -896,7 +952,7 @@ liqRibLightData::liqRibLightData( const MDagPath & light )
 void liqRibLightData::write()
 {
   if ( !excludeFromRib ) {
-    LIQDEBUGPRINTF( "-> writing light\n" );
+    LIQDEBUGPRINTF( "-> writing light %s \n", lightName.asChar());
 
     RiConcatTransform( * const_cast< RtMatrix* >( &transformationMatrix ) );
     if ( liqglo_isShadowPass ) {
@@ -1040,6 +1096,7 @@ void liqRibLightData::write()
                                     RI_NULL );
             } else {
             RtString shadowname = const_cast< char* >( shadowName.asChar() );
+            
             handle = RiLightSource( "liquidspot",
                                     "intensity",                    &intensity,
                                     "lightcolor",                   color,
