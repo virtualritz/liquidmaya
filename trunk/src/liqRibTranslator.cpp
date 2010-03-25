@@ -7106,11 +7106,6 @@ MStatus liqRibTranslator::objectBlock()
 		RiAttributeEnd();
 		attributeDepth--;
 	}
-
-
-liquidMessage("[objectBlock] END", messageError);
-//liquidMessage( "[objectBlock] START: returnStatus=%d  success=%d\n", returnStatus, MS::kSuccess);
-
 	return returnStatus;
 }
 
