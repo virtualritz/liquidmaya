@@ -30,6 +30,9 @@
 #include <liqGlobalHelpers.h>
 #include <liqIOStream.h>
 
+#include <boost/scoped_array.hpp>
+#include <boost/scoped_ptr.hpp>
+
 #include <maya/MArgList.h>
 #include <maya/MGlobal.h>
 #include <maya/MStatus.h>
@@ -39,6 +42,7 @@
 #include <maya/MArgParser.h>
 #include <maya/MArgDatabase.h>
 #include <maya/MFnSet.h>
+#include <maya/MPlug.h>
 
 #include <ri.h>
 
@@ -300,12 +304,12 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 		liqRibNode ribNode;
 		ribNode.set(objDagPath, 0, MRT_Unknown);
 
+
 		// don't write out clipping planes
 		if ( ribNode.object(0)->type == MRT_ClipPlane )
 		{
 			return;
 		}
-
 		if ( ribNode.rib.box != "" && ribNode.rib.box != "-" )
 		{
 			RiArchiveRecord( RI_COMMENT, "Additional RIB:\n%s", ribNode.rib.box.asChar() );
@@ -326,21 +330,99 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 				RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.rib.delayedReadArchive.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
 			}
 		}
-
 		// If it's a curve we should write the basis function
 		if ( ribNode.object(0)->type == MRT_NuCurve )
 		{
 			RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
 		}
-
 		if ( !ribNode.object(0)->ignore )
 		{
+
+			// SURFACE
+			{
+				// liqGetShader : construit les shaders une seul fois meme si utilisé bcp
+				MStatus status;
+				MStatus gStatus;
+				MObject assignedShader = ribNode.assignedShader.object();
+				//MFnDependencyNode shaderNode( assignedShader );
+				//MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
+				//rmanShaderNamePlug.getValue( rmShaderStr );
+				liqShader currentShader( assignedShader );
+
+				scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
+				scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
+				assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+
+				//////////////////////////////////////////////
+				// get global liquidGlobals.shortShaderNames ..... FAUDRAIT ETRE INDEPENDANT !!
+				//
+				//	comme ca    : Surface "db_lambertRed" "uniform float Kd" [1]
+				//	ou comme ca : Surface "/prod/tools/renderman/duran-duboi/pixar/compiledShaders/db_lambertRed" "uniform float Kd" [1]
+				//
+				bool liqglo_shortShaderNames;                 // true if we don't want to output path names with shaders
+				{
+					MSelectionList rGlobalList;
+					MObject rGlobalObj;
+					status = rGlobalList.add( "liquidGlobals" );
+					status = rGlobalList.getDependNode( 0, rGlobalObj );
+					MFnDependencyNode rGlobalNode( rGlobalObj );
+					MPlug gPlug = rGlobalNode.findPlug( "shortShaderNames", &gStatus );
+					if( gStatus == MS::kSuccess )
+						gPlug.getValue( liqglo_shortShaderNames );
+					gStatus.clear();
+				}
+				char* shaderFileName;
+				LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
+
+				// check shader space transformation
+				if( currentShader.shaderSpace != "" )
+				{
+					RiTransformBegin();
+					RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
+				}
+				// output shader
+				// its one less as the tokenPointerArray has a preset size of 1 not 0
+				int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
+				RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+				if( currentShader.shaderSpace != "" )
+					RiTransformEnd();
+			}
+
+
+
+			// DISPLACE
+			{
+				bool liqglo_shortShaderNames = 1;
+
+				MObject assignedDisplace = ribNode.assignedDisp.object();
+				liqShader currentShader(assignedDisplace);
+				scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
+				scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
+				assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+				char *shaderFileName;
+				LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
+				// check shader space transformation
+				if( currentShader.shaderSpace != "" )
+				{
+					RiTransformBegin();
+					RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
+				}
+				// output shader
+				int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
+				RiDisplacementV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+				if( currentShader.shaderSpace != "" )
+					RiTransformEnd();
+			}
+
+
+
+
 			ribNode.object(0)->writeObject();
 		}
 	}
 	else
 	{
-		// we're looking at a transform node
+		// we're looking for a transform node
 		bool wroteTransform = false;
 		if (writeTransform && (objDagPath.apiType() == MFn::kTransform))
 		{

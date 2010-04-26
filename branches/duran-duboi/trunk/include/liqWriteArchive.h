@@ -67,6 +67,10 @@ private:
 	bool           m_exportTransform;
 	bool           m_binaryRib;
 	bool           m_debug;
+	
+	bool           m_exportSurface;
+	bool           m_exportDisplace;
+	bool           m_exportVolume;
 };
 
 
