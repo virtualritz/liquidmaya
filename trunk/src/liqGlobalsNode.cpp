@@ -352,7 +352,7 @@ MObject liqGlobalsNode::aShadersMaxCachedAELayouts;
 
 MObject liqGlobalsNode::aVerbosity;
 
-#define LIQ_GLOBALS_HIDE_ATTRIBUTES false
+#define LIQ_GLOBALS_HIDE_ATTRIBUTES true
 
 #define CREATE_BOOL(attr, obj, name, shortName, default)    \
     obj = attr.create( name, shortName, MFnNumericData::kBoolean, default, &status); \
