@@ -39,6 +39,8 @@
 #include <maya/MDagPath.h>
 #include <maya/MSyntax.h>
 
+class liqRibNode;
+
 class liqWriteArchive : public MPxCommand
 {
 public:
@@ -49,7 +51,7 @@ public:
 	static MSyntax syntax();
 
 	MStatus doIt(const MArgList& args);
-	MStatus redoIt();
+	MStatus parseArguments(const MArgList& args);
 
 private:
 	void outputIndentation();
@@ -57,9 +59,13 @@ private:
 	void writeObjectToRib(const MDagPath &objDagPath, bool writeTransform);
 	MStringArray stringArrayRemoveDuplicates(MStringArray src);
 
+	void writeSurface(liqRibNode &);
+	void writeDisplace(liqRibNode &);
+	void writeVolume(liqRibNode &);
+
 private:
 	static MSyntax m_syntax;
-	unsigned int   m_indentLevel;
+	unsigned int  m_indentLevel;
 	MStringArray   m_objectNames;
 	MString        m_outputFilename;
 	//bool           outputRootTransform;
@@ -71,6 +77,7 @@ private:
 	bool           m_exportSurface;
 	bool           m_exportDisplace;
 	bool           m_exportVolume;
+	bool           m_shortShaderNames;
 };
 
 
