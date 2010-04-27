@@ -59,6 +59,10 @@ MSyntax liqWriteArchive::m_syntax;
 
 liqWriteArchive::liqWriteArchive() : m_indentLevel(0), m_outputFilename("/tmp/tmprib.rib"), m_exportTransform(1)
 {
+	m_exportSurface = 0;
+	m_exportDisplace = 0;
+	m_exportVolume = 0;
+	m_shortShaderNames = 0;
 }
 
 
@@ -80,19 +84,29 @@ MSyntax liqWriteArchive::syntax()
 	syn.useSelectionAsDefault(true);
 	syn.setObjectType(MSyntax::kStringObjects, 0);
 
-	syn.addFlag("b",  "binary");
-	syn.addFlag("d",  "debug");
-	syn.addFlag("o",  "output", MSyntax::kString);
+	syn.addFlag("b", "binary");
+	syn.addFlag("d", "debug");
+	syn.addFlag("o", "output", MSyntax::kString);
+
+	syn.addFlag("es", "exportSurface", MSyntax::kBoolean);
+	syn.addFlag("ed", "exportDisplace", MSyntax::kBoolean);
+	syn.addFlag("ev", "exportVolume", MSyntax::kBoolean);
+	syn.addFlag("ssn", "shortShaderNames", MSyntax::kBoolean);
+
 	return syn;
 }
 
 
-MStatus liqWriteArchive::doIt(const MArgList& args)
+MStatus liqWriteArchive::parseArguments(const MArgList& args)
 {
 	MStatus status;
 	MArgParser argParser(syntax(), args);
 	int flagIndex;
-
+	//for(int i=0; i<args.length(); i++)
+	//{
+	//	MString tmp = args.asString(i);
+	//	printf("ARG %d : %s \n", i, tmp.asChar());
+	//}
 	// flag debug
 	m_debug = false;
 	flagIndex = args.flagIndex("d", "debug");
@@ -114,16 +128,38 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 		displayError("[liqWriteArchive::doIt] Must provide the output rib : liquidWriteArchive -o /mon/rib.rib");
 		return MS::kInvalidParameter;
 	}
-	status = argParser.getFlagArgument("output", flagIndex, m_outputFilename);
-
-
+	m_outputFilename = args.asString(flagIndex+1);
+	// flag exportSurface
+	flagIndex = args.flagIndex("es", "exportSurface");
+	if(flagIndex != MArgList::kInvalidArgIndex)
+	{
+		m_exportSurface = args.asInt(flagIndex+1);
+	}
+	// flag exportDisplace
+	flagIndex = args.flagIndex("ed", "exportDisplace");
+	if(flagIndex != MArgList::kInvalidArgIndex)
+	{
+		m_exportDisplace = args.asInt(flagIndex+1);
+	}
+	// flag exportVolume
+	flagIndex = args.flagIndex("ev", "exportVolume");
+	if(flagIndex != MArgList::kInvalidArgIndex)
+	{
+		m_exportVolume = args.asInt(flagIndex+1);
+	}
+	// flag shortShaderNames
+	flagIndex = args.flagIndex("ssn", "shortShaderNames");
+	if(flagIndex != MArgList::kInvalidArgIndex)
+	{
+		m_shortShaderNames = args.asInt(flagIndex+1);
+	}
 	// get objetcs
 	int i;
 	MStringArray listToBeExported;
 	status = argParser.getObjects( listToBeExported );
 	if(status!=MS::kSuccess)
 	{
-		displayError("[liqWriteArchive::doIt] Must provide the output rib : liquidWriteArchive -o /mon/rib.rib");
+		displayError("[liqWriteArchive::doIt] Must provide objects to export : liquidWriteArchive {\"obj1\", \"obj2\", \"obj3\"}");
 		return MS::kInvalidParameter;
 	}
 	//listToBeExported = stringArrayRemoveDuplicates(listToBeExported);
@@ -139,15 +175,127 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 	m_objectNames = listToBeExported;
 	if(m_debug)
 	{
-		printf("[liqWriteArchive::doIt] exporting :\n");
+		printf("[liqWriteArchive::doIt] exporting objects :\n");
 		for(i=0; i<listToBeExported.length();i++)
 		{
 			printf("    '%d' : '%s' \n", i, listToBeExported[i].asChar() );
 		}
 		printf("et c'est tout\n");
 	}
+	return MS::kSuccess;
+}
 
-	return redoIt();
+
+MStatus liqWriteArchive::doIt(const MArgList& args)
+{
+	MStatus status;
+	status = parseArguments(args);
+	if( status != MS::kSuccess )
+	{
+		return status;
+	}
+	unsigned int i;
+	unsigned int j;
+	std::vector<MDagPath> objDb;
+	std::vector<MObject> setsDn;
+	// building an array with the MDagPaths to export
+	for(i=0; i<m_objectNames.length(); i++)
+	{
+		// get a handle on the named object
+		MSelectionList selList;
+		selList.add(m_objectNames[i]);
+		MDagPath objDagPath;
+		status = selList.getDagPath(0, objDagPath);
+		if(!status)
+		{
+			MObject depNode;
+			status = selList.getDependNode(0, depNode);
+			if(!status)
+			{
+				MGlobal::displayWarning("[liqWriteArchive::doIt] Error retrieving object " + m_objectNames[i]);
+			}
+			else
+			{
+				MFnDependencyNode fnDepNode(depNode);
+				MString type = fnDepNode.typeName();
+				//printf("OBJ %s : type=%s \n", fnDepNode.name().asChar(), type.asChar());
+				if(type=="objectSet")
+				{
+					setsDn.push_back(depNode);
+				}
+			}
+		}
+		else
+		{
+			objDb.push_back(objDagPath);
+		}
+	}
+	if( !objDb.size() && !setsDn.size() )
+	{
+		MGlobal::displayError("[liqWriteArchive::doIt] no objetcs to export");
+		return MS::kFailure;
+	}
+
+	// test that the output file is writable
+	FILE *f = fopen( m_outputFilename.asChar(), "w" );
+	if(!f)
+	{
+		MGlobal::displayError( "[liqWriteArchive::doIt] Error writing to output file " + m_outputFilename + ". Check file permissions there" );
+		return MS::kFailure;
+	}
+	fclose(f);
+
+	// binary or ascii
+#if defined( PRMAN ) || defined( DELIGHT )
+	RtString format[ 1 ] = { "ascii" };
+	if ( m_binaryRib )
+	{
+		format[ 0 ] = "binary";
+	}
+	RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
+#endif
+	// write the RIB file
+	if(m_debug)
+	{
+		cout << "[liquidWriteArchive::doIt] Writing on file : " << m_outputFilename.asChar() << endl;
+	}
+	RiBegin( const_cast< RtToken >( m_outputFilename.asChar() ) );
+
+	for(i=0; i<objDb.size(); i++)
+	{
+		if(m_debug)
+		{
+			printf("[liqWriteArchive::doIt] Export object '%s' \n", m_objectNames[i].asChar());
+		}
+		writeObjectToRib(objDb[i], m_exportTransform);
+	}
+	for(i=0; i<setsDn.size(); i++)
+	{
+		MFnSet fnSet(setsDn[i], &status);
+		if(!status)
+		{
+			MGlobal::displayWarning("[liqWriteArchive::doIt] Error init fnSet on object " + m_objectNames[i]);
+			continue;
+		}
+		if(m_debug)
+		{
+			printf("[liqWriteArchive::doIt] Export set '%s' \n", m_objectNames[i].asChar());
+		}
+		MSelectionList memberList;
+		fnSet.getMembers(memberList, true);
+		MDagPath objDagPath;
+		for(j=0; j<memberList.length(); j++)
+		{
+			status = memberList.getDagPath(j, objDagPath);
+			if(m_debug)
+			{
+				printf("    - Export object '%s' \n", objDagPath.fullPathName().asChar());
+			}
+			writeObjectToRib(objDagPath, m_exportTransform);
+		}
+	}
+	RiEnd();
+	return MS::kSuccess;
 }
 
 
@@ -175,116 +323,6 @@ MStringArray liqWriteArchive::stringArrayRemoveDuplicates(MStringArray src)
 }
 
 
-MStatus liqWriteArchive::redoIt()
-{
-	try
-	{
-		MStatus status;
-		unsigned int i;
-		unsigned int j;
-		std::vector<MDagPath> objDb;
-		std::vector<MObject> setsDn;
-		// building an array with the MDagPaths to export
-		for(i=0; i<m_objectNames.length(); i++)
-		{
-			// get a handle on the named object
-			MSelectionList selList;
-			selList.add(m_objectNames[i]);
-			MDagPath objDagPath;
-			status = selList.getDagPath(0, objDagPath);
-			if(!status)
-			{
-				MObject depNode;
-				status = selList.getDependNode(0, depNode);
-
-				if(!status)
-				{
-					MGlobal::displayWarning("[liqWriteArchive::redoIt] Error retrieving object " + m_objectNames[i]);
-				}
-				else
-				{
-					MFnDependencyNode fnDepNode(depNode);
-					MString type = fnDepNode.typeName();
-					printf("OBJ %s : type=%s \n", fnDepNode.name().asChar(), type.asChar());
-					if(type=="objectSet")
-					{
-						setsDn.push_back(depNode);
-					}
-				}
-			}
-			else
-			{
-				objDb.push_back(objDagPath);
-			}
-		}
-		if( !objDb.size() && !setsDn.size() )
-		{
-			MGlobal::displayError("[liqWriteArchive::redoIt] no objetcs to export");
-			return MS::kFailure;
-		}
-
-		// test that the output file is writable
-		FILE *f = fopen( m_outputFilename.asChar(), "w" );
-		if(!f)
-		{
-			MGlobal::displayError( "Error writing to output file " + m_outputFilename + ". Check file permissions there" );
-			return MS::kFailure;
-		}
-		fclose(f);
-
-		// binary or ascii
-#if defined( PRMAN ) || defined( DELIGHT )
-		RtString format[ 1 ] = { "ascii" };
-		if ( m_binaryRib )
-		{
-			format[ 0 ] = "binary";
-		}
-		RiOption( "rib", "format", ( RtPointer )&format, RI_NULL);
-#endif
-		// write the RIB file
-		if(m_debug)
-		{
-			cout << "liquidWriteArchive: writing on file : " << m_outputFilename.asChar() << endl;
-		}
-		RiBegin( const_cast< RtToken >( m_outputFilename.asChar() ) );
-
-		for(i=0; i<objDb.size(); i++)
-		{
-			printf("EXPORT OBJECT  %s \n", m_objectNames[i].asChar());
-			writeObjectToRib(objDb[i], m_exportTransform);
-		}
-		for(i=0; i<setsDn.size(); i++)
-		{
-			MFnSet fnSet(setsDn[i], &status);
-			if(!status)
-			{
-				MGlobal::displayWarning("[liqWriteArchive::redoIt] Error init fnSet on object " + m_objectNames[i]);
-				continue;
-			}
-			printf("EXPORT SET  %s \n", m_objectNames[i].asChar());
-			
-			MSelectionList memberList;
-			fnSet.getMembers(memberList, true);
-			MDagPath objDagPath;
-			for(j=0; j<memberList.length(); j++)
-			{
-				status = memberList.getDagPath(j, objDagPath);
-				printf("    - EXPORT OBJECT  %s \n", objDagPath.fullPathName().asChar());
-				writeObjectToRib(objDagPath, m_exportTransform);
-			}
-		}
-	
-		RiEnd();
-	}
-	catch (...)
-	{
-		MGlobal::displayError("Caught exception in liqWriteArchive::redoIt()");
-		return MS::kFailure;
-	}
-	return MS::kSuccess;
-}
-
-
 void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTransform)
 {
 	if (!isObjectVisible(objDagPath))
@@ -303,7 +341,6 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 
 		liqRibNode ribNode;
 		ribNode.set(objDagPath, 0, MRT_Unknown);
-
 
 		// don't write out clipping planes
 		if ( ribNode.object(0)->type == MRT_ClipPlane )
@@ -337,86 +374,22 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 		}
 		if ( !ribNode.object(0)->ignore )
 		{
-
-			// SURFACE
+			if(m_exportSurface)
 			{
-				// liqGetShader : construit les shaders une seul fois meme si utilisé bcp
-				MStatus status;
-				MStatus gStatus;
-				MObject assignedShader = ribNode.assignedShader.object();
-				//MFnDependencyNode shaderNode( assignedShader );
-				//MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
-				//rmanShaderNamePlug.getValue( rmShaderStr );
-				liqShader currentShader( assignedShader );
-
-				scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
-				scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
-				assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
-
-				//////////////////////////////////////////////
-				// get global liquidGlobals.shortShaderNames ..... FAUDRAIT ETRE INDEPENDANT !!
-				//
-				//	comme ca    : Surface "db_lambertRed" "uniform float Kd" [1]
-				//	ou comme ca : Surface "/prod/tools/renderman/duran-duboi/pixar/compiledShaders/db_lambertRed" "uniform float Kd" [1]
-				//
-				bool liqglo_shortShaderNames;                 // true if we don't want to output path names with shaders
-				{
-					MSelectionList rGlobalList;
-					MObject rGlobalObj;
-					status = rGlobalList.add( "liquidGlobals" );
-					status = rGlobalList.getDependNode( 0, rGlobalObj );
-					MFnDependencyNode rGlobalNode( rGlobalObj );
-					MPlug gPlug = rGlobalNode.findPlug( "shortShaderNames", &gStatus );
-					if( gStatus == MS::kSuccess )
-						gPlug.getValue( liqglo_shortShaderNames );
-					gStatus.clear();
-				}
-				char* shaderFileName;
-				LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
-
-				// check shader space transformation
-				if( currentShader.shaderSpace != "" )
-				{
-					RiTransformBegin();
-					RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
-				}
-				// output shader
-				// its one less as the tokenPointerArray has a preset size of 1 not 0
-				int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
-				RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
-				if( currentShader.shaderSpace != "" )
-					RiTransformEnd();
+				outputIndentation();
+				writeSurface(ribNode);
 			}
-
-
-
-			// DISPLACE
+			if(m_exportDisplace)
 			{
-				bool liqglo_shortShaderNames = 1;
-
-				MObject assignedDisplace = ribNode.assignedDisp.object();
-				liqShader currentShader(assignedDisplace);
-				scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
-				scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
-				assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
-				char *shaderFileName;
-				LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
-				// check shader space transformation
-				if( currentShader.shaderSpace != "" )
-				{
-					RiTransformBegin();
-					RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
-				}
-				// output shader
-				int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
-				RiDisplacementV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
-				if( currentShader.shaderSpace != "" )
-					RiTransformEnd();
+				outputIndentation();
+				writeDisplace(ribNode);
 			}
-
-
-
-
+			if(m_exportVolume)
+			{
+				outputIndentation();
+				writeVolume(ribNode);
+			}
+			outputIndentation();
 			ribNode.object(0)->writeObject();
 		}
 	}
@@ -479,6 +452,90 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 	if(m_debug)
 	{
 		cout << "liquidWriteArchive: finished writing object: " << objDagPath.fullPathName().asChar() << endl;
+	}
+}
+
+
+void liqWriteArchive::writeSurface(liqRibNode &ribNode)
+{
+	if(	ribNode.assignedShader.object().isNull() )
+	{
+		return;
+	}
+	liqShader assignedShader( ribNode.assignedShader.object() );
+	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
+	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
+	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+	char* shaderFileName;
+	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
+	if( assignedShader.shaderSpace != "" )
+	{
+		RiTransformBegin();
+		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
+	}
+	// output shader
+	// its one less as the tokenPointerArray has a preset size of 1 not 0
+	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
+	RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+	if( assignedShader.shaderSpace != "" )
+	{
+		RiTransformEnd();
+	}
+}
+
+
+void liqWriteArchive::writeDisplace(liqRibNode &ribNode)
+{
+	if(	ribNode.assignedDisp.object().isNull() )
+	{
+		return;
+	}
+	liqShader assignedShader( ribNode.assignedDisp.object() );
+	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
+	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
+	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+	char* shaderFileName;
+	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
+	if( assignedShader.shaderSpace != "" )
+	{
+		RiTransformBegin();
+		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
+	}
+	// output shader
+	// its one less as the tokenPointerArray has a preset size of 1 not 0
+	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
+	RiDisplacementV( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+	if( assignedShader.shaderSpace != "" )
+	{
+		RiTransformEnd();
+	}
+}
+
+
+void liqWriteArchive::writeVolume(liqRibNode &ribNode)
+{
+	if(	ribNode.assignedVolume.object().isNull() )
+	{
+		return;
+	}
+	liqShader assignedShader( ribNode.assignedVolume.object() );
+	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
+	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
+	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+	char* shaderFileName;
+	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
+	if( assignedShader.shaderSpace != "" )
+	{
+		RiTransformBegin();
+		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
+	}
+	// output shader
+	// its one less as the tokenPointerArray has a preset size of 1 not 0
+	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
+	RiAtmosphereV( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+	if( assignedShader.shaderSpace != "" )
+	{
+		RiTransformEnd();
 	}
 }
 
