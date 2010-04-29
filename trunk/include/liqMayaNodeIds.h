@@ -37,14 +37,15 @@
 #else
 // THESE ARE THE NEW IDs
 #define liqSurfaceNodeId		0x0010351f
-#define liqDisplacementNodeId	0x00103520
+#define liqDisplacementNodeId		0x00103520
 #define liqVolumeNodeId			0x00103521
 #define liqLightNodeId			0x00103522
 #define liqRibboxNodeId			0x00103523
 #define liqGlobalsNodeId		0x00103524
 #define liqCoordSysNodeId		0x00103525
 #define liqRibRequestId			0x0010F6D1
-#define liqBoundingBoxLocatorId	0x0010F6D8
+#define liqBoundingBoxLocatorId		0x0010F6D8
+#define liqShaderNodeId			0x0010F6D9
 #endif
 
 #endif // __LIQ_MAYA_NODE_IDS_H__

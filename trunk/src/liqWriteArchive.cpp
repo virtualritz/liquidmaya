@@ -30,9 +30,6 @@
 #include <liqGlobalHelpers.h>
 #include <liqIOStream.h>
 
-#include <boost/scoped_array.hpp>
-#include <boost/scoped_ptr.hpp>
-
 #include <maya/MArgList.h>
 #include <maya/MGlobal.h>
 #include <maya/MStatus.h>
@@ -101,7 +98,7 @@ MStatus liqWriteArchive::parseArguments(const MArgList& args)
 {
 	MStatus status;
 	MArgParser argParser(syntax(), args);
-	int flagIndex;
+	unsigned int flagIndex;
 	//for(int i=0; i<args.length(); i++)
 	//{
 	//	MString tmp = args.asString(i);
@@ -154,7 +151,7 @@ MStatus liqWriteArchive::parseArguments(const MArgList& args)
 		m_shortShaderNames = args.asInt(flagIndex+1);
 	}
 	// get objetcs
-	int i;
+	unsigned int i;
 	MStringArray listToBeExported;
 	status = argParser.getObjects( listToBeExported );
 	if(status!=MS::kSuccess)
@@ -194,6 +191,7 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 	{
 		return status;
 	}
+	initalizeShaderHandlerGenerator();
 	unsigned int i;
 	unsigned int j;
 	std::vector<MDagPath> objDb;
@@ -376,18 +374,33 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 		{
 			if(m_exportSurface)
 			{
-				outputIndentation();
-				writeSurface(ribNode);
+				//outputIndentation();
+				//writeSurface(ribNode);
+				if(	!ribNode.assignedShader.object().isNull() )
+				{
+					liqShader assignedShader( ribNode.assignedShader.object() );
+					assignedShader.write( m_shortShaderNames, m_indentLevel );
+				}
 			}
 			if(m_exportDisplace)
 			{
-				outputIndentation();
-				writeDisplace(ribNode);
+				//outputIndentation();
+				//writeDisplace(ribNode);
+				if(	!ribNode.assignedDisp.object().isNull() )
+				{
+					liqShader assignedDisplace( ribNode.assignedDisp.object() );
+					assignedDisplace.write( m_shortShaderNames, m_indentLevel );
+				}
 			}
 			if(m_exportVolume)
 			{
-				outputIndentation();
-				writeVolume(ribNode);
+				//outputIndentation();
+				//writeVolume(ribNode);
+				if(	!ribNode.assignedVolume.object().isNull() )
+				{
+					liqShader assignedVolume( ribNode.assignedVolume.object() );
+					assignedVolume.write( m_shortShaderNames, m_indentLevel );
+				}
 			}
 			outputIndentation();
 			ribNode.object(0)->writeObject();
@@ -456,88 +469,91 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 }
 
 
-void liqWriteArchive::writeSurface(liqRibNode &ribNode)
-{
-	if(	ribNode.assignedShader.object().isNull() )
-	{
-		return;
-	}
-	liqShader assignedShader( ribNode.assignedShader.object() );
-	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
-	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
-	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
-	char* shaderFileName;
-	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
-	if( assignedShader.shaderSpace != "" )
-	{
-		RiTransformBegin();
-		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
-	}
-	// output shader
-	// its one less as the tokenPointerArray has a preset size of 1 not 0
-	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
-	RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
-	if( assignedShader.shaderSpace != "" )
-	{
-		RiTransformEnd();
-	}
-}
-
-
-void liqWriteArchive::writeDisplace(liqRibNode &ribNode)
-{
-	if(	ribNode.assignedDisp.object().isNull() )
-	{
-		return;
-	}
-	liqShader assignedShader( ribNode.assignedDisp.object() );
-	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
-	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
-	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
-	char* shaderFileName;
-	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
-	if( assignedShader.shaderSpace != "" )
-	{
-		RiTransformBegin();
-		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
-	}
-	// output shader
-	// its one less as the tokenPointerArray has a preset size of 1 not 0
-	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
-	RiDisplacementV( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
-	if( assignedShader.shaderSpace != "" )
-	{
-		RiTransformEnd();
-	}
-}
-
-
-void liqWriteArchive::writeVolume(liqRibNode &ribNode)
-{
-	if(	ribNode.assignedVolume.object().isNull() )
-	{
-		return;
-	}
-	liqShader assignedShader( ribNode.assignedVolume.object() );
-	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
-	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
-	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
-	char* shaderFileName;
-	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
-	if( assignedShader.shaderSpace != "" )
-	{
-		RiTransformBegin();
-		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
-	}
-	// output shader
-	// its one less as the tokenPointerArray has a preset size of 1 not 0
-	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
-	RiAtmosphereV( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
-	if( assignedShader.shaderSpace != "" )
-	{
-		RiTransformEnd();
-	}
-}
+//void liqWriteArchive::writeSurface(liqRibNode &ribNode)
+//{
+//	if(	ribNode.assignedShader.object().isNull() )
+//	{
+//		return;
+//	}
+//	liqShader assignedShader( ribNode.assignedShader.object() );
+//	
+//	//assignedShader.getCoShaders();
+//	
+//	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
+//	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
+//	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+//	char* shaderFileName;
+//	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
+//	if( assignedShader.shaderSpace != "" )
+//	{
+//		RiTransformBegin();
+//		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
+//	}
+//	// output shader
+//	// its one less as the tokenPointerArray has a preset size of 1 not 0
+//	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
+//	RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+//	if( assignedShader.shaderSpace != "" )
+//	{
+//		RiTransformEnd();
+//	}
+//}
+//
+//
+//void liqWriteArchive::writeDisplace(liqRibNode &ribNode)
+//{
+//	if(	ribNode.assignedDisp.object().isNull() )
+//	{
+//		return;
+//	}
+//	liqShader assignedShader( ribNode.assignedDisp.object() );
+//	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
+//	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
+//	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+//	char* shaderFileName;
+//	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
+//	if( assignedShader.shaderSpace != "" )
+//	{
+//		RiTransformBegin();
+//		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
+//	}
+//	// output shader
+//	// its one less as the tokenPointerArray has a preset size of 1 not 0
+//	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
+//	RiDisplacementV( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+//	if( assignedShader.shaderSpace != "" )
+//	{
+//		RiTransformEnd();
+//	}
+//}
+//
+//
+//void liqWriteArchive::writeVolume(liqRibNode &ribNode)
+//{
+//	if(	ribNode.assignedVolume.object().isNull() )
+//	{
+//		return;
+//	}
+//	liqShader assignedShader( ribNode.assignedVolume.object() );
+//	scoped_array< RtToken > tokenArray( new RtToken[ assignedShader.tokenPointerArray.size() ] );
+//	scoped_array< RtPointer > pointerArray( new RtPointer[ assignedShader.tokenPointerArray.size() ] );
+//	assignTokenArrays( assignedShader.tokenPointerArray.size(), &assignedShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+//	char* shaderFileName;
+//	LIQ_GET_SHADER_FILE_NAME( shaderFileName, m_shortShaderNames, assignedShader );
+//	if( assignedShader.shaderSpace != "" )
+//	{
+//		RiTransformBegin();
+//		RiCoordSysTransform( ( RtString )assignedShader.shaderSpace.asChar() );
+//	}
+//	// output shader
+//	// its one less as the tokenPointerArray has a preset size of 1 not 0
+//	int shaderParamCount = assignedShader.tokenPointerArray.size() - 1;
+//	RiAtmosphereV( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+//	if( assignedShader.shaderSpace != "" )
+//	{
+//		RiTransformEnd();
+//	}
+//}
 
 
 void liqWriteArchive::outputIndentation()

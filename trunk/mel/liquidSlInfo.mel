@@ -51,6 +51,13 @@
 //
 
 
+global proc string liquidSlGetShader()
+{
+	global string $gLiquidSlShaderFile;
+	return $gLiquidSlShaderFile;
+}
+
+
 global proc liquidSlSetShader( string $shaderFile )
 {
     global string $gLiquidSlShaderFile;
@@ -429,8 +436,11 @@ global proc liquidSlInfo( string $shaderFile )
         print( $i + ": " + $paramType + " " + $paramName );
         if ( $paramArraySize > 0 )
             print( "[" + $paramArraySize + "]" );
-        print( " = " + $paramDefault + "\n" );
+        print( " = " + $paramDefault + " " );
+        
+        print ( " arraySize="+$paramArraySize+" ");
 
+        print( "\n" );
 
         // The following doesn't do anything, it just
         // demonstrates how to convert the $paramDefault
@@ -439,7 +449,7 @@ global proc liquidSlInfo( string $shaderFile )
         // point, vector, and normal are all represented
         // as mel vectors.
 
-        if ( $paramArraySize == 0 )
+        if( $paramArraySize == 0 )
         {
             switch ( $paramType )
             {

@@ -60,7 +60,9 @@ typedef enum {
 /* The following are variable types added since RISpec 3.1 */
     SHADER_TYPE_VECTOR,
     SHADER_TYPE_NORMAL,
-    SHADER_TYPE_MATRIX
+    SHADER_TYPE_MATRIX,
+/* The following is for co-shading */
+    SHADER_TYPE_SHADER
 } SHADER_TYPE;
 
 

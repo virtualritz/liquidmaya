@@ -372,7 +372,8 @@ global proc liquidFileBrowserWindow_wrapCallback(string $callback, string $arg1,
 */
 global proc liquidFileBrowserWindow( string $path, string $filemask, string $callback )
 {
-	if (`about -nt` || `about -mac`) {
+	if (`about -nt` || `about -mac`)
+	{
 		string $workspace = `workspace -q -fn`;
 		// note globals do NOT get set
 
@@ -390,7 +391,6 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
 									-fl $filemask
 									-an "Choose File"
 									`;
-
 		if( $dialogSuccess )
 		{
 			// previous call blocks
@@ -403,7 +403,10 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
 
   global string $gLiquidFileBrowserWindowDirectory;
   global string $gLiquidFileBrowserWindowFileMask;
-  $gLiquidFileBrowserWindowDirectory = substitute("/$", $path, "");
+  if( $gLiquidFileBrowserWindowDirectory == "" )
+  {
+	  $gLiquidFileBrowserWindowDirectory = substitute("/$", $path, "");
+  }
   $gLiquidFileBrowserWindowFileMask = $filemask;
 
   // add the bookmarks menu

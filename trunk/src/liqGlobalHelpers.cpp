@@ -1153,6 +1153,8 @@ void liquidMessage( const string& msg, liquidVerbosityType type ) {
           break;
         case messageError:
           MGlobal::displayError( infoOutput );
+        default:
+          break;
       }
     } else {
       string infoOutput( "[Liquid] " );
@@ -1163,6 +1165,8 @@ void liquidMessage( const string& msg, liquidVerbosityType type ) {
           break;
         case messageError:
           cerr << "Error: ";
+        default:
+          break;
       }
       cerr << infoOutput << endl << flush;
     }
@@ -1223,3 +1227,20 @@ MString parseLiquidRibRequest( MStringArray requestArray, MString attr )
 //	MGlobal::displayInfo( MString( "combinedRequest: " ) + combinedRequest );
 */	return combinedRequest;
 }
+
+
+void initalizeShaderHandlerGenerator()
+{
+	static int shaderHandlerId = 0;
+	shaderHandlerId = 0;
+}
+
+string getUniqueShaderHandler()
+{
+	static int shaderHandlerId;
+	shaderHandlerId++;
+	char shaderHandler[512];
+	sprintf(shaderHandler, "CO_SHADER_%d", shaderHandlerId);
+	return shaderHandler;
+}
+

@@ -59,9 +59,9 @@ private:
 	void writeObjectToRib(const MDagPath &objDagPath, bool writeTransform);
 	MStringArray stringArrayRemoveDuplicates(MStringArray src);
 
-	void writeSurface(liqRibNode &);
-	void writeDisplace(liqRibNode &);
-	void writeVolume(liqRibNode &);
+	//void writeSurface(liqRibNode &);
+	//void writeDisplace(liqRibNode &);
+	//void writeVolume(liqRibNode &);
 
 private:
 	static MSyntax m_syntax;

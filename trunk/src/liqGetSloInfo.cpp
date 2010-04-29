@@ -121,6 +121,7 @@ liqGetSloInfo::liqGetSloInfo()
   shaderTypeMap["vector"]         = SHADER_TYPE_VECTOR;
   shaderTypeMap["normal"]         = SHADER_TYPE_NORMAL;
   shaderTypeMap["matrix"]         = SHADER_TYPE_MATRIX;
+  shaderTypeMap["shader"]         = SHADER_TYPE_SHADER;
 
   shaderDetailMap["unknown"]      = SHADER_DETAIL_UNKNOWN;
   shaderDetailMap["varying"]      = SHADER_DETAIL_VARYING;
