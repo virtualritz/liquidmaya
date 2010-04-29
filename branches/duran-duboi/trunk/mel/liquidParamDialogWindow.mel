@@ -81,25 +81,29 @@ global proc liquidChangeTextFileAttr ( string $selectedObj, string $argName, str
 
 global proc liquidChangeTextFileAttrPlus ( string $selectedObj, string $argName, string $fieldName, string $defaultPath, string $fileSpec )
 {
-  string $currentAttrValue = `getAttr ($selectedObj+"."+$argName)`;
+	string $currentAttrValue = `getAttr ($selectedObj+"."+$argName)`;
 
-  string $MapDir = ($currentAttrValue == "" || liquidGetModifiersState() == "Shift" )? $defaultPath : (dirname($currentAttrValue));
+	string $MapDir = ($currentAttrValue == "" || liquidGetModifiersState() == "Shift" )? $defaultPath : (dirname($currentAttrValue));
+	// we might have a relative path
+	if ( !gmatch( $MapDir, "/*") )
+	{
+		$MapDir = ( `workspace -q -rd` + $MapDir);
+	}
+	if( $MapDir != "" )
+	{
+		if( `filetest -d $MapDir` )
+		{
+			if( `match "[^\/]$" $MapDir` != "" )
+			{
+				$MapDir += "/";
+			}
+		}
+	}
 
-  // we might have a relative path
-  if ( !gmatch( $MapDir, "/*") ) $MapDir = ( `workspace -q -rd` + $MapDir);
+	// Callback called by the file browser. filename and filetype will be appended to the end
+	string $cmd = "liquidChangeTextFileAttrPlusCB \"" + $selectedObj + "\" \"" + $argName + "\" \"" + $fieldName + "\" ";
 
-  if( $MapDir != "" ) {
-    if ( `filetest -d $MapDir` ) {
-      if ( `match "[^\/]$" $MapDir` != "" ) $MapDir += "/";
-    }
-  }
-
-  // Callback called by the file browser. filename and filetype will be appended to the end
-  string $cmd = "liquidChangeTextFileAttrPlusCB \"" + $selectedObj + "\" \"" + $argName + "\" \"" + $fieldName + "\" ";
-
-
-  liquidFileBrowserWindow( $defaultPath, $fileSpec, encodeString($cmd) );
-
+	liquidFileBrowserWindow( $defaultPath, $fileSpec, encodeString($cmd) );
 }
 
 /*

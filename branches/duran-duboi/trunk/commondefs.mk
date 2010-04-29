@@ -21,7 +21,8 @@ OBJEXT		= o
 LD		= $(MAYA_LOCATION)/bin/mayald
 #LOCFLAGS	= -fmessage-length=0 -Os -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
 LOCFLAGS	= -fmessage-length=0 -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
-WARNFLAGS	= -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
+#WARNFLAGS	= -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
+WARNFLAGS	= -Wall -W
 NO_TRANS_LINK	=
 VBIN		= redhat
 EXTRA_LIBS	=

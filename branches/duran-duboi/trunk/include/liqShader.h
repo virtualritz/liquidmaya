@@ -49,15 +49,19 @@ public :
     liqShader( const liqShader & src );
     liqShader & operator=( const liqShader & src );
     liqShader ( MObject shaderObj );
-    MStatus liqShaderParseVectorAttr ( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType );
-    MStatus liqShaderParseVectorArrayAttr ( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType, unsigned int arraySize );
-    
-    
+    virtual ~liqShader();
+    MStatus liqShaderParseVectorAttr( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType );
+    MStatus liqShaderParseVectorArrayAttr( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType, unsigned int arraySize );
+
+	void write(bool shortShaderNames, unsigned int indentLevel);
+    void writeAsCoShader(bool shortShaderNames, unsigned int indentLevel);
+	void outputIndentation(unsigned int indentLevel);
+
     // void freeShader( void ); -- not needed anymore. vector calls the dtors itself when going out of scope
     // int numTPV; -- handled by tokenPointerArray.size() now
-    vector< liqTokenPointer	> tokenPointerArray;
-    string name;
-    string file;
+
+    string      name;
+    string      file;
     RtColor     rmColor;
     RtColor     rmOpacity;
     bool        hasShadingRate;
@@ -69,6 +73,10 @@ public :
     SHADER_TYPE shader_type;
     MString     shaderSpace;
     int         evaluateAtEveryFrame;
+    MObject     m_mObject;
+    
+    vector< liqTokenPointer	> tokenPointerArray;
+    vector< MObject > coShaderArray;
 };
 
 

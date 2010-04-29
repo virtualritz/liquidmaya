@@ -505,6 +505,7 @@ MStatus liqSurfaceNode::initialize()
   return MS::kSuccess;
 }
 
+
 MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
 {
   // outColor or individual R, G, B channel
@@ -530,11 +531,12 @@ MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
     MFloatVector& surfaceNormal = block.inputValue( aNormalCamera, &status ).asFloatVector();
     CHECK_MSTATUS( status );
 
-    if ( ignoreLights ) {
-
+    if( ignoreLights )
+    {
       MFloatVector cam( 0.0, 0.0, 1.0 );
       float cosln = cam * surfaceNormal;
-      if ( cosln > 0.0f ) {
+      if ( cosln > 0.0f )
+      {
         float diff = cosln * cosln * Kd + Ka;
         resultColor = diff * cColor;
       }

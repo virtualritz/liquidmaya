@@ -64,7 +64,6 @@ char* basename( const char* filename );
 
 #define LIQ_GET_SHADER_FILE_NAME(a, b, c) if( b ) a = basename( const_cast<char *>(c.file.c_str())); else a = const_cast<char *>(c.file.c_str());
 
-
 MStringArray findAttributesByPrefix(const char* pPrefix, MFnDependencyNode& NodeFn );
 bool isObjectTwoSided( const MDagPath & path );
 bool isObjectReversed( const MDagPath & path );
@@ -105,6 +104,9 @@ MString sanitizeNodeName( const MString& name );
 RtString& getLiquidRibName( const string& name );
 void liquidMessage( const string& msg, liquidVerbosityType type );
 MString parseLiquidRibRequest( MStringArray requestArray, MString attr );
+
+void initalizeShaderHandlerGenerator();
+string getUniqueShaderHandler();
 
 class arrayDeleter // needed to free a shared/scoped/weak_ptr to an array
 {
