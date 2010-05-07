@@ -86,6 +86,7 @@ public:
   SHADER_TYPE   getType();
   int           getNumParam();
   MString       getTypeStr();
+  static MString getTypeStr(SHADER_TYPE shaderType);
   MString       getArgName( int num );
   SHADER_TYPE   getArgType( int num );
   MString       getArgTypeStr( int num );

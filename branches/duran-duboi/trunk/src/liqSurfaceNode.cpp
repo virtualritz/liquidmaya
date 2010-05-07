@@ -73,6 +73,7 @@ MObject liqSurfaceNode::aRmanTypes;
 MObject liqSurfaceNode::aRmanDefaults;
 MObject liqSurfaceNode::aRmanArraySizes;
 MObject liqSurfaceNode::aRmanLifCmds;
+MObject liqSurfaceNode::aRmanMethods;
 
 MObject liqSurfaceNode::aPreviewPrimitive;
 MObject liqSurfaceNode::aPreviewCustomPrimitive;
@@ -206,6 +207,9 @@ MStatus liqSurfaceNode::initialize()
   MAKE_INPUT(tAttr);
 
   aRmanLifCmds = tAttr.create(  MString("rmanLifCmds"),  MString("rlc"), MFnData::kStringArray, aRmanLifCmds, &status );
+  MAKE_INPUT(tAttr);
+
+  aRmanMethods = tAttr.create(  MString("rmanMethods"),  MString("rmt"), MFnData::kStringArray, aRmanMethods, &status );
   MAKE_INPUT(tAttr);
 
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );

@@ -111,7 +111,9 @@ LIQUIDMAINOBJS = liqShader.$(OBJEXT) \
 					liqJobList.$(OBJEXT) \
 					liqRibRequestNode.$(OBJEXT) \
 					liqRiCommands.$(OBJEXT) \
-					liqRibImplicitSphereData.$(OBJEXT)
+					liqRibImplicitSphereData.$(OBJEXT)\
+					liqCoShaderNode.$(OBJEXT) \
+					liqShaderFactory.$(OBJEXT)
 
 
 LIQUIDOUTMAINOBJS := $(patsubst %,$(VPATH)/%,$(LIQUIDMAINOBJS))

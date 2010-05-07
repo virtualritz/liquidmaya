@@ -53,6 +53,7 @@ public :
     MStatus liqShaderParseVectorAttr( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType );
     MStatus liqShaderParseVectorArrayAttr( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType, unsigned int arraySize );
 
+	void appendCoShader(MObject coshader, MPlug plug);
 	void write(bool shortShaderNames, unsigned int indentLevel);
     void writeAsCoShader(bool shortShaderNames, unsigned int indentLevel);
 	void outputIndentation(unsigned int indentLevel);
@@ -72,11 +73,12 @@ public :
     bool        hasErrors;
     SHADER_TYPE shader_type;
     MString     shaderSpace;
+    MString     shaderHandler;
     int         evaluateAtEveryFrame;
     MObject     m_mObject;
     
     vector< liqTokenPointer	> tokenPointerArray;
-    vector< MObject > coShaderArray;
+    vector< MObject > m_coShaderArray;
 };
 
 

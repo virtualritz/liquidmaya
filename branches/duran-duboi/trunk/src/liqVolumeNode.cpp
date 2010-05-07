@@ -71,6 +71,7 @@ MObject liqVolumeNode::aRmanTypes;
 MObject liqVolumeNode::aRmanDefaults;
 MObject liqVolumeNode::aRmanArraySizes;
 MObject liqVolumeNode::aRmanLifCmds;
+MObject liqVolumeNode::aRmanMethods;
 
 MObject liqVolumeNode::aPreviewPrimitive;
 MObject liqVolumeNode::aPreviewCustomPrimitive;
@@ -167,6 +168,9 @@ MStatus liqVolumeNode::initialize()
   MAKE_INPUT(tAttr);
 
   aRmanLifCmds = tAttr.create(  MString("rmanLifCmds"),  MString("rlc"), MFnData::kStringArray, aRmanLifCmds, &status );
+  MAKE_INPUT(tAttr);
+
+  aRmanMethods = tAttr.create(  MString("rmanMethods"),  MString("rmt"), MFnData::kStringArray, aRmanMethods, &status );
   MAKE_INPUT(tAttr);
 
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );

@@ -105,9 +105,6 @@ RtString& getLiquidRibName( const string& name );
 void liquidMessage( const string& msg, liquidVerbosityType type );
 MString parseLiquidRibRequest( MStringArray requestArray, MString attr );
 
-void initalizeShaderHandlerGenerator();
-string getUniqueShaderHandler();
-
 class arrayDeleter // needed to free a shared/scoped/weak_ptr to an array
 {
   public:

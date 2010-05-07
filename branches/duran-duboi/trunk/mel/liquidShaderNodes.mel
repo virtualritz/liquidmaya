@@ -35,6 +35,7 @@
 global string $gLiquidAELastShader;
 global string $gLiquidAELastNode;
 
+// TODO : store the shaderMethods as well
 
 /**
  *  Stores extra data about the shader that will be needed at RIB export time.
@@ -47,6 +48,8 @@ proc rmanParams_create( string $node, int $reReadShaderParams )
     liquidSlInfoReset(); // force reload
     liquidSlSetShader( $shaderPath );
   }
+
+  trace ("[rmanParams_create] for "+$node+", reread: "+$reReadShaderParams);
 
   global string $gLifCmdList[];
 
@@ -119,6 +122,8 @@ global proc removeObsoleteParams( string $node )
   string $allUserDefinedAttr[] = `listAttr -ud -hd $node`;
   string $obsoleteAttr[] = stringArrayRemove( $gLiquidSlParamNames, $allUserDefinedAttr );
 
+  trace ("[removeObsoleteParams] for "+$node);
+
   // remove obsolete attributes - that is the ones
   // that do not exist anymore.
   for ( $at in $obsoleteAttr ) {
@@ -155,10 +160,13 @@ global proc removeObsoleteParams( string $node )
  *  Here we check for false-positives : parameters with the same name
  *  but a different type or array size.
  *  This can be done only once the shader has been set.
+ *  Modified to add suport for shader parameters
  */
 proc checkParamsDefinition( string $node )
 {
   int $numOfArgs = liquidSlNumParams();
+
+  trace ("[checkParamsDefinition] for "+$node);
 
   for ( $i = 0; $i < $numOfArgs ; $i++ ) {
 
@@ -173,6 +181,7 @@ proc checkParamsDefinition( string $node )
         case "float":
           $mayaType = "double";
           break;
+        case "shader":
         case "string":
           $mayaType = "string";
           break;
@@ -183,9 +192,6 @@ proc checkParamsDefinition( string $node )
         case "normal":
         case "vector":
           $mayaType = "double3";
-          break;
-        case "shader":
-          $mayaType = "message";
           break;
         default:
           break;
@@ -198,17 +204,17 @@ proc checkParamsDefinition( string $node )
       $attrSize = ( $attrSize = 1 )?  0 : $attrSize;
 
       if ( $argArrayLen != $attrSize ) {
-        //trace ("size : we must delete "+$node + "." + $argName + " ( "+$argArrayLen+" != "+$attrSize+" )");
+        trace ("size : we must delete "+$node + "." + $argName + " ( "+$argArrayLen+" != "+$attrSize+" )");
         $deleteAttr = 1;
       }
 
       if ( $mayaType != $attrType ) {
-        //trace ("type : we must delete "+$node + "." + $argName + " ( "+$mayaType+" != "+$attrType+" )");
+        trace ("type : we must delete "+$node + "." + $argName + " ( "+$mayaType+" != "+$attrType+" )");
         $deleteAttr = 1;
       }
 
       if ( $deleteAttr == 1 ) {
-        //trace ("   >> deleted : "+$node + "." + $argName );
+        trace ("   >> deleted : "+$node + "." + $argName );
         catch(`deleteAttr ($node + "." + $argName )`);
       }
 
@@ -225,43 +231,40 @@ proc checkParamsDefinition( string $node )
  */
 global proc liquidShaderNodes_initParams( string $nodeAttr )
 {
-	//trace ("liquidShaderNodes_initParams "+$nodeAttr+"\n");
-	$node = basenameEx( $nodeAttr );
-	string $shaderPath = `getAttr ($node+".rmanShaderLong")`;
+  trace ("[liquidShaderNodes_initParams] for "+$nodeAttr);
 
-	// shader does not exist / not readable
-	if ( !`filetest -s $shaderPath` )
-	{
-		warning ("[liquid] "+$shaderPath+" does not exist or is not readable");
-	}
+  //trace ("liquidShaderNodes_initParams "+$nodeAttr+"\n");
+  $node = basenameEx( $nodeAttr );
+  string $shaderPath = `getAttr ($node+".rmanShaderLong")`;
 
-	// invalid path
-	if ( !liquidGlobalsExists() )
-	{
-		eval("liquidCreateGlobals();select "+$node+";");
-	}
-	string $extension = `getAttr "liquidGlobals.shaderExt"`;
-	if ( ( match("[a-zA-Z]+$", $shaderPath ) != $extension ) && ( "" != $extension ) )
-	{
-		warning ("[liquid] Shaders must end with "+$extension+" ");
-		return;
-	}
 
-	// read shader params
-	liquidSlInfoReset();
-	liquidSlSetShader( $shaderPath );
+  // shader does not exist / not readable
+  if ( !`filetest -s $shaderPath` ) {
+    warning ("[liquid] "+$shaderPath+" does not exist or is not readable");
+  }
 
-	// check the type
-	string $shadertype = liquidSlShaderType();
-	string $nodeType = nodeType( $node );
-	$nodeType = tolower( $nodeType );
-	if( !gmatch( $nodeType, ("*"+$shadertype+"*") ) && $shadertype!="shader" )
-	{
-		string $short = basenameEx($shaderPath);
-		string $typ = substitute("liquid", $nodeType, "" );
-		warning ("[liquidShaderNodes] " + $short + " is not a " + $typ + "shader (node="+$node+")!");
-		return;
-	}
+  // invalid path
+  if ( !liquidGlobalsExists() ) eval("liquidCreateGlobals();select "+$node+";");
+  string $extension = `getAttr "liquidGlobals.shaderExt"`;
+  if ( ( match("[a-zA-Z]+$", $shaderPath ) != $extension ) && ( "" != $extension ) ) {
+    warning ("[liquid] Shaders must end with "+$extension+" ");
+    return;
+  }
+
+  // read shader params
+  liquidSlInfoReset();
+  liquidSlSetShader( $shaderPath );
+
+  // check the type
+  string $shadertype = liquidSlShaderType();
+  string $nodeType = nodeType( $node );
+  $nodeType = tolower( $nodeType );
+  if ( !gmatch( $nodeType, ("*"+$shadertype+"*") ) ) {
+    string $short = basenameEx($shaderPath);
+    string $typ = substitute("liquid", $nodeType, "" );
+    warning ("[liquid] " + $short + " is not a " + $typ + " shader !");
+    return;
+  }
 
   // here we check for false-positives : parameters with the same name
   // but a different type or array size.
@@ -285,7 +288,9 @@ global proc liquidShaderNodes_initParams( string $nodeAttr )
     string $fullattr = ($node+"."+$at);
 
     // if we have a well-known attr, skip it.
-    if (  $at == "rmanParams"     ||
+	// Added rmanMethods
+    if (  $at == "rmanMethods"    ||
+		  $at == "rmanParams"     ||
           $at == "rmanDetails"    ||
           $at == "rmanTypes"      ||
           $at == "rmanDefaults"   ||
@@ -618,6 +623,8 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
 {
   float $st = `timerX`;
 
+  trace ("[liquidShaderNodesParamsReplace] for "+$msg);
+
   string $theNode        = basenameEx( $msg );
   string $nodeType       = nodeType( $theNode );
   string $longShaderName = getAttr( $msg );
@@ -662,7 +669,7 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
   setParent $topParent;
 
   string $time = `timerX -st $st`;
-  //trace ("   replace DONE !  ( "+$time+" sec. )");
+  trace ("[liquidShaderNodesParamsReplace] DONE !  ( "+$time+" sec. )");
 
 }
 
@@ -691,10 +698,7 @@ global proc liquidShaderPickerNew( string $nodeName, string $msg )
   $ctlName = ( "liquidShader_" + $node[1] );
 
   string $shaderDir  = getAttr("liquidGlobals.fluidShaderBrowserDefaultPath");
-  if( !gmatch( $shaderDir, "/*") )
-  {
-	  $shaderDir = (`workspace -q -rd` + $shaderDir);
-  }
+  if ( !gmatch( $shaderDir, "/*") ) $shaderDir = (`workspace -q -rd` + $shaderDir);
 
   string $myFileCommand = ( "{\n"
                             + "string $v = `getAttr "+$msg+"`+\"\";"

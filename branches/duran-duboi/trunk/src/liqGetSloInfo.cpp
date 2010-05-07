@@ -85,7 +85,7 @@ extern int debugMode;
 //int SDRtoSLOMAP[7] = { 3, 11, 12, 1, 2, 13, 4 };
 //int SDRTypetoSLOTypeMAP[5] = { 5, 7, 8, 6, 10 };
 
-const char* shaderTypeStr[14] = { "unknown",        //0
+const char* shaderTypeStr[15] = { "unknown",        //0
                                   "point",          //1
                                   "color",          //2
                                   "float",          //3
@@ -98,9 +98,10 @@ const char* shaderTypeStr[14] = { "unknown",        //0
                                   "imager",         //10
                                   "vector",         //11
                                   "normal",         //12
-                                  "matrix" };       //13
+                                  "matrix",         //13
+                                  "shader" };       //14
 
-const char* shaderDetailStr[3] = {   "unknown",
+const char* shaderDetailStr[3] = {  "unknown",
                                      "varying",
                                      "uniform" };
 
@@ -168,6 +169,11 @@ int liqGetSloInfo::getNumParam()
 MString liqGetSloInfo::getTypeStr()
 {
     return MString( shaderTypeStr[ shaderType ] );
+}
+
+MString liqGetSloInfo::getTypeStr(SHADER_TYPE type)
+{
+    return MString( shaderTypeStr[ type ] );
 }
 
 MString liqGetSloInfo::getArgName( int num )

@@ -29,6 +29,7 @@
 #include <liqRibObj.h>
 #include <liqGlobalHelpers.h>
 #include <liqIOStream.h>
+#include <liqShaderFactory.h>
 
 #include <maya/MArgList.h>
 #include <maya/MGlobal.h>
@@ -191,7 +192,8 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 	{
 		return status;
 	}
-	initalizeShaderHandlerGenerator();
+	// clear shaders
+	liqShaderFactory::instance().clearShaders();
 	unsigned int i;
 	unsigned int j;
 	std::vector<MDagPath> objDb;
@@ -293,6 +295,8 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 		}
 	}
 	RiEnd();
+	// clear shaders
+	liqShaderFactory::instance().clearShaders();
 	return MS::kSuccess;
 }
 
