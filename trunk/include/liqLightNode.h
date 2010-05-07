@@ -84,6 +84,7 @@ class liqLightNode : public MPxNode
     static MObject aRmanDefaults;
     static MObject aRmanArraySizes;
     static MObject aRmanLifCmds;
+	static MObject aRmanMethods;
 
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;

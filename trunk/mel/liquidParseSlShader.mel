@@ -173,7 +173,8 @@ global proc int liquidParseSlShader ( string $shaderNode, string $fileName )
                 "surface",
                 "displacement",
                 "volume",
-                "light"
+                "light",
+                "coshader"
                     };
     $liqShaderArgTypes =
                     {

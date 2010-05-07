@@ -75,6 +75,8 @@ extern "C" {
 #include <liqJobList.h>
 #include <liqRiCommands.h>
 #include <liqBoundingBoxLocator.h>
+#include <liqCoShaderNode.h>
+#include <liqShaderFactory.h>
 
 
 #define LIQVENDOR "http://liquidmaya.sourceforge.net/"
@@ -435,15 +437,23 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   LIQCHECKSTATUS( status, "Can't register liquidCoordSys node" );
   status.clear();
 
-  // register the liquidCoordSys node
-  status = plugin.registerNode( "liquidBoundingBox", liqBoundingBoxLocator::id, liqBoundingBoxLocator::creator, liqBoundingBoxLocator::initialize, MPxNode::kLocatorNode );
-  LIQCHECKSTATUS( status, "Can't register liquidBoundingBox node" );
+  // register the liqBoundingBoxLocator node
+  status = plugin.registerNode( "liqBoundingBoxLocator", liqBoundingBoxLocator::id, liqBoundingBoxLocator::creator, liqBoundingBoxLocator::initialize, MPxNode::kLocatorNode );
+  LIQCHECKSTATUS( status, "Can't register liqBoundingBoxLocator node" );
   status.clear();
 
   // register the liquidGlobals node
   status = plugin.registerNode( "liquidGlobals", liqGlobalsNode::id, liqGlobalsNode::creator, liqGlobalsNode::initialize, MPxNode::kDependNode );
   LIQCHECKSTATUS( status, "Can't register liquidGlobals node" );
   status.clear();
+
+  // register the liquidCoShader node
+  const MString UserClassifyCoShader( "utility/general:swatch/liqCoShaderSwatch" );
+  status = plugin.registerNode( "liquidCoShader", liqCoShaderNode::id, liqCoShaderNode::creator, liqCoShaderNode::initialize, MPxNode::kDependNode, &UserClassifyCoShader );
+  LIQCHECKSTATUS( status, "Can't register liquidCoShader node" );
+  status.clear();
+  status = MSwatchRenderRegister::registerSwatchRender( "liqCoShaderSwatch", liqNodeSwatch::creator );
+  LIQCHECKSTATUS( status, "Can't register liquidCoShader swatch" );
 
   // setup all of the base liquid interface
   MString sourceLine("source ");
@@ -730,7 +740,14 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
   status = plugin.deregisterNode( liqGlobalsNode::id );
   LIQCHECKSTATUS( status, "Can't deregister liquidGlobals node" );
 
+  status = plugin.deregisterNode( liqCoShaderNode::id );
+  LIQCHECKSTATUS( status, "Can't deregister liquidCoShader node" );
+  status = MSwatchRenderRegister::unregisterSwatchRender( "liqCoShaderSwatch" );
+  LIQCHECKSTATUS( status, "Can't deregister liquidCoShader swatch generator" );
+
   cout <<"Liquid "<< LIQUIDVERSION << " unregistered"<<endl<<endl;
+
+	liqShaderFactory::deleteInstance();
 
   return MS::kSuccess;
 }

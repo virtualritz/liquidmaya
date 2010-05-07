@@ -177,7 +177,7 @@ bool liqTokenPointer::set( const string& name, ParameterType ptype, unsigned int
   setTokenName( name );
   m_pType = ptype;
 
-  if( m_pType != rString ) {
+  if( m_pType!=rString && m_pType!=rShader ) {
 
     resetTokenString();
 
@@ -196,6 +196,7 @@ bool liqTokenPointer::set( const string& name, ParameterType ptype, unsigned int
         m_eltSize = 4;
         break;
       case rString: // Useless but prevent warning at compile time
+      case rShader: // Useless but prevent warning at compile time
         m_eltSize = 0;
         break;
       case rMatrix:
@@ -427,45 +428,61 @@ const RtPointer liqTokenPointer::getRtPointer()
 
 string liqTokenPointer::getRiDeclare() const
 {
-  string type;
-  switch ( m_pType ) {
-  case rString:
-    type = "string";
-    break;
-  case rMatrix:
-    type = "matrix";
-    break;
-  case rFloat:
-    type = "float";
-    break;
-  case rHpoint:
-    type = "hpoint";
-    break;
-  case rPoint:
-    type = "point";
-    break;
-  case rVector:
-    type = "vector";
-    break;
-  case rNormal:
-    type = "normal";
-    break;
-  case rColor:
-    type = "color";
-    break;
-  }
-
-  if ( m_isUArray ) {
-    strstream declare;
-    declare << "[" << m_uArraySize << "]" << ends;
-    type += declare.str();
-  }
-
-  if( rUndefined != m_dType ) {
-    type = detailType[ m_dType ] + " " + type;
-  }
-
-  return type;
+	string type;
+	switch ( m_pType )
+	{
+	case rString:
+		type = "string";
+		break;
+	case rShader:
+		type = "shader";
+		break;
+	case rMatrix:
+		type = "matrix";
+		break;
+	case rFloat:
+		type = "float";
+		break;
+	case rHpoint:
+		type = "hpoint";
+		break;
+	case rPoint:
+		type = "point";
+		break;
+	case rVector:
+		type = "vector";
+		break;
+	case rNormal:
+		type = "normal";
+		break;
+	case rColor:
+		type = "color";
+		break;
+	}
+	//printf("liqTokenPointer :: TYPE=%s _ m_isUArray=%d _ m_isArray=%d _ m_uArraySize=%d _ m_arraySize=%d \n", type.c_str(), m_isUArray, m_isArray, m_uArraySize, m_arraySize);
+	if( m_pType==rString || m_pType==rShader )
+	{
+		if( m_isArray )
+		{
+			strstream declare;
+			declare << "[" << m_arraySize << "]" << ends;
+			type += declare.str();
+		}
+	}
+	else
+	{
+		if( m_isUArray )
+		{
+			strstream declare;
+			declare << "[" << m_uArraySize << "]" << ends;
+			type += declare.str();
+		}
+	}
+	if( rUndefined != m_dType )
+	{
+		type = detailType[ m_dType ] + " " + type;
+	}
+	return type;
 }
 
 liqTokenPointer::operator bool() const

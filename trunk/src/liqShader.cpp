@@ -34,6 +34,7 @@
 #include <liqShader.h>
 #include <liqGlobalHelpers.h>
 #include <liqMayaNodeIds.h>
+#include <liqShaderFactory.h>
 
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -59,8 +60,9 @@ liqShader::liqShader()
   hasErrors             = false;
   shader_type           = SHADER_TYPE_UNKNOWN;
   shaderSpace           = "";
-  evaluateAtEveryFrame     = 0;
+  evaluateAtEveryFrame  = 0;
   tokenPointerArray.push_back( liqTokenPointer() ); // ENsure we have a 0 element
+  shaderHandler         = liqShaderFactory::instance().getUniqueShaderHandler();
 }
 
 liqShader::liqShader( const liqShader& src )
@@ -83,7 +85,9 @@ liqShader::liqShader( const liqShader& src )
   hasErrors            = src.hasErrors;
   shader_type          = src.shader_type;
   shaderSpace          = src.shaderSpace;
-  evaluateAtEveryFrame    = src.evaluateAtEveryFrame;
+  evaluateAtEveryFrame = src.evaluateAtEveryFrame;
+  shaderHandler        = src.shaderHandler;
+  m_mObject            = src.m_mObject;
 }
 
 
@@ -94,6 +98,7 @@ liqShader::liqShader( MObject shaderObj )
 	MFnDependencyNode shaderNode( shaderObj );
 	MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
 	rmanShaderNamePlug.getValue( rmShaderStr );
+	shaderHandler = liqShaderFactory::instance().getUniqueShaderHandler();
 
 	LIQDEBUGPRINTF( "-> Using Renderman Shader %s. \n", rmShaderStr.asChar() );
 
@@ -119,10 +124,6 @@ liqShader::liqShader( MObject shaderObj )
 	rmOpacity[2]          = 1.0;
 
 	liqGetSloInfo shaderInfo;
-
-
-	MFnDependencyNode shaderDN(m_mObject);
-	printf("- INIT liqShader for MObject %s \n", shaderDN.name().asChar());
 
 
 // commented out for it generates errors - Alf
@@ -192,10 +193,16 @@ liqShader::liqShader( MObject shaderObj )
 		numArgs = shaderInfo.getNumParam();
 		for (unsigned int i( 0 ); i < numArgs; i++ )
 		{
-			if ( shaderInfo.getArgName( i ) == "liquidShadingRate" )
+			MString paramName = shaderInfo.getArgName(i);
+			int arraySize = shaderInfo.getArgArraySize(i);
+			SHADER_TYPE shaderType = shaderInfo.getArgType(i);
+			SHADER_DETAIL shaderDetail = shaderInfo.getArgDetail(i);
+
+			bool skipToken = false;
+			if ( paramName == "liquidShadingRate" )
 			{
 				// BUGFIX: Monday 6th August - fixed shading rate bug where it only accepted the default value
-				MPlug floatPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
+				MPlug floatPlug = shaderNode.findPlug( paramName, &status );
 				if ( MS::kSuccess == status )
 				{
 					float floatPlugVal;
@@ -208,42 +215,27 @@ liqShader::liqShader( MObject shaderObj )
 				hasShadingRate = true;
 				continue;
 			}
-			switch ( shaderInfo.getArgDetail(i) )
-			{
-				case SHADER_DETAIL_UNIFORM:
-				{
-					tokenPointerArray.rbegin()->setDetailType( rUniform );
-					break;
-				}
-				case SHADER_DETAIL_VARYING:
-				{
-					tokenPointerArray.rbegin()->setDetailType( rVarying);
-					break;
-				}
-				case SHADER_DETAIL_UNKNOWN:
-					tokenPointerArray.rbegin()->setDetailType( rUniform);
-					break;
-			}
 			
-			
-			
-			printf("PARSE ARGUMENT %s \n", shaderInfo.getArgName( i ).asChar() );
-			switch ( shaderInfo.getArgType( i ) )
+			switch ( shaderType )
 			{
 				case SHADER_TYPE_STRING:
 				{
-					MPlug stringPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
+					MPlug stringPlug = shaderNode.findPlug( paramName, &status );
 					if ( MS::kSuccess == status )
 					{
-						unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-						if ( arraySize > 0 ) 
+						if( arraySize == 0 ) 
+						{
+							skipToken = true;
+							printf("[liqShader] warning undefined string array size, not yet implemented...\n");
+						}
+						else if( arraySize > 0 ) 
 						{
 							bool isArrayAttr( stringPlug.isArray( &status ) );
 							if ( isArrayAttr )
 							{
 								MPlug plugObj;
-								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString, arraySize );
-								for( unsigned int kk( 0 ); kk < arraySize; kk++ )
+								tokenPointerArray.rbegin()->set( paramName.asChar(), rString, arraySize );
+								for( unsigned int kk( 0 ); kk < (unsigned int)arraySize; kk++ )
 								{
 									plugObj = stringPlug.elementByLogicalIndex( kk, &status );
 									if ( MS::kSuccess == status )
@@ -253,49 +245,61 @@ liqShader::liqShader( MObject shaderObj )
 										MString stringVal = parseString( stringPlugVal );
 										tokenPointerArray.rbegin()->setTokenString( kk, stringVal.asChar() );
 									}
+									else
+									{
+										printf("[liqShader] error while building param %d : %s \n", kk, stringPlug.name().asChar() );
+									}
 								}
-								tokenPointerArray.push_back( liqTokenPointer() );
+							}
+							else
+							{
+								printf("[liqShader] error while building string param %s assumed as an array but wasn't...\n", stringPlug.name().asChar() );
 							}
 						}
-						else
+						else if( arraySize == -1 )
 						{
 							MString stringPlugVal;
 							stringPlug.getValue( stringPlugVal );
 							MString stringDefault( shaderInfo.getArgStringDefault( i, 0 ) );
-							if ( stringPlugVal != stringDefault )
+							if( stringPlugVal == stringDefault )
+							{
+								skipToken = true;
+							}
+							else
 							{
 								MString stringVal( parseString( stringPlugVal ) );
-								LIQDEBUGPRINTF("[liqShader::liqShader] parsed string for param %s = %s \n", shaderInfo.getArgName( i ).asChar(), stringVal.asChar() );
-								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString );
+								LIQDEBUGPRINTF("[liqShader::liqShader] parsed string for param %s = %s \n", paramName.asChar(), stringVal.asChar() );
+								tokenPointerArray.rbegin()->set( paramName.asChar(), rString );
 								tokenPointerArray.rbegin()->setTokenString( 0, stringVal.asChar() );
-								tokenPointerArray.push_back( liqTokenPointer() );
 							}
 						}
+					}
+					else
+					{
+						skipToken = true;
 					}
 					break;
 				}
 				case SHADER_TYPE_SCALAR:
 				{
-					MPlug floatPlug( shaderNode.findPlug( shaderInfo.getArgName( i ), &status ) );
-
-printf("EXPORT PLUG %s \n", floatPlug.name().asChar() );
-					
+					MPlug floatPlug( shaderNode.findPlug( paramName, &status ) );
 					if ( MS::kSuccess == status )
 					{
-						unsigned arraySize( shaderInfo.getArgArraySize( i ) );
-						if ( arraySize == -1 )
+						if( arraySize == 0 )
 						{
-							printf("[liqShader] Warning : export float array with undefined size => not yet implemented !!!");
+							skipToken = true;
+							printf("[liqShader] warning undefined float array size, not yet implemented ....\n");
 						}
-						else if ( arraySize > 0)
+						else if( arraySize > 0 )
 						{
 							bool isArrayAttr( floatPlug.isArray( &status ) );
 							if ( isArrayAttr )
 							{
 								// philippe : new way to store float arrays as multi attr
 								MPlug plugObj;
-								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat, false, true, arraySize );
-								for( unsigned kk( 0 ); kk < arraySize; kk++ )
+								tokenPointerArray.rbegin()->set( paramName.asChar(), rFloat, false, true, arraySize );
+								//tokenPointerArray.rbegin()->set( paramName.asChar(), rFloat, 1, arraySize, true );
+								for( unsigned int kk( 0 ); kk < (unsigned int)arraySize; kk++ )
 								{
 									plugObj = floatPlug.elementByLogicalIndex( kk, &status );
 									if ( MS::kSuccess == status )
@@ -306,172 +310,255 @@ printf("EXPORT PLUG %s \n", floatPlug.name().asChar() );
 									}
 								}
 							}
-							else
-							{
-								// philippe : old way to store float arrays as floatArray attr
-								MObject plugObj;
-								floatPlug.getValue( plugObj );
-								MFnDoubleArrayData fnDoubleArrayData( plugObj );
-								const MDoubleArray& doubleArrayData( fnDoubleArrayData.array( &status ) );
-								// Hmmmmmmm Really a uArray ?
-								tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat, false, true, arraySize );
-								for( unsigned kk( 0 ); kk < arraySize; kk++ )
-								{
-									tokenPointerArray.rbegin()->setTokenFloat( kk, ( float )doubleArrayData[ kk ] );
-								}
-							}
 						}
-
-
-						else
+						else if( arraySize == -1 )
 						{
 							float floatPlugVal;
 							floatPlug.getValue( floatPlugVal );
-							tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rFloat );
+							tokenPointerArray.rbegin()->set( paramName.asChar(), rFloat );
 							tokenPointerArray.rbegin()->setTokenFloat( 0, floatPlugVal );
 						}
-						tokenPointerArray.push_back( liqTokenPointer() );
+					}
+					else
+					{
+						skipToken = true;
 					}
 					break;
 				}
 				case SHADER_TYPE_COLOR:
-				{
-					unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-					if ( arraySize > 0 )
-					{
-						//fprintf( stderr, "Got %i colors in array !\n", arraySize );
-						status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor, arraySize );
-						//fprintf( stderr, "Done with color array !\n", arraySize );
-					} else
-						status = liqShaderParseVectorAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rColor );
-					break;
-				}
 				case SHADER_TYPE_POINT:
-				{
-					unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-					if ( arraySize > 0 )
-						status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rPoint, arraySize );
-					else
-						status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rPoint );
-					break;
-				}
 				case SHADER_TYPE_VECTOR:
-				{
-					unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-					if ( arraySize > 0 )
-						status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rVector, arraySize );
-					else
-						status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rVector );
-					break;
-				}
 				case SHADER_TYPE_NORMAL:
 				{
-					unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-					if ( arraySize > 0 )
-						status = liqShaderParseVectorArrayAttr( shaderNode, shaderInfo.getArgName( i ).asChar(), rNormal, arraySize );
+					ParameterType parameterType;
+					if( shaderType==SHADER_TYPE_COLOR )
+					{
+						parameterType = rColor;
+					}
+					else if(shaderType==SHADER_TYPE_POINT)
+					{
+						parameterType = rPoint;
+					}
+					else if(shaderType==SHADER_TYPE_VECTOR)
+					{
+						parameterType = rVector;
+					}
+					else if(shaderType==SHADER_TYPE_NORMAL)
+					{
+						parameterType = rNormal;
+					}
+					if( arraySize==0 )
+					{
+						printf("[liqShader] warning undefined float[3] array size, not yet implemented ....\n");
+						skipToken = true;
+					}
+					else if ( arraySize > 0 )
+					{
+						status = liqShaderParseVectorArrayAttr( shaderNode, paramName.asChar(), parameterType, arraySize );
+						if( status != MS::kSuccess )
+						{
+							skipToken = true;
+							printf("[liqShader] error while building float[] param %s on %s ...\n", paramName.asChar(), shaderNode.name().asChar() );
+						}
+					}
 					else
-						status = liqShaderParseVectorAttr( shaderNode,  shaderInfo.getArgName( i ).asChar(), rNormal );
+					{
+						status = liqShaderParseVectorAttr( shaderNode, paramName.asChar(), parameterType );
+						if( status != MS::kSuccess )
+						{
+							skipToken = true;
+							printf("[liqShader] error while building float[] param %s on %s ...\n", paramName.asChar(), shaderNode.name().asChar() );
+						}
+					}
 					break;
 				}
 				case SHADER_TYPE_MATRIX:
 				{
 					liquidMessage( "WHAT IS THE MATRIX!", messageError );
+					skipToken = true;
 					break;
 				}
 				case SHADER_TYPE_SHADER:
 				{
-printf("-> PARSE SHADER\n");
-					//if( shaderInfo.getArgName( i ) != "diffuseColorTexture" )
-					//{
-					//	break;
-					//}
-					printf( "-- ATTRIBUT %s --\n", shaderInfo.getArgName( i ).asChar() );
-
-					MPlug coShaderPlug = shaderNode.findPlug( shaderInfo.getArgName( i ), &status );
+					MPlug coShaderPlug = shaderNode.findPlug( paramName, &status );
 					if ( MS::kSuccess == status )
 					{
-						unsigned int arraySize( shaderInfo.getArgArraySize( i ) );
-						printf("    => ARRAY SIZE = %d\n", shaderInfo.getArgArraySize( i ));
-						if( arraySize > 0 ) 
+						// undefined array size : set array size to nbConnections
+						if( arraySize==0 )
 						{
-							bool isArrayAttr = coShaderPlug.isArray( &status );
-							if ( isArrayAttr )
+							MPlug plugObj;
+							unsigned int numConnectedElements = coShaderPlug.numConnectedElements();
+							if( numConnectedElements == 0 )
 							{
-								unsigned int i;
-								unsigned int j;
-								MPlug plugObj;
-								unsigned int numConnectedElements = coShaderPlug.numConnectedElements();
-								printf("CONNECTED PLUG (%d): \n", numConnectedElements);
-								for(i=0; i<numConnectedElements; i++)
-								{
-									MPlug connectedPlug = coShaderPlug.connectionByPhysicalIndex(i);
-									//printf("PLUG %d = %s \n", i, connectedPlug.name().asChar());
-									bool asSrc = 0;
-									bool asDst = 1;
-									MPlugArray connectedPlugArray;
-									connectedPlug.connectedTo( connectedPlugArray, asDst, asSrc );
-									printf("   num CONNECTED PLUGS : %d \n", connectedPlugArray.length());
-									for(j=0; j<connectedPlugArray.length(); j++)
-									{
-										MObject coshader = connectedPlugArray[j].node();
-										// test object type
-										int isLiquidShader = 0;
-										MFn::Type objectType = coshader.apiType();
-										if( objectType == MFn::kPluginDependNode )
-										{
-											MFnDependencyNode fnObject(coshader);
-											MTypeId depNodeId = fnObject.typeId();
-											if( depNodeId==liqSurfaceNodeId || depNodeId==liqDisplacementNodeId || depNodeId==liqVolumeNodeId || depNodeId==liqShaderNodeId )
-											{
-												isLiquidShader = 1;
-											}											
-										}
-										if( isLiquidShader )
-										{
-											coShaderArray.push_back(coshader);
-										}
-										else
-										{
-											printf("[liqShader::liqShader] Error unsupported connection in plug '%s', abort co-shading for this plug.\n", connectedPlugArray[j].name().asChar());
-										}
-									}
-								}
+								skipToken = true;
+							}
+							else
+							{
+								arraySize = numConnectedElements;
 							}
 						}
-						else
+						if ( arraySize > 0 )
 						{
-							//MString stringPlugVal;
-							//stringPlug.getValue( stringPlugVal );
-							//MString stringDefault( shaderInfo.getArgStringDefault( i, 0 ) );
-							//
-							//if ( stringPlugVal != stringDefault )
+							unsigned int i;
+							// Gestion en mode shader (message connection) 
+							unsigned int numConnectedElements = coShaderPlug.numConnectedElements();
+							tokenPointerArray.rbegin()->set( paramName.asChar(), rString, numConnectedElements );
+							for(i=0; i<numConnectedElements; i++)
+							{
+								MPlug connectedPlug = coShaderPlug.connectionByPhysicalIndex(i);
+								bool asSrc = 0;
+								bool asDst = 1;
+								MPlugArray connectedPlugArray;
+								connectedPlug.connectedTo( connectedPlugArray, asDst, asSrc );
+								MObject coshader = connectedPlugArray[0].node();
+								appendCoShader(coshader, connectedPlugArray[0]);
+								MString coShaderId = liqShaderFactory::instance().getShaderId(coshader);
+								tokenPointerArray.rbegin()->setTokenString( i, coShaderId.asChar() );
+							}
+
+							// Gestion en mode string
+							//bool isArrayAttr( coShaderPlug.isArray( &status ) );
+							//if ( isArrayAttr )
 							//{
-							//	MString stringVal( parseString( stringPlugVal ) );
-							//	LIQDEBUGPRINTF("[liqShader::liqShader] parsed string for param %s = %s \n", shaderInfo.getArgName( i ).asChar(), stringVal.asChar() );
-							//	tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString );
-							//	tokenPointerArray.rbegin()->setTokenString( 0, stringVal.asChar() );
-							//	tokenPointerArray.push_back( liqTokenPointer() );
+							//	MPlug plugObj;
+							//	tokenPointerArray.rbegin()->set( paramName.asChar(), rShader, arraySize );
+							//	for( unsigned int kk( 0 ); kk < (unsigned int)arraySize; kk++ )
+							//	{
+							//		plugObj = coShaderPlug.elementByLogicalIndex( kk, &status );
+							//		printf("          value %d : ", kk);
+
+							//		if ( MS::kSuccess == status )
+							//		{
+							//			MString stringPlugVal;
+							//			plugObj.getValue( stringPlugVal );
+							//			MString stringVal = parseString( stringPlugVal );
+							//			tokenPointerArray.rbegin()->setTokenString( kk, stringVal.asChar() );
+							//			printf(" %s ", stringVal.asChar());
+							//		}
+							//		else
+							//		{
+							//			printf("[liqShader] error while building shader param %d : %s \n", kk, coShaderPlug.name().asChar() );
+							//		}
+							//		printf("\n");
+							//	}
+							//	//tokenPointerArray.push_back( liqTokenPointer() );
+							//}
+							//else
+							//{
+							//	printf("[liqShader] error while building param %s assumed as an array but wasn't...\n", coShaderPlug.name().asChar() );
 							//}
 						}
-					}
+						else if ( arraySize == -1 )
+						{
+							// Gestion en mode shader (message connection) 
+							MPlugArray connectionArray;
+							bool asSrc = 0;
+							bool asDst = 1;
+							coShaderPlug.connectedTo(connectionArray, asDst, asSrc);
+							if( connectionArray.length() == 0 )
+							{
+								skipToken = true;
+							}
+							else
+							{
+								MPlug connectedPlug = connectionArray[0];
+								MObject coshader = connectedPlug.node();
+								appendCoShader(coshader, coShaderPlug);
+								MString coShaderId = liqShaderFactory::instance().getShaderId(coshader);
+								tokenPointerArray.rbegin()->set( paramName.asChar(), rString );
+								tokenPointerArray.rbegin()->setTokenString( 0, coShaderId.asChar() );
+							}
 
+							// Gestion en mode string
+							
+							//MString stringPlugVal;
+							//coShaderPlug.getValue( stringPlugVal );
+							//MString stringDefault( shaderInfo.getArgStringDefault( i, 0 ) );
+							//if ( stringPlugVal == stringDefault )
+							//{
+							//	skipToken = true;
+							//	printf("          value : default => skipping \n");
+							//}
+							//else
+							//{
+							//	MString stringVal( parseString( stringPlugVal ) );
+							//	LIQDEBUGPRINTF("[liqShader::liqShader] parsed string for param %s = %s \n", paramName.asChar(), stringVal.asChar() );
+							//	tokenPointerArray.rbegin()->set( shaderInfo.getArgName( i ).asChar(), rString );
+							//	tokenPointerArray.rbegin()->setTokenString( 0, stringVal.asChar() );
+							//	printf("          value : %s \n", stringVal.asChar());
+							//}
+							
+						}
+					}
 					break;
 				}
 				case SHADER_TYPE_UNKNOWN :
 				default:
 					liquidMessage( "Unknown shader type", messageError );
+					skipToken = true;
 					break;
+			}
+			if( !skipToken )
+			{
+				// set token type
+				switch ( shaderDetail )
+				{
+					case SHADER_DETAIL_UNIFORM:
+					{
+						tokenPointerArray.rbegin()->setDetailType( rUniform );
+						break;
+					}
+					case SHADER_DETAIL_VARYING:
+					{
+						tokenPointerArray.rbegin()->setDetailType( rVarying);
+						break;
+					}
+					case SHADER_DETAIL_UNKNOWN:
+						tokenPointerArray.rbegin()->setDetailType( rUniform);
+						break;
+				}
+				// create next token
+				tokenPointerArray.push_back( liqTokenPointer() );
+			}
+			else
+			{
+				// skip parameter : parameter will not be written inside rib
 			}
 		}
 	}
 	shaderInfo.resetIt();
-
-	printf("-- INIT DONE \n\n");
 }
 
 
 liqShader::~liqShader()
 {
+}
+
+
+void liqShader::appendCoShader(MObject coshader, MPlug plug)
+{
+	// test if it's really a co-shader
+	int isLiquidShader = 0;
+	MFn::Type objectType = coshader.apiType();
+	if( objectType == MFn::kPluginDependNode )
+	{
+		MFnDependencyNode fnObject(coshader);
+		MTypeId depNodeId = fnObject.typeId();
+		//printf("liqSurfaceNodeId=%d  liqDisplacementNodeId=%d  liqVolumeNodeId=%d  liqCoShaderNodeId=%d\n", liqSurfaceNodeId, liqDisplacementNodeId, liqVolumeNodeId, liqCoShaderNodeId);
+		if( depNodeId==liqSurfaceNodeId || depNodeId==liqDisplacementNodeId || depNodeId==liqVolumeNodeId || depNodeId==liqCoShaderNodeId )
+		{
+			isLiquidShader = 1;
+		}
+	}
+	if( isLiquidShader )
+	{
+		MFnDependencyNode fnObject(coshader);
+		m_coShaderArray.push_back(coshader);
+	}
+	else
+	{
+		printf("[liqShader::appendCoShader] Error unsupported connection in plug '%s', abort co-shading for this plug.\n", plug.name().asChar());
+	}
 }
 
 
@@ -489,8 +576,7 @@ MStatus liqShader::liqShaderParseVectorAttr ( const MFnDependencyNode& shaderNod
 		triplePlug.child( 1 ).getValue( y );
 		triplePlug.child( 2 ).getValue( z );
 		tokenPointerArray.rbegin()->setTokenFloat( 0, x, y, z );
-
-		tokenPointerArray.push_back( liqTokenPointer() );
+		//tokenPointerArray.push_back( liqTokenPointer() );
 	}
   return status;
 }
@@ -515,7 +601,7 @@ MStatus liqShader::liqShaderParseVectorArrayAttr ( const MFnDependencyNode& shad
         tokenPointerArray.rbegin()->setTokenFloat( kk, x, y, z );
       }
     }
-    tokenPointerArray.push_back( liqTokenPointer() );
+    //tokenPointerArray.push_back( liqTokenPointer() );
   }
 
   return status;
@@ -549,16 +635,11 @@ liqShader & liqShader::operator=( const liqShader & src )
 void liqShader::write(bool shortShaderNames, unsigned int indentLevel)
 {
 	MFnDependencyNode node(m_mObject);
-	printf(" - write shader '%s' => %d coshaders \n", node.name().asChar(), coShaderArray.size());
-
 	// write co-shaders before
 	unsigned int i; 
-	for(i=0; i<coShaderArray.size(); i++)
+	for(i=0; i<m_coShaderArray.size(); i++)
 	{
-		MFnDependencyNode conode(coShaderArray[i]);
-		printf(" parse coshader '%s' \n", conode.name().asChar());
-
-		liqShader coShader(coShaderArray[i]);
+		liqShader &coShader = liqShaderFactory::instance().getShader(m_coShaderArray[i]);
 		if( coShader.hasErrors )
 		{
 			char errorMsg[512];
@@ -583,7 +664,6 @@ void liqShader::write(bool shortShaderNames, unsigned int indentLevel)
 	// output shader
 	// its one less as the tokenPointerArray has a preset size of 1 not 0
 	int shaderParamCount = tokenPointerArray.size() - 1;
-	
 	switch( shader_type )
 	{
 	case SHADER_TYPE_SURFACE :
@@ -614,18 +694,14 @@ void liqShader::write(bool shortShaderNames, unsigned int indentLevel)
 void liqShader::writeAsCoShader(bool shortShaderNames, unsigned int indentLevel)
 {
 	MFnDependencyNode node(m_mObject);
-	printf("  - write coshader '%s' \n", node.name().asChar());
-	
-	
 	// write up co-shaders before
 	unsigned int i; 
-	for(i=0; i<coShaderArray.size(); i++)
+	for(i=0; i<m_coShaderArray.size(); i++)
 	{
-		liqShader coShader(coShaderArray[i]);
+		//liqShader coShader(m_coShaderArray[i]);
+		liqShader &coShader = liqShaderFactory::instance().getShader(m_coShaderArray[i]);
 		coShader.writeAsCoShader(shortShaderNames, indentLevel);
 	}
-
-
 	// write co-shader
 	scoped_array< RtToken > tokenArray( new RtToken[ tokenPointerArray.size() ] );
 	scoped_array< RtPointer > pointerArray( new RtPointer[ tokenPointerArray.size() ] );
@@ -639,7 +715,7 @@ void liqShader::writeAsCoShader(bool shortShaderNames, unsigned int indentLevel)
 	// output shader
 	// its one less as the tokenPointerArray has a preset size of 1 not 0
 	int shaderParamCount = tokenPointerArray.size() - 1;
-	char *shaderHandler = const_cast<char*>(getUniqueShaderHandler().c_str());
+	char *shaderHandlerPtr = const_cast<char*>(shaderHandler.asChar());
 	switch( shader_type )
 	{
 	case SHADER_TYPE_SHADER :
@@ -647,11 +723,11 @@ void liqShader::writeAsCoShader(bool shortShaderNames, unsigned int indentLevel)
 	case SHADER_TYPE_DISPLACEMENT :
 	case SHADER_TYPE_VOLUME :
 		outputIndentation(indentLevel);
-		RiShaderV(shaderFileName, shaderHandler, shaderParamCount, tokenArray.get(), pointerArray.get());
+		RiShaderV(shaderFileName, shaderHandlerPtr, shaderParamCount, tokenArray.get(), pointerArray.get());
 		break;
 	default :
 		char errorMsg[512];
-		sprintf(errorMsg, "[liqShader::writeAsCoShader] Unknown shader type for %s shader_type=%d", name.c_str(), shader_type);
+		sprintf(errorMsg, "[liqShader::writeAsCoShader] Unknown shader type for %s shader_type=%d (%s)", name.c_str(), shader_type, liqGetSloInfo::getTypeStr(shader_type).asChar());
 		liquidMessage( errorMsg, messageError );
 		break;
 	}

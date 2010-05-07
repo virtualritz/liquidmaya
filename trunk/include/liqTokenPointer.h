@@ -46,7 +46,8 @@ enum ParameterType {
   rColor  = 4,
   rString = 5,
   rHpoint = 6,
-  rMatrix = 7
+  rMatrix = 7,
+  rShader = 8
 };
 
 enum DetailType {

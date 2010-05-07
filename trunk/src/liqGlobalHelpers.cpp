@@ -1228,19 +1228,3 @@ MString parseLiquidRibRequest( MStringArray requestArray, MString attr )
 */	return combinedRequest;
 }
 
-
-void initalizeShaderHandlerGenerator()
-{
-	static int shaderHandlerId = 0;
-	shaderHandlerId = 0;
-}
-
-string getUniqueShaderHandler()
-{
-	static int shaderHandlerId;
-	shaderHandlerId++;
-	char shaderHandler[512];
-	sprintf(shaderHandler, "CO_SHADER_%d", shaderHandlerId);
-	return shaderHandler;
-}
-

@@ -74,6 +74,7 @@ MObject liqLightNode::aRmanTypes;
 MObject liqLightNode::aRmanDefaults;
 MObject liqLightNode::aRmanArraySizes;
 MObject liqLightNode::aRmanLifCmds;
+MObject liqLightNode::aRmanMethods;
 
 MObject liqLightNode::aPreviewPrimitive;
 MObject liqLightNode::aPreviewCustomPrimitive;
@@ -185,6 +186,9 @@ MStatus liqLightNode::initialize()
   MAKE_INPUT(tAttr);
 
   aRmanLifCmds = tAttr.create(  MString( "rmanLifCmds"), MString( "rlc"), MFnData::kStringArray, aRmanLifCmds, &status );
+  MAKE_INPUT(tAttr);
+
+  aRmanMethods = tAttr.create(  MString("rmanMethods"),  MString("rmt"), MFnData::kStringArray, aRmanMethods, &status );
   MAKE_INPUT(tAttr);
 
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );
