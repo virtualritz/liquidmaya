@@ -54,7 +54,7 @@ typedef enum {
     SHADER_TYPE_SURFACE,
     SHADER_TYPE_LIGHT,
     SHADER_TYPE_DISPLACEMENT,
-    SHADER_TYPE_VOLUME,
+    SHADER_TYPE_VOLUME,           // 8
     SHADER_TYPE_TRANSFORMATION,
     SHADER_TYPE_IMAGER,
 /* The following are variable types added since RISpec 3.1 */
@@ -95,6 +95,11 @@ public:
   MString       getArgStringDefault( int num, int entry );
   float         getArgFloatDefault( int num, int entry );
   int           getArgArraySize( int num );
+  int           isOutputParameter( unsigned int num );
+
+  // TODO :
+  //int           getNumMethods( );
+  //int           getMethodName( int num );
 
   struct mstrcomp
   {
@@ -117,6 +122,7 @@ private:
   std::vector<void*> argDefault;
   std::map<const MString, SHADER_TYPE, mstrcomp> shaderTypeMap;
   std::map<const MString, SHADER_DETAIL, mstrcomp> shaderDetailMap;
+  std::vector<int> argIsOutput;
 };
 
 

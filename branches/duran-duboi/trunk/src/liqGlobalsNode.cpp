@@ -352,7 +352,7 @@ MObject liqGlobalsNode::aShadersMaxCachedAELayouts;
 
 MObject liqGlobalsNode::aVerbosity;
 
-#define LIQ_GLOBALS_HIDE_ATTRIBUTES true
+#define LIQ_GLOBALS_HIDE_ATTRIBUTES false
 
 #define CREATE_BOOL(attr, obj, name, shortName, default)    \
     obj = attr.create( name, shortName, MFnNumericData::kBoolean, default, &status); \
@@ -818,13 +818,15 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_BOOL( nAttr, aBits_features_6, "DisplayChannels", "DisplayChannels", 0 );
 	CHECK_MSTATUS( cAttr.addChild( aBits_features_6 ) );
 
-	CREATE_COMP( cAttr, aBits_required, "bits_required", "breq" );
+	// temporary avoid AEnewBooleanGroup error when attributes are grouped and visible. TODO...
+	//CREATE_COMP( cAttr, aBits_required, "bits_required", "breq" );
 	CREATE_BOOL( nAttr, aBits_required_0, "Swap_UV", "Swap_UV", 0 );
-	CHECK_MSTATUS( cAttr.addChild( aBits_required_0 ) );
+	//CHECK_MSTATUS( cAttr.addChild( aBits_required_0 ) );
 	CREATE_BOOL( nAttr, aBits_required_1, "__Pref", "__Pref", 0 );
-	CHECK_MSTATUS( cAttr.addChild( aBits_required_1 ) );
-	CREATE_BOOL( nAttr, aBits_required_2, "MakeShadow", "MakeShadow", 0 );
-	CHECK_MSTATUS( cAttr.addChild( aBits_required_2 ) );
+	//CHECK_MSTATUS( cAttr.addChild( aBits_required_1 ) );
+	CREATE_BOOL( nAttr, aBits_required_2, "MakeShadow", "MakeShadow", 1 );
+	//CHECK_MSTATUS( cAttr.addChild( aBits_required_2 ) );
+
 
 	CREATE_STRING( tAttr,  aShotName,                   "shotName",                     "sn",     ""    );
 	CREATE_STRING( tAttr,  aShotVersion,                "shotVersion",                  "sv",     ""    );
