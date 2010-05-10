@@ -297,6 +297,10 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 	RiEnd();
 	// clear shaders
 	liqShaderFactory::instance().clearShaders();
+	if(m_debug)
+	{
+		printf("[liqWriteArchive::doIt] Export done \n");
+	}
 	return MS::kSuccess;
 }
 
@@ -331,16 +335,15 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 	{
 		return;
 	}
-	if(m_debug)
-	{
-		cout << "liquidWriteArchive: writing object: " << objDagPath.fullPathName().asChar() << endl;
-	}
-	
+
 	if (objDagPath.node().hasFn(MFn::kShape) || MFnDagNode( objDagPath ).typeName() == "liquidCoorSys")
 	{
 		// we're looking at a shape node, so write out the geometry to the RIB
+		if(m_debug)
+		{
+			cout << "[liqWriteArchive::writeObjectToRib] writing shape object '" << objDagPath.fullPathName().asChar() <<"'"<< endl;
+		}
 		outputObjectName(objDagPath);
-
 		liqRibNode ribNode;
 		ribNode.set(objDagPath, 0, MRT_Unknown);
 
@@ -413,6 +416,10 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 	else
 	{
 		// we're looking for a transform node
+		if(m_debug)
+		{
+			cout << "[liqWriteArchive::writeObjectToRib] writing transform object '" << objDagPath.fullPathName().asChar() <<"'"<< endl;
+		}
 		bool wroteTransform = false;
 		if (writeTransform && (objDagPath.apiType() == MFn::kTransform))
 		{
@@ -440,13 +447,13 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 		int nChildren = objDagPath.childCount();
 		if(m_debug)
 		{
-			cout << "liquidWriteArchive: object " << objDagPath.fullPathName().asChar() << "has " << nChildren << " children" << endl;
+			cout << "[liqWriteArchive::writeObjectToRib] object " << objDagPath.fullPathName().asChar() << " has " << nChildren << " children " << endl;
 		}
 		for(int i=0; i<nChildren; ++i)
 		{
 			if(m_debug)
 			{
-				cout << "liquidWriteArchive: writing child number " << i << endl;
+				cout << "[liqWriteArchive::writeObjectToRib] writing child number " << i << endl;
 			}
 			MDagPath childDagNode;
 			MStatus stat = MDagPath::getAPathTo(objDagPath.child(i), childDagNode);
@@ -456,7 +463,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 			}
 			else
 			{
-				MGlobal::displayWarning("error getting a dag path to child node of object " + objDagPath.fullPathName());
+				MGlobal::displayWarning("[liqWriteArchive::writeObjectToRib] Error getting a dag path to child node of object " + objDagPath.fullPathName());
 			}
 		}
 		if (wroteTransform)
@@ -468,7 +475,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 	}
 	if(m_debug)
 	{
-		cout << "liquidWriteArchive: finished writing object: " << objDagPath.fullPathName().asChar() << endl;
+		cout << "[liqWriteArchive::writeObjectToRib] finished writing object: " << objDagPath.fullPathName().asChar() << endl;
 	}
 }
 

@@ -15,7 +15,7 @@
 ** The Initial Developer of the Original Code is Colin Doncaster. Portions
 ** created by Colin Doncaster are Copyright (C) 2002. All Rights Reserved.
 **
-** Contributor(s): Philippe Leprince.
+** Contributor(s): Baptiste Sansierra
 **
 **
 ** The RenderMan (R) Interface Procedures and Protocol are:
@@ -28,15 +28,13 @@
 
 /* ______________________________________________________________________
 **
-** Liquid Volume Shader Node Header
+** Liquid Co-Shader Node Header
 ** ______________________________________________________________________
 */
 
 
-#ifndef liqVolumeNode_H
-#define liqVolumeNode_H
-
-#include <liquid.h>
+#ifndef __LIQ_CO_SHADER_NODE_H__
+#define __LIQ_CO_SHADER_NODE_H__
 
 
 #include <maya/MPxNode.h>
@@ -52,62 +50,49 @@
 #include <maya/MSwatchRenderBase.h>
 #include <maya/MFnDependencyNode.h>
 
+#include <liquid.h>
 #include <liqNodeSwatch.h>
 
 
-
-
-class liqVolumeNode : public MPxNode
+class liqCoShaderNode : public MPxNode
 {
-  public:
-                      liqVolumeNode();
-    virtual          ~liqVolumeNode();
-
-    //virtual MStatus   compute( const MPlug&, MDataBlock& );
-    virtual void      postConstructor();
-
-    static  void *    creator();
-    static  MStatus   initialize();
-
-    //  Id tag for use with binary file format
-    static  MTypeId   id;
-    liqNodeSwatch*    renderSwatch;
-
-  private:
-
-    // Input attributes
-    static MObject aRmanShader;
-    static MObject aRmanShaderLong;
-    static MObject aRmanShaderLif;
-    static MObject aRmanParams;
-    static MObject aRmanDetails;
-    static MObject aRmanTypes;
-    static MObject aRmanDefaults;
-    static MObject aRmanArraySizes;
-    static MObject aRmanLifCmds;
+public:
+	liqCoShaderNode();
+	virtual ~liqCoShaderNode();
+	//virtual MStatus   compute( const MPlug&, MDataBlock& );
+	virtual void postConstructor();
+	static void *creator();
+	static MStatus initialize();
+	//  Id tag for use with binary file format
+	static MTypeId id;
+	liqNodeSwatch *renderSwatch;
+private:
+	// Input attributes
+	static MObject aRmanShader;
+	static MObject aRmanShaderLong;
+	static MObject aRmanShaderLif;
+	static MObject aRmanParams;
+	static MObject aRmanDetails;
+	static MObject aRmanTypes;
+	static MObject aRmanDefaults;
+	static MObject aRmanArraySizes;
+	static MObject aRmanLifCmds;
 	static MObject aRmanMethods;
 	static MObject aRmanIsOutput;
 
-    static MObject aPreviewPrimitive;
-    static MObject aPreviewCustomPrimitive;
-    static MObject aPreviewObjectSize;
-    static MObject aPreviewPixelSamples;
-    static MObject aPreviewShadingRate;
-    static MObject aPreviewBackplane;
-
-
-    static MObject aOutputInShadow;
-    static MObject aShaderSpace;
-    static MObject aRefreshPreview;
-
-    // Output attributes
-    static MObject aOutColor;
-    static MObject aAssignedObjects;
-
-    bool    swatchInit;
+	static MObject aPreviewPrimitive;
+	static MObject aPreviewCustomPrimitive;
+	static MObject aPreviewObjectSize;
+	static MObject aPreviewPixelSamples;
+	static MObject aPreviewShadingRate;
+	static MObject aPreviewBackplane;
+	static MObject aOutputInShadow;
+	static MObject aShaderSpace;
+	static MObject aRefreshPreview;
+	// Output attributes
+	static MObject aOutColor;
+	static MObject aAssignedObjects;
+	bool swatchInit;
 };
-
-
-
 
 #endif

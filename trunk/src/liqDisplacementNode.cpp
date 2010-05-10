@@ -73,6 +73,7 @@ MObject liqDisplacementNode::aRmanDefaults;
 MObject liqDisplacementNode::aRmanArraySizes;
 MObject liqDisplacementNode::aRmanLifCmds;
 MObject liqDisplacementNode::aRmanMethods;
+MObject liqDisplacementNode::aRmanIsOutput;
 
 MObject liqDisplacementNode::aPreviewPrimitive;
 MObject liqDisplacementNode::aPreviewCustomPrimitive;
@@ -177,6 +178,9 @@ MStatus liqDisplacementNode::initialize()
   aRmanMethods = tAttr.create(  MString("rmanMethods"),  MString("rmt"), MFnData::kStringArray, aRmanMethods, &status );
   MAKE_INPUT(tAttr);
 
+  aRmanIsOutput = tAttr.create(  MString("rmanIsOutput"),  MString("rio"), MFnData::kIntArray, aRmanIsOutput, &status );
+  MAKE_INPUT(tAttr);
+
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );
   eAttr.addField( "Sphere",   0 );
   eAttr.addField( "Cube",     1 );
@@ -237,6 +241,8 @@ MStatus liqDisplacementNode::initialize()
   CHECK_MSTATUS(addAttribute(aRmanDefaults));
   CHECK_MSTATUS(addAttribute(aRmanArraySizes));
   CHECK_MSTATUS(addAttribute(aRmanLifCmds));
+  CHECK_MSTATUS(addAttribute(aRmanMethods));
+  CHECK_MSTATUS(addAttribute(aRmanIsOutput));
 
   CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
   CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));

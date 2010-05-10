@@ -90,6 +90,32 @@ liqShader::liqShader( const liqShader& src )
   m_mObject            = src.m_mObject;
 }
 
+liqShader & liqShader::operator=( const liqShader & src )
+{
+  //numTPV = src.numTPV;
+  tokenPointerArray     = src.tokenPointerArray;
+  name                  = src.name;
+  file                  = src.file;
+  rmColor[0]            = src.rmColor[0];
+  rmColor[1]            = src.rmColor[1];
+  rmColor[2]            = src.rmColor[2];
+  rmOpacity[0]          = src.rmOpacity[0];
+  rmOpacity[1]          = src.rmOpacity[1];
+  rmOpacity[2]          = src.rmOpacity[2];
+  hasShadingRate        = src.hasShadingRate;
+  shadingRate           = src.shadingRate;
+  hasDisplacementBound  = src.hasDisplacementBound;
+  displacementBound     = src.displacementBound;
+  outputInShadow        = src.outputInShadow;
+  hasErrors             = src.hasErrors;
+  shader_type           = src.shader_type;
+  shaderSpace           = src.shaderSpace;
+  evaluateAtEveryFrame = src.evaluateAtEveryFrame;
+  shaderHandler        = src.shaderHandler;
+  m_mObject            = src.m_mObject;
+  return *this;
+}
+
 
 liqShader::liqShader( MObject shaderObj )
 {
@@ -147,7 +173,6 @@ liqShader::liqShader( MObject shaderObj )
 		node specific shading rate. */
 
 		shader_type = shaderInfo.getType();
-
 		// Set RiColor and RiOpacity
 		status.clear();
 		MPlug colorPlug = shaderNode.findPlug( "color" );
@@ -193,6 +218,10 @@ liqShader::liqShader( MObject shaderObj )
 		numArgs = shaderInfo.getNumParam();
 		for (unsigned int i( 0 ); i < numArgs; i++ )
 		{
+			if( shaderInfo.isOutputParameter(i) )   // throw output parameters
+			{
+				continue;				
+			}
 			MString paramName = shaderInfo.getArgName(i);
 			int arraySize = shaderInfo.getArgArraySize(i);
 			SHADER_TYPE shaderType = shaderInfo.getArgType(i);
@@ -358,7 +387,7 @@ liqShader::liqShader( MObject shaderObj )
 						if( status != MS::kSuccess )
 						{
 							skipToken = true;
-							printf("[liqShader] error while building float[] param %s on %s ...\n", paramName.asChar(), shaderNode.name().asChar() );
+							printf("[liqShader] error while building float[3] array param %s on %s ...\n", paramName.asChar(), shaderNode.name().asChar() );
 						}
 					}
 					else
@@ -367,7 +396,7 @@ liqShader::liqShader( MObject shaderObj )
 						if( status != MS::kSuccess )
 						{
 							skipToken = true;
-							printf("[liqShader] error while building float[] param %s on %s ...\n", paramName.asChar(), shaderNode.name().asChar() );
+							printf("[liqShader] error while building float[3] param %s on %s ...\n", paramName.asChar(), shaderNode.name().asChar() );
 						}
 					}
 					break;
@@ -605,30 +634,6 @@ MStatus liqShader::liqShaderParseVectorArrayAttr ( const MFnDependencyNode& shad
   }
 
   return status;
-}
-
-
-liqShader & liqShader::operator=( const liqShader & src )
-{
-  //numTPV = src.numTPV;
-  tokenPointerArray     = src.tokenPointerArray;
-  name                  = src.name;
-  file                  = src.file;
-  rmColor[0]            = src.rmColor[0];
-  rmColor[1]            = src.rmColor[1];
-  rmColor[2]            = src.rmColor[2];
-  rmOpacity[0]          = src.rmOpacity[0];
-  rmOpacity[1]          = src.rmOpacity[1];
-  rmOpacity[2]          = src.rmOpacity[2];
-  hasShadingRate        = src.hasShadingRate;
-  shadingRate           = src.shadingRate;
-  hasDisplacementBound  = src.hasDisplacementBound;
-  displacementBound     = src.displacementBound;
-  outputInShadow        = src.outputInShadow;
-  hasErrors             = src.hasErrors;
-  shader_type           = src.shader_type;
-  shaderSpace           = src.shaderSpace;
-  return *this;
 }
 
 
