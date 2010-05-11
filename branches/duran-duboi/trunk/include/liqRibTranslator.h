@@ -440,11 +440,10 @@ private :
   bool          m_depthMaskReverseSign;
   float         m_depthMaskDepthBias;
 
-  vector<liqShader> m_shaders;
-
-  liqShader & liqGetShader( MObject shaderObj );
+  //vector<liqShader> m_shaders;
+  //liqShader & liqGetShader( MObject shaderObj );
   MStatus liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType );
-  void freeShaders( void );
+  //void freeShaders( void );
 
   void scanExpressions( liqShader & currentShader );
   void scanExpressions( liqRibLightData *light );
