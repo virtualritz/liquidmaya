@@ -113,6 +113,7 @@ static const char *LIQUIDVERSION =
 #include <liqProcessLauncher.h>
 #include <liqRenderer.h>
 #include <liqCustomNode.h>
+#include <liqShaderFactory.h>
 
 using namespace boost;
 using namespace std;
@@ -213,12 +214,12 @@ int RiNColorSamples;
 #endif
 
 
-void liqRibTranslator::freeShaders( void )
-{
-  LIQDEBUGPRINTF( "-> freeing shader data.\n" );
-  m_shaders.clear();
-  LIQDEBUGPRINTF( "-> finished freeing shader data.\n" );
-}
+//void liqRibTranslator::freeShaders( void )
+//{
+//  LIQDEBUGPRINTF( "-> freeing shader data.\n" );
+//  m_shaders.clear();
+//  LIQDEBUGPRINTF( "-> finished freeing shader data.\n" );
+//}
 
 // Hmmmmm should change magic to Liquid
 MString liqRibTranslator::magic("##Liquid");
@@ -338,33 +339,35 @@ void liqRibTranslator::processExpression( liqTokenPointer *token, liqRibLightDat
 }
 
 
-liqShader & liqRibTranslator::liqGetShader( MObject shaderObj )
-{
-  MString rmShaderStr;
+//liqShader & liqRibTranslator::liqGetShader( MObject shaderObj )
+//{
+//  MString rmShaderStr;
+//
+//  MFnDependencyNode shaderNode( shaderObj );
+//  MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
+//  rmanShaderNamePlug.getValue( rmShaderStr );
+//
+//  LIQDEBUGPRINTF( "-> Using Renderman Shader " );
+//
+//  LIQDEBUGPRINTF( rmShaderStr.asChar() );
+//  LIQDEBUGPRINTF( "\n" );
+//
+//
+//  vector<liqShader>::iterator iter = m_shaders.begin();
+//  while ( iter != m_shaders.end() ){
+//    string shaderNodeName = shaderNode.name().asChar();
+//    if( iter->name == shaderNodeName ) {
+//      // Already got it : nothing to do
+//      return *iter;
+//    }
+//    ++iter;
+//  }
+//  liqShader currentShader( shaderObj );
+//  m_shaders.push_back( currentShader );
+//  return m_shaders.back();
+//}
 
-  MFnDependencyNode shaderNode( shaderObj );
-  MPlug rmanShaderNamePlug = shaderNode.findPlug( MString( "rmanShaderLong" ) );
-  rmanShaderNamePlug.getValue( rmShaderStr );
 
-  LIQDEBUGPRINTF( "-> Using Renderman Shader " );
-
-  LIQDEBUGPRINTF( rmShaderStr.asChar() );
-  LIQDEBUGPRINTF( "\n" );
-
-
-  vector<liqShader>::iterator iter = m_shaders.begin();
-  while ( iter != m_shaders.end() ){
-    string shaderNodeName = shaderNode.name().asChar();
-    if( iter->name == shaderNodeName ) {
-      // Already got it : nothing to do
-      return *iter;
-    }
-    ++iter;
-  }
-  liqShader currentShader( shaderObj );
-  m_shaders.push_back( currentShader );
-  return m_shaders.back();
-}
 
 MStatus liqRibTranslator::liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType )
 {
@@ -2777,19 +2780,21 @@ MStatus liqRibTranslator::doIt( const MArgList& args )
     for ( ; frameIndex < frameNumbers.size(); frameIndex++ )
     {
 		// clean dirty shaders which must be rebuild
-		vector<liqShader>::iterator shaderBegin = m_shaders.begin();
-		vector<liqShader>::iterator shaderEnd = m_shaders.end();
-		vector<liqShader>::iterator shaderIter;
-		vector<liqShader> cleanShaders;
-		for( shaderIter=shaderBegin; shaderIter!=shaderEnd; shaderIter++)
-		{
-			if(!shaderIter->evaluateAtEveryFrame)
-			{
-				cleanShaders.push_back(*shaderIter);
-			}
-		}
-		m_shaders.clear();
-		m_shaders = cleanShaders;
+		//vector<liqShader>::iterator shaderBegin = m_shaders.begin();
+		//vector<liqShader>::iterator shaderEnd = m_shaders.end();
+		//vector<liqShader>::iterator shaderIter;
+		//vector<liqShader> cleanShaders;
+		//for( shaderIter=shaderBegin; shaderIter!=shaderEnd; shaderIter++)
+		//{
+		//	if(!shaderIter->evaluateAtEveryFrame)
+		//	{
+		//		cleanShaders.push_back(*shaderIter);
+		//	}
+		//}
+		//m_shaders.clear();
+		//m_shaders = cleanShaders;
+
+      liqShaderFactory::instance().clearShaders();
 
 
       liqglo_lframe = frameNumbers[ frameIndex ];
@@ -6626,74 +6631,251 @@ MStatus liqRibTranslator::objectBlock()
     }
 
 
-    bool writeShaders( true );
-
-    if( liqglo_currentJob.isShadow &&
-         ( ( !liqglo_currentJob.deepShadows && !m_outputShadersInShadows )            ||
-           ( liqglo_currentJob.deepShadows && !m_outputShadersInDeepShadows ) )
-        )
-      writeShaders = false;
-
-
-    if( writeShaders ) {
-
-      if( hasVolumeShader && !m_ignoreVolumes ) {
-
-        liqShader& currentShader( liqGetShader( ribNode->assignedVolume.object() ) );
-
-        // per shader shadow pass override
-        bool outputVolumeShader = true;
-        if( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) {
-          outputVolumeShader = false;
-        }
-
-        if( !currentShader.hasErrors && outputVolumeShader ) {
-          scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
-          scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
-          assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
-          char *shaderFileName;
-          LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
-          // check shader space transformation
-          if( currentShader.shaderSpace != "" ) {
-            RiTransformBegin();
-            RiCoordSysTransform( ( char* )currentShader.shaderSpace.asChar() );
-          }
-          RiAtmosphereV ( shaderFileName, currentShader.tokenPointerArray.size(), tokenArray.get(), pointerArray.get() );
-          if( currentShader.shaderSpace != "" ) {
-            RiTransformEnd();
-          }
-        }
-      }
-
-	if( hasSurfaceShader && !m_ignoreSurfaces )
+	bool writeShaders( true );
+	if( liqglo_currentJob.isShadow && ( ( !liqglo_currentJob.deepShadows && !m_outputShadersInShadows ) || ( liqglo_currentJob.deepShadows && !m_outputShadersInDeepShadows ) ) )
 	{
-		if( hasCustomSurfaceShader )
+		writeShaders = false;
+	}
+
+    if( writeShaders )
+    {
+		if( hasVolumeShader && !m_ignoreVolumes )
 		{
-			if( hasCustomSurfaceShader == liqCustomPxShaderNode )
-			{  // Just call the write method of the custom shader
-				MFnDependencyNode customShaderDepNode( ribNode->assignedShader.object() );
-				MPxNode *mpxNode = customShaderDepNode.userNode();
-				liqCustomNode *customNode( NULL );
-				if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>( mpxNode ) ) )
-					customNode->liquidWrite();
+			//liqShader& currentShader( liqGetShader( ribNode->assignedVolume.object() ) );
+			liqShader& currentShader = liqShaderFactory::instance().getShader( ribNode->assignedVolume.object() );
+			// per shader shadow pass override
+			if( !liqglo_currentJob.isShadow || currentShader.outputInShadow )
+			{
+				currentShader.write(liqglo_shortShaderNames, 0);
+			}
+		}
+		if( hasSurfaceShader && !m_ignoreSurfaces )
+		{
+			if( hasCustomSurfaceShader )
+			{
+				if( hasCustomSurfaceShader == liqCustomPxShaderNode )
+				{  // Just call the write method of the custom shader
+					MFnDependencyNode customShaderDepNode( ribNode->assignedShader.object() );
+					MPxNode *mpxNode = customShaderDepNode.userNode();
+					liqCustomNode *customNode( NULL );
+					if( mpxNode && ( customNode = dynamic_cast<liqCustomNode*>( mpxNode ) ) )
+						customNode->liquidWrite();
+					else ;// Should never happen in theory ... but what is the way to report a problem ???
+				}
 				else
-					;// Should never happen in theory ... but what is the way to report a problem ???
+				{ 
+					// Default : just write the contents of the rib box
+					RiArchiveRecord( RI_VERBATIM, ( char* )shaderRibBox.asChar() );
+					RiArchiveRecord( RI_VERBATIM, "\n" );
+				}
 			}
 			else
-			{ 
-				// Default : just write the contents of the rib box
-				RiArchiveRecord( RI_VERBATIM, ( char* )shaderRibBox.asChar() );
-				RiArchiveRecord( RI_VERBATIM, "\n" );
+			{
+				//liqShader& currentShader( liqGetShader( ribNode->assignedShader.object() ) );
+				liqShader& currentShader = liqShaderFactory::instance().getShader( ribNode->assignedShader.object() );
+
+				// Output color overrides or color
+				if(ribNode->shading.color.r != -1.0)
+				{
+					RtColor rColor;
+					rColor[0] = ribNode->shading.color[0];
+					rColor[1] = ribNode->shading.color[1];
+					rColor[2] = ribNode->shading.color[2];
+					RiColor( rColor );
+				}
+				else
+				{
+					RiColor( currentShader.rmColor );
+				}
+
+				if(ribNode->shading.opacity.r != -1.0)
+				{
+					RtColor rOpacity;
+					rOpacity[0] = ribNode->shading.opacity[0];
+					rOpacity[1] = ribNode->shading.opacity[1];
+					rOpacity[2] = ribNode->shading.opacity[2];
+					RiOpacity( rOpacity );
+				}
+				else
+				{
+					RiOpacity( currentShader.rmOpacity );
+				}
+
+				// per shader shadow pass override
+				if( !liqglo_currentJob.isShadow || currentShader.outputInShadow )
+				{
+					currentShader.write(liqglo_shortShaderNames, 0);
+				}
+
+				//if( outputSurfaceShader )
+				//{
+				//	scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
+				//	scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
+				//	assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
+
+				//	char* shaderFileName;
+				//	LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
+
+				//	// check shader space transformation
+				//	if( currentShader.shaderSpace != "" )
+				//	{
+				//		RiTransformBegin();
+				//		RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
+				//	}
+				//	// output shader
+				//	// its one less as the tokenPointerArray has a preset size of 1 not 0
+				//	int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
+				//	RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+				//	if( currentShader.shaderSpace != "" )
+				//		RiTransformEnd();
+				//}
 			}
 		}
 		else
 		{
-			liqShader& currentShader( liqGetShader( ribNode->assignedShader.object() ) );
+			RtColor rColor,rOpacity;
+			if( m_shaderDebug )
+			{
+				// shader debug on !! everything goes red and opaque !!!
+				rColor[0] = 1.;
+				rColor[1] = 0.;
+				rColor[2] = 0.;
+				RiColor( rColor );
 
-			// per shader shadow pass override
-			bool outputSurfaceShader( true );
-			if( liqglo_currentJob.isShadow && !currentShader.outputInShadow )
-				outputSurfaceShader = false;
+				rOpacity[0] = 1.;
+				rOpacity[1] = 1.;
+				rOpacity[2] = 1.;
+				RiOpacity( rOpacity );
+			}
+			else
+			{
+				if(ribNode->shading.color.r != -1.0)
+				{
+					rColor[0] = ribNode->shading.color[0];
+					rColor[1] = ribNode->shading.color[1];
+					rColor[2] = ribNode->shading.color[2];
+					RiColor( rColor );
+				}
+				else if( ( ribNode->color.r != -1.0 ) )
+				{
+					rColor[0] = ribNode->color[0];
+					rColor[1] = ribNode->color[1];
+					rColor[2] = ribNode->color[2];
+					RiColor( rColor );
+				}
+				if(ribNode->shading.opacity.r != -1.0)
+				{
+					rOpacity[0] = ribNode->shading.opacity[0];
+					rOpacity[1] = ribNode->shading.opacity[1];
+					rOpacity[2] = ribNode->shading.opacity[2];
+					RiOpacity( rOpacity );
+				}
+				else if( ( ribNode->opacity.r != -1.0 ) )
+				{
+					rOpacity[0] = ribNode->opacity[0];
+					rOpacity[1] = ribNode->opacity[1];
+					rOpacity[2] = ribNode->opacity[2];
+					RiOpacity( rOpacity );
+				}
+			}
+
+			if( !m_ignoreSurfaces )
+			{
+				MObject shadingGroup = ribNode->assignedShadingGroup.object();
+				MObject shader = ribNode->findShader( shadingGroup );
+				//
+				// here we check for regular shader nodes first
+				// and assign default shader to shader-less nodes.
+				//
+				if( m_shaderDebug )
+				{
+					RiSurface( "constant", RI_NULL );
+				}
+				else if( shader.apiType() == MFn::kLambert )
+				{
+					RiSurface( "matte", RI_NULL );
+				}
+				else if( shader.apiType() == MFn::kPhong )
+				{
+					RiSurface( "plastic", RI_NULL );
+				}
+				else if( path.hasFn( MFn::kPfxHair ) )
+				{
+					// get some of the hair system parameters
+					RtFloat translucence = 0, specularPower = 0;
+					RtColor specularColor;
+					//cout <<"getting pfxHair shading params..."<<endl;
+					MObject hairSystemObj;
+					MFnDependencyNode pfxHairNode( path.node() );
+					MPlug plugToHairSystem = pfxHairNode.findPlug( "renderHairs", &status );
+					MPlugArray hsPlugs;
+					status.clear();
+					if( plugToHairSystem.connectedTo( hsPlugs, true, false, &status ) )
+					{
+						//cout <<"connected"<<endl;
+						if( status == MS::kSuccess )
+						{
+							hairSystemObj = hsPlugs[0].node();
+						}
+					}
+					if( hairSystemObj != MObject::kNullObj )
+					{
+						MFnDependencyNode hairSystemNode(hairSystemObj);
+						MPlug paramPlug;
+						status.clear();
+						paramPlug = hairSystemNode.findPlug( "translucence", &status );
+						if( status == MS::kSuccess )
+						{
+							paramPlug.getValue( translucence );
+							//cout <<"translucence = "<<translucence<<endl;
+						}
+						status.clear();
+						paramPlug = hairSystemNode.findPlug( "specularColor", &status );
+						if( status == MS::kSuccess )
+						{
+							paramPlug.child(0).getValue( specularColor[0] );
+							paramPlug.child(1).getValue( specularColor[1] );
+							paramPlug.child(2).getValue( specularColor[2] );
+							//cout <<"specularColor = "<<specularColor<<endl;
+						}
+						status.clear();
+						paramPlug = hairSystemNode.findPlug( "specularPower", &status );
+						if( status == MS::kSuccess )
+						{
+							paramPlug.getValue( specularPower );
+							//cout <<"specularPower = "<<specularPower<<endl;
+						}
+					}
+					RiSurface(  "liquidpfxhair",
+								"float specularpower", &specularPower,
+								"float translucence",  &translucence,
+								"color specularcolor", &specularColor,
+								RI_NULL );
+				}
+				else if( path.hasFn( MFn::kPfxToon ) )
+				{
+					RiSurface( "liquidpfxtoon", RI_NULL );
+				}
+				else if( path.hasFn( MFn::kPfxGeometry ) )
+				{
+					RiSurface( "liquidpfx", RI_NULL );
+				}
+				else
+				{
+					RiSurface( "plastic", RI_NULL );
+				}
+			}
+		}
+	}
+	else if( liqglo_currentJob.deepShadows )
+	{
+		// if the current job is a deep shadow,
+		// we still want to output primitive color and opacity.
+		// In case of custom shaders, what should we do ? Stephane.
+		if( hasSurfaceShader && ! hasCustomSurfaceShader )
+		{
+			//liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
+			liqShader &currentShader = liqShaderFactory::instance().getShader( ribNode->assignedShader.object() );
 
 			// Output color overrides or color
 			if(ribNode->shading.color.r != -1.0)
@@ -6705,8 +6887,9 @@ MStatus liqRibTranslator::objectBlock()
 				RiColor( rColor );
 			}
 			else
+			{
 				RiColor( currentShader.rmColor );
-
+			}
 			if(ribNode->shading.opacity.r != -1.0)
 			{
 				RtColor rOpacity;
@@ -6716,278 +6899,134 @@ MStatus liqRibTranslator::objectBlock()
 				RiOpacity( rOpacity );
 			}
 			else
-				RiOpacity( currentShader.rmOpacity );
-
-			if( outputSurfaceShader )
 			{
-				scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
-				scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
-				assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
-
-				char* shaderFileName;
-				LIQ_GET_SHADER_FILE_NAME( shaderFileName, liqglo_shortShaderNames, currentShader );
-
-				// check shader space transformation
-				if( currentShader.shaderSpace != "" )
-				{
-					RiTransformBegin();
-					RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
-				}
-				// output shader
-				// its one less as the tokenPointerArray has a preset size of 1 not 0
-				int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
-				RiSurfaceV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
-				if( currentShader.shaderSpace != "" )
-					RiTransformEnd();
+				RiOpacity( currentShader.rmOpacity );
 			}
 		}
-
-	} else {
-        RtColor rColor,rOpacity;
-        if( m_shaderDebug ) {
-          // shader debug on !! everything goes red and opaque !!!
-          rColor[0] = 1.;
-          rColor[1] = 0.;
-          rColor[2] = 0.;
-          RiColor( rColor );
-
-          rOpacity[0] = 1.;
-          rOpacity[1] = 1.;
-          rOpacity[2] = 1.;
-          RiOpacity( rOpacity );
-        } else {
-
-          if(ribNode->shading.color.r != -1.0) {
-            rColor[0] = ribNode->shading.color[0];
-            rColor[1] = ribNode->shading.color[1];
-            rColor[2] = ribNode->shading.color[2];
-            RiColor( rColor );
-          } else if( ( ribNode->color.r != -1.0 ) ) {
-            rColor[0] = ribNode->color[0];
-            rColor[1] = ribNode->color[1];
-            rColor[2] = ribNode->color[2];
-            RiColor( rColor );
-          }
-
-          if(ribNode->shading.opacity.r != -1.0) {
-            rOpacity[0] = ribNode->shading.opacity[0];
-            rOpacity[1] = ribNode->shading.opacity[1];
-            rOpacity[2] = ribNode->shading.opacity[2];
-            RiOpacity( rOpacity );
-          } else if( ( ribNode->opacity.r != -1.0 ) ) {
-            rOpacity[0] = ribNode->opacity[0];
-            rOpacity[1] = ribNode->opacity[1];
-            rOpacity[2] = ribNode->opacity[2];
-            RiOpacity( rOpacity );
-          }
-        }
-
-        if( !m_ignoreSurfaces ) {
-          MObject shadingGroup = ribNode->assignedShadingGroup.object();
-          MObject shader = ribNode->findShader( shadingGroup );
-          //
-          // here we check for regular shader nodes first
-          // and assign default shader to shader-less nodes.
-          //
-          if( m_shaderDebug ) {
-            RiSurface( "constant", RI_NULL );
-          } else if( shader.apiType() == MFn::kLambert ) {
-            RiSurface( "matte", RI_NULL );
-          } else if( shader.apiType() == MFn::kPhong ) {
-            RiSurface( "plastic", RI_NULL );
-          } else if( path.hasFn( MFn::kPfxHair ) ) {
-
-            // get some of the hair system parameters
-            RtFloat translucence = 0, specularPower = 0;
-            RtColor specularColor;
-            //cout <<"getting pfxHair shading params..."<<endl;
-            MObject hairSystemObj;
-            MFnDependencyNode pfxHairNode( path.node() );
-            MPlug plugToHairSystem = pfxHairNode.findPlug( "renderHairs", &status );
-            MPlugArray hsPlugs;
-            status.clear();
-            if( plugToHairSystem.connectedTo( hsPlugs, true, false, &status ) ) {
-              //cout <<"connected"<<endl;
-              if( status == MS::kSuccess ) {
-                hairSystemObj = hsPlugs[0].node();
-              }
-            }
-            if( hairSystemObj != MObject::kNullObj ) {
-              MFnDependencyNode hairSystemNode(hairSystemObj);
-              MPlug paramPlug;
-              status.clear();
-              paramPlug = hairSystemNode.findPlug( "translucence", &status );
-              if( status == MS::kSuccess ) {
-                paramPlug.getValue( translucence );
-                //cout <<"translucence = "<<translucence<<endl;
-              }
-              status.clear();
-              paramPlug = hairSystemNode.findPlug( "specularColor", &status );
-              if( status == MS::kSuccess ) {
-                paramPlug.child(0).getValue( specularColor[0] );
-                paramPlug.child(1).getValue( specularColor[1] );
-                paramPlug.child(2).getValue( specularColor[2] );
-                //cout <<"specularColor = "<<specularColor<<endl;
-              }
-              status.clear();
-              paramPlug = hairSystemNode.findPlug( "specularPower", &status );
-              if( status == MS::kSuccess ) {
-                paramPlug.getValue( specularPower );
-                //cout <<"specularPower = "<<specularPower<<endl;
-              }
-            }
-            RiSurface(  "liquidpfxhair",
-                        "float specularpower", &specularPower,
-                        "float translucence",  &translucence,
-                        "color specularcolor", &specularColor,
-                        RI_NULL );
-          } else if( path.hasFn( MFn::kPfxToon ) ) {
-            RiSurface( "liquidpfxtoon", RI_NULL );
-          }
-			else if( path.hasFn( MFn::kPfxGeometry ) )
+		else
+		{
+			RtColor rColor,rOpacity;
+			if(ribNode->shading.color.r != -1.0)
 			{
-				RiSurface( "liquidpfx", RI_NULL );
+				rColor[0] = ribNode->shading.color[0];
+				rColor[1] = ribNode->shading.color[1];
+				rColor[2] = ribNode->shading.color[2];
+				RiColor( rColor );
 			}
-			
-			else {
-            RiSurface( "plastic", RI_NULL );
-          }
-        }
-      }
-    } else if( liqglo_currentJob.deepShadows ) {
+			else if( ( ribNode->color.r != -1.0 ) )
+			{
+				rColor[0] = ribNode->color[0];
+				rColor[1] = ribNode->color[1];
+				rColor[2] = ribNode->color[2];
+				RiColor( rColor );
+			}
 
-      // if the current job is a deep shadow,
-      // we still want to output primitive color and opacity.
-      // In case of custom shaders, what should we do ? Stephane.
-      if( hasSurfaceShader && ! hasCustomSurfaceShader ) {
+			if(ribNode->shading.opacity.r != -1.0)
+			{
+				rOpacity[0] = ribNode->shading.opacity[0];
+				rOpacity[1] = ribNode->shading.opacity[1];
+				rOpacity[2] = ribNode->shading.opacity[2];
+				RiOpacity( rOpacity );
+			}
+			else if( ( ribNode->opacity.r != -1.0 ) )
+			{
+				rOpacity[0] = ribNode->opacity[0];
+				rOpacity[1] = ribNode->opacity[1];
+				rOpacity[2] = ribNode->opacity[2];
+				RiOpacity( rOpacity );
+			}
+			if( path.hasFn( MFn::kPfxHair ) )
+			{
+				// get some of the hair system parameters
+				float translucence = 0, specularPower = 0;
+				float specularColor[3];
+				//cout <<"getting pfxHair shading params..."<<endl;
+				MObject hairSystemObj;
+				MFnDependencyNode pfxHairNode( path.node() );
+				MPlug plugToHairSystem = pfxHairNode.findPlug( "renderHairs", &status );
+				MPlugArray hsPlugs;
+				status.clear();
+				if( plugToHairSystem.connectedTo( hsPlugs, true, false, &status ) )
+				{
+					//cout <<"connected"<<endl;
+					if( status == MS::kSuccess )
+					{
+						hairSystemObj = hsPlugs[0].node();
+					}
+				}
+				if( hairSystemObj != MObject::kNullObj )
+				{
+					MFnDependencyNode hairSystemNode(hairSystemObj);
+					MPlug paramPlug;
+					status.clear();
+					paramPlug = hairSystemNode.findPlug( "translucence", &status );
+					if( status == MS::kSuccess )
+					{
+						paramPlug.getValue( translucence );
+						//cout <<"translucence = "<<translucence<<endl;
+					}
+					status.clear();
+					paramPlug = hairSystemNode.findPlug( "specularColor", &status );
+					if( status == MS::kSuccess )
+					{
+						paramPlug.child(0).getValue( specularColor[0] );
+						paramPlug.child(1).getValue( specularColor[1] );
+						paramPlug.child(2).getValue( specularColor[2] );
+						//cout <<"specularColor = "<<specularColor<<endl;
+					}
+					status.clear();
+					paramPlug = hairSystemNode.findPlug( "specularPower", &status );
+					if( status == MS::kSuccess )
+					{
+						paramPlug.getValue( specularPower );
+						//cout <<"specularPower = "<<specularPower<<endl;
+					}
+				}
+				RiSurface(  "liquidPfxHair",
+							"float specularPower", &specularPower,
+							"float translucence",  &translucence,
+							"color specularColor", &specularColor,
+							RI_NULL );
+			}
+		}
+	}
+	else
+	{
+		RiSurface( "null", RI_NULL );
+	}
 
-        liqShader & currentShader = liqGetShader( ribNode->assignedShader.object());
+	if( hasDisplacementShader && !m_ignoreDisplacements )
+	{
+		//liqShader & currentShader = liqGetShader( ribNode->assignedDisp.object() );
+		liqShader &currentShader = liqShaderFactory::instance().getShader( ribNode->assignedDisp.object() );
 
-        // Output color overrides or color
-        if(ribNode->shading.color.r != -1.0) {
-          RtColor rColor;
-          rColor[0] = ribNode->shading.color[0];
-          rColor[1] = ribNode->shading.color[1];
-          rColor[2] = ribNode->shading.color[2];
-          RiColor( rColor );
-        } else {
-          RiColor( currentShader.rmColor );
-        }
+		// per shader shadow pass override
+		if( !liqglo_currentJob.isShadow || currentShader.outputInShadow )
+		{
+			currentShader.write(liqglo_shortShaderNames, 0);
+		}
 
-        if(ribNode->shading.opacity.r != -1.0) {
-          RtColor rOpacity;
-          rOpacity[0] = ribNode->shading.opacity[0];
-          rOpacity[1] = ribNode->shading.opacity[1];
-          rOpacity[2] = ribNode->shading.opacity[2];
-          RiOpacity( rOpacity );
-        } else {
-          RiOpacity( currentShader.rmOpacity );
-        }
-      } else {
-        RtColor rColor,rOpacity;
+		//if( !currentShader.hasErrors && outputDispShader )
+		//{
+		//	scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
+		//	scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
+		//	assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
 
-        if(ribNode->shading.color.r != -1.0) {
-          rColor[0] = ribNode->shading.color[0];
-          rColor[1] = ribNode->shading.color[1];
-          rColor[2] = ribNode->shading.color[2];
-          RiColor( rColor );
-        } else if( ( ribNode->color.r != -1.0 ) ) {
-          rColor[0] = ribNode->color[0];
-          rColor[1] = ribNode->color[1];
-          rColor[2] = ribNode->color[2];
-          RiColor( rColor );
-        }
-
-        if(ribNode->shading.opacity.r != -1.0) {
-          rOpacity[0] = ribNode->shading.opacity[0];
-          rOpacity[1] = ribNode->shading.opacity[1];
-          rOpacity[2] = ribNode->shading.opacity[2];
-          RiOpacity( rOpacity );
-        } else if( ( ribNode->opacity.r != -1.0 ) ) {
-          rOpacity[0] = ribNode->opacity[0];
-          rOpacity[1] = ribNode->opacity[1];
-          rOpacity[2] = ribNode->opacity[2];
-          RiOpacity( rOpacity );
-        }
-
-        if( path.hasFn( MFn::kPfxHair ) ) {
-
-            // get some of the hair system parameters
-            float translucence = 0, specularPower = 0;
-            float specularColor[3];
-            //cout <<"getting pfxHair shading params..."<<endl;
-            MObject hairSystemObj;
-            MFnDependencyNode pfxHairNode( path.node() );
-            MPlug plugToHairSystem = pfxHairNode.findPlug( "renderHairs", &status );
-            MPlugArray hsPlugs;
-            status.clear();
-            if( plugToHairSystem.connectedTo( hsPlugs, true, false, &status ) ) {
-              //cout <<"connected"<<endl;
-              if( status == MS::kSuccess ) {
-                hairSystemObj = hsPlugs[0].node();
-              }
-            }
-            if( hairSystemObj != MObject::kNullObj ) {
-              MFnDependencyNode hairSystemNode(hairSystemObj);
-              MPlug paramPlug;
-              status.clear();
-              paramPlug = hairSystemNode.findPlug( "translucence", &status );
-              if( status == MS::kSuccess ) {
-                paramPlug.getValue( translucence );
-                //cout <<"translucence = "<<translucence<<endl;
-              }
-              status.clear();
-              paramPlug = hairSystemNode.findPlug( "specularColor", &status );
-              if( status == MS::kSuccess ) {
-                paramPlug.child(0).getValue( specularColor[0] );
-                paramPlug.child(1).getValue( specularColor[1] );
-                paramPlug.child(2).getValue( specularColor[2] );
-                //cout <<"specularColor = "<<specularColor<<endl;
-              }
-              status.clear();
-              paramPlug = hairSystemNode.findPlug( "specularPower", &status );
-              if( status == MS::kSuccess ) {
-                paramPlug.getValue( specularPower );
-                //cout <<"specularPower = "<<specularPower<<endl;
-              }
-            }
-            RiSurface(  "liquidPfxHair",
-                        "float specularPower", &specularPower,
-                        "float translucence",  &translucence,
-                        "color specularColor", &specularColor,
-                        RI_NULL );
-          }
-      }
-    } else {
-      RiSurface( "null", RI_NULL );
-    }
-
-    if( hasDisplacementShader && !m_ignoreDisplacements ) {
-
-      liqShader & currentShader = liqGetShader( ribNode->assignedDisp.object() );
-
-      // per shader shadow pass override
-      bool outputDispShader = true;
-      if( liqglo_currentJob.isShadow && !currentShader.outputInShadow ) outputDispShader = false;
-
-      if( !currentShader.hasErrors && outputDispShader ) {
-        scoped_array< RtToken > tokenArray( new RtToken[ currentShader.tokenPointerArray.size() ] );
-        scoped_array< RtPointer > pointerArray( new RtPointer[ currentShader.tokenPointerArray.size() ] );
-        assignTokenArrays( currentShader.tokenPointerArray.size(), &currentShader.tokenPointerArray[ 0 ], tokenArray.get(), pointerArray.get() );
-
-        char *shaderFileName;
-        LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
-        // check shader space transformation
-        if( currentShader.shaderSpace != "" ) {
-            RiTransformBegin();
-            RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
-        }
-        // output shader
-		int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
-        RiDisplacementV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
-        if( currentShader.shaderSpace != "" ) RiTransformEnd();
-      }
-    }
+		//	char *shaderFileName;
+		//	LIQ_GET_SHADER_FILE_NAME(shaderFileName, liqglo_shortShaderNames, currentShader );
+		//	// check shader space transformation
+		//	if( currentShader.shaderSpace != "" )
+		//	{
+		//		RiTransformBegin();
+		//		RiCoordSysTransform( ( RtString )currentShader.shaderSpace.asChar() );
+		//	}
+		//	// output shader
+		//	int shaderParamCount = currentShader.tokenPointerArray.size() - 1;
+		//	RiDisplacementV ( shaderFileName, shaderParamCount, tokenArray.get(), pointerArray.get() );
+		//	if( currentShader.shaderSpace != "" )
+		//		RiTransformEnd();
+		//}
+	}
 
     if( ribNode->rib.box != "" && ribNode->rib.box != "-" ) {
       RiArchiveRecord( RI_COMMENT, " RIB Box:\n%s", ribNode->rib.box.asChar() );

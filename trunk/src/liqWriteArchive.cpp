@@ -295,8 +295,6 @@ MStatus liqWriteArchive::doIt(const MArgList& args)
 		}
 	}
 	RiEnd();
-	// clear shaders
-	liqShaderFactory::instance().clearShaders();
 	if(m_debug)
 	{
 		printf("[liqWriteArchive::doIt] Export done \n");

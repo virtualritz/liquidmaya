@@ -640,6 +640,11 @@ MStatus liqShader::liqShaderParseVectorArrayAttr ( const MFnDependencyNode& shad
 void liqShader::write(bool shortShaderNames, unsigned int indentLevel)
 {
 	MFnDependencyNode node(m_mObject);
+	if( hasErrors )
+	{
+		printf("[liqShader::write] Erros occured while initializing shader '%s', won't export shader", node.name().asChar());
+		return;
+	}
 	// write co-shaders before
 	unsigned int i; 
 	for(i=0; i<m_coShaderArray.size(); i++)
@@ -699,6 +704,11 @@ void liqShader::write(bool shortShaderNames, unsigned int indentLevel)
 void liqShader::writeAsCoShader(bool shortShaderNames, unsigned int indentLevel)
 {
 	MFnDependencyNode node(m_mObject);
+	if( hasErrors )
+	{
+		printf("[liqShader::write] Erros occured while initializing shader '%s', won't export shader", node.name().asChar());
+		return;
+	}
 	// write up co-shaders before
 	unsigned int i; 
 	for(i=0; i<m_coShaderArray.size(); i++)
