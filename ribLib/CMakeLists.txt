@@ -1,0 +1,79 @@
+cmake_minimum_required(VERSION 2.6.4)
+
+set(TARGET_NAME "librib")
+
+if("$ENV{ARCH}" STREQUAL "-x64")
+  set(TARGET_NAME "${TARGET_NAME}$ENV{ARCH}")  
+endif("$ENV{ARCH}" STREQUAL "-x64")
+
+project(${TARGET_NAME})
+
+set(CMAKE_BUILD_TYPE "Release")
+
+if(WIN32)
+#	set(zlib_DIR $ENV{LIQUIDHOME})
+  set(ZLIB_INCLUDE_DIRS $ENV{ZLIB_INCLUDE_DIRS})
+  set(ZLIB_LIBRARIES $ENV{ZLIB_LIBRARIES})
+  message( STATUS ">> ZLIB_INCLUDE_DIRS = ${ZLIB_INCLUDE_DIRS}")
+  message( STATUS ">> ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
+else(WIN32)
+  if(UNIX)
+		if(APPLE)
+			find_package( zlib REQUIRED )
+		else(APPLE)
+			set(ZLIB_INCLUDE_DIRS "/usr/include")
+		endif(APPLE)
+	endif(UNIX)
+endif(WIN32)
+
+if(UNIX)
+	if(APPLE)
+		#set(CMAKE_OSX_ARCHITECTURES "i386;x86_64;")
+		set(CMAKE_OSX_ARCHITECTURES "i386")
+		#Changing the order of configurations to be sure release is the first one
+		set(CMAKE_CONFIGURATION_TYPES "Release;Debug;MinSizeRel;RelWithDebInfo")
+		add_definitions(-DMACOSX)
+	else(APPLE)
+		add_definitions(-DLINUX)
+	endif(APPLE)
+endif(UNIX)
+if(WIN32)
+	add_definitions(-DWINNT)
+endif(WIN32)
+
+file(GLOB src RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+file(GLOB inc RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}" ) 
+include_directories( "${ZLIB_INCLUDE_DIRS}" )
+
+message( STATUS "LIQUIDHOME = $ENV{LIQUIDHOME}")
+message( STATUS "CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
+message( STATUS "ZLIB_INCLUDE_DIRS = ${ZLIB_INCLUDE_DIRS}")
+message( STATUS "TARGET_NAME = ${TARGET_NAME}")
+
+message( STATUS "SOURCE_DIR = ${${TARGET_NAME}_SOURCE_DIR}")
+message( STATUS "BINARY_DIR = ${${TARGET_NAME}_BINARY_DIR}")
+
+add_definitions( -DNDEBUG )
+add_definitions( -D_BOOL )
+add_definitions( -DREQUIRE_IOSTREAM ) 
+add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
+add_definitions( -D_LIB )
+add_definitions( -DHAVE_ZLIB )
+add_definitions( -DYY_NO_UNISTD_H )
+
+
+add_library(${TARGET_NAME} ${src} ${inc})
+set_target_properties( ${TARGET_NAME} PROPERTIES PREFIX "" OUTPUT_NAME "${TARGET_NAME}" )
+#if(UNIX AND NOT APPLE)
+if(UNIX)
+   set_target_properties(${TARGET_NAME} PROPERTIES COMPILE_FLAGS "-w -fPIC -pthread")
+else(UNIX)
+  set_target_properties(${TARGET_NAME} PROPERTIES COMPILE_FLAGS "-w")
+endif(UNIX)
+#endif(UNIX AND NOT APPLE)
+
+
+target_link_libraries( ${TARGET_NAME} )
+install(TARGETS ${TARGET_NAME} ARCHIVE DESTINATION lib)
