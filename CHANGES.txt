@@ -1,57 +1,63 @@
-1.7rc1 (pleprince)
-* Largely rewrote Fluid. It's an order of magnitude faster now.
-  o New shader and lif file parsing 10-100x faster.
-  o New shader editing window code : much faster too.
-  o Improved error checking in shader and lif parsing.
-  o Shader parameters can be arbitrarily re-ordered in the editing window.
-  o Better support for arrays in shaders.
-    + Supported :
-      # Float arrays
-      # Color arrays
-      # Vector / Normal / Point arrays
-      # String arrays
-    + Unsupported
-      # Matrices arrays.
-      # no dynamic arrays support yet.
-* Container Nodes
-  o Bringing shader organisation functionalities to liquid
-  o You can create as many containers as you want to organise your shaders.
-  o containers are only internal for the time being.
-  o read/write lcf (liquid container file) files describing their content.
-  o added a rib box node
-* Automatic dutch (rotated) camera generation
-  o Crop Window settings are still consistent after the camera has been rotated
-* feat  : Delayed read archives : if no bbox supplied, a bbox will be computed based on the current primitive.
-* feat  : Delayed read archives : added an attribute to grow/shrink the bounding box.
-* feat  : graphic render crop GUI in RenderGlobals. the crop window is visible through the camera.
-* feat  : added raytracing control options output.
-* feat  : added new visibility/ray-tracing attributes support in prman 12.5+.
-* feat  : added raytracing hit-modes support in prman 12.5+.
-* feat  : added matte support.
-* feat  : added irradiance attributes support.
-* feat  : added a template for shader nodes.
-* feat  : corrected an global initialization problem in mel startup.
-* feat  : added coordsys browser
-* feat  : added a texture viewer field in the globals. right-click in a fluid tex field allows you to display the texture with the utility of your choice.
-* feat  : you can pass a qualified path to liquidLoadGlobals
-* fixed :  RiCurves export.
-* fixed : liqMaxDiffuseDepth and liqMaxSpecularDepth were defined as float, although they should be ints.
-* fixed : rib attributes are now correctly exported.
-* fixed : substitution is working again
-  o feat  : added $OBJ and $OBJPATH to substitution
-  o feat  : added $SHOT and $VER to substitution
-o fixed : the ribbox node is not connected correctly
-o fixed : the name field of the param window does not display the real shader name.
-o feat  : make the camera name in the beauty rib file optional
-o feat  : add liqIgnoreShapes boolean attribute per node. when on, only the transform is exported.
-o feat  : string array support
-o fixed : search paths work correctly with relatives paths on.
-o fixed : search paths can be overriden on the command line.
-o feat  : explicit message to stderr if we get a bad path
-o feat  : command line help : all the flags are now displayed
-o feat  : added a shotName and shotVersion string attr to the globals. they are only there to be substituted in pipeliny stuff.
-o fixed : container swatch refresh
+2.3.5
+- MEL change for Maya 2009
+- compatibility fixes for linux
+- output of plugin shapes in RIB, so they can be used as placeholders
+- working xcodeproj file for MAC, thanks to Brian Sundman
 
+2.3.4
+- RIReadArchive Mel command updated, the -inline(i) flag inlines the Read Archive into the RIB
+- liquidCleanup command script modified so confirm dialog can be supressed (to use it in scripts)
+- wiki link changed in globals
+- "Render All Curves" global option fixed, global switch for curve rendering
+- the Maya Subdiv render module is fixed, maya subdivs are now ouput properly, with the following limitations:
+  - only the base mesh (level 0) is output (no hierarchy edits)
+  - level 0 edge/vertex creases are always hard (crease value 7), all other levels are ignored
+ - maya subdivs can be tagged like polygons through the liquid menu which gives access to the boundary interpolation options
+
+2.3.3
+- liquidGeneratePlace3dTexture( int scoped ) mel command available - maya 3d textures will be output in RIB as scoped or standard coordinate systems
+- liquid curves can be assigned a base and tip width
+- new liquid curves group creates a single RiCurves primitive for a group of nurbs curves
+- new liquid bounding box locator that resizes automatically to its children used for the curves group
+
+2.3.2
+- custom shading group integrated in the shading attributes, you can now connect a shading group to any object, like locators etc
+- liquidGeneratePlace2dTexture.mel to be used in postWorldMel slot/Render Globals will output all pace2dTexure nodes in RIB (for Prman)
+- othreshold and zthreshold as color values in globals
+- Paint Effects group integrated in attribute editor, assignment of individual shading groups to tubes, leafs and petals now possible
+- fixed a bug in the PRMAN build, the Rib output of the "P" parameter got lost if a rib object got used more than once, i.e. for shadows or motionblur
+
+2.3.1
+- adapted to maya2008 uvs for polys and subdivs
+- applied patch for Aqsis settings
+
+2.3.0
+- added prePosterous group - mel binding for preTransform,
+  postTransform, preShape and postShape scripts
+- 4 Mel insertion points combining with the rib boxes in the globals
+- 60 + Ri commands added
+- Maya2008 edge and corner creases supported
+
+2.2.14
+- 3Delight subsurface scatter group completed
+
+2.2.13
+
+- support for aggregate shadowmaps
+- subdiv surface inspector
+- aggregate shadowmaps using light name when using autoshadow and camera name when using autoshadow 0, 1 etc
+- first shadowcam outputs always with "aggregate" set to 0 to overwrite old map if it exists
+- fixed naming when using shadow sets
+- error message "problem using shader..." fixed
+- paint effects exporter extension - shader assignment to paint effects, uniform width, camera facing and curve id implemented
+- paint effects menu item to add/remove these attributes to pfx strokes
+- added more shadow controls, subd menu updated
+- added support for mid-point ratio attribute on a camera
+- implementation of inclusive/exclusive light linking similar to "illuminate by default" on/off in maya, in the liquid globals
+- liquid rib request node, holds preWorld/preFrame etc. attributes and can be saved with a file, main use for inline archives (instancing)
+- liquid light linker - fast alternative to maya light linker
+- subdiv tag error corrected causing many error messages
+  
 
 1.6.7 (on sourceforge again!)
 
