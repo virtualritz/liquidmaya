@@ -9,17 +9,15 @@ cd %tmpdir%
 SET LIQUIDHOME=c:/tools/liquidmaya
 SET LIQPLUGSUFFIX=.mll
 
-
-
 :set_maya_version
-rem SET MAYA_VERSION=2008
+SET MAYA_VERSION=2008
 rem SET MAYA_VERSION=2009
 rem SET MAYA_VERSION=2010
-SET MAYA_VERSION=2011
+rem SET MAYA_VERSION=2011
 
 :set_maya_arch
-rem SET ARCH=
-SET ARCH=-x64
+SET ARCH=
+rem SET ARCH=-x64
 
 SET AW_LOCATION=c:/Autodesk
 SET MAYALIBS=Image.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib
@@ -33,7 +31,6 @@ SET GEN="NMake Makefiles"
 
 
 IF DEFINED ARCH (echo ARCH defined) ELSE ( goto set_x32 )
-
 IF %ARCH% == -x64 GOTO set_x64 
 
 :set_x32
