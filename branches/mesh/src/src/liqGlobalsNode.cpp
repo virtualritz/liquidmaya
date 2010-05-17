@@ -603,8 +603,8 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_INT( nAttr,  aNumProcs,                   "numProcs",                     "np",     0     );
 	CREATE_FLOAT( nAttr,  aGain,                     "gain",                         "gn",     1.0   );
 	CREATE_FLOAT( nAttr,  aGamma,                    "gamma",                        "gm",     1.0   );
-	CREATE_INT( nAttr,  aXResolution,                "xResolution",                  "xres",   1024  );
-	CREATE_INT( nAttr,  aYResolution,                "yResolution",                  "yres",   768   );
+	CREATE_INT( nAttr,  aXResolution,                "xResolution",                  "xres",   768  );
+	CREATE_INT( nAttr,  aYResolution,                "yResolution",                  "yres",   576   );
 	CREATE_FLOAT( nAttr,  aPixelAspectRatio,         "pixelAspectRatio",             "par",    1.0   );
 
 	CREATE_BOOL(  nAttr,  aCameraBlur,                 "cameraBlur",                   "cb",     false  );
@@ -637,8 +637,8 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_BOOL(   nAttr,  aCleanRenderScript,         "cleanRenderScript",            "clrs",   false );
 	CREATE_BOOL(   nAttr,  aJustRib,                   "justRib",                      "jr",     false );
 
-	CREATE_STRING( tAttr,  aAlfredTags,                "alfredTags",                   "alft",   ""    );
-	CREATE_STRING( tAttr,  aAlfredServices,            "alfredServices",               "alfs",   ""    );
+	CREATE_STRING( tAttr,  aAlfredTags,                "alfredTags",                   "alft",   "prman"    );
+	CREATE_STRING( tAttr,  aAlfredServices,            "alfredServices",               "alfs",   "pixarRender"    );
   CREATE_STRING( tAttr,  aDirMaps,                   "dirmaps",                      "dmps",   ""    );
 	CREATE_STRING( tAttr,  aRenderCommand,             "renderCommand",                "rdc",    ""    );
 	CREATE_STRING( tAttr,  aRibgenCommand,             "ribgenCommand",                "rgc",    ""    );
@@ -649,8 +649,8 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aPreFrameCommand,           "preFrameCommand",              "prfc",   ""    );
 	CREATE_STRING( tAttr,  aPreJobCommand,             "preJobCommand",                "prjc",   ""    );
 	CREATE_STRING( tAttr,  aPostJobCommand,            "postJobCommand",               "pojc",   ""    );
-	CREATE_STRING( tAttr,  aKey,                       "key",                          "k",      ""    );
-	CREATE_STRING( tAttr,  aService,                   "service",                      "srv",    ""    );
+	CREATE_STRING( tAttr,  aKey,                       "key",                          "k",      "maya"    );
+	CREATE_STRING( tAttr,  aService,                   "service",                      "srv",    "liquid"    );
 	CREATE_STRING( tAttr,  aLastRenderScript,          "lastRenderScript",             "lrs",    ""    );
 	CREATE_STRING( tAttr,  aLastRibFile,               "lastRibFile",                  "lrf",    ""    );
 
