@@ -1,8 +1,8 @@
 @echo off 
 SET tmpdir=tmp
 
-rem  if exist %tmpdir% rmdir /s /q %tmpdir%
-rem   mkdir %tmpdir%
+if exist %tmpdir% rmdir /s /q %tmpdir%
+   mkdir %tmpdir%
 
 cd %tmpdir%
 
