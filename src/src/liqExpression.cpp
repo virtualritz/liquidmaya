@@ -39,7 +39,7 @@ extern bool liqglo_isShadowPass;
 extern bool liqglo_expandShaderArrays;
 extern bool liqglo_doShadows;
 extern bool liqglo_shortShaderNames;
-extern MStringArray liqglo_DDimageName;
+extern MString liqglo_DDimageName;
 
 liqExpression::liqExpression( const string& str1, const string& objName ) :
 // liqExpression::liqExpression( char * str, char *objName ) :
@@ -124,14 +124,14 @@ MString	liqExpression::CalcValue( )
       object_name = tokens[1];
       if ( object_name.length() ) 
       {
-        if ( ( liqglo_DDimageName[0] == "" ) ) 
+        if ( ( liqglo_DDimageName == "" ) ) 
         {
           value += liqglo_sceneName;
         } 
         else 
         {
-          int pointIndex = liqglo_DDimageName[0].index( '.' );
-          value += liqglo_DDimageName[0].substring(0, pointIndex-1).asChar();
+          int pointIndex = liqglo_DDimageName.index( '.' );
+          value += liqglo_DDimageName.substring(0, pointIndex-1).asChar();
         }
         value += "_";
         value += object_name;
@@ -146,14 +146,14 @@ MString	liqExpression::CalcValue( )
     case exp_PointShadow:
       if ( object_name.length() ) 
       {
-        if ( ( liqglo_DDimageName[0] == "" ) ) 
+        if ( ( liqglo_DDimageName == "" ) ) 
         {
           value += liqglo_sceneName;
         } 
         else 
         {
-          int pointIndex = liqglo_DDimageName[0].index( '.' );
-          value += liqglo_DDimageName[0].substring(0, pointIndex-1).asChar();
+          int pointIndex = liqglo_DDimageName.index( '.' );
+          value += liqglo_DDimageName.substring(0, pointIndex-1).asChar();
         }
         value += "_";
         value += object_name;

@@ -729,7 +729,9 @@ global proc liquidShaderNodesParamsReplace ( string $msg )
 global proc liquidShaderNodesMakeInstance( string $node )
 {
   // globals
-  global string $gLiquidInheritedStandardShaderParams[] = {
+  global string $gLiquidInheritedStandardShaderParams[];
+  clear($gLiquidInheritedStandardShaderParams); // prevent warning: Global variable is already initialized
+  $gLiquidInheritedStandardShaderParams = {
 	"color",
 	"opacity",
 	"Ci",

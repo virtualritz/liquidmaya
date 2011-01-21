@@ -58,9 +58,9 @@
 
 class liqRibNode;
 
-using namespace std;
+//using namespace std;
 using namespace boost;
-typedef shared_ptr< liqRibNode > liqRibNodePtr;
+typedef boost::shared_ptr< liqRibNode > liqRibNodePtr;
 
 
 

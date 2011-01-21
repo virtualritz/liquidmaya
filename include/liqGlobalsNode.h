@@ -202,8 +202,8 @@ class liqGlobalsNode : public MPxNode
     static MObject aAlfredServices;
     static MObject aDirMaps;
     static MObject aRenderCommand;
-    static MObject aRibgenCommand;
-
+    static MObject aRibgenCommand; 
+    
     static MObject aPreviewer;
     static MObject aPreCommand;
     static MObject aPostFrameCommand;
@@ -241,6 +241,7 @@ class liqGlobalsNode : public MPxNode
 
     static MObject aRenderScriptFormat;
     static MObject aRenderScriptCommand;
+    static MObject aRenderScriptFileName;
 
     static MObject aFluidShaderBrowserDefaultPath;
 
@@ -284,6 +285,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aViewTexture;
     static MObject aViewTextureCmd;
     static MObject aViewTextureFilt;
+    static MObject aTextureExt;
 
     static MObject aBits_hiders;
     static MObject aBits_hiders_0;

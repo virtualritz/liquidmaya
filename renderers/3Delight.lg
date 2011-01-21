@@ -76,6 +76,10 @@ proc setAttribute13() {
 	setAttr ".dshImageMode" -type "string" "rgbaz";
 }
 
+proc setAttribute14() {
+	setAttr ".textureExt" -type "string" "tdl";
+}
+
 // The following code will be executed by sourcing this file
 //
 catch(setAttribute1());
@@ -91,3 +95,4 @@ catch(setAttribute10());
 catch(setAttribute11());
 catch(setAttribute12());
 catch(setAttribute13());
+catch(setAttribute14());

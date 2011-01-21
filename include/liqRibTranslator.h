@@ -53,7 +53,7 @@
 #include <boost/shared_ptr.hpp>
 
 
-using namespace std;
+using namespace boost;
 
 class liqRibTranslator : public MPxCommand {
 public:
@@ -69,6 +69,7 @@ public:
 private: // Methods
   MObject rGlobalObj;
 
+  MStatus setRenderLayer( const MArgList & );
   MStatus scanSceneNodes( MObject&, MDagPath &, float, int, int &, MStatus& ); 
   MStatus scanScene(float, int );
 
@@ -77,31 +78,36 @@ private: // Methods
   void getCameraInfo( MFnCamera &cam );
   void setSearchPaths();
   void setOutDirs();
-
-  // rib output functions
+  MString verifyResourceDir( const char *resourceName, MString resourceDir, bool &problem );
+  bool verifyOutputDirectories();
+ 
   MStatus liquidDoArgs( MArgList args );
   bool liquidInitGlobals();
   void liquidReadGlobals();
-  bool verifyOutputDirectories();
   MString getHiderOptions( MString rendername, MString hidername );
-
   MStatus buildJobs();
+
+  // rib output functions
+  MStatus ribOutput( long scanTime, MString ribName, bool world_only, bool out_lightBlock, MString archiveName );
+  
   MStatus ribPrologue();
   MStatus ribEpilogue();
   MStatus framePrologue( long );
+  MStatus frameEpilogue( long );
   MStatus worldPrologue();
+  MStatus worldEpilogue();
   MStatus lightBlock();
   MStatus coordSysBlock();
   MStatus objectBlock();
-  MStatus worldEpilogue();
-  MStatus frameEpilogue( long );
+  
   void doAttributeBlocking( const MDagPath & newPath,  const MDagPath & previousPath );
   void printProgress ( unsigned stat, unsigned frames, unsigned where );
 
   MString generateRenderScriptName()  const;
   MString generateTempMayaSceneName() const;
   MString generateFileName( fileGenMode mode, const structJob& job );
-  MString generateShadowArchiveName( bool renderAllFrames, long renderAtframe, MString geometrySet );
+  string  generateImageName( MString aovName, const structJob& job );
+  // MString generateShadowArchiveName( bool renderAllFrames, long renderAtframe, MString geometrySet );
   static bool renderFrameSort( const structJob& a, const structJob& b );
 
 private: // Data
@@ -164,26 +170,27 @@ private: // Data
     CLOSE_ON_NEXT_FRAME   = 3
   } shutterConfig;
 
-  bool        cleanShadows;                // UN-USED GLOBAL
-  bool        cleanTextures;               // UN-USED GLOBAL
+  bool       cleanShadows;                // UN-USED GLOBAL
+  bool       cleanTextures;               // UN-USED GLOBAL
   liquidlong  pixelSamples;
-  float       shadingRate;
+  float      shadingRate;
   liquidlong  bucketSize[2];
   liquidlong  gridSize;
   liquidlong  textureMemory;
   liquidlong  eyeSplits;
-  MVector    othreshold;
-  MVector    zthreshold;
+  MVector     othreshold;
+  MVector     zthreshold;
   // bool        renderAllCameras;   // Render all cameras, or only active ones     UN-USED GLOBAL
-  bool        ignoreFilmGate;
-  double      fov_ratio;
+  bool       ignoreFilmGate;
+  double     fov_ratio;
   int         cam_width,
               cam_height;
   float       aspectRatio;
   liquidlong  quantValue;
-  MString     renderCamera;
-  MString     baseShadowName;
-  bool        createOutputDirectories;
+  //MString     renderCamera;
+  MString     baseShadowName; // shadow rib archive name
+  MString     baseSceneName;  // scene rib archive name
+  bool       createOutputDirectories;
 
   static MString magic;
 
@@ -211,7 +218,7 @@ private: // Data
   bool launchRender;
 
   // Hash table for scene
-  shared_ptr< liqRibHT > htable;
+  boost::shared_ptr< liqRibHT > htable;
 
   // Depth in attribute blocking
   // NOTE : used in liqRibTranslator::doAttributeBlocking,
@@ -363,6 +370,8 @@ private :
   MString m_postWorldRIB;
 
   MString m_preGeomRIB;
+  
+  MString originalLayer;
 
   // Display Driver Variables
   typedef struct structDDParam {
@@ -451,6 +460,8 @@ private :
   void scanExpressions( liqShader & currentShader );
   void scanExpressions( liqRibLightData *light );
   void processExpression( liqTokenPointer *token, liqRibLightData *light = NULL );
+  
+  
 };
 
 #endif

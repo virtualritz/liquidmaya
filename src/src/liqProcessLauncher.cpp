@@ -15,10 +15,13 @@
 **
 ** RenderMan (R) is a registered trademark of Pixar
 */
-
+#include <liqGlobalHelpers.h>
 #include "liqProcessLauncher.h"
 
 #include <maya/MString.h>
+
+#include <sstream>
+using namespace std;
 
 
 /* ______________________________________________________________________
@@ -73,30 +76,41 @@ bool liqProcessLauncher::execute( const MString &command, const MString &argumen
 
 bool liqProcessLauncher::execute( const MString &command, const MString &arguments, const MString &path, const bool wait )
 {
-  if ( !wait ) {
-    printf( "::=> Render (no wait) %s %s %s\n", command.asChar(), arguments.asChar(), path.asChar() );
+  
+  stringstream err;
+  err << "Render (" << ( (!wait)? "no " : "" ) << "wait) "<< command.asChar() << " "<< arguments.asChar()<<" "<< path.asChar() << endl << ends;
+  liquidMessage( err.str(), messageInfo );
+    
+  if ( !wait ) 
+  {
     /* Doesn't work on Windows 7!!!!! 
     int returnCode = (int)ShellExecute( NULL, NULL, ( LPCTSTR )command.asChar(), ( LPCTSTR )arguments.asChar(), ( LPCTSTR )path.asChar(), SW_SHOWNORMAL );
     DWORD dw = GetLastError();
     printf( "::=> return value = %d GetLastError = %d\n", returnCode, dw );
     return true;
     */
-    _chdir( path.asChar() );
-    /*
+    // _chdir( path.asChar() );
+    
+/* 
     MString cmd = command + " " + arguments;
+    _flushall();
     int returnCode = system( cmd.asChar() );
+    cout << "out:Return value = " << returnCode << endl << flush;
     return ( returnCode != -1 );
-    */
+*/    
     //  _P_DETACH -- good for MayaRenderView and it, bad for framebuffer and alfred
     
-    int returnCode =  _spawnlp( _P_NOWAITO, command.asChar(), arguments.asChar(), NULL );
+        
+    int returnCode =  _spawnlp( _P_NOWAITO, command.asChar(), command.asChar(), arguments.asChar(), NULL );
     DWORD dw = GetLastError();
-    printf( "::=> return value = %d GetLastError = %d\n", returnCode, dw );
+    err << "err:Return value = " << returnCode << " GetLastError = " << dw << endl << ends;
+    liquidMessage( err.str(), messageInfo );
+    // cout << "out:Return value = " << returnCode << " GetLastError = " << dw << endl << flush;
     return ( returnCode != -1 );
     
-  } else {
-    printf( "::=> Render (wait) %s %s %s\n", command.asChar(), arguments.asChar(), path.asChar() );
-    
+  } 
+  else 
+  {
     PROCESS_INFORMATION pinfo;
     STARTUPINFO sinfo;
     HANDLE hErrReadPipe, hErrReadPipeDup;
@@ -149,8 +163,8 @@ bool liqProcessLauncher::execute( const MString &command, const MString &argumen
             &sinfo,                   // startup information
             &pinfo                    // process information
           );
-    if ( ret ) {
-
+    if ( ret ) 
+    {
       SetStdHandle( STD_ERROR_HANDLE, hSaveStderr ); // restore saved Stderr
       SetStdHandle( STD_OUTPUT_HANDLE, hSaveStdout ); // restore saved Stderr
 
@@ -172,7 +186,6 @@ bool liqProcessLauncher::execute( const MString &command, const MString &argumen
       }
       fflush( stdout );
     }
-
     return ( ret )? true : false ;
   }
 }

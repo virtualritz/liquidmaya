@@ -72,6 +72,7 @@ void liqRenderer::setRenderer()
   liquidGetPlugValue( globalsNode, "shaderComp", shaderCompiler, status );
   liquidGetPlugValue( globalsNode, "makeTexture", textureMaker, status );
   liquidGetPlugValue( globalsNode, "viewTexture", textureViewer, status );
+  liquidGetPlugValue( globalsNode, "textureExt", textureExtension, status );
 
   {
     // get enabled features from the globals.

@@ -98,6 +98,8 @@ MObject liqLightNode::aShadingRateFactor;
 MObject liqLightNode::aNearClipPlane;
 MObject liqLightNode::aFarClipPlane;
 
+MObject liqLightNode::aShadowMainCamera;
+
 MObject liqLightNode::aShadowCameras;
 
 MObject liqLightNode::aOutColor;
@@ -256,6 +258,9 @@ MStatus liqLightNode::initialize()
   MAKE_INPUT(nAttr);
   aFarClipPlane = nAttr.create( "farClipPlane", "fcp", MFnNumericData::kDouble, 250000.0, &status );
   MAKE_INPUT(nAttr);
+  
+  aShadowMainCamera = tAttr.create( "shadowMainCamera", "smc", MFnData::kString, aShadowMainCamera, &status );
+  MAKE_INPUT(tAttr);
 
   aShadowCameras = mAttr.create( "shadowCameras", "shc" );
   MAKE_INPUT(mAttr);
@@ -307,6 +312,8 @@ MStatus liqLightNode::initialize()
   CHECK_MSTATUS(addAttribute(aShadingRateFactor));
   CHECK_MSTATUS(addAttribute(aNearClipPlane));
   CHECK_MSTATUS(addAttribute(aFarClipPlane));
+  
+  CHECK_MSTATUS(addAttribute(aShadowMainCamera));
 
   CHECK_MSTATUS(addAttribute(aShadowCameras));
 

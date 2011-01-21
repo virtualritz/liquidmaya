@@ -10,9 +10,12 @@ proc AEliquidCreateMenu()
   if ( `menu -q -ex liquidAEMenu` ) return ;
 
   menu -label "Liquid" liquidAEMenu;
-      liquidCreateObjectsAttributesMenu( "attrEd" );
-      liquidCreateLightsAttributesMenu( "attrEd" );
-      liquidCreateSetsAttributesMenu( "attrEd" );
+      menuItem  -label "Attribute Manager..."   
+                -command liquidAttributeManager 
+                -ann "Liquid attributes manager";
+      //liquidCreateObjectsAttributesMenu( "attrEd" );
+      //liquidCreateLightsAttributesMenu( "attrEd" );
+      //liquidCreateSetsAttributesMenu( "attrEd" );
 
   setParent $parent;
 }

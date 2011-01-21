@@ -50,7 +50,6 @@ extern "C" {
 #include <liqRibTranslator.h>
 #include <liqGlobalHelpers.h>
 
-
 #if defined(_WIN32)/* && !defined(DEFINED_LIQUIDVERSION)*/
 // unix build gets this from the Makefile
 static const char* LIQUIDVERSION =
@@ -59,8 +58,7 @@ static const char* LIQUIDVERSION =
 #define DEFINED_LIQUIDVERSION
 #endif
 
-
-extern bool liquidBin;
+bool liquidBin = true;
 
 static const char* usage =
 "\nUsage: liquid [options] filename\n\
@@ -153,9 +151,11 @@ The options match the liquid MEL command parameters.\n";
 
 void signalHandler(int sig)
 {
-  if (sig == SIGTERM) {
+  if (sig == SIGTERM) 
+  {
     throw( MString( "Liquid command terminated!\n" ) );
-  } else {
+  } else 
+  {
     signal(sig, signalHandler);
   }
 }
@@ -180,9 +180,12 @@ int main(int argc, char **argv)
   MString UserClassify;
   MString fileName;
 
-  liquidBin = true;
+  //liquidBin = true;
+  
   liquidMessage( string(LIQUIDVERSION), messageInfo );
-
+  
+  cerr << "liquidBin = " << liquidBin << endl << flush; 
+  
   char *maya_location = getenv( "MAYA_LOCATION" );
   if ( maya_location == NULL )
   {
@@ -238,6 +241,7 @@ int main(int argc, char **argv)
     MLibrary::cleanup( 1 );
     return (1);
   }
+
   if ( !fileExists( fileName ) ) 
   {
     status.perror("Liquid -> file not found: " + fileName + "\n");
@@ -245,9 +249,9 @@ int main(int argc, char **argv)
     MLibrary::cleanup( 1 );
     return ( 1 );
   }
-
+ 
   // load the file into liquid's virtual maya
-  status = MFileIO::open( fileName );
+  status = MFileIO::open( fileName ); 
   if ( !status ) 
   {
     MString error = " Error opening file: ";
@@ -257,7 +261,7 @@ int main(int argc, char **argv)
     MLibrary::cleanup( 1 );
     return( 1 ) ;
   }
-
+  
   liqRibTranslator liquidTrans;
 
 #ifdef SIGRTMAX
@@ -268,7 +272,7 @@ int main(int argc, char **argv)
   }
 #endif
 #endif
-
+  
   status = liquidTrans.doIt( myArgs );
 
   if (status) 

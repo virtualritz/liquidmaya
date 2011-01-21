@@ -89,7 +89,7 @@ global proc liquidCreateCurveGroup()
 		}
 	}
 	string $transform = `createNode transform -n liquidCurveGroup`;
-	string $bb = `createNode liquidBoundingBox -p $transform`;
+	string $bb = `createNode liqBoundingBoxLocator -p $transform`;
 	if( size( $curves ) )
 		parent $curves $transform;
 	

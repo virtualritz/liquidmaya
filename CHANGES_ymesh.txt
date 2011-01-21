@@ -1,3 +1,21 @@
+
+Liquid 	2.3.6b (ymesh)
+
+- liquidAttributeManager.mel replaces a tree of menu for liquid attributes attachment/detachment.
+- build configuration files moved to $LIQUIDHOME/build directory
+- zlibwapi.dll (1.2.5) is needed if linking with generic ribLib 
+- Fixed code for nurbs surfaces with pt.w != 1 
+- String variable $TEX for texture file extension from Render Globals
+- .textureExt attribute in liquidGlobals
+- .shadowMainCamera attribute in liqLightNode allows to specify alternative camera for shadow
+  generation (instead of maya defauly lightsource camera)
+- in liqGlobalHelpers.cpp added a set of functions "liquidGetPlugElementValue" for different value types
+  (The purpose is to reduce and unify code for reading secondary displays and display channels attributes)     
+- "generateShadowArchiveName" replaced by call to "generateFileName" with case "fgm_shadow_archive"
+- code for setting RenderLayer moved from "liqRibTranslator::doIt" to "liqRibTranslator::setRenderLayer" 
+- code for output shadow/beauty rib moved from "liqRibTranslator::doIt" to "liqRibTranslator::ribOutput" 
+- fixed dirmaps usage in Alfred scripts
+
 Liquid 	2.3.5 (ymesh)
 
 - Cross-platform CMAKE support
@@ -13,8 +31,8 @@ Directories shaders, scripts, textures, plugins, previewRibFiles are placed in /
 
 - boost removed from include (it's supposed that boost library is installed in system)
 
-- in liqGlobalHelpers added a set of function liquidGetPlugValue for different value types and liquidGetPlugNumElements.
-The purpose is to reduce and unify code for reading maya atrributes.  
+- in liqGlobalHelpers.cpp added a set of functions "liquidGetPlugValue" for different value types and "liquidGetPlugNumElements".
+  (The purpose is to reduce and unify code for reading maya atrributes.)  
 
 - Fixed code for trimmed curves on planar nurbs
 - added noNormalizeNurbsUV attribute

@@ -6,6 +6,17 @@ if("$ENV{ARCH}" STREQUAL "-x64")
   set(TARGET_NAME "${TARGET_NAME}$ENV{ARCH}")  
 endif("$ENV{ARCH}" STREQUAL "-x64")
 
+
+if(UNIX)
+	if(APPLE)
+		set(TARGET_DIR lib/osx)
+	else(APPLE)
+		set(TARGET_DIR lib/linux)
+	endif(APPLE)
+else(UNIX)
+	set(TARGET_DIR lib/win)		
+endif(UNIX)
+
 project(${TARGET_NAME})
 
 set(CMAKE_BUILD_TYPE "Release")
@@ -41,7 +52,9 @@ if(UNIX)
 	endif(APPLE)
 endif(UNIX)
 if(WIN32)
-	add_definitions(-DWINNT)
+	add_definitions(-DWINNT) 
+	add_definitions(-DZLIB_WINAPI)
+	add_definitions(-DZLIB_DLL )
 endif(WIN32)
 
 file(GLOB src RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
@@ -66,7 +79,6 @@ add_definitions( -D_LIB )
 add_definitions( -DHAVE_ZLIB )
 add_definitions( -DYY_NO_UNISTD_H )
 
-
 add_library(${TARGET_NAME} ${src} ${inc})
 set_target_properties( ${TARGET_NAME} PROPERTIES PREFIX "" OUTPUT_NAME "${TARGET_NAME}" )
 #if(UNIX AND NOT APPLE)
@@ -79,4 +91,4 @@ endif(UNIX)
 
 
 target_link_libraries( ${TARGET_NAME} )
-install(TARGETS ${TARGET_NAME} ARCHIVE DESTINATION lib)
+install(TARGETS ${TARGET_NAME} ARCHIVE DESTINATION ${TARGET_DIR})

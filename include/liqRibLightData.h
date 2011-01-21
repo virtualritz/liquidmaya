@@ -130,7 +130,7 @@ private:
   RtFloat       lightID;
   int           hitmode;
   
-  liqShader     rmanLightShader;
+  liqShader     *rmanLightShader;
 };
 
 
