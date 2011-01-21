@@ -41,7 +41,7 @@
 using namespace boost;
 
 class liqRibObj;
-typedef shared_ptr< liqRibObj > liqRibObjPtr;
+typedef boost::shared_ptr< liqRibObj > liqRibObjPtr;
 
 class liqRibObj {
 public:

@@ -2,6 +2,15 @@ cmake_minimum_required(VERSION 2.6.4)
 
 set(TARGET_NAME liquid)
 set(TARGET_DIR $ENV{LIQRMAN})
+if(UNIX)
+	if(APPLE)
+		set(TARGET_DIR $ENV{LIQRMAN}/osx)
+	else(APPLE)
+		set(TARGET_DIR $ENV{LIQRMAN}/linux)
+	endif(APPLE)
+else(UNIX)
+	set(TARGET_DIR $ENV{LIQRMAN}/win)		
+endif(UNIX)
 
 #if("$ENV{ARCH}" STREQUAL "-x64")
 #  set(TARGET_DIR "${TARGET_DIR}$ENV{ARCH}")  
@@ -10,24 +19,24 @@ set(TARGET_DIR $ENV{LIQRMAN})
 project(${TARGET_NAME})
 set(CMAKE_BUILD_TYPE "Release")
 
-set(Maya_DIR $ENV{LIQUIDHOME}/cmake)
+set(Maya_DIR $ENV{LIQUIDHOME}/build/cmake)
 find_package(Maya REQUIRED)
 message( STATUS "MAYA_LOCATION = $ENV{MAYA_LOCATION}")
 message( STATUS "Maya_INCLUDE_DIR = ${Maya_INCLUDE_DIR}")
 message( STATUS "MAYA_LIB = ${MAYA_LIB}")
 #message( STATUS "Maya_LIBRARIES = ${Maya_LIBRARIES}")
 
-set(zlib_DIR $ENV{LIQUIDHOME}/cmake)
+set(zlib_DIR $ENV{LIQUIDHOME}/build/cmake)
 find_package( zlib REQUIRED )
+
 message( STATUS "ZLIB_INCLUDE_DIR = ${ZLIB_INCLUDE_DIR}")
 message( STATUS "ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
 #message( STATUS "ZLIB_LIBRARIES = $ENV{ZLIB_LIBRARIES}")
 
-set(GL_DIR $ENV{LIQUIDHOME}/cmake)
+set(GL_DIR $ENV{LIQUIDHOME}/build/cmake)
 find_package(GL REQUIRED)
 message( STATUS "GL_INCLUDE_DIR = ${GL_INCLUDE_DIR}")
 message( STATUS "GL_LIBRARIES = ${GL_LIBRARIES}")
-
 
 if(UNIX)
 	if(APPLE)
@@ -47,11 +56,15 @@ if(UNIX)
 		include_directories(${GL_INCLUDE_DIR})
 		include_directories("/usr/X11/include")
 		include_directories("/usr/include/malloc")
-		set(EXTRA_LIBS "/usr/X11/lib")
+		# set(EXTRA_LIBS "/usr/X11/lib")
+		# set(EXTRA_LIBS "/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries")
+		set(EXTRA_LIBS "")
 	else(APPLE)
 		add_definitions(-DLINUX)
-		set(EXTRA_LIBS "/usr/lib64")
-		set(LIQUIDBINLIBS "-lawxml2 -lsvml -liff -lpthread")
+		set(EXTRA_LIBS "/usr/lib64:/lib64")
+		#set(LIQUIDBINLIBS "-lawxml2 -lsvml -liff -lpthread")
+		# fedora 13 needs -ldl !!!
+		set(LIQUIDBINLIBS "-lawxml2 -lsvml -liff -lpthread -ldl")
     #-lguide
     set(LIQUIDBINLIBS "${LIQUIDBINLIBS} -lOpenMayalib -lAnimSlice -lDeformSlice -lDynSlice -lKinSlice -lModelSlice -lNurbsSlice -lPolySlice -lProjectSlice -lImage -lImageUI -lShared -lTranslators") 
     set(LIQUIDBINLIBS "${LIQUIDBINLIBS} -lDataModel -lNurbsEngine -lRenderModel -lDependEngine -lCommandEngine -lAG -lAnimEngine -lAppVersion -lGeometryEngine -lDependCommand -lExtensionLayer -lPolyEngine -lSubdivEngine") 
@@ -61,6 +74,8 @@ endif(UNIX)
 if(WIN32)
 	add_definitions(-DWINNT)
 	add_definitions(-D_WIN32)
+	add_definitions(-DZLIB_WINAPI)
+	add_definitions(-DZLIB_DLL )
 	#add_definitions(-Dulong="unsigned long")
 	#add_definitions(-Duint="unsigned int")
 endif(WIN32)
@@ -87,14 +102,12 @@ message( STATUS "BOOST_ROOT = $ENV{BOOST_ROOT}")
 message( STATUS "LIQUIDHOME = $ENV{LIQUIDHOME}")
 message( STATUS "LIQUIDVERSION = $ENV{LIQUIDVERSION}")
 
-
 add_definitions( -DNDEBUG )
 add_definitions( -D_BOOL )
 add_definitions( -DREQUIRE_IOSTREAM )
 add_definitions( -DLIQUID_EXPORTS )
 add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
 add_definitions( $ENV{LIQRMANFLAGS} ) 
-
 
 add_library( liquidobj STATIC ${src} )
 
@@ -105,7 +118,6 @@ set_target_properties( liquid PROPERTIES PREFIX "" OUTPUT_NAME "liquid" SUFFIX "
 link_directories( ${MAYA_LIB} "$ENV{LIQRMANLIB}" ${EXTRA_LIBS} )
 add_executable( liquidbin liquidBin.cpp )
 set_target_properties( liquidbin PROPERTIES OUTPUT_NAME "liquid" )
-
 
 if(UNIX)
 	if(APPLE)
@@ -122,13 +134,14 @@ if(UNIX)
 		#LINK_FLAGS "-O" LINK_FLAGS "-L/usr/lib64"
 	endif(APPLE)
 else(UNIX)
-   set_target_properties( liquidobj PROPERTIES COMPILE_FLAGS "-w")
+   set_target_properties(liquidobj PROPERTIES COMPILE_FLAGS "-w")
    set_target_properties(liquid PROPERTIES COMPILE_FLAGS "-D_USRDLL -w")
    set_target_properties(liquidbin PROPERTIES COMPILE_FLAGS "-DLIQUIDBIN -w") 
 endif(UNIX)
 
-target_link_libraries( liquid liquidobj $ENV{LIQRMANLIBS} ${Maya_LIBRARIES} $ENV{LIBS} ${ZLIB_LIBRARIES} ${GL_LIBRARIES})
-target_link_libraries( liquidbin liquidobj $ENV{LIQRMANLIBS} ${Maya_LIBRARIES} $ENV{LIBS} ${LIQUIDBINLIBS} ${ZLIB_LIBRARIES} ${GL_LIBRARIES})
+# ${ZLIB_LIBRARIES}
+target_link_libraries( liquid liquidobj $ENV{LIQRMANLIBS} ${Maya_LIBRARIES} $ENV{LIBS} ${GL_LIBRARIES} ${ZLIB_LIBRARIES})
+target_link_libraries( liquidbin liquidobj $ENV{LIQRMANLIBS} ${Maya_LIBRARIES} $ENV{LIBS} ${LIQUIDBINLIBS} ${GL_LIBRARIES} ${ZLIB_LIBRARIES})
 install(TARGETS liquid liquidbin 
         LIBRARY DESTINATION ${TARGET_DIR} 
         RUNTIME DESTINATION ${TARGET_DIR})

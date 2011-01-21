@@ -153,6 +153,7 @@ EXTERN(RtToken)		RI_CULL;
 EXTERN(RtToken)		RI_COMPRESSION;
 EXTERN(RtToken)		RI_RIB;
 EXTERN(RtToken)		RI_BRICKMEMORY;
+EXTERN(RtToken)		RI_GROUPING;
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -230,6 +231,9 @@ EXTERN(RtToken)		RI_DIFFUSEHITMODE;
 EXTERN(RtToken)		RI_SPECULARHITMODE;
 EXTERN(RtToken)		RI_TRANSMISSIONHITMODE;
 EXTERN(RtToken)		RI_CAMERAHITMODE;
+
+// Grouping attributes
+EXTERN(RtToken)		RI_MEMBERSHIP;
 
 ////////////////////////////////////////////////////////////////////////
 //

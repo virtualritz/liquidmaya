@@ -54,7 +54,7 @@
 #include <maya/MSwatchRenderRegister.h>
 #include <maya/MImage.h>
 #include <maya/MFnDependencyNode.h>
-
+#include <maya/MFnStringData.h>
 
 #include <liqIOStream.h>
 
@@ -233,6 +233,7 @@ MObject liqGlobalsNode::aPreGeom;
 
 MObject liqGlobalsNode::aRenderScriptFormat;
 MObject liqGlobalsNode::aRenderScriptCommand;
+MObject liqGlobalsNode::aRenderScriptFileName;
 
 MObject liqGlobalsNode::aFluidShaderBrowserDefaultPath;
 MObject liqGlobalsNode::aPreviewType;
@@ -302,6 +303,7 @@ MObject liqGlobalsNode::aShaderComp;
 MObject liqGlobalsNode::aShaderExt;
 MObject liqGlobalsNode::aMakeTexture;
 MObject liqGlobalsNode::aViewTexture;
+MObject liqGlobalsNode::aTextureExt;
 
 MObject liqGlobalsNode::aBits_hiders;
 MObject liqGlobalsNode::aBits_hiders_0;
@@ -437,7 +439,11 @@ MObject liqGlobalsNode::aVerbosity;
     CHECK_MSTATUS(attr.setReadable(true));    \
     CHECK_MSTATUS(attr.setWritable(true));    \
     CHECK_MSTATUS(attr.setHidden(true));      \
-    CHECK_MSTATUS(addAttribute(obj));
+    CHECK_MSTATUS(attr.setDefault( stringData.create( MString( default ), &sstat ) ) ); \
+    CHECK_MSTATUS( sstat );         \
+    CHECK_MSTATUS(addAttribute(obj));         
+   
+    
 
 #define CREATE_MULTI_STRING(attr, obj, name, shortName, default)    \
     obj = attr.create( name, shortName, MFnData::kString, obj, &status); \
@@ -506,7 +512,10 @@ MStatus liqGlobalsNode::initialize()
 	MFnTypedAttribute     tAttr;
 	MFnNumericAttribute   nAttr;
 	MFnCompoundAttribute  cAttr;
-	MStatus status;
+	MStatus status, sstat;
+	
+	MFnStringData stringData;
+
 
 	// Create input attributes
 	CREATE_BOOL( nAttr,  aLaunchRender,             "launchRender",                 "lr",     true  );
@@ -562,26 +571,26 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aShaderDirectory,            "shaderDirectory",              "shdd",   ""    );
 	CREATE_STRING( tAttr,  aTempDirectory,              "tempDirectory",                "tmpd",   ""    );
 
-	CREATE_BOOL( nAttr,  aDeferredGen,                "deferredGen",                  "defg",   false );
+	CREATE_BOOL( nAttr, aDeferredGen,                "deferredGen",                  "defg",   false );
 	CREATE_INT( nAttr,  aDeferredBlock,              "deferredBlock",                "defb",   1     );
-	CREATE_STRING( tAttr,  aPreframeMel,                "preframeMel",                  "prfm",   ""    );
-	CREATE_STRING( tAttr,  aPostframeMel,               "postframeMel",                 "pofm",   ""    );
+	CREATE_STRING( tAttr,aPreframeMel,                "preframeMel",                  "prfm",   ""    );
+	CREATE_STRING( tAttr,aPostframeMel,               "postframeMel",                 "pofm",   ""    );
 	CREATE_BOOL( nAttr,  aUseRenderScript,            "useRenderScript",              "urs",    false );
 	CREATE_BOOL( nAttr,  aRemoteRender,               "remoteRender",                 "rr",     false );
 	CREATE_BOOL( nAttr,  aNetRManRender,              "netRManRender",                "nrr",    false );
-	CREATE_INT( nAttr,  aMinCPU,                     "minCPU",                       "min",    1     );
-	CREATE_INT( nAttr,  aMaxCPU,                     "maxCPU",                       "max",    1     );
+	CREATE_INT( nAttr,   aMinCPU,                     "minCPU",                       "min",    1     );
+	CREATE_INT( nAttr,   aMaxCPU,                     "maxCPU",                       "max",    1     );
 	CREATE_BOOL( nAttr,  aIgnoreShadows,              "ignoreShadows",                "ish",    false );
 	CREATE_BOOL( nAttr,  aShapeOnlyInShadowNames,     "shapeOnlyInShadowNames",       "sosn",   false );
 	CREATE_BOOL( nAttr,  aFullShadowRibs,             "fullShadowRibs",               "fsr",    false );
 	CREATE_BOOL( nAttr,  aBinaryOutput,               "binaryOutput",                 "bin",    false );
 	CREATE_BOOL( nAttr,  aCompressedOutput,           "compressedOutput",             "comp",   false );
 
-	CREATE_BOOL( nAttr,  aOutputMayaPolyCreases,            "outputMayaPolyCreases",              "ompc",    true );
+	CREATE_BOOL( nAttr,  aOutputMayaPolyCreases,      "outputMayaPolyCreases",        "ompc",    true );
 	CREATE_BOOL( nAttr,  aRenderAllCurves,            "renderAllCurves",              "rac",    true );
 	CREATE_BOOL( nAttr,  aOutputMeshUVs,              "outputMeshUVs",                "muv",    false );
 
-	CREATE_BOOL( nAttr,  aIlluminateByDefault,      "illuminateByDefault",        "ilbd",   true );
+	CREATE_BOOL( nAttr,  aIlluminateByDefault,        "illuminateByDefault",          "ilbd",   true );
 	CREATE_BOOL( nAttr,  aLiquidSetLightLinking,      "liquidSetLightLinking",        "setll",   false );
 	CREATE_BOOL( nAttr,  aIgnoreSurfaces,             "ignoreSurfaces",               "isrf",   false );
 	CREATE_BOOL( nAttr,  aIgnoreDisplacements,        "ignoreDisplacements",          "idsp",   false );
@@ -597,15 +606,15 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_BOOL( nAttr,  aShaderDebug,                "shaderDebug",                  "sdbg",   false );
 	CREATE_BOOL( nAttr,  aShowProgress,               "showProgress",                 "prog",   false );
 	CREATE_BOOL( nAttr,  aDoAnimation,                "doAnimation",                  "anim",   false );
-	CREATE_STRING( tAttr,  aFrameSequence,              "frameSequence",                "fseq",   "1-100@1" );
+	CREATE_STRING( tAttr,aFrameSequence,              "frameSequence",                "fseq",   "1-100@1" );
 	CREATE_BOOL( nAttr,  aDoPadding,                  "doPadding",                    "dpad",   true  );
-	CREATE_INT( nAttr,  aPadding,                    "padding",                      "pad",    4     );
-	CREATE_INT( nAttr,  aNumProcs,                   "numProcs",                     "np",     0     );
-	CREATE_FLOAT( nAttr,  aGain,                     "gain",                         "gn",     1.0   );
-	CREATE_FLOAT( nAttr,  aGamma,                    "gamma",                        "gm",     1.0   );
-	CREATE_INT( nAttr,  aXResolution,                "xResolution",                  "xres",   768  );
-	CREATE_INT( nAttr,  aYResolution,                "yResolution",                  "yres",   576   );
-	CREATE_FLOAT( nAttr,  aPixelAspectRatio,         "pixelAspectRatio",             "par",    1.0   );
+	CREATE_INT( nAttr,  aPadding,                     "padding",                      "pad",    4     );
+	CREATE_INT( nAttr,  aNumProcs,                    "numProcs",                     "np",     0     );
+	CREATE_FLOAT( nAttr,  aGain,                      "gain",                         "gn",     1.0   );
+	CREATE_FLOAT( nAttr,  aGamma,                     "gamma",                        "gm",     1.0   );
+	CREATE_INT( nAttr,  aXResolution,                 "xResolution",                  "xres",   768  );
+	CREATE_INT( nAttr,  aYResolution,                 "yResolution",                  "yres",   576   );
+	CREATE_FLOAT( nAttr,  aPixelAspectRatio,          "pixelAspectRatio",             "par",    1.0   );
 
 	CREATE_BOOL(  nAttr,  aCameraBlur,                 "cameraBlur",                   "cb",     false  );
 	CREATE_BOOL(  nAttr,  aTransformationBlur,         "transformationBlur",           "tb",     false  );
@@ -641,7 +650,7 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aAlfredServices,            "alfredServices",               "alfs",   "pixarRender"    );
   CREATE_STRING( tAttr,  aDirMaps,                   "dirmaps",                      "dmps",   ""    );
 	CREATE_STRING( tAttr,  aRenderCommand,             "renderCommand",                "rdc",    ""    );
-	CREATE_STRING( tAttr,  aRibgenCommand,             "ribgenCommand",                "rgc",    ""    );
+	CREATE_STRING( tAttr,  aRibgenCommand,             "ribgenCommand",                "rgc",    "liquid"    );
 
 	CREATE_STRING( tAttr,  aPreviewer,                 "previewer",                    "prv",    ""    );
 	CREATE_STRING( tAttr,  aPreCommand,                "preCommand",                   "prc",    ""    );
@@ -649,8 +658,8 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aPreFrameCommand,           "preFrameCommand",              "prfc",   ""    );
 	CREATE_STRING( tAttr,  aPreJobCommand,             "preJobCommand",                "prjc",   ""    );
 	CREATE_STRING( tAttr,  aPostJobCommand,            "postJobCommand",               "pojc",   ""    );
-	CREATE_STRING( tAttr,  aKey,                       "key",                          "k",      "maya"    );
-	CREATE_STRING( tAttr,  aService,                   "service",                      "srv",    "liquid"    );
+	CREATE_STRING( tAttr,  aKey,                       "key",                          "k",      "liquid"    );
+	CREATE_STRING( tAttr,  aService,                   "service",                      "srv",    "pixarMTOR"    );
 	CREATE_STRING( tAttr,  aLastRenderScript,          "lastRenderScript",             "lrs",    ""    );
 	CREATE_STRING( tAttr,  aLastRibFile,               "lastRibFile",                  "lrf",    ""    );
 
@@ -664,8 +673,8 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aRenderJobName,              "renderJobName",                "rjn",    ""    );
 	CREATE_BOOL(   nAttr,  aShortShaderNames,           "shortShaderNames",             "ssn",    false );
 
-	CREATE_BOOL( nAttr,  aRelativeFileNames,          "relativeFileNames",            "rfn",    false );
-	CREATE_BOOL( nAttr,  aExpandAlfred,               "expandAlfred",                 "ea",     false );
+	CREATE_BOOL( nAttr,    aRelativeFileNames,          "relativeFileNames",            "rfn",    false );
+	CREATE_BOOL( nAttr,    aExpandAlfred,               "expandAlfred",                 "ea",     false );
 
 	CREATE_STRING( tAttr,  aPreFrameBeginMel,           "preFrameBeginMel",                "prfbm",   ""    );
 	CREATE_STRING( tAttr,  aPreWorldMel,                "preWorldMel",                     "prwm",    ""    );
@@ -677,73 +686,74 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aPostWorld,                  "postWorld",                    "pow",    ""    );
 	CREATE_STRING( tAttr,  aPreGeom,                    "preGeom",                      "prg",    ""    );
 
-	CREATE_INT( nAttr,  aRenderScriptFormat,         "renderScriptFormat",           "rsf",    2     );
+	CREATE_INT( nAttr,     aRenderScriptFormat,         "renderScriptFormat",           "rsf",    2     );
 	CREATE_STRING( tAttr,  aRenderScriptCommand,        "renderScriptCommand",          "rsc",    ""    );
+	CREATE_STRING( tAttr,  aRenderScriptFileName,       "renderScriptFileName",          "rsn",    ""    );
 
-	CREATE_STRING( tAttr,  aFluidShaderBrowserDefaultPath,  "fluidShaderBrowserDefaultPath",  "fsbdp",  "" );
+	CREATE_STRING( tAttr,  aFluidShaderBrowserDefaultPath, "fluidShaderBrowserDefaultPath",  "fsbdp",  "" );
 
-	CREATE_INT( nAttr,  aPreviewType,                "previewType",                  "prt",    0     );
+	CREATE_INT( nAttr,     aPreviewType,                "previewType",                  "prt",    0     );
 	CREATE_STRING( tAttr,  aPreviewRenderer,            "previewRenderer",              "prr",    ""    );
-	CREATE_INT( nAttr,  aPreviewSize,                "previewSize",                  "prs",    128   );
-	CREATE_INT( nAttr,  aPreviewPrimitive,           "previewPrimitive",             "prp",    0     );
+	CREATE_INT( nAttr,     aPreviewSize,                "previewSize",                  "prs",    128   );
+	CREATE_INT( nAttr,     aPreviewPrimitive,           "previewPrimitive",             "prp",    0     );
 	CREATE_STRING( tAttr,  aPreviewDisplayDriver,       "previewDisplayDriver",         "prdd",   ""    );
-	CREATE_INT( nAttr,  aPreviewConnectionType,      "previewConnectionType",        "prct",   0     );
-	CREATE_BOOL( nAttr,  aRenderViewLocal,            "renderViewLocal",              "rvl",    1     );
-	CREATE_LONG( nAttr,  aRenderViewPort,             "renderViewPort",               "rvp",    6667  );
-	CREATE_INT( nAttr,  aRenderViewTimeOut,          "renderViewTimeOut",            "rvto",   20    );
+	CREATE_INT( nAttr,     aPreviewConnectionType,      "previewConnectionType",        "prct",   0     );
+	CREATE_BOOL( nAttr,    aRenderViewLocal,            "renderViewLocal",              "rvl",    1     );
+	CREATE_LONG( nAttr,    aRenderViewPort,             "renderViewPort",               "rvp",    6667  );
+	CREATE_INT( nAttr,     aRenderViewTimeOut,          "renderViewTimeOut",            "rvto",   20    );
 
-	CREATE_BOOL( nAttr,  aUseRayTracing,              "useRayTracing",                "ray",    false );
-	CREATE_FLOAT( nAttr,  aTraceBreadthFactor,         "traceBreadthFactor",           "trbf",   1.0   );
-	CREATE_FLOAT( nAttr,  aTraceDepthFactor,           "traceDepthFactor",             "trdf",   1.0   );
-	CREATE_INT( nAttr,  aTraceMaxDepth,              "traceMaxDepth",                "trmd",   10    );
-	CREATE_FLOAT( nAttr,  aTraceSpecularThreshold,     "traceSpecularThreshold",       "trst",   10.0  );
-	CREATE_BOOL( nAttr,  aTraceRayContinuation,       "traceRayContinuation",         "trrc",   true     );
-	CREATE_LONG( nAttr,  aTraceCacheMemory,           "traceCacheMemory",             "trcm",   30720 );
-	CREATE_BOOL( nAttr,  aTraceDisplacements,         "traceDisplacements",           "trd",    false );
-	CREATE_FLOAT( nAttr,  aTraceBias,                  "traceBias",                    "trb",    0.05  );
-	CREATE_BOOL( nAttr,  aTraceSampleMotion,          "traceSampleMotion",            "tsm",    false );
-	CREATE_INT( nAttr,  aTraceMaxSpecularDepth,      "traceMaxSpecularDepth",        "trmsd",  2     );
-	CREATE_INT( nAttr,  aTraceMaxDiffuseDepth,       "traceMaxDiffuseDepth",         "trmdd",  2     );
+	CREATE_BOOL( nAttr,    aUseRayTracing,              "useRayTracing",                "ray",    false );
+	CREATE_FLOAT( nAttr,   aTraceBreadthFactor,         "traceBreadthFactor",           "trbf",   1.0   );
+	CREATE_FLOAT( nAttr,   aTraceDepthFactor,           "traceDepthFactor",             "trdf",   1.0   );
+	CREATE_INT( nAttr,     aTraceMaxDepth,              "traceMaxDepth",                "trmd",   10    );
+	CREATE_FLOAT( nAttr,   aTraceSpecularThreshold,     "traceSpecularThreshold",       "trst",   10.0  );
+	CREATE_BOOL( nAttr,    aTraceRayContinuation,       "traceRayContinuation",         "trrc",   true     );
+	CREATE_LONG( nAttr,    aTraceCacheMemory,           "traceCacheMemory",             "trcm",   30720 );
+	CREATE_BOOL( nAttr,    aTraceDisplacements,         "traceDisplacements",           "trd",    false );
+	CREATE_FLOAT( nAttr,   aTraceBias,                  "traceBias",                    "trb",    0.05  );
+	CREATE_BOOL( nAttr,    aTraceSampleMotion,          "traceSampleMotion",            "tsm",    false );
+	CREATE_INT( nAttr,     aTraceMaxSpecularDepth,      "traceMaxSpecularDepth",        "trmsd",  2     );
+	CREATE_INT( nAttr,     aTraceMaxDiffuseDepth,       "traceMaxDiffuseDepth",         "trmdd",  2     );
 
-	CREATE_FLOAT( nAttr,  aIrradianceMaxError,         "irradianceMaxError",           "ime",    -1.0  );
-	CREATE_FLOAT( nAttr,  aIrradianceMaxPixelDist,     "irradianceMaxPixelDist",       "impd",   -1.0  );
+	CREATE_FLOAT( nAttr,   aIrradianceMaxError,         "irradianceMaxError",           "ime",    -1.0  );
+	CREATE_FLOAT( nAttr,   aIrradianceMaxPixelDist,     "irradianceMaxPixelDist",       "impd",   -1.0  );
 	CREATE_STRING( tAttr,  aIrradianceHandle,           "irradianceHandle",             "ih",     ""    );
-	CREATE_INT( nAttr,  aIrradianceFileMode,         "irradianceFileMode",           "ifm",    0     );
+	CREATE_INT( nAttr,     aIrradianceFileMode,         "irradianceFileMode",           "ifm",    0     );
 
-	CREATE_BOOL( nAttr,  aUseMtorSubdiv,              "useMtorSubdiv",                "ums",    false );
+	CREATE_BOOL( nAttr,    aUseMtorSubdiv,              "useMtorSubdiv",                "ums",    false );
 
-	CREATE_INT( nAttr,  aHider,                      "hider",                        "h",      0     );
+	CREATE_INT( nAttr,     aHider,                      "hider",                        "h",      0     );
 	// "hidden" hider advanced options - PRMAN ONLY
-	CREATE_INT( nAttr,  aJitter,                     "jitter",                       "j",      0     );
+	CREATE_INT( nAttr,     aJitter,                     "jitter",                       "j",      0     );
 	// PRMAN 13 BEGIN
-	CREATE_FLOAT( nAttr,  aHiddenApertureNSides,       "hiddenApertureNSides",         "hans",   0.0   );
-	CREATE_FLOAT( nAttr,  aHiddenApertureAngle,        "hiddenApertureAngle",          "haa",    0.0   );
-	CREATE_FLOAT( nAttr,  aHiddenApertureRoundness,    "hiddenApertureRoundness",      "har",    0.0   );
-	CREATE_FLOAT( nAttr,  aHiddenApertureDensity,      "hiddenApertureDensity",        "had",    0.0   );
-	CREATE_FLOAT( nAttr,  aHiddenShutterOpeningOpen,   "hiddenShutterOpeningOpen",     "hsoo",   0.0   );
-	CREATE_FLOAT( nAttr,  aHiddenShutterOpeningClose,  "hiddenShutterOpeningClose",    "hsoc",   1.0   );
+	CREATE_FLOAT( nAttr,   aHiddenApertureNSides,       "hiddenApertureNSides",         "hans",   0.0   );
+	CREATE_FLOAT( nAttr,   aHiddenApertureAngle,        "hiddenApertureAngle",          "haa",    0.0   );
+	CREATE_FLOAT( nAttr,   aHiddenApertureRoundness,    "hiddenApertureRoundness",      "har",    0.0   );
+	CREATE_FLOAT( nAttr,   aHiddenApertureDensity,      "hiddenApertureDensity",        "had",    0.0   );
+	CREATE_FLOAT( nAttr,   aHiddenShutterOpeningOpen,   "hiddenShutterOpeningOpen",     "hsoo",   0.0   );
+	CREATE_FLOAT( nAttr,   aHiddenShutterOpeningClose,  "hiddenShutterOpeningClose",    "hsoc",   1.0   );
 	// PRMAN 13 END
-	CREATE_FLOAT( nAttr,  aHiddenOcclusionBound,       "hiddenOcclusionBound",         "hob",    0.0   );
-	CREATE_BOOL( nAttr,  aHiddenMpCache,              "hiddenMpCache",                "hmpc",   true  );
-	CREATE_INT( nAttr,  aHiddenMpMemory,             "hiddenMpMemory",               "hmpm",   6144  );
+	CREATE_FLOAT( nAttr,   aHiddenOcclusionBound,       "hiddenOcclusionBound",         "hob",    0.0   );
+	CREATE_BOOL( nAttr,    aHiddenMpCache,              "hiddenMpCache",                "hmpc",   true  );
+	CREATE_INT( nAttr,     aHiddenMpMemory,             "hiddenMpMemory",               "hmpm",   6144  );
 	CREATE_STRING( tAttr,  aHiddenMpCacheDir,           "hiddenMpCacheDir",             "hmcd",   ""   );
-	CREATE_BOOL( nAttr,  aHiddenSampleMotion,         "hiddenSampleMotion",           "hsm",    true  );
-	CREATE_INT( nAttr,  aHiddenSubPixel,             "hiddenSubPixel",               "hsp",    1     );
-	CREATE_BOOL( nAttr,  aHiddenExtremeMotionDof,     "hiddenExtremeMotionDof",       "hemd",   false );
-	CREATE_INT( nAttr,  aHiddenMaxVPDepth,           "hiddenMaxVPDepth",             "hmvd",  -1     );
+	CREATE_BOOL( nAttr,    aHiddenSampleMotion,         "hiddenSampleMotion",           "hsm",    true  );
+	CREATE_INT( nAttr,     aHiddenSubPixel,             "hiddenSubPixel",               "hsp",    1     );
+	CREATE_BOOL( nAttr,    aHiddenExtremeMotionDof,     "hiddenExtremeMotionDof",       "hemd",   false );
+	CREATE_INT( nAttr,     aHiddenMaxVPDepth,           "hiddenMaxVPDepth",             "hmvd",  -1     );
 	// PRMAN 13 BEGIN
-	CREATE_BOOL( nAttr,  aHiddenSigma,                "hiddenSigmaHiding",            "hsh",    false );
-	CREATE_FLOAT( nAttr,  aHiddenSigmaBlur,            "hiddenSigmaBlur",              "hshb",   1.0   );
+	CREATE_BOOL( nAttr,    aHiddenSigma,                "hiddenSigmaHiding",            "hsh",    false );
+	CREATE_FLOAT( nAttr,   aHiddenSigmaBlur,            "hiddenSigmaBlur",              "hshb",   1.0   );
 	// PRMAN 13 END
 
-	CREATE_INT( nAttr,  aRaytraceFalseColor,         "raytraceFalseColor",            "rfc",   0     );
+	CREATE_INT( nAttr,     aRaytraceFalseColor,         "raytraceFalseColor",            "rfc",   0     );
 
-	CREATE_INT( nAttr,  aPhotonEmit,                 "photonEmit",                    "phe",   0     );
-	CREATE_BOOL( nAttr,  aPhotonSampleSpectrum,       "photonSampleSpectrum",          "phss",  false );
+	CREATE_INT( nAttr,     aPhotonEmit,                 "photonEmit",                    "phe",   0     );
+	CREATE_BOOL( nAttr,    aPhotonSampleSpectrum,       "photonSampleSpectrum",          "phss",  false );
 
 	CREATE_STRING( tAttr,  aDepthMaskZFile,             "depthMaskZFile",               "dmzf",   ""    );
-	CREATE_BOOL( nAttr,  aDepthMaskReverseSign,       "depthMaskReverseSign",         "dmrs",   false );
-	CREATE_FLOAT( nAttr,  aDepthMaskDepthBias,         "depthMaskDepthBias",           "dmdb",   0.01  );
+	CREATE_BOOL( nAttr,    aDepthMaskReverseSign,       "depthMaskReverseSign",         "dmrs",   false );
+	CREATE_FLOAT( nAttr,   aDepthMaskDepthBias,         "depthMaskDepthBias",           "dmdb",   0.01  );
 
 	CREATE_STRING( tAttr,  aRenderCmdFlags,             "renderCmdFlags",               "rcf",    ""    );
 	CREATE_STRING( tAttr,  aShaderInfo,                 "shaderInfo",                   "shi",    ""    );
@@ -751,6 +761,7 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aShaderExt,                  "shaderExt",                    "she",    ""    );
 	CREATE_STRING( tAttr,  aMakeTexture,                "makeTexture",                  "mtx",    ""    );
 	CREATE_STRING( tAttr,  aViewTexture,                "viewTexture",                  "vtx",    ""    );
+	CREATE_STRING( tAttr,  aTextureExt,                 "textureExt",                   "txe",    ""    );
 
 	CREATE_STRING( tAttr,  aDshDisplayName,             "dshDisplayName",               "dsdn",   ""    );
 	CREATE_STRING( tAttr,  aDshImageMode,               "dshImageMode",                 "dsim",   ""    );
@@ -762,21 +773,21 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_STRING( tAttr,  aShadersOutputParamsFilter,  "shadersOutputParamsFilter",    "opf",    "^_*" );
 	CREATE_INT(    nAttr,  aShadersMaxCachedAELayouts,  "shadersMaxCachedAELayouts",    "mcl",    10    );
 
-	CREATE_INT( nAttr,  aVerbosity,                  "verbosity",                    "vty",    1     );
+	CREATE_INT( nAttr,     aVerbosity,                  "verbosity",                    "vty",    1     );
 
-	CREATE_COMP( cAttr, aBits_hiders, "bits_hiders", "bhid" );
-    CREATE_BOOL( nAttr, aBits_hiders_0, "Hidden", "Hidden", 1 );
-    CHECK_MSTATUS( cAttr.addChild( aBits_hiders_0 ) );
-    CREATE_BOOL( nAttr, aBits_hiders_1, "Photon", "Photon", 0 );
-    CHECK_MSTATUS( cAttr.addChild( aBits_hiders_1 ) );
-    CREATE_BOOL( nAttr, aBits_hiders_2, "ZBuffer", "ZBuffer", 1 );
-    CHECK_MSTATUS( cAttr.addChild( aBits_hiders_2 ) );
-    CREATE_BOOL( nAttr, aBits_hiders_3, "Raytrace", "Raytrace", 0 );
-    CHECK_MSTATUS( cAttr.addChild( aBits_hiders_3 ) );
-    CREATE_BOOL( nAttr, aBits_hiders_4, "OpenGL", "OpenGL", 0 );
-    CHECK_MSTATUS( cAttr.addChild( aBits_hiders_4 ) );
-    CREATE_BOOL( nAttr, aBits_hiders_5, "DepthMask", "DepthMask", 0 );
-    CHECK_MSTATUS( cAttr.addChild( aBits_hiders_5 ) );
+	CREATE_COMP( cAttr,    aBits_hiders,                "bits_hiders",                  "bhid" );
+  CREATE_BOOL( nAttr,    aBits_hiders_0,              "Hidden",                       "Hidden", 1 );
+  CHECK_MSTATUS( cAttr.addChild( aBits_hiders_0 ) );
+  CREATE_BOOL( nAttr, aBits_hiders_1, "Photon", "Photon", 0 );
+  CHECK_MSTATUS( cAttr.addChild( aBits_hiders_1 ) );
+  CREATE_BOOL( nAttr, aBits_hiders_2, "ZBuffer", "ZBuffer", 1 );
+  CHECK_MSTATUS( cAttr.addChild( aBits_hiders_2 ) );
+  CREATE_BOOL( nAttr, aBits_hiders_3, "Raytrace", "Raytrace", 0 );
+  CHECK_MSTATUS( cAttr.addChild( aBits_hiders_3 ) );
+  CREATE_BOOL( nAttr, aBits_hiders_4, "OpenGL", "OpenGL", 0 );
+  CHECK_MSTATUS( cAttr.addChild( aBits_hiders_4 ) );
+  CREATE_BOOL( nAttr, aBits_hiders_5, "DepthMask", "DepthMask", 0 );
+  CHECK_MSTATUS( cAttr.addChild( aBits_hiders_5 ) );
 
 	CREATE_COMP( cAttr, aBits_filters, "bits_filters", "bfil" );
 	CREATE_BOOL( nAttr, aBits_filters_0, "Box", "Box", 1 );

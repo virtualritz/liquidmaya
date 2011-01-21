@@ -57,7 +57,7 @@ typedef void *PtDspyImageHandle;
 #define PkDspyUnsigned8  6
 #define PkDspySigned8    7
 
-typedef enum
+typedef enum PtDspyError
 {
   PkDspyErrorNone         = 0,  // Successful completion
   PkDspyErrorNoMemory     = 1,  // Unable to allocate memory
@@ -67,27 +67,27 @@ typedef enum
   PkDspyErrorUndefined    = 5  // No other error messages appropriate
 } PtDspyError;
 
-typedef enum
+typedef enum PtDspyQueryType
 {
   PkOverwriteQuery  = 0,
   PkSizeQuery       = 1,
 } PtDspyQueryType;
 
 
-typedef struct
+typedef struct PtDspyOverwriteInfo
 {
   int   overwrite;
   int   interactive;
 } PtDspyOverwriteInfo;
 
-typedef struct
+typedef struct PtDspySizeInfo
 {
   int   Width;
   int   Height;
   float AspectRatio;
 } PtDspySizeInfo;
 
-typedef struct 
+typedef struct UserParameter
 {
   char *name;
   unsigned char ptype, nelements; //,  pad0, pad1;
@@ -95,13 +95,13 @@ typedef struct
   int size;
 } UserParameter;
 
-typedef struct 
+typedef struct PtDspyDevFormat
 {
   char * name;
   unsigned type;
 } PtDspyDevFormat;
 
-typedef enum
+typedef enum PtFlagStuff
 {
   PkDspyFlagsWantsScanlineOrder    = 0x0001,
   PkDspyFlagsWantsEmptyBuckets     = 0x0002,

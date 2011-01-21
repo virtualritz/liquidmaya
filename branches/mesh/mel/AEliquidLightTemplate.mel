@@ -34,8 +34,6 @@
 //  Returns:
 //
 
-
-
 proc setupShadowCamera( string $cameraShape )
 {
   // set attributes
@@ -48,7 +46,7 @@ proc setupShadowCamera( string $cameraShape )
   // add extra attributes
   if ( !objExists( ($cameraShape+".liqShadowResolution") ) )     addAttr -ln liqShadowResolution       -at long      -dv 512                          -k true  $cameraShape;
   if ( !objExists( ($cameraShape+".liqMidPointShadow") ) )       addAttr -ln liqMidPointShadow         -at bool      -dv 0                            -k true  $cameraShape;
-  if ( !objExists( ($cameraShape+".liqMidPointRatio") ) )		 addAttr -ln liqMidPointRatio          -at "float"   -dv 0.1                          -k true  $cameraShape;
+  if ( !objExists( ($cameraShape+".liqMidPointRatio") ) )		    addAttr -ln liqMidPointRatio          -at "float"   -dv 0.1                          -k true  $cameraShape;
   if ( !objExists( ($cameraShape+".liqDeepShadows") ) )          addAttr -ln liqDeepShadows            -at bool      -dv 0                            -k true  $cameraShape;
   if ( !objExists( ($cameraShape+".liqPixelSamples") ) )         addAttr -ln liqPixelSamples           -at short     -dv 1                            -k true  $cameraShape;
   if ( !objExists( ($cameraShape+".liqVolumeInterpretation") ) ) addAttr -ln liqVolumeInterpretation   -at enum      -enumName "Discreet:Continuous"  -k true  $cameraShape;
@@ -100,7 +98,8 @@ global proc connectExistingShadowCamera( string $nodeDotAttr, string $flag, stri
   string $theCamera = "";
   string $nodetype  = nodeType( $source );
 
-  switch( $nodetype ) {
+  switch( $nodetype ) 
+  {
     case "transform":
       string $tmp[] = `listRelatives -c -type camera $source`;
       if ( size( $tmp ) ) $theCamera = $tmp[0];
@@ -113,8 +112,8 @@ global proc connectExistingShadowCamera( string $nodeDotAttr, string $flag, stri
       break;
   }
 
-
-  if ( size( $theCamera ) ) {
+  if ( size( $theCamera ) ) 
+  {
     connectAttr ($theCamera+".message") $nodeDotAttr;
     setupShadowCamera( $theCamera );
   }
@@ -154,10 +153,10 @@ global proc shadowCameraReplace( string $nodeDotAttr )
   int $sizeAttr = `getAttr -size $nodeDotAttr`;
 
   // created or update existing attributes
-  for ( $i=0; $i<$sizeAttr; $i++ ) {
-
-    if ( !`attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) {
-
+  for ( $i=0; $i<$sizeAttr; $i++ ) 
+  {
+    if ( !`attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) 
+    {
       setParent $gLiquidShadowCameraParentLayout;
       setParent AEliquidLightShadowCamerasColumnL;
 
@@ -171,8 +170,9 @@ global proc shadowCameraReplace( string $nodeDotAttr )
                                 -ignore             ("ignoreShadowCamera "+$nodeDotAttr+"["+$i+"]")
                                 -unignore           ("unIgnoreShadowCamera "+$nodeDotAttr+"["+$i+"]")
                                 ("shadowCameraNavGrp_"+$i);
-    } else {
-
+    } 
+    else 
+    {
       attrNavigationControlGrp  -e
                                 -at ($nodeDotAttr+"["+$i+"]")
                                 -createNew          ("addShadowCamera "+$nodeDotAttr+"["+$i+"]")
@@ -186,14 +186,14 @@ global proc shadowCameraReplace( string $nodeDotAttr )
     }
   }
 
-
   // add either the default navigation grp or add an extra one
-  if ( $sizeAttr == 0 ) {
-
+  if ( $sizeAttr == 0 ) 
+  {
     setParent $gLiquidShadowCameraParentLayout;
     setParent AEliquidLightShadowCamerasColumnL;
 
-    if ( !`attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) {
+    if ( !`attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) 
+    {
       attrNavigationControlGrp  -l ("Shadow Camera "+$i)
                                 -ann "click here to add a shadow camera or drop a shadow camera on the field"
                                 -at ($nodeDotAttr+"["+$i+"]")
@@ -204,7 +204,9 @@ global proc shadowCameraReplace( string $nodeDotAttr )
                                 -ignore             ("ignoreShadowCamera "+$nodeDotAttr+"["+$i+"]")
                                 -unignore           ("unIgnoreShadowCamera "+$nodeDotAttr+"["+$i+"]")
                                 ("shadowCameraNavGrp_"+$i);
-    } else {
+    } 
+    else 
+    {
       attrNavigationControlGrp  -e
                                 -at ($nodeDotAttr+"["+$i+"]")
                                 -createNew          ("addShadowCamera "+$nodeDotAttr+"["+$i+"]")
@@ -215,13 +217,13 @@ global proc shadowCameraReplace( string $nodeDotAttr )
                                 -unignore           ("unIgnoreShadowCamera "+$nodeDotAttr+"["+$i+"]")
                                 ("shadowCameraNavGrp_"+$i);
     }
-
-  } else {
-
-    if ( size( `connectionInfo -sfd ($nodeDotAttr+"["+($i-1)+"]")` ) ) {
-
-      if ( !`attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) {
-
+  } 
+  else 
+  {
+    if ( size( `connectionInfo -sfd ($nodeDotAttr+"["+($i-1)+"]")` ) ) 
+    {
+      if ( !`attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) 
+      {
         setParent $gLiquidShadowCameraParentLayout;
         setParent AEliquidLightShadowCamerasColumnL;
 
@@ -235,7 +237,9 @@ global proc shadowCameraReplace( string $nodeDotAttr )
                                   -ignore             ("ignoreShadowCamera "+$nodeDotAttr+"["+$i+"]")
                                   -unignore           ("unIgnoreShadowCamera "+$nodeDotAttr+"["+$i+"]")
                                   ("shadowCameraNavGrp_"+$i);
-      } else {
+      } 
+      else 
+      {
         attrNavigationControlGrp  -e
                                 -at ($nodeDotAttr+"["+$i+"]")
                                 -createNew          ("addShadowCamera "+$nodeDotAttr+"["+$i+"]")
@@ -250,13 +254,11 @@ global proc shadowCameraReplace( string $nodeDotAttr )
   }
 
 
-  while( `attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) {
-
+  while( `attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) 
+  {
     deleteUI ("shadowCameraNavGrp_"+$i);
     $i++;
   }
-
-
 }
 
 global proc shadowCameraNew( string $nodeDotAttr )
@@ -272,8 +274,6 @@ global proc shadowCameraNew( string $nodeDotAttr )
 
   setUITemplate -ppt;
 }
-
-
 
 global proc mainShadowStatusNew( string $nodeDotAttr )
 {
@@ -298,12 +298,6 @@ global proc mainShadowStatusReplace( string $nodeDotAttr )
 
   scriptJob -runOnce true -attributeChange $nodeDotAttr ("mainShadowStatusReplace "+$nodeDotAttr);
 }
-
-
-
-
-
-
 
 global proc AEliquidLightTemplate( string $nodeDotAttr )
 {
@@ -339,6 +333,7 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
       editorTemplate -addSeparator;
       editorTemplate -addControl "nearClipPlane";
       editorTemplate -addControl "farClipPlane";
+      editorTemplate -addControl "shadowMainCamera";
       editorTemplate -ccu "mainShadowStatusNew" "mainShadowStatusReplace" "generateMainShadow";
     editorTemplate -endLayout;
     editorTemplate -beginLayout "Extra Shadows";
@@ -366,9 +361,6 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
   editorTemplate -endScrollLayout;
   layout -e -vis true "AEcontrolFormLayout";
 }
-
-
-
 
 global proc AEliquidAreaLight( string $node )
 {

@@ -45,14 +45,11 @@
   #define RI_VERBATIM "verbatim"
 #endif
 
-
 extern MString  liqglo_ribDir;
 extern MString  liqglo_textureDir;
 extern MString  liqglo_projectDir;
 extern MString  liqglo_sceneName;
 extern long     liqglo_lframe;
-
-
 
 void* liqJobList::creator()
 {
@@ -72,7 +69,6 @@ MSyntax liqJobList::syntax()
   return syn;
 }
 
-
 MStatus liqJobList::doIt(const MArgList& args)
 {
   MStatus status;
@@ -80,42 +76,47 @@ MStatus liqJobList::doIt(const MArgList& args)
 
   doShadows = false;
   int flagIndex = args.flagIndex("sh", "shadows");
-  if (flagIndex != MArgList::kInvalidArgIndex) {
+  if (flagIndex != MArgList::kInvalidArgIndex) 
+  {
     doShadows = true;
   }
 
   doSingleShadows = false;
   flagIndex = args.flagIndex("ssh", "singleShadows");
-  if (flagIndex != MArgList::kInvalidArgIndex) {
+  if (flagIndex != MArgList::kInvalidArgIndex) 
+  {
     doSingleShadows = true;
   }
 
   doCamera = false;
   flagIndex = args.flagIndex("cam", "camera");
-  if (flagIndex != MArgList::kInvalidArgIndex) {
+  if (flagIndex != MArgList::kInvalidArgIndex) 
+  {
     doCamera = true;
   }
 
   fullPath = false;
   flagIndex = args.flagIndex("fp", "fullPath");
-  if (flagIndex != MArgList::kInvalidArgIndex) {
+  if (flagIndex != MArgList::kInvalidArgIndex) 
+  {
     fullPath = true;
   }
 
   debug = false;
   flagIndex = args.flagIndex("d", "debug");
-  if (flagIndex != MArgList::kInvalidArgIndex) {
+  if (flagIndex != MArgList::kInvalidArgIndex) 
+  {
     debug = true;
   }
 
-  if ( !doShadows && !doSingleShadows && !doCamera ) {
+  if ( !doShadows && !doSingleShadows && !doCamera ) 
+  {
     status = MS::kFailure;
     MString err( "LiquidJobList : Not enough valid flags specified" );
     status.perror( err );
     MGlobal::displayError( err );
     return status;
   }
-
 
   result.clear();
 
@@ -124,7 +125,7 @@ MStatus liqJobList::doIt(const MArgList& args)
 
 MStatus liqJobList::redoIt()
 {
-  if ( debug ) cout <<"redoIt"<<endl;
+  LIQDEBUGPRINTF( "redoIt" );
   clearResult();
   MStatus status;
   MObject cameraNode;
@@ -135,95 +136,92 @@ MStatus liqJobList::redoIt()
   try {
 
     ribTranslator.m_escHandler.beginComputation();
-
-
+    //
     // set the current project directory
     //
     MString MELCommand = "workspace -q -rd";
     MString MELReturn;
     MGlobal::executeCommand( MELCommand, MELReturn );
     liqglo_projectDir = MELReturn;
-
-
+    //
     // set the current scene name
     //
     liqglo_sceneName = liquidTransGetSceneName();
-
-
+    //
     // set the frame
     //
     liqglo_lframe = ( int ) MAnimControl::currentTime().as( MTime::uiUnit() );
-
-
+    //
     // read the globals
     //
-    if ( debug ) cout <<"  read globals..."<<flush;
-    if ( ribTranslator.liquidInitGlobals() ) ribTranslator.liquidReadGlobals();
-    else {
+    LIQDEBUGPRINTF( "read globals...");
+    if ( ribTranslator.liquidInitGlobals() ) 
+      ribTranslator.liquidReadGlobals();
+    else 
+    {
       MString err("no liquidGlobals node in the scene");
       throw err;
     }
-    if ( debug ) cout <<"done !"<<endl;
-
-
+    LIQDEBUGPRINTF( "done !");
+    //
     // verify the output directories
     //
-    if ( ribTranslator.verifyOutputDirectories() ) {
+    if ( ribTranslator.verifyOutputDirectories() ) 
+    {
       MString err("The output directories are not properly setup in the globals");
       throw err;
     }
-
-
+    //
     // build the job list
     //
-    if ( debug ) cout <<"  build jobs..."<<flush;
-    if ( ribTranslator.buildJobs() != MS::kSuccess ) {
+    LIQDEBUGPRINTF("  build jobs..." );
+    if ( ribTranslator.buildJobs() != MS::kSuccess ) 
+    {
       MString err("buildJob() Failed");
       throw err;
     }
-    if ( debug ) cout <<"done !"<<endl;
-
+    LIQDEBUGPRINTF( "done !");
 
     std::vector<structJob>::iterator iterShad = ribTranslator.jobList.begin();
-
+    //
     // get the shadows
     //
-    if ( doShadows || doSingleShadows ) {
-      if ( debug ) cout <<"  do shadows..."<<flush;
-
-      while ( iterShad != ribTranslator.jobList.end() ) {
-        if ( doShadows && iterShad->isShadow && iterShad->everyFrame ) result.append( liquidGetRelativePath(fullPath, iterShad->ribFileName, liqglo_projectDir) );
-        if ( doSingleShadows && iterShad->isShadow && !iterShad->everyFrame ) {
+    if ( doShadows || doSingleShadows ) 
+    {
+      LIQDEBUGPRINTF("  do shadows..." );
+      while ( iterShad != ribTranslator.jobList.end() ) 
+      {
+        if ( doShadows && iterShad->isShadow && iterShad->everyFrame ) 
           result.append( liquidGetRelativePath(fullPath, iterShad->ribFileName, liqglo_projectDir) );
-        }
+        if ( doSingleShadows && iterShad->isShadow && !iterShad->everyFrame ) 
+          result.append( liquidGetRelativePath(fullPath, iterShad->ribFileName, liqglo_projectDir) );
         ++iterShad;
       }
-
-      if ( debug ) cout <<"done !"<<endl;
+      LIQDEBUGPRINTF( "done !");
     }
-
-
+    //
     // get the camera
     //
-    if ( doCamera ) {
-      if ( debug ) cout <<"  do camera..."<<flush;
+    if ( doCamera ) 
+    {
+      LIQDEBUGPRINTF( "  do camera..." );
       iterShad = ribTranslator.jobList.end();
       --iterShad;
       result.append( liquidGetRelativePath(fullPath, iterShad->ribFileName, liqglo_projectDir) );
-      if ( debug ) cout <<"done !"<<endl;
+      LIQDEBUGPRINTF( "done !");
     }
 
     ribTranslator.m_escHandler.endComputation();
 
   } catch ( MString msg ) {
-
+    //
     // catch any error
     //
-    MGlobal::displayError("liquidJobList : "+msg);
+    MGlobal::displayError( "liquidJobList : " + msg );
     ribTranslator.m_escHandler.endComputation();
     return MS::kFailure;
   }
-
+  //
   // output the result
   //
   setResult( result );

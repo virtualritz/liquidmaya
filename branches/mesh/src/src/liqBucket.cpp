@@ -58,7 +58,7 @@ int bucket::set(const bucketInfo &info, const BUCKETDATATYPE *pixels )
 	m_info.top			= info.top;
 	m_info.channels	= info.channels;
 	m_info.channels	= info.channels;
-	unsigned size = (info.right-info.left)*abs(info.top-info.bottom)*info.channels*sizeof(BUCKETDATATYPE);
+	unsigned size = ( info.right - info.left ) * abs( (long double)(info.top - info.bottom) ) * info.channels * sizeof( BUCKETDATATYPE );
 	m_pixels		= new BUCKETDATATYPE[size];
   if( !m_pixels )
 		return 1;

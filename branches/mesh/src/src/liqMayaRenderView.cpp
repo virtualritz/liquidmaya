@@ -377,7 +377,7 @@ MStatus liqMayaRenderCmd::getBucket(const int socket,const unsigned int numChann
 		long int hi = std::abs( (long int)info.bottom - (long int)info.top ) ;
 		const unsigned int size = (info.right-info.left)* hi * numChannels * sizeof(BUCKETDATATYPE);  
 	#else
-		const unsigned int size = (info.right-info.left)*abs(info.bottom-info.top)*numChannels*sizeof(BUCKETDATATYPE);
+	  const unsigned int size = (info.right-info.left)*labs( (long int)info.bottom - (long int)info.top )*numChannels*sizeof(BUCKETDATATYPE);
 	#endif
 #endif
 	
@@ -386,6 +386,9 @@ MStatus liqMayaRenderCmd::getBucket(const int socket,const unsigned int numChann
 #if defined(OSX)  
 //	printf("[liqMayaRenderView] sizeof(BUCKETDATATYPE) = %d\n", sizeof(BUCKETDATATYPE) );
 //	printf("[liqMayaRenderView] abs(info.bottom-info.top) = %d\n", std::abs( (long int)info.bottom - (long int)info.top ) );
+#else
+//	printf("[liqMayaRenderView] sizeof(BUCKETDATATYPE) = %d\n", sizeof(BUCKETDATATYPE) );
+//	printf("[liqMayaRenderView] labs(info.bottom-info.top) = %d\n", labs( info.bottom - info.top ) );
 #endif
 
 

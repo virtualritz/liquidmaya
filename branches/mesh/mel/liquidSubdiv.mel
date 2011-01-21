@@ -54,7 +54,7 @@ global proc liquidMakeSubdivUI()
 
       string $menu = `optionMenuGrp -cal 1 "right" -label "Interpolate Boundary" liqSubdivInterpolate`;
       int $i;
-      for( $i = 0; $i < 3; ++$i ) 
+      for ( $i = 0; $i < 3; ++$i ) 
         menuItem -data $i -label $liqBoundaryModes[ $i ];
       
       $ck += 1; // wtf -v doesn't work -- have to go through the selection
@@ -71,7 +71,7 @@ global proc liquidMakeSubdivUI()
 
       string $menu = `optionMenuGrp -cal 1 "right" -label "UV Interpolation" liqSubdivUV`;
       int $i;
-      for( $i = 0; $i < 3; ++$i ) 
+      for ( $i = 0; $i < 3; ++$i ) 
         menuItem -data $i -label $liqUVinterpModes[ $i ];
       
       $ck += 1; // wtf -v doesn't work -- have to go through the selection
@@ -124,13 +124,13 @@ global proc liquidMakeSubdiv()
       setAttr ( $current + ".mtorSubdiv" ) true;
     
     if ( !`attributeQuery -node $current -ex "liqSubdivUVInterpolation"`) 
-      addAttr -ln liqSubdivUVInterpolation -at short $current;
+      addAttr -ln liqSubdivUVInterpolation -at "enum" -enumName "True Facevarying:New Facevarying:Facevertex" $current;
     
     if ( `attributeQuery -node $current -ex "liqSubdivUVInterpolation"`) 
       setAttr ( $current + ".liqSubdivUVInterpolation" ) $fv;
     
     if ( !`attributeQuery -node $current -ex "liqSubdivInterpolateBoundary"`) 
-      addAttr -ln liqSubdivInterpolateBoundary -at short $current;
+      addAttr -ln liqSubdivInterpolateBoundary -at "enum" -enumName "Off:Sharp:Smooth" $current;
     
     if ( `attributeQuery -node $current -ex "liqSubdivInterpolateBoundary"`) 
       setAttr ( $current + ".liqSubdivInterpolateBoundary" ) $interp;

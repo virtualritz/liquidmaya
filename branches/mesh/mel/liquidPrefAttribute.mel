@@ -54,7 +54,7 @@ global proc liquidAddPrefAttribute()
 
 global proc liquidDeletePrefAttribute()
 {
-  string $nodes[] = `ls -dag -sl -type nurbsSurface -type mesh`;
+  string $nodes[] = `ls -dag -sl -type nurbsSurface -type nurbsCurve -type mesh`;
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( `attributeQuery -node $currentNode -ex "rmanP__Pref"` ) deleteAttr ( $currentNode + ".rmanP__Pref" );
@@ -69,7 +69,7 @@ global proc liquidAddNrefAttribute()
   // the C++ plug-in, in not here!!!
   liquidDeleteNrefAttribute;
 
-  string $nodes[] = `ls -dag -sl -type nurbsSurface -type mesh`;
+  string $nodes[] = `ls -dag -sl -type nurbsSurface -type nurbsCurve -type mesh`;
   string $currentNode;
   for ( $currentNode in $nodes ) {
     if ( objExists( ($currentNode+".rmanNNref") ) ) deleteAttr ($currentNode+".rmanNNref");

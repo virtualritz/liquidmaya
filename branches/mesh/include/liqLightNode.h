@@ -106,6 +106,7 @@ class liqLightNode : public MPxNode
     static MObject aShadingRateFactor;
     static MObject aNearClipPlane;
     static MObject aFarClipPlane;
+    static MObject aShadowMainCamera;
     static MObject aShadowCameras;
 
     static MObject aResolution;

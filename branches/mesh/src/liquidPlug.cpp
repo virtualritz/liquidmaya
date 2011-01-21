@@ -89,15 +89,14 @@ static const char * LIQUIDVERSION =
 #define DEFINED_LIQUIDVERSION
 #endif
 
-extern bool liquidBin;
-
+bool liquidBin = false;
 
 ////////////////////// EXPORTS /////////////////////////////////////////////////////////
 LIQUID_EXPORT MStatus initializePlugin(MObject obj)
 //  Description:
 //      Register the command when the plug-in is loaded
 {
-  liquidBin = false;
+  // liquidBin = false;
 
   MStatus status;
 
@@ -468,22 +467,29 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
     MString tmphome( tmphomeChar );
     sourceLine += "\"" + liquidSanitizePath( tmphome ) + "/mel/" + "liquidStartup.mel\"";
 #else
-	for (unsigned k( 0 );k<strlen(tmphomeChar); k++ ) {
+	for (unsigned k( 0 ); k < strlen(tmphomeChar) ; k++ ) 
 		if ( tmphomeChar[ k ] == '\\' ) tmphomeChar[ k ] = '/';
-	}
+	
 
 	MString tmphome( tmphomeChar );
 	sourceLine += "\"" + tmphome + "/mel/" + "liquidStartup.mel\"";
 #endif
-  } else {
+  } 
+  else 
+  {
     sourceLine += "\"liquidStartup.mel\"";
   }
 
   status = MGlobal::executeCommand(sourceLine);
-
-  status = plugin.registerUI("liquidStartup", "liquidShutdown");
+  if ( status == MS::kSuccess )
+  {
+    stringstream ss;
+    ss << "Liquid " << LIQUIDVERSION << " registered" << ends;
+    liquidMessage( ss.str(), messageInfo );
+    status = plugin.registerUI("liquidStartup", "liquidShutdown");
+  }
   LIQCHECKSTATUS( status, "Can't register liquidStartup and liquidShutdown interface scripts" );
-  cout << "Liquid " << LIQUIDVERSION << " registered"<< endl;
+  
   return MS::kSuccess;
 }
 
@@ -751,7 +757,9 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
   status = MSwatchRenderRegister::unregisterSwatchRender( "liqCoShaderSwatch" );
   LIQCHECKSTATUS( status, "Can't deregister liquidCoShader swatch generator" );
 
-  cout <<"Liquid "<< LIQUIDVERSION << " unregistered"<<endl<<endl;
+  stringstream ss;
+  ss << "Liquid " << LIQUIDVERSION << " unregistered" << ends;
+  liquidMessage( ss.str(), messageInfo );
 
 	liqShaderFactory::deleteInstance();
 

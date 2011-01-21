@@ -44,7 +44,7 @@
 
 
 
-typedef enum {
+typedef enum SHADER_TYPE {
     SHADER_TYPE_UNKNOWN,
     SHADER_TYPE_POINT,
     SHADER_TYPE_COLOR,
@@ -66,7 +66,7 @@ typedef enum {
 } SHADER_TYPE;
 
 
-typedef enum {
+typedef enum SHADER_DETAIL {
     SHADER_DETAIL_UNKNOWN,
     SHADER_DETAIL_VARYING,
     SHADER_DETAIL_UNIFORM

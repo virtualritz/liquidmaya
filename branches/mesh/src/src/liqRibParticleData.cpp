@@ -91,7 +91,7 @@ public:
   int m_particleId; // global particle id
 };
 
-typedef shared_ptr< liq_particleInfo > liq_particleInfoPtr;
+typedef boost::shared_ptr< liq_particleInfo > liq_particleInfoPtr;
 typedef vector< liq_particleInfoPtr > liq_particleInfoVector ;
 
 class liq_particleIdSort

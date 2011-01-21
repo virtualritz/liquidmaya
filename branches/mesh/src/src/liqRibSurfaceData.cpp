@@ -216,13 +216,10 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
     //
     vknot[ 0 ] = vknot[ 1 ];
     vknot[ k + 1 ] = vknot[ k ];
-    
-    
 
     // Read CV information
     //
     MItSurfaceCV cvs( surface, liquidRenderer.requires_SWAPPED_UVS == false );
-    
     
     if ( liquidRenderer.requires_SWAPPED_UVS )
     {
@@ -232,9 +229,9 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
 				while( !cvs.isRowDone() ) 
 				{
 					MPoint pt( cvs.position( MSpace::kObject ) );
-					*cvPtr++ = ( RtFloat )pt.x;
-					*cvPtr++ = ( RtFloat )pt.y; 
-					*cvPtr++ = ( RtFloat )pt.z;
+					*cvPtr++ = ( RtFloat )(pt.x * pt.w);
+					*cvPtr++ = ( RtFloat )(pt.y * pt.w); 
+					*cvPtr++ = ( RtFloat )(pt.z * pt.w);
 					*cvPtr++ = ( RtFloat )pt.w;
 					cvs.next();
 				}
@@ -243,9 +240,7 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
 		}
 		else
     {
-    	// Reverse v knots order for matching Maya texture coordinates	
-    	
-    	    	
+      // Reverse v knots order for matching Maya texture coordinates	
     	// store rows in reversed order
     	RtFloat* cvPtr( CVs.get() );
     	cvPtr += nu * ( nv - 1 ) * 4; // set pointer to last row in array
@@ -255,27 +250,24 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
 				while( !cvs.isRowDone() ) 
 				{
 					MPoint pt( cvs.position( MSpace::kObject ) );
-					*cvPtr++ = ( RtFloat )pt.x;
-					*cvPtr++ = ( RtFloat )pt.y; 
-					*cvPtr++ = ( RtFloat )pt.z;
+					*cvPtr++ = ( RtFloat )(pt.x * pt.w);
+					*cvPtr++ = ( RtFloat )(pt.y * pt.w); 
+					*cvPtr++ = ( RtFloat )(pt.z * pt.w);
 					*cvPtr++ = ( RtFloat )pt.w;
 					cvs.next();
+					// LIQDEBUGPRINTF( "-> %f %f %f %f\n", pt.x, pt.y, pt.z, pt.w  );
 				}
 				cvs.nextRow();
 				cvPtr -= (nu * 4 * 2); // skip two rows
 			}
-    	
     }
-
     // Store trim information
     //
     if ( nurbs.isTrimmedSurface() ) 
     {
       hasTrims = true;
       LIQDEBUGPRINTF( "-> storing trim information\n" );
-
       unsigned numRegions, numBoundaries, numEdges, numCurves;
-
       // Get the number of loops
       //
       numRegions = nurbs.numRegions();
@@ -285,7 +277,6 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
         numBoundaries = nurbs.numBoundaries( r );
         nloops += numBoundaries;
       }
-
       // Get the number of trim curves in each loop and gather curve
       // information
       //
@@ -300,7 +291,6 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
           {
             MObjectArray curves( nurbs.edge( r, b, e, true ) );
             numCurves += curves.length();
-
             // Gather extra stats for each curve
             //
             for ( unsigned c( 0 ); c < curves.length(); c++ ) 
@@ -346,7 +336,6 @@ liqRibSurfaceData::liqRibSurfaceData( MObject surface )
                 }
                 w.push_back( pnt.w );
               }
-
               // Read the knot array for each curve
               //
               MDoubleArray knotsTmpArray;
@@ -469,7 +458,9 @@ bool liqRibSurfaceData::writeNextGrain()
                  const_cast< RtFloat* >( &w[ 0 ] ) );
     ++grain;
     return true;
-  } else if ( !tokenPointerArray.empty() ) {
+  } 
+  else if ( !tokenPointerArray.empty() ) 
+  {
     unsigned numTokens( tokenPointerArray.size() );
     scoped_array< RtToken > tokenArray( new RtToken[ numTokens ] );
     scoped_array< RtPointer > pointerArray( new RtPointer[ numTokens ] );
@@ -491,7 +482,6 @@ bool liqRibSurfaceData::writeNextGrain()
 
     grain = 0;
   }
-
   return false;
 }
 
@@ -516,7 +506,6 @@ bool liqRibSurfaceData::compare( const liqRibData & otherObj ) const
   {
     return false;
   }
-
   // Check Knots
   unsigned i;
   unsigned last( nu + uorder );
@@ -531,7 +520,6 @@ bool liqRibSurfaceData::compare( const liqRibData & otherObj ) const
     if ( !equiv( vknot[ i ], other.vknot[ i ] ) )
       return false;
   }
-
   // Check CVs
   last = nu * nv * 4;
   for ( i = 0; i < last; ++i ) 
@@ -539,7 +527,6 @@ bool liqRibSurfaceData::compare( const liqRibData & otherObj ) const
     if ( !equiv( CVs[ i ], other.CVs[ i ] ) )
       return false;
   }
-
   // TODO: Check trims as well
   return true;
 }
