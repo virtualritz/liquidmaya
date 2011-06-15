@@ -103,7 +103,7 @@ bool liqNodeSwatch::doIteration () {
     doneFObj.setFullName( doneFile );
 
     if ( doneFObj.exists() ) {
-
+	//cout << "Updating " << nodename << " with " << filePreviewPath << endl;
 	status = img.readFromFile( filePreviewPath );
 
       if ( status == MS::kSuccess ) {
@@ -138,10 +138,24 @@ bool liqNodeSwatch::doIteration () {
 
       if ( nodeType == "liquidRibBox" ) preview += "/icons/liquidRibBoxSwatch.iff";
       else if ( nodeType == "liquidLight" ) preview += "/icons/liquidLightSwatch.iff";
-      else preview += "/icons/noPreview.iff";
+      else preview += "/icons/noPreview.jpg";
 
-      img.readFromFile( preview );
-      img.verticalFlip();
+      status = img.readFromFile( preview );
+      if ( status == MS::kSuccess ) {
+        img.verticalFlip();
+      } else {
+	  	// Try to get a valid image ...
+      	img.create( resolution(), resolution() );
+		unsigned char *pixels = img.pixels();
+		unsigned char * p = pixels;
+		for( unsigned int i=0; i < resolution() * resolution(); i++ )
+		{
+			*p = 1; p++;
+			*p = 0; p++;
+			*p = 0; p++;
+			*p = 1; p++;
+		}
+	  }
     }
     result = true;
 

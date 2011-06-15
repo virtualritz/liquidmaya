@@ -98,7 +98,7 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 
 	DspyReorderFormatting(formatCount,format,formatCount,outformat);
 
-	char hostname[32] = "localhost", *h;
+	char hostname[1024] = "localhost", *h;
 	if(PkDspyErrorNone==DspyFindStringInParamList("host",&h,paramCount,parameters)){
 		strcpy(hostname,h);
 	}

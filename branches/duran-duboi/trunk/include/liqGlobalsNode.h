@@ -141,6 +141,7 @@ class liqGlobalsNode : public MPxNode
 	static MObject aOutputMayaPolyCreases;
 	static MObject aRenderAllCurves;
     static MObject aOutputMeshUVs;
+    static MObject aOutputMeshAsRMSArrays;
 	static MObject aIlluminateByDefault;
 	static MObject aLiquidSetLightLinking;
 	static MObject aIgnoreSurfaces;
@@ -150,6 +151,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aOutputShadersInShadows;
     static MObject aOutputShadersInDeepShadows;
     static MObject aOutputLightsInDeepShadows;
+	static MObject aExportAllShadersParameters;
 
     static MObject aOutputShadowPass;
     static MObject aOutputHeroPass;

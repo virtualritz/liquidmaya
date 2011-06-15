@@ -94,7 +94,7 @@ liqMayaRenderCmd::liqMayaRenderCmd()
 	m_quantize[1] = 255.0;
 	m_quantize[2] = 0.0;
 	m_quantize[3] = 255.0;
-	m_timeout = 30;
+	m_timeout = 50;
 	m_bGetRenderRegion = false;
 #ifdef _WIN32
 	WSADATA wsaData;
@@ -203,8 +203,8 @@ MStatus liqMayaRenderCmd::redoIt()
 	else{
 		int s ,slaveSocket,status = 0;
 		//get the hostname
-		int hostlen=32;
-		char hostname[32] = "localhost";
+		int hostlen=1024;
+		char hostname[1024] = "localhost";
 		if(!m_bLocalhost){
 			status = gethostname(hostname,hostlen);
 			CHECKERRNO(status,"[liqMayaRenderView] gethostname(hostname)",);

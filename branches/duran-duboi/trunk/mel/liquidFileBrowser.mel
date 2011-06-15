@@ -298,12 +298,12 @@ global proc liquidFileBrowserWindow_updateFinder( int $doLoad, string $filemask,
   string $finder = `finder -q -fp lfb_finder`;
   string $newPath = $finder;
 
-  //trace $gLiquidFileBrowserWindowDirectory;
+  //ltrace $gLiquidFileBrowserWindowDirectory;
 
   if ( `filetest -f $newPath` ) {
 
     /*** file selection ***/
-    //trace "file:";
+    //ltrace "file:";
     $newPath = $gLiquidFileBrowserWindowDirectory + "/" + $fileInList[0] ;
     finder -e -fp $newPath lfb_finder;
     if ( $doLoad ) liquidFileBrowserWindow_load( $filemask, $callback );
@@ -311,12 +311,12 @@ global proc liquidFileBrowserWindow_updateFinder( int $doLoad, string $filemask,
   } else if ( `filetest -d $newPath` ) {
 
     /*** directory selection ***/
-    //trace ( "dir: " + $gLiquidFileBrowserWindowDirectory );
+    //ltrace ( "dir: " + $gLiquidFileBrowserWindowDirectory );
     $newPath = substitute("[^/]*$", $newPath, "");
     $newPath = ( $gLiquidFileBrowserWindowDirectory + "/" + substitute("/$", $fileInList[0], "" ) );
     finder -e -fp $newPath lfb_finder;
 
-  } //else trace ( "all failed ! > " + $newPath );
+  } //else ltrace ( "all failed ! > " + $newPath );
 
   string $path = dirname( $newPath );
 
@@ -372,7 +372,18 @@ global proc liquidFileBrowserWindow_wrapCallback(string $callback, string $arg1,
 */
 global proc liquidFileBrowserWindow( string $path, string $filemask, string $callback )
 {
-	if (`about -nt` || `about -mac`)
+	// get maya version
+	string $tmp[];
+	string $mayaVersion = `about -v`;
+	tokenize($mayaVersion, " ", $tmp);
+	int $mayaNumVersion = $tmp[0];
+	// get starting dir
+	global string $gLiquidFileBrowserWindowDirectory;
+	if( $gLiquidFileBrowserWindowDirectory == "" )
+	{
+		$gLiquidFileBrowserWindowDirectory = substitute("/$", $path, "");
+	}
+	if(`about -nt` || `about -mac`)
 	{
 		string $workspace = `workspace -q -fn`;
 		// note globals do NOT get set
@@ -397,16 +408,36 @@ global proc liquidFileBrowserWindow( string $path, string $filemask, string $cal
 			return;
 		}
 	}
+	else if( $mayaNumVersion >= 2011 )
+	{
+		tokenize($filemask, ";", $tmp);
+		$filemask = "";
+		for($i=0; $i<size($tmp); $i++)
+		{
+			$filemask += $tmp[$i];
+			if( $i!=size($tmp)-1 )
+			{
+				$filemask += ";;";
+			}
+		}
+		string $filename[] = `fileDialog2 -fileFilter $filemask -fileMode 1 -caption "Browser" -startingDirectory $gLiquidFileBrowserWindowDirectory`;
+		if( size($filename) )
+		{
+			if( $callback !=  "" )
+			{
+				string $cmd = `substituteAllString $callback "\\\"" "\""` + " \"" + $filename[0] + "\" \"" + $filename[0] + "\"";
+				print( $cmd + "\n");
+				eval $cmd;
+			}
+		}
+		return;
+	}
+
 
   if ( `window -q -ex liquidFileBrowserWindow` ) deleteUI liquidFileBrowserWindow;
   window -title "Liquid Browser" -menuBar true -width 400 -height 300 liquidFileBrowserWindow;
 
-  global string $gLiquidFileBrowserWindowDirectory;
   global string $gLiquidFileBrowserWindowFileMask;
-  if( $gLiquidFileBrowserWindowDirectory == "" )
-  {
-	  $gLiquidFileBrowserWindowDirectory = substitute("/$", $path, "");
-  }
   $gLiquidFileBrowserWindowFileMask = $filemask;
 
   // add the bookmarks menu

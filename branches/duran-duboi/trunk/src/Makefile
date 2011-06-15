@@ -6,7 +6,6 @@ VPATH ?= $(VPATHDEBUG)
 # -lefence
 #-llkm -lzip -ltarget
 LIQUIDBINLIBS =		$(LIBS) $(MAYALIBS) \
-					-lOpenMayalib \
 					-lOpenMayaFX \
 					-lAnimSlice \
 					-lDeformSlice \
@@ -92,7 +91,7 @@ LIQUIDMAINOBJS = liqShader.$(OBJEXT) \
 					liqGetSloInfo.$(OBJEXT) \
 					liqGetAttr.$(OBJEXT) \
 					liqRibGenData.$(OBJEXT) \
-					liqRibSubdivisionData.$(OBJEXT) \
+					liqRibHierarchicalSubdivisionData.$(OBJEXT) \
 					liqRibMayaSubdivisionData.$(OBJEXT) \
 					liqProcessLauncher.$(OBJEXT) \
 					liqRenderer.$(OBJEXT) \
@@ -113,7 +112,16 @@ LIQUIDMAINOBJS = liqShader.$(OBJEXT) \
 					liqRiCommands.$(OBJEXT) \
 					liqRibImplicitSphereData.$(OBJEXT)\
 					liqCoShaderNode.$(OBJEXT) \
-					liqShaderFactory.$(OBJEXT)
+					liqShaderFactory.$(OBJEXT) \
+					liqRibShaderTranslator.$(OBJEXT) \
+					liqSurfaceSwitcherNode.$(OBJEXT) \
+					liqSwitcherNode.$(OBJEXT) \
+					liqGenericShader.$(OBJEXT) \
+					liqSwitcher.$(OBJEXT) \
+					liqDisplacementSwitcherNode.$(OBJEXT) \
+					liqParseString.$(OBJEXT) \
+					liqRibSubdivisionData.$(OBJEXT) \
+
 
 
 LIQUIDOUTMAINOBJS := $(patsubst %,$(VPATH)/%,$(LIQUIDMAINOBJS))
@@ -147,14 +155,14 @@ $(LIQUIDPLUG) : $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDLIB)
 	@echo "MAKE LIQUID PLUG"
 	@echo $@
 	@echo "-----------------------"
-	$(CPP) $(LDFLAGS) -shared -o $(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDLIB) $(LIBS) -lprman
+	$(CPP) $(LDFLAGS) $(SHAREDFLAG) -o $(LIQUIDPLUG) $(VPATH)/liquidPlug.$(OBJEXT) $(LIQUIDLIB) $(LIBS)
 
 $(LIQUIDBIN) : $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB)
 	@echo "-----------------------"
 	@echo "MAKE LIQUID BIN"
 	@echo $@
 	@echo "-----------------------"
-	$(CPP) -DLIQUIDBIN $(LDFLAGS) -o $(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB) $(LIQUIDBINLIBS) -lprman
+	$(CPP) -DLIQUIDBIN $(LDFLAGS) -o $(LIQUIDBIN) $(VPATH)/liquidBin.$(OBJEXT) $(LIQUIDLIB) $(LIQUIDBINLIBS)
 
 $(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
 	@echo "-----------------------"
@@ -165,8 +173,11 @@ $(LIQUIDLIB) : $(LIQUIDOUTMAINOBJS)
 
 ifneq "$(LIQRMAN)" "GENERIC"
 $(LIQUIDDPY) : $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT)
+	@echo "-----------------------"
+	@echo "MAKE DSPY"
 	@echo $@
-	$(CPP) -shared $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT) -I$(LIQRMANPATH) -L$(LIQRMANPATH)/lib -o $(LIQUIDDPY)
+	@echo "-----------------------"
+	$(CPP) $(LDDPYFLAGS) -shared $(VPATH)/$(LIQDISPLAYOBJS).$(OBJEXT) -I$(LIQRMANPATH) -L$(LIQRMANPATH)/lib $(LIQRMANLIBS) -o $(LIQUIDDPY)
 	mkdir -p ../$(LIQUIDDPYLOC)
 	cp $(LIQUIDDPY) ../$(LIQUIDDPYLOC)
 endif

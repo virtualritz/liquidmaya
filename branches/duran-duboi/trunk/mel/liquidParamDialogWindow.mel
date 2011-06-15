@@ -42,16 +42,21 @@
 
 global proc liquidAddTextureViewerMenu( string $textFieldGrp, string $nodeDotAttr )
 {
-  string $viewer = `getAttr liquidGlobals.viewTexture`;
-  if ( $viewer != "" ) {
-    string $attr = match("[A-Za-z0-9_]+$", $nodeDotAttr);
-    popupMenu -button 3 -postMenuCommand ("liquidAE_LifStringOverrideEnabler ($gLiquid_currentAENode+\"."+$attr+"\") "+$textFieldGrp) ($textFieldGrp+"PopupMenu");
-      menuItem  -l ("View")
-                -c ("{\n"+
-                    "  string $file = `textFieldGrp -q -tx "+$textFieldGrp+"`;"+
-                    "  liquidTextureViewer( $file );"+
-                    "}");
-  }
+	string $viewer = "";
+	if( objExists("liquidGlobals") )
+	{
+		$viewer = `getAttr liquidGlobals.viewTexture`;
+	}
+	if ( $viewer != "" )
+	{
+		string $attr = match("[A-Za-z0-9_]+$", $nodeDotAttr);
+		popupMenu -button 3 -postMenuCommand ("liquidAE_LifStringOverrideEnabler ($gLiquid_currentAENode+\"."+$attr+"\") "+$textFieldGrp) ($textFieldGrp+"PopupMenu");
+		menuItem  -l ("View")
+			-c ("{\n"+
+			"  string $file = `textFieldGrp -q -tx "+$textFieldGrp+"`;"+
+			"  liquidTextureViewer( $file );"+
+			"}");
+	}
 }
 
 
@@ -70,6 +75,10 @@ global proc liquidChangeTextFileAttr ( string $selectedObj, string $argName, str
 {
   string $currentAttrValue = `getAttr ($selectedObj+"."+$argName)`;
   string $defaultPath = (`getAttr liquidGlobals.textureDirectory`);
+  if(gmatch($defaultPath, "*`*"))  // if there's a mel procedure, we must eval!...
+  {
+	  $defaultPath = eval(substituteAllString($defaultPath, "`", ""));
+  }
 
   string $fileSpec;
   if ( `about -os` == "linux" || `about -os` == "linux64" ) $fileSpec += "*.tex";
@@ -197,7 +206,7 @@ global proc liquidLifCoordSysBrowser( string $selectedObj, string $argName, stri
 global proc liquidParamAU( string $selectedObj )
 {
   if ( `optionVar -ex liquidAE_autoRefresh` && `optionVar -q liquidAE_autoRefresh` ) {
-    trace ("+ liquidParamAU "+$selectedObj);
+    ltrace ("+ liquidParamAU "+$selectedObj);
     liquidShaderNodePreview $selectedObj;
   }
 }

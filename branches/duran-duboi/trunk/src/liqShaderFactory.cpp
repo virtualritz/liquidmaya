@@ -30,6 +30,16 @@
 #include <maya/MFnDependencyNode.h>
 #include <maya/MPlug.h>
 
+#include <liqShader.h>
+#include <liqSwitcher.h>
+#include <liqMayaNodeIds.h>
+
+#include <liqSurfaceNode.h>
+#include <liqDisplacementNode.h>
+#include <liqVolumeNode.h>
+#include <liqLightNode.h>
+#include <liqCoShaderNode.h>
+
 
 liqShaderFactory * liqShaderFactory::_instance=NULL;
 
@@ -48,8 +58,8 @@ liqShaderFactory::~liqShaderFactory()
 
 void liqShaderFactory::clearShaders()
 {
-	vector<liqShader*>::iterator iter;
-	vector<liqShader*>::iterator end = m_shaders.end();
+	vector<liqGenericShader*>::iterator iter;
+	vector<liqGenericShader*>::iterator end = m_shaders.end();
 	for( iter=m_shaders.begin(); iter!=end; iter++ )
 	{
 		if( *iter )
@@ -62,7 +72,7 @@ void liqShaderFactory::clearShaders()
 }
 
 
-liqShader &liqShaderFactory::getShader( MObject shaderObj )
+liqGenericShader &liqShaderFactory::getShader( MObject shaderObj, bool withAllParameters )
 {
 	MString rmShaderStr;
 	MFnDependencyNode shaderNode( shaderObj );
@@ -71,7 +81,7 @@ liqShader &liqShaderFactory::getShader( MObject shaderObj )
 	LIQDEBUGPRINTF( "-> Using Renderman Shader " );
 	LIQDEBUGPRINTF( rmShaderStr.asChar() );
 	LIQDEBUGPRINTF( "\n" );
-	vector<liqShader*>::iterator iter = m_shaders.begin();
+	vector<liqGenericShader*>::iterator iter = m_shaders.begin();
 	while ( iter != m_shaders.end() )
 	{
 		//string shaderNodeName = shaderNode.name().asChar();
@@ -82,19 +92,37 @@ liqShader &liqShaderFactory::getShader( MObject shaderObj )
 		}
 		++iter;
 	}
-	liqShader *currentShader = new liqShader( shaderObj );
-	//printf("CREATE AND PUSH SHADER FOR NODE %s \n", shaderNode.name().asChar() );
-	//printf("    name = %s\n", currentShader->name.c_str());
-	//printf("    file = %s\n", currentShader->file.c_str());
-	//printf("    hdl  = %s\n", currentShader->shaderHandler.asChar());
+	liqGenericShader *currentShader = NULL;
+
+	MTypeId typeId = shaderNode.typeId();
+
+	if(	typeId==liqSurfaceNode::id ||
+		typeId==liqDisplacementNode::id ||
+		typeId==liqVolumeNode::id ||
+		typeId==liqLightNode::id || 
+		typeId==liqCoShaderNode::id
+		)	// classic shader
+	{
+		currentShader = new liqShader( shaderObj, withAllParameters );
+	}
+	else	// switcher
+	{
+		currentShader = new liqSwitcher( shaderObj, withAllParameters );
+	}
+	if( currentShader->hasErrors )
+	{
+		printf("[liqShaderFactory] error while creating liqObject for node '%s'\n", shaderNode.name().asChar() );
+	}
 	m_shaders.push_back( currentShader );
+	//fflush(stdout);
+	//fflush(stderr);
 	return *(m_shaders.back());
 }
 
 
 MString liqShaderFactory::getShaderId( MObject shaderObj )
 {
-	liqShader &shader = liqShaderFactory::getShader( shaderObj );
+	liqGenericShader &shader = liqShaderFactory::getShader( shaderObj );
 	return shader.shaderHandler;
 }
 

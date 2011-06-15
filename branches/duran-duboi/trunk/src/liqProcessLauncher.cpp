@@ -36,6 +36,9 @@ bool liqProcessLauncher::execute( const MString &command, const MString &argumen
 {
   chdir( path.asChar() );
   MString cmd = command + " " + arguments + ( wait ? "" : "&" );
+
+  cout <<"[liqProcessLauncher] execute command : "<< cmd.asChar() <<endl;
+
   int returnCode = system( cmd.asChar() );
   if(returnCode==-1)
   {

@@ -34,48 +34,60 @@
 
 #include <liqTokenPointer.h>
 #include <liqGetSloInfo.h>
+#include <liqGenericShader.h>
 #define MR_SURFPARAMSIZE 1024
 
 #include <string>
 #include <vector>
 
+class liqSwitcher;
 
 using namespace std;
 
-class liqShader
+class liqShader : public liqGenericShader
 {
 public :
     liqShader();
     liqShader( const liqShader & src );
     liqShader & operator=( const liqShader & src );
-    liqShader ( MObject shaderObj );
+    //liqShader ( MObject shaderObj );
+    liqShader ( MObject shaderObj, bool outputAllParameters=false );
     virtual ~liqShader();
-    MStatus liqShaderParseVectorAttr( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType );
-    MStatus liqShaderParseVectorArrayAttr( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType, unsigned int arraySize );
 
 	void appendCoShader(MObject coshader, MPlug plug);
-	void write(bool shortShaderNames, unsigned int indentLevel);
-    void writeAsCoShader(bool shortShaderNames, unsigned int indentLevel);
+	void *write(bool shortShaderNames, unsigned int indentLevel, SHADER_TYPE forceAs=SHADER_TYPE_UNKNOWN);
+	void *write(bool shortShaderNames, unsigned int indentLevel, vector<MString> &yetExportedShaders, SHADER_TYPE forceAs=SHADER_TYPE_UNKNOWN);
+	void writeRibAttributes(MFnDependencyNode node, SHADER_TYPE shaderType);
+
+	//void writeAsCoShader(bool shortShaderNames, unsigned int indentLevel);
 	void outputIndentation(unsigned int indentLevel);
 
     // void freeShader( void ); -- not needed anymore. vector calls the dtors itself when going out of scope
     // int numTPV; -- handled by tokenPointerArray.size() now
 
-    string      name;
+	virtual bool isShader();
+	virtual bool isSwitcher();
+	virtual liqShader* asShader();
+	virtual liqSwitcher* asSwitcher();
+
+
+//    string      name;
     string      file;
-    RtColor     rmColor;
-    RtColor     rmOpacity;
+//    RtColor     rmColor;
+//    RtColor     rmOpacity;
     bool        hasShadingRate;
     RtFloat     shadingRate;
     bool        hasDisplacementBound;
     RtFloat     displacementBound;
-    bool        outputInShadow;
-    bool        hasErrors;
+//    bool        outputInShadow;
+//    bool        hasErrors;
     SHADER_TYPE shader_type;
     MString     shaderSpace;
-    MString     shaderHandler;
+//    MString     shaderHandler;
     int         evaluateAtEveryFrame;
-    MObject     m_mObject;
+//    MObject     m_mObject;
+//    bool		m_outputAllParameters;     // allow to write all shader arguments even if they are on default value
+    float		m_previewGamma;
     
     vector< liqTokenPointer	> tokenPointerArray;
     vector< MObject > m_coShaderArray;

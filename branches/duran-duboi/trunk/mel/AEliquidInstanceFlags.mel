@@ -19,34 +19,41 @@ proc AEliquidCreateMenu()
 
 global proc liquidLargeFieldUpdater()
 {
-  //early exit
-  string $globalsExists = objExists( "liquidGlobals" );
+	//early exit
+	string $globalsExists = objExists( "liquidGlobals" );
 
-  string $currentLayer = `editRenderLayerGlobals -q -currentRenderLayer`;
-  string $prefix = ($currentLayer == "defaultRenderLayer")? "masterLayer_":"";
-  string $attr[] = { "liqRIBBox", "preframeMel", "postframeMel", "preFrameBegin", "preWorld", "postWorld", "preGeom" };
-  string $obj[]  = { "obj", "", "", "", "", "", "" };
-  string $sel[] = `ls -sl -tr -l -tail 1`;
-  string $ctl;
+	string $currentLayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+	string $prefix = ($currentLayer == "defaultRenderLayer")? "masterLayer_":"";
+	string $attr[] = { "liqRIBBox", "preframeMel", "postframeMel", "preFrameBegin", "preWorld", "postWorld", "preGeom" };
+	string $obj[]  = { "obj", "", "", "", "", "", "" };
+	string $sel[] = `ls -sl -tr -l -tail 1`;
+	string $ctl;
 
-  for ( $i=0; $i<size( $attr ); $i++ ) {
+	for ( $i=0; $i<size( $attr ); $i++ )
+	{
+		$ctl = ( $obj[$i] == "obj" )? ("liquidLargeFieldCtl"+$attr[$i]) : ($prefix+"liquidLargeFieldCtl"+$attr[$i]);
+		if ( !`scrollField -q -ex $ctl` )
+		{
+			//ltrace("    >>  skip "+$ctl);
+			continue;
+		}
 
-    $ctl = ( $obj[$i] == "obj" )? ("liquidLargeFieldCtl"+$attr[$i]) : ($prefix+"liquidLargeFieldCtl"+$attr[$i]);
-
-    if ( !`scrollField -q -ex $ctl` ) {
-      //trace("    >>  skip "+$ctl);
-      continue;
-    }
-
-    if ( $obj[$i] == "obj" ) {
-      scrollField -e -tx (`getAttr ($sel[0]+"."+$attr[$i])`) $ctl;
-      //trace ("    >>  updated "+$ctl);
-    } else {
-      if ( $globalsExists ) scrollField -e -tx (`getAttr ("liquidGlobals."+$attr[$i])`) $ctl;
-      //trace ("    >>  updated "+$ctl);
-    }
-  }
-  //trace "\n";
+		if ( $obj[$i] == "obj" )
+		{
+			if( objExists($sel[0]+"."+$attr[$i]) )
+			{
+				scrollField -e -tx (`getAttr ($sel[0]+"."+$attr[$i])`) $ctl;
+				//ltrace ("    >>  updated "+$ctl);
+			}
+		}
+		else
+		{
+			if ( $globalsExists )
+				scrollField -e -tx (`getAttr ("liquidGlobals."+$attr[$i])`) $ctl;
+			//ltrace ("    >>  updated "+$ctl);
+		}
+	}
+	//ltrace "\n";
 }
 
 global proc liquidFieldUpdateMenu( string $msg )
@@ -324,6 +331,7 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"RIB Generator\"") ("liquidSmallFieldReplace "+$node+" \"RIB Generator\"") "liqRIBGenerator";
       editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"Read Archive\"") "liqRIBReadArchive";
       editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Delayed Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"Delayed Read Archive\"") "liqRIBDelayedReadArchive";
+      editorTemplate -label "Disable RIBBox Parsing" -addDynamicControl "liqDisableRibBoxParsing";
       editorTemplate -label "DRA Bounding Box" -addDynamicControl "ribDelayedArchiveBBox";
       editorTemplate -label "DRA Bounds Scaling" -addDynamicControl "liqRIBDelayedReadArchiveBBoxScale";
 

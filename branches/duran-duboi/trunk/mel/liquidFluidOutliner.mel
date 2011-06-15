@@ -283,7 +283,7 @@ global string $liqFluidSaveSelection[];
                         		slimDispApps( $p, "shadingmodel" );
                         		slimDispApps( $p, "surface" );
                         		slimDispApps( $p, "light" );
-					slimDispApps( $p, "displacement" );
+								slimDispApps( $p, "displacement" );
                         		slimDispApps( $p, "volume" );
                         		slimDispApps( $p, "ensemble"  );
                         		slimDispApps( $p, "mapgen" );

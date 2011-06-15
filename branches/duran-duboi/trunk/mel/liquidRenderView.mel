@@ -167,7 +167,7 @@ global proc liqRVExposure( float $val )
 
   float $newExp = $gLiqLastExposure + $val;
   float $exposure = exp( $newExp ) * 255;
-  //trace ("$exposure = "+$exposure+"\n");
+  //ltrace ("$exposure = "+$exposure+"\n");
 
   if ( $exposure > 1 ) {
 

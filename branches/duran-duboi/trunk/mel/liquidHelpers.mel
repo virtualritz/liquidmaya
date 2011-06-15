@@ -488,7 +488,7 @@ global proc string liquidVarSubstitute( string $str )
   while (gmatch( $result, "*%*%*")) {
     string $envvar = match("%[A-Za-z0-9_]+%", $result);
     string $envvalue = substituteAllString( $envvar, "%", "");
-    trace $envvar;
+    ltrace $envvar;
     $envvalue = getenv($envvalue);
     $result = substitute($envvar, $result, $envvalue);
   }

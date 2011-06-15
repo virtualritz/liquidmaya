@@ -55,12 +55,16 @@
 MSyntax liqWriteArchive::m_syntax;
 
 
+extern bool liqglo_outputMeshAsRMSArrays;            // true => write uvs as arrays
+
+
 liqWriteArchive::liqWriteArchive() : m_indentLevel(0), m_outputFilename("/tmp/tmprib.rib"), m_exportTransform(1)
 {
 	m_exportSurface = 0;
 	m_exportDisplace = 0;
 	m_exportVolume = 0;
 	m_shortShaderNames = 0;
+	liqglo_outputMeshAsRMSArrays = true;
 }
 
 
@@ -329,12 +333,13 @@ MStringArray liqWriteArchive::stringArrayRemoveDuplicates(MStringArray src)
 
 void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTransform)
 {
+	MStatus status;
 	if (!isObjectVisible(objDagPath))
 	{
 		return;
 	}
 
-	if (objDagPath.node().hasFn(MFn::kShape) || MFnDagNode( objDagPath ).typeName() == "liquidCoorSys")
+	if( objDagPath.node().hasFn(MFn::kShape) || MFnDagNode( objDagPath ).typeName() == "liquidCoorSys" )
 	{
 		// we're looking at a shape node, so write out the geometry to the RIB
 		if(m_debug)
@@ -345,42 +350,18 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 		liqRibNode ribNode;
 		ribNode.set(objDagPath, 0, MRT_Unknown);
 
+		MFnDagNode fnDagNode( objDagPath );
+
 		// don't write out clipping planes
 		if ( ribNode.object(0)->type == MRT_ClipPlane )
 		{
 			return;
 		}
-		if ( ribNode.rib.box != "" && ribNode.rib.box != "-" )
-		{
-			RiArchiveRecord( RI_COMMENT, "Additional RIB:\n%s", ribNode.rib.box.asChar() );
-		}
-		if ( ribNode.rib.readArchive != "" && ribNode.rib.readArchive != "-" )
-		{
-			// the following test prevents a really nasty infinite loop !!
-			if ( ribNode.rib.readArchive != m_outputFilename )
-			{
-				RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode.rib.readArchive.asChar() );
-			}
-		}
-		if ( ribNode.rib.delayedReadArchive != "" && ribNode.rib.delayedReadArchive != "-" )
-		{
-			// the following test prevents a really nasty infinite loop !!
-			if ( ribNode.rib.delayedReadArchive != m_outputFilename )
-			{
-				RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.rib.delayedReadArchive.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
-			}
-		}
-		// If it's a curve we should write the basis function
-		if ( ribNode.object(0)->type == MRT_NuCurve )
-		{
-			RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
-		}
-		if ( !ribNode.object(0)->ignore )
+		// write shading
+		if( !ribNode.object(0)->ignore )
 		{
 			if(m_exportSurface)
 			{
-				//outputIndentation();
-				//writeSurface(ribNode);
 				if(	!ribNode.assignedShader.object().isNull() )
 				{
 					liqShader assignedShader( ribNode.assignedShader.object() );
@@ -389,8 +370,6 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 			}
 			if(m_exportDisplace)
 			{
-				//outputIndentation();
-				//writeDisplace(ribNode);
 				if(	!ribNode.assignedDisp.object().isNull() )
 				{
 					liqShader assignedDisplace( ribNode.assignedDisp.object() );
@@ -399,14 +378,46 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 			}
 			if(m_exportVolume)
 			{
-				//outputIndentation();
-				//writeVolume(ribNode);
 				if(	!ribNode.assignedVolume.object().isNull() )
 				{
 					liqShader assignedVolume( ribNode.assignedVolume.object() );
 					assignedVolume.write( m_shortShaderNames, m_indentLevel );
 				}
 			}
+		}
+		// write ribboxs
+		if ( ribNode.rib.box != "" && ribNode.rib.box != "-" )
+		{
+			outputIndentation();
+			RiArchiveRecord( RI_COMMENT, "Additional RIB:\n%s", ribNode.rib.box.asChar() );
+		}
+		if ( ribNode.rib.readArchive != "" && ribNode.rib.readArchive != "-" )
+		{
+			// the following test prevents a really nasty infinite loop !!
+			if ( ribNode.rib.readArchive != m_outputFilename )
+			{
+				outputIndentation();
+				RiArchiveRecord( RI_COMMENT, "Read Archive Data: \nReadArchive \"%s\"", ribNode.rib.readArchive.asChar() );
+			}
+		}
+		if ( ribNode.rib.delayedReadArchive != "" && ribNode.rib.delayedReadArchive != "-" )
+		{
+			// the following test prevents a really nasty infinite loop !!
+			if ( ribNode.rib.delayedReadArchive != m_outputFilename )
+			{
+				outputIndentation();
+				RiArchiveRecord( RI_COMMENT, "Delayed Read Archive Data: \nProcedural \"DelayedReadArchive\" [ \"%s\" ] [ %f %f %f %f %f %f ]", ribNode.rib.delayedReadArchive.asChar(), ribNode.bound[0], ribNode.bound[3], ribNode.bound[1], ribNode.bound[4], ribNode.bound[2], ribNode.bound[5]);
+			}
+		}
+		// If it's a curve we should write the basis function
+		if ( ribNode.object(0)->type == MRT_NuCurve )
+		{
+			outputIndentation();
+			RiBasis( RiBSplineBasis, 1, RiBSplineBasis, 1 );
+		}
+		// write geometry
+		if( !ribNode.object(0)->ignore )
+		{
 			outputIndentation();
 			ribNode.object(0)->writeObject();
 		}
@@ -427,8 +438,13 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 			}
 			// push the transform onto the RIB stack
 			outputObjectName(objDagPath);
-			MFnDagNode mfnDag(objDagPath);
-			MMatrix tm = mfnDag.transformationMatrix();
+			//MFnDagNode mfnDag(objDagPath);
+			//MMatrix tm = mfnDag.transformationMatrix();
+			MMatrix tm = objDagPath.inclusiveMatrix(&status);
+			if(status != MS::kSuccess)
+			{
+				cout << "[liqWriteArchive::writeObjectToRib] error while getting transform for '" << objDagPath.fullPathName().asChar() <<"'"<< endl;
+			}
 			if (true)   // (!tm.isEquivalent(MMatrix::identity)) {
 			{
 				RtMatrix riTM;
@@ -464,7 +480,7 @@ void liqWriteArchive::writeObjectToRib(const MDagPath &objDagPath, bool writeTra
 				MGlobal::displayWarning("[liqWriteArchive::writeObjectToRib] Error getting a dag path to child node of object " + objDagPath.fullPathName());
 			}
 		}
-		if (wroteTransform)
+		if(wroteTransform)
 		{
 			m_indentLevel--;
 			outputIndentation();

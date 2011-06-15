@@ -38,7 +38,7 @@
 #include <liquid.h>
 #include <liqRenderer.h>
 #include <liqRibHT.h>
-#include <liqShader.h>
+#include <liqGenericShader.h>
 #include <liqRenderScript.h>
 #include <liqRibLightData.h>
 #include <liqExpression.h>
@@ -73,9 +73,12 @@ private: // Methods
 
   void portFieldOfView( int width, int height, double& horizontal, double& vertical, MFnCamera& fnCamera );
   void computeViewingFrustum( double window_aspect, double& left, double& right, double& bottom, double& top, MFnCamera& cam );
-  void getCameraInfo( MFnCamera &cam );
+  void getCameraInfo( MFnCamera &cam, structCamera &camStruct );
+  MStatus getCameraTransform( MFnCamera& cam, structCamera &camStruct );
+  void getCameraFilmOffset( MFnCamera& cam, structCamera &camStruct );
   void setSearchPaths();
   void setOutDirs();
+  void exportJobCamera(const structJob &job, const structCamera camera[]);
 
   // rib output functions
   MStatus liquidDoArgs( MArgList args );
@@ -112,7 +115,10 @@ private: // Data
     kRibError
   };
   MRibStatus ribStatus;
-
+  
+  MDagPath m_camDagPath;
+  bool m_isStereoCamera;
+  
   // Render Globals and RIB Export Options
   vector<structJob>  jobList;
   vector<structJob>  shadowList;
@@ -173,10 +179,11 @@ private: // Data
   MVector    othreshold;
   MVector    zthreshold;
   // bool        renderAllCameras;   // Render all cameras, or only active ones     UN-USED GLOBAL
+
   bool        ignoreFilmGate;
-  double      fov_ratio;
-  int         cam_width,
-              cam_height;
+//  double      fov_ratio; => mv in cam struct
+//  int         cam_width, => mv in cam struct
+//              cam_height; => mv in cam struct
   float       aspectRatio;
   liquidlong  quantValue;
   MString     renderCamera;
@@ -448,6 +455,14 @@ private :
   void scanExpressions( liqShader & currentShader );
   void scanExpressions( liqRibLightData *light );
   void processExpression( liqTokenPointer *token, liqRibLightData *light = NULL );
+  
+  MStringArray m_objectListToExport;
+  bool m_exportSpecificList;
+  bool m_exportOnlyObjectBlock;
+  
+  bool m_skipVisibilityAttributes;
+  bool m_skipShadingAttributes;
+  bool m_skipRayTraceAttributes;
 };
 
 #endif

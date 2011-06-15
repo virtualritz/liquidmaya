@@ -33,17 +33,30 @@
 ** ______________________________________________________________________
 */
 
-surface liquidchecker( float frequency = 4 ) {
-	varying float ss, tt, x, y;
+surface liquidchecker( float frequency = 4.5; float mode = 0; ) {
+  if ( mode == 0 ) {
+    color a = 0.33;
+    color b = 0.66;
+    varying float ss, tt, x, y;
 
-	ss = s * frequency;
-	tt = t * frequency;
-	x = mod( ss - 0.5, 1 );
-	y = mod( tt - 0.5, 1 );
+    ss = s * frequency;
+    tt = t * frequency;
+    x = mod( ss - 0.5, 1 );
+    y = mod( tt - 0.5, 1 );
 
-	x = filterstep( 0.5, x, x + du );
-	y = filterstep( 0.5, y, y + dv );
+    x = filterstep( 0.5, x, x + du );
+    y = filterstep( 0.5, y, y + du );
 
-	Oi = Os;
-	Ci = Oi * Cs * mix( 0.33 * x, ( 0.66 - x ), y );
+    Oi = Os;
+    Ci = Os * mix(mix( a * x, ( b - x ), y ), color(0.85), 0.8);
+  }
+  if ( mode == 1 ) {
+    Oi = Os;
+    Ci = Os * 0.5;
+  }
 }
+
+
+
+
+

@@ -75,12 +75,14 @@ MObject liqSurfaceNode::aRmanArraySizes;
 MObject liqSurfaceNode::aRmanLifCmds;
 MObject liqSurfaceNode::aRmanMethods;
 MObject liqSurfaceNode::aRmanIsOutput;
+MObject liqSurfaceNode::aRmanAccept;
 
 MObject liqSurfaceNode::aPreviewPrimitive;
 MObject liqSurfaceNode::aPreviewCustomPrimitive;
 MObject liqSurfaceNode::aPreviewCustomBackplane;
 MObject liqSurfaceNode::aPreviewCustomLightRig;
 MObject liqSurfaceNode::aColor;
+MObject liqSurfaceNode::aTransparency;
 MObject liqSurfaceNode::aOpacity;
 MObject liqSurfaceNode::aShaderSpace;
 MObject liqSurfaceNode::aDisplacementBound;
@@ -93,8 +95,8 @@ MObject liqSurfaceNode::aPreviewObjectSize;
 MObject liqSurfaceNode::aPreviewShadingRate;
 MObject liqSurfaceNode::aPreviewBackplane;
 MObject liqSurfaceNode::aPreviewIntensity;
-MObject liqSurfaceNode::aCi;
-MObject liqSurfaceNode::aOi;
+//MObject liqSurfaceNode::aCi;
+//MObject liqSurfaceNode::aOi;
 
 MObject liqSurfaceNode::aMayaIgnoreLights;
 MObject liqSurfaceNode::aMayaKa;
@@ -120,6 +122,7 @@ MObject liqSurfaceNode::aLightBlindData;
 MObject liqSurfaceNode::aLightData;
 
 MObject liqSurfaceNode::aEvaluateAtEveryFrame;
+MObject liqSurfaceNode::aPreviewGamma;
 
 MObject liqSurfaceNode::aOutColor;
 MObject liqSurfaceNode::aOutTransparency;
@@ -216,6 +219,9 @@ MStatus liqSurfaceNode::initialize()
   aRmanIsOutput = tAttr.create(  MString("rmanIsOutput"),  MString("rio"), MFnData::kIntArray, aRmanIsOutput, &status );
   MAKE_INPUT(tAttr);
 
+  aRmanAccept = tAttr.create(  MString("rmanAccept"),  MString("rma"), MFnData::kStringArray, aRmanAccept, &status );
+  MAKE_INPUT(tAttr);
+
   aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );
   eAttr.addField( "Sphere",   0 );
   eAttr.addField( "Cube",     1 );
@@ -262,6 +268,10 @@ MStatus liqSurfaceNode::initialize()
   nAttr.setDefault( 1.0, 1.0, 1.0 );
   MAKE_INPUT(nAttr);
 
+  aTransparency = nAttr.createColor("transparency", "ts"); // Needed by Maya for Open Gl preview in "5" mode, invert opacity in compute
+  nAttr.setDefault( 0.0, 0.0, 0.0 );
+  MAKE_INPUT(nAttr);
+	
   aShaderSpace = tAttr.create( MString("shaderSpace"), MString("ssp"), MFnData::kString, aShaderSpace, &status );
   MAKE_INPUT(tAttr);
 
@@ -288,13 +298,13 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(nAttr.setHidden(true ) );
 
   // dynamic shader attr
-  aCi = nAttr.createColor("Ci", "ci");
-  nAttr.setDefault( 1.0, 1.0, 1.0 );
-  MAKE_INPUT(nAttr);
+  //aCi = nAttr.createColor("Ci", "ci");
+  //nAttr.setDefault( 1.0, 1.0, 1.0 );
+  //MAKE_INPUT(nAttr);
 
-  aOi = nAttr.createColor("Oi", "oi");
-  nAttr.setDefault( 1.0, 1.0, 1.0 );
-  MAKE_INPUT(nAttr);
+  //aOi = nAttr.createColor("Oi", "oi");
+  //nAttr.setDefault( 1.0, 1.0, 1.0 );
+  //MAKE_INPUT(nAttr);
 
 
   // create attributes for maya renderer
@@ -438,9 +448,17 @@ MStatus liqSurfaceNode::initialize()
   aEvaluateAtEveryFrame = nAttr.create("evaluateAtEveryFrame", "def",  MFnNumericData::kBoolean, 0.0, &status);
   MAKE_NONKEYABLE_INPUT(nAttr);
 
+  aPreviewGamma = nAttr.create( "previewGamma", "pg", MFnNumericData::kFloat, 1, &status );
+  CHECK_MSTATUS( status );
+  CHECK_MSTATUS( nAttr.setStorable( true ) );
+  CHECK_MSTATUS( nAttr.setHidden( true ) );
+  CHECK_MSTATUS( nAttr.setReadable( true ) );
+  CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+
   // Create output attributes
   aOutColor = nAttr.createColor("outColor", "oc");
   MAKE_OUTPUT(nAttr);
+
   aOutTransparency = nAttr.createColor("outTransparency", "ot");
   MAKE_OUTPUT(nAttr);
 
@@ -453,8 +471,9 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( addAttribute( aRmanDefaults ) );
   CHECK_MSTATUS( addAttribute( aRmanArraySizes ) );
   CHECK_MSTATUS( addAttribute( aRmanLifCmds ) );
-  CHECK_MSTATUS( addAttribute(aRmanMethods) );
-  CHECK_MSTATUS( addAttribute(aRmanIsOutput) );
+  CHECK_MSTATUS( addAttribute( aRmanMethods) );
+  CHECK_MSTATUS( addAttribute( aRmanIsOutput) );
+  CHECK_MSTATUS( addAttribute( aRmanAccept) );
 
   CHECK_MSTATUS( addAttribute( aPreviewPrimitive ) );
   CHECK_MSTATUS( addAttribute( aPreviewCustomPrimitive ) );
@@ -464,10 +483,11 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( addAttribute( aPreviewShadingRate ) );
   CHECK_MSTATUS( addAttribute( aPreviewBackplane ) );
   CHECK_MSTATUS( addAttribute( aPreviewIntensity ) );
-  CHECK_MSTATUS( addAttribute( aCi ) );
-  CHECK_MSTATUS( addAttribute( aOi ) );
+  //CHECK_MSTATUS( addAttribute( aCi ) );
+  //CHECK_MSTATUS( addAttribute( aOi ) );
 
   CHECK_MSTATUS( addAttribute( aColor ) );
+  CHECK_MSTATUS( addAttribute( aTransparency ) );
   CHECK_MSTATUS( addAttribute( aOpacity ) );
   CHECK_MSTATUS( addAttribute( aShaderSpace ) );
   CHECK_MSTATUS( addAttribute( aDisplacementBound ) );
@@ -483,6 +503,7 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS( addAttribute( aLightData ) );
 
   CHECK_MSTATUS( addAttribute( aEvaluateAtEveryFrame ) );
+  CHECK_MSTATUS( addAttribute( aPreviewGamma ) );
 
   CHECK_MSTATUS( addAttribute( aOutColor ) );
   CHECK_MSTATUS( addAttribute( aOutTransparency ) );
@@ -512,16 +533,20 @@ MStatus liqSurfaceNode::initialize()
   CHECK_MSTATUS(attributeAffects( aLightBlindData,      aOutColor ) );
   CHECK_MSTATUS(attributeAffects( aLightData,           aOutColor ) );
 
+  CHECK_MSTATUS(attributeAffects( aOpacity,           aOutTransparency ) );
+
   return MS::kSuccess;
 }
 
 
 MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
 {
-  // outColor or individual R, G, B channel
-  if( (plug == aOutColor) || (plug.parent() == aOutColor) ) {
 
-    //cout <<"compute... "<<endl;
+  // outColor or individual R, G, B channel
+  if( 	(plug == aOutColor) || (plug.parent() == aOutColor) ||
+  		( plug == aOutTransparency ) || (plug.parent() == aOutTransparency) ) 
+  { 
+
 
     // init shader
     MStatus status;
@@ -594,14 +619,15 @@ MStatus liqSurfaceNode::compute( const MPlug& plug, MDataBlock& block )
 
     }
 
-    resultTrans[0] = ( 1 - resultTrans[0] );
-    resultTrans[1] = ( 1 - resultTrans[1] );
-    resultTrans[2] = ( 1 - resultTrans[2] );
+    resultTrans[0] = ( 1.0 - resultTrans[0] );
+    resultTrans[1] = ( 1.0 - resultTrans[1] );
+    resultTrans[2] = ( 1.0 - resultTrans[2] );
 
 
     // set ouput color attribute
     MDataHandle outColorHandle = block.outputValue( aOutColor );
     MFloatVector& outColor = outColorHandle.asFloatVector();
+
     outColor = resultColor;
     outColorHandle.setClean();
 

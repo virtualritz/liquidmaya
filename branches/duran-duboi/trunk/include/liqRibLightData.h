@@ -53,6 +53,7 @@ public:
   MString       autoShadowName( int PointLightDir = -1 ) const;
 
 private:
+  liqGenericShader *rmanShader;
 
   MString       extraShadowName( const MFnDependencyNode & lightShaderNode, const int & index ) const;
 

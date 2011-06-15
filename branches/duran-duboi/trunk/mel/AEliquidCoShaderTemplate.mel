@@ -2,9 +2,9 @@
 global proc AEliquidCoShaderTemplate( string $nodeName )
 {
 	layout -e -vis false "AEcontrolFormLayout";
-	editorTemplate -callCustom ("liquidPreviewSwatchNew "+$nodeName) ("liquidPreviewSwatchReplace "+$nodeName) "message";
+	editorTemplate -callCustom "liquidPreviewSwatchNew" "liquidPreviewSwatchReplace" "message";
 	editorTemplate -beginScrollLayout;
-		editorTemplate -ccu ("liquidShaderPickerNew "+$nodeName) ("liquidShaderPickerReplace "+$nodeName) "rmanShaderLong";
+		editorTemplate -ccu "liquidShaderPickerNew" "liquidShaderPickerReplace" "rmanShaderLong";
 		editorTemplate -beginLayout "Preview";
 			editorTemplate -addControl "previewPrimitive";
 			editorTemplate -ccu "liquidShaderNodesCustomPrimitiveNew \"Custom Primitive\" "
@@ -27,9 +27,17 @@ global proc AEliquidCoShaderTemplate( string $nodeName )
 		editorTemplate -suppress rmanShader;
 		editorTemplate -suppress rmanShaderLong;
 		editorTemplate -suppress rmanShaderLif;
+		editorTemplate -suppress rmanMethods;
 		editorTemplate -suppress rmanParams;
+		editorTemplate -suppress rmanDetails;
+		editorTemplate -suppress rmanTypes;
+		editorTemplate -suppress rmanIsOutput;
+		editorTemplate -suppress rmanAccept;
+		editorTemplate -suppress rmanDefaults;
 		editorTemplate -suppress rmanArraySizes;
 		editorTemplate -suppress rmanLifCmds;
+		editorTemplate -suppress rmanLifCtrls;		
+		
 		editorTemplate -addExtraControls;
 	editorTemplate -endScrollLayout;
 	layout -e -vis true "AEcontrolFormLayout";

@@ -369,7 +369,9 @@ EXTERN(RtVoid)
     RiExteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
     RiShadingRate (RtFloat size),
     RiShadingInterpolation (RtToken type),
-    RiMatte (RtBoolean onoff);
+    RiMatte (RtBoolean onoff),
+    RiShader(char *name, RtToken handle, ...),
+    RiShaderV(char *name, RtToken handle, RtInt n, RtToken nms[], RtPointer vals[]);
 
 EXTERN(RtVoid)
     RiBound (RtBound bound), RiDetail (RtBound bound),
@@ -489,6 +491,16 @@ EXTERN(RtVoid)
 		       RtInt ntags, RtToken tags[], RtInt nargs[],
 		       RtInt intargs[], RtFloat floatargs[],
 		       RtInt n, RtToken tokens[], RtPointer params[]),
+    RiHierarchicalSubdivisionMesh(RtToken scheme, RtInt nfaces,
+		       RtInt nvertices[], RtInt vertices[],
+		       RtInt ntags, RtToken tags[], RtInt nargs[],
+		       RtInt intargs[], RtFloat floatargs[], RtToken stringargs[],
+		       ...),
+    RiHierarchicalSubdivisionMeshV(RtToken scheme, RtInt nfaces,
+		       RtInt nvertices[], RtInt vertices[],
+		       RtInt ntags, RtToken tags[], RtInt nargs[],
+		       RtInt intargs[], RtFloat floatargs[], RtToken stringargs[],
+		       RtInt n, RtToken tokens[], RtPointer params[]),
     RiBlobby (RtInt nleaf, RtInt ncode, RtInt code[],
 	      RtInt nflt, RtFloat flt[], RtInt nstr, RtString str[], ...),
     RiBlobbyV (RtInt nleaf, RtInt ncode, RtInt code[],
@@ -546,6 +558,16 @@ EXTERN(RtVoid)
     RiErrorPrint (RtInt code, RtInt severity, char *message),
     RiErrorAbort (RtInt code, RtInt severity, char *message);
 
+
+EXTERN(RtVoid)
+	RiIfBegin (char *expr, ...),
+	RiIfBeginV (char *expr, RtInt n, RtToken nms[], RtPointer vals[]),
+	RiElse (),
+	RiElseIf (char *expr, ...),
+	RiElseIfV (char *expr, RtInt n, RtToken nms[], RtPointer vals[]),
+	RiIfEnd ();
+
+
 EXTERN(RtVoid)
     RiArchiveRecord (RtToken type, char *format, ...),
     RiReadArchive (RtString filename, RtFunc callback, ...),
@@ -562,6 +584,11 @@ EXTERN(RtVoid)
 
 EXTERN(RtVoid)
 	RiVisibility(RtInt,RtPoint *,RtPoint *,RtPoint *);
+
+EXTERN(RtVoid)
+	RiCamera(char *name, ...),
+	RiCameraV(char *name, int n, RtToken tokens[], RtPointer params[]);
+
 
 
 /*

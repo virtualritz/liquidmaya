@@ -87,6 +87,7 @@ class liqVolumeNode : public MPxNode
     static MObject aRmanLifCmds;
 	static MObject aRmanMethods;
 	static MObject aRmanIsOutput;
+	static MObject aRmanAccept;
 
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
@@ -99,6 +100,8 @@ class liqVolumeNode : public MPxNode
     static MObject aOutputInShadow;
     static MObject aShaderSpace;
     static MObject aRefreshPreview;
+
+	static MObject aPreviewGamma;
 
     // Output attributes
     static MObject aOutColor;

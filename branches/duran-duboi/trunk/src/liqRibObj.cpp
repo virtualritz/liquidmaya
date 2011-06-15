@@ -57,6 +57,7 @@ extern "C" {
 #include <liqRibNuCurveData.h>
 #include <liqRibCurvesData.h>
 #include <liqRibSubdivisionData.h>
+#include <liqRibHierarchicalSubdivisionData.h>
 #include <liqRibMayaSubdivisionData.h>
 #include <liqRibClipPlaneData.h>
 #include <liqRibCoordData.h>
@@ -125,9 +126,10 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 	ignoreShadow = !isObjectCastsShadows( path );
 	if( !ignoreShadow )
 		ignoreShadow = !areObjectAndParentsVisible( path );
-	
 	if( !ignoreShadow )
 		ignoreShadow = !areObjectAndParentsTemplated( path );
+
+	receiveShadow = isObjectReceiveShadows( path );
 	
 	// don't bother storing it if it's not going to be visible!
 	LIQDEBUGPRINTF( "-> about to create rep\n");
@@ -208,7 +210,7 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 				else
 					data = liqRibDataPtr( new liqRibPfxHairData( skip ) );
 			}
-			else if( obj.hasFn( MFn::kParticle ) )
+			else if( obj.hasFn( MFn::kParticle ) || obj.hasFn( MFn::kNParticle) )
 			{
 				type = MRT_Particles;
 				if( !ignoreShapes )
@@ -253,11 +255,27 @@ liqRibObj::liqRibObj( const MDagPath &path, ObjectType objType )
 				if( usingSubdiv )
 				{
 					// we've got a subdivision surface
+					MPlug hierarchicalSubdivPlug( nodeFn.findPlug( "liqHierarchicalSubdiv", &status ) );
+					bool useHierarchicalSubdiv = 0;
+					if( status == MS::kSuccess )
+					{
+						hierarchicalSubdivPlug.getValue( useHierarchicalSubdiv );
+					}
 					type = MRT_Subdivision;
-					if( !ignoreShapes )
-						data = liqRibDataPtr( new liqRibSubdivisionData( obj ) );
+					if( useHierarchicalSubdiv )
+					{
+						if( !ignoreShapes )
+							data = liqRibDataPtr( new liqRibHierarchicalSubdivisionData( obj ) );
+						else
+							data = liqRibDataPtr( new liqRibHierarchicalSubdivisionData( skip ) );
+					}
 					else
-						data = liqRibDataPtr( new liqRibSubdivisionData( skip ) );
+					{
+						if( !ignoreShapes )
+							data = liqRibDataPtr( new liqRibSubdivisionData( obj ) );
+						else
+							data = liqRibDataPtr( new liqRibSubdivisionData( skip ) );
+					}
 					type = data->type();
 				}
 				else

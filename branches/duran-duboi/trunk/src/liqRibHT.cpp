@@ -117,7 +117,6 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   MStatus    returnStatus;
 
   objTypeVec.push_back( objType );
-
   MString nodeName = fnDagNode.fullPathName( &returnStatus );
   if ( objType == MRT_RibGen ) nodeName += "RIBGEN";
 
@@ -194,7 +193,6 @@ int liqRibHT::insert( MDagPath &path, double /*lframe*/, int sample,
   }
 
   node->set( path, sample, objType, particleId );
-
 
   // If we were given a specific matrix to use (this only
   // happens when we've got particle-instancing.

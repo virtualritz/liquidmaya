@@ -65,7 +65,7 @@ using namespace std;
 
 extern int debugMode;
 extern bool liqglo_outputMeshUVs;
-
+extern bool liqglo_outputMeshAsRMSArrays;
 
 /** Create a RIB compatible representation of a Maya polygon mesh.
  */
@@ -114,12 +114,10 @@ liqRibMeshData::liqRibMeshData( MObject mesh ): numFaces( 0 ),
 
 	// UV sets -------------------
 	//
-	const unsigned numSTs( fnMesh.numUVs() );
+	//const unsigned numSTs( fnMesh.numUVs() );
 	const unsigned numUVSets( fnMesh.numUVSets() );
-	// get current uvSet
 	MString currentUVSetName;
 	fnMesh.getCurrentUVSetName( currentUVSetName );
-	// get others uvSets
 	MStringArray extraUVSetNames;
 	MStringArray UVSetNames;
 	fnMesh.getUVSetNames( UVSetNames );
@@ -130,11 +128,6 @@ liqRibMeshData::liqRibMeshData( MObject mesh ): numFaces( 0 ),
 			extraUVSetNames.append( UVSetNames[i] );
 		}
 	}
-	//printf("CURRENT UV SET : '%s' \n", currentUVSetName.asChar());
-	//for(i=0; i<extraUVSetNames.length(); i++)
-	//{
-	//	printf("OTHER UV SET %d : '%s' \n", i, extraUVSetNames[i].asChar());
-	//}
 
 	numFaces = fnMesh.numPolygons();
 	const unsigned numFaceVertices( fnMesh.numFaceVertices() );
@@ -178,39 +171,72 @@ liqRibMeshData::liqRibMeshData( MObject mesh ): numFaces( 0 ),
 		normalsPointerPair.setDetailType( rFaceVarying );
 	}
 
+	// uv
 	std::vector<liqTokenPointer> UVSetsArray;
 	UVSetsArray.reserve( 1 + extraUVSetNames.length() );
-
-	if ( numSTs > 0 )
+	liqTokenPointer currentUVSetUPtr;
+	liqTokenPointer currentUVSetVPtr;
+	liqTokenPointer currentUVSetNamePtr;
+	liqTokenPointer extraUVSetsUPtr;
+	liqTokenPointer extraUVSetsVPtr;
+	liqTokenPointer extraUVSetsNamePtr;
+	if(liqglo_outputMeshAsRMSArrays)
 	{
-		liqTokenPointer pFaceVertexPointerPair;
+		currentUVSetUPtr.set( "s", rFloat, numFaceVertices );
+		currentUVSetUPtr.setDetailType( rFaceVarying );
 
-		pFaceVertexPointerPair.set( "st", rFloat, numFaceVertices, 2 );
-		pFaceVertexPointerPair.setDetailType( rFaceVarying );
+		currentUVSetVPtr.set( "t", rFloat, numFaceVertices );
+		currentUVSetVPtr.setDetailType( rFaceVarying );
 
-		UVSetsArray.push_back( pFaceVertexPointerPair );
+		currentUVSetNamePtr.set( "currentUVSet", rString, 1 );
+		currentUVSetNamePtr.setDetailType( rConstant );
 
-		for( j=0; j<extraUVSetNames.length(); j++)
+		if( numUVSets > 1 )
+		{
+			extraUVSetsUPtr.set( "u_uvSet", rFloat, numFaceVertices, numUVSets-1 );
+			extraUVSetsUPtr.setDetailType( rFaceVarying );
+
+			extraUVSetsVPtr.set( "v_uvSet", rFloat, numFaceVertices, numUVSets-1 );
+			extraUVSetsVPtr.setDetailType( rFaceVarying );
+
+			extraUVSetsNamePtr.set( "extraUVSets", rString, numUVSets-1 );
+			extraUVSetsNamePtr.setDetailType( rConstant );
+		}
+	}
+	else
+	{
+		if ( numUVSets > 0 )
 		{
 			liqTokenPointer pFaceVertexPointerPair;
 
-			pFaceVertexPointerPair.set( extraUVSetNames[j].asChar(), rFloat, numFaceVertices, 2 );
+			pFaceVertexPointerPair.set( "st", rFloat, numFaceVertices, 2 );
 			pFaceVertexPointerPair.setDetailType( rFaceVarying );
 
 			UVSetsArray.push_back( pFaceVertexPointerPair );
-		}
 
-		if( liqglo_outputMeshUVs )
-		{
-			// Match MTOR, which also outputs face-varying STs as well for some reason - Paul
-			// not anymore - Philippe
-			pFaceVertexSPointer.set( "u", rFloat, numFaceVertices );
-			pFaceVertexSPointer.setDetailType( rFaceVarying );
+			for( j=0; j<extraUVSetNames.length(); j++)
+			{
+				liqTokenPointer pFaceVertexPointerPair;
 
-			pFaceVertexTPointer.set( "v", rFloat, numFaceVertices );
-			pFaceVertexTPointer.setDetailType( rFaceVarying );
+				pFaceVertexPointerPair.set( extraUVSetNames[j].asChar(), rFloat, numFaceVertices, 2 );
+				pFaceVertexPointerPair.setDetailType( rFaceVarying );
+
+				UVSetsArray.push_back( pFaceVertexPointerPair );
+			}
+
+			if( liqglo_outputMeshUVs )
+			{
+				// Match MTOR, which also outputs face-varying STs as well for some reason - Paul
+				// not anymore - Philippe
+				pFaceVertexSPointer.set( "u", rFloat, numFaceVertices );
+				pFaceVertexSPointer.setDetailType( rFaceVarying );
+
+				pFaceVertexTPointer.set( "v", rFloat, numFaceVertices );
+				pFaceVertexTPointer.setDetailType( rFaceVarying );
+			}
 		}
 	}
+
 
 	vertexParam = pointsPointerPair.getTokenFloatArray();
 	normalParam = normalsPointerPair.getTokenFloatArray();
@@ -238,30 +264,68 @@ liqRibMeshData::liqRibMeshData( MObject mesh ): numFaces( 0 ),
 				normalsPointerPair.setTokenFloat( faceVertex, normals[normal].x, normals[normal].y, normals[normal].z );
 			}
 			
-			
-			if ( UVSetsArray.size() )
+			if( liqglo_outputMeshAsRMSArrays )
 			{
-				for( j=0; j<UVSetsArray.size(); j++ )
+				for( j=0; j<numUVSets; j++ )
 				{
-					MString uvSetName;
 					if(j==0)
 					{
-						uvSetName = currentUVSetName;
+						MString uvSetName = currentUVSetName;
+						// set uvSet name
+						currentUVSetNamePtr.setTokenString( 0, currentUVSetName.asChar() );
+						// set uv values
+						fnMesh.getPolygonUV( face, i, S, T, &uvSetName );
+						
+						currentUVSetUPtr.setTokenFloat( faceVertex, S );
+#ifdef DURANDUBOI
+						currentUVSetVPtr.setTokenFloat( faceVertex, T );
+#else
+						currentUVSetVPtr.setTokenFloat( faceVertex, 1-T );
+#endif
 					}
 					else
 					{
-						uvSetName = extraUVSetNames[j-1];
+						MString uvSetName = extraUVSetNames[j-1];
+						// set uvSet name
+						extraUVSetsNamePtr.setTokenString( j-1, extraUVSetNames[j-1].asChar() );
+						// set uv values
+						fnMesh.getPolygonUV( face, i, S, T, &uvSetName );
+						extraUVSetsUPtr.setTokenFloat( (numFaceVertices*(j-1)) + faceVertex, S );
+#ifdef DURANDUBOI
+						extraUVSetsVPtr.setTokenFloat( (numFaceVertices*(j-1)) + faceVertex, T );
+#else
+						extraUVSetsVPtr.setTokenFloat( (numFaceVertices*(j-1)) + faceVertex, 1-T );
+#endif
 					}
-					fnMesh.getPolygonUV( face, i, S, T, &uvSetName );
-					UVSetsArray[j].setTokenFloat( faceVertex, 0, S );
-					UVSetsArray[j].setTokenFloat( faceVertex, 1, 1-T );
-					//printf("V%d  %s : %f %f  =>  %f %f \n", i, uvSetName.asChar(), S, T, S, 1-T);
 				}
-				if( liqglo_outputMeshUVs )
+			}
+			else
+			{
+				if( numUVSets )
 				{
-					// Match MTOR, which always outputs face-varying STs as well for some reason - Paul
-					pFaceVertexSPointer.setTokenFloat( faceVertex, S );
-					pFaceVertexTPointer.setTokenFloat( faceVertex, 1-T );
+					for( j=0; j<numUVSets; j++ )
+					{
+						MString uvSetName;
+						if(j==0)
+						{
+							uvSetName = currentUVSetName;
+						}
+						else
+						{
+							uvSetName = extraUVSetNames[j-1];
+						}
+						fnMesh.getPolygonUV( face, i, S, T, &uvSetName );
+						UVSetsArray[j].setTokenFloat( faceVertex, 0, S );
+						UVSetsArray[j].setTokenFloat( faceVertex, 1, 1-T );
+						//printf("V%d  %s : %f %f  =>  %f %f \n", i, uvSetName.asChar(), S, T, S, 1-T);
+
+						if( liqglo_outputMeshUVs && j==0)
+						{
+							// Match MTOR, which always outputs face-varying STs as well for some reason - Paul
+							pFaceVertexSPointer.setTokenFloat( faceVertex, S );
+							pFaceVertexTPointer.setTokenFloat( faceVertex, 1-T );
+						}
+					}
 				}
 			}
 			++faceVertex;
@@ -271,14 +335,30 @@ liqRibMeshData::liqRibMeshData( MObject mesh ): numFaces( 0 ),
 	// Add tokens to array and clean up after
 	tokenPointerArray.push_back( pointsPointerPair );
 	tokenPointerArray.push_back( normalsPointerPair );
-	if( UVSetsArray.size() )
+
+	if(liqglo_outputMeshAsRMSArrays)
 	{
-		tokenPointerArray.insert( tokenPointerArray.end(), UVSetsArray.begin(), UVSetsArray.end() );
+		tokenPointerArray.push_back( currentUVSetNamePtr );
+		tokenPointerArray.push_back( currentUVSetUPtr );
+		tokenPointerArray.push_back( currentUVSetVPtr );
+		if( numUVSets > 1 )
+		{
+			tokenPointerArray.push_back( extraUVSetsNamePtr );
+			tokenPointerArray.push_back( extraUVSetsUPtr );
+			tokenPointerArray.push_back( extraUVSetsVPtr );
+		}
 	}
-	if( liqglo_outputMeshUVs )
+	else
 	{
-		tokenPointerArray.push_back( pFaceVertexSPointer );
-		tokenPointerArray.push_back( pFaceVertexTPointer );
+		if( UVSetsArray.size() )
+		{
+			tokenPointerArray.insert( tokenPointerArray.end(), UVSetsArray.begin(), UVSetsArray.end() );
+		}
+		if( liqglo_outputMeshUVs )
+		{
+			tokenPointerArray.push_back( pFaceVertexSPointer );
+			tokenPointerArray.push_back( pFaceVertexTPointer );
+		}
 	}
 	addAdditionalSurfaceParameters( mesh );
 }
@@ -355,13 +435,16 @@ void liqRibMeshData::write()
     scoped_array< RtPointer > pointerArray( new RtPointer[ numTokens ] );
     assignTokenArraysV( tokenPointerArray, tokenArray.get(), pointerArray.get() );
 
+	RtToken *tokenPtr = tokenArray.get();
+	RtPointer *pointerPtr = pointerArray.get();
+
     RiPointsGeneralPolygonsV( numFaces,
                               &nloops[ 0 ],
                               nverts.get(),
                               verts.get(),
                               numTokens,
-                              tokenArray.get(),
-                              pointerArray.get() );
+                              tokenPtr,
+                              pointerPtr );
 
     if ( areaLight ) {
       // RiAttributeEnd();
@@ -387,7 +470,7 @@ bool liqRibMeshData::compare( const liqRibData & otherObj ) const
   if ( numPoints != other.numPoints ) return false;
   if ( numNormals != other.numNormals ) return false;
 
-  for ( unsigned i( 0 ); i < numFaces; ++i ) {
+  for ( int i( 0 ); i < numFaces; ++i ) {
     if ( nverts[i] != other.nverts[i] ) return false;
     numFaceVertices += nverts[i];
   }
@@ -396,7 +479,7 @@ bool liqRibMeshData::compare( const liqRibData & otherObj ) const
     if ( verts[i] != other.verts[i] ) return false;
   }
 
-  for ( unsigned i( 0 ); i < numPoints; ++i ) {
+  for ( int i( 0 ); i < numPoints; ++i ) {
     const unsigned a( i * 3 );
     const unsigned b( a + 1 );
     const unsigned c( a + 2 );
@@ -408,7 +491,7 @@ bool liqRibMeshData::compare( const liqRibData & otherObj ) const
     }
   }
 
-  for ( unsigned i( 0 ); i < numNormals; ++i ) {
+  for ( int i( 0 ); i < numNormals; ++i ) {
     const unsigned a = i * 3;
     const unsigned b = a + 1;
     const unsigned c = a + 2;
