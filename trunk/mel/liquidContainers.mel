@@ -618,6 +618,7 @@ global proc liquidContainer_assignToContainer( string $container, string $nodes[
     string $type = liquidGetShaderNodeType($node);
     switch( $type ) {
       case "Surface":
+      case "Shader":
       case "Disp":
       case "Volume":
       case "Light":

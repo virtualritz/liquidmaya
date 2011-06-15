@@ -256,12 +256,12 @@ bool isObjectCastsShadows( const MDagPath & path )
 
 /** Check if the given object receives shadows.
  */
-bool isObjectReceivesShadows( const MDagPath & path )
+bool isObjectReceiveShadows( const MDagPath & path )
 {
   MStatus status;
   MFnDagNode fnDN( path );
   // Check the visibility attribute of the node
-  MPlug vPlug = fnDN.findPlug( MString( "receivesShadows" ), &status );
+  MPlug vPlug = fnDN.findPlug( MString( "receiveShadows" ), &status );
   bool receivesShadows = true;
   if( status == MS::kSuccess ) {
     vPlug.getValue( receivesShadows );
@@ -376,6 +376,15 @@ void assignTokenArraysV( const vector<liqTokenPointer>& tokenPointerArray, RtTok
   }
 }
 
+void assignIthTokenArraysV( const vector<liqTokenPointer>& tokenPointerArray, RtToken tokens[], RtPointer pointers[], unsigned int primi )
+{
+  unsigned i( 0 );
+  for( vector< liqTokenPointer >::const_iterator iter( tokenPointerArray.begin() ); iter != tokenPointerArray.end(); iter++, i++ ) {
+    tokens[ i ] = const_cast< RtString >( const_cast< liqTokenPointer* >( &( *iter ) )->getDetailedTokenName().c_str() );
+    pointers[ i ] = const_cast< liqTokenPointer* >( &( *iter ) )->getIthRtPointer( primi );
+  }
+}
+
 MObject findFacetShader( MObject mesh, int polygonIndex ){
   MFnMesh     fnMesh( mesh );
   MObjectArray shaders;
@@ -464,170 +473,183 @@ MString getFileName( const MString& fullpath ) {
  */
 MString parseString( const MString& inputString, bool doEscaped )
 {
-  MString constructedString;
-  MString tokenString;
-  bool inToken = false;
-  int sLength = inputString.length();
-  int i;
+	MString constructedString;
+	MString tokenString;
+	int escapedDollar = 0;
+	bool inToken = false;
+	int sLength = inputString.length();
+	int i;
+	for( i = 0; i < sLength; i++ )
+	{
+		if( inputString.substring( i, i ) == "\\" && inputString.substring( i + 1, i + 1 ) == "$" )
+		{
+			escapedDollar = 1;
+		}
+		else if( inputString.substring( i, i ) == "$" )
+		{
+			if(escapedDollar)
+			{
+				constructedString += "$";
+			}
+			else
+			{
+				tokenString.clear();
+				inToken = true;
+			}
+			escapedDollar = 0;
+		}
+		else if( inToken )
+		{
+			tokenString += inputString.substring(i, i);
+			if( tokenString == "F" )
+			{
+				constructedString += (int)liqglo_lframe;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "SCN" )
+			{
+				constructedString += liqglo_sceneName;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "IMG" )
+			{
+				constructedString += liqglo_DDimageName[0];
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "PDIR" || tokenString == "PROJDIR" )
+			{
+				constructedString += liqglo_projectDir;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "RDIR" || tokenString == "RIBDIR" )
+			{
+				constructedString += liqglo_ribDir;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "TDIR" || tokenString == "TEXDIR" )
+			{
+				constructedString += liqglo_textureDir;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "OBJ" && inputString.substring(i+1, i+4) != "PATH" )
+			{
+				constructedString += liqglo_currentNodeShortName;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "OBJPATH" )
+			{
+				constructedString += liqglo_currentNodeName;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "SHOT" )
+			{
+				constructedString += liqglo_shotName;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "VER" )
+			{
+				constructedString += liqglo_shotVersion;
+				inToken = false;
+				tokenString.clear();
+			}
+			else if( tokenString == "LYR" || tokenString == "LAYER" )
+			{
+				constructedString += liqglo_layer;
+				inToken = false;
+				tokenString.clear();
+			}
+		}
+		else if( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" )
+		{
+			constructedString += (int)liqglo_lframe;
+		}
+		else if( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" )
+		{
+			int paddingSize = 0;
+			while( inputString.substring(i, i) == "#" )
+			{
+				paddingSize++;
+				i++;
+			}
+			i--;
+			if( paddingSize == 1 )
+			{
+				paddingSize = 4;
+			}
+			if( paddingSize > 20 )
+			{
+				paddingSize = 20;
+			}
+			char paddedFrame[20];
+			sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
+			constructedString += paddedFrame;
+		}
+		else if( inputString.substring( i + 1, i + 1 ) == "%" )
+		{
+			if( inputString.substring( i, i ) == "\\" )
+			{
+				constructedString += "%";
+				i++;
+			}
+			else
+			{
+				constructedString += inputString.substring( i, i );
+				i += 2; // move to 1st character after the '%'
 
-  for( i = 0; i < sLength; i++ )
-  {
-    if( inputString.substring(i, i) == "$" )
-    {
-      tokenString.clear();
-      inToken = true;
-    }
-    else if( inToken )
-    {
-      tokenString += inputString.substring(i, i);
-      if( tokenString == "F" )
-      {
-        constructedString += (int)liqglo_lframe;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "SCN" )
-      {
-        constructedString += liqglo_sceneName;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "IMG" )
-      {
-        constructedString += liqglo_DDimageName[0];
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "PDIR" || tokenString == "PROJDIR" )
-      {
-        constructedString += liqglo_projectDir;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "RDIR" || tokenString == "RIBDIR" )
-      {
-        constructedString += liqglo_ribDir;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "TDIR" || tokenString == "TEXDIR" )
-      {
-        constructedString += liqglo_textureDir;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "OBJ" && inputString.substring(i+1, i+4) != "PATH" )
-      {
-        constructedString += liqglo_currentNodeShortName;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "OBJPATH" )
-      {
-        constructedString += liqglo_currentNodeName;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "SHOT" )
-      {
-        constructedString += liqglo_shotName;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "VER" )
-      {
-        constructedString += liqglo_shotVersion;
-        inToken = false;
-        tokenString.clear();
-      }
-      else if( tokenString == "LYR" || tokenString == "LAYER" )
-      {
-        constructedString += liqglo_layer;
-        inToken = false;
-        tokenString.clear();
-      }
-    }
-    else if( inputString.substring(i, i) == "@" && inputString.substring(i - 1, i - 1) != "\\" )
-    {
-      constructedString += (int)liqglo_lframe;
-    }
-    else if( inputString.substring(i, i) == "#" && inputString.substring(i - 1, i - 1) != "\\" )
-    {
-      int paddingSize = 0;
-      while( inputString.substring(i, i) == "#" )
-      {
-        paddingSize++;
-        i++;
-      }
-      i--;
-      if( paddingSize == 1 )
-      {
-        paddingSize = 4;
-      }
-      if( paddingSize > 20 )
-      {
-        paddingSize = 20;
-      }
-      char paddedFrame[20];
-      sprintf( paddedFrame, "%0*ld", paddingSize, liqglo_lframe );
-      constructedString += paddedFrame;
-    }
-    else if( inputString.substring( i + 1, i + 1 ) == "%" )
-    {
-      if( inputString.substring( i, i ) == "\\" )
-      {
-        constructedString += "%";
-        i++;
-      }
-      else
-      {
-        constructedString += inputString.substring( i, i );
-        i += 2; // move to 1st character after the '%'
+				MString envString;
+				char* envVal( NULL );
 
-        MString envString;
-        char* envVal( NULL );
+				// loop through the string looking for the closing %
+				if( i < sLength )
+				{
+					while( i < sLength && inputString.substring( i, i ) != "%" )
+					{
+						envString += inputString.substring( i, i );
+						i++;
+					}
 
-        // loop through the string looking for the closing %
-        if( i < sLength ) {
-          while( i < sLength && inputString.substring( i, i ) != "%" ) {
-            envString += inputString.substring( i, i );
-            i++;
-          }
+					envVal = getenv( envString.asChar() );
 
-          envVal = getenv( envString.asChar() );
-
-          if( envVal != NULL ) {
-            constructedString += envVal;
-          }
-          // else environment variable doesn't exist.. do nothing
-        }
-      }
-      // else early exit: % was the last character in the string.. do nothing
-    }
-    else if( inputString.substring( i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" )
-    {
-      // do nothing
-    }
-    else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" )
-    {
-      constructedString += "\n";
-      i++;
-    }
-    else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" )
-    {
-      constructedString += "\t";
-      i++;
-    }
-    else
-    {
-      constructedString += inputString.substring(i, i);
-    }
-  }
-
-  // Moritz: now parse for MEL command sequences
-  constructedString = parseCommandString( constructedString );
-
-  return constructedString;
+					if( envVal != NULL )
+					{
+						constructedString += envVal;
+					}
+					// else environment variable doesn't exist.. do nothing
+				}
+			}
+			// else early exit: % was the last character in the string.. do nothing
+		}
+		else if( inputString.substring( i + 1, i + 1 ) == "#" && inputString.substring(i, i) == "\\" )
+		{
+			// do nothing
+		}
+		else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "n" && inputString.substring(i, i) == "\\" )
+		{
+			constructedString += "\n";
+			i++;
+		}
+		else if( doEscaped && inputString.substring(i + 1, i + 1 ) == "t" && inputString.substring(i, i) == "\\" )
+		{
+			constructedString += "\t";
+			i++;
+		}
+		else
+		{
+			constructedString += inputString.substring(i, i);
+		}
+	}
+	// Moritz: now parse for MEL command sequences
+	constructedString = parseCommandString( constructedString );
+	return constructedString;
 }
 
 // Moritz: added below code for simple MEL parameter expression scripting support

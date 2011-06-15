@@ -77,7 +77,10 @@ extern "C" {
 #include <liqBoundingBoxLocator.h>
 #include <liqCoShaderNode.h>
 #include <liqShaderFactory.h>
-
+#include <liqRibShaderTranslator.h>
+#include <liqSurfaceSwitcherNode.h>
+#include <liqDisplacementSwitcherNode.h>
+#include <liqParseString.h>
 
 #define LIQVENDOR "http://liquidmaya.sourceforge.net/"
 
@@ -455,6 +458,28 @@ LIQUID_EXPORT MStatus initializePlugin(MObject obj)
   status = MSwatchRenderRegister::registerSwatchRender( "liqCoShaderSwatch", liqNodeSwatch::creator );
   LIQCHECKSTATUS( status, "Can't register liquidCoShader swatch" );
 
+
+  status = plugin.registerCommand("liqRibShaderTranslator", liqRibShaderTranslator::creator );
+  LIQCHECKSTATUS( status, "Can't register liquid translator command" );
+
+  // register the liquidShaderSwitcher node
+  const MString UserClassifySurfaceSwitcher( "shader/surface" );
+  status = plugin.registerNode( "liquidSurfaceSwitcher", liqSurfaceSwitcherNode::id, liqSurfaceSwitcherNode::creator, liqSurfaceSwitcherNode::initialize, MPxNode::kDependNode, &UserClassifySurfaceSwitcher );
+  LIQCHECKSTATUS( status, "Can't register liquidSurfaceSwitcher node" );
+  status.clear();
+  //status = MSwatchRenderRegister::registerSwatchRender( "liqSurfSwatch", liqNodeSwatch::creator );
+  //LIQCHECKSTATUS( status, "Can't register liquidSurfaceSwitcher swatch" );
+
+  // register the liquidDisplacementSwitcher node
+  const MString UserClassifyDisplaceSwitcher( "shader/displacement" );
+  status = plugin.registerNode( "liquidDisplacementSwitcher", liqDisplacementSwitcherNode::id, liqDisplacementSwitcherNode::creator, liqDisplacementSwitcherNode::initialize, MPxNode::kDependNode, &UserClassifyDisplaceSwitcher );
+  LIQCHECKSTATUS( status, "Can't register liquidDisplacementSwitcher node" );
+  status.clear();
+
+  status = plugin.registerCommand("liqParseString", liqParseString::creator );
+  LIQCHECKSTATUS( status, "Can't register liquid parseString command" );
+
+
   // setup all of the base liquid interface
   MString sourceLine("source ");
   char *tmphomeChar;
@@ -745,9 +770,21 @@ LIQUID_EXPORT MStatus uninitializePlugin(MObject obj)
   status = MSwatchRenderRegister::unregisterSwatchRender( "liqCoShaderSwatch" );
   LIQCHECKSTATUS( status, "Can't deregister liquidCoShader swatch generator" );
 
+  status = plugin.deregisterCommand("liqRibShaderTranslator");
+  LIQCHECKSTATUS( status, "Can't deregister liqRibShaderTranslator command" );
+
+  status = plugin.deregisterNode( liqSurfaceSwitcherNode::id );
+  LIQCHECKSTATUS( status, "Can't deregister liquidSurfaceSwitcher node" );
+
+  status = plugin.deregisterNode( liqDisplacementSwitcherNode::id );
+  LIQCHECKSTATUS( status, "Can't deregister liquidDisplacementSwitcher node" );
+
+  status = plugin.deregisterCommand("liqParseString");
+  LIQCHECKSTATUS( status, "Can't deregister liqParseString command" );
+
   cout <<"Liquid "<< LIQUIDVERSION << " unregistered"<<endl<<endl;
 
-	liqShaderFactory::deleteInstance();
+  liqShaderFactory::deleteInstance();
 
   return MS::kSuccess;
 }

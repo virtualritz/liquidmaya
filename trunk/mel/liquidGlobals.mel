@@ -84,7 +84,7 @@ global proc liquidGlobalsRenderLayerOverrideUpdateMenu( string $attr, string $pr
 proc resizeLayout( string $root, int $levels )
 {
   string $old = `setParent -q`;
-  //trace ("----------------------------------------------");
+  //ltrace ("----------------------------------------------");
 
   string $layout = `setParent $root`;
   int $height = 0;
@@ -92,9 +92,9 @@ proc resizeLayout( string $root, int $levels )
   for ( $c in $children ) {
     if ( `layout -q -ex $c` ) $height += `layout -q -h $c`;
     else $height += `control -q -h $c`;
-    //trace("  "+$c+" = "+$height);
+    //ltrace("  "+$c+" = "+$height);
   }
-  //trace (match("|[A-Za-z0-9_]*$", $layout)+" = "+$height);
+  //ltrace (match("|[A-Za-z0-9_]*$", $layout)+" = "+$height);
 
   if ( $height <= 1 ) {
     layout -e -h 1 $layout;
@@ -104,7 +104,7 @@ proc resizeLayout( string $root, int $levels )
   for ( $i=0; $i<$levels; $i++ ) {
     $layout = `setParent ..`;
     layout -e -h $height $layout;
-    //trace (match("|[A-Za-z0-9_]*$", $layout)+" = "+$height);
+    //ltrace (match("|[A-Za-z0-9_]*$", $layout)+" = "+$height);
     $height += `layout -q -h $layout`;
   }
 
@@ -152,6 +152,8 @@ proc liquidShowBoolGlobal( string $name, string $label )
 
 proc liquidShowBitFieldGlobal( string $attr )
 {
+	// ICI
+	print("DEBUG : liquidShowBitFieldGlobal " + $attr + "\n");
   string $bitFields[] = `attributeQuery -n liquidGlobals -lc $attr`;
   string $bit;
   for ( $bit in $bitFields ) {
@@ -488,6 +490,7 @@ global proc liquidInitGlobalVals()
     ,"illuminateByDefault",			"bool",   false
     ,"liquidSetLightLinking",       "bool",   false
     ,"outputMeshUVs",               "bool",   false
+    ,"outputMeshAsRMSArrays",       "bool",   false
     ,"ignoreSurfaces",              "bool",   false
     ,"ignoreDisplacements",         "bool",   false
     ,"ignoreLights",                "bool",   false
@@ -495,6 +498,7 @@ global proc liquidInitGlobalVals()
     ,"outputShadersInShadows",      "bool",   false
     ,"outputShadersInDeepShadows",  "bool",   false
     ,"outputLightsInDeepShadows",   "bool",   false
+    ,"exportAllShadersParameters",  "bool",   false
 
     ,"outputShadowPass",            "bool",   false
     ,"outputHeroPass",              "bool",   true
@@ -599,20 +603,20 @@ global proc liquidInitGlobalVals()
     ,"previewConnectionType",       "long",   0
     ,"renderViewLocal",             "bool",   true
     ,"renderViewPort",              "long",   6667
-    ,"renderViewTimeOut",           "long",   20
+    ,"renderViewTimeOut",           "long",   50
 
     ,"useRayTracing",               "bool",   false
-    ,"traceBreadthFactor",          "float",  1.0
-    ,"traceDepthFactor",            "float",  1.0
-    ,"traceMaxDepth",               "long",   10
-    ,"traceSpecularThreshold",      "float",  10
-    ,"traceRayContinuation",        "bool",   true
-    ,"traceCacheMemory",            "long",   30720
-    ,"traceDisplacements",          "bool",   false
-    ,"traceBias",                   "float",  0.05
-    ,"traceSampleMotion",           "bool",   false
-    ,"traceMaxSpecularDepth",       "long",   2
-    ,"traceMaxDiffuseDepth",        "long",   2
+    ,"ltraceBreadthFactor",          "float",  1.0
+    ,"ltraceDepthFactor",            "float",  1.0
+    ,"ltraceMaxDepth",               "long",   10
+    ,"ltraceSpecularThreshold",      "float",  10
+    ,"ltraceRayContinuation",        "bool",   true
+    ,"ltraceCacheMemory",            "long",   30720
+    ,"ltraceDisplacements",          "bool",   false
+    ,"ltraceBias",                   "float",  0.05
+    ,"ltraceSampleMotion",           "bool",   false
+    ,"ltraceMaxSpecularDepth",       "long",   2
+    ,"ltraceMaxDiffuseDepth",        "long",   2
 
     ,"irradianceMaxError",          "float",  -1.0
     ,"irradianceMaxPixelDist",      "float",  -1.0
@@ -634,10 +638,10 @@ global proc liquidInitGlobalVals()
     ,"viewTextureFilter",           "stringArray",  "*.tdl"           // texture viewer file filter
 
     // This is the list of filters supported by the renderer
-    ,"bits_hiders",                 "boolArray",  "Hidden Photon ZBuffer Raytrace OpenGL DepthMask"
+    ,"bits_hiders",                 "boolArray",  "Hidden Photon ZBuffer Rayltrace OpenGL DepthMask"
     ,"bits_filters",                "boolArray",  "Box Triangle Catmull_Rom Gaussian Sinc Blackman_Harris Mitchell SeparableCatmull_Rom Lanczos Bessel Disk"
     ,"bits_features",               "boolArray",  "Blobbies Points Eyesplits Raytracing DepthOfField AdvancedVisibility DisplayChannels"
-    ,"bits_required",               "boolArray",  "Swap_UV __Pref MakeShadow"
+    //,"bits_required",               "boolArray",  "Swap_UV __Pref MakeShadow"
 
     ,"dshDisplayName",              "string",     "dsm"               // Deep Shadow Display name
     ,"dshImageMode",                "string",     "rgbaz"             // Deep Shadow Display image mode
@@ -654,7 +658,7 @@ global proc liquidInitGlobalVals()
   $liqHidersList = {
     "Hidden",
     "Photon",
-    "Raytrace",
+    "Rayltrace",
     "OpenGL",
     "ZBuffer"
   };
@@ -664,7 +668,7 @@ global proc liquidInitGlobalVals()
     "Blobbies",
     "Points",
     "Eyesplits",
-    "Raytrace",
+    "Rayltrace",
     "DepthOfField",
     "AdvancedVisibility",
     "DisplayChannels"
@@ -691,7 +695,7 @@ global proc liquidInitGlobalVals()
     "bits_hiders",
     "bits_filters",
     "bits_features",
-    "bits_required",
+    //"bits_required",
     "dshDisplayName",
     "dshImageMode"
   };
@@ -773,17 +777,25 @@ global proc int oldLiquidGlobalsExists()
 
 global proc int liquidGlobalsExists()
 {
-  int $returnVal;
-  $returnVal = `objExists liquidGlobals`;
-  if ( $returnVal ) {
-    if ( nodeType( "liquidGlobals" ) == "oldBlindDataBase" ) {
-      delete liquidGlobals;
-      if ( `window -q -ex unifiedRenderGlobalsWindow` ) deleteUI unifiedRenderGlobalsWindow;
-      return 0;
-    }
-    if ( nodeType( "liquidGlobals" ) != "liquidGlobals" ) return 0;
-  }
-  return $returnVal;
+	int $returnVal;
+	$returnVal = `objExists liquidGlobals`;
+	if ( $returnVal )
+	{
+		if ( nodeType( "liquidGlobals" ) == "oldBlindDataBase" )
+		{
+			delete liquidGlobals;
+			if ( `window -q -ex unifiedRenderGlobalsWindow` )
+			{
+				deleteUI unifiedRenderGlobalsWindow;
+			}
+			return 0;
+		}
+		if ( nodeType( "liquidGlobals" ) != "liquidGlobals" )
+		{
+			return 0;
+		}
+	}
+	return $returnVal;
 }
 
 
@@ -792,30 +804,35 @@ global proc int liquidGlobalsExists()
  */
 global proc liquidCreateGlobals()
 {
-  if ( `liquidGlobalsExists` ) {
-    delete liquidGlobals;
-  }
-  if ( !`liquidGlobalsExists` ) {
-    createNode "liquidGlobals" -n "liquidGlobals";
-    print "Liquid Globals Created!\n";
-  }
+	if ( `liquidGlobalsExists` )
+	{
+		delete liquidGlobals;
+	}
+	if ( !`liquidGlobalsExists` )
+	{
+		string $currentNamespace = `namespaceInfo -cur`;
+		namespace -set ":";
+		createNode "liquidGlobals" -n "liquidGlobals" -skipSelect;
+		print "Liquid Globals Created!\n";
+		namespace -set $currentNamespace;
+	}
 
-  // set the default display driver
-  if ( !`getAttr -size liquidGlobals.ddImageName` || `getAttr liquidGlobals.ddImageName[0]` == "" ) {
-    //print "init default display driver";
-    setAttr -type "string" liquidGlobals.ddImageName[0] "";
-    setAttr -type "string" liquidGlobals.ddImageType[0] "framebuffer";
-    setAttr -type "string" liquidGlobals.ddImageMode[0] "rgba";
-    setAttr liquidGlobals.ddBitDepth[0]       8;
-    setAttr liquidGlobals.ddPixelFilter[0]    0;
-    setAttr liquidGlobals.ddPixelFilterX[0]   2.0;
-    setAttr liquidGlobals.ddPixelFilterY[0]   2.0;
-  }
-
-  liquidLoadGlobals( "default", "global" );
-
-
-
+	// set the default display driver
+	if( objExists("liquidGlobals.ddImageName") )
+	{
+		if ( !`getAttr -size liquidGlobals.ddImageName` || `getAttr liquidGlobals.ddImageName[0]` == "" )
+		{
+			//print "init default display driver";
+			setAttr -type "string" liquidGlobals.ddImageName[0] "";
+			setAttr -type "string" liquidGlobals.ddImageType[0] "framebuffer";
+			setAttr -type "string" liquidGlobals.ddImageMode[0] "rgba";
+			setAttr liquidGlobals.ddBitDepth[0]       8;
+			setAttr liquidGlobals.ddPixelFilter[0]    0;
+			setAttr liquidGlobals.ddPixelFilterX[0]   2.0;
+			setAttr liquidGlobals.ddPixelFilterY[0]   2.0;
+		}
+	}
+	liquidLoadGlobals( "default", "global" );
 }
 
 // REVIEW : not called anymore.
@@ -1033,7 +1050,7 @@ global proc int liquidSaveGlobals( string $name, string $presetType, int $forceO
         } else {
           // the path is not valid
           string $msg = ("liquidSaveGlobals: \""+$presetType+"\" is not a valid path !");
-          trace $msg;
+          ltrace $msg;
           warning $msg;
           return false;
         }
@@ -1085,13 +1102,13 @@ global proc int liquidSaveGlobals( string $name, string $presetType, int $forceO
       if ( `sysFile -rename $globalName $presetFile` ) $ret = true;
       else {
         string $msg = ("liquidSaveGlobals: \""+$presetFile+"\" could not be moved to \""+$globalName+"\" !");
-        trace $msg;
+        ltrace $msg;
         warning $msg;
         $ret = false;
       }
     } else {
       string $msg = ("liquidSaveGlobals: \""+$presetFile+"\" is not writable !");
-      trace $msg;
+      ltrace $msg;
       warning $msg;
       $ret = false;
     }
@@ -1673,7 +1690,6 @@ global proc liquidDisplayDriverGuiUpdateList()
   for ( $i = 1; $i < $numDD; $i++ ) {
 
     if ( !`objExists liquidGlobals.ddImageName[$i]` ) continue;
-
     int    $DDenable = `getAttr liquidGlobals.ddEnable[$i]`;
     string $DDtype   = `getAttr liquidGlobals.ddImageType[$i]`;
     string $DDmode   = `getAttr liquidGlobals.ddImageMode[$i]`;
@@ -2550,7 +2566,7 @@ global proc liquidHiderOptions_buildIt( string $prefix )
       // RAYTRACE
       if ( $renderer == "pixie" ) {
         if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true -vis false $theLayout;
-          liquidShowIntGlobal     "raytraceFalseColor"    "False Color";
+          liquidShowIntGlobal     "rayltraceFalseColor"    "False Color";
       } else if ( !`columnLayout -q -ex $theLayout`) columnLayout -adj true $theLayout;
       if (!`about -win`) {  tabLayout -e -h (`layout -q -h $theLayout`) $parent; }
       tabLayout -e -st $theLayout $parent;
@@ -2849,6 +2865,8 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
         liquidShowBoolGlobal "outputMayaPolyCreases" "Use Maya Poly Creases";
         liquidShowBoolGlobal "renderAllCurves"   "Render All Curves";
         liquidShowBoolGlobal "outputMeshUVs"     "Extra MtoR Mesh UVs";
+        liquidShowBoolGlobal "outputMeshAsRMSArrays"     "Write Mesh UVs as RMS arrays";
+        liquidShowBoolGlobal "exportAllShadersParameters"     "Export all shaders parameters";
         liquidShowBoolGlobal "ribRelativeTransforms" "Relative Transforms";
         liquidShowBoolGlobal "outputComments"    "Detailed Comments";
         frameLayout -bs "etchedIn" -l "Light Linking" -cll true -cl false;
@@ -2905,6 +2923,13 @@ global proc liquidGlobalsOptionsTab_buildIt( string $prefix )
             liquidShowBoolGlobal "compressedOutput" "GZip Compressed";
           setParent ..;
         setParent ..;
+      setParent ..;
+    setParent ..;
+    frameLayout -bs "etchedIn" -l "Render View" -cll true -cl false;
+      columnLayout -adj true;
+        liquidShowBoolGlobal "renderViewLocal"    "Local Render";
+        liquidShowIntGlobal "renderViewPort"    "Port";
+        liquidShowIntGlobal "renderViewTimeOut"    "Time-Out";
       setParent ..;
     setParent ..;
     frameLayout -bs "etchedIn" -l "Clean Up" -cll true -cl false;
@@ -3082,11 +3107,11 @@ global proc liquidGlobalsRendererTab_buildIt( string $prefix )
       setParent..;
     setParent..;
 
-    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Requirements" -cll true -cl true;
-      columnLayout -adj true;
-        liquidShowBitFieldGlobal( "bits_required" );
-      setParent..;
-    setParent..;
+//    frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Requirements" -cll true -cl true;
+//      columnLayout -adj true;
+//        liquidShowBitFieldGlobal( "bits_required" );
+//      setParent..;
+//    setParent..;
 
     frameLayout -mh 5 -mw 5 -bs "etchedIn" -l "Deep Shadow Display Driver" -cll true -cl true;
       columnLayout -adj true;
@@ -3152,13 +3177,13 @@ global proc liquidGlobalsFluidTab_buildIt( string $prefix )
         liquidShowStringGlobal "fluidShaderBrowserDefaultPath" "Default Path" $prefix;
       setParent ..;
     setParent ..;
-    frameLayout -l "Render View" -cl false;
-      columnLayout -adj true;
-        liquidShowBoolGlobal  "renderViewLocal"   "Local Render";
-        liquidShowIntGlobal   "renderViewPort"    "Port";
-        liquidShowIntGlobal   "renderViewTimeOut" "Time-Out";
-      setParent ..;
-    setParent ..;
+    //frameLayout -l "Render View" -cl false;
+    //  columnLayout -adj true;
+    //    liquidShowBoolGlobal  "renderViewLocal"   "Local Render";
+    //    liquidShowIntGlobal   "renderViewPort"    "Port";
+    //    liquidShowIntGlobal   "renderViewTimeOut" "Time-Out";
+    //  setParent ..;
+    //setParent ..;
     frameLayout -l "Shaders" -cl false;
       columnLayout -adj true;
         liquidShowBoolGlobal    "shadersIgnoreOutputParams"   "Ignore Output Params";

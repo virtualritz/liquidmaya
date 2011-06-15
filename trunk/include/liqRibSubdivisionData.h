@@ -41,23 +41,32 @@
 
 using namespace boost;
 
-typedef struct tagPolyEdgeIndx {
-    RtInt	vtx0;
-    RtInt	vtx1;
+#ifndef liqSubdivStructs_H
+#define liqSubdivStructs_H
+
+typedef struct tagPolyEdgeIndx
+{
+	RtInt	vtx0;
+	RtInt	vtx1;
 } PolyEdgeIndx;
 
 typedef RtInt PolyVertexIndx;
 typedef RtInt PolyFaceIndx;
 
-typedef struct tagSbdExtraTag {
-    RtFloat	value;		// hardness for creases and corners
-    RtInt	length;		// number of elements
-    union tagExtraData {
-        PolyEdgeIndx	*edges;
-        PolyVertexIndx	*vertices;
-        PolyFaceIndx	*faces;
-    } ExtraData;
+typedef struct tagSbdExtraTag
+{
+	RtFloat	value;		// hardness for creases and corners
+	RtInt	length;		// number of elements
+	union tagExtraData
+	{
+		PolyEdgeIndx	*edges;
+		PolyVertexIndx	*vertices;
+		PolyFaceIndx	*faces;
+	} ExtraData;
 } SbdExtraTag;
+
+#endif
+
 
 class liqRibSubdivisionData : public liqRibData {
 public: // Methods

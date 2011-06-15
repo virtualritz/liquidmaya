@@ -73,6 +73,9 @@ MObject liqCoShaderNode::aRmanArraySizes;
 MObject liqCoShaderNode::aRmanLifCmds;
 MObject liqCoShaderNode::aRmanMethods;
 MObject liqCoShaderNode::aRmanIsOutput;
+MObject liqCoShaderNode::aRmanAccept;
+
+MObject liqCoShaderNode::aPreviewGamma;
 
 MObject liqCoShaderNode::aPreviewPrimitive;
 MObject liqCoShaderNode::aPreviewCustomPrimitive;
@@ -180,6 +183,9 @@ MStatus liqCoShaderNode::initialize()
 	aRmanIsOutput = tAttr.create(  MString("rmanIsOutput"),  MString("rio"), MFnData::kIntArray, aRmanIsOutput, &status );
 	MAKE_INPUT(tAttr);
 
+	aRmanAccept = tAttr.create(  MString("rmanAccept"),  MString("rma"), MFnData::kStringArray, aRmanAccept, &status );
+	MAKE_INPUT(tAttr);
+
 	aPreviewPrimitive = eAttr.create( "previewPrimitive", "pvp", 7, &status );
 	eAttr.addField( "Sphere",   0 );
 	eAttr.addField( "Cube",     1 );
@@ -218,6 +224,13 @@ MStatus liqCoShaderNode::initialize()
 	MAKE_NONKEYABLE_INPUT(nAttr);
 	CHECK_MSTATUS(nAttr.setHidden(true));
 
+	aPreviewGamma = nAttr.create( "previewGamma", "pg", MFnNumericData::kFloat, 1, &status );
+	CHECK_MSTATUS( status );
+	CHECK_MSTATUS( nAttr.setStorable( true ) );
+	CHECK_MSTATUS( nAttr.setHidden( true ) );
+	CHECK_MSTATUS( nAttr.setReadable( true ) );
+	CHECK_MSTATUS( nAttr.setDefault( 1.0f ) );
+
 	// Create output attributes
 	aOutColor = nAttr.createColor("outColor", "oc");
 	MAKE_OUTPUT(nAttr);
@@ -233,6 +246,8 @@ MStatus liqCoShaderNode::initialize()
 	CHECK_MSTATUS(addAttribute(aRmanLifCmds));
 	CHECK_MSTATUS(addAttribute(aRmanMethods));
 	CHECK_MSTATUS(addAttribute(aRmanIsOutput));
+	CHECK_MSTATUS(addAttribute(aRmanAccept));
+	CHECK_MSTATUS(addAttribute(aPreviewGamma));
 
 	CHECK_MSTATUS(addAttribute(aPreviewPrimitive));
 	CHECK_MSTATUS(addAttribute(aPreviewCustomPrimitive));

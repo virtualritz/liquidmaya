@@ -40,8 +40,13 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #else
+#if defined(OSMac_)
+#include <gl.h>
+#include <glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 #endif
 
 #include <liqIOStream.h>

@@ -94,7 +94,7 @@ global proc connectShadowCamera( string $shadowCameraShape, string $nodeDotAttr 
  */
 global proc connectExistingShadowCamera( string $nodeDotAttr, string $flag, string $source )
 {
-  //trace ($nodeDotAttr+" + "+$flag+" + "+$source+"\n");
+  //ltrace ($nodeDotAttr+" + "+$flag+" + "+$source+"\n");
   if ( !objExists( $source ) ) return;
 
   string $theCamera = "";
@@ -123,7 +123,7 @@ global proc connectExistingShadowCamera( string $nodeDotAttr, string $flag, stri
 global proc disconnecShadowCamera( string $nodeDotAttr )
 {
   // nothing yet
-  //trace ("disconnecShadowCamera "+$nodeDotAttr);
+  //ltrace ("disconnecShadowCamera "+$nodeDotAttr);
 }
 
 global proc deleteShadowCamera( string $nodeDotAttr )
@@ -134,13 +134,13 @@ global proc deleteShadowCamera( string $nodeDotAttr )
 global proc ignoreShadowCamera( string $nodeDotAttr )
 {
   // nothing yet
-  //trace ("ignoreShadowCamera "+$nodeDotAttr);
+  //ltrace ("ignoreShadowCamera "+$nodeDotAttr);
 }
 
 global proc unIgnoreShadowCamera( string $nodeDotAttr )
 {
   // nothing yet
-  //trace ("unIgnoreShadowCamera "+$nodeDotAttr);
+  //ltrace ("unIgnoreShadowCamera "+$nodeDotAttr);
 }
 
 
@@ -307,14 +307,16 @@ global proc mainShadowStatusReplace( string $nodeDotAttr )
 
 global proc AEliquidLightTemplate( string $nodeDotAttr )
 {
+	string $nodeName = plugNode($nodeDotAttr);
+
   layout -e -vis false "AEcontrolFormLayout";
 
-  editorTemplate -callCustom ("liquidPreviewSwatchNew "+$nodeDotAttr) ("liquidPreviewSwatchReplace "+$nodeDotAttr) "message";
+  editorTemplate -callCustom "liquidPreviewSwatchNew" "liquidPreviewSwatchReplace" "message";
 
   editorTemplate -beginScrollLayout;
 
-    editorTemplate -ccu ("liquidShaderPickerNew "+$nodeDotAttr) ("liquidShaderPickerReplace "+$nodeDotAttr) "rmanShaderLong";
-
+	editorTemplate -ccu "liquidShaderPickerNew" "liquidShaderPickerReplace" "rmanShaderLong";
+	
     editorTemplate -beginLayout "Preview";
       editorTemplate -addControl "previewPrimitive";
       editorTemplate -ccu "liquidShaderNodesCustomPrimitiveNew \"Custom Primitive\" "
@@ -347,6 +349,7 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
 
     editorTemplate -beginLayout "RIB";
       editorTemplate -addControl "outputInShadow";
+      editorTemplate -ccu ("liquidLargeFieldNew "+$nodeName+" \"RIB Box\"") ("liquidLargeFieldReplace "+$nodeName+" \"RIB Box\"") "liqRIBBox";
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Parameters" -collapse 0;

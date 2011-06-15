@@ -172,6 +172,7 @@ bool liqTokenPointer::set( const string& name, ParameterType ptype, bool asArray
   return set( name, ptype, asArray ? arraySize : 1, asUArray ? arraySize : 0 );
 }
 
+
 bool liqTokenPointer::set( const string& name, ParameterType ptype, unsigned int arraySize, unsigned int uArraySize )
 {
   setTokenName( name );
@@ -327,6 +328,7 @@ void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFl
   m_tokenFloats[ m_eltSize * i + 2 ] = z;
 }
 
+
 void liqTokenPointer::setTokenFloats( const RtFloat* vals )
 {
   LIQDEBUGPRINTF( "-> copying data\n" );
@@ -361,6 +363,31 @@ void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat x, RtFloat y , RtFl
   m_tokenFloats[ m_eltSize * i + 1 ] = y;
   m_tokenFloats[ m_eltSize * i + 2 ] = z;
   m_tokenFloats[ m_eltSize * i + 3 ] = w;
+}
+
+
+void liqTokenPointer::setTokenFloat( unsigned int i, RtFloat x1, RtFloat y1 , RtFloat z1, RtFloat w1, RtFloat x2, RtFloat y2 , RtFloat z2, RtFloat w2, RtFloat x3, RtFloat y3 , RtFloat z3, RtFloat w3, RtFloat x4, RtFloat y4 , RtFloat z4, RtFloat w4 )
+{
+  assert( m_tokenSize > ( m_eltSize * i + 15 ) );
+  m_tokenFloats[ m_eltSize * i + 0 ] = x1;
+  m_tokenFloats[ m_eltSize * i + 1 ] = y1;
+  m_tokenFloats[ m_eltSize * i + 2 ] = z1;
+  m_tokenFloats[ m_eltSize * i + 3 ] = w1;
+
+  m_tokenFloats[ m_eltSize * i + 4 ] = x2;
+  m_tokenFloats[ m_eltSize * i + 5 ] = y2;
+  m_tokenFloats[ m_eltSize * i + 6 ] = z2;
+  m_tokenFloats[ m_eltSize * i + 7 ] = w2;
+
+  m_tokenFloats[ m_eltSize * i + 8 ] = x3;
+  m_tokenFloats[ m_eltSize * i + 9 ] = y3;
+  m_tokenFloats[ m_eltSize * i + 10 ] = z3;
+  m_tokenFloats[ m_eltSize * i + 11 ] = w3;
+
+  m_tokenFloats[ m_eltSize * i + 12 ] = x4;
+  m_tokenFloats[ m_eltSize * i + 13 ] = y4;
+  m_tokenFloats[ m_eltSize * i + 14 ] = z4;
+  m_tokenFloats[ m_eltSize * i + 15 ] = w4;
 }
 
 
@@ -425,6 +452,25 @@ const RtPointer liqTokenPointer::getRtPointer()
     return ( RtPointer )m_tokenFloats.get();
   }
 }
+
+// Return a RtPointer for a token corresponding to the ith element of a primitive
+const RtPointer liqTokenPointer::getIthRtPointer( unsigned int i )
+{
+  if( m_pType == rString ) {
+    assert( m_arraySize > i );
+    m_tokenStringArray = shared_array< RtString >( new RtString[ 1 ] );
+	m_tokenStringArray[ 0 ] = const_cast< RtString >( m_tokenString[ i ].c_str() );
+    return ( RtPointer )m_tokenStringArray.get();
+  } else {
+    if( m_isArray || m_isUArray ) {
+  	  assert( m_tokenSize > ( m_eltSize * i ) );
+      return ( RtPointer ) ( m_tokenFloats.get() + m_eltSize * i);
+    } else {
+      return ( RtPointer )m_tokenFloats.get(); // uniform ...
+    }
+  }
+}
+
 
 string liqTokenPointer::getRiDeclare() const
 {

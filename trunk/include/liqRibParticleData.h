@@ -75,15 +75,16 @@ private:
   unsigned grain;
 
   // Data storage for blobby particles
-  vector< RtInt > codeArray;
-  vector< RtFloat > floatArray;
-  vector< RtString > stringArray;
+  vector< RtInt > m_codeArray;
+  vector< RtFloat > m_floatArray;
+  vector< string > m_stringArray;
 
   MIntArray m_validParticles;
 
   unsigned  m_numParticles;
   unsigned  m_numValidParticles;
   short     m_multiCount;  // Support for multi-point and multi-streak.
+  
 };
 
 #endif

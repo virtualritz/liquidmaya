@@ -12,7 +12,7 @@ ALL_RELEASE_PATHS = $(patsubst bin/$(VBIN)/%,$(RELEASE_PATH)%,$(COMPILED_VERSION
 default : debug
 
 clean :
-	( cd ribLib && make -j $(THREADS) $@ )
+	#( cd ribLib && make -j $(THREADS) $@ )
 	( cd src && make -j $(THREADS) $@ )
 	( cd shaders && make -j $(THREADS) $@ )
 
@@ -82,3 +82,4 @@ dist :
 	@( cd mel && make -j $(THREADS) newversion );
 	@( cd icons && make -j $(THREADS) newversion );
 	@( cd renderers && make -j $(THREADS) newversion );
+

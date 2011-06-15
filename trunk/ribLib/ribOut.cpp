@@ -537,6 +537,11 @@ void		CRibOut::RiMatte(int onoff) {
 	out("Matte %d\n",onoff);
 }
 
+void		CRibOut::RiShaderV(char *name,char *handle,int n,char *tokens[],void *params[]) {
+	out("Shader \"%s\" \"%s\"",name, handle);
+	writePL(n,tokens,params);
+}
+
 void		CRibOut::RiBound(float *bound) {
 	out("Bound [%g %g %g %g %g %g]\n",bound[0],bound[1],bound[2],bound[3],bound[4],bound[5]);
 }
@@ -1185,6 +1190,70 @@ void		CRibOut::RiSubdivisionMeshV(char * scheme,int nfaces,int nvertices[],int v
 	writePL(numVertices,numVertices,numFacevaryings,nfaces,n,tokens,params);
 }
 
+
+
+void CRibOut::RiHierarchicalSubdivisionMeshV(char *scheme,int nfaces,int nvertices[],int vertices[],int ntags,char * tags[],int nargs[],int intargs[],float floatargs[], char *stringargs[], int n,char *tokens[],void *params[]) {
+	int	numVertices;
+	int	i,j;
+	int	numInt,numFloat,numString;
+	int	numFacevaryings;
+
+	for (i=0,j=0;i<nfaces;j+=nvertices[i],i++);
+	numFacevaryings	=	j;
+
+	for (numVertices=-1,i=0;i<j;i++) {
+		if (vertices[i] > numVertices)	numVertices	=	vertices[i];
+	}
+	numVertices++;
+
+	out("HierarchicalSubdivisionMesh \"%s\" [ ",scheme);
+	for (i=0;i<nfaces;i++) {
+		out("%d ",nvertices[i]);
+	}
+
+	out("] [ ");
+	for (i=0;i<j;i++) {
+		out("%d ",vertices[i]);
+	}
+
+	out("] [");
+	for (i=0;i<ntags;i++) {
+		out(" \"%s\" ",tags[i]);
+	}
+
+	out("] [");
+	numInt		=	0;
+	numFloat	=	0;
+	numString	= 	0;
+	for (i=0;i<ntags;i++) {
+		out(" %d %d %d ",nargs[0],nargs[1],nargs[2]);
+		numInt		+=	nargs[0];
+		numFloat	+=	nargs[1];
+		numString	+=	nargs[2];
+		nargs		+=	3;
+	}
+
+	out("] [ ");
+	for (i=0;i<numInt;i++) {
+		out("%d ",intargs[i]);
+	}
+
+	out("] [ ");
+	for (i=0;i<numFloat;i++) {
+		out("%g ",floatargs[i]);
+	}
+
+	out("] [ ");
+	for (i=0;i<numString;i++) {
+		out("\"%s\" ",stringargs[i]);
+	}
+
+	out("] ");
+
+	writePL(numVertices,numVertices,numFacevaryings,nfaces,n,tokens,params);
+}
+
+
 void		CRibOut::RiBlobbyV(int /*nleaf*/,int /*ncode*/,int /*code*/ [],int /*nflt*/,float /*flt*/ [],int /*nstr*/,char * /*str*/ [],int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {
 	errorHandler(RIE_UNIMPLEMENT,RIE_ERROR,"Blobby primitive is not implemented\n");
 }
@@ -1265,6 +1334,43 @@ void		CRibOut::RiErrorHandler(void (*handler)(int,int,char *)) {
 	errorHandler	=	handler;
 }
 
+
+void CRibOut::RiIfBeginV (char *expr, int n,char *tokens[],void *params[])
+{
+	out("IfBegin \"%s\"",expr);
+	if( n )
+	{
+		writePL(n,tokens,params);
+	}
+	else
+	{
+		out("\n");
+	}
+}
+
+void CRibOut::RiElse ()
+{
+	out("Else\n");
+}
+
+void CRibOut::RiElseIfV (char *expr, int n,char *tokens[],void *params[])
+{
+	out("ElseIf \"%s\"",expr);
+	if( n )
+	{
+		writePL(n,tokens,params);
+	}
+	else
+	{
+		out("\n");
+	}
+}
+
+void CRibOut::RiIfEnd ()
+{
+	out("IfEnd\n");
+}
+
 void		CRibOut::RiArchiveRecord(char * type,char *format,va_list args) {
 	if (strcmp(type,RI_COMMENT) == 0) {
 		out("#");
@@ -1293,6 +1399,19 @@ void		CRibOut::RiTrace(int,float [][3],float [][3],float [][3],float []) {
 }
 
 void		CRibOut::RiVisibility(int,float [][3],float [][3],float [][3]) {
+}
+
+void CRibOut::RiCameraV(char *expr, int n,char *tokens[],void *params[])
+{
+	out("RiCamera \"%s\" ",expr);
+	if( n )
+	{
+		writePL(n,tokens,params);
+	}
+	else
+	{
+		out("\n");
+	}
 }
 
 void		CRibOut::writePL(int numParameters,char *tokens[],void *vals[]) {

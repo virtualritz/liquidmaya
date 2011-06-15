@@ -10,82 +10,103 @@ MAYA_VERSIONS ?= $(wildcard $(AW_LOCATION)/maya*)
 MAYA_VERSION ?= 2010
 LIQRMAN ?= prman
 LIQ_OLD_MAYA_IDS ?= 0
+MAYA_INCLUDE_PATH = $(MAYA_LOCATION)/include
+
 # Os settings
 # What about Suze ?
 
-OS_NAME := $(shell uname -o)
+OS_NAME := $(shell uname -s)
 
-ifeq "$(OS_NAME)" "GNU/Linux"
-PLUGSUF		= so
-OBJEXT		= o
-LD		= $(MAYA_LOCATION)/bin/mayald
-#LOCFLAGS	= -fmessage-length=0 -Os -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
-LOCFLAGS	= -fmessage-length=0 -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
-#WARNFLAGS	= -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
-WARNFLAGS	= -Wall -W
-NO_TRANS_LINK	=
-VBIN		= redhat
-EXTRA_LIBS	=
-AR		= ar cqs
-CPP		= g++-4.1
+ifeq "$(OS_NAME)" "Linux"
+	PLUGSUF		= so
+	OBJEXT		= o
+	LD		= $(MAYA_LOCATION)/bin/mayald
+	#LOCFLAGS	= -fmessage-length=0 -Os -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL
+	LOCFLAGS	= -fmessage-length=0 -pthread -fno-gnu-keywords --fast-math -fPIC -DLINUX -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL -DDURANDUBOI
+	#WARNFLAGS	= -Wall -W -Wno-comment -Wpointer-arith -Wno-inline -Woverloaded-virtual -Wno-sign-compare -Wno-parentheses -Wno-deprecated
+	WARNFLAGS	= -Wall -W
+	NO_TRANS_LINK	=
+	VBIN		= redhat
+	EXTRA_LIBS	=
+	AR		= ar cqs
+	CPP		= g++-4.1
+	SHAREDFLAG = -shared
+	UX_RELEASE_TEST_FILES = /etc/fedora-release /etc/redhat-release /etc/slackware-version /etc/gentoo-release /etc/SuSE-release
+	UX_RELEASE_FILE ?= $(foreach FILE, $(UX_RELEASE_TEST_FILES), $(wildcard $(FILE)*))
+	FLAVORX := $(patsubst /etc/%-release,%,$(UX_RELEASE_FILE))
+	FLAVORX := $(patsubst /etc/%-version,%,$(FLAVORX))
 
-UX_RELEASE_TEST_FILES = /etc/fedora-release /etc/redhat-release /etc/slackware-version /etc/gentoo-release /etc/SuSE-release
-UX_RELEASE_FILE ?= $(foreach FILE, $(UX_RELEASE_TEST_FILES), $(wildcard $(FILE)*))
-FLAVORX := $(patsubst /etc/%-release,%,$(UX_RELEASE_FILE))
-FLAVORX := $(patsubst /etc/%-version,%,$(FLAVORX))
-
-#********************************************
-# Anything special for some linux flavor ?
-#********************************************
-ifeq "$(FLAVORX)" "fedora redhat"
-VBIN	= fedora
-ifneq "$(MAYA_VERSION)" "2008"
-# Make sure we use gcc 3.3.4 if 3.4.4 is default one
-ifeq "$(shell $(CPP) -dumpversion)" "3.4.4"
-CPP = g++334
-endif
+	#********************************************
+	# Anything special for some linux flavor ?
+	#********************************************
+	ifeq "$(FLAVORX)" "fedora redhat"
+		VBIN	= fedora
+		ifneq "$(MAYA_VERSION)" "2008"
+			# Make sure we use gcc 3.3.4 if 3.4.4 is default one
+			ifeq "$(shell $(CPP) -dumpversion)" "3.4.4"
+				CPP = g++334
+			endif
+		else
+			CPP = g++
+		endif
+	else
+		VBIN	= $(FLAVORX)
+	endif
 else
-CPP = g++
-endif
-else
-VBIN	= $(FLAVORX)
+	ifeq "$(OS_NAME)" "Cygwin"
+		# Cygwin
+		FLAVORX = cygwin
+		PLUGSUF			= .mll
+		BINSUF			= .exe
+		OBJSUF			= .obj
+		LIBSUF			= .lib
+		CPP			= cl
+		LINK			= link
+		LD			= $(MAYA_LOCATION)/bin/mayald
+		LOCFLAGS		= -nologo -O2 -EHsc -MT -YXstdafx.h -FD -GR -D_BOOL -D_WIN32 -DWIN32 -D_USRDLL -DLIQUID_EXPORTS -Dulong="unsigned long" -Duint="unsigned int"
+		WARNFLAGS		= -W1
+		VBIN			= win32
+		AR			= ar cqs
+		LINKEROPTS		= -INCREMENTAL:NO -NOLOGO -NODEFAULTLIB:libircmt$(LIBEXT) -PDB:liquid.pdb -MACHINE:I386
+		LIBPATHFLAG		= -LIBPATH:
+		LIBFLAG			=
+		SHAREDFLAG		= -DLL
+		OUTFLAG			= -Fo
+		EXTRALIBS		= $(LIBFLAG)shell32$(LIBSUF) $(LIBFLAG)Foundation$(LIBSUF)
+	else
+		ifeq "$(OS_NAME)" "Darwin"
+			# Darwin
+			FLAVORX		= darwin
+			PLUGSUF		= bundle
+			OBJEXT		= o
+			LD			= $(MAYA_LOCATION)/bin/mayald
+			# Change -m32 into -m64 to compile against 64 bits libs
+			ifeq "$(MAYA_VERSION)" "2010"
+				LOCFLAGS		=  -m32 -I/System/Library/Frameworks/AGL.framework/Headers -I/System/Library/Frameworks/OpenGL.framework/Headers -I/System/Library/Frameworks/GLUT.framework/Headers -fPIC -DDARWIN= -DMAC_PLUGIN= -DOSMac_= -DOSX -fmessage-length=0 -pthread -fno-gnu-keywords --fast-math -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL -DDURANDUBOI
+			else
+				LOCFLAGS		=  -I/System/Library/Frameworks/AGL.framework/Headers -I/System/Library/Frameworks/OpenGL.framework/Headers -I/System/Library/Frameworks/GLUT.framework/Headers -fPIC -DDARWIN= -DMAC_PLUGIN= -DOSMac_= -DOSX -fmessage-length=0 -pthread -fno-gnu-keywords --fast-math -D__USER__=DEV_USER -D__HOST__=DEV_HOST -D__PROJECTNAME__=DEV_PROJECT -D__BUILDVERSION__=DEV_VERSION -DNDEBUG -DREQUIRE_IOSTREAM -D_BOOL -DDURANDUBOI
+			endif
+			WARNFLAGS		= -Wall -W
+			NO_TRANS_LINK	=
+			VBIN			= darwin
+			EXTRA_LIBS		=
+			AR				= ar cqs
+			CPP				= g++-4.2
+			SHAREDFLAG		= -bundle
+			MAYA_INCLUDE_PATH = /Applications/Autodesk/maya$(MAYA_VERSION)/devkit/include
+		else
+			#********************************************
+			# Not Linux, not Cygwin, not Darwin ...what is it ?
+			#********************************************
+			FLAVORX = "notunix"
+		endif
+	endif
 endif
 
-else
 ifeq "$(OS_NAME)" "Cygwin"
-# Cygwin
-FLAVORX = cygwin
-PLUGSUF			= .mll
-BINSUF			= .exe
-OBJSUF			= .obj
-LIBSUF			= .lib
-CPP			= cl
-LINK			= link
-LD			= $(MAYA_LOCATION)/bin/mayald
-LOCFLAGS		= -nologo -O2 -EHsc -MT -YXstdafx.h -FD -GR -D_BOOL -D_WIN32 -DWIN32 -D_USRDLL -DLIQUID_EXPORTS -Dulong="unsigned long" -Duint="unsigned int"
-WARNFLAGS		= -W1
-VBIN			= win32
-AR			= ar cqs
-LINKEROPTS		= -INCREMENTAL:NO -NOLOGO -NODEFAULTLIB:libircmt$(LIBEXT) -PDB:liquid.pdb -MACHINE:I386
-LIBPATHFLAG		= -LIBPATH:
-LIBFLAG			=
-SHAREDFLAG		= -DLL
-OUTFLAG			= -Fo
-EXTRALIBS		= $(LIBFLAG)shell32$(LIBSUF) $(LIBFLAG)Foundation$(LIBSUF)
-
-endif
-
-#********************************************
-# Not Linux, not Cygwin ...what is it ?
-#********************************************
-
-FLAVORX = "notunix"
-endif
-
-ifeq "$(OS_NAME)" "Cygwin"
-SPC = \040
+	SPC = \040
 else
-SPC = " "
+	SPC = " "
 endif
 
 LIQUIDSHORTVERSION := $(shell tr -d \"\\"\\"\" < $(DEPTH)/src/liquid.version)
@@ -94,25 +115,25 @@ LIQUIDVERSION = \"$(SPC)$(LIQUIDSHORTVERSION)$(SPC)for$(SPC)$(LIQRMAN),$(SPC)$(B
 
 # Renderers setting
 # Pixie
-ifeq "$(LIQRMAN)" "pixie"
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriverPixie
-LIQRMANPATH 	= 	$${PIXIEHOME:=/usr/local/Pixie}
-LIQUIDDPYLOC	=	displayDrivers/Pixie/
-LIQDPYNAME	=	liqmaya.so
-LIQRMANFLAGS	=	-DPIXIE
-LIQRMANLIBS 	=	-lri -lsdr
-LIQWINRMANLIBS	=	"ri.lib sdr.lib"
-USEDVAR 	=	PIXIEHOME
-CSL 		= 	$(LIQRMANPATH)/bin/sdrc
-SLOEXT		=	sdr
-SLFLAGS 	=
+ifeq "$(LIQRMAN)" "$(patsubst val%,val,$(LIQRMAN))" "pixie"
+	LIQDISPLAYOBJS  = 	liqMayaDisplayDriverPixie
+	LIQRMANPATH 	= 	$${PIXIEHOME:=/usr/local/Pixie}
+	LIQUIDDPYLOC	=	displayDrivers/Pixie/
+	LIQDPYNAME	=	liqmaya.so
+	LIQRMANFLAGS	=	-DPIXIE
+	LIQRMANLIBS 	=	-lri -lsdr
+	LIQWINRMANLIBS	=	"ri.lib sdr.lib"
+	USEDVAR 	=	PIXIEHOME
+	CSL 		= 	$(LIQRMANPATH)/bin/sdrc
+	SLOEXT		=	sdr
+	SLFLAGS 	=
 endif
 
 ifeq "$(LIQRMAN)" "GENERIC"
-USE_RIBLIB	= yes
-LIQRMANFLAGS	= -DGENERIC_RIBLIB
-LIQRMANLIBS	=
-LIQDISPLAYOBJ	=
+	USE_RIBLIB	= yes
+	LIQRMANFLAGS	= -DGENERIC_RIBLIB
+	LIQRMANLIBS	=
+	LIQDISPLAYOBJ	=
 endif
 
 #********************************************
@@ -120,102 +141,99 @@ endif
 # Air
 #********************************************
 ifeq "$(LIQRMAN)" "air"
-USE_RIBLIB		:=	yes
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAir
-LIQRMANPATH 	= 	$${AIRHOME:=/usr/local/Air}
-LIQUIDDPYLOC	=	displayDrivers/Air/
-LIQDPYNAME	=	d_liqmaya.so
-LIQRMANFLAGS	=	-DAIR
-LIQRMANLIBS 	=
-LIQWINRMANLIBS	=
-USEDVAR 	=	AIRHOME
-CSL 		= 	$(LIQRMANPATH)/bin/shaded
-SLOEXT		=	sdb
-SLFLAGS 	=
+	USE_RIBLIB		:=	yes
+	LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAir
+	LIQRMANPATH 	= 	$${AIRHOME:=/usr/local/Air}
+	LIQUIDDPYLOC	=	displayDrivers/Air/
+	LIQDPYNAME	=	d_liqmaya.so
+	LIQRMANFLAGS	=	-DAIR
+	LIQRMANLIBS 	=
+	LIQWINRMANLIBS	=
+	USEDVAR 	=	AIRHOME
+	CSL 		= 	$(LIQRMANPATH)/bin/shaded
+	SLOEXT		=	sdb
+	SLFLAGS 	=
 endif
 
 #********************************************
 # Aqsis
 #********************************************
-ifeq "$(LIQRMAN)" "aqsis"
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAqsis
-LIQRMANPATH 	=	$${AQSIS_BASE_PATH:=/usr/local/aqsis}
-LIQUIDDPYLOC	=	displayDrivers/Aqsis/
-LIQDPYNAME	=	liqmaya.so
-LIQRMANFLAGS	=	-DAQSIS
-LIQRMANLIBS 	=	-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs
-LIQWINRMANLIBS	=	ri2rib.lib slxargs.lib
-USEDVAR 	=	AQSIS_BASE_PATH
-CSL 		= 	$(LIQRMANPATH)/bin/aqsl
-SLOEXT		=	slx
-SLFLAGS 	= 	-DAQSIS
+ifeq "$(LIQRMAN)" "$(patsubst val%,val,$(LIQRMAN))" "aqsis"
+	LIQDISPLAYOBJS  = 	liqMayaDisplayDriverAqsis
+	LIQRMANPATH 	=	$${AQSIS_BASE_PATH:=/usr/local/aqsis}
+	LIQUIDDPYLOC	=	displayDrivers/Aqsis/
+	LIQDPYNAME	=	liqmaya.so
+	LIQRMANFLAGS	=	-DAQSIS
+	LIQRMANLIBS 	=	-lshaderexecenv -lshadervm -laqsistypes -lri2rib -lslxargs
+	LIQWINRMANLIBS	=	ri2rib.lib slxargs.lib
+	USEDVAR 	=	AQSIS_BASE_PATH
+	CSL 		= 	$(LIQRMANPATH)/bin/aqsl
+	SLOEXT		=	slx
+	SLFLAGS 	= 	-DAQSIS
 endif
 
 #********************************************
 # 3delight
 #********************************************
-ifeq "$(LIQRMAN)" "3delight"
-LIQDISPLAYOBJS  =	liqMayaDisplayDriver3Delight
-#LIQRMANPATH 	=	$${DELIGHT:=/usr/local/3delight}
-LIQRMANPATH 	=	$${DELIGHT:=/home/alf/software/3delight-8.0.1/Linux-x86_64}
-LIQUIDDPYLOC	=	displayDrivers/3Delight/
-LIQDPYNAME	=	liqmaya.dpy
-LIQRMANFLAGS	=	-DDELIGHT
-LIQRMANLIBS 	=	-l:/home/alf/software/3delight-8.0.1/Linux-x86_64/lib/lib3delight.so -lc -ldl -lm
-LIQWINRMANLIBS	=	3delight.lib
-USEDVAR 	=	DELIGHT
-CSL 		= 	$(LIQRMANPATH)/bin/shaderdl
-SLOEXT		=	sdl
-SLFLAGS 	=	-DDELIGHT
+ifeq "$(LIQRMAN)" "$(patsubst val%,val,$(LIQRMAN))" "3Delight"
+	LIQDISPLAYOBJS  =	liqMayaDisplayDriver3Delight
+	LIQRMANPATH 	=	$${DELIGHT:=/usr/local/3delight}
+	LIQUIDDPYLOC	=	displayDrivers/3Delight/
+	LIQDPYNAME	=	liqmaya.dpy
+	LIQRMANFLAGS	=	-DDELIGHT
+	LIQRMANLIBS 	=	-l3delight
+	LIQWINRMANLIBS	=	3delight.lib
+	USEDVAR 	=	DELIGHT
+	CSL 		= 	$(LIQRMANPATH)/bin/shaderdl
+	SLOEXT		=	sdl
+	SLFLAGS 	=	-DDELIGHT
 endif
 
 #********************************************
 # Entropy
 #********************************************
 ifeq "$(LIQRMAN)" "entropy"
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriverEntropy
-LIQRMANPATH 	=	$${ENTROPYHOME:=/usr/local/exluna/Entropy}
-LIQUIDDPYLOC	=	displayDrivers/Entropy/
-LIQDPYNAME	=	d_liqmaya.so
-LIQRMANFLAGS	=	-DENTROPY
-LIQRMANLIBS 	=	-lribout -lsleargs
-USEDVAR 	=	ENTROPYHOME
-CSL 		= 	$(LIQRMANPATH)/bin/sle
-SLOEXT		=	fixme
-SLFLAGS 	= 	-DENTROPY
+	LIQDISPLAYOBJS  = 	liqMayaDisplayDriverEntropy
+	LIQRMANPATH 	=	$${ENTROPYHOME:=/usr/local/exluna/Entropy}
+	LIQUIDDPYLOC	=	displayDrivers/Entropy/
+	LIQDPYNAME	=	d_liqmaya.so
+	LIQRMANFLAGS	=	-DENTROPY
+	LIQRMANLIBS 	=	-lribout -lsleargs
+	USEDVAR 	=	ENTROPYHOME
+	CSL 		= 	$(LIQRMANPATH)/bin/sle
+	SLOEXT		=	fixme
+	SLFLAGS 	= 	-DENTROPY
 endif
 
 #********************************************
 # Prman
 #********************************************
 ifeq "$(patsubst prman%,prman,$(LIQRMAN))" "prman"
-PRMANVERSION 	= 	$(patsubst prman%,%,$(LIQRMAN))
-LIQRMANPATH 	=	$${RMANTREE:=/local/pixar/RenderManProServer-14.1}
-LIQUIDDPYLOC	=	displayDrivers/PRMan/
-LIQDPYNAME	=	d_liqmaya.so
-LIQRMANFLAGS	=	-DPRMAN
-USEDVAR 	= 	RMANTREE
-CSL 		= 	$(LIQRMANPATH)/bin/shader
-SLFLAGS 	= 	-DPRMANexx
-SLOEXT		=	slo
-LIQDISPLAYOBJS  = 	liqMayaDisplayDriver
+	PRMANVERSION 	= 	$(patsubst prman%,%,$(LIQRMAN))
+	LIQRMANPATH 	=	$${RMANTREE:=/local/pixar/RenderManProServer-14.1}
+	LIQUIDDPYLOC	=	displayDrivers/PRMan/
+	LIQDPYNAME	=	d_liqmaya.so
+	LIQRMANFLAGS	=	-DPRMAN
+	USEDVAR 	= 	RMANTREE
+	CSL 		= 	$(LIQRMANPATH)/bin/shader
+	SLFLAGS 	= 	-DPRMANexx
+	SLOEXT		=	slo
+	LIQDISPLAYOBJS  = 	liqMayaDisplayDriver
 
-ifeq "$(patsubst 12.%,12,$(PRMANVERSION))" "12"
-LIQRMANLIBS 	=	-lrib -lsloargs -llkm -ltarget -lzip -lprmutil
-LIQWINRMANLIBS	= "rib.lib sloargs.lib"
-LIQUIDDPYLOC	=	displayDrivers/PRMan/
-else
-ifeq "$(patsubst 13.%,13,$(PRMANVERSION))" "13"
-LIQRMANLIBS 	=	-lprmansdk
-LIQWINRMANLIBS	=	prmansdk.lib
-LIQUIDDPYLOC	=	displayDrivers/PRMan/
-else
-LIQRMANLIBS		=	
-LIQWINRMANLIBS	=	
-endif
-
-endif
-
+	ifeq "$(patsubst 12.%,12,$(PRMANVERSION))" "12"
+		LIQRMANLIBS 	=	-lrib -lsloargs -llkm -ltarget -lzip -lprmutil
+		LIQWINRMANLIBS	= "rib.lib sloargs.lib"
+		LIQUIDDPYLOC	=	displayDrivers/PRMan/
+	else
+		ifeq "$(patsubst 13.%,13,$(PRMANVERSION))" "13"
+			LIQRMANLIBS 	=	-lprmansdk
+			LIQWINRMANLIBS	=	prmansdk.lib
+			LIQUIDDPYLOC	=	displayDrivers/PRMan/
+		else
+			LIQRMANLIBS		=	-lprman
+			LIQUIDDPYLOC	=	displayDrivers/PRMan/
+		endif
+	endif
 endif
 
 
@@ -243,24 +261,40 @@ VPATHMEL 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/mel
 VPATHRENDERS 		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/renderers
 VPATHICONS  		= $(DEPTH)/bin/$(VBIN)/$(BIN_VERSION)/$(LIQRMAN)/icons
 CPPFLAGS		= -DLIQUIDVERSION=$(LIQUIDVERSION) $(LOCFLAGS) $(LIQRMANFLAGS) $(WARNFLAGS) $(EXTRAFLAGS) $(NO_TRANS_LINK) -DREQUIRE_IOSTREAM
-LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib64
-
-ifeq "$(USE_RIBLIB)" "yes"
-INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(DEPTH)/ribLib -I../include
-LIBS			= $(DEPTH)/bin/linux32/librib.a $(MAYALIBS) $(EXTRA_LIBS) 
-CPPFLAGS 		+= -DGENERIC_RIBLIB
+ifeq "$(OS_NAME)" "Darwin"
+	LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/MacOS -L$(LIQRMANPATH)/lib -L/System/Library/Frameworks/OpenGL.framework/Libraries
+	ifeq "$(MAYA_VERSION)" "2010"
+		LDDPYFLAGS		= -m32
+	else
+		LDDPYFLAGS		=
+	endif
 else
-INCLUDES		= -I. -I.. -I$(MAYA_LOCATION)/include -I$(LIQRMANPATH)/include -I../include
-LIBS			= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
+	LDFLAGS			= $(CPPFLAGS) -L$(MAYA_LOCATION)/lib -L$(LIQRMANPATH)/lib -L/usr/lib64
+	LDDPYFLAGS		= 
+endif
+ifeq "$(USE_RIBLIB)" "yes"
+	INCLUDES		= -I. -I.. -I$(MAYA_INCLUDE_PATH) -I$(DEPTH)/ribLib -I../include
+	LIBS			= $(DEPTH)/bin/linux32/librib.a $(MAYALIBS) $(EXTRA_LIBS) 
+	CPPFLAGS 		+= -DGENERIC_RIBLIB
+else
+	INCLUDES		= -I. -I.. -I$(MAYA_INCLUDE_PATH) -I$(LIQRMANPATH)/include -I../include
+	LIBS			= $(LIQRMANLIBS) $(MAYALIBS) $(EXTRA_LIBS) -lm
 endif
 
 DPYINCLUDES		= -I$(LIQRMANPATH)/include
 
 ifeq "$(MAYA_VERSION)" "2009"
-MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX
+	MAYALIBS		= -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX
 else
-MAYALIBS		= -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lGL -lGLU
+
+	ifeq "$(OS_NAME)" "Darwin"
+		MAYALIBS		= -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lGL -lGLU
+	else
+		MAYALIBS		= -lFoundation -lOpenMaya -lOpenMayaRender -lOpenMayaUI -lOpenMayaAnim -lOpenMayaFX -lGL -lGLU -lOpenMayalib
+	endif
 endif
+
+
 
 TARGET  		= $(VPATH)/$(LIQUIDPLUG)
 

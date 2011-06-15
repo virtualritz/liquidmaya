@@ -212,9 +212,12 @@ int liqGetSloInfo::getArgArraySize( int num )
   return argArraySize[ num ];
 }
 
-MString liqGetSloInfo::getArgStringDefault( int num, int /*entry*/ )
+MString liqGetSloInfo::getArgStringDefault( int num, int entry )
 {
-    return MString( ( char * )argDefault[ num ] );
+	MStringArray buffer;
+	MString defaultValues( ( char * )argDefault[ num ] );
+	defaultValues.split(':', buffer);
+    return buffer[entry];
 }
 
 float liqGetSloInfo::getArgFloatDefault( int num, int entry )
@@ -237,6 +240,19 @@ int liqGetSloInfo::isOutputParameter( unsigned int num )
 }
 
 
+MString liqGetSloInfo::getArgAccept( unsigned int num )
+{
+	if(num<argAccept.size())
+	{
+		return argAccept[num];
+	}
+	else
+	{
+		return "";  // must only append with old scenes...
+	}
+}
+
+
 void liqGetSloInfo::resetIt()
 {
     numParam = 0;
@@ -246,6 +262,7 @@ void liqGetSloInfo::resetIt()
     argDetail.clear();
     argArraySize.clear();
     argIsOutput.clear();
+    argAccept.clear();
     unsigned int k;
     for ( k = 0; k < argDefault.size(); k++ ) {
         lfree( argDefault[k] );
@@ -447,7 +464,7 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
     else if ( nodeType == "liquidVolume" )        shaderType = ( SHADER_TYPE ) 8;
     else if ( nodeType == "liquidCoShader" )      shaderType = ( SHADER_TYPE ) 14;
 
-    MStringArray shaderParams, shaderDetails, shaderTypes, shaderDefaults, shaderMethods;
+    MStringArray shaderParams, shaderDetails, shaderTypes, shaderDefaults, shaderMethods, shaderAccept;
     MIntArray shaderArraySizes, shaderOutputs;
 
 	// commented out for it causes unjustified errors
@@ -474,6 +491,28 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
       error = "Liquid -> error reading " + shaderNode.name() + ".rmanDetails ... Please run \"liquidShaderUpdater(1)\" to fix your scene !";
       throw error;
     }
+
+
+	// get the parameter access
+	shaderPlug = shaderNode.findPlug( "rmanAccept", &stat );
+	if( stat==MS::kSuccess )
+	{
+		shaderPlug.getValue( arrayObject );
+		stringArrayData.setObject( arrayObject );
+		stringArrayData.copyTo( shaderAccept );
+		if( shaderAccept.length()==0 && numParam!=0 )
+		{
+			printf("[liqGetSloInfo::setShaderNode] warning reading %s.rmanAccept, array is empty ...\n", shaderNode.name().asChar() );
+		}
+		else if( shaderAccept.length() != numParam )
+		{
+			printf("[liqGetSloInfo::setShaderNode] error reading %s.rmanAccept, bad array size %d, should be %d ...\n", shaderNode.name().asChar(), shaderAccept.length(), numParam );
+		}
+	}
+	else
+	{
+		printf("[liqGetSloInfo::setShaderNode] error plug %s.rmanAccept doesn't exist\n", shaderNode.name().asChar());
+	}
 
 	// get the parameter output on/off
 	shaderPlug = shaderNode.findPlug( "rmanIsOutput", &stat );
@@ -548,6 +587,12 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
       //cout <<"setShaderNode:       - shaderDetails["<<k<<"] = "<<shaderDetails[k]<<" -> "<<theParamDetail<<endl;
       argDetail.push_back( theParamDetail );
 
+
+      if( shaderAccept.length() == numParam )
+      {
+		  argAccept.push_back( shaderAccept[k] );
+	  }
+
       if( shaderOutputs.length() == numParam )
       {
 		  argIsOutput.push_back( shaderOutputs[k] );
@@ -607,30 +652,56 @@ int liqGetSloInfo::setShaderNode( MFnDependencyNode &shaderNode )
           break;
         }
 
-        //case SHADER_TYPE_MATRIX: {
-        //  printf("\"%s\" [%f %f %f %f\n",
-        //          arg->svd_spacename,
-        //          (double) (arg->svd_default.matrixval[0]),
-        //          (double) (arg->svd_default.matrixval[1]),
-        //          (double) (arg->svd_default.matrixval[2]),
-        //          (double) (arg->svd_default.matrixval[3]));
-        //  printf("\t\t\t%f %f %f %f\n",
-        //          (double) (arg->svd_default.matrixval[4]),
-        //          (double) (arg->svd_default.matrixval[5]),
-        //          (double) (arg->svd_default.matrixval[6]),
-        //          (double) (arg->svd_default.matrixval[7]));
-        //  printf("\t\t\t%f %f %f %f\n",
-        //          (double) (arg->svd_default.matrixval[8]),
-        //          (double) (arg->svd_default.matrixval[9]),
-        //          (double) (arg->svd_default.matrixval[10]),
-        //          (double) (arg->svd_default.matrixval[11]));
-        //  printf("\t\t\t%f %f %f %f]\n",
-        //          (double) (arg->svd_default.matrixval[12]),
-        //          (double) (arg->svd_default.matrixval[13]),
-        //          (double) (arg->svd_default.matrixval[14]),
-        //          (double) (arg->svd_default.matrixval[15]));
-        //  break;
-        //}
+        case SHADER_TYPE_MATRIX: {
+          if( shaderArraySizes[k] > 0  ) {
+              //cout<<"setShaderNode:         - array size : "<<shaderArraySizes[k]<<endl;
+              float *floats = ( float *)lmalloc( sizeof( float ) * 16 * shaderArraySizes[k] );
+              MStringArray tmp;
+              shaderDefaults[k].split( ':', tmp );
+              for (unsigned int kk = 0; kk < tmp.length()/16; kk++ ) {
+                //cout<<"setShaderNode:           [ "<<tmp[3*kk].asFloat()<<" "<<tmp[3*kk+1].asFloat()<<" "<<tmp[3*kk+2].asFloat()<<" ]   kk="<<kk<<endl;
+                floats[16*kk   ] = tmp[16*kk   ].asFloat();
+                floats[16*kk+1 ] = tmp[16*kk+1 ].asFloat();
+                floats[16*kk+2 ] = tmp[16*kk+2 ].asFloat();
+                floats[16*kk+3 ] = tmp[16*kk+3 ].asFloat();
+                floats[16*kk+4 ] = tmp[16*kk+4 ].asFloat();
+                floats[16*kk+5 ] = tmp[16*kk+5 ].asFloat();
+                floats[16*kk+6 ] = tmp[16*kk+6 ].asFloat();
+                floats[16*kk+7 ] = tmp[16*kk+7 ].asFloat();
+                floats[16*kk+8 ] = tmp[16*kk+8 ].asFloat();
+                floats[16*kk+9 ] = tmp[16*kk+9 ].asFloat();
+                floats[16*kk+10] = tmp[16*kk+10].asFloat();
+                floats[16*kk+11] = tmp[16*kk+11].asFloat();
+                floats[16*kk+12] = tmp[16*kk+12].asFloat();
+                floats[16*kk+13] = tmp[16*kk+13].asFloat();
+                floats[16*kk+14] = tmp[16*kk+14].asFloat();
+                floats[16*kk+15] = tmp[16*kk+15].asFloat();
+              }
+              argDefault.push_back( ( void * )floats );
+          } else {
+              float *floats = ( float *)lmalloc( sizeof( float ) * 16 );
+              MStringArray tmp;
+              shaderDefaults[k].split( ':', tmp );
+              floats[0 ] = tmp[0 ].asFloat();
+              floats[1 ] = tmp[1 ].asFloat();
+              floats[2 ] = tmp[2 ].asFloat();
+              floats[3 ] = tmp[3 ].asFloat();
+              floats[4 ] = tmp[4 ].asFloat();
+              floats[5 ] = tmp[5 ].asFloat();
+              floats[6 ] = tmp[6 ].asFloat();
+              floats[7 ] = tmp[7 ].asFloat();
+              floats[8 ] = tmp[8 ].asFloat();
+              floats[9 ] = tmp[9 ].asFloat();
+              floats[10] = tmp[10].asFloat();
+              floats[11] = tmp[11].asFloat();
+              floats[12] = tmp[12].asFloat();
+              floats[13] = tmp[13].asFloat();
+              floats[14] = tmp[14].asFloat();
+              floats[15] = tmp[15].asFloat();
+              argDefault.push_back( ( void * )floats );
+          }
+          break;
+        }
 
         case SHADER_TYPE_SHADER:
         default: {

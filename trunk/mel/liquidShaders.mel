@@ -43,7 +43,7 @@ global proc string[] liquidGetShaderList(string $type)
 {
   string $out_shaderlist[];
   if($type == "all") {
-    string $types[] = {"Surface","Light","Displacement","Volume","RibBox"};
+    string $types[] = {"Surface","Light","Disp","Volume","RibBox","Shader"};
     for($shader_type in $types) {
       $out_shaderlist = stringArrayCatenate($out_shaderlist, `ls -type ("liquid"+$shader_type)`);
     }
@@ -56,13 +56,16 @@ global proc string[] liquidGetShaderList(string $type)
 /**
  *  compatible with liquid 1.8+
  */
+
 global proc string liquidGetShaderNodeType( string $node )
 {
   string $returnValue;
   string $nodeType, $typeId, $type;
-
   $nodeType = nodeType( $node );
-  if ( objExists( ( $node + ".typeId" ) ) ) $typeId = `getAttr ( $node + ".typeId" ) `;
+  if ( objExists( ( $node + ".typeId" ) ) )
+  {
+	  $typeId = `getAttr ( $node + ".typeId" ) `;
+  }
   $type = `substring $node 1 10`;
   if( ( $type == "liquidSurf" ) || ( $typeId == 303126790 ) || ( $nodeType == "liquidSurface" ) ) {
     $returnValue = "Surface";
@@ -76,13 +79,30 @@ global proc string liquidGetShaderNodeType( string $node )
   if( ( $type == "liquidVolu" ) || ( $typeId == 303126793 ) || ( $nodeType == "liquidVolume" ) ) {
     $returnValue = "Volume";
   }
+  if( ( $type == "liquidCoSh" ) || ( $typeId == 303126796) || ( $nodeType == "liquidCoShader" ) ) {
+    $returnValue = "Shader";
+  }  
   if( ( $type == "liquidRibb" ) || ( $typeId == 303126794 ) || ( $nodeType == "liquidRibBox" ) ) {
     $returnValue = "Ribbox";
   }
   if( ( $type == "liquidCont" ) || ( $typeId == 303126795 ) ) {
     $returnValue = "Container";
   }
+  if( $nodeType == "liquidSurfaceSwitcher" ) {
+    $returnValue = "SurfaceSwitch";
+  }
+  if( $nodeType == "liquidDisplacementSwitcher" ) {
+    $returnValue = "DispSwitch";
+  }
   return $returnValue;
+}
+
+ // Find it a bit messed up to return fill type name, but for displacement where it's Disp
+ // and why not return it in lowercase anyway ?
+global proc string liquidGetShaderNodeExpectedType( string $node )
+{
+	string $shaderNodeLiquidType = liquidGetShaderNodeType( $node );
+	return (($shaderNodeLiquidType == "Disp") ? "displacement" : tolower($shaderNodeLiquidType));
 }
 
 /**
@@ -374,6 +394,8 @@ proc string liquidNewShaderNode_old( string $filename )
     setAttr ( $newNodeName + ".typeId" ) 303126792;
   } else if ( $shaderType == "volume" ) {
     setAttr ( $newNodeName + ".typeId" ) 303126793;
+  } else if ( $shaderType == "shader" ) {
+    setAttr ( $newNodeName + ".typeId" ) 303126796;    
   } else {
     delete $newNodeName;
     error "Unrecognized Shader Type";
@@ -430,13 +452,13 @@ global proc string liquidNewShaderNode( string $filename )
 
   if ( $version < 1.8 ) $newNodeName = liquidNewShaderNode_old( $filename );
   else {
-    //trace ("  * new method");
+    //ltrace ("  * new method");
     string $shortName = basenameEx( $filename );
     string $longName = $filename;
 
     // get the correct shader type - possibilities are surface, light, displacement and volume
     if ( !`filetest -r $filename` ) error( "liquidNewShaderNode : shader is not readable > "+$filename);
-    //trace ("  * setting shader "+$filename);
+    //ltrace ("  * setting shader "+$filename);
     liquidSlInfoReset();
     liquidSlSetShader( $filename );
     string $shaderType = liquidSlShaderType();
@@ -591,12 +613,12 @@ global proc string getSLShaderNodeFor( string $nodeName )
   string $classification[] = getClassification( nodeType( $nodeName ) );
   string $liquidType = match("/[surfacediplmntvou]+", $classification[0]);
   $liquidType = capitalizeString( match("[a-z]+", $liquidType ) );
-  //trace ("SLShaderNodeAlreadyExists( "+$nodeName+") -> "+$liquidType);
+  //ltrace ("SLShaderNodeAlreadyExists( "+$nodeName+") -> "+$liquidType);
 
   if ( objExists( ($nodeName+".liquid"+$liquidType+"ShaderNode") ) ) {
 
     string $connections[] = `listConnections -plugs true ($nodeName+".liquid"+$liquidType+"ShaderNode")`;
-    //trace ("SLShaderNodeAlreadyExists( "+$nodeName+") -> "+$nodeName+".liquid"+$liquidType+"ShaderNode is connected to "+$connections[0]);
+    //ltrace ("SLShaderNodeAlreadyExists( "+$nodeName+") -> "+$nodeName+".liquid"+$liquidType+"ShaderNode is connected to "+$connections[0]);
     return match("[A-Za-z0-9_]+", $connections[0]);
   }
 

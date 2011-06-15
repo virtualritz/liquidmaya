@@ -33,6 +33,27 @@
 //
 
 
+global proc ltrace_set()
+{
+	global int $gLiquid_ltrace;
+	
+	string $doTrace = `getenv "LIQUIDTRACE"`;
+	if( size( $doTrace ) ) {
+		$gLiquid_ltrace = 1;
+	} else {
+		$gLiquid_ltrace = 0;
+	}
+}
+
+global proc ltrace(string $msg)
+{
+	global int $gLiquid_ltrace;
+	
+	if ($gLiquid_ltrace) {
+		trace ($msg);
+	}
+}
+
 global proc string liquidGetHome()
 {
   string $home = `getenv "LIQUIDHOME"`;
@@ -78,11 +99,16 @@ global proc liquidLoadScripts()
     "AEliquidDisplacementTemplate.mel",
     "AEliquidVolumeTemplate.mel",
     "AEliquidLightTemplate.mel",
+    "AEliquidCoShaderTemplate.mel",    
     "AEliquidRibBoxTemplate.mel",
     //"AEliquidSLTemplate.mel",
     "AEliquidCoordSysTemplate.mel",
+    "AEliquidSurfaceRelated.mel",
+    "AEliquidCoShaderRelated.mel",        
     "liquidBuildHypergraphNodePopupMenuItems.mel",
     "getMultiListerSelection.mel",
+    "connectNodeToAttrOverride.mel",
+    "connectNodeToNodeOverride.mel",
     "liquidIni.mel",
     "liquidSlParseSdl.mel",
     "liquidSlParseSdr.mel",
@@ -126,7 +152,10 @@ global proc liquidLoadScripts()
     "liquidCreateGlobalsTab.mel",
     "liquidRenderView.mel",
     "liquidLightLinker.mel",
-    "AEliquidCoShaderTemplate.mel"
+    "AEliquidSurfaceSwitcherTemplate.mel",
+    "AEliquidDisplacementSwitcherTemplate.mel",
+    "AEliquidSwitcherRelatedTemplate.mel",
+    "liquidSwitcherNodes.mel"
   };
 
   string $liquidHome = liquidGetHome();
@@ -134,6 +163,7 @@ global proc liquidLoadScripts()
   for ( $i = 0; $i < size($mel_files); $i++) {
     eval( "source \"" + $liquidHome + "/mel/" + $mel_files[$i]  + "\"" );
   }
+  global int $gLiquidCleanPreviewRibs = 1;
 }
 
 
@@ -142,6 +172,8 @@ global proc liquidAETemplateOverwrite()
   //liquidDebugPrint("OVERWRITING DEFAULT AE TEMPLATES");
   // eval( "source \"" + liquidGetHome() + "/mel/AEdagNodeInclude.mel\"" );
   // eval( "source \"" + liquidGetHome() + "/mel/AEtransformTemplate.mel\"" );
+  eval( "source \"" + liquidGetHome() + "/mel/AEliquidSurfaceRelated.mel\"" );
+  eval( "source \"" + liquidGetHome() + "/mel/AEliquidCoShaderRelated.mel\"" );
 }
 
 
@@ -344,6 +376,16 @@ global proc liquidCreateSetsAttributesMenu( string $prefix )
   setParent -menu ..;
 }
 
+
+global proc liquidCreateShaderAttributesMenu( string $prefix )
+{
+  menuItem -label "Shader Attributes" -subMenu true -tearOff true;
+    menuItem -label "Add RIBBox" -command liquidCreateShaderRIBBox -ann "Add a RIBBox on selected shader(s)";
+    menuItem -label "Remove RIB Group" -command liquidRemoveShaderRIBBox -ann "Remove all RIBBox attributes";
+  setParent -menu ..;
+}
+
+
 /**
  * create the liquid menu interface
  */
@@ -366,6 +408,7 @@ global proc liquidCreateMenus()
       liquidCreateObjectsAttributesMenu( "main" );
       liquidCreateLightsAttributesMenu( "main" );
       liquidCreateSetsAttributesMenu( "main" );
+      liquidCreateShaderAttributesMenu( "main" );
       menuItem -d true;
       menuItem -label "Subdivision Surfaces" -subMenu true -tearOff true -aob true;
         if ( !`optionVar -exists liqSubivMesh` ) optionVar -iv liqSubdiv true;
@@ -694,6 +737,9 @@ global proc liquidStartup()
   // the intention to commit our stuff back more regularly than in the past. :)
   // Besides, there are leftovers in the mel/ folder, so we don't want to blindfoldely source
   // everything in there anyway.
+  // set the log flag for trace calls
+  ltrace_set();
+  
   liquidLoadScripts();
   //liquidRegisterSlLib();
   liquidCreateMenus();

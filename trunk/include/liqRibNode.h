@@ -101,9 +101,9 @@ class liqRibNode {
 
     void     writeUserAttributes();
     MObject  findShadingGroup( const MDagPath& path, ObjectType type );
-    MObject  findShader( MObject& group );
-    MObject  findDisp( MObject& group );
-    MObject  findVolume( MObject& group );
+    MObject  findShader();
+    MObject  findDisp();
+    MObject  findVolume();
 //  void     getIgnoredLights( MObject& group, MObjectArray& lights );
     void     getLinkLights( MObjectArray& lights, bool exclusive );
     void     getSetLights( MObjectArray& lights );

@@ -135,6 +135,7 @@ MObject liqGlobalsNode::aCompressedOutput;
 MObject liqGlobalsNode::aOutputMayaPolyCreases;
 MObject liqGlobalsNode::aRenderAllCurves;
 MObject liqGlobalsNode::aOutputMeshUVs;
+MObject liqGlobalsNode::aOutputMeshAsRMSArrays;
 MObject liqGlobalsNode::aIlluminateByDefault;
 MObject liqGlobalsNode::aLiquidSetLightLinking;
 MObject liqGlobalsNode::aIgnoreSurfaces;
@@ -144,6 +145,7 @@ MObject liqGlobalsNode::aIgnoreVolumes;
 MObject liqGlobalsNode::aOutputShadersInShadows;
 MObject liqGlobalsNode::aOutputShadersInDeepShadows;
 MObject liqGlobalsNode::aOutputLightsInDeepShadows;
+MObject liqGlobalsNode::aExportAllShadersParameters;
 
 MObject liqGlobalsNode::aOutputShadowPass;
 MObject liqGlobalsNode::aOutputHeroPass;
@@ -580,7 +582,8 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_BOOL( nAttr,  aOutputMayaPolyCreases,      "outputMayaPolyCreases",		  "ompc",    true );
 	CREATE_BOOL( nAttr,  aRenderAllCurves,            "renderAllCurves",              "rac",    true );
 	CREATE_BOOL( nAttr,  aOutputMeshUVs,              "outputMeshUVs",                "muv",    false );
-	CREATE_BOOL( nAttr,  aIlluminateByDefault,        "illuminateByDefault",        "ilbd",   true );
+	CREATE_BOOL( nAttr,  aOutputMeshAsRMSArrays,      "outputMeshAsRMSArrays",        "rmsuv",  false );
+	CREATE_BOOL( nAttr,  aIlluminateByDefault,        "illuminateByDefault",          "ilbd",   true );
 	CREATE_BOOL( nAttr,  aLiquidSetLightLinking,      "liquidSetLightLinking",        "setll",   false );
 	CREATE_BOOL( nAttr,  aIgnoreSurfaces,             "ignoreSurfaces",               "isrf",   false );
 	CREATE_BOOL( nAttr,  aIgnoreDisplacements,        "ignoreDisplacements",          "idsp",   false );
@@ -589,6 +592,8 @@ MStatus liqGlobalsNode::initialize()
 	CREATE_BOOL( nAttr,  aOutputShadersInShadows,     "outputShadersInShadows",       "osis",   false );
 	CREATE_BOOL( nAttr,  aOutputShadersInDeepShadows, "outputShadersInDeepShadows",   "osids",  false );
 	CREATE_BOOL( nAttr,  aOutputLightsInDeepShadows,  "outputLightsInDeepShadows",    "olids",  false );
+	CREATE_BOOL( nAttr,  aExportAllShadersParameters, "exportAllShadersParameters",   "easp",  false );
+
 
 	CREATE_BOOL( nAttr,  aOutputShadowPass,           "outputShadowPass",             "osp",    false );
 	CREATE_BOOL( nAttr,  aOutputHeroPass,             "outputHeroPass",               "ohp",    true  );

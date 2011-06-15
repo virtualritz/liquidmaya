@@ -677,8 +677,8 @@ proc convertShadingNetworkToRSL ( string $startingNode, string $assingToNode )
   string $shaderdirpath = $shaderdir;
   if ( !gmatch( $shaderdir, "/*") || !gmatch( $shaderdir, "?:*") )
     $shaderdirpath = ( workspace( "-q", "-rd" ) + $shaderdir );
-  trace ( "cd " + $shaderdirpath );
-  trace ( $shaderComp + " " + $startingNode  + ".sl" );
+  ltrace ( "cd " + $shaderdirpath );
+  ltrace ( $shaderComp + " " + $startingNode  + ".sl" );
   system ( "cd " + $shaderdirpath  );
   system ( $shaderComp + " " + $startingNode + ".sl"  );
 
