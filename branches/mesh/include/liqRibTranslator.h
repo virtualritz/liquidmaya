@@ -38,7 +38,7 @@
 #include <liquid.h>
 #include <liqRenderer.h>
 #include <liqRibHT.h>
-#include <liqShader.h>
+#include <liqGenericShader.h>
 #include <liqRenderScript.h>
 #include <liqRibLightData.h>
 #include <liqExpression.h>
@@ -75,38 +75,41 @@ private: // Methods
 
   void portFieldOfView( int width, int height, double& horizontal, double& vertical, MFnCamera& fnCamera );
   void computeViewingFrustum( double window_aspect, double& left, double& right, double& bottom, double& top, MFnCamera& cam );
-  void getCameraInfo( MFnCamera &cam );
+  void getCameraInfo( MFnCamera &cam, structCamera &camStruct );
+  MStatus getCameraTransform( MFnCamera& cam, structCamera &camStruct );
+  void getCameraFilmOffset( MFnCamera& cam, structCamera &camStruct );
   void setSearchPaths();
   void setOutDirs();
   MString verifyResourceDir( const char *resourceName, MString resourceDir, bool &problem );
   bool verifyOutputDirectories();
+
+	void exportJobCamera(const structJob &job, const structCamera camera[]);
  
-  MStatus liquidDoArgs( MArgList args );
+ 	// rib output functions 
+	MStatus liquidDoArgs( MArgList args );
   bool liquidInitGlobals();
   void liquidReadGlobals();
   MString getHiderOptions( MString rendername, MString hidername );
-  MStatus buildJobs();
 
-  // rib output functions
   MStatus ribOutput( long scanTime, MString ribName, bool world_only, bool out_lightBlock, MString archiveName );
-  
+
+  MStatus buildJobs();
   MStatus ribPrologue();
   MStatus ribEpilogue();
   MStatus framePrologue( long );
-  MStatus frameEpilogue( long );
   MStatus worldPrologue();
-  MStatus worldEpilogue();
   MStatus lightBlock();
   MStatus coordSysBlock();
   MStatus objectBlock();
-  
+  MStatus worldEpilogue();
+  MStatus frameEpilogue( long );
   void doAttributeBlocking( const MDagPath & newPath,  const MDagPath & previousPath );
   void printProgress ( unsigned stat, unsigned frames, unsigned where );
 
   MString generateRenderScriptName()  const;
   MString generateTempMayaSceneName() const;
   MString generateFileName( fileGenMode mode, const structJob& job );
-  string  generateImageName( MString aovName, const structJob& job );
+  string  generateImageName( MString aovName, const structJob& job, MString format );
   // MString generateShadowArchiveName( bool renderAllFrames, long renderAtframe, MString geometrySet );
   static bool renderFrameSort( const structJob& a, const structJob& b );
 
@@ -119,6 +122,9 @@ private: // Data
     kRibError
   };
   MRibStatus ribStatus;
+
+  MDagPath m_camDagPath;
+  bool m_isStereoCamera;
 
   // Render Globals and RIB Export Options
   vector<structJob>  jobList;
@@ -182,9 +188,9 @@ private: // Data
   MVector     zthreshold;
   // bool        renderAllCameras;   // Render all cameras, or only active ones     UN-USED GLOBAL
   bool       ignoreFilmGate;
-  double     fov_ratio;
-  int         cam_width,
-              cam_height;
+//  double      fov_ratio; => mv in cam struct
+//  int         cam_width, => mv in cam struct
+//              cam_height; => mv in cam struct
   float       aspectRatio;
   liquidlong  quantValue;
   //MString     renderCamera;
@@ -454,14 +460,16 @@ private :
   //vector<liqShader> m_shaders;
 
   //liqShader & liqGetShader( MObject shaderObj );
-  MStatus liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType );
+  // MStatus liqShaderParseVectorAttr ( liqShader & currentShader, MFnDependencyNode & shaderNode, const char * argName, ParameterType pType );
   //void freeShaders( void );
-
-  void scanExpressions( liqShader & currentShader );
-  void scanExpressions( liqRibLightData *light );
-  void processExpression( liqTokenPointer *token, liqRibLightData *light = NULL );
   
+  MStringArray m_objectListToExport;
+  bool m_exportSpecificList;
+  bool m_exportOnlyObjectBlock;
   
+  bool m_skipVisibilityAttributes;
+  bool m_skipShadingAttributes;
+  bool m_skipRayTraceAttributes;
 };
 
 #endif

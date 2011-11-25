@@ -48,7 +48,6 @@ enum ExprType {
 class liqExpression {
   public:
   liqExpression( const string& str, const string& objName = string() );
-  // liqExpression( char * str, char *objName = NULL );
 
   MString	CalcValue( void );
 

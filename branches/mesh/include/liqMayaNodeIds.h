@@ -46,6 +46,9 @@
 #define liqRibRequestId         0x0010F6D1
 #define liqBoundingBoxLocatorId 0x0010F6D8
 #define liqCoShaderNodeId       0x0010F6D9
+#define liqSwitcherNodeId       0x0010F6DA
+#define liqSurfaceSwitcherNodeId 0x0010F6DB
+#define liqDisplacementSwitcherNodeId 0x0010F6DC
 #endif
 
 #endif // __LIQ_MAYA_NODE_IDS_H__

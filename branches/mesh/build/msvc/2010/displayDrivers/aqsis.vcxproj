@@ -107,8 +107,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\displayDrivers\liqMayaDisplayDriver.cpp" />
     <ClCompile Include="..\..\..\..\src\displayDrivers\liqMayaDisplayDriverAqsis.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\displayDrivers\liqMayaDisplayDriver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

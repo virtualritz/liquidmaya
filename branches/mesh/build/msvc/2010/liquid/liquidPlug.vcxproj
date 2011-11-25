@@ -41,6 +41,14 @@
       <Configuration>Release maya2011 generic</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release maya2012 generic|Win32">
+      <Configuration>Release maya2012 generic</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release maya2012 generic|x64">
+      <Configuration>Release maya2012 generic</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -90,6 +98,12 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -115,6 +129,12 @@
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -147,6 +167,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -160,6 +183,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|x64'" Label="PropertySheets">
@@ -191,6 +217,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|Win32'">
     <TargetName>liquid</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|Win32'">
+    <TargetName>liquid</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|Win32'">
     <TargetName>liquid_debug</TargetName>
   </PropertyGroup>
@@ -209,6 +238,11 @@
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\tmp\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|Win32'">
+    <TargetExt>.mll</TargetExt>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\tmp\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|Win32'">
     <TargetExt>.mll</TargetExt>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -247,6 +281,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -259,6 +296,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|x64'">
     <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\tmp\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|x64'">
+    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\tmp\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|x64'">
     <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\tmp\</IntDir>
   </PropertyGroup>
@@ -271,6 +311,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|x64'">
     <TargetName>liquid</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|x64'">
+    <TargetName>liquid</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|x64'">
     <TargetName>liquid_debug</TargetName>
   </PropertyGroup>
@@ -282,6 +325,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|x64'">
     <TargetExt>.mll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|x64'">
+    <TargetExt>.mll</TargetExt>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|x64'">
     <TargetExt>.mll</TargetExt>
@@ -335,7 +382,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(LIQUIDCODE)\ribLib\lib;C:\Autodesk\Maya2008\lib;d:\code\LIBS\zlib\lib\Win32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(LIQUIDHOME)\ribLib\lib\win;C:\Autodesk\Maya2008\lib;d:\code\LIBS\zlib\lib\Win32</AdditionalLibraryDirectories>
       <AdditionalDependencies>librib.lib;Foundation.lib;OpenMaya.lib;OpenMayaAnim.lib;OpenMayaFX.lib;OpenMayaRender.lib;OpenMayaUI.lib;glu32.lib;opengl32.lib;netapi32.lib;ws2_32.lib;zlibwapi.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <AdditionalOptions>
@@ -371,6 +418,31 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2011 generic|Win32'">
+    <ClCompile>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(LIQUIDCODE)\include;$(LIQUIDCODE)\ribLib;C:\Autodesk\Maya2011\include;C:\tools\boost\boost_1_41_0;C:\tools\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;WIN32;_BOOL;REQUIRE_IOSTREAM;_CRT_SECURE_NO_DEPRECATE;LIQUID_EXPORTS;GENERIC_RIBLIB;NO_RICMD;ZLIB_WINAPI;ZLIB_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BrowseInformation>false</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(LIQUIDCODE)\ribLib\lib;C:\Autodesk\Maya2011\lib;d:\code\LIBS\zlib\lib\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>librib.lib;Foundation.lib;OpenMaya.lib;OpenMayaAnim.lib;OpenMayaFX.lib;OpenMayaRender.lib;OpenMayaUI.lib;glu32.lib;opengl32.lib;netapi32.lib;ws2_32.lib;zlibwapi.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <AdditionalOptions>
+      </AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(TargetPath)" $(LIQUIDCODE)\bin\Maya2011\generic\win</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|Win32'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
@@ -470,7 +542,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(LIQUIDCODE)\include;$(LIQUIDCODE)\ribLib;C:\Autodesk\Maya2011-x64\include;C:\tools\boost\boost_1_41_0;C:\tools\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(LIQUIDHOME)\include;$(LIQUIDHOME)\ribLib;C:\Autodesk\Maya2011-x64\include;C:\tools\boost\boost_1_41_0;C:\tools\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WIN32;WIN32;_BOOL;REQUIRE_IOSTREAM;_CRT_SECURE_NO_DEPRECATE;LIQUID_EXPORTS;GENERIC_RIBLIB;NO_RICMD;ZLIB_WINAPI;ZLIB_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
@@ -478,12 +550,36 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(LIQUIDCODE)\ribLib\lib;C:\Autodesk\Maya2011-x64\lib;d:\code\LIBS\zlib\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(LIQUIDHOME)\ribLib\lib\win;C:\Autodesk\Maya2011-x64\lib;d:\code\LIBS\zlib\lib\x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>librib-x64.lib;Foundation.lib;OpenMaya.lib;OpenMayaAnim.lib;OpenMayaFX.lib;OpenMayaRender.lib;OpenMayaUI.lib;glu32.lib;opengl32.lib;netapi32.lib;ws2_32.lib;zlibwapi.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(TargetPath)" $(LIQUIDCODE)\bin\Maya2011-x64\generic\win</Command>
+      <Command>copy /Y "$(TargetPath)" $(LIQUIDHOME)\bin\Maya2011-x64\generic\win</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release maya2012 generic|x64'">
+    <ClCompile>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(LIQUIDHOME)\include;$(LIQUIDHOME)\ribLib;C:\Autodesk\Maya2012-x64\include;C:\tools\boost\boost_1_41_0;C:\tools\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;WIN32;_BOOL;REQUIRE_IOSTREAM;_CRT_SECURE_NO_DEPRECATE;LIQUID_EXPORTS;GENERIC_RIBLIB;NO_RICMD;ZLIB_WINAPI;ZLIB_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(LIQUIDHOME)\ribLib\lib\win;C:\Autodesk\Maya2012-x64\lib;d:\code\LIBS\zlib\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>librib-x64.lib;Foundation.lib;OpenMaya.lib;OpenMayaAnim.lib;OpenMayaFX.lib;OpenMayaRender.lib;OpenMayaUI.lib;glu32.lib;opengl32.lib;netapi32.lib;ws2_32.lib;zlibwapi.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(TargetPath)" $(LIQUIDHOME)\bin\Maya2012-x64\generic\win</Command>
+      <Message>Copy "$(TargetPath)" to $(LIQUIDHOME)\bin\Maya2012-x64\generic\win</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug maya2011 generic|x64'">
@@ -579,57 +675,57 @@
     <ClInclude Include="..\..\..\..\include\liqWriteArchive.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\common\liqAttachPrefAttribute.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqBoundingBoxLocator.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqBucket.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqCoordSysNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqCoShaderNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqDisplacementNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqExpression.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqGetAttr.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqGetSloInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqGlobalHelpers.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqGlobalsNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqJobList.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqLightNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqLightNodeBehavior.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqMayaRenderView.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqMemory.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqNodeSwatch.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqPreviewShader.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqProcessLauncher.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRenderer.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibboxNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibClipPlaneData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibCoordData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibCurvesData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibGenData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibHT.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibImplicitSphereData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibLightData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibLocatorData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibMayaSubdivisionData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibMeshData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibNuCurveData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibObj.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibParticleData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibPfxData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibPfxHairData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibPfxToonData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibRequestNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibSubdivisionData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibSurfaceData.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRibTranslator.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqRiCommands.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqShader.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqShaderFactory.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqSurfaceNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqTokenPointer.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqVolumeNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\common\liqWriteArchive.cpp" />
     <ClCompile Include="..\..\..\..\src\liquidPlug.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqAttachPrefAttribute.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqBoundingBoxLocator.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqBucket.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqCoordSysNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqCoShaderNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqDisplacementNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqExpression.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqGetAttr.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqGetSloInfo.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqGlobalHelpers.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqGlobalsNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqJobList.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqLightNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqLightNodeBehavior.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqMayaRenderView.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqMemory.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqNodeSwatch.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqPreviewShader.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqProcessLauncher.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRenderer.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibboxNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibClipPlaneData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibCoordData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibCurvesData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibGenData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibHT.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibImplicitSphereData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibLightData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibLocatorData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibMayaSubdivisionData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibMeshData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibNuCurveData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibObj.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibParticleData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibPfxData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibPfxHairData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibPfxToonData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibRequestNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibSubdivisionData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibSurfaceData.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRibTranslator.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqRiCommands.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqShader.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqShaderFactory.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqSurfaceNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqTokenPointer.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqVolumeNode.cpp" />
-    <ClCompile Include="..\..\..\..\src\src\liqWriteArchive.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

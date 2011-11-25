@@ -35,23 +35,12 @@ global proc liquidMakeRenderCurve()
 	string $current;
 	for ( $current in $selected )
 	{
-		if ( !`attributeQuery -node $current -ex "liquidCurve"`)
-			addAttr -ln liquidCurve -at bool $current;
-
-		if ( `attributeQuery -node $current -ex "liquidCurve"`)
-			setAttr ( $current + ".liquidCurve" ) true;
-
-		if ( !`attributeQuery -node $current -ex "liquidCurveBaseWidth"`)
-			addAttr -ln liquidCurveBaseWidth -at "float" $current;
-
-		if ( `attributeQuery -node $current -ex "liquidCurveBaseWidth"`)
-			setAttr ( $current + ".liquidCurveBaseWidth" ) 0.1;
-
-		if ( !`attributeQuery -node $current -ex "liquidCurveTipWidth"`)
-			addAttr -ln liquidCurveTipWidth -at "float" $current;
-
-		if ( `attributeQuery -node $current -ex "liquidCurveTipWidth"`)
-			setAttr ( $current + ".liquidCurveTipWidth" ) 0.1;
+		if ( !`attributeQuery -node $current -ex "liquidCurve"`) addAttr -ln liquidCurve -at bool $current;
+ 	  if ( `attributeQuery -node $current -ex "liquidCurve"`) setAttr ( $current + ".liquidCurve" ) true;
+		if ( !`attributeQuery -node $current -ex "liquidCurveBaseWidth"`) addAttr -ln liquidCurveBaseWidth -at "float" $current;
+		if ( `attributeQuery -node $current -ex "liquidCurveBaseWidth"`) setAttr ( $current + ".liquidCurveBaseWidth" ) 0.1;
+		if ( !`attributeQuery -node $current -ex "liquidCurveTipWidth"`) addAttr -ln liquidCurveTipWidth -at "float" $current;
+		if ( `attributeQuery -node $current -ex "liquidCurveTipWidth"`) setAttr ( $current + ".liquidCurveTipWidth" ) 0.1;
 	}
 }
 
@@ -61,14 +50,9 @@ global proc liquidUnMakeRenderCurve()
 	string $current;
 	for ( $current in $selected )
 	{
-		if ( `attributeQuery -node $current -ex "liquidCurve"`)
-			deleteAttr ( $current + ".liquidCurve" );
-
-		if ( `attributeQuery -node $current -ex "liquidCurveBaseWidth"`)
-			deleteAttr ( $current + ".liquidCurveBaseWidth" );
-
-		if ( `attributeQuery -node $current -ex "liquidCurveTipWidth"`)
-			deleteAttr ( $current + ".liquidCurveTipWidth" );
+		if ( `attributeQuery -node $current -ex "liquidCurve"`) deleteAttr ( $current + ".liquidCurve" );
+		if ( `attributeQuery -node $current -ex "liquidCurveBaseWidth"`) deleteAttr ( $current + ".liquidCurveBaseWidth" );
+		if ( `attributeQuery -node $current -ex "liquidCurveTipWidth"`) deleteAttr ( $current + ".liquidCurveTipWidth" );
 	}
 }
 
@@ -82,7 +66,7 @@ global proc liquidCreateCurveGroup()
 	for ( $s in $selected )
 	{
 		string $shapes[] = `listRelatives -s $s`;
-		if( `objectType -isType "nurbsCurve" $shapes[0]` )
+		if ( `objectType -isType "nurbsCurve" $shapes[0]` )
 		{
 			$curves[$k] = $s;
 			$k++;
@@ -90,8 +74,7 @@ global proc liquidCreateCurveGroup()
 	}
 	string $transform = `createNode transform -n liquidCurveGroup`;
 	string $bb = `createNode liqBoundingBoxLocator -p $transform`;
-	if( size( $curves ) )
-		parent $curves $transform;
+	if ( size( $curves ) ) parent $curves $transform;
 	
 	// custom shading group
 	if ( !`attributeQuery -node $transform -ex "liquidCustomShadingGroup"` )

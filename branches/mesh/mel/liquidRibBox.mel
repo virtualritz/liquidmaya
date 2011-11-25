@@ -43,11 +43,9 @@ global proc liquidAddRibBox ()
   // in my opinion should be just ls -tr -sl. Stephane
   string $nodes[] = `ls -tr -sl`;
   string $currentNode;
-  for ( $currentNode in $nodes ) {
-    if ( !`attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
+  for ( $currentNode in $nodes ) 
+    if ( !`attributeQuery -node $currentNode -ex "liqRIBBox"` ) 
       addAttr -ln "liqRIBBox" -dt "string" $currentNode;
-    }
-  }
 }
 
 global proc liquidDeleteRibBox ()
@@ -56,11 +54,9 @@ global proc liquidDeleteRibBox ()
   // atributes recursively ?
   string $nodes[] = `ls -dag -sl`;
   string $currentNode;
-  for ( $currentNode in $nodes ) {
-    if ( `attributeQuery -node $currentNode -ex "liqRIBBox"` ) {
+  for ( $currentNode in $nodes ) 
+    if ( `attributeQuery -node $currentNode -ex "liqRIBBox"` ) 
       deleteAttr ( $currentNode + ".liqRIBBox" );
-    }
-  }
 }
 
 //// This is very bad! It overrides existing attached ribbox info!!!

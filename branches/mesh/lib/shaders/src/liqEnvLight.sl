@@ -1,7 +1,7 @@
 
 #include "liquidtools.h"
 light
-me_envlight (
+liqEnvLight (
     uniform string envname = "";
     uniform string envspace = "world";
     uniform float  Intensity = 1.0;

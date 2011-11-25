@@ -68,8 +68,8 @@ public:
   class Cmd
   {
   public:
-    Cmd() : command(""), remote(true), alfredExpand(false), alfredTags(""), alfredServices("") {}
-    Cmd(const std::string &c, bool r) : command(c), remote(r), alfredExpand(false), alfredTags(""), alfredServices("") {}
+    Cmd() : command(""), remote( true ), alfredExpand( false ), alfredTags( "" ), alfredServices( "" ) {}
+    Cmd( const string &c, bool r ) : command(c), remote(r), alfredExpand(false), alfredTags(""), alfredServices("") {}
 
     string command;
 
@@ -78,41 +78,27 @@ public:
     string alfredTags;
     string alfredServices;
     
-    std::string getALF() const
+    string getALF() const
     {
-      std::stringstream ss;
+      stringstream ss;
       
-      if ( remote ) 
-        ss << "RemoteCmd";
-      else 
-        ss << "Cmd";
+      if ( remote ) ss << "RemoteCmd";
+      else          ss << "Cmd";
       ss << " {" << command << "}";
-      
-      if ( alfredExpand ) 
-        ss << " -expand 1";
-      
-      if ( alfredServices != "" ) 
-        ss << " -service {" << alfredServices << "}";
-      
-      if ( alfredTags != "" ) 
-        ss << " -tags {" << alfredTags << "}";
-      
-      
+      if ( alfredExpand ) ss << " -expand 1";
+      if ( alfredServices != "" ) ss << " -service {" << alfredServices << "}";
+      if ( alfredTags != "" ) ss << " -tags {" << alfredTags << "}";
+
       return ss.str();
     }
     
-    std::string getXML() const
+    string getXML() const
     {
       stringstream ss;
       
       ss << "<command remote=\"" << remote << "\"";
-      
-      if (alfredServices != "") 
-        ss << " alfredservices=\"" << alfredServices << "\"";
-      
-      if (alfredTags != "") 
-        ss << " alfredtags=\"" << alfredTags << "\"";
-      
+      if ( alfredServices != "" ) ss << " alfredservices=\"" << alfredServices << "\"";
+      if ( alfredTags != "" ) ss << " alfredtags=\"" << alfredTags << "\"";
       ss << ">" << command << "</command>";
       
       return ss.str();
@@ -136,49 +122,44 @@ public:
     
     bool isInstance;
     
-    std::string getALF(unsigned int indentLevel=0) const
+    string getALF( unsigned int indentLevel=0 ) const
     {
       stringstream ss;
       
       // setup the correct indentation amount to prepend onto each line
-      std::string indent;
-      for( unsigned i(0); i < indentLevel ; ++i ) 
-        indent += "  ";
+      string indent;
+      for ( unsigned i(0); i < indentLevel ; ++i ) indent += "  ";
       
       // if we're an instance task, then the title is the name of the task to instance
       // and nothing more gets done in this job
-      if (isInstance) 
+      if ( isInstance ) 
       {
         ss << indent << "Instance {" << title << "}";
         return ss.str();
       }
-      
       ss << indent << "Task -title {" << title << "}";
        
-      if (!childJobs.empty()) 
+      if ( !childJobs.empty() ) 
       { 
-        ss << " -subtasks {" << std::endl;
-        for( std::vector<Job>::const_iterator child=childJobs.begin(); child!=childJobs.end(); ++child ) 
+        ss << " -subtasks {" << endl;
+        for ( vector<Job>::const_iterator child=childJobs.begin(); child!=childJobs.end(); ++child ) 
           ss << child->getALF(indentLevel+1) << endl;
-        
         ss << indent << "}";
       }
       
       if ( !commands.empty() ) 
       {
-        ss << " -cmds {" << std::endl;
-        for(std::vector<Cmd>::const_iterator command=commands.begin(); command!=commands.end(); ++command) 
+        ss << " -cmds {" << endl;
+        for ( vector<Cmd>::const_iterator command=commands.begin(); command!=commands.end(); ++command ) 
           ss << indent << "  " << command->getALF() << endl;
-        
         ss << indent << "}";
       }
       
       if ( !cleanupCommands.empty() ) 
       {
         ss << " -cleanup {" << endl;
-        for(std::vector<Cmd>::const_iterator cleanup=cleanupCommands.begin(); cleanup!=cleanupCommands.end(); ++cleanup) 
+        for ( vector<Cmd>::const_iterator cleanup=cleanupCommands.begin(); cleanup!=cleanupCommands.end(); ++cleanup ) 
           ss << indent << "  " << cleanup->getALF() << std::endl;
-        
         ss << indent << "}";
       }
       
@@ -188,17 +169,15 @@ public:
         ss << indent << "  " << chaserCommand << endl;
         ss << indent << "}";
       }
-      
       return ss.str();
     }
     
-    std::string getXML(unsigned int indentLevel=0) const
+    string getXML( unsigned int indentLevel = 0 ) const
     {
       stringstream ss;
       string indent;
 
-      for( unsigned i=0 ; i < indentLevel ; ++i ) 
-        indent += "  ";
+      for ( unsigned i=0 ; i < indentLevel ; ++i ) indent += "  ";
        
       if (isInstance) 
       {
@@ -213,7 +192,6 @@ public:
         ss << indent << "<subtasks>" << endl;
         for ( std::vector<Job>::const_iterator child=childJobs.begin(); child!=childJobs.end(); ++child ) 
           ss << child->getXML(indentLevel+1);
-        
         ss << indent << "</subtasks>" << endl;
       }
             
@@ -237,7 +215,6 @@ public:
       
       if ( chaserCommand != "" ) 
         ss << indent << "<chaser>" << chaserCommand << "</chaser>" << endl;
-
       ss << indent << "</task>" << endl;
             
       return ss.str();
@@ -246,7 +223,7 @@ public:
     // adds a job as a dependency of any 'leaf' jobs anywhere under the hierarchy
     // of this job. i.e. any job with no children will get this as a child
     // good for tacking instances onto the end of job trees
-    void addLeafDependency(const Job &job)
+    void addLeafDependency( const Job &job )
     {
       bool hasChildren = false;
       for ( std::vector<Job>::iterator child=childJobs.begin(); child!=childJobs.end(); ++child ) 
@@ -254,12 +231,11 @@ public:
         if ( !child->isInstance ) 
         {
           hasChildren = true;
-          child->addLeafDependency(job);
+          child->addLeafDependency( job );
         }
       }
       
-      if ( !hasChildren ) 
-        childJobs.push_back(job);
+      if ( !hasChildren ) childJobs.push_back( job );
     }
   };
 
@@ -274,7 +250,7 @@ public:
   // the first (main) job will always have an ID of '1'
   // for the main job, or any other job not dependent on anything else
   // you should specify a parent ID of '0' (no parent)
-  int addJob(const Job &job, unsigned int parentJobID=0)
+  int addJob( const Job &job, unsigned int parentJobID = 0 )
   {
     int jobId = popNextJobID();
     assert(jobId > 0);
@@ -287,9 +263,9 @@ public:
     {
       if (jobs.find(parentJobID) == jobs.end()) 
       {
-        throw MString("Error liqRenderScript::addJob() called with non-existant parent job ID");
+        throw MString( "Error liqRenderScript::addJob() called with non-existant parent job ID" );
       }
-      jobs[parentJobID].childJobs.push_back(job);
+      jobs[parentJobID].childJobs.push_back( job );
     }
     
     return jobId;
@@ -305,7 +281,7 @@ public:
     maxServers    = 1;
   }
   
-  std::string getALF() const
+  string getALF() const
   {
     stringstream ss;
     
@@ -313,8 +289,7 @@ public:
     ss << "Job -title {" << title << "(liquid job)}";
     ss << " -comment {#Created By Liquid " << LIQUIDVERSION << "}";
     
-    if ( dirmaps.size() )
-      ss << " -dirmaps {" << dirmaps << "}";  
+    if ( dirmaps.size() ) ss << " -dirmaps {" << dirmaps << "}";  
     ss << " -atleast " << minServers << " " << "-atmost " << maxServers;
      
     if ( !jobs.empty() ) 
@@ -322,7 +297,6 @@ public:
       ss << " -subtasks { ";
       for ( std::map<int, Job>::const_iterator job=jobs.begin(); job!=jobs.end(); ++job ) 
         ss << endl << job->second.getALF(1);    
-      
       ss << endl << "}";
     }
     
@@ -331,14 +305,13 @@ public:
       ss << " -cleanup { " << endl;
       for ( std::vector<Cmd>::const_iterator cmd=cleanupCommands.begin(); cmd!=cleanupCommands.end(); ++cmd ) 
         ss << "  " << cmd->getALF() << endl;
-      
       ss << "}" << endl;
     }
     
     return ss.str();
   }
   
-  std::string getXML() const
+  string getXML() const
   {
     stringstream ss;
     
@@ -353,7 +326,6 @@ public:
       ss << "  <subtasks>" << endl;
       for ( std::map<int, Job>::const_iterator job=jobs.begin(); job!=jobs.end(); ++job ) 
         ss << job->second.getXML(1);    
-      
       ss << "  </subtasks>" << endl;
     }
     
@@ -365,31 +337,28 @@ public:
       
       ss << "  </cleanup>" << endl;
     }
-    
     ss << "</renderscript>" << endl;
     
     return ss.str();
   }
   
-  bool writeALF(const std::string &filename) const
+  bool writeALF( const string &filename ) const
   {
-    ofstream outFile(filename.c_str());
+    ofstream outFile( filename.c_str() );
     
-    if (!outFile) 
-      return false;
+    if ( !outFile ) return false;
     
     outFile << getALF().c_str();
     outFile.close();
     return true;
   }
   
-  bool writeXML(const std::string &filename) const
+  bool writeXML( const string &filename ) const
   {
-    ofstream outFile(filename.c_str());
+    ofstream outFile( filename.c_str() );
 	  LIQDEBUGPRINTF( "Writing XML Render Script to: %s!\n", filename.c_str() );	  
     
-    if (!outFile) 
-      return false;
+    if ( !outFile ) return false;
     
     outFile << getXML().c_str();
     outFile.close();
@@ -397,9 +366,9 @@ public:
     return true;
   }
   
-  void addLeafDependency(const Job &job)
+  void addLeafDependency( const Job &job )
   {
-    for ( std::map<int, Job>::iterator j=jobs.begin(); j!=jobs.end(); ++j ) 
+    for ( map<int, Job>::iterator j=jobs.begin(); j!=jobs.end(); ++j ) 
       if ( (!j->second.isInstance) && (j->second.title != "liquid pre-job") ) 
         j->second.addLeafDependency(job);
   }

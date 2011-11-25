@@ -36,9 +36,10 @@
 */
 
 #include <liqRibData.h>
-#include <liqShader.h>
+#include <liqGenericShader.h>
 
-class liqShader;
+//#include "liqShader.h"
+//class liqShader;
 
 class liqRibLightData : public liqRibData {
 public:
@@ -56,6 +57,7 @@ public:
   MString       autoShadowName( int PointLightDir = -1 ) const;
 
 private:
+  liqGenericShader *rmanShader;
 
   MString       extraShadowName( const MFnDependencyNode & lightShaderNode, const int & index ) const;
 
@@ -90,6 +92,18 @@ private:
   // Area Lights
   MString       lightMap;
   RtFloat       lightMapSaturation;
+
+  // 3Delight light attributes
+  struct delightLight {
+	bool emitPhotons;
+	bool autoShadows;
+  int  autoShadowsSamples;
+    enum {
+      SAMPLING_STRATEGY_NONE = -1,
+      SAMPLING_STRATEGY_LIGHTSOURCE = 0, // lightsource
+      SAMPLING_STRATEGY_ILLUMINANCE = 1 // illuminance
+    } SamplingStrategy;
+  } delightLight;
 
   RtFloat       nonDiffuse;
   RtFloat       nonSpecular;
@@ -130,7 +144,7 @@ private:
   RtFloat       lightID;
   int           hitmode;
   
-  liqShader     *rmanLightShader;
+  // liqShader     *rmanLightShader;
 };
 
 

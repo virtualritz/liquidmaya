@@ -305,6 +305,8 @@ void		CRiInterface::RiPointsV(int /*npts*/,int /*n*/,char * /*tokens*/ [],void *
 void		CRiInterface::RiSubdivisionMeshV(char * /*scheme*/,int /*nfaces*/,int /*nvertices*/ [],int /*vertices*/ [],int /*ntags*/,char * /*tags*/[],int /*nargs*/ [],int /*intargs*/ [],float /*floatargs*/ [],int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {
 }
 
+void		CRiInterface::RiHierarchicalSubdivisionMeshV(char * /*scheme*/,int /*nfaces*/,int /*nvertices*/ [],int /*vertices*/ [],int /*ntags*/,char * /*tags*/[],int /*nargs*/ [],int /*intargs*/ [],float /*floatargs*/ [],char */*stringargs*/ [],int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {
+}
 void		CRiInterface::RiBlobbyV(int /*nleaf*/,int /*ncode*/,int /*code*/ [],int /*nflt*/,float /*flt*/ [],int /*nstr*/,char * /*str*/ [],int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {
 }
 
@@ -362,6 +364,14 @@ void		CRiInterface::RiErrorHandler(void (*handler)(int,int,char *)) {
 	errorHandler	=	handler;
 }
 
+void		CRiInterface::RiIfBeginV (char */*expr*/, int /*n*/, char */*nms*/ [], void */*vals*/ []) {
+}
+void		CRiInterface::RiElse () {
+}
+void		CRiInterface::RiElseIfV (char */*expr*/, int /*n*/, char */*nms*/ [], void */*vals*/ []) {
+}
+void		CRiInterface::RiIfEnd () {
+}
 void		CRiInterface::RiArchiveRecord(char * /*type*/,char * /*format*/,va_list /*args*/) {
 }
 
@@ -383,3 +393,5 @@ void		CRiInterface::RiError(int c,int s,char *m) {
 	}
 }
 
+void		CRiInterface::RiCameraV(char *, int , char *[], void *[]) {
+}

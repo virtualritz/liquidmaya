@@ -82,8 +82,6 @@ global proc liqShowRV()
 {
   string $editor = `liqGetRVPanel`;
 
-
-
   {
     // window already exists ? open it.
     string $wins[] = `lsUI -windows`;
@@ -265,11 +263,11 @@ global proc string liquidmayaRender(int $resolution0, int $resolution1, int $doS
   liqShowRV();
 
   // Ensure we dont let maya test resolution optionvar bug get us
-  if (`optionVar -ex "renderViewTestResolution"`) {
+  if (`optionVar -ex "renderViewTestResolution"`) 
+	{
   	// seems to get set null on render abort, clear it
-	if (`optionVar -q "renderViewTestResolution"` == 0) {
-	  optionVar -remove "renderViewTestResolution";
-	 }
+		if (`optionVar -q "renderViewTestResolution"` == 0) 
+	  	optionVar -remove "renderViewTestResolution";
   }
 
   liquidPreview();

@@ -10,14 +10,15 @@ SET LIQUIDHOME=d:/code/maya/liquidmaya
 SET LIQPLUGSUFFIX=.mll
 
 :set_maya_version
-SET MAYA_VERSION=2008
+rem SET MAYA_VERSION=2008
 rem SET MAYA_VERSION=2009
 rem SET MAYA_VERSION=2010
-rem MAYA_VERSION=2011
+rem SET MAYA_VERSION=2011
+SET MAYA_VERSION=2012
 
 :set_maya_arch
 SET ARCH=
-set SET ARCH=-x64
+SET ARCH=-x64
 
 SET AW_LOCATION=c:/Autodesk
 SET MAYALIBS=Image.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib
@@ -25,7 +26,8 @@ SET LIBS=netapi32.lib;ws2_32.lib
 SET BOOST_ROOT=C:/tools/boost/boost_1_41_0
 SET ZLIB_INCLUDE_DIR=d:/code/LIBS/zlib/include
 rem SET VSINSTALLDIR="C:\Program Files (x86)\Microsoft Visual Studio 8"
-SET VSINSTALLDIR="C:\Program Files (x86)\Microsoft Visual Studio 10.0"
+SET VSINSTALLDIR="C:\Program Files (x86)\Microsoft Visual Studio 9.0"
+rem SET VSINSTALLDIR="C:\Program Files (x86)\Microsoft Visual Studio 10.0"
 SET GEN="NMake Makefiles"
 
 @echo build for %MAYA_VERSION% %ARCH%

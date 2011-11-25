@@ -4,6 +4,10 @@ proc string[] liquidGetSelection( string $flag )
 }
 
 
+proc string[] liquidGetShaderSelection()
+{
+	return `ls -sl -type "liquidSurface" -type "liquidDisplacement" -type "liquidVolume" -type "liquidLight"`;
+}
 // Shading group -----------------------------------------------
 
 global proc liquidCreateShadingAttributes()
@@ -1325,5 +1329,44 @@ global proc liquidAddNoNormalizeNurbs()
     if ( !objExists( ($currentNode+".noNormalizeNurbs") ) ) 
       addAttr -ln "noNormalizeNurbs" -at bool $currentNode;
     setAttr ($currentNode+".noNormalizeNurbs") 1;
+  }
+}
+
+// Particle attributes -------------------------------------------------
+
+global proc liquidAddCloudAttributes( )
+{
+  string $nodes[] = `ls -l -type "particle" -type "nParticle" -dag -sl`;
+  string $trf;
+  for ( $currentNode in $nodes ) {
+	// Crappy way to retrieve the transform, much faster than listRelatives
+	// $currentNode = `substitute "|[^|]+$" $currentNode ""`;
+    if ( !objExists( ($currentNode+".liqCloudyCodes") ) ) {
+      addAttr -ln "liqCloudyCodes" -dt "Int32Array" $currentNode;
+    }
+    if ( !objExists( ($currentNode+".liqCloudyFloats") ) ) {
+      addAttr -ln "liqCloudyFloats" -dt "doubleArray" $currentNode;
+    }
+    if ( !objExists( ($currentNode+".liqCloudyStrings") ) ) {
+      addAttr -ln "liqCloudyStrings" -dt "stringArray" $currentNode;
+    }
+  }
+}
+global proc liquidDeleteCloudAttributes( )
+{
+  string $nodes[] = `ls -l -type "particle" -type "nParticle" -dag -sl`;
+  string $trf;
+  for ( $currentNode in $nodes ) {
+	// Crappy way to retrieve the transform, much faster than listRelatives
+	// $currentNode = `substitute "|[^|]+$" $currentNode ""`;
+    if ( objExists( ($currentNode+".liqCloudyCodes") ) ) {
+      deleteAttr ($currentNode+".liqCloudyCodes");
+    }
+    if ( objExists( ($currentNode+".liqCloudyFloats") ) ) {
+      deleteAttr ($currentNode+".liqCloudyFloats");
+    }
+    if ( objExists( ($currentNode+".liqCloudyStrings") ) ) {
+      deleteAttr ($currentNode+".liqCloudyStrings");
+    }
   }
 }

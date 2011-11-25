@@ -104,7 +104,11 @@ CRibOut::CRibOut(const char *n) : CRiInterface()
   time( &aclock );
   newtime = localtime( &aclock );
 
+#ifdef WIN32
+  outName = _strdup(n);
+#else
   outName = strdup(n);
+#endif
   if ( *outName == '|' ) {
     outFile       = popen(outName+1,"w");
     outputCompressed  = FALSE;
@@ -206,7 +210,7 @@ CRibOut::~CRibOut()
 
   delete attributes;
   map<string,CVariable*>::iterator it;
-  for( it = declaredVariables->begin(); it != declaredVariables->end(); it++)
+  for ( it = declaredVariables->begin(); it != declaredVariables->end(); it++ )
   {
     delete it->second;
   }
@@ -554,8 +558,13 @@ void    CRibOut::RiOptionV(char *name,int n,char *tokens[],void *params[]) {
     }
   } else if ( strcmp(name,"user") == 0 ) {
     char seps[] = " \t"; 
-    for (i=0;i<n;i++) {
+    for( i=0; i < n ; i++ ) 
+    {
+#ifdef WIN32      
+      char *parse_str = _strdup( tokens[i] );
+#else
       char *parse_str = strdup( tokens[i] );
+#endif
       char *token = strtok( parse_str, seps );
       //printf( "parse USER option : %s \n",parse_str );
       while ( token != NULL ) {
@@ -1017,6 +1026,19 @@ void    CRibOut::RiAttributeV(char *name,int n,char *tokens[],void *params[])
         attributeCheckFloat(RI_SS_SHADINGRATE,1)
         attributeCheckFloat(RI_SS_SCALE,1)
         attributeCheckString(RI_SS_REFERENCECAMERA)
+        attributeEndCheck
+    }
+  } 
+  else if ( strcmp( name, RI_LIGHT ) == 0) 
+  {
+    for ( i = 0 ; i < n ; i++ ) 
+    {
+      if ( FALSE ) 
+      {
+        attributeCheckString(RI_LIGHT_EMITPHOTONS)
+        attributeCheckString(RI_LIGHT_SHADOWS)
+        attributeCheckInt(RI_LIGHT_SAMPLES,1)
+        attributeCheckString(RI_LIGHT_SAMPLINGSTRATEGY)
         attributeEndCheck
     }
   } 
@@ -1621,6 +1643,76 @@ void    CRibOut::RiSubdivisionMeshV(char * scheme,int nfaces,int nvertices[],int
   writePL(numVertices,numVertices,numFacevaryings,nfaces,n,tokens,params);
 }
 
+void CRibOut::RiHierarchicalSubdivisionMeshV(char *scheme,int nfaces,int nvertices[],int vertices[],int ntags,char * tags[],int nargs[],int intargs[],float floatargs[], char *stringargs[], int n,char *tokens[],void *params[]) {
+	int	numVertices;
+	int	i,j;
+	int	numInt,numFloat,numString;
+	int	numFacevaryings;
+	unsigned int itemsPerLine = 0;
+
+	for ( i = 0, j = 0 ; i < nfaces ; j += nvertices[i], i++ );
+	numFacevaryings	=	j;
+
+	for ( numVertices = -1, i = 0 ; i < j ; i++ ) 
+	{
+		if ( vertices[i] > numVertices)	numVertices	=	vertices[i];
+	}
+	numVertices++;
+
+	out("HierarchicalSubdivisionMesh \"%s\" [ ",scheme);
+	for ( i = 0 ; i < nfaces ; i++ ) 
+	{
+		out("%d ",nvertices[i]);
+		if ( !( itemsPerLine++ % maxItemsPerLine) ) out( "\n" );
+	}
+	out("] [ ");
+	for ( i = 0 ; i < j ; i++ ) 
+	{
+		out("%d ",vertices[i]);
+		if ( !( itemsPerLine++ % maxItemsPerLine) ) out( "\n" );
+	}
+	out("] [");
+	for ( i = 0 ; i < ntags ; i++ ) 
+	{
+		out(" \"%s\" ",tags[i]);
+		if ( !( itemsPerLine++ % maxItemsPerLine) ) out( "\n" );
+	}
+	out("] [");
+	numInt		=	0;
+	numFloat	=	0;
+	numString	= 	0;
+	for ( i = 0 ; i < ntags ; i++ ) 
+	{
+		out(" %d %d %d ",nargs[0],nargs[1],nargs[2]);
+		if ( !( itemsPerLine++ % maxItemsPerLine) ) out( "\n" );
+		numInt		+=	nargs[0];
+		numFloat	+=	nargs[1];
+		numString	+=	nargs[2];
+		nargs		+=	3;
+	}
+	out("] [ ");
+	for ( i = 0 ; i < numInt ; i++ ) 
+	{
+		out("%d ",intargs[i]);
+		if ( !( itemsPerLine++ % maxItemsPerLine) ) out( "\n" );
+	}
+	out("] [ ");
+	for ( i = 0 ; i < numFloat ; i++ ) 
+	{
+		out("%g ",floatargs[i]);
+		if ( !( itemsPerLine++ % maxItemsPerLine) ) out( "\n" );
+	}
+	out("] [ ");
+	for ( i = 0 ; i < numString ; i++ ) 
+	{
+		out("\"%s\" ",stringargs[i]);
+		if ( !( itemsPerLine++ % maxItemsPerLine) ) out( "\n" );
+	}
+	out("] ");
+	writePL( numVertices, numVertices, numFacevaryings, nfaces, n, tokens, params );
+}
+
+
 void    CRibOut::RiBlobbyV(int /*nleaf*/,int /*ncode*/,int /*code*/ [],int /*nflt*/,float /*flt*/ [],int /*nstr*/,char * /*str*/ [],int /*n*/,char * /*tokens*/ [],void * /*params*/ []) 
 {
   errorHandler(RIE_UNIMPLEMENT,RIE_ERROR,"Blobby primitive is not implemented\n");
@@ -1719,22 +1811,64 @@ void    CRibOut::RiErrorHandler(void (*handler)(int,int,char *))
   errorHandler  = handler;
 }
 
+void CRibOut::RiIfBeginV (char *expr, int n,char *tokens[],void *params[])
+{
+	out("IfBegin \"%s\"",expr);
+	if( n )
+	{
+		writePL(n,tokens,params);
+	}
+	else
+	{
+		out("\n");
+	}
+}
+
+void CRibOut::RiElse ()
+{
+	out("Else\n");
+}
+
+void CRibOut::RiElseIfV (char *expr, int n,char *tokens[],void *params[])
+{
+	out("ElseIf \"%s\"",expr);
+	if( n )
+	{
+		writePL(n,tokens,params);
+	}
+	else
+	{
+		out("\n");
+	}
+}
+
+void CRibOut::RiIfEnd ()
+{
+	out("IfEnd\n");
+}
+
 void    CRibOut::RiArchiveRecord(char * type,char *format,va_list args) 
 {
-  if (strcmp(type,RI_COMMENT) == 0) 
+  if ( strcmp( type, RI_COMMENT ) == 0 ) 
   {
     out("#");
     vout(format,args);
     out("\n");
-  } else if (strcmp(type,RI_STRUCTURE) == 0) {
+  } 
+	else if ( strcmp( type, RI_STRUCTURE ) == 0 ) 
+	{
     out("##");
     vout(format,args);
     out("\n");
-  } else if (strcmp(type,RI_VERBATIM) == 0) {
+  } 
+	else if ( strcmp( type, RI_VERBATIM ) == 0 ) 
+	{
     vout(format,args);
     out("\n");
-  } else {
-    error(CODE_BADTOKEN,"Unknown record type: \"%s\"\n",type);
+  } 
+	else 
+	{
+    error ( CODE_BADTOKEN, "Unknown record type: \"%s\"\n", type );
   }
 }
 
@@ -1753,6 +1887,19 @@ void    CRibOut::RiTrace(int,float [][3],float [][3],float [][3],float [])
 
 void    CRibOut::RiVisibility(int,float [][3],float [][3],float [][3]) 
 {
+}
+
+void CRibOut::RiCameraV( char *expr, int n, char *tokens[], void *params[] )
+{
+	out ( "RiCamera \"%s\" ", expr );
+	if ( n )
+	{
+		writePL(n,tokens,params);
+	}
+	else
+	{
+		out("\n");
+	}
 }
 
 void    CRibOut::writePL(int numParameters,char *tokens[],void *vals[]) 
@@ -1858,7 +2005,13 @@ retry:;
   out("\n");
 }
 
-void    CRibOut::writePL(int numVertex,int numVarying,int numFaceVarying,int numUniform,int numParameters,char *tokens[],void *vals[]) 
+void    CRibOut::writePL( int numVertex,
+													int numVarying,
+													int numFaceVarying,
+													int numUniform,
+													int numParameters,
+													char *tokens[],
+													void *vals[] ) 
 {
   int   i,j;
   float *f;

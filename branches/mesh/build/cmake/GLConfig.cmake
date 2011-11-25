@@ -11,9 +11,10 @@ endif(WIN32)
 
 if(UNIX)
 	if(APPLE)
-		set(GL_INCLUDE "/System/Library/Frameworks/AGL.framework/Headers")
+		#set(GL_INCLUDE "/System/Library/Frameworks/AGL.framework/Headers")
+		set(GL_INCLUDE "/System/Library/Frameworks/OpenGL.framework/Headers")
 		#set(GL_INCLUDE "/usr/include/GL")
-		FIND_PATH( GL_INCLUDE_DIR agl.h ${GL_INCLUDE} )
+		FIND_PATH( GL_INCLUDE_DIR gl.h ${GL_INCLUDE} )
 		# set(GL_LIB "/usr/X11/lib")
 		
 		set( GL_LIB "/System/Library/Frameworks/OpenGL.framework/Libraries" )

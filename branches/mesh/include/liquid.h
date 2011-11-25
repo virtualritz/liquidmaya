@@ -105,7 +105,7 @@ extern int debugMode;
 
 #define LIQ_CANCEL_FEEDBACK_MESSAGE MString( "Liquid -> RIB Generation Cancelled!\n" )
 #define LIQ_CHECK_CANCEL_REQUEST    if ( m_escHandler.isInterruptRequested() ) throw( LIQ_CANCEL_FEEDBACK_MESSAGE )
-#define LIQ_ADD_SLASH_IF_NEEDED(a) if ( a.asChar()[a.length() - 1] != '/' ) a += "/"
+#define LIQ_ADD_SLASH_IF_NEEDED(a) if(a.length()){ if ( a.asChar()[a.length() - 1] != '/' ){ a += "/";}}
 #define LIQ_ANIM_EXT MString( ".%0*d");
 #define LIQ_SET_EXT MString( ".%0*s");
 
@@ -279,6 +279,11 @@ struct structCamera {
   double  focalLength;
   double  horizontalFilmOffset;
   double  verticalFilmOffset;
+  int width;
+  int height;
+  double fov_ratio;
+  structCamera *rightCam;
+  structCamera *leftCam;
 };
 
 enum RenderPass {
@@ -319,12 +324,15 @@ struct structJob {
 
   bool                  hasShadowCam;
   bool                  isShadowPass;
+  bool                  isStereoPass;
   int                   shadowPixelSamples;
   int                   shadowVolumeInterpretation;
   bool                  shadowAggregation;
   bool                  isPoint;
   PointLightDirection   pointDir;
   structCamera          camera[ LIQMAXMOTIONSAMPLES ];
+  structCamera          leftCamera[ LIQMAXMOTIONSAMPLES ];    // stereo cam
+  structCamera          rightCamera[ LIQMAXMOTIONSAMPLES ];    // stereo cam
   MDagPath              path;
   MDagPath              shadowCamPath;
   MString               jobOptions;
@@ -339,7 +347,7 @@ struct structJob {
   bool                  skip;
 };
 
-typedef enum SBD_EXTRA_TAG {
+typedef enum {
   TAG_CREASE,
   TAG_HOLE,
   TAG_CORNER,

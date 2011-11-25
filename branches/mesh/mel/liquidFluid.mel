@@ -38,39 +38,74 @@ global string $liquidShaderSpec = "*";
 
 global proc string liquidFluidGetPreviewDir()
 {
-  // retrieve the current project path
-  string $projectPath = `workspace -q -rootDirectory`;
-
-  // check the existence of the preview directory
-  string $previewTopDir = ($projectPath+"liquidPreviews");
-  if ( !`filetest -d $previewTopDir` ) {
-    string $current = `pwd`;
-    chdir $projectPath;
-    sysFile -makeDir liquidPreviews;
-    chdir $current;
-  }
-
-  // check the existence of the scene directory
-  string $scene = basenameEx(`file -q -sceneName`);
-  if ( !size( $scene ) ) {
-    $scene = "Untitled";
-  }
-  string $previewSceneDir = ($previewTopDir+"/"+$scene);
-  if ( !`filetest -d $previewSceneDir` ) {
-    sysFile -makeDir $previewSceneDir;
-    // if dir creation failed
-    if ( !`filetest -d $previewSceneDir` ) {
-      string $tmpDir = `getenv( "TEMP" )`;
-      if ( "" == $tmpDir ) {
-        $tmpDir = `getenv( "TMP" )`;
-      }
-      if ( "" != $tmpDir ) {
-        $previewSceneDir = $tmpDir;
-      }
-    }
-  }
-
-  return $previewSceneDir;
+	if ( !liquidGlobalsExists() )
+	{
+		eval("liquidCreateGlobals();");
+	}
+	// retrieve the current project path
+	string $projectPath = `workspace -q -rootDirectory`;
+	if( `substring $projectPath (size($projectPath)) (size($projectPath))` != "/" )
+	{
+		$projectPath += "/";
+	}
+	// get the temp dir
+	string $fullTmpDir;
+	string $tmpDir = `getAttr liquidGlobals.tempDirectory`;
+	$tmpDir = `liqParseString -s $tmpDir`;
+	if( $tmpDir == "" )
+	{
+		// check the existence of the preview directory
+		$fullTmpDir = $projectPath + "liquidPreviews";
+		if ( !`filetest -d $fullTmpDir` )
+		{
+			string $current = `pwd`;
+			chdir $projectPath;
+			sysFile -makeDir liquidPreviews;
+			chdir $current;
+		}
+	}
+	else if( `substring $tmpDir 1 1` == "/" )
+	{
+		if( `substring $tmpDir (size($tmpDir)) (size($tmpDir))` != "/" )
+		{
+			$tmpDir += "/";
+		}
+		$fullTmpDir = $tmpDir + "liquidPreviews";
+	}
+	else
+	{
+		if( `substring $tmpDir (size($tmpDir)) (size($tmpDir))` != "/" )
+		{
+			$tmpDir += "/";
+		}
+		$fullTmpDir = $projectPath + $tmpDir + "liquidPreviews";
+	}
+	
+	// check the existence of the scene directory
+	string $scene = basenameEx(`file -q -sceneName`);
+	if ( !size( $scene ) )
+	{
+		$scene = "Untitled";
+	}
+	string $previewSceneDir = ($fullTmpDir+"/"+$scene);
+	if ( !`filetest -d $previewSceneDir` )
+	{
+		sysFile -makeDir $previewSceneDir;
+		// if dir creation failed
+		if ( !`filetest -d $previewSceneDir` )
+		{
+			string $tmpDir = `getenv( "TEMP" )`;
+			if ( "" == $tmpDir )
+			{
+				$tmpDir = `getenv( "TMP" )`;
+			}
+			if ( "" != $tmpDir )
+			{
+				$previewSceneDir = $tmpDir;
+			}
+		}
+	}
+	return $previewSceneDir;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -669,7 +704,7 @@ global proc liquidFluidReloadPreviewSwatch( string $shaderNode )
  while ( !`filetest -r ($image+".done")` &&  `timerX -st $timeout` < 30.0 ) {
    // wait 30 seconds max before giving up
  }
- if ( `timerX -st $timeout` < 31.0 ) trace ("render took "+(`timerX -st $timeout`)+" seconds");
+ if ( `timerX -st $timeout` < 31.0 ) ltrace ("render took "+(`timerX -st $timeout`)+" seconds");
  else warning ("preview of \""+$shaderNode+"\" took more than 30 seconds !");
 
  if ( `filetest -w ($image+".done")` ) sysFile -del ($image+".done");
@@ -682,7 +717,7 @@ global proc liquidFluidReloadPreviewSwatch( string $shaderNode )
  // refresh the palette swatch
  string $containerPreviewNode = liquidContainer_getPreviewNodeName( $shaderNode );
  if ( $containerPreviewNode != "" ) {
-   trace ("refresh "+$containerPreviewNode+" with "+$image);
+   ltrace ("refresh "+$containerPreviewNode+" with "+$image);
    eval `setAttr -type "string" ($containerPreviewNode+".fileTextureName") $image`;
  }
 

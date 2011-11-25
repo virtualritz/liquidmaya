@@ -32,10 +32,11 @@ proc setAttribute7() {
 
 proc setAttribute8() {
 	setAttr ".Hidden" yes;
-	setAttr ".Photon" no;
+	setAttr ".Photon" yes;
 	setAttr ".ZBuffer" no;
 	setAttr ".Raytrace" yes;
 	setAttr ".OpenGL" no;
+	setAttr ".DepthMask" yes;
 }
 
 proc setAttribute9() {
@@ -59,7 +60,7 @@ proc setAttribute10() {
 	setAttr ".Raytracing" yes;
 	setAttr ".DepthOfField" yes;
 	setAttr ".AdvancedVisibility" yes;
-	setAttr ".DisplayChannels" no;
+	setAttr ".DisplayChannels" yes;
 }
 
 proc setAttribute11() {
@@ -79,7 +80,6 @@ proc setAttribute13() {
 proc setAttribute14() {
 	setAttr ".textureExt" -type "string" "tdl";
 }
-
 // The following code will be executed by sourcing this file
 //
 catch(setAttribute1());

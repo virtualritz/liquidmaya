@@ -245,10 +245,10 @@ global proc liquidAddReflection()
   // `attributeQuery -node $texNode -ex "liqReflectMapGen"`
 
   addAttr -ln liqReflectionMapGen -at bool -dv true $name;
-  addAttr -ln liqReflectionSet -dt "string" $name;
-  addAttr -ln liqReflectionMapSize -at short -dv 512 $name;
-  addAttr -ln liqReflectionShadingRate -at short -dv 5 $name;
-  addAttr -ln liqReflectionEveryFrame -at bool -dv true $name;
+  addAttr -ln liqMapGenSet -dt "string" $name;
+  addAttr -ln liqMapSize -at short -dv 512 $name;
+  addAttr -ln liqMapGenShadingRate -at short -dv 5 $name;
+  addAttr -ln liqMapGenEveryFrame -at bool -dv true $name;
 
   rename $plane "liqReflectionMapGen";
 }
@@ -262,10 +262,10 @@ global proc liquidAddEnvironment()
 {
   string $name = `shadingNode -asUtility place3dTexture`;
   addAttr -ln liqEnvMapGen -at bool -dv true $name;
-  addAttr -ln liqEnvironmentSet -dt "string" $name;
-  addAttr -ln liqEnvironmentMapSize -at short -dv 512 $name;
-  addAttr -ln liqEnvironmentShadingRate -at short -dv 5 $name;
-  addAttr -ln liqReflectionEveryFrame -at bool -dv true $name;
+  addAttr -ln liqMapGenSet -dt "string" $name;
+  addAttr -ln liqMapSize -at short -dv 512 $name;
+  addAttr -ln liqMapGenShadingRate -at short -dv 5 $name;
+  addAttr -ln liqMapGenEveryFrame -at bool -dv true $name;
 
   rename $name "liqEnvironmentMapGen";
 }
@@ -310,20 +310,20 @@ global proc string liquidToUI( string $source )
   else 
   {
     string $match = match("[a-z][A-Z]", $result);
-    while( $match != "" ) 
+    while ( $match != "" ) 
     {
       $result = substitute("[a-z][A-Z]", $result, (substring($match, 1, 1)+" "+substring($match, 2, 2)) );
       $match = match("[a-z][A-Z]", $result);
     }
     $match = match("[a-z][0-9]+", $result);
-    while( $match != "" ) 
+    while ( $match != "" ) 
     {
       int $size = size( $match );
       $result = substitute("[a-z][0-9]+", $result, (substring($match, 1, 1)+" "+substring($match, 2, $size)));
       $match = match("[a-z][0-9]+", $result);
     }
     $match = match("[0-9]+[A-Za-z]", $result);
-    while( $match != "" ) 
+    while ( $match != "" ) 
     {
       int $size = size( $match );
       $result = substitute("[0-9]+[A-Za-z]", $result, (substring($match, 1, $size-1)+" "+substring($match, $size, $size)) );
@@ -365,8 +365,7 @@ global proc liquidCropWindowViewer()
     	delete -ch $cropWindow[0];
 
     	string $top = firstParentOf( $cameraTransform );
-    	if ( $top != "" ) 
-    	  parent $cropWindow[0] $top;
+    	if ( $top != "" ) parent $cropWindow[0] $top;
     	connectAttr ($cameraTransform+".t") ( $cropWindow[0]+".t");
     	connectAttr ($cameraTransform+".r") ( $cropWindow[0]+".r");
     	connectAttr ($cameraTransform+".s") ( $cropWindow[0]+".s");
@@ -428,8 +427,7 @@ global proc liquidCropWindowViewer()
 global proc liquidTextureViewer( string $file )
 {
   $file = liquidVarSubstitute( $file );
-  if ( gmatch( $file, "`*`") ) 
-    $file = eval($file);
+  if ( gmatch( $file, "`*`") ) $file = eval($file);
 
   if ( !`filetest -r $file` ) 
   {
@@ -462,6 +460,7 @@ global proc liquidTextureViewer( string $file )
   switch( $os ) 
   {
     case "linux":
+    case "linux64":
       string $cmd = ($viewer+" "+$file+" &");
       system $cmd;
       break;
@@ -478,16 +477,13 @@ global proc string liquidVarSubstitute( string $str )
   string $rdir = ( $pdir + `getAttr liquidGlobals.ribDirectory` );
   string $shot = `getAttr liquidGlobals.shotName`;
 
-  if ( $shot == "" ) 
-    $shot = " ! NOT_SET ! ";
+  if ( $shot == "" ) $shot = " ! NOT_SET ! ";
 
   string $ver = `getAttr liquidGlobals.shotVersion`;
-  if ( $ver == "" ) 
-    $ver = " ! NOT_SET ! ";
+  if ( $ver == "" ) $ver = " ! NOT_SET ! ";
 
   string $scn = basenameEx(`file -q -sn -shn`);
-  if ( $scn == "" ) 
-    $scn = "untitled";
+  if ( $scn == "" ) $scn = "untitled";
   string $frame = "0";
   string $padded = "0";
   int $padding = (`getAttr liquidGlobals.doPadding`)? (`getAttr liquidGlobals.padding`):1;
@@ -500,7 +496,7 @@ global proc string liquidVarSubstitute( string $str )
   while (gmatch( $result, "*$SCN*"))    $result = substitute("\$SCN", $result, $scn );
   while (gmatch( $result, "*$F*"))      $result = substitute("\$F", $result, $frame );
   while (gmatch( $result, "*#*"))       $result = substitute("#", $result, $padded );
-  while (gmatch( $result, "*%*%*")) 
+  while ( gmatch( $result, "*%*%*") ) 
   {
     string $envvar = match("%[A-Za-z0-9_]+%", $result);
     string $envvalue = substituteAllString( $envvar, "%", "");
@@ -518,13 +514,10 @@ global proc string liquidAutoShadowName( string $lightShape )
   $textdir = liquidVarSubstitute( $textdir );
   string $currentWorkspace = `workspace -q -rd`;
 
-  if ( !gmatch( $textdir, "/*") ) 
-    $shadowname = ( $currentWorkspace + $textdir );
-  else 
-    $shadowname = $textdir;
+  if ( !gmatch( $textdir, "/*") ) $shadowname = ( $currentWorkspace + $textdir );
+  else  $shadowname = $textdir;
 
-  if ( !gmatch( $shadowname, "*/") ) 
-    $shadowname += "/";
+  if ( !gmatch( $shadowname, "*/") ) $shadowname += "/";
 
   int $isPointLight = (nodeType($lightShape) == "pointLight")? 1:0;
   int $shapeOnlyInName = `getAttr liquidGlobals.shapeOnlyInShadowNames`;
@@ -532,34 +525,30 @@ global proc string liquidAutoShadowName( string $lightShape )
   if ( !$shapeOnlyInName ) 
   {
     string $scenename = basenameEx(`file -q -shn -sn`);
-    if ( $scenename == "" ) 
-      $scenename = "untitled";
+    if ( $scenename == "" ) $scenename = "untitled";
 
     $shadowname += $scenename;
     $shadowname += "_";
   }
 
   $shadowname += $lightShape;
+  $shadowname += "_";
 
   $shadowname += ( objExists(($lightShape+".deepShadows")) && `getAttr ($lightShape+".deepShadows")`)? "DSH":"SHD";
 
-  if ( $isPointLight ) 
-    $shadowname += "_??";
+  if ( $isPointLight ) $shadowname += "_??";
 
   $shadowname += ".";
 
   string $geoSet =  ( objExists(($lightShape+".everyFrame")) )? string(`getAttr ($lightShape+".geometrySet")`) : "";
-  if ( $geoSet != "" ) 
-    $shadowname += ( $geoSet + "." );
+  if ( $geoSet != "" ) $shadowname += ( $geoSet + "." );
 
   int $everyFrame = ( objExists(($lightShape+".everyFrame")) && `getAttr ($lightShape+".everyFrame")` == 0 )? 0:1;
   string $frame;
-  if ( $everyFrame ) 
-    $frame = `currentTime -q`;
-  else 
-    $frame = `getAttr ($lightShape+".renderAtFrame")`;
+  if ( $everyFrame ) $frame = `currentTime -q`;
+  else               $frame = `getAttr ($lightShape+".renderAtFrame")`;
   int $pad = ( `getAttr liquidGlobals.doPadding` )? `getAttr liquidGlobals.padding` : 0;
-  while( size($frame) < $pad ) $frame = ("0"+$frame);
+  while ( size($frame) < $pad ) $frame = ( "0" + $frame );
 
   $shadowname += $frame;
   $shadowname += ".tex";
@@ -570,11 +559,9 @@ global proc string liquidAutoShadowName( string $lightShape )
 global proc liquidViewShadowMap( string $node )
 {
   string $file = liquidAutoShadowName($node);
-  string $test = (size( match("\?\?", $file) ))? (substitute("\?\?", $file, "PX")) : $file;
-  if ( `filetest -r $test` ) 
-    liquidTextureViewer($file);
-  else 
-    warning("No shadow map on disk !\n " + $file + "  ");
+  string $test = ( size( match("\?\?", $file) ) )? (substitute("\?\?", $file, "PX")) : $file;
+  if ( `filetest -r $test` ) liquidTextureViewer( $file );
+  else warning( "No shadow map on disk !\n " + $file + "  " );
 }
 
 

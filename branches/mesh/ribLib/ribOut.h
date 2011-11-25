@@ -172,6 +172,7 @@ public:
 	virtual	void		RiCurvesV(char * degree,int ncurves,int nverts[],char * wrap,int n,char *tokens[],void *params[]);
 	virtual	void		RiPointsV(int npts,int n,char *tokens[],void *params[]);
 	virtual	void		RiSubdivisionMeshV(char * scheme,int nfaces,int nvertices[],int vertices[],int ntags,char * tags[],int nargs[],int intargs[],float floatargs[],int n,char *tokens[],void *params[]);
+	virtual	void		RiHierarchicalSubdivisionMeshV(char *scheme,int nfaces,int nvertices[],int vertices[],int ntags,char * tags[],int nargs[],int intargs[],float floatargs[], char *stringargs[], int n,char *tokens[],void *params[]);
 	virtual	void		RiBlobbyV(int nleaf,int ncode,int code[],int nflt,float flt[],int nstr,char *str[],int n,char *tokens[],void *params[]);
 
 	virtual	void		RiProcDelayedReadArchive(char * data,float detail);
@@ -197,6 +198,10 @@ public:
 
 	virtual	void		RiErrorHandler(void (*handler)(int,int,char *));
 
+	virtual	void		RiIfBeginV (char *expr, int n,char *tokens[],void *params[]);
+	virtual	void		RiElse ();
+	virtual	void		RiElseIfV (char *expr, int n,char *tokens[],void *params[]);
+	virtual	void		RiIfEnd ();
 	virtual	void		RiArchiveRecord(char * type,char *format,va_list args);
 	virtual	void		RiReadArchiveV(char *filename,void (*callback)(const char *),int n,char *tokens[],void *params[]);
 
@@ -204,6 +209,7 @@ public:
 	virtual	void		RiTrace(int,float [][3],float [][3],float [][3],float []);
 	virtual	void		RiVisibility(int,float [][3],float [][3],float [][3]);
 
+	virtual	void		RiCameraV(char *cam, int n, char *tokens[], void *params[]);
 private:
 	void				writePL(int,char *[],void *[]);
 	void				writePL(int numVertex,int numVarying,int numFaceVarying,int numUniform,int,char *[],void *[]);

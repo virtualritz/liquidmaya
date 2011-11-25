@@ -31,13 +31,38 @@
 //  Description:  startup sequence
 //
 //
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
+global proc ltrace_set()
+{
+	global int $gLiquid_ltrace;
+	
+	string $doTrace = `getenv "LIQUIDTRACE"`;
+	if( size( $doTrace ) ) {
+		$gLiquid_ltrace = 1;
+	} else {
+		$gLiquid_ltrace = 0;
+	}
+}
+/**
+ * 
+ */
+global proc ltrace(string $msg)
+{
+	global int $gLiquid_ltrace;
+	
+	if ($gLiquid_ltrace) {
+		trace ($msg);
+	}
+}
+/**
+ * 
+ */
 global proc string liquidGetHome()
 {
   string $home = `getenv "LIQUIDHOME"`;
-  if( !size( $home ) ) 
+  if ( !size( $home ) ) 
   {
     warning( "Environment variable LIQUIDHOME is not set - please set to the base Liquid directory (containing /mel, etc)" );
     string $promptStr = "The LIQUIDHOME environment variable is not currently set.\n\
@@ -50,7 +75,7 @@ global proc string liquidGetHome()
                                 -title "LIQUIDHOME" 
                                 -text "/usr/local/liquid" 
                                 -b "Set" -b "Cancel" -cb "Cancel" -ds "Cancel"`;
-    if ($res == "Set") 
+    if ( $res == "Set" ) 
     {
       $home = `promptDialog -q -text`;
       putenv "LIQUIDHOME" $home;
@@ -60,20 +85,19 @@ global proc string liquidGetHome()
   $home = substitute("/$", $home, "");
   return $home;
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc string liquidGetPluginName()
 {
   string $plugs[] = `pluginInfo -q -listPlugins`;
   for ( $p in $plugs ) 
-    if ( gmatch( $p, "liquid*") ) 
-      return $p;
+    if ( gmatch( $p, "liquid*") ) return $p;
   return "";
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidLoadScripts()
 {
   string $mel_files[] = {
@@ -92,11 +116,16 @@ global proc liquidLoadScripts()
     "AEliquidDisplacementTemplate.mel",
     "AEliquidVolumeTemplate.mel",
     "AEliquidLightTemplate.mel",
+    "AEliquidCoShaderTemplate.mel",    
     "AEliquidRibBoxTemplate.mel",
     //"AEliquidSLTemplate.mel",
     "AEliquidCoordSysTemplate.mel",
+    "AEliquidSurfaceRelated.mel",
+    "AEliquidCoShaderRelated.mel",        
     "liquidBuildHypergraphNodePopupMenuItems.mel",
     "getMultiListerSelection.mel",
+    "connectNodeToAttrOverride.mel",
+    "connectNodeToNodeOverride.mel",
     "liquidIni.mel",
     "liquidSlParseSdl.mel",
     "liquidSlParseSdr.mel",
@@ -134,55 +163,64 @@ global proc liquidLoadScripts()
     "liquidWriteRSL_textures.mel",
     "liquidWriteRSL_utilities.mel",
     "liquidConvertShadingNetworkToRSL.mel",
-    "liquidLifWidgets.mel",
     "liquidShaderNodes.mel",
+    "liquidLifWidgets.mel",
     "registerLiquidRenderer.mel",
     "liquidCreateGlobalsTab.mel",
     "liquidRenderView.mel",
     "liquidLightLinker.mel",
     "liquidAttributeManager.mel",
-    "AEliquidCoShaderTemplate.mel"
+     "AEliquidSurfaceSwitcherTemplate.mel",
+    "AEliquidDisplacementSwitcherTemplate.mel",
+    "AEliquidSwitcherRelatedTemplate.mel",
+    "liquidSwitcherNodes.mel"
   };
 
   string $liquidHome = liquidGetHome();
   int $i;
-  for ( $i = 0; $i < size($mel_files); $i++ ) 
+  for ( $i = 0; $i < size( $mel_files ); $i++ ) 
     eval( "source \"" + $liquidHome + "/mel/" + $mel_files[$i]  + "\"" );
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidMayaVersionOverwrite()
 {
-	global string $liq_maya_version;
+  global string $liq_maya_version;
   
   string $maya_version_str[] = stringToStringArray( `about -version`, " " );
   $liq_maya_version = $maya_version_str[0];
   
   string $liquidHome = liquidGetHome();
   
-  if ( $liq_maya_version == "2011" )
+  int $liq_maya_version_int = $liq_maya_version;
+
+  if ( $liq_maya_version_int >= 2011 )
   {	
   	eval( "source \"" + $liquidHome + "/mel/2011/liquidParamDialogWindow.mel"  + "\"" );
   } 
-  
+  if ( $liq_maya_version_int >= 2012 )
+  {	
+  	eval( "source \"" + $liquidHome + "/mel/2012/liquidBuildHypergraphNodePopupMenuItems.mel"  + "\"" );
+  } 
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidAETemplateOverwrite()
 {
   //liquidDebugPrint("OVERWRITING DEFAULT AE TEMPLATES");
   // eval( "source \"" + liquidGetHome() + "/mel/AEdagNodeInclude.mel\"" );
   // eval( "source \"" + liquidGetHome() + "/mel/AEtransformTemplate.mel\"" );
+  eval( "source \"" + liquidGetHome() + "/mel/AEliquidSurfaceRelated.mel\"" );
+  eval( "source \"" + liquidGetHome() + "/mel/AEliquidCoShaderRelated.mel\"" );
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidShowAbout()
 {
-  if (`window -exists liquidAbout`) 
-    deleteUI liquidAbout;
+  if (`window -exists liquidAbout`) deleteUI liquidAbout;
 
   // find where the liquid MEL scripts are kept, which is where
   // the Liquid logo image is too
@@ -222,9 +260,9 @@ global proc liquidShowAbout()
 
   showWindow liquidAbout;
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidMenuPostVisibilityAttributes( string $prefix )
 {
   int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );
@@ -233,7 +271,9 @@ global proc liquidMenuPostVisibilityAttributes( string $prefix )
   if ( `menuItem -q -ex ($prefix+"LiquidMenuItemVisibilityDiffuse")` )  menuItem -e -en $newStyle     ($prefix+"LiquidMenuItemVisibilityDiffuse");
   if ( `menuItem -q -ex ($prefix+"LiquidMenuItemVisibilitySpecular")` ) menuItem -e -en $newStyle     ($prefix+"LiquidMenuItemVisibilitySpecular");
 }
-
+/**
+ * 
+ */
 global proc liquidMenuPostRaytracingAttributes( string $prefix )
 {
   int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );
@@ -242,14 +282,18 @@ global proc liquidMenuPostRaytracingAttributes( string $prefix )
   if ( `menuItem -q -ex ($prefix+"LiquidMenuItemSpecularHitMode")` )    menuItem -e -en $newStyle ($prefix+"LiquidMenuItemSpecularHitMode");
   if ( `menuItem -q -ex ($prefix+"LiquidMenuItemTransmissionHitMode")`) menuItem -e -en $newStyle ($prefix+"LiquidMenuItemTransmissionHitMode");
 }
-
+/**
+ * 
+ */
 global proc liquidMenuPostShadingAttributes( string $prefix )
 {
   int $newStyle = liquidGlobalsFeatureQuery( "AdvancedVisibility" );
 
   if ( `menuItem -q -ex ($prefix+"LiquidMenuItemCameraHitMode")` )     menuItem -e -en $newStyle ($prefix+"LiquidMenuItemCameraHitMode");
 }
-
+/**
+ * 
+ */
 global proc liquidCreateObjectsAttributesMenu( string $prefix )
 {
   menuItem -label "Object Attributes" -subMenu true -tearOff true;
@@ -386,9 +430,17 @@ global proc liquidCreateSetsAttributesMenu( string $prefix )
   setParent -menu ..;
 }
 
-//===========================================================================================
-// create the liquid menu interface
-//===========================================================================================
+global proc liquidCreateShaderAttributesMenu( string $prefix )
+{
+  menuItem -label "Shader Attributes" -subMenu true -tearOff true;
+    menuItem -label "Add RIBBox" -command liquidCreateShaderRIBBox -ann "Add a RIBBox on selected shader(s)";
+    menuItem -label "Remove RIB Group" -command liquidRemoveShaderRIBBox -ann "Remove all RIBBox attributes";
+  setParent -menu ..;
+}
+
+/**
+ * create the liquid menu interface
+ */
 global proc liquidCreateMenus()
 {
   global string $gMainWindow;
@@ -396,8 +448,7 @@ global proc liquidCreateMenus()
   string $iconPath = (liquidGetHome()+"/icons/");
 
   // keep it nice and clean
-  if ( `menu -exists liquidMainWindowMenu` ) 
-    deleteUI liquidMainWindowMenu;
+  if ( `menu -exists liquidMainWindowMenu` ) deleteUI liquidMainWindowMenu;
 
   if ( $gMainWindow != "" )
   {
@@ -497,7 +548,7 @@ global proc liquidCreateMenus()
         menuItem -label "Add DelayedReadArchive" -command liquidDelayedReadArchive;
         menuItem -label "Delete DelayedReadArchive" -command liquidDeleteDelayedReadArchive;
         menuItem -d true;
-        menuItem -label "Export Selected as RIB Archive" -ann "Write a RIB file for selected object only" -command "liquid -ra -sel";
+        menuItem -label "Export Selected as RIB Archive" -ann "Write a RIB file for selected object only" -command "liquid -GL -ra -nolr -sel";
         menuItem -label "Export Selected as RIB Archive Without Shaders" -enable false -ann "Write a RIB file for selected object only without shaders";
       setParent -menu ..;
       menuItem -d true;
@@ -509,34 +560,32 @@ global proc liquidCreateMenus()
       menuItem -label "About..." -command "liquidShowAbout";
   }
 }
-//===========================================================================================
-// Destroy the liquid menu interface
-//===========================================================================================
+/**
+ * Destroy the liquid menu interface
+ */
 global proc liquidRemoveMenus()
 {
   deleteUI liquidMainWindowMenu;
 }
-//===========================================================================================
-// Command called when the preview menu item is picked
-//===========================================================================================
+/**
+ * Command called when the preview menu item is picked
+ */
 global proc liquidRender()
 {
-  if ( !`liquidGlobalsExists` ) 
-    liquidCreateGlobals;
+  if ( !`liquidGlobalsExists` ) liquidCreateGlobals;
   liquid -GL;
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc int[] liquidPreview_getRenderViewResolution()
 {
   float $xres = `getAttr liquidGlobals.xResolution`;
   float $yres = `getAttr liquidGlobals.yResolution`;
   int   $res, $width, $heigth;
-  if ( `optionVar -ex renderViewTestResolution` ) 
-    $res  = `optionVar -q renderViewTestResolution`;
+  if ( `optionVar -ex renderViewTestResolution` ) $res  = `optionVar -q renderViewTestResolution`;
 
-  switch( $res ) 
+  switch ( $res ) 
   {
     case 2:
       $width  = $xres * 0.1;
@@ -573,9 +622,9 @@ global proc int[] liquidPreview_getRenderViewResolution()
   }
   return {$width, $heigth};
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc float[] liquidPreview_getRenderViewCropWindow()
 {
   int $imageSize[] = liquidPreview_getRenderViewResolution();
@@ -589,36 +638,33 @@ global proc float[] liquidPreview_getRenderViewCropWindow()
 
   return {$x1, $x2, $y1, $y2};
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidmayaCmdlineRender( string $options )
 {
   string $cmd = ( "liquid -GL " + $options );
   eval $cmd;
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidmayaBatchRender( string $options )
 {
-  if( ! `pluginInfo -q -l "liquid"` ) 
-    loadPlugin "liquid";
+  if ( ! `pluginInfo -q -l "liquid"` ) loadPlugin "liquid";
   string $cmd = ( "liquid -GL " + $options );
   eval $cmd;
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidPreview()
 {
-  if ( !`liquidGlobalsExists` ) 
-    liquidCreateGlobals;
+  if ( !`liquidGlobalsExists` ) liquidCreateGlobals;
   
   undoInfo -stateWithoutFlush 0;
   int $mods = `getModifiers`;
-  if ( ($mods / 1) % 2) 
-    liquidPreviewSelected();
+  if ( ($mods / 1) % 2)  liquidPreviewSelected();
   else 
   {
     int $imageSize[2] = liquidPreview_getRenderViewResolution();
@@ -626,43 +672,40 @@ global proc liquidPreview()
   }
   undoInfo -stateWithoutFlush 1;
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidCropPreview()
 {
-  if ( !`liquidGlobalsExists` ) 
-    liquidCreateGlobals;
+  if ( !`liquidGlobalsExists` ) liquidCreateGlobals;
   
   int $imageSize[2] = liquidPreview_getRenderViewResolution();
   float $crop[] = liquidPreview_getRenderViewCropWindow();
   liquid -GL -renderView -x $imageSize[0] -y $imageSize[1] -cw $crop[0] $crop[1] $crop[2] $crop[3];
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidRenderSelected()
 {
-  if ( !`liquidGlobalsExists` ) 
-    liquidCreateGlobals;
+  if ( !`liquidGlobalsExists` ) liquidCreateGlobals;
 
   liquid -GL -sel;
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidPreviewSelected()
 {
-  if ( !`liquidGlobalsExists` ) 
-    liquidCreateGlobals;
+  if ( !`liquidGlobalsExists` ) liquidCreateGlobals;
   
   liqShowRV();
   int $imageSize[2] = liquidPreview_getRenderViewResolution();
   liquid -GL -renderView -x $imageSize[0] -y $imageSize[1] -sel;
 }
-//===========================================================================================
-// Returns the name of the Maya Scene
-//===========================================================================================
+/**
+ * Returns the name of the Maya Scene
+ */
 global proc string liquidGetSceneName()
 {
   string $fullName = `file -q -a`;
@@ -673,9 +716,9 @@ global proc string liquidGetSceneName()
   $shortName = $choppedName[0];
   return $shortName;
 }
-//===========================================================================================
-//  register the available functions in the sl lib
-//===========================================================================================
+/**
+ *  register the available functions in the sl lib
+ */
 global proc liquidRegisterSlLib()
 {
   global string $gLiquidSlLibFunctions[];
@@ -704,18 +747,18 @@ global proc liquidRegisterSlLib()
   else 
     warning ("The slLib is not in "+$libPath+" !!!");
 }
-//===========================================================================================
-// Removes all liquid interface windows from the scene.
-//===========================================================================================
+/**
+ * Removes all liquid interface windows from the scene.
+ */
 global proc liquidCleanUp()
 {
   // nothing to do
 }
-//===========================================================================================
-// Create a script node in charge of closing gui elements before loading a new scene.
-// This script node is NOT active in batch mode.
-// \see liquidCleanUp()
-//===========================================================================================
+/**
+ * Create a script node in charge of closing gui elements before loading a new scene.
+ * This script node is NOT active in batch mode.
+ * \see liquidCleanUp()
+ */
 global proc liquidCreateScriptNode()
 {
   if ( !objExists( "liquidCleanUpNode" ) )  
@@ -724,9 +767,9 @@ global proc liquidCreateScriptNode()
                 -afterScript    "if ( `whatIs liquid` == \"Command\" ) liquidCleanUp;"
                 -name           liquidCleanUpNode;
 }
-//===========================================================================================
-//
-//===========================================================================================
+/**
+ * 
+ */
 global proc liquidCreateScriptJobs()
 {
   // setup a scriptJob to update some widgets
@@ -743,9 +786,9 @@ global proc liquidCreateScriptJobs()
   scriptJob -event "renderLayerChange" "eval(\"liquidLargeFieldUpdater;liquidAE_LifStringOverrideDisplayAll\")" -protected;
   scriptJob -event "renderLayerManagerChange" "eval(\"liquidLargeFieldUpdater;liquidAE_LifStringOverrideDisplayAll\")" -protected;
 }
-//===========================================================================================
-// Initializes the Liquid User Interface.
-//===========================================================================================
+/**
+ * Initializes the Liquid User Interface.
+ */
 global proc liquidStartup()
 {
   // BT: the module manager takes care of sourcing so we dont want to be sourcing this lot twice

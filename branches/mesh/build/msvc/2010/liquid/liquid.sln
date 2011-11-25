@@ -90,6 +90,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2011", "2011", "{01F72143-B
 		..\..\..\..\mel\2011\liquidParamDialogWindow.mel = ..\..\..\..\mel\2011\liquidParamDialogWindow.mel
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2012", "2012", "{FC3F15F3-DA5B-4EBE-AFD1-9E58F0A85015}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\mel\2012\liquidBuildHypergraphNodePopupMenuItems.mel = ..\..\..\..\mel\2012\liquidBuildHypergraphNodePopupMenuItems.mel
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug maya2008 generic|Win32 = Debug maya2008 generic|Win32
@@ -102,6 +107,8 @@ Global
 		Release maya2008 generic|x64 = Release maya2008 generic|x64
 		Release maya2011 generic|Win32 = Release maya2011 generic|Win32
 		Release maya2011 generic|x64 = Release maya2011 generic|x64
+		Release maya2012 generic|Win32 = Release maya2012 generic|Win32
+		Release maya2012 generic|x64 = Release maya2012 generic|x64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 	EndGlobalSection
@@ -126,6 +133,10 @@ Global
 		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release maya2011 generic|Win32.Build.0 = Release maya2011 generic|Win32
 		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release maya2011 generic|x64.ActiveCfg = Release maya2011 generic|x64
 		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release maya2011 generic|x64.Build.0 = Release maya2011 generic|x64
+		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release maya2012 generic|Win32.ActiveCfg = Release maya2012 generic|Win32
+		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release maya2012 generic|Win32.Build.0 = Release maya2012 generic|Win32
+		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release maya2012 generic|x64.ActiveCfg = Release maya2012 generic|x64
+		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release maya2012 generic|x64.Build.0 = Release maya2012 generic|x64
 		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release|Win32.ActiveCfg = Release|Win32
 		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release|Win32.Build.0 = Release|Win32
 		{1F2F300A-B63E-4A09-AD99-E4184D0CD14F}.Release|x64.ActiveCfg = Release|x64
@@ -150,6 +161,10 @@ Global
 		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release maya2011 generic|Win32.Build.0 = Release maya2011 generic|Win32
 		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release maya2011 generic|x64.ActiveCfg = Release maya2011 generic|x64
 		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release maya2011 generic|x64.Build.0 = Release maya2011 generic|x64
+		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release maya2012 generic|Win32.ActiveCfg = Release maya2012 generic|Win32
+		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release maya2012 generic|Win32.Build.0 = Release maya2012 generic|Win32
+		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release maya2012 generic|x64.ActiveCfg = Release maya2012 generic|x64
+		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release maya2012 generic|x64.Build.0 = Release maya2012 generic|x64
 		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release|Win32.ActiveCfg = Release|Win32
 		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release|Win32.Build.0 = Release|Win32
 		{98831621-9576-402A-836D-BC0FCDC4C3A5}.Release|x64.ActiveCfg = Release|x64
@@ -160,5 +175,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{01F72143-B937-463F-BCB2-92A48CF63349} = {FB2677FF-20B3-4345-A9D6-AEBF8969420F}
+		{FC3F15F3-DA5B-4EBE-AFD1-9E58F0A85015} = {FB2677FF-20B3-4345-A9D6-AEBF8969420F}
 	EndGlobalSection
 EndGlobal
