@@ -87,6 +87,7 @@ class liqDisplacementNode : public MPxNode
     static MObject aRmanLifCmds;
 	static MObject aRmanMethods;
 	static MObject aRmanIsOutput;
+	static MObject aRmanAccept;
 
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
@@ -101,7 +102,8 @@ class liqDisplacementNode : public MPxNode
     static MObject aShaderSpace;
     static MObject aRefreshPreview;
 
-    // Output attributes
+  	static MObject aPreviewGamma;  
+		// Output attributes
     static MObject aDisplacement;
     static MObject aOutColor;
     static MObject aAssignedObjects;

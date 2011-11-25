@@ -44,7 +44,8 @@ global proc liquidAddPrefAttribute()
 
   string $nodes[] = `ls -dag -sl -type nurbsSurface -type nurbsCurve -type mesh`;
   string $currentNode;
-  for ( $currentNode in $nodes ) {
+  for ( $currentNode in $nodes ) 
+	{
     if ( objExists( ($currentNode+".rmanPPref") ) ) deleteAttr ($currentNode+".rmanPPref");
     if ( objExists( ($currentNode+".rmanP__Pref") ) ) deleteAttr ($currentNode+".rmanP__Pref");
     liquidAttachPrefAttribute $currentNode;
@@ -56,7 +57,8 @@ global proc liquidDeletePrefAttribute()
 {
   string $nodes[] = `ls -dag -sl -type nurbsSurface -type nurbsCurve -type mesh`;
   string $currentNode;
-  for ( $currentNode in $nodes ) {
+  for ( $currentNode in $nodes ) 
+	{
     if ( `attributeQuery -node $currentNode -ex "rmanP__Pref"` ) deleteAttr ( $currentNode + ".rmanP__Pref" );
     if ( `attributeQuery -node $currentNode -ex "rmanPPref"` ) deleteAttr ( $currentNode + ".rmanPPref" );
     if ( objExists( ( $currentNode + ".rmanFhasPref" ) ) ) deleteAttr ( $currentNode + ".rmanFhasPref" );
@@ -71,7 +73,8 @@ global proc liquidAddNrefAttribute()
 
   string $nodes[] = `ls -dag -sl -type nurbsSurface -type nurbsCurve -type mesh`;
   string $currentNode;
-  for ( $currentNode in $nodes ) {
+  for ( $currentNode in $nodes ) 
+	{
     if ( objExists( ($currentNode+".rmanNNref") ) ) deleteAttr ($currentNode+".rmanNNref");
     if ( objExists( ($currentNode+".rmanN__Nref") ) ) deleteAttr ($currentNode+".rmanN__Nref");
     liquidAttachPrefAttribute -exportN $currentNode;
@@ -83,7 +86,8 @@ global proc liquidDeleteNrefAttribute()
 {
   string $nodes[] = `ls -dag -sl -type nurbsSurface -type nurbsCurve -type mesh`;
   string $currentNode;
-  for ( $currentNode in $nodes ) {
+  for ( $currentNode in $nodes ) 
+	{
     if ( `attributeQuery -node $currentNode -ex "rmanN__Nref"` ) deleteAttr ( $currentNode + ".rmanN__Nref" );
     if ( `attributeQuery -node $currentNode -ex "rmanNNref"` ) deleteAttr ( $currentNode + ".rmanNNref" );
     if ( objExists( ( $currentNode + ".rmanFhasNref" ) ) ) deleteAttr ( $currentNode + ".rmanFhasNref" );

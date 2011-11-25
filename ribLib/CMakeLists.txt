@@ -21,6 +21,19 @@ project(${TARGET_NAME})
 
 set(CMAKE_BUILD_TYPE "Release")
 
+if(UNIX)
+set(ZLIB_INCLUDE_DIR "/usr/include")
+set(ZLIB_INCLUDE_DIRS "/usr/include")
+set(ZLIB_LIBRARIES "/usr/lib64")
+endif(UNIX)	
+
+set( zlib_DIR $ENV{LIQUIDHOME}/build/cmake )
+find_package( zlib REQUIRED )
+
+message( STATUS "ZLIB_INCLUDE_DIR = ${ZLIB_INCLUDE_DIR}")
+message( STATUS "ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
+
+
 if(WIN32)
 #	set(zlib_DIR $ENV{LIQUIDHOME})
   set(ZLIB_INCLUDE_DIRS $ENV{ZLIB_INCLUDE_DIRS})
@@ -30,9 +43,11 @@ if(WIN32)
 else(WIN32)
   if(UNIX)
 		if(APPLE)
-			find_package( zlib REQUIRED )
+#			find_package( zlib REQUIRED )
 		else(APPLE)
-			set(ZLIB_INCLUDE_DIRS "/usr/include")
+#			set(ZLIB_INCLUDE_DIRS "/usr/include")
+#			set(ZLIB_LIBRARIES "/usr/lib64")
+#			find_package( zlib REQUIRED )
 		endif(APPLE)
 	endif(UNIX)
 endif(WIN32)

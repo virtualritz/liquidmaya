@@ -1,39 +1,44 @@
 global proc int liquidTabInUnifiedRenderGlobals()
 {
   string $parentForm = `setParent -query`;
-  return (gmatch( $parentForm, "unifiedRenderGlobalsWindow*"));
+  return ( gmatch( $parentForm, "unifiedRenderGlobalsWindow*" ) );
 }
 
 global proc liquidCreateMayaGlobalsTab( string $name )
 {
-  if ( !liquidGlobalsExists() ) liquidCreateGlobals();
+  if ( !liquidGlobalsExists() ) 
+  liquidCreateGlobals();
 
   //setUITemplate -pushTemplate attributeEditorTemplate;
 
   setParent liquidUnifiedRenderGlobalsMainTabLayout;
-  eval ("liquidGlobals"+$name+"Tab");
+  eval( "liquidGlobals" + $name + "Tab" );
   string $newlayout = ("liquidGlobals"+$name+"Set");
-  if ( `layout -q -ex $newlayout` ) tabLayout -e -tabLabel $newlayout $name liquidUnifiedRenderGlobalsMainTabLayout;
+  if ( `layout -q -ex $newlayout` ) 
+    tabLayout -e -tabLabel $newlayout $name liquidUnifiedRenderGlobalsMainTabLayout;
 
   //setUITemplate -popTemplate;
 }
 
 global proc liquidCreateMayaGlobalsFrame( string $name )
 {
-  if ( !liquidGlobalsExists() ) liquidCreateGlobals();
+  if ( !liquidGlobalsExists() ) 
+  liquidCreateGlobals();
 
   setParent liquidUnifiedRenderGlobalsMainColumnLayout;
-  frameLayout -label $name -pec ("liquidExpandGlobalsLayout liquidRenderGlobals"+$name+"Frame;") ("liquidRenderGlobals"+$name+"Frame");
-    eval ("liquidGlobals"+$name+"Tab");
+  frameLayout -label $name -pec ( "liquidExpandGlobalsLayout liquidRenderGlobals" + $name + "Frame;" ) ( "liquidRenderGlobals" + $name + "Frame" );
+    eval( "liquidGlobals" + $name + "Tab" );
   setParent ..;
 }
 
 
 global proc liquidCreateMainGlobalsTab()
 {
-  if ( !liquidGlobalsExists() ) liquidCreateGlobals();
+  if ( !liquidGlobalsExists() ) 
+    liquidCreateGlobals();
 
-  if ( `layout -q -ex liquidTabLayout` ) layout -e -m true liquidTabLayout;
+  if ( `layout -q -ex liquidTabLayout` ) 
+    layout -e -m true liquidTabLayout;
 
   setUITemplate -pushTemplate renderGlobalsTemplate;
   setUITemplate -pushTemplate attributeEditorTemplate;
@@ -47,7 +52,8 @@ global proc liquidCreateMainGlobalsTab()
             -sc $cmd
             liquidUnifiedRenderGlobalsMainTabLayout;
 
-  if ( `layout -q -ex liquidTabLayout` ) layout -e -m true liquidTabLayout;
+  if ( `layout -q -ex liquidTabLayout` ) 
+    layout -e -m true liquidTabLayout;
 
   liquidCreateMayaGlobalsTab( "Frame" );
   liquidCreateMayaGlobalsTab( "File" );
@@ -59,10 +65,11 @@ global proc liquidCreateMainGlobalsTab()
   liquidCreateMayaGlobalsTab( "Renderer" );
   liquidCreateMayaGlobalsTab( "Fluid" );
 
+  if ( `layout -q -ex liquidTabLayout` ) 
+    tabLayout -e -cc $cmd -sc $cmd liquidTabLayout;
 
-  if ( `layout -q -ex liquidTabLayout` ) tabLayout -e -cc $cmd -sc $cmd liquidTabLayout;
-
-  if ( `layout -q -ex liquidTabLayout` ) layout -e -m false liquidTabLayout;
+  if ( `layout -q -ex liquidTabLayout` ) 
+    layout -e -m false liquidTabLayout;
 
   setUITemplate -popTemplate;
   setUITemplate -popTemplate;
@@ -73,7 +80,8 @@ global proc liquidUpdateMayaGlobals()
 {
   //print ("+++  liquidUpdateMayaGlobals  +++\n");
 
-  if ( `layout -q -ex liquidCommonTab` ) layout -e -m false -vis false liquidCommonTab;
+  if ( `layout -q -ex liquidCommonTab` ) 
+    layout -e -m false -vis false liquidCommonTab;
 
   float $resx = `getAttr liquidGlobals.xResolution`;
   float $resy = `getAttr liquidGlobals.yResolution`;
@@ -88,7 +96,7 @@ global proc int liquidmayaHasCommonGlobalValue( string $global )
 
   int 	$isSupported = true;
 
-  switch ($global)
+  switch ( $global )
   {
     case "width":
     case "height":
@@ -122,7 +130,7 @@ global proc string liquidmayaGetCommonGlobalValue( string $global)
 
   string 	$value;
 
-  switch ($global)
+  switch ( $global )
   {
     case "width":
       $value = `getAttr liquidGlobals.xResolution`;

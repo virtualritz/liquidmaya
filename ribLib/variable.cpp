@@ -113,7 +113,7 @@
 //
 //                             Pixie
 //
-// Copyright � 1999 - 2003, Okan Arikan
+// Copyright © 1999 - 2003, Okan Arikan
 //
 // Contact: okan@cs.berkeley.edu
 //

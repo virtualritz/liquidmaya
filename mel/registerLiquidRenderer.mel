@@ -117,7 +117,7 @@ global proc liquidmayaSetCommonGlobalValue( string $global, string $value )
     select $sel;
   }
 
-  switch ($global) 
+  switch ( $global ) 
   {
     case "animation":
       $intValue = $value;
@@ -170,9 +170,8 @@ global proc liquidmayaSetCommonGlobalValue( string $global, string $value )
 global proc liquidRenderLogoCallback()
 {
   string $url = `getenv "LIQUIDHELP"`;
-  if ( $url == "" ) 
-    $url = "http://liquidmaya.wiki.sourceforge.net/";
-  evalDeferred ("showHelp -absolute \""+$url+"\"" );
+  if ( $url == "" ) $url = "http://liquidmaya.wiki.sourceforge.net/";
+  evalDeferred ( "showHelp -absolute \"" + $url + "\"" );
 }
 
 global proc registerLiquidRenderer()
@@ -182,7 +181,7 @@ global proc registerLiquidRenderer()
   {
     string $icon = ( liquidGetHome() + "/icons/liquidIcon2.xpm" );
 
-    if (getApplicationVersionAsFloat() >= 8.0) 
+    if ( getApplicationVersionAsFloat() >= 8.0 ) 
     {
       eval  (
         "renderer  -rendererUIName                        \"Liquid\" "                    +
@@ -238,8 +237,7 @@ global proc liquidAddTabs()
 
 global proc unregisterLiquidRenderer()
 {
-  if ( `renderer -q -ex liquid` ) 
-    renderer -unregisterRenderer liquid;
+  if ( `renderer -q -ex liquid` ) renderer -unregisterRenderer liquid;
   updateRendererUI();
 }
 

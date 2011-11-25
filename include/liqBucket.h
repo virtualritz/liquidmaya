@@ -37,7 +37,7 @@
 
 #include <vector>
 
-typedef struct imageInfo{
+typedef struct {
    int channels;
    int width;
    int height;

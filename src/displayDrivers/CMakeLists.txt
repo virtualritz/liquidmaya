@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 2.6.4)
 set(TARGET_NAME $ENV{LIQDPYNAME})
 
 set(TARGET_DIR $ENV{LIQRMAN})
-if("$ENV{ARCH}" STREQUAL "-x64")
-  set(TARGET_DIR "${TARGET_DIR}$ENV{ARCH}")  
-endif("$ENV{ARCH}" STREQUAL "-x64")
+#if("$ENV{ARCH}" STREQUAL "-x64")
+#  set(TARGET_DIR "${TARGET_DIR}$ENV{ARCH}")  
+#endif("$ENV{ARCH}" STREQUAL "-x64")
 
 link_directories( "$ENV{LIQRMANLIB}" )
 
@@ -18,8 +18,11 @@ set(CMAKE_BUILD_TYPE "Release")
 
 if(UNIX)
 	if(APPLE)
-		#set(CMAKE_OSX_ARCHITECTURES "i386;x86_64;")
-		set(CMAKE_OSX_ARCHITECTURES "i386")
+		if("$ENV{ARCH}" STREQUAL "-x64")
+		  set(CMAKE_OSX_ARCHITECTURES "x86_64")
+		else("$ENV{ARCH}" STREQUAL "-x64")
+		  set(CMAKE_OSX_ARCHITECTURES "i386")
+		endif("$ENV{ARCH}" STREQUAL "-x64")
 		#Changing the order of configurations to be sure release is the first one
 		set(CMAKE_CONFIGURATION_TYPES "Release;Debug;MinSizeRel;RelWithDebInfo")
 		add_definitions(-DMACOSX)
@@ -38,6 +41,7 @@ set(src $ENV{LIQDPYSRC})
 
 #include_directories( "${CMAKE_CURRENT_SOURCE_DIR}" ) 
 include_directories( "$ENV{LIQUIDHOME}/include" )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}" )
 include_directories( "$ENV{LIQRMANINC}" )
 
 

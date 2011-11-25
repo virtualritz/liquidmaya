@@ -86,6 +86,7 @@ class liqLightNode : public MPxNode
     static MObject aRmanLifCmds;
 	static MObject aRmanMethods;
 	static MObject aRmanIsOutput;
+	static MObject aRmanAccept;
 
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
@@ -99,6 +100,7 @@ class liqLightNode : public MPxNode
     static MObject aDeepShadows;
     static MObject aPixelSamples;
     static MObject aVolumeInterpretation;
+    static MObject aDeepShadowsDisplayMode;
     static MObject aEveryFrame;
     static MObject aRenderAtFrame;
     static MObject aAggregateShadowMaps;

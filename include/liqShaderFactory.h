@@ -29,7 +29,8 @@
 
 
 #include <liquid.h>
-#include <liqShader.h>
+//#include <liqShader.h>
+#include <liqGenericShader.h>
 #include <maya/MString.h>
 
 
@@ -50,18 +51,20 @@ public:
     
 	virtual ~liqShaderFactory();
 
-	liqShader &getShader(MObject shaderObj);
+	liqGenericShader &getShader(MObject shaderObj, bool withAllParameters = false);
 	MString getShaderId( MObject shaderObj );
 
 	MString getUniqueShaderHandler();
 
 	void clearShaders();
 
+	//inline void setBuildShadersWithAllParameters(bool b){buildShadersWithAllParameters = b;}
 private:
 	liqShaderFactory();
 	static liqShaderFactory *_instance;
 	int shaderHandlerId;
-	vector<liqShader*> m_shaders;
+	vector<liqGenericShader*> m_shaders;
+	//bool buildShadersWithAllParameters;
 };
 
 #endif

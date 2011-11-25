@@ -62,9 +62,19 @@ class liqNodeSwatch : public MSwatchRenderBase
 
     liqNodeSwatch(MObject swatchObj, MObject renderObj, int resolution):
       MSwatchRenderBase( swatchObj, renderObj, resolution ) {
-        //initialisation de l'image
+        // Init image
         MImage &img = image();
         img.create(resolution,resolution);
+		unsigned char *pixels = img.pixels();
+		unsigned char * p = pixels;
+		for ( unsigned int i=0; i < resolution * resolution; i++ )
+		{
+			*p = 0; p++;
+			*p = 0; p++;
+			*p = 0; p++;
+			*p = 1; p++;
+		}
+		//bzero( pixels, resolution * resolution * 4 );
       }
 
     virtual         ~liqNodeSwatch () {};

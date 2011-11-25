@@ -37,7 +37,7 @@
 
 global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFileName )
 {
-  //trace ("liquidAttachShaderParams( "+$currentNodeName+", "+$shaderFileName+" )\n");
+	ltrace ("liquidAttachShaderParams( "+$currentNodeName+", "+$shaderFileName+" )\n");
 
   // parse the shader
   // don't force a reload
@@ -46,8 +46,7 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
   // get the output filter mask from the liquidGlobals.
   int $filterOutputParams = `getAttr liquidGlobals.shadersIgnoreOutputParams`;
   string $outputFilter = strip( `getAttr liquidGlobals.shadersOutputParamsFilter` );
-  if ( $outputFilter == "" ) 
-    $outputFilter = "^_*";
+  if ( $outputFilter == "" )  $outputFilter = "^_*";
 
   // just use the globals
   int $numOfArgs = liquidSlNumParams();
@@ -75,6 +74,7 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
     string $argDefaultS[];
     float  $argDefaultF[];
     vector $argDefaultV[];
+		float	$argDefaultFM[];
 
     int $hiddenState = false;
     string $plug = ($currentNodeName + "." + $argName);
@@ -82,7 +82,7 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
 
     if ( ! objExists( $plug )  ) 
     {
-      switch( $argType ) 
+      switch ( $argType ) 
       {
         case "float":
           if ( $isArray  ) 
@@ -112,23 +112,27 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
           {
             // string array
             $argDefaultS = liquidSlDefaultToStringArray( $paramDefault );
+					  ltrace ("[liquidAttachShaderParams] addAttr multi string "+$argName);
             addAttr -hidden true -longName $argName -dt "string" -multi $currentNodeName;
-            for ( $k = 0; $k < $argArrayLen; $k++ )
-            { 
-              $cplug = ($currentNodeName+"."+$argName+"["+$k+"]");
-              setAttr -type "string" $cplug $argDefaultS[$k];
+  					for ( $k = 0; $k < $argArrayLen; $k++ ) 
+  					{
+  						$cplug = ($plug+"["+$k+"]");
+  						ltrace ("[liquidAttachShaderParams] setAttr "+$cplug+" \""+$argDefaultS[$k]+"\"");
+  						setAttr $cplug -type "string" $argDefaultS[$k];
             }
           } 
           else 
           {
             // simple string
             $argDefaultS[0] = liquidSlDefaultToString( $paramDefault );
+					  ltrace ("[liquidAttachShaderParams] addAttr string "+$argName);
             addAttr -hidden true -longName $argName -dt "string" $currentNodeName;
-            setAttr $cplug -type "string" $argDefaultS[0];
+					  ltrace ("[liquidAttachShaderParams] setAttr "+$cplug+" "+" \""+$argDefaultS[0]+"\"");
+					setAttr $plug -type "string" $argDefaultS[0];
           }
           break;
         case "color":
-          if( $argName == "opacity" ) 
+          if ( $argName == "opacity" ) 
           {
             string $tmpAttrName = $currentNodeName + ".opacity";
             // Moritz: this is for compatibility with old scenes that
@@ -141,38 +145,41 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
               addAttr -hidden true -k true -longName "redO" -at "float" -parent "opacity" $currentNodeName;
               addAttr -hidden true -k true -longName "greenO" -at "float" -parent "opacity" $currentNodeName;
               addAttr -hidden true -k true -longName "blueO" -at "float" -parent "opacity" $currentNodeName;
-              setAttr  ( $currentNodeName + ".opacity" ) -type float3 $tmpVal $tmpVal $tmpVal;
+						setAttr  $plug -type float3 $tmpVal $tmpVal $tmpVal;
             }
             break;
           }
           if ( $isArray ) 
           {
             // color array
+					  ltrace ("[liquidAttachShaderParams] addAttr multi color "+$argName);
             $argDefaultV = liquidSlDefaultToVectorArray( $paramDefault );
             int $size = size($argDefaultV);
             addAttr -hidden true -k true -longName $argName -at "float3" -usedAsColor -multi $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName+"a" ) -at "float" -parent $argName $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName+"b" ) -at "float" -parent $argName $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName+"c" ) -at "float" -parent $argName $currentNodeName;
-            int $k = 0;
-            for ( ; $k<$size; $k++ ) 
-            {
+						addAttr -hidden true -k true -longName ( $argName+"R" ) -at "float" -parent $argName $currentNodeName;
+						addAttr -hidden true -k true -longName ( $argName+"G" ) -at "float" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName+"B" ) -at "float" -parent $argName $currentNodeName;
+  					for ( $k = 0; $k < $size; $k++ ) 
+  					{
+  						$cplug = ( $plug + "[" + $k + "]" );
               vector $v = $argDefaultV[$k];
-              setAttr  ( $currentNodeName + "." + $argName + "[" + $k + "]" ) -type "float3" ($v.x) ($v.y) ($v.z);
-            }
-          } 
-          else 
+  						setAttr $cplug  -type "float3" ($v.x) ($v.y) ($v.z);
+            } 
+          }
+					else 
           {
             // simple color
+					  ltrace ("[liquidAttachShaderParams] addAttr color "+$argName);
             $argDefaultV[0] = liquidSlDefaultToVector( $paramDefault );
             vector $v = $argDefaultV[0];
             addAttr -hidden true -k true -longName $argName -at "float3" -usedAsColor $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName + "a" ) -at "float" -parent $argName $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName + "b" ) -at "float" -parent $argName $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName + "c" ) -at "float" -parent $argName $currentNodeName;
-            setAttr  $cplug -type "float3" ($v.x) ($v.y) ($v.z);
+						addAttr -hidden true -k true -longName ( $argName + "R" ) -at "float" -parent $argName $currentNodeName;
+						addAttr -hidden true -k true -longName ( $argName + "G" ) -at "float" -parent $argName $currentNodeName;
+            addAttr -hidden true -k true -longName ( $argName + "B" ) -at "float" -parent $argName $currentNodeName;
+					  setAttr  $plug -type "float3" ($v.x) ($v.y) ($v.z);
           }
           break;
+          
         case "point":
         case "vector":
         case "normal":
@@ -182,14 +189,14 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             $argDefaultV = liquidSlDefaultToVectorArray( $paramDefault );
             int $size = size($argDefaultV);
             addAttr -hidden true -k true -longName $argName -at "double3"-multi $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName+"a" ) -at "double" -parent $argName $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName+"b" ) -at "double" -parent $argName $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName+"c" ) -at "double" -parent $argName $currentNodeName;
-            int $k;
+						addAttr -hidden true -k true -longName ( $argName+"X" ) -at "double" -parent $argName $currentNodeName;
+						addAttr -hidden true -k true -longName ( $argName+"Y" ) -at "double" -parent $argName $currentNodeName;
+						addAttr -hidden true -k true -longName ( $argName+"Z" ) -at "double" -parent $argName $currentNodeName;
             for ( $k = 0; $k<$size; $k++ ) 
             {
+						  $cplug = ( $plug + "[" + $k + "]" );
               vector $v = $argDefaultV[$k];
-              setAttr  ( $currentNodeName + "." + $argName+"["+$k+"]" ) -type "double3" ($v.x) ($v.y) ($v.z);
+						  setAttr  $cplug -type "double3" ($v.x) ($v.y) ($v.z);
             }
           } 
           else 
@@ -197,15 +204,43 @@ global proc liquidAttachShaderParams( string $currentNodeName, string $shaderFil
             $argDefaultV[0] = liquidSlDefaultToVector( $paramDefault );
             vector $v = $argDefaultV[0];
             addAttr -hidden true -k true -longName $argName -at double3 $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName + "a" ) -at double -parent $argName $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName + "b" ) -at double -parent $argName $currentNodeName;
-            addAttr -hidden true -k true -longName ( $argName + "c" ) -at double -parent $argName $currentNodeName;
-            setAttr  $cplug -type double3 ($v.x) ($v.y) ($v.z);
+						addAttr -hidden true -k true -longName ( $argName + "X" ) -at double -parent $argName $currentNodeName;
+						addAttr -hidden true -k true -longName ( $argName + "Y" ) -at double -parent $argName $currentNodeName;
+						addAttr -hidden true -k true -longName ( $argName + "Z" ) -at double -parent $argName $currentNodeName;
+					  setAttr  $plug -type double3 ($v.x) ($v.y) ($v.z);
           }
           break;
+          
         case "matrix":
-  				error ("[liquidAttachShaderParams] matrix parameter type unsupported yet");
-  				break;
+  				if ( $isArray ) 
+  				{
+  					ltrace ("[liquidAttachShaderParams] addAttr multi matrix "+$argName);
+  					$argDefaultFM = liquidSlDefaultToFloatMatrixArray( $paramDefault );
+  					int $size = size($argDefaultFM) / 16;
+  					addAttr -hidden true -k true -longName $argName -at "matrix" -multi $currentNodeName;
+  					int $k, $m;
+  					for ( $k = 0; $k < $size; $k++ ) 
+  					{
+  						$cplug = ( $plug + "[" + $k + "]" );
+  						$m = $k * 16;
+  						setAttr	$cplug -type "matrix"	$argDefaultFM[$m+ 0] $argDefaultFM[$m+ 1] $argDefaultFM[$m+ 2] $argDefaultFM[$m+ 3]
+  														$argDefaultFM[$m+ 4] $argDefaultFM[$m+ 5] $argDefaultFM[$m+ 6] $argDefaultFM[$m+ 7]
+  														$argDefaultFM[$m+ 8] $argDefaultFM[$m+ 9] $argDefaultFM[$m+10] $argDefaultFM[$m+11]
+  														$argDefaultFM[$m+12] $argDefaultFM[$m+13] $argDefaultFM[$m+14] $argDefaultFM[$m+15];
+  					}
+  				} 
+  				else 
+  				{
+  					ltrace ("[liquidAttachShaderParams] addAttr matrix "+$argName);
+  					$argDefaultFM = liquidSlDefaultToFloatMatrix( $paramDefault );
+  					addAttr -hidden true -k true -longName $argName -at "matrix" $currentNodeName;
+  					setAttr	$plug -type "matrix"	$argDefaultFM[ 0] $argDefaultFM[ 1] $argDefaultFM[ 2] $argDefaultFM[ 3]
+  													$argDefaultFM[ 4] $argDefaultFM[ 5] $argDefaultFM[ 6] $argDefaultFM[ 7]
+  													$argDefaultFM[ 8] $argDefaultFM[ 9] $argDefaultFM[10] $argDefaultFM[11]
+  													$argDefaultFM[12] $argDefaultFM[13] $argDefaultFM[14] $argDefaultFM[15];
+  				}
+    			break;
+  				
   			default:
   				error ("[liquidAttachShaderParams] unkown parameter type "+$argType+"\n");
   				break;				
@@ -279,7 +314,10 @@ global proc liquidAttachParams ( string $currentNodeName )
   if ( $nodeType == "Disp" || $nodeType == "Surface" ) 
     if (!`attributeQuery -n $currentNodeName -ex ( "displacementBound" ) `) 
       addAttr -ln displacementBound -at "float" -dv 0.0 $currentNodeName;
+	if ($nodeType == "Shader" ) {
+		// If we need something special for coshaders
 
+	}
   if ( $nodeType != "Light" && !objExists( ($currentNodeName+".outputInShadow") ) ) 
   {
     addAttr -ln outputInShadow -at "bool" -dv 0 $currentNodeName;

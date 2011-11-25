@@ -61,8 +61,7 @@ global proc int liquidParseEndStrForVal( string $endStr, int $argType, string $v
       return 0;
     string $buffer[];
     int $numTokens = `tokenize $tmpStr2 "[] " $buffer`;
-    if( $numTokens != 3 )
-      return 0;
+    if( $numTokens != 3 ) return 0;
     else
     {
       $vals[0] = $buffer[0];
@@ -82,8 +81,7 @@ global proc int liquidParseEndStrForVal( string $endStr, int $argType, string $v
           return 0;
       string $buffer[];
       int $numTokens = `tokenize $tmpStr2 "[] " $buffer`;
-      if( $numTokens != 4 )
-        return 0;
+      if( $numTokens != 4 ) return 0;
       else
       {
         int $i =0;

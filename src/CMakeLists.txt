@@ -21,10 +21,22 @@ set(CMAKE_BUILD_TYPE "Release")
 
 set(Maya_DIR $ENV{LIQUIDHOME}/build/cmake)
 find_package(Maya REQUIRED)
+
 message( STATUS "MAYA_LOCATION = $ENV{MAYA_LOCATION}")
 message( STATUS "Maya_INCLUDE_DIR = ${Maya_INCLUDE_DIR}")
 message( STATUS "MAYA_LIB = ${MAYA_LIB}")
-#message( STATUS "Maya_LIBRARIES = ${Maya_LIBRARIES}")
+message( STATUS "Maya_LIBRARIES = ${Maya_LIBRARIES}")
+
+if(UNIX)
+set(ZLIB_INCLUDE_DIR "/usr/include")
+set(ZLIB_INCLUDE_DIRS "/usr/include")
+set(ZLIB_LIBRARIES "/usr/lib64")
+
+	if("$ENV{MAYA_VERSION}" STREQUAL "2012" )
+		set(ZLIB_LIBRARIES ${MAYA_LIB} )
+	endif("$ENV{MAYA_VERSION}" STREQUAL "2012")
+
+endif(UNIX)
 
 set(zlib_DIR $ENV{LIQUIDHOME}/build/cmake)
 find_package( zlib REQUIRED )
@@ -65,10 +77,15 @@ if(UNIX)
 		#set(LIQUIDBINLIBS "-lawxml2 -lsvml -liff -lpthread")
 		# fedora 13 needs -ldl !!!
 		set(LIQUIDBINLIBS "-lawxml2 -lsvml -liff -lpthread -ldl")
+
+		if("$ENV{MAYA_VERSION}" STREQUAL "2012" )
+			set( Maya_LIBRARIES "${Maya_LIBRARIES};${MAYA_LOCATION}/lib/libadp_core-2_5.so" )
+		endif("$ENV{MAYA_VERSION}" STREQUAL "2012")
+
     #-lguide
     set(LIQUIDBINLIBS "${LIQUIDBINLIBS} -lOpenMayalib -lAnimSlice -lDeformSlice -lDynSlice -lKinSlice -lModelSlice -lNurbsSlice -lPolySlice -lProjectSlice -lImage -lImageUI -lShared -lTranslators") 
     set(LIQUIDBINLIBS "${LIQUIDBINLIBS} -lDataModel -lNurbsEngine -lRenderModel -lDependEngine -lCommandEngine -lAG -lAnimEngine -lAppVersion -lGeometryEngine -lDependCommand -lExtensionLayer -lPolyEngine -lSubdivEngine") 
-		set(LIQUIDBINLIBS "${LIQUIDBINLIBS} -lSubdivGeom -l3dGraphics -lNurbs -lPoly -lSubdiv -lHWFoundation -lHWGL -lHWRender -lBase -lSharedUI -lHWRenderMaya -lDevices -lManips -lAnimUISlice -lDynUISlice -lRenderSlice -lModelUISlice -lUrchinSlice")
+    set(LIQUIDBINLIBS "${LIQUIDBINLIBS} -lSubdivGeom -l3dGraphics -lNurbs -lPoly -lSubdiv -lHWFoundation -lHWGL -lHWRender -lBase -lSharedUI -lHWRenderMaya -lDevices -lManips -lAnimUISlice -lDynUISlice -lRenderSlice -lModelUISlice -lUrchinSlice")
 	endif(APPLE)
 endif(UNIX)
 if(WIN32)
@@ -80,7 +97,7 @@ if(WIN32)
 	#add_definitions(-Duint="unsigned int")
 endif(WIN32)
 
-file(GLOB src RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+file(GLOB src RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/common/*.cpp")
 file(GLOB inc RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "$ENV{LIQUIDHOME}/include/*.h")
 
 #include_directories( "${CMAKE_CURRENT_SOURCE_DIR}" ) 
@@ -91,6 +108,7 @@ include_directories( "$ENV{LIQRMANINC}" )
 include_directories( "${ZLIB_INCLUDE_DIR}" )
 
 message( STATUS "TARGET_NAME = ${TARGET_NAME}")
+message( STATUS "TARGET_DIR = ${TARGET_DIR}")
 
 message( STATUS "SOURCE_DIR = ${${TARGET_NAME}_SOURCE_DIR}")
 message( STATUS "BINARY_DIR = ${${TARGET_NAME}_BINARY_DIR}")

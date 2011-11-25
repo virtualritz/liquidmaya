@@ -58,6 +58,7 @@ public:
     int      written;
     bool     ignore;
     bool     ignoreShadow;
+    bool     receiveShadow;
     bool     ignoreShapes;
 
     MMatrix  matrix( int instance ) const;

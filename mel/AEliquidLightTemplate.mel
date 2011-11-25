@@ -108,7 +108,7 @@ global proc connectExistingShadowCamera( string $nodeDotAttr, string $flag, stri
       $theCamera = $source;
       break;
     default:
-      warning ("Can not connect a "+$nodetype+" as a shadow camera !");
+      warning ("Can not connect a " + $nodetype + " as a shadow camera !");
       break;
   }
 
@@ -153,9 +153,9 @@ global proc shadowCameraReplace( string $nodeDotAttr )
   int $sizeAttr = `getAttr -size $nodeDotAttr`;
 
   // created or update existing attributes
-  for ( $i=0; $i<$sizeAttr; $i++ ) 
+  for ( $i=0; $i < $sizeAttr; $i++ ) 
   {
-    if ( !`attrNavigationControlGrp -q -ex ("shadowCameraNavGrp_"+$i)` ) 
+    if ( !`attrNavigationControlGrp -q -ex ( "shadowCameraNavGrp_" + $i )` ) 
     {
       setParent $gLiquidShadowCameraParentLayout;
       setParent AEliquidLightShadowCamerasColumnL;
@@ -289,6 +289,7 @@ global proc mainShadowStatusReplace( string $nodeDotAttr )
   editorTemplate -dimControl $node  "deepShadows"            $state;
   editorTemplate -dimControl $node  "pixelSamples"           $state;
   editorTemplate -dimControl $node  "volumeInterpretation"   $state;
+  editorTemplate -dimControl $node  "liqDeepShadowsDisplayMode"   $state;
   editorTemplate -dimControl $node  "everyFrame"             $state;
   editorTemplate -dimControl $node  "renderAtFrame"          $state;
   editorTemplate -dimControl $node  "geometrySet"            $state;
@@ -301,13 +302,15 @@ global proc mainShadowStatusReplace( string $nodeDotAttr )
 
 global proc AEliquidLightTemplate( string $nodeDotAttr )
 {
-  layout -e -vis false "AEcontrolFormLayout";
+  string $nodeName = plugNode($nodeDotAttr);
+ 
+	layout -e -vis false "AEcontrolFormLayout";
 
-  editorTemplate -callCustom ("liquidPreviewSwatchNew "+$nodeDotAttr) ("liquidPreviewSwatchReplace "+$nodeDotAttr) "message";
+  editorTemplate -callCustom "liquidPreviewSwatchNew" "liquidPreviewSwatchReplace" "message";
+  
+		editorTemplate -beginScrollLayout;
 
-  editorTemplate -beginScrollLayout;
-
-    editorTemplate -ccu ("liquidShaderPickerNew "+$nodeDotAttr) ("liquidShaderPickerReplace "+$nodeDotAttr) "rmanShaderLong";
+  editorTemplate -ccu "liquidShaderPickerNew" "liquidShaderPickerReplace" "rmanShaderLong";
 
     editorTemplate -beginLayout "Preview";
       editorTemplate -addControl "previewPrimitive";
@@ -325,6 +328,7 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
       editorTemplate -addControl "deepShadows";
       editorTemplate -addControl "pixelSamples";
       editorTemplate -addControl "volumeInterpretation";
+      editorTemplate -label "Display Mode" -addControl "liqDeepShadowsDisplayMode";
       editorTemplate -addSeparator;
       editorTemplate -addControl "everyFrame";
       editorTemplate -addControl "renderAtFrame";
@@ -337,16 +341,20 @@ global proc AEliquidLightTemplate( string $nodeDotAttr )
       editorTemplate -ccu "mainShadowStatusNew" "mainShadowStatusReplace" "generateMainShadow";
     editorTemplate -endLayout;
     editorTemplate -beginLayout "Extra Shadows";
+      editorTemplate -label "Aggregate Shadow Maps" -addDynamicControl "aggregateShadowMaps";
       editorTemplate -ccu "shadowCameraNew" "shadowCameraReplace" "shadowCameras";
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "RIB";
       editorTemplate -addControl "outputInShadow";
+			editorTemplate -ccu ("liquidLargeFieldNew "+$nodeName+" \"RIB Box\"") ("liquidLargeFieldReplace "+$nodeName+" \"RIB Box\"") "liqRIBBox";
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Parameters" -collapse 0;
       editorTemplate -ccu "liquidShaderNodesParamsNew" "liquidShaderNodesParamsReplace" "rmanShaderLong";
     editorTemplate -endLayout;
+    
+    
 
     editorTemplate -suppress rmanShader;
     editorTemplate -suppress rmanShaderLong;

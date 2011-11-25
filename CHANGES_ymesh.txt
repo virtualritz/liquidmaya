@@ -1,3 +1,6 @@
+Liquid 	2.4.0 (ymesh)
+
+- merged last sources from duran-duboi branch
 
 Liquid 	2.3.6b (ymesh)
 

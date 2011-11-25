@@ -45,6 +45,7 @@ extern "C" {
 #include <maya/MArgList.h>
 #include <maya/MLibrary.h>
 #include <maya/MFileIO.h>
+#include <maya/MGlobal.h>
 
 #include <liquid.h>
 #include <liqRibTranslator.h>
@@ -194,12 +195,15 @@ int main(int argc, char **argv)
   }  
   
   // initialize the maya library
-  status = MLibrary::initialize ( argv[0], true );
+  status = MLibrary::initialize ( true, argv[0], true );
   if ( !status ) 
   {
     status.perror("MLibrary::initialize");
     return 1;
   }
+//  MString melSourceUserSetupCmd = "if(exists(\"userSetup\")){print(\"[liquidBin] source userSetup!\\\n\");source \"userSetup\";}'";
+  MString melSourceUserSetupCmd = "if(exists(\"userSetup\")){source \"userSetup\";}";
+  MGlobal::executeCommand(melSourceUserSetupCmd);
   
   // start building an argument list to
   // pass to the Maya liquid command
@@ -251,7 +255,7 @@ int main(int argc, char **argv)
   }
  
   // load the file into liquid's virtual maya
-  status = MFileIO::open( fileName ); 
+  status = MFileIO::open( fileName, NULL, true );  // true for  `file -o -f`
   if ( !status ) 
   {
     MString error = " Error opening file: ";

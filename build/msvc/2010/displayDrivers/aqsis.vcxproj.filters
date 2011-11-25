@@ -18,8 +18,10 @@
     <ClCompile Include="..\..\..\..\src\displayDrivers\liqMayaDisplayDriverAqsis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\displayDrivers\liqMayaDisplayDriver.cpp">
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\displayDrivers\liqMayaDisplayDriver.h">
       <Filter>Header Files</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
 </Project>

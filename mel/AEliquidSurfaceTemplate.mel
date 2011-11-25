@@ -35,13 +35,13 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
 {
   layout -e -vis false "AEcontrolFormLayout";
 
-  editorTemplate -callCustom ("liquidPreviewSwatchNew "+$nodeName) ("liquidPreviewSwatchReplace "+$nodeName) "message";
+  editorTemplate -callCustom "liquidPreviewSwatchNew" "liquidPreviewSwatchReplace" "message";
 
   editorTemplate -beginScrollLayout;
 
-    editorTemplate -ccu ("liquidShaderPickerNew "+$nodeName) ("liquidShaderPickerReplace "+$nodeName) "rmanShaderLong";
+    editorTemplate -ccu "liquidShaderPickerNew" "liquidShaderPickerReplace" "rmanShaderLong";
     editorTemplate -addControl "evaluateAtEveryFrame";
-    
+
     editorTemplate -beginLayout "Preview";
       editorTemplate -addControl "previewPrimitive";
       editorTemplate -ccu "liquidShaderNodesCustomPrimitiveNew \"Custom Primitive\" "
@@ -65,40 +65,47 @@ global proc AEliquidSurfaceTemplate( string $nodeName )
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "RIB";
-      editorTemplate -addControl "color";
-      editorTemplate -addControl "opacity";
+      editorTemplate -label "Color (Ci)" -addControl "color";
+      editorTemplate -label "Opacity (Oi)" -addControl "opacity";
+      editorTemplate -addControl "transparency";
       editorTemplate -addControl "displacementBound";
       editorTemplate -label "Disp. Bound Space" -addControl "displacementBoundSpace";
       editorTemplate -addControl "shaderSpace";
       editorTemplate -addControl "outputInShadow";
+      editorTemplate -ccu ("liquidLargeFieldNew "+$nodeName+" \"RIB Box\"") ("liquidLargeFieldReplace "+$nodeName+" \"RIB Box\"") "liqRIBBox";
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Parameters" -collapse 0;
-      editorTemplate -ccu "liquidShaderNodesParamsNew "  "liquidShaderNodesParamsReplace " "rmanShaderLong";
+    	editorTemplate -ccu "liquidShaderNodesParamsNew " "liquidShaderNodesParamsReplace " "rmanShaderLong";
     editorTemplate -endLayout;
-
 
     editorTemplate -beginLayout "Maya Renderer" -collapse 1;
-      editorTemplate -addControl "mayaIgnoreLights";
-      editorTemplate -addControl "mayaKa";
-      editorTemplate -addControl "mayaKd";
+		editorTemplate -addControl "mayaIgnoreLights";
+		editorTemplate -addControl "mayaKa";
+		editorTemplate -addControl "mayaKd";
     editorTemplate -endLayout;
 
-    editorTemplate -suppress rmanShader;
-    editorTemplate -suppress rmanShaderLong;
+	editorTemplate -suppress rmanShader;
+	editorTemplate -suppress rmanShaderLong;
     editorTemplate -suppress rmanShaderLif;
+    editorTemplate -suppress rmanMethods;
     editorTemplate -suppress rmanParams;
     editorTemplate -suppress rmanDetails;
     editorTemplate -suppress rmanTypes;
+    editorTemplate -suppress rmanIsOutput;
+    editorTemplate -suppress rmanAccept;
     editorTemplate -suppress rmanDefaults;
     editorTemplate -suppress rmanArraySizes;
     editorTemplate -suppress rmanLifCmds;
-
+	editorTemplate -suppress rmanLifCtrls;
+	editorTemplate -suppress nodeState;
+	editorTemplate -suppress caching;
+	
     editorTemplate -addExtraControls;
 
-  editorTemplate -endScrollLayout;
+	editorTemplate -endScrollLayout;
 
-  layout -e -vis true "AEcontrolFormLayout";
+	layout -e -vis true "AEcontrolFormLayout";
 
 }
 

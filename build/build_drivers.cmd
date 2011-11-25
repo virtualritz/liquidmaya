@@ -1,4 +1,4 @@
-rem @echo off 
+@echo off 
 
 SET tmpdir=tmp
 if exist %tmpdir% rmdir /s /q %tmpdir%
@@ -8,8 +8,10 @@ cd %tmpdir%
 SET LIQUIDHOME=d:/code/maya/liquidmaya
 
 rem SET VSINSTALLDIR="C:\Program Files (x86)\Microsoft Visual Studio 8"
-SET VSINSTALLDIR="C:\Program Files (x86)\Microsoft Visual Studio 10.0"
+SET VSINSTALLDIR="C:\Program Files (x86)\Microsoft Visual Studio 9.0"
+rem SET VSINSTALLDIR="C:\Program Files (x86)\Microsoft Visual Studio 10.0"
 SET GEN="NMake Makefiles"
+
 rem SET ARCH=
 rem call %VSINSTALLDIR%\VC\vcvarsall.bat x86
 

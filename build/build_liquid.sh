@@ -1,19 +1,20 @@
 #!/bin/bash
 tmpDir="tmp"
 if [ -d $tmpDir ]; then
-   rm -rf $tmpDir
+#   rm -rf $tmpDir
    echo "$tmpDir"
 fi
-mkdir -p $tmpDir
+#mkdir -p $tmpDir
 cd $tmpDir
 
-export LIQUIDHOME=$LIQUIDCODE
+#export LIQUIDHOME=$LIQUIDCODE
 
 # Set Maya version
 #export MAYA_VERSION=2008
 #export MAYA_VERSION=2009
 #export MAYA_VERSION=2010
 export MAYA_VERSION=2011
+#export MAYA_VERSION=2012
 
 # Set Maya architecture
 #export ARCH=
@@ -119,9 +120,6 @@ case $LIQRMAN in
 		build_liquid
 		;;
 esac
-
-
-
 
 exit 0
 

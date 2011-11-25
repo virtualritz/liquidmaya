@@ -45,7 +45,7 @@
 #include <liqShader.h>
 
 
-typedef enum liquidVerbosityType {
+typedef enum {
   verbosityOff = 0,
   verbosityErrors = 1,
   messageError = 1,
@@ -72,11 +72,13 @@ bool isObjectVisible( const MDagPath & path );
 bool isObjectPrimaryVisible( const MDagPath & path );
 bool isObjectTemplated( const MDagPath & path );
 bool isObjectCastsShadows( const MDagPath & path );
+bool isObjectReceiveShadows( const MDagPath & path );
 bool isObjectMotionBlur( const MDagPath & path );
 bool areObjectAndParentsVisible( const MDagPath & path );
 bool areObjectAndParentsTemplated( const MDagPath & path );
 void assignTokenArrays( unsigned numTokens, const liqTokenPointer tokenPointerArray[], RtToken tokens[], RtPointer pointers[] );
 void assignTokenArraysV( const vector<liqTokenPointer>& tokenPointerArray, RtToken tokens[], RtPointer pointers[] );
+void assignIthTokenArraysV( const vector<liqTokenPointer>& tokenPointerArray, RtToken tokens[], RtPointer pointers[], unsigned int primi );
 MObject findFacetShader( MObject mesh, int polygonIndex );
 bool fileExists( const MString & filename );
 bool fileIsNewer( const MString & file1, const MString & file2 );

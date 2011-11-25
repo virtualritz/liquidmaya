@@ -7,14 +7,14 @@ mkdir -p $tmpDir
 cd $tmpDir
 
 
-export LIQUIDHOME=/tools/liquidmaya
+#export LIQUIDHOME=/tools/maya/liquidmaya
 # GEN="NMake Makefiles"
 # export ARCH=
 export ARCH=-x64
 
 #export LIQRMAN=generic
-export LIQRMAN=PRMan
-#export LIQRMAN=3Delight
+#export LIQRMAN=PRMan
+export LIQRMAN=3Delight
 # LIQRMAN=pixie
 # LIQRMAN=aqsis
 # LIQRMAN=air

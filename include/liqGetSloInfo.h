@@ -44,7 +44,7 @@
 
 
 
-typedef enum SHADER_TYPE {
+typedef enum {
     SHADER_TYPE_UNKNOWN,
     SHADER_TYPE_POINT,
     SHADER_TYPE_COLOR,
@@ -66,7 +66,7 @@ typedef enum SHADER_TYPE {
 } SHADER_TYPE;
 
 
-typedef enum SHADER_DETAIL {
+typedef enum {
     SHADER_DETAIL_UNKNOWN,
     SHADER_DETAIL_VARYING,
     SHADER_DETAIL_UNIFORM
@@ -96,6 +96,7 @@ public:
   float         getArgFloatDefault( int num, int entry );
   int           getArgArraySize( int num );
   int           isOutputParameter( unsigned int num );
+  MString       getArgAccept( unsigned int num );
 
   // TODO :
   //int           getNumMethods( );
@@ -123,6 +124,7 @@ private:
   std::map<const MString, SHADER_TYPE, mstrcomp> shaderTypeMap;
   std::map<const MString, SHADER_DETAIL, mstrcomp> shaderDetailMap;
   std::vector<int> argIsOutput;
+	std::vector<MString> argAccept;
 };
 
 

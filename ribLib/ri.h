@@ -154,6 +154,8 @@ EXTERN(RtToken)		RI_COMPRESSION;
 EXTERN(RtToken)		RI_RIB;
 EXTERN(RtToken)		RI_BRICKMEMORY;
 EXTERN(RtToken)		RI_GROUPING;
+// 3Delight Light attributes
+EXTERN(RtToken)		RI_LIGHT;
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -200,6 +202,11 @@ EXTERN(RtToken)		RI_SS_MEANFREEPATH;
 EXTERN(RtToken)		RI_SS_REFLECTANCE;
 EXTERN(RtToken)		RI_SS_REFERENCECAMERA;
 
+// 3Delight Light attributes
+EXTERN(RtToken)		RI_LIGHT_EMITPHOTONS;
+EXTERN(RtToken)		RI_LIGHT_SHADOWS;
+EXTERN(RtToken)		RI_LIGHT_SAMPLES;
+EXTERN(RtToken)		RI_LIGHT_SAMPLINGSTRATEGY;
 
 // Photon map attributes
 EXTERN(RtToken)		RI_GLOBALMAP;
@@ -522,6 +529,16 @@ EXTERN(RtVoid)
 		       RtInt ntags, RtToken tags[], RtInt nargs[],
 		       RtInt intargs[], RtFloat floatargs[],
 		       RtInt n, RtToken tokens[], RtPointer params[]),
+    RiHierarchicalSubdivisionMesh(RtToken scheme, RtInt nfaces,
+		       RtInt nvertices[], RtInt vertices[],
+		       RtInt ntags, RtToken tags[], RtInt nargs[],
+		       RtInt intargs[], RtFloat floatargs[], RtToken stringargs[],
+		       ...),
+    RiHierarchicalSubdivisionMeshV(RtToken scheme, RtInt nfaces,
+		       RtInt nvertices[], RtInt vertices[],
+		       RtInt ntags, RtToken tags[], RtInt nargs[],
+		       RtInt intargs[], RtFloat floatargs[], RtToken stringargs[],
+		       RtInt n, RtToken tokens[], RtPointer params[]),
     RiBlobby (RtInt nleaf, RtInt ncode, RtInt code[],
 	      RtInt nflt, RtFloat flt[], RtInt nstr, RtString str[], ...),
     RiBlobbyV (RtInt nleaf, RtInt ncode, RtInt code[],
@@ -580,6 +597,13 @@ EXTERN(RtVoid)
     RiErrorAbort (RtInt code, RtInt severity, char *message);
 
 EXTERN(RtVoid)
+	RiIfBegin (char *expr, ...),
+	RiIfBeginV (char *expr, RtInt n, RtToken nms[], RtPointer vals[]),
+	RiElse (),
+	RiElseIf (char *expr, ...),
+	RiElseIfV (char *expr, RtInt n, RtToken nms[], RtPointer vals[]),
+	RiIfEnd ();
+EXTERN(RtVoid)
     RiArchiveRecord (RtToken type, char *format, ...),
     RiReadArchive (RtString filename, RtFunc callback, ...),
     RiReadArchiveV (RtString filename, RtFunc callback,
@@ -596,6 +620,9 @@ EXTERN(RtVoid)
 EXTERN(RtVoid)
 	RiVisibility(RtInt,RtPoint *,RtPoint *,RtPoint *);
 
+EXTERN(RtVoid)
+	RiCamera(char *name, ...),
+	RiCameraV(char *name, int n, RtToken tokens[], RtPointer params[]);
 
 /*
     Error codes

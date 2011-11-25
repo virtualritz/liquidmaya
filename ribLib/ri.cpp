@@ -201,23 +201,24 @@ RtToken   RI_CUSTOM                     = "custom";
 //
 ////////////////////////////////////////////////////////////////////////
 RtToken		RI_LIMITS				=	"limits";
-RtToken		RI_SEARCHPATH			=	"searchpath";
+RtToken		RI_SEARCHPATH		=	"searchpath";
 RtToken		RI_SHADOW				=	"shadow";
 RtToken		RI_RENDER				=	"render";
 RtToken		RI_DICE					=	"dice";
 RtToken		RI_HINT					=	"hint";
-RtToken		RI_TEXTURE				=	"texture";
+RtToken		RI_TEXTURE			=	"texture";
 RtToken		RI_HIDER				=	"hider";
-RtToken		RI_STATISTICS			=	"statistics";
-RtToken		RI_VISIBILITY			=	"visibility";
+RtToken		RI_STATISTICS		=	"statistics";
+RtToken		RI_VISIBILITY		=	"visibility";
 RtToken		RI_DISPLACEMENTBOUND	=	"displacementbound";
-RtToken		RI_IRRADIANCE			=	"irradiance";
+RtToken		RI_IRRADIANCE		=	"irradiance";
 RtToken		RI_CULL					=	"cull";
-RtToken		RI_COMPRESSION			=	"compression";
+RtToken		RI_COMPRESSION	=	"compression";
 RtToken		RI_RIB					=	"rib";
-RtToken		RI_BRICKMEMORY			=	"brickmemory";
+RtToken		RI_BRICKMEMORY	=	"brickmemory";
 RtToken		RI_GROUPING			=	"grouping";
 
+RtToken		RI_LIGHT				=	"light";
 ////////////////////////////////////////////////////////////////////////
 //
 //	Non-Standard attributes
@@ -260,6 +261,12 @@ RtToken		RI_SS_SCALE       =	"scale";
 RtToken		RI_SS_MEANFREEPATH	=	"meanfreepath";
 RtToken		RI_SS_REFLECTANCE	  =	"reflectance";
 RtToken		RI_SS_REFERENCECAMERA =	"referencecamera";
+
+// 3Delight Light attributes
+RtToken		RI_LIGHT_EMITPHOTONS = "emitphotons";
+RtToken		RI_LIGHT_SHADOWS = "shadows";
+RtToken		RI_LIGHT_SAMPLES = "samples";
+RtToken		RI_LIGHT_SAMPLINGSTRATEGY = "samplingstrategy";
 
 // Trace attributes
 RtToken		RI_BIAS					=	"bias";
@@ -695,7 +702,7 @@ RiFrameAspectRatio (RtFloat aspect) {
 
 EXTERN(RtVoid)
 RiScreenWindow (RtFloat left, RtFloat right, RtFloat bot, RtFloat top) {
-	if (check("RiScreenWindow",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;
+	if (check("RiScreenWindow",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_XFORM_BLOCK)) return;
 
 	renderMan->RiScreenWindow(left,right,bot,top);
 }
@@ -719,7 +726,7 @@ RiProjection (char *name, ...) {
 
 EXTERN(RtVoid)
 RiProjectionV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
-	if (check("RiProjection",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK)) return;
+	if (check("RiProjection",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_XFORM_BLOCK)) return;
 
 	renderMan->RiProjectionV(name,n,tokens,params);
 }
@@ -1791,6 +1798,29 @@ EXTERN(RtVoid)
 }
 
 EXTERN(RtVoid)
+	RiHierarchicalSubdivisionMesh(RtToken scheme, RtInt nfaces,
+		       RtInt nvertices[], RtInt vertices[],
+		       RtInt ntags, RtToken tags[], RtInt nargs[],
+		       RtInt intargs[], RtFloat floatargs[], RtToken stringargs[],...)
+{
+	va_list	args;
+	va_start(args,stringargs);
+	getArgs(args);
+	RiHierarchicalSubdivisionMeshV(scheme,nfaces,nvertices,vertices,ntags,tags,nargs,intargs,floatargs,stringargs, nTokens,tokens,values);
+	va_end(args);
+}
+EXTERN(RtVoid)
+	RiHierarchicalSubdivisionMeshV(RtToken scheme, RtInt nfaces,
+		       RtInt nvertices[], RtInt vertices[],
+		       RtInt ntags, RtToken tags[], RtInt nargs[],
+		       RtInt intargs[], RtFloat floatargs[], RtToken stringargs[],
+		       RtInt n, RtToken tokens[], RtPointer params[])
+{
+    if (check("RiHierarchicalSubdivisionMesh",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK | RENDERMAN_OBJECT_BLOCK | RENDERMAN_MOTION_BLOCK)) return;
+    
+		renderMan->RiHierarchicalSubdivisionMeshV(scheme,nfaces,nvertices,vertices,ntags,tags,nargs,intargs,floatargs,stringargs,n,tokens,params);
+}
+EXTERN(RtVoid)
     RiBlobby (RtInt nleaf, RtInt ncode, RtInt code[],
 	RtInt nflt, RtFloat flt[], RtInt nstr, RtString str[], ...) {
 	va_list	args;
@@ -2182,6 +2212,38 @@ RiErrorAbort (RtInt code, RtInt severity, char * /*message*/) {
 }
 
 
+EXTERN(RtVoid) RiIfBegin (char *expr, ...)
+{
+	va_list	args;
+	va_start(args,expr);
+	getArgs(args);
+	RiIfBeginV(expr,nTokens,tokens,values);
+	va_end(args);
+}
+EXTERN(RtVoid) RiIfBeginV (char *expr, RtInt n, RtToken nms[], RtPointer vals[])
+{
+	renderMan->RiIfBeginV(expr,n,nms,vals);
+}
+EXTERN(RtVoid) RiElse ()
+{
+	renderMan->RiElse();
+}
+EXTERN(RtVoid) RiElseIf (char *expr, ...)
+{
+	va_list	args;
+	va_start(args,expr);
+	getArgs(args);
+	RiElseIfV(expr,nTokens,tokens,values);
+	va_end(args);
+}
+EXTERN(RtVoid) RiElseIfV (char *expr, RtInt n, RtToken nms[], RtPointer vals[])
+{
+	renderMan->RiIfBeginV(expr,n,nms,vals);
+}
+EXTERN(RtVoid) RiIfEnd ()
+{
+	renderMan->RiIfEnd();
+}
 EXTERN(RtVoid)
 RiArchiveRecord (RtToken type, char *format, ...) {
 	va_list	args;
@@ -2243,4 +2305,17 @@ RiVisibility(RtInt n,RtPoint *from,RtPoint *to,RtPoint *Oi) {
 	}
 
 	renderMan->RiVisibility(n,from,to,Oi);
+}
+EXTERN(RtVoid) RiCamera(char *name, ...)
+{
+	va_list	args;
+	va_start(args,name);
+	getArgs(args);
+printf("RiCameraV CALL with %d tokens\n", nTokens);
+	RiCameraV(name,nTokens,tokens,values);
+	va_end(args);
+}
+EXTERN(RtVoid) RiCameraV(char *name, int n, RtToken tokens[], RtPointer params[])
+{
+	renderMan->RiCameraV(name, n, tokens, params);
 }

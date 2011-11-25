@@ -57,8 +57,8 @@ public:
   // pType data type, these values corrospond to the types of
   // particleRenderType in maya!
   enum pType {
-	MPTMultiPoint = 0,
-	MPTMultiStreak = 1,
+	  MPTMultiPoint = 0,
+	  MPTMultiStreak = 1,
     MPTNumeric = 2,
     MPTPoints = 3,
     MPTSpheres = 4,
@@ -75,9 +75,9 @@ private:
   unsigned grain;
 
   // Data storage for blobby particles
-  vector< RtInt > codeArray;
-  vector< RtFloat > floatArray;
-  vector< RtString > stringArray;
+  vector< RtInt > m_codeArray;
+  vector< RtFloat > m_floatArray;
+  vector< string > m_stringArray;
 
   MIntArray m_validParticles;
 

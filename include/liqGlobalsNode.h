@@ -35,8 +35,6 @@
 #ifndef liqGlobalsNode_H
 #define liqGlobalsNode_H
 
-#include <liquid.h>
-
 #include <maya/MPxNode.h>
 #include <maya/MIOStream.h>
 #include <maya/MString.h>
@@ -50,10 +48,8 @@
 #include <maya/MSwatchRenderBase.h>
 #include <maya/MFnDependencyNode.h>
 
-#include <liqNodeSwatch.h>
-
-
-
+#include "liquid.h"
+#include "liqNodeSwatch.h"
 
 class liqGlobalsNode : public MPxNode
 {
@@ -142,6 +138,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aOutputMayaPolyCreases;
     static MObject aRenderAllCurves;
     static MObject aOutputMeshUVs;
+    static MObject aOutputMeshAsRMSArrays;
     static MObject aIlluminateByDefault;
     static MObject aLiquidSetLightLinking;
     static MObject aIgnoreSurfaces;
@@ -151,6 +148,7 @@ class liqGlobalsNode : public MPxNode
     static MObject aOutputShadersInShadows;
     static MObject aOutputShadersInDeepShadows;
     static MObject aOutputLightsInDeepShadows;
+	static MObject aExportAllShadersParameters;
 
     static MObject aOutputShadowPass;
     static MObject aOutputHeroPass;
@@ -272,6 +270,11 @@ class liqGlobalsNode : public MPxNode
     static MObject aIrradianceMaxPixelDist;
     static MObject aIrradianceHandle;
     static MObject aIrradianceFileMode;
+
+    static MObject aPhotonGlobalHandle;
+    static MObject aCausticGlobalHandle;
+    static MObject aPhotonShadingModel;
+    static MObject aPhotonEstimator;
 
     static MObject aUseMtorSubdiv;
     static MObject aHider;

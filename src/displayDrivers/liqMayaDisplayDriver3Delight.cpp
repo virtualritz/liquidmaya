@@ -90,8 +90,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 #else
 #define closesocket close
 #endif
-
-
+  
 PtDspyError
 DspyImageOpen(PtDspyImageHandle *pvImage,
               const char *drivername,
@@ -176,7 +175,7 @@ DspyImageOpen(PtDspyImageHandle *pvImage,
 PtDspyError
 DspyImageQuery(PtDspyImageHandle pvImage,
                PtDspyQueryType querytype,
-               size_t datalen,
+               int datalen, // size_t datalen,
                void *data) {
 	if ((datalen == 0) || (NULL == data))
 		return PkDspyErrorBadParams;
@@ -210,8 +209,6 @@ DspyImageQuery(PtDspyImageHandle pvImage,
 	return PkDspyErrorNone;
 }
 
-
-
 PtDspyError DspyImageData(PtDspyImageHandle pvImage,
                           int xmin,
                           int xmax_plusone,
@@ -230,7 +227,6 @@ PtDspyError DspyImageData(PtDspyImageHandle pvImage,
 
 }
 
-
 PtDspyError DspyImageClose(PtDspyImageHandle pvImage) {
 	bucket::bucketInfo binfo;
 #ifdef _WIN32
@@ -243,7 +239,6 @@ PtDspyError DspyImageClose(PtDspyImageHandle pvImage) {
 	closesocket(socketId);
 	return PkDspyErrorNone;
 }
-
 
 PtDspyError sendData(const int socket,
 			 const int xmin,
@@ -284,6 +279,7 @@ PtDspyError sendData(const int socket,
 	return PkDspyErrorNone;
 
 }
+  
 
 
 int openSocket(const char *host, const int port)

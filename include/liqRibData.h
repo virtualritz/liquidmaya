@@ -47,7 +47,7 @@
 #include <liqTokenPointer.h>
 
 using namespace boost;
-//using namespace std;
+using namespace std;
 
 class liqRibData;
 typedef boost::shared_ptr< liqRibData > liqRibDataPtr;

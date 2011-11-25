@@ -32,20 +32,27 @@ global proc liquidLargeFieldUpdater()
   string $sel[] = `ls -sl -tr -l -tail 1`;
   string $ctl;
 
-  for ( $i=0; $i<size( $attr ); $i++ ) {
-
+  for ( $i=0; $i<size( $attr ); $i++ ) 
+	{
     $ctl = ( $obj[$i] == "obj" )? ("liquidLargeFieldCtl"+$attr[$i]) : ($prefix+"liquidLargeFieldCtl"+$attr[$i]);
-
-    if ( !`scrollField -q -ex $ctl` ) {
+    if ( !`scrollField -q -ex $ctl` ) 
+		{
       //trace("    >>  skip "+$ctl);
       continue;
     }
 
-    if ( $obj[$i] == "obj" ) {
-      scrollField -e -tx (`getAttr ($sel[0]+"."+$attr[$i])`) $ctl;
-      //trace ("    >>  updated "+$ctl);
-    } else {
-      if ( $globalsExists ) scrollField -e -tx (`getAttr ("liquidGlobals."+$attr[$i])`) $ctl;
+    if ( $obj[$i] == "obj" ) 
+		{
+    	if( objExists($sel[0]+"."+$attr[$i]) )
+			{  
+				scrollField -e -tx (`getAttr ($sel[0]+"."+$attr[$i])`) $ctl;
+      	//trace ("    >>  updated "+$ctl);
+			}
+    } 
+		else 
+		{
+      if ( $globalsExists ) 
+				scrollField -e -tx (`getAttr ("liquidGlobals."+$attr[$i])`) $ctl;
       //trace ("    >>  updated "+$ctl);
     }
   }
@@ -247,6 +254,7 @@ global proc AEliquidInstanceFlags( string $node )
 
       editorTemplate -label "Camera" -addDynamicControl "liqVisibilityCamera";
       editorTemplate -label "Ray Tracer" -addDynamicControl "liqVisibilityTrace";
+      editorTemplate -label "Photon" -addDynamicControl "liqVisibilityPhoton";
       editorTemplate -label "Transmission" -addDynamicControl "liqVisibilityTransmission";
       editorTemplate -label "Diffuse Rays" -addDynamicControl "liqVisibilityDiffuse";
       editorTemplate -label "Specular Rays" -addDynamicControl "liqVisibilitySpecular";
@@ -327,7 +335,8 @@ global proc AEliquidInstanceFlags( string $node )
       editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"RIB Generator\"") ("liquidSmallFieldReplace "+$node+" \"RIB Generator\"") "liqRIBGenerator";
       editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"Read Archive\"") "liqRIBReadArchive";
       editorTemplate -ccu ("liquidSmallFieldNew "+$node+" \"Delayed Read Archive\"") ("liquidSmallFieldReplace "+$node+" \"Delayed Read Archive\"") "liqRIBDelayedReadArchive";
-      editorTemplate -label "DRA Bounding Box" -addDynamicControl "ribDelayedArchiveBBox";
+   		editorTemplate -label "Disable RIBBox Parsing" -addDynamicControl "liqDisableRibBoxParsing";   
+			editorTemplate -label "DRA Bounding Box" -addDynamicControl "ribDelayedArchiveBBox";
       editorTemplate -label "DRA Bounds Scaling" -addDynamicControl "liqRIBDelayedReadArchiveBBoxScale";
 
       editorTemplate -beginLayout "Shadow RIB" -collapse true;

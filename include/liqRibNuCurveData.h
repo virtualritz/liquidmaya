@@ -53,10 +53,6 @@ private: // Data
 
     RtInt                   ncurves;
     shared_array< RtInt >   nverts;
-    //shared_array< RtInt >   order;
-    //shared_array< RtFloat > knot;
-    //shared_array< RtFloat > min;
-    //shared_array< RtFloat > max;
     shared_array< RtFloat > CVs;
     shared_array< RtFloat > NuCurveWidth;
 };

@@ -7,7 +7,7 @@ fi
 mkdir -p $tmpDir
 cd $tmpDir
 
-export LIQUIDHOME=$LIQUIDCODE
+# export LIQUIDHOME=$LIQUIDCODE
 # ZLIB_LIBRARIES=C:/tools/zlib/lib
 # ZLIB_INCLUDE_DIRS=C:/tools/zlib/include
 

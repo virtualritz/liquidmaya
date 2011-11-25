@@ -71,6 +71,7 @@ global proc AEliquidShadowControls( string $node )
         editorTemplate -label "Shadow Blur"           -addDynamicControl "liqShadowBlur";
         editorTemplate -label "Pixel Samples"         -addDynamicControl "pixelSamples";
         editorTemplate -label "Volume Interpretation" -addDynamicControl "volumeInterpretation";
+        editorTemplate -label "Display Mode" -addDynamicControl "liqDeepShadowsDisplayMode";
       editorTemplate -endLayout;
 
       editorTemplate -label "Every Frame"         -addDynamicControl "everyFrame";
@@ -105,6 +106,13 @@ global proc AEliquidShadowControls( string $node )
       editorTemplate -suppress "liqRIBOptions";
       editorTemplate -suppress "liqRIBFrame";
 
+    editorTemplate -endLayout;
+    
+    editorTemplate -beginLayout "3Delight";
+      editorTemplate -label "Emit Photons" -addDynamicControl "liqDelightLightEmitphotons";
+      editorTemplate -label "Automatic Shadows" -addDynamicControl "liqDelightLightShadows";
+      editorTemplate -label "Automatic Shadows Samples" -addDynamicControl "liqDelightLightSamples";
+      editorTemplate -label "Area Light Sampling Strategy" -addDynamicControl "liqDelightLightSamplingStrategy";
     editorTemplate -endLayout;
 
   editorTemplate -endLayout;
