@@ -46,7 +46,7 @@ global proc liquidDebugPrint(string $debugMsg)
 global proc liquidGeneratePlace2dTexture()
 {
 	string $list[] = `ls -type place2dTexture`;
-	for( $l in $list )
+	for ( $l in $list )
 	{
 		float $a[17], $tmp;
 		$a[0] = `getAttr ( $l + ".coverageU" )`;
@@ -98,24 +98,30 @@ global proc liquidGeneratePlace3dTexture( int $scoped )
 
 global proc liquidViewLastRib()
 {
-  if ((!objExists("liquidGlobals") || !`attributeExists lastRibFile liquidGlobals` ) || (`getAttr liquidGlobals.lastRibFile` == "" )) {
+  if ( (!objExists("liquidGlobals") || !`attributeExists lastRibFile liquidGlobals` ) || (`getAttr liquidGlobals.lastRibFile` == "" )) {
     warning("liquidGlobals.lastRibFile is not set - no RIB has been generated during this session");
     return;
   }
 
   string $ribFileName = `getAttr liquidGlobals.lastRibFile`;
-  if ( `file -q -exists $ribFileName` ) {
+  if ( `file -q -exists $ribFileName` ) 
+  {
     print("Viewing RIB file: " + $ribFileName + "\n");
-    if (`about -win`) {
+    if (`about -win`) 
+    {
       system ( "start notepad " + $ribFileName );
-    } else if(`about -mac`) {
+    } 
+    else if(`about -mac`) 
+    {
       system ( "open " + $ribFileName + " & ");
-    } else {
+    } 
+    else 
+    {
       system ( "nedit " + $ribFileName + " &");
     }
-  } else {
+  } 
+  else 
     warning("RIB file not found - " + $ribFileName);
-  }
 }
 
 global proc liquidViewLastRenderScript()

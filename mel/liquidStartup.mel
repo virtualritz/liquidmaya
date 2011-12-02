@@ -39,21 +39,24 @@ global proc ltrace_set()
 	global int $gLiquid_ltrace;
 	
 	string $doTrace = `getenv "LIQUIDTRACE"`;
-	if( size( $doTrace ) ) {
+	
+	if ( size( $doTrace ) ) 
 		$gLiquid_ltrace = 1;
-	} else {
+	else 
 		$gLiquid_ltrace = 0;
-	}
 }
 /**
  * 
  */
-global proc ltrace(string $msg)
+global proc ltrace( string $msg )
 {
 	global int $gLiquid_ltrace;
 	
-	if ($gLiquid_ltrace) {
-		trace ($msg);
+	// print ($msg + "\n");
+	
+	if ( $gLiquid_ltrace )
+	{ 
+	  trace ( $msg );
 	}
 }
 /**
@@ -180,6 +183,8 @@ global proc liquidLoadScripts()
   int $i;
   for ( $i = 0; $i < size( $mel_files ); $i++ ) 
     eval( "source \"" + $liquidHome + "/mel/" + $mel_files[$i]  + "\"" );
+    
+  // ltrace_set();
 }
 /**
  * 
@@ -583,7 +588,8 @@ global proc int[] liquidPreview_getRenderViewResolution()
   float $xres = `getAttr liquidGlobals.xResolution`;
   float $yres = `getAttr liquidGlobals.yResolution`;
   int   $res, $width, $heigth;
-  if ( `optionVar -ex renderViewTestResolution` ) $res  = `optionVar -q renderViewTestResolution`;
+  if ( `optionVar -ex renderViewTestResolution` ) 
+    $res  = `optionVar -q renderViewTestResolution`;
 
   switch ( $res ) 
   {
@@ -735,7 +741,7 @@ global proc liquidRegisterSlLib()
     {
       string $tmp[] = `getFileList -fld ($libPath+$cat+"/") -fs "*.h"`;
       int $i = 0;
-      while( $tmp[$i] != "" ) 
+      while ( $tmp[$i] != "" ) 
       {
         int $s = size( $tmp[$i] );
         $tmp[$i] = substring( $tmp[$i], 1, $s-2);
