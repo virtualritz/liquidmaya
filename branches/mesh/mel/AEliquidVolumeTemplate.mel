@@ -21,10 +21,17 @@ global proc AEliquidVolumeTemplate( string $nodeName )
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "RIB";
+      
+      editorTemplate -addControl "volumeType";
+      editorTemplate -label "Color (Ci)" -addControl "color";
+      editorTemplate -label "Opacity (Oi)" -addControl "opacity";
+      editorTemplate -addControl "transparency";
       editorTemplate -addControl "displacementBound";
       editorTemplate -addControl "shaderSpace";
       editorTemplate -addControl "outputInShadow";
-      editorTemplate -ccu ("liquidLargeFieldNew "+$nodeName+" \"RIB Box\"") ("liquidLargeFieldReplace "+$nodeName+" \"RIB Box\"") "liqRIBBox";
+      editorTemplate -label "Use VisiblePoints Shader" -ann "available in PRMan 16.x"  -addControl "useVisiblePoints" ; // 
+      
+      editorTemplate -ccu ("liquidLargeFieldNew " + $nodeName + " \"RIB Box\"") ("liquidLargeFieldReplace " + $nodeName + " \"RIB Box\"") "liqRIBBox";
     editorTemplate -endLayout;
 
     editorTemplate -beginLayout "Parameters" -collapse 0;

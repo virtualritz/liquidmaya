@@ -52,16 +52,16 @@ using namespace std;
 
 //////////////////////////////////////////////////////////////////
 // String definitions
-RtToken		RI_FRAMEBUFFER		=	"framebuffer";
+RtToken		RI_FRAMEBUFFER =	"framebuffer";
 RtToken		RI_FILE				=	"file";
 
 RtToken		RI_RGB				=	"rgb";
 RtToken		RI_RGBA				=	"rgba";
 RtToken		RI_RGBZ				=	"rgbz";
 RtToken		RI_RGBAZ			=	"rgbaz";
-RtToken		RI_A				=	"a";
-RtToken		RI_Z				=	"z";
-RtToken		RI_AZ				=	"az";
+RtToken		RI_A				  =	"a";
+RtToken		RI_Z				  =	"z";
+RtToken		RI_AZ				  =	"az";
 
 RtToken		RI_PERSPECTIVE		=	"perspective";
 RtToken		RI_ORTHOGRAPHIC		=	"orthographic";
@@ -69,50 +69,50 @@ RtToken		RI_ORTHOGRAPHIC		=	"orthographic";
 RtToken		RI_HIDDEN			=	"hidden";
 RtToken		RI_PAINT			=	"paint";
 
-RtToken		RI_CONSTANT			=	"constant";
+RtToken		RI_CONSTANT		=	"constant";
 RtToken		RI_SMOOTH			=	"smooth";
 
-RtToken		RI_FLATNESS			=	"flatness";
+RtToken		RI_FLATNESS		=	"flatness";
 RtToken		RI_FOV				=	"fov";
 
-RtToken		RI_AMBIENTLIGHT		=	"ambientlight";
+RtToken		RI_AMBIENTLIGHT	=	"ambientlight";
 RtToken		RI_POINTLIGHT		=	"pointlight";
-RtToken		RI_DISTANTLIGHT		=	"distantlight";
+RtToken		RI_DISTANTLIGHT	=	"distantlight";
 RtToken		RI_SPOTLIGHT		=	"spotlight";
 
 RtToken		RI_INTENSITY		=	"intensity";
 RtToken		RI_LIGHTCOLOR		=	"lightcolor";
-RtToken		RI_FROM				=	"from";
-RtToken		RI_TO				=	"to";
+RtToken		RI_FROM				  =	"from";
+RtToken		RI_TO				    =	"to";
 RtToken		RI_CONEANGLE		=	"coneangle";
 RtToken     RI_CONEDELTAANGLE	=	"conedeltaangle";
 RtToken		RI_BEAMDISTRIBUTION	=	"beamdistribution";
 
-RtToken		RI_MATTE			=	"matte";
-RtToken		RI_METAL			=	"metal";
+RtToken		RI_MATTE			  =	"matte";
+RtToken		RI_METAL			  =	"metal";
 RtToken		RI_SHINYMETAL		=	"shinymetal";
 RtToken		RI_PLASTIC			=	"plastic";
 RtToken		RI_PAINTEDPLASTIC	=	"paintedplastic";
 
-RtToken		RI_KA				=	"Ka";
-RtToken		RI_KD				=	"Kd";
-RtToken		RI_KS				=	"Ks";
-RtToken		RI_ROUGHNESS		=	"roughness";
-RtToken		RI_KR				=	"Kr";
+RtToken		RI_KA				      =	"Ka";
+RtToken		RI_KD				      =	"Kd";
+RtToken		RI_KS				      =	"Ks";
+RtToken		RI_ROUGHNESS		  =	"roughness";
+RtToken		RI_KR				      =	"Kr";
 RtToken		RI_TEXTURENAME		=	"texturename";
 RtToken		RI_SPECULARCOLOR	=	"specularcolor";
 
-RtToken		RI_DEPTHCUE			=	"depthcue";
+RtToken		RI_DEPTHCUE		=	"depthcue";
 RtToken		RI_FOG				=	"fog";
 RtToken		RI_BUMPY			=	"bumpy";
 
-RtToken		RI_MINDISTANCE		=	"mindistance";
+RtToken		RI_MINDISTANCE	=	"mindistance";
 RtToken		RI_BACKGROUND		=	"background";
 RtToken		RI_DISTANCE			=	"distance";
 RtToken		RI_AMPLITUDE		=	"amplitude";
 
-RtToken		RI_INSIDE			=	"inside";
-RtToken		RI_OUTSIDE			=	"outside";
+RtToken		RI_INSIDE		=	"inside";
+RtToken		RI_OUTSIDE	=	"outside";
 RtToken		RI_LH				=	"lh";
 RtToken		RI_RH				=	"rh";
 
@@ -131,51 +131,49 @@ RtToken		RI_BILINEAR			=	"bilinear";
 RtToken		RI_BICUBIC			=	"bicubic";
 
 RtToken		RI_PRIMITIVE		=	"primitive";
-RtToken		RI_INTERSECTION		=	"intersection";
-RtToken		RI_UNION			=	"union";
+RtToken		RI_INTERSECTION	=	"intersection";
+RtToken		RI_UNION			  =	"union";
 RtToken		RI_DIFFERENCE		=	"difference";
 
 RtToken		RI_PERIODIC			=	"periodic";
-RtToken		RI_NOWRAP			=	"nowrap";
-RtToken		RI_NONPERIODIC		=	"nonperiodic";
-RtToken		RI_CLAMP			=	"clamp";
-RtToken		RI_BLACK			=	"black";
+RtToken		RI_NOWRAP			  =	"nowrap";
+RtToken		RI_NONPERIODIC	=	"nonperiodic";
+RtToken		RI_CLAMP			  =	"clamp";
+RtToken		RI_BLACK			  =	"black";
 
-RtToken		RI_IGNORE			=	"ignore";
-RtToken		RI_PRINT			=	"print";
-RtToken		RI_ABORT			=	"abort";
-RtToken		RI_HANDLER			=	"handler";
+RtToken		RI_IGNORE			  =	"ignore";
+RtToken		RI_PRINT			  =	"print";
+RtToken		RI_ABORT			  =	"abort";
+RtToken		RI_HANDLER		  =	"handler";
 
-RtToken		RI_ORIGIN			=	"origin";
+RtToken		RI_ORIGIN			  =	"origin";
 RtToken		RI_IDENTIFIER		=	"identifier";
-RtToken		RI_NAME				=	"name";
+RtToken		RI_NAME				  =	"name";
 
 RtToken		RI_COMMENT			=	"comment";
 RtToken		RI_STRUCTURE		=	"structure";
 RtToken		RI_VERBATIM			=	"verbatim";
 
-RtToken		RI_LINEAR			=	"linear";
-RtToken		RI_CUBIC			=	"cubic";
-RtToken		RI_WIDTH			=	"width";
+RtToken		RI_LINEAR			  =	"linear";
+RtToken		RI_CUBIC			  =	"cubic";
+RtToken		RI_WIDTH			  =	"width";
 RtToken		RI_CONSTANTWIDTH	=	"constantwidth";
 
-RtToken		RI_CATMULLCLARK		=	"catmull-clark";
-RtToken		RI_HOLE				=	"hole";
-RtToken		RI_CREASE			=	"crease";
-RtToken		RI_CORNER			=	"corner";
+RtToken		RI_CATMULLCLARK	=	"catmull-clark";
+RtToken		RI_HOLE				  =	"hole";
+RtToken		RI_CREASE			  =	"crease";
+RtToken		RI_CORNER			  =	"corner";
 RtToken		RI_INTERPOLATEBOUNDARY	=	"interpolateboundary";
 
 RtToken		RI_CURRENT			=	"current";
-RtToken		RI_WORLD			=	"world";
-RtToken		RI_OBJECT			=	"object";
-RtToken		RI_SHADER			=	"shader";
-RtToken		RI_RASTER			=	"raster";
-RtToken		RI_NDC				=	"ndc";
-RtToken		RI_SCREEN			=	"screen";
-RtToken		RI_CAMERA			=	"camera";
-RtToken		RI_EYE				=	"eye";
-
-
+RtToken		RI_WORLD			  =	"world";
+RtToken		RI_OBJECT			  =	"object";
+RtToken		RI_SHADER			  =	"shader";
+RtToken		RI_RASTER			  =	"raster";
+RtToken		RI_NDC				  =	"ndc";
+RtToken		RI_SCREEN			  =	"screen";
+RtToken		RI_CAMERA			  =	"camera";
+RtToken		RI_EYE				  =	"eye";
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -225,51 +223,51 @@ RtToken		RI_LIGHT				=	"light";
 //
 ////////////////////////////////////////////////////////////////////////
 
-RtToken		RI_NORMALDEVIATION		=	"normaldeviation";
+RtToken		RI_NORMALDEVIATION	=	"normaldeviation";
 RtToken		RI_POINTDEVIATION		=	"pointdeviation";
 
 // Dice attributes
 RtToken		RI_MINSUBDIVISION		=	"minsubdivision";
 RtToken		RI_MAXSUBDIVISION		=	"maxsubdivision";
-RtToken		RI_NUMPROBES			=	"numprobes";
-RtToken		RI_MINSPLITS			=	"minsplits";
+RtToken		RI_NUMPROBES			  =	"numprobes";
+RtToken		RI_MINSPLITS			  =	"minsplits";
 RtToken		RI_BOUNDEXPAND			=	"boundexpand";
-RtToken		RI_BINARY				=	"binary";
+RtToken		RI_BINARY				    =	"binary";
 RtToken		RI_RASTERORIENT			=	"rasterorient";
 
 // Displacementbound attributes
-RtToken		RI_SPHERE				=	"sphere";
-RtToken		RI_COORDINATESYSYTEM	=	"coordinatesystem";
+RtToken		RI_SPHERE				    =	"sphere";
+RtToken		RI_COORDINATESYSYTEM=	"coordinatesystem";
 
 // Visibility attributes
-RtToken		RI_PHOTON				  =	"photon";
-RtToken		RI_ENVIRONMENT		=	"environment";
-RtToken		RI_TRACE				  =	"trace";
-RtToken		RI_TRANSMISSION		=	"transmission";
-RtToken		RI_NEWTRANSMISSION=	"transmission";
-RtToken		RI_CAUSTICS				=	"caustics";
-RtToken		RI_SPECULAR				=	"specular";
-RtToken		RI_DIFFUSE				=	"diffuse";
-RtToken		RI_SUBSURFACE			=	"subsurface";
+RtToken		RI_PHOTON				    =	"photon";
+RtToken		RI_ENVIRONMENT		  =	"environment";
+RtToken		RI_TRACE				    =	"trace";
+RtToken		RI_TRANSMISSION		  =	"transmission";
+RtToken		RI_NEWTRANSMISSION  =	"transmission";
+RtToken		RI_CAUSTICS				  =	"caustics";
+RtToken		RI_SPECULAR				  =	"specular";
+RtToken		RI_DIFFUSE				  =	"diffuse";
+RtToken		RI_SUBSURFACE			  =	"subsurface";
 
 // 3Delight Subsurface attributes
-RtToken		RI_SS_SCATTERING	=	"scattering";
-RtToken		RI_SS_ABSORPTION	=	"absorption";
-RtToken		RI_SS_IOR			    =	"refractionindex";
-RtToken		RI_SS_SHADINGRATE =	"shadingrate";
-RtToken		RI_SS_SCALE       =	"scale";
+RtToken		RI_SS_SCATTERING	  =	"scattering";
+RtToken		RI_SS_ABSORPTION	  =	"absorption";
+RtToken		RI_SS_IOR			      =	"refractionindex";
+RtToken		RI_SS_SHADINGRATE   =	"shadingrate";
+RtToken		RI_SS_SCALE         =	"scale";
 RtToken		RI_SS_MEANFREEPATH	=	"meanfreepath";
 RtToken		RI_SS_REFLECTANCE	  =	"reflectance";
 RtToken		RI_SS_REFERENCECAMERA =	"referencecamera";
 
 // 3Delight Light attributes
 RtToken		RI_LIGHT_EMITPHOTONS = "emitphotons";
-RtToken		RI_LIGHT_SHADOWS = "shadows";
-RtToken		RI_LIGHT_SAMPLES = "samples";
+RtToken		RI_LIGHT_SHADOWS    = "shadows";
+RtToken		RI_LIGHT_SAMPLES    = "samples";
 RtToken		RI_LIGHT_SAMPLINGSTRATEGY = "samplingstrategy";
 
 // Trace attributes
-RtToken		RI_BIAS					=	"bias";
+RtToken		RI_BIAS					    =	"bias";
 RtToken		RI_DISPLACEMENTS		=	"displacements";
 RtToken		RI_MAXDIFFUSEDEPTH		=	"maxdiffusedepth";
 RtToken		RI_MAXSPECULARDEPTH		=	"maxspeculardepth";
@@ -277,20 +275,20 @@ RtToken		RI_SPECULARTHRESHOLD	=	"specularthreshold";
 RtToken		RI_CONTINUATIONBYDEFAULT	=	"continuationbydefault";
 
 // Photon attributes
-RtToken		RI_GLOBALMAP			=	"globalmap";
-RtToken		RI_CAUSTICMAP			=	"causticmap";
-RtToken		RI_ESTIMATOR			=	"estimator";
+RtToken		RI_GLOBALMAP			  =	"globalmap";
+RtToken		RI_CAUSTICMAP			  =	"causticmap";
+RtToken		RI_ESTIMATOR			  =	"estimator";
 RtToken		RI_SHADINGMODEL			=	"shadingmodel";
-RtToken		RI_ILLUMINATEFRONT		=	"illuminatefront";
-RtToken		RI_IOR					=	"ior";
-RtToken		RI_IORRANGE				=	"iorrange";
+RtToken		RI_ILLUMINATEFRONT	=	"illuminatefront";
+RtToken		RI_IOR					    =	"ior";
+RtToken		RI_IORRANGE				  =	"iorrange";
 
 // Motionfactor attribute
 RtToken		RI_MOTIONFACTOR			=	"motionfactor";
 
 // Cull attributes
-//RtToken	RI_HIDDEN				=	"hidden";
-RtToken		RI_BACKFACING			=	"backfacing";
+//RtToken	RI_HIDDEN				    =	"hidden";
+RtToken		RI_BACKFACING			  =	"backfacing";
 
 // Shade attributes
 RtToken		RI_SHADE			          =	"shade";
@@ -298,6 +296,10 @@ RtToken		RI_DIFFUSEHITMODE	      =	"diffusehitmode";
 RtToken		RI_SPECULARHITMODE	    =	"specularhitmode";
 RtToken		RI_TRANSMISSIONHITMODE	=	"transmissionhitmode";
 RtToken		RI_CAMERAHITMODE	      =	"camerahitmode";
+
+RtToken		RI_STRATEGY             = "strategy";
+RtToken		RI_VOLUMEINTERSECTIONSTRATEGY = "volumeintersectionstrategy";
+RtToken		RI_VOLUMEINTERSECTIONPRIORITY = "volumeintersectionpriority";
 
 // Grouping attributes
 RtToken		RI_MEMBERSHIP	      =	"membership";
@@ -582,7 +584,7 @@ RiContext(RtContextHandle handle) {
 
 EXTERN(RtVoid)
 RiBegin (RtToken name) {
-	if (renderMan != NULL) {
+	if ( renderMan != NULL ) {
 		error(CODE_NESTING,"Already started.\n");
 		return;
 	}
@@ -591,7 +593,7 @@ RiBegin (RtToken name) {
 	
 	//printf(":: name = %s\n", name);
 	// Parse the net string
-	if (name != NULL) {
+	if ( name != NULL ) {
 		renderMan	=	new CRibOut(name);
 	} else {
 		// If we're a runprogram, we should be writing out to stdout
@@ -1140,6 +1142,23 @@ RiSurfaceV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
 }
 
 EXTERN(RtVoid)
+RiVPSurface (char *name, ...) {
+	va_list			args;
+
+	va_start(args,name);
+	getArgs(args);
+	RiVPSurfaceV(name,nTokens,tokens,values);
+	va_end(args);
+}
+
+EXTERN(RtVoid)
+RiVPSurfaceV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
+	if (check("RiVPSurface",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
+
+	renderMan->RiVPSurfaceV(name,n,tokens,params);
+}
+
+EXTERN(RtVoid)
 RiAtmosphere (char *name, ...) {
 	va_list			args;
 
@@ -1157,6 +1176,23 @@ RiAtmosphereV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
 }
 
 EXTERN(RtVoid)
+RiVPAtmosphere (char *name, ...) {
+	va_list			args;
+
+	va_start(args,name);
+	getArgs(args);
+	RiVPAtmosphereV(name,nTokens,tokens,values);
+	va_end(args);
+}
+
+EXTERN(RtVoid)
+RiVPAtmosphereV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
+	if (check("RiVPAtmosphere",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
+
+	renderMan->RiVPAtmosphereV(name,n,tokens,params);
+}
+
+EXTERN(RtVoid)
 RiInterior (char *name, ...) {
 	va_list			args;
 
@@ -1168,9 +1204,26 @@ RiInterior (char *name, ...) {
 
 EXTERN(RtVoid)
 RiInteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
-	if (check("RiExterior",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
+	if (check("RiInterior",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
 
 	renderMan->RiInteriorV(name,n,tokens,params);
+}
+
+EXTERN(RtVoid)
+RiVPInterior (char *name, ...) {
+	va_list			args;
+
+	va_start(args,name);
+	getArgs(args);
+	RiVPInteriorV(name,nTokens,tokens,values);
+	va_end(args);
+}
+
+EXTERN(RtVoid)
+RiVPInteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
+	if (check("RiVPInterior",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
+
+	renderMan->RiVPInteriorV(name,n,tokens,params);
 }
 
 EXTERN(RtVoid)
@@ -1188,6 +1241,23 @@ RiExteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
 	if (check("RiExterior",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
 
 	renderMan->RiExteriorV(name,n,tokens,params);
+}
+
+EXTERN(RtVoid)
+RiVPExterior (char *name, ...) {
+	va_list			args;
+
+	va_start(args,name);
+	getArgs(args);
+	RiExteriorV(name,nTokens,tokens,values);
+	va_end(args);
+}
+
+EXTERN(RtVoid)
+RiVPExteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]) {
+	if (check("RiVPExterior",RENDERMAN_BLOCK | RENDERMAN_FRAME_BLOCK | RENDERMAN_WORLD_BLOCK | RENDERMAN_ATTRIBUTE_BLOCK | RENDERMAN_XFORM_BLOCK | RENDERMAN_SOLID_PRIMITIVE_BLOCK)) return;
+
+	renderMan->RiVPExteriorV(name,n,tokens,params);
 }
 
 EXTERN(RtVoid)

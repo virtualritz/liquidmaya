@@ -160,8 +160,8 @@ endif(UNIX)
 # ${ZLIB_LIBRARIES}
 target_link_libraries( liquid liquidobj $ENV{LIQRMANLIBS} ${Maya_LIBRARIES} $ENV{LIBS} ${GL_LIBRARIES} ${ZLIB_LIBRARIES})
 target_link_libraries( liquidbin liquidobj $ENV{LIQRMANLIBS} ${Maya_LIBRARIES} $ENV{LIBS} ${LIQUIDBINLIBS} ${GL_LIBRARIES} ${ZLIB_LIBRARIES})
-install(TARGETS liquid liquidbin 
-        LIBRARY DESTINATION ${TARGET_DIR} 
-        RUNTIME DESTINATION ${TARGET_DIR})
+install( TARGETS liquid liquidbin 
+         LIBRARY DESTINATION ${TARGET_DIR} 
+         RUNTIME DESTINATION ${TARGET_DIR} )
 
 

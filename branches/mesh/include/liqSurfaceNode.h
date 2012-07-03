@@ -83,9 +83,9 @@ class liqSurfaceNode : public MPxNode
     static MObject aRmanDefaults;
     static MObject aRmanArraySizes;
     static MObject aRmanLifCmds;
-	static MObject aRmanMethods;
-	static MObject aRmanIsOutput;
-	static MObject aRmanAccept;
+	  static MObject aRmanMethods;
+	  static MObject aRmanIsOutput;
+	  static MObject aRmanAccept;
 
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
@@ -105,6 +105,8 @@ class liqSurfaceNode : public MPxNode
     static MObject aDisplacementBoundSpace;
     static MObject aOutputInShadow;
     static MObject aShaderSpace;
+    
+    static MObject aVisiblePoints;
 
     static MObject aResolution;
     static MObject aRefreshPreview;
@@ -136,7 +138,7 @@ class liqSurfaceNode : public MPxNode
     static MObject aLightData;
 
     static MObject aEvaluateAtEveryFrame;
-	static MObject aPreviewGamma;
+	  static MObject aPreviewGamma;
 
     // Output attributes
     static MObject aOutColor;

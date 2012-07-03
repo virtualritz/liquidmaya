@@ -91,7 +91,7 @@ MStatus	liqGetAttr::doIt( const MArgList& args )
 	MPlug attrPlug = depNode.findPlug( attrName );
 	MObject plugObj;
 	attrPlug.getValue( plugObj );
-	if( plugObj.apiType() == MFn::kDoubleArrayData ) 
+	if ( plugObj.apiType() == MFn::kDoubleArrayData ) 
   {
 	  MFnDoubleArrayData fnDoubleArrayData( plugObj );
 	  const MDoubleArray& doubleArrayData( fnDoubleArrayData.array( &status ) );

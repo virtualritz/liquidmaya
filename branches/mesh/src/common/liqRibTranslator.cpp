@@ -2981,12 +2981,16 @@ MStatus liqRibTranslator::ribPrologue()
         // names.at(i)    - from
         // names.at(i+1)  - to
         // [\"UNC\" \"/from_path/\" \"//comp/to_path/\"]
+        #ifdef GENERIC_RIBLIB
         ss << "[\\\"" << names.at(i+2) << "\\\" \\\"" << names.at(i) << "\\\" \\\"" << names.at(i+1) << "\\\"] ";
+        #else
+        ss << "[\"" << names.at(i+2) << "\" \"" << names.at(i) << "\" \"" << names.at(i+1) << "\"] ";
+        #endif
       }
       // cout << ss.str() << endl;
       string dirmapsPath ( ss.str() );
       RtString list = const_cast< char* > ( dirmapsPath.c_str() );
-      RiOption( "searchpath", "dirmap", &list, RI_NULL );
+      RiOption( "searchpath", "string dirmap", &list, RI_NULL );
     }
     RtString list = const_cast< char* > ( liqglo_shaderPath.asChar() );
     RiOption( "searchpath", "shader", &list, RI_NULL );
@@ -4183,9 +4187,10 @@ MStatus liqRibTranslator::framePrologue( long lframe )
 #if defined ( DELIGHT ) ||  defined ( PRMAN ) || defined (PIXIE)
           //if( liquidRenderer.renderName == MString("PRMan") )
           RiDisplayChannelV( ( RtToken )channel.str().c_str(), numTokens, tokens, values );
-					if ( channel == "color Ci" ) isCiDeclared = 1;
-					else if ( channel == "float a" ) isADeclared = 1;
-					
+					if ( channel.str().c_str() == "color Ci" ) 
+            isCiDeclared = 1;
+					else if ( channel.str().c_str() == "float a" ) 
+            isADeclared = 1;
 #else
   // defined ( GENERIC_RIBLIB ) ||
    RiArchiveRecord( RI_VERBATIM, "DisplayChannel \"%s\" %s %s %s", 
@@ -4892,13 +4897,14 @@ MStatus liqRibTranslator::objectBlock()
      		RiShadingRate ( ribNode->shading.shadingRate );
 
     bool writeShaders( true );
-
+    RtString mode;
+    RtInt off( 0 );
+    RtInt on( 1 );
 		// END => EOF NOT SHADOW
     if ( !liqglo_currentJob.isShadow ) 
     {
-      RtInt off( 0 );
-      RtInt on( 1 );
-      RtString mode;
+      
+      
 			
 			if ( !m_skipShadingAttributes )
 			{
@@ -4986,6 +4992,9 @@ MStatus liqRibTranslator::objectBlock()
                 	case liqRibNode::hitmode::DIFFUSE_HITMODE_SHADER:
                   	mode = "shader";
                   	break;
+                  case liqRibNode::hitmode::DIFFUSE_HITMODE_CACHE:
+                  	mode = "cache";
+                  	break;
                 	case liqRibNode::hitmode::DIFFUSE_HITMODE_PRIMITIVE:
                 	default:
                   	mode = "primitive";
@@ -5000,6 +5009,9 @@ MStatus liqRibTranslator::objectBlock()
                   case liqRibNode::hitmode::SPECULAR_HITMODE_PRIMITIVE:
                     mode = "primitive";
                     break;
+                  case liqRibNode::hitmode::SPECULAR_HITMODE_CACHE:
+                    mode = "cache";
+                    break;
                   case liqRibNode::hitmode::SPECULAR_HITMODE_SHADER:
                   default:
                     mode = "shader";
@@ -5013,6 +5025,9 @@ MStatus liqRibTranslator::objectBlock()
                 {
                   case liqRibNode::hitmode::TRANSMISSION_HITMODE_PRIMITIVE:
                     mode = "primitive";
+                    break;
+                  case liqRibNode::hitmode::TRANSMISSION_HITMODE_CACHE:
+                    mode = "cache";
                     break;
                   case liqRibNode::hitmode::TRANSMISSION_HITMODE_SHADER:
                   default:
@@ -5030,6 +5045,9 @@ MStatus liqRibTranslator::objectBlock()
             	{
               	case liqRibNode::hitmode::CAMERA_HITMODE_PRIMITIVE:
                 	mode = "primitive";
+                	break;
+                case liqRibNode::hitmode::CAMERA_HITMODE_CACHE:
+                	mode = "cache";
                 	break;
               	case liqRibNode::hitmode::CAMERA_HITMODE_SHADER:
               	default:
@@ -5139,7 +5157,7 @@ MStatus liqRibTranslator::objectBlock()
           RiAttribute( "photon", (RtToken) "estimator", &estimator, RI_NULL );
         }
       } // liquidRenderer.supports_RAYTRACE
-
+      
 		  // 3Delight sss group
 		  if ( ribNode->delightSSS.doScatter && liquidRenderer.renderName == MString("3Delight") )
 		  {
@@ -5208,6 +5226,23 @@ MStatus liqRibTranslator::objectBlock()
       if ( ( !liqglo_currentJob.deepShadows && !m_outputShadersInShadows ) || 
 					( liqglo_currentJob.deepShadows && !m_outputShadersInDeepShadows ) )
         writeShaders = false;
+    }
+    
+    // new prman 16.x shade attributes group 
+    if ( ribNode->shade.strategy != liqRibNode::shade::SHADE_STRATEGY_GRIDS )
+    {
+      mode = "vpvolumes"; 
+      RiAttribute( "shade", (RtToken) "strategy", &mode, RI_NULL );
+    }
+    if ( ribNode->shade.volumeIntersectionStrategy != liqRibNode::shade::SHADE_VOLUMEINTERSECTIONSTRATEGY_EXCLUSIVE )
+    {
+      mode = "additive"; 
+      RiAttribute( "shade", (RtToken) "volumeintersectionstrategy", &mode, RI_NULL );
+    }
+    if ( ribNode->shade.volumeIntersectionPriority != 0.0 )
+    {
+      RtFloat value= ribNode->shade.volumeIntersectionPriority; 
+      RiAttribute( "shade", (RtToken) "volumeintersectionpriority", &value, RI_NULL );
     }
 
     if ( writeShaders ) 
@@ -5331,7 +5366,7 @@ MStatus liqRibTranslator::objectBlock()
         if ( !m_ignoreSurfaces ) 
         {
           MObject shadingGroup = ribNode->assignedShadingGroup.object();
-				MObject shader = ribNode->findShader();
+				  MObject shader = ribNode->findShader();
           //
           // here we check for regular shader nodes first
           // and assign default shader to shader-less nodes.
@@ -5659,23 +5694,39 @@ MStatus liqRibTranslator::worldPrologue()
     }
     RiWorldBegin();
     // set attributes from the globals
+#ifdef GENERIC_RIBLIB      
+      extern int useAdvancedVisibilityAttributes;
+      useAdvancedVisibilityAttributes = false;
+#endif
     if ( rt_useRayTracing )
     {
       RiArchiveRecord(RI_COMMENT,  " Ray-Tracing Attributes from liquid globals");
       RtInt on( 1 );
-      RiAttribute("visibility", "int trace", &on, RI_NULL );
-      if ( rt_traceDisplacements )
-        RiAttribute("trace", "int displacements", &on, RI_NULL );
-      if ( rt_traceSampleMotion )
-        RiAttribute("trace", "int samplemotion", &on, RI_NULL );
-      if ( rt_traceBias != 0 )
-        RiAttribute("trace", "float bias", &rt_traceBias, RI_NULL );
+      
+      if ( !liquidRenderer.supports_ADVANCED_VISIBILITY )
+      {
+        RtString trans = "shader";
+        RiAttribute( "visibility", "int trace", &on, RI_NULL );
+        RiAttribute( "visibility", "string transmission", &trans, RI_NULL );
+      }
+      else
+      {
+        #ifdef GENERIC_RIBLIB         
+        useAdvancedVisibilityAttributes = true;
+        #endif
+
+        RiAttribute( "visibility", "int diffuse", &on, RI_NULL );
+        RiAttribute( "visibility", "int specular", &on, RI_NULL );
+        RiAttribute( "visibility", "int transmission", &on, RI_NULL );
+      }
+
+      if ( rt_traceDisplacements ) RiAttribute("trace", "int displacements", &on, RI_NULL );
+      if ( rt_traceSampleMotion )  RiAttribute("trace", "int samplemotion", &on, RI_NULL );
+      if ( rt_traceBias != 0 )     RiAttribute("trace", "float bias", &rt_traceBias, RI_NULL );
       RiAttribute("trace", "int maxdiffusedepth", &rt_traceMaxDiffuseDepth, RI_NULL);
       RiAttribute("trace", "int maxspeculardepth", &rt_traceMaxSpecularDepth, RI_NULL);
-      if ( rt_irradianceMaxError != -1.0 )
-        RiAttribute( "irradiance", (RtToken) "float maxerror", &rt_irradianceMaxError, RI_NULL );
-      if ( rt_irradianceMaxPixelDist != -1.0 )
-        RiAttribute( "irradiance", (RtToken) "float maxpixeldist", &rt_irradianceMaxPixelDist, RI_NULL );
+      if ( rt_irradianceMaxError != -1.0 )     RiAttribute( "irradiance", (RtToken) "float maxerror", &rt_irradianceMaxError, RI_NULL );
+      if ( rt_irradianceMaxPixelDist != -1.0 ) RiAttribute( "irradiance", (RtToken) "float maxpixeldist", &rt_irradianceMaxPixelDist, RI_NULL );
 
       // ymesh: add photon/caustic map attribites
       if (  rt_photonGlobalHandle != "" || rt_causticGlobalHandle != "") 

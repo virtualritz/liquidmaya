@@ -876,6 +876,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
         haveSpriteNumsArray = true;
         spriteNumPlug.getValue( spriteNumObject );
         spriteNumArray.setObject( spriteNumObject );
+        cout << "DBG> spriteNumPP found length = " << spriteNumArray.length() << endl;
       } 
       else 
       {
@@ -884,6 +885,7 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
         {
           haveSpriteNums = true;
           spriteNumPlug.getValue( spriteNum );
+          cout << "DBG> spriteNum found spriteNum = " << spriteNum << endl;
         }
       }
 
@@ -959,38 +961,59 @@ liqRibParticleData::liqRibParticleData( MObject partobj )
                                   posArray[m_validParticles[part_num]].x,
                                   posArray[m_validParticles[part_num]].y,
                                   posArray[m_validParticles[part_num]].z );
-        if ( haveSpriteNumsArray ) 
-          spriteNumParameter.setTokenFloat( part_num, spriteNumArray[m_validParticles[part_num]]);
+        if ( haveSpriteNumsArray )
+        {   
+          float spriteNumPP = spriteNumArray[ m_validParticles[ part_num ] ];
+          spriteNumParameter.setTokenFloat( part_num, spriteNumPP );
+          cout << "DBG> part_num = " << part_num << " spriteNumArray[ m_validParticles[ part_num ] ] = " << spriteNumArray[ m_validParticles[ part_num ] ] << endl;
+          
+        }
         else if ( haveSpriteNums ) 
+        {  
           spriteNumParameter.setTokenFloat( part_num, spriteNum );
-        
+        }
         if ( haveSpriteTwistArray ) 
+        {  
           spriteTwistParameter.setTokenFloat( part_num, spriteTwistArray[m_validParticles[part_num]] );
+        }
         else if ( haveSpriteTwist ) 
+        {  
           spriteTwistParameter.setTokenFloat( part_num, spriteTwist);
-        
+        }
         if ( haveSpriteScaleXArray ) 
+        {  
           spriteScaleXParameter.setTokenFloat(part_num, spriteScaleXArray[m_validParticles[part_num]] );
-        else if ( haveSpriteScaleX ) 
+        }
+        else if ( haveSpriteScaleX )
+        {   
           spriteScaleXParameter.setTokenFloat( part_num, spriteScaleX);
-        
+        }
         if ( haveSpriteScaleYArray ) 
+        {  
           spriteScaleYParameter.setTokenFloat( part_num, spriteScaleYArray[m_validParticles[part_num]] );
+        }  
         else if ( haveSpriteScaleY ) 
+        {  
           spriteScaleYParameter.setTokenFloat( part_num, spriteScaleY);
+        }  
       }
       tokenPointerArray.push_back( Pparameter );
-      if ( haveSpriteNumsArray || haveSpriteNums ) 
+      if ( haveSpriteNumsArray || haveSpriteNums )
+      {   
         tokenPointerArray.push_back( spriteNumParameter );
-      
-      if ( haveSpriteTwistArray || haveSpriteTwist ) 
+      }
+      if ( haveSpriteTwistArray || haveSpriteTwist )
+      {   
         tokenPointerArray.push_back( spriteTwistParameter );
-      
+      }
       if ( haveSpriteScaleXArray || haveSpriteScaleX ) 
+      {  
         tokenPointerArray.push_back( spriteScaleXParameter );
-      
+      }
       if ( haveSpriteScaleYArray || haveSpriteScaleY ) 
+      {  
         tokenPointerArray.push_back( spriteScaleYParameter );
+      }  
 #endif
 
     } // case MPTSprites
@@ -1354,8 +1377,12 @@ void liqRibParticleData::write()
           if ( posAttr != -1 ) 
           {
             float *P( &( ( RtFloat* ) pointerArray[ posAttr ] )[ ui * 3 ] );
-            float spriteNum( numAttr == -1 ? 0 : ( ( RtFloat* )pointerArray[ numAttr ] )[ ui ] );
-
+            float spriteNumPP = 0;
+            if ( numAttr != -1 ) 
+              spriteNumPP = ( ( RtFloat* )pointerArray[ numAttr ] )[ ui ];
+              
+            cout << ">>DBG write spriteNumPP = " << spriteNumPP << endl;
+            
             float x0 = P[ 0 ] - spriteRadiusX * right[ 0 ] + spriteRadiusY * up[ 0 ];
             float y0 = P[ 1 ] - spriteRadiusX * right[ 1 ] + spriteRadiusY * up[ 1 ];
             float z0 = P[ 2 ] - spriteRadiusX * right[ 2 ] + spriteRadiusY * up[ 2 ];
@@ -1373,12 +1400,20 @@ void liqRibParticleData::write()
                                   x1, y1, z1,
                                   x2, y2, z2,
                                   x3, y3, z3 };
-            RiPatch( "bilinear", "P", &patch, "float spriteNum", &spriteNum, RI_NULL );
+            // !!! if not GENERIC_RIBLIB use RiPatch( "bilinear", "P", &patch, "float spriteNum", &spriteNum, RI_NULL );                                  
+            // RiPatch( "bilinear", "P", &patch, "float spriteNum", (RtFloat*)&spriteNumPP, RI_NULL );
+            // Patch "bilinear"  "P" [0.446265 0.316269 -0.647637 1.27725 0.316269 -1.20393 0.615752 -0.636188 -0.39446 1.44674 -0.636188 -0.950756 ]  "float spriteNum" [2 0 0 0 ]
+            RiArchiveRecord( RI_VERBATIM, "Patch \"bilinear\" \"P\" [%f %f %f %f %f %f %f %f %f %f %f %f] \"float spriteNum\" [%f]", 
+                                          x0, y0, z0,x1, y1, z1, x2, y2, z2,x3, y3, z3,
+                                            spriteNumPP ); 
+            RiAttributeEnd();
           } 
-          else 
+          else
+          {   
             RiIdentity();
+          }
         }
-				RiAttributeEnd();
+				// RiAttributeEnd();
       }
       break;
 
@@ -1654,7 +1689,8 @@ bool liqRibParticleData::writeNextGrain()
           if ( posAttr != -1 ) 
           {
             float *P( &( ( RtFloat* ) pointerArray[ posAttr ] )[ grain * 3 ] );
-            float spriteNum( numAttr == -1 ? 0 : ( ( RtFloat* )pointerArray[ numAttr ] )[ grain ] );
+            float spriteNum( (numAttr == -1) ? 0 : ( ( RtFloat* )pointerArray[ numAttr ] )[ grain ] );
+            cout << ">DBG write next grain spriteNum = " << spriteNum << endl;
 
             float x0 = P[ 0 ] - spriteRadiusX * right[ 0 ] + spriteRadiusY * up[ 0 ];
             float y0 = P[ 1 ] - spriteRadiusX * right[ 1 ] + spriteRadiusY * up[ 1 ];
@@ -1673,7 +1709,10 @@ bool liqRibParticleData::writeNextGrain()
                                   x1, y1, z1,
                                   x2, y2, z2,
                                   x3, y3, z3 };
-            RiPatch( "bilinear", "P", &patch, "float spriteNum", &spriteNum, RI_NULL );
+            // RiPatch( "bilinear", "P", &patch, "float spriteNum", &spriteNum, RI_NULL );
+             RiArchiveRecord( RI_VERBATIM, "Patch \"bilinear\" \"P\" [%f %f %f %f %f %f %f %f %f %f %f %f] \"float spriteNum\" [%f]", 
+                                          x0, y0, z0,x1, y1, z1, x2, y2, z2,x3, y3, z3,
+                                            spriteNum ); 
           } 
 					else 
             RiIdentity();
@@ -1740,7 +1779,7 @@ void liqRibParticleData::addAdditionalParticleParameters( MObject node )
   addAdditionalVectorParameters( nodeFn, "rmanC", rColor );
 }
 
-void liqRibParticleData::addAdditionalFloatParameters( MFnDependencyNode nodeFn )
+void liqRibParticleData::addAdditionalFloatParameters( MFnDependencyNode &nodeFn )
 {
   MStringArray foundAttributes = findAttributesByPrefix( "rmanF", nodeFn );
   MStatus  status;
@@ -1783,7 +1822,7 @@ void liqRibParticleData::addAdditionalFloatParameters( MFnDependencyNode nodeFn 
   }
 }
 
-void liqRibParticleData::addAdditionalVectorParameters( MFnDependencyNode nodeFn, const string& prefix, ParameterType type )
+void liqRibParticleData::addAdditionalVectorParameters( MFnDependencyNode &nodeFn, const string& prefix, ParameterType type )
 {
   MStringArray foundAttributes = findAttributesByPrefix( prefix.c_str(), nodeFn );
   MStatus  status;

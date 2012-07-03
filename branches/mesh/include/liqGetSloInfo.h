@@ -72,6 +72,12 @@ typedef enum {
     SHADER_DETAIL_UNIFORM
 } SHADER_DETAIL;
 
+typedef enum {
+    VOLUME_TYPE_ATMOSPHERE,
+    VOLUME_TYPE_INTERIOR,
+    VOLUME_TYPE_EXTERIOR
+} VOLUME_TYPE;
+
 
 class liqGetSloInfo : public MPxCommand {
 public:

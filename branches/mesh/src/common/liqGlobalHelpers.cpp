@@ -31,12 +31,13 @@
 */
 
 // Maya Headers
+#include <maya/MGlobal.h>
 #include <maya/MPlug.h>
 #include <maya/MFnAttribute.h>
 #include <maya/MFnMesh.h>
+#include <maya/MFnDependencyNode.h>
 #include <maya/MItSelectionList.h>
 #include <maya/MItDependencyNodes.h>
-#include <maya/MGlobal.h>
 #include <maya/MFnDoubleArrayData.h>
 #include <maya/MFnStringArrayData.h>
 #include <maya/MFnIntArrayData.h>
@@ -115,12 +116,13 @@ MStringArray findAttributesByPrefix( const char* pPrefix, MFnDependencyNode& Nod
 
 /** Checks if the given object is double-sided.
  */
-bool isObjectTwoSided( const MDagPath & path )
+bool isObjectTwoSided ( const MDagPath & path )
 {
   MStatus status;
-  MFnDagNode fnDN( path );
+  MFnDagNode fnDN ( path );
+  
   bool doubleSided = true;
-  liquidGetPlugValue( fnDN, "doubleSided", doubleSided, status );
+  liquidGetPlugValue ( fnDN, "doubleSided", doubleSided, status );
   return  doubleSided;
 }
 
@@ -1301,7 +1303,7 @@ MString parseLiquidRibRequest( MStringArray requestArray, MString attr )
   return combinedRequest;
 }
 // liquidGetPlugValue bool
-MStatus liquidGetPlugValue( MFnDependencyNode node, 
+MStatus liquidGetPlugValue( MFnDependencyNode &node, 
                             const char *name, bool &value, MStatus &status )
 {
   status.clear();
@@ -1310,7 +1312,7 @@ MStatus liquidGetPlugValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugValue int
-MStatus liquidGetPlugValue( MFnDependencyNode node, 
+MStatus liquidGetPlugValue( MFnDependencyNode &node, 
                             const char *name, int &value, MStatus &status )
 {
   status.clear();
@@ -1319,7 +1321,7 @@ MStatus liquidGetPlugValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugValue RtFloat
-MStatus liquidGetPlugValue( MFnDependencyNode node, 
+MStatus liquidGetPlugValue( MFnDependencyNode &node, 
                             const char *name, RtFloat &value, MStatus &status )
 {
   status.clear();
@@ -1328,7 +1330,7 @@ MStatus liquidGetPlugValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugValue double
-MStatus liquidGetPlugValue( MFnDependencyNode node, 
+MStatus liquidGetPlugValue( MFnDependencyNode &node, 
                             const char *name, double &value, MStatus &status )
 {
   status.clear();
@@ -1337,7 +1339,7 @@ MStatus liquidGetPlugValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugValue MString
-MStatus liquidGetPlugValue( MFnDependencyNode node, 
+MStatus liquidGetPlugValue( MFnDependencyNode &node, 
                             const char *name, MString &value, MStatus &status, bool parsed )
 {
   status.clear();
@@ -1351,7 +1353,7 @@ MStatus liquidGetPlugValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugValue MVector
-MStatus liquidGetPlugValue( MFnDependencyNode node, 
+MStatus liquidGetPlugValue( MFnDependencyNode &node, 
                             const char *name, MVector &value, MStatus &status )
 {
   status.clear();
@@ -1365,7 +1367,7 @@ MStatus liquidGetPlugValue( MFnDependencyNode node,
    return status;
 }
 // liquidGetPlugNumElements
-unsigned int liquidGetPlugNumElements( MFnDependencyNode node, const char *name, MStatus *status )
+unsigned int liquidGetPlugNumElements( MFnDependencyNode &node, const char *name, MStatus *status )
 {
   unsigned int num = 0;
   status->clear();
@@ -1378,7 +1380,7 @@ unsigned int liquidGetPlugNumElements( MFnDependencyNode node, const char *name,
   return num;
 }
 // liquidGetPlugElementValue MString
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, 
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, 
                                    unsigned int ind, 
                                    const char *name, 
                                    MString &value, 
@@ -1395,7 +1397,7 @@ MStatus liquidGetPlugElementValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugElementValue int
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, 
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, 
                                    unsigned int ind, 
                                    const char *name, 
                                    int &value, 
@@ -1412,7 +1414,7 @@ MStatus liquidGetPlugElementValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugElementValue bool
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, 
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, 
                                    unsigned int ind, 
                                    const char *name, 
                                    bool &value, 
@@ -1429,7 +1431,7 @@ MStatus liquidGetPlugElementValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugElementValue float
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, 
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, 
                                    unsigned int ind, 
                                    const char *name, 
                                    float &value, 
@@ -1446,7 +1448,7 @@ MStatus liquidGetPlugElementValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugElementValue MStringArray
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, 
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, 
                                    unsigned int ind, 
                                    const char *name, 
                                    MStringArray &array, 
@@ -1469,7 +1471,7 @@ MStatus liquidGetPlugElementValue( MFnDependencyNode node,
   return status;
 }
 // liquidGetPlugElementValue MIntArray
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, 
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, 
                                    unsigned int ind, 
                                    const char *name, 
                                    MIntArray &array, 
