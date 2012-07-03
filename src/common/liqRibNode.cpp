@@ -125,6 +125,10 @@ liqRibNode::liqRibNode( liqRibNodePtr instanceOfNode,
   visibility.newtransmission = false;
   visibility.midpoint       = true;
   visibility.photon         = false;
+  
+  shade.strategy = shade::SHADE_STRATEGY_GRIDS;
+  shade.volumeIntersectionStrategy = shade::SHADE_VOLUMEINTERSECTIONSTRATEGY_EXCLUSIVE;
+  shade.volumeIntersectionPriority = 0.0;
 
   hitmode.diffuse           = hitmode::DIFFUSE_HITMODE_PRIMITIVE;
   hitmode.specular          = hitmode::SPECULAR_HITMODE_SHADER;
@@ -344,6 +348,14 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if ( visibility.photon == false ) 
         liquidGetPlugValue( nodePeeker, "liqVisibilityPhoton", visibility.photon, status );
       
+      // ymesh: new shade attrributes in prman 16.x
+      if ( shade.strategy == shade::SHADE_STRATEGY_GRIDS ) 
+        liquidGetPlugValue( nodePeeker, "liqShadeStrategy", (int&)shade.strategy, status ); 
+      if ( shade.volumeIntersectionStrategy == shade::SHADE_VOLUMEINTERSECTIONSTRATEGY_EXCLUSIVE ) 
+        liquidGetPlugValue( nodePeeker, "liqVolumeIntersectionStrategy", (int&)shade.volumeIntersectionStrategy, status ); 
+      if ( shade.volumeIntersectionPriority == 0.0 ) 
+        liquidGetPlugValue( nodePeeker, "liqVolumeIntersectionPriority", shade.volumeIntersectionPriority, status ); 
+
       // philippe : new shading hit-mode attributes in prman 12.5
 
       if ( hitmode.camera == hitmode::CAMERA_HITMODE_SHADER ) 
@@ -556,15 +568,15 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
       if ( ignoreShapes == false )
         liquidGetPlugValue( nodePeeker, "liqIgnoreShapes", ignoreShapes, status );
  
-      MFnDependencyNode nodeFn( nodePeeker );
+      // MFnDependencyNode nodeFn( nodePeeker );
 
       // find the attributes
-      MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodeFn );
-      MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodeFn );
-      MStringArray vectorAttributesFound = findAttributesByPrefix( "rmanV", nodeFn );
-      MStringArray normalAttributesFound = findAttributesByPrefix( "rmanN", nodeFn );
-      MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodeFn );
-      MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodeFn );
+      MStringArray floatAttributesFound  = findAttributesByPrefix( "rmanF", nodePeeker );
+      MStringArray pointAttributesFound  = findAttributesByPrefix( "rmanP", nodePeeker );
+      MStringArray vectorAttributesFound = findAttributesByPrefix( "rmanV", nodePeeker );
+      MStringArray normalAttributesFound = findAttributesByPrefix( "rmanN", nodePeeker );
+      MStringArray colorAttributesFound  = findAttributesByPrefix( "rmanC", nodePeeker );
+      MStringArray stringAttributesFound = findAttributesByPrefix( "rmanS", nodePeeker );
 
       if ( floatAttributesFound.length() > 0 ) 
       {
@@ -572,20 +584,22 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         {
           liqTokenPointer tokenPointerPair;
           MString cutString( floatAttributesFound[i].substring( 5, floatAttributesFound[i].length() ) );
-          MPlug fPlug( nodeFn.findPlug( floatAttributesFound[i] ) );
+          MPlug fPlug( nodePeeker.findPlug( floatAttributesFound[i] ) );
           MObject plugObj;
           status = fPlug.getValue( plugObj );
+          
           if ( plugObj.apiType() == MFn::kDoubleArrayData ) 
           {
             MFnDoubleArrayData fnDoubleArrayData( plugObj );
             const MDoubleArray& doubleArrayData( fnDoubleArrayData.array( &status ) );
             tokenPointerPair.set( cutString.asChar(), rFloat, doubleArrayData.length() );
+            
             for ( unsigned kk( 0 ); kk < doubleArrayData.length(); kk++ ) 
               tokenPointerPair.setTokenFloat( kk, doubleArrayData[kk] );
           } 
           else 
           {
-            if( fPlug.isArray() ) 
+            if ( fPlug.isArray() ) 
             {
               unsigned nbElts( fPlug.evaluateNumElements() );
               float floatValue;
@@ -621,7 +635,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         {
           liqTokenPointer tokenPointerPair;
           MString cutString( pointAttributesFound[i].substring( 5, pointAttributesFound[i].length() ) );
-          MPlug pPlug( nodeFn.findPlug( pointAttributesFound[i] ) );
+          MPlug pPlug( nodePeeker.findPlug( pointAttributesFound[i] ) );
           MObject plugObj;
           status = pPlug.getValue( plugObj );
           if ( plugObj.apiType() == MFn::kPointArrayData ) 
@@ -647,9 +661,9 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
             tokenPointerMap[ tokenPointerPair.getDetailedTokenName() ] = tokenPointerPair;
         }
       }
-      parseVectorAttributes( nodeFn, vectorAttributesFound, rVector );
-      parseVectorAttributes( nodeFn, normalAttributesFound, rNormal );
-      parseVectorAttributes( nodeFn, colorAttributesFound,  rColor  );
+      parseVectorAttributes( nodePeeker, vectorAttributesFound, rVector );
+      parseVectorAttributes( nodePeeker, normalAttributesFound, rNormal );
+      parseVectorAttributes( nodePeeker, colorAttributesFound,  rColor  );
 
       if ( stringAttributesFound.length() > 0 ) 
       {
@@ -657,7 +671,7 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
         {
           liqTokenPointer tokenPointerPair;
           MString cutString( stringAttributesFound[i].substring( 5, stringAttributesFound[i].length() ) );
-          MPlug sPlug( nodeFn.findPlug( stringAttributesFound[i] ) );
+          MPlug sPlug( nodePeeker.findPlug( stringAttributesFound[i] ) );
           MObject plugObj;
           status = sPlug.getValue( plugObj );
           tokenPointerPair.set( cutString.asChar(), rString );
@@ -665,12 +679,13 @@ void liqRibNode::set( const MDagPath &path, int sample, ObjectType objType, int 
           sPlug.getValue( stringVal );
 					stringVal = parseString( stringVal );
           tokenPointerPair.setTokenString( 0, stringVal.asChar() );
+          
           if ( tokenPointerMap.end() == tokenPointerMap.find( tokenPointerPair.getDetailedTokenName() ) ) 
             tokenPointerMap[ tokenPointerPair.getDetailedTokenName() ] = tokenPointerPair;
         }
       }
     } // if( dagSearcher.apiType( &status ) == MFn::kTransform )
-  } while( dagSearcher.length() > 0 );
+  } while ( dagSearcher.length() > 0 );
 
 	// Raytracing Sets membership handling
 	if ( grouping.membership.empty() )

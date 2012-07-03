@@ -111,19 +111,19 @@ MString parseLiquidRibRequest( MStringArray requestArray, MString attr );
 void initalizeShaderHandlerGenerator();
 string getUniqueShaderHandler();
 
-MStatus liquidGetPlugValue( MFnDependencyNode node, const char *name, bool &value, MStatus &status );
-MStatus liquidGetPlugValue( MFnDependencyNode node, const char *name, int &value, MStatus &status );
-MStatus liquidGetPlugValue( MFnDependencyNode node, const char *name, RtFloat &value, MStatus &status );
-MStatus liquidGetPlugValue( MFnDependencyNode node, const char *name, double &value, MStatus &status );
-MStatus liquidGetPlugValue( MFnDependencyNode node, const char *name, MString &value, MStatus &status, bool parsed = false );
-MStatus liquidGetPlugValue( MFnDependencyNode node, const char *name, MVector &value, MStatus &status );
-unsigned int liquidGetPlugNumElements( MFnDependencyNode node, const char *name, MStatus *status );
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, unsigned int ind, const char *name, MString &value, MStatus &status );
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, unsigned int ind, const char *name, int &value, MStatus &status );
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, unsigned int ind, const char *name, bool &value, MStatus &status );
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, unsigned int ind, const char *name, float &value, MStatus &status );
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, unsigned int ind, const char *name, MStringArray &array, MStatus &status );
-MStatus liquidGetPlugElementValue( MFnDependencyNode node, unsigned int ind, const char *name, MIntArray &array, MStatus &status );
+MStatus liquidGetPlugValue( MFnDependencyNode &node, const char *name, bool &value, MStatus &status );
+MStatus liquidGetPlugValue( MFnDependencyNode &node, const char *name, int &value, MStatus &status );
+MStatus liquidGetPlugValue( MFnDependencyNode &node, const char *name, RtFloat &value, MStatus &status );
+MStatus liquidGetPlugValue( MFnDependencyNode &node, const char *name, double &value, MStatus &status );
+MStatus liquidGetPlugValue( MFnDependencyNode &node, const char *name, MString &value, MStatus &status, bool parsed = false );
+MStatus liquidGetPlugValue( MFnDependencyNode &node, const char *name, MVector &value, MStatus &status );
+unsigned int liquidGetPlugNumElements( MFnDependencyNode &node, const char *name, MStatus *status );
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, unsigned int ind, const char *name, MString &value, MStatus &status );
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, unsigned int ind, const char *name, int &value, MStatus &status );
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, unsigned int ind, const char *name, bool &value, MStatus &status );
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, unsigned int ind, const char *name, float &value, MStatus &status );
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, unsigned int ind, const char *name, MStringArray &array, MStatus &status );
+MStatus liquidGetPlugElementValue( MFnDependencyNode &node, unsigned int ind, const char *name, MIntArray &array, MStatus &status );
 
 class arrayDeleter // needed to free a shared/scoped/weak_ptr to an array
 {

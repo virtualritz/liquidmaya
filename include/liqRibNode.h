@@ -132,7 +132,8 @@ class liqRibNode {
       bool     matte;
       bool     doubleShaded;
     } shading;
-
+    
+    
 
     struct trace {
       bool      sampleMotion;
@@ -161,28 +162,46 @@ class liqRibNode {
       } Transmission;
 	  Transmission transmission;
     } visibility;
+    
+    struct shade {
+      typedef enum {
+        SHADE_STRATEGY_GRIDS      = 0,
+        SHADE_STRATEGY_VPVOLUMES  = 1   
+      } Strategy;
+      Strategy strategy;
+      typedef enum {
+        SHADE_VOLUMEINTERSECTIONSTRATEGY_EXCLUSIVE = 0,
+        SHADE_VOLUMEINTERSECTIONSTRATEGY_ADDITIVE = 1   
+      } VolumeIntersectionStrategy;
+      VolumeIntersectionStrategy volumeIntersectionStrategy;
+      float volumeIntersectionPriority; 
+    } shade;
 
     struct hitmode {
       typedef enum {
         CAMERA_HITMODE_PRIMITIVE  = 0,
-        CAMERA_HITMODE_SHADER     = 1
+        CAMERA_HITMODE_SHADER     = 1,
+        CAMERA_HITMODE_CACHE      = 2
       } Camera;
-	  Camera camera;
+	    Camera camera;
       typedef enum {
         DIFFUSE_HITMODE_PRIMITIVE  = 0,
-        DIFFUSE_HITMODE_SHADER     = 1
+        DIFFUSE_HITMODE_SHADER     = 1,
+        DIFFUSE_HITMODE_CACHE      = 2
       } Diffuse;
-	  Diffuse diffuse;
+	    Diffuse diffuse;
       typedef enum {
         SPECULAR_HITMODE_PRIMITIVE  = 0,
-        SPECULAR_HITMODE_SHADER     = 1
+        SPECULAR_HITMODE_SHADER     = 1,
+        SPECULAR_HITMODE_CACHE      = 2
       } Specular;
-	  Specular specular;
+	    Specular specular;
       typedef enum {
         TRANSMISSION_HITMODE_PRIMITIVE  = 0,
-        TRANSMISSION_HITMODE_SHADER     = 1
+        TRANSMISSION_HITMODE_SHADER     = 1,
+        TRANSMISSION_HITMODE_CACHE      = 2
       } Transmission;
-	  Transmission transmission;
+	    Transmission transmission;
     } hitmode;
 
     struct irradiance {
@@ -197,7 +216,7 @@ class liqRibNode {
         FILEMODE_WRITE = 2,
         FILEMODE_READ_WRITE = 3
       } FileMode;
-	  FileMode fileMode;
+	    FileMode fileMode;
     } irradiance;
 
     struct photon {

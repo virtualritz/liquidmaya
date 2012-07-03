@@ -234,10 +234,18 @@ EXTERN(RtToken)		RI_BACKFACING;
 
 // Shade attributes
 EXTERN(RtToken)		RI_SHADE;
+
 EXTERN(RtToken)		RI_DIFFUSEHITMODE;
 EXTERN(RtToken)		RI_SPECULARHITMODE;
 EXTERN(RtToken)		RI_TRANSMISSIONHITMODE;
 EXTERN(RtToken)		RI_CAMERAHITMODE;
+
+EXTERN(RtToken)		RI_STRATEGY;
+EXTERN(RtToken)		RI_GRIDS;
+EXTERN(RtToken)		RI_VPVOLUMES;
+
+EXTERN(RtToken)		RI_VOLUMEINTERSECTIONSTRATEGY;
+EXTERN(RtToken)		RI_VOLUMEINTERSECTIONPRIORITY;
 
 // Grouping attributes
 EXTERN(RtToken)		RI_MEMBERSHIP;
@@ -397,16 +405,24 @@ EXTERN(RtLightHandle)
 
 EXTERN(RtVoid)
     RiIlluminate (RtLightHandle light, RtBoolean onoff),
-    RiShader(char *name, RtToken handle, ...),
-	  RiShaderV(char *name, RtToken handle, RtInt n, RtToken tokens[], RtPointer parms[]),
+    RiShader (char *name, RtToken handle, ...),
+	  RiShaderV (char *name, RtToken handle, RtInt n, RtToken tokens[], RtPointer parms[]),
     RiSurface (char *name, ...),
     RiSurfaceV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
+    RiVPSurface (char *name, ...),
+    RiVPSurfaceV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
     RiAtmosphere (char *name, ...),
     RiAtmosphereV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
+    RiVPAtmosphere (char *name, ...),
+    RiVPAtmosphereV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
     RiInterior (char *name, ...),
     RiInteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
+    RiVPInterior (char *name, ...),
+    RiVPInteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
     RiExterior (char *name, ...),
     RiExteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
+    RiVPExterior (char *name, ...),
+    RiVPExteriorV (char *name, RtInt n, RtToken tokens[], RtPointer params[]),
     RiShadingRate (RtFloat size),
     RiShadingInterpolation (RtToken type),
     RiMatte (RtBoolean onoff);

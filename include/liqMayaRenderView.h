@@ -88,8 +88,8 @@ MObject getNode(MString name,MStatus *returnStatus);
 #define INFO(EXPR,ENDL) {cout<<#EXPR<<" "<<EXPR<<" ";if(ENDL)cout<<endl;}
 #define CHECKERR(STAT,MSG)       \
     if ( MS::kSuccess != STAT ) {   \
-	cerr <<"Failed: " <<MSG << " : "<<STAT<< endl;        \
-            return MS::kFailure;    \
+			cerr << "Failed: " <<MSG << " : "<<STAT<< endl;        \
+      return MS::kFailure;    \
     }
 
 #define CHECKERRNO(STATUS,MSG,ACTION){ if(STATUS == -1){perror(MSG); ACTION; return MS::kFailure;}}

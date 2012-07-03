@@ -161,6 +161,11 @@ void		CRiInterface::RiInteriorV(char * /*name*/,int /*n*/,char * /*tokens*/ [],v
 void		CRiInterface::RiExteriorV(char * /*name*/,int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {
 }
 
+void		CRiInterface::RiVPSurfaceV(char * /*name*/,int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {}
+void		CRiInterface::RiVPAtmosphereV(char * /*name*/,int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {}
+void		CRiInterface::RiVPInteriorV(char * /*name*/,int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {}
+void		CRiInterface::RiVPExteriorV(char * /*name*/,int /*n*/,char * /*tokens*/ [],void * /*params*/ []) {}
+
 void		CRiInterface::RiShadingRate(float /*size*/) {
 }
 
@@ -388,7 +393,7 @@ void		CRiInterface::RiVisibility(int,float [][3],float [][3],float [][3]) {
 }
 
 void		CRiInterface::RiError(int c,int s,char *m) {
-	if (errorHandler != NULL) {
+	if ( errorHandler != NULL ) {
 		errorHandler(c,s,m);
 	}
 }

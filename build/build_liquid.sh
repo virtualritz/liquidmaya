@@ -1,9 +1,9 @@
 #!/bin/bash
 tmpDir="tmp"
-if [ -d $tmpDir ]; then
+#if [ -d $tmpDir ]; then
 #   rm -rf $tmpDir
-   echo "$tmpDir"
-fi
+#   echo "$tmpDir"
+#fi
 #mkdir -p $tmpDir
 cd $tmpDir
 
@@ -13,8 +13,8 @@ cd $tmpDir
 #export MAYA_VERSION=2008
 #export MAYA_VERSION=2009
 #export MAYA_VERSION=2010
-export MAYA_VERSION=2011
-#export MAYA_VERSION=2012
+#export MAYA_VERSION=2011
+export MAYA_VERSION=2012
 
 # Set Maya architecture
 #export ARCH=
@@ -50,8 +50,8 @@ function build_liquid(){
 	cd ..
 }
 
-export LIQRMAN=generic
-# LIQRMAN=PRMan
+#export LIQRMAN=generic
+export LIQRMAN=PRMan
 # LIQRMAN=3Delight
 # LIQRMAN=pixie
 # LIQRMAN=aqsis

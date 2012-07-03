@@ -90,6 +90,12 @@ public:
 	virtual	void		RiAtmosphereV(char *name,int n,char *tokens[],void *params[]);
 	virtual	void		RiInteriorV(char *name,int n,char *tokens[],void *params[]);
 	virtual	void		RiExteriorV(char *name,int n,char *tokens[],void *params[]);
+	
+	virtual	void		RiVPSurfaceV(char *name,int n,char *tokens[],void *params[]);
+	virtual	void		RiVPAtmosphereV(char *name,int n,char *tokens[],void *params[]);
+	virtual	void		RiVPInteriorV(char *name,int n,char *tokens[],void *params[]);
+	virtual	void		RiVPExteriorV(char *name,int n,char *tokens[],void *params[]);
+	
 	virtual	void		RiShadingRate(float size);
 	virtual	void		RiShadingInterpolation(char * type);
 	virtual	void		RiMatte(int onoff);

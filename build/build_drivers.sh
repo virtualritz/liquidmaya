@@ -13,8 +13,8 @@ cd $tmpDir
 export ARCH=-x64
 
 #export LIQRMAN=generic
-#export LIQRMAN=PRMan
-export LIQRMAN=3Delight
+export LIQRMAN=PRMan
+#export LIQRMAN=3Delight
 # LIQRMAN=pixie
 # LIQRMAN=aqsis
 # LIQRMAN=air
@@ -98,7 +98,8 @@ case $LIQRMAN in
 		export LIQDPYNAME=d_liqmaya
 		export LIQDPYSUFFIX=.so
 		export LIQDPYSRC=liqMayaDisplayDriver.cpp
-		export LIQRMANLIBS=prmansdk
+		#export LIQRMANLIBS=prmansdk
+    export LIQRMANLIBS=prman
 		export LIBS=
 		export LIQRMANINC=$LIQRMANPATH/include
 		export LIQRMANLIB=$RMANTREE/lib

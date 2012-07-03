@@ -667,9 +667,21 @@ void    CRibOut::RiSurfaceV(char *name,int n,char *tokens[],void *params[])
   writePL(n,tokens,params);
 }
 
+void CRibOut::RiVPSurfaceV ( char *name,int n,char *tokens[],void *params[] ) 
+{
+  out("VPSurface \"%s\" ",name);
+  writePL(n,tokens,params);
+}
+
 void    CRibOut::RiAtmosphereV(char *name,int n,char *tokens[],void *params[]) 
 {
   out("Atmosphere \"%s\" ",name);
+  writePL(n,tokens,params);
+}
+
+void    CRibOut::RiVPAtmosphereV(char *name,int n,char *tokens[],void *params[]) 
+{
+  out("VPAtmosphere \"%s\" ",name);
   writePL(n,tokens,params);
 }
 
@@ -679,9 +691,21 @@ void    CRibOut::RiInteriorV(char *name,int n,char *tokens[],void *params[])
   writePL(n,tokens,params);
 }
 
+void    CRibOut::RiVPInteriorV(char *name,int n,char *tokens[],void *params[]) 
+{
+  out("VPInterior \"%s\" ",name);
+  writePL(n,tokens,params);
+}
+
 void    CRibOut::RiExteriorV(char *name,int n,char *tokens[],void *params[]) 
 {
   out("Exterior \"%s\" ",name);
+  writePL(n,tokens,params);
+}
+
+void    CRibOut::RiVPExteriorV(char *name,int n,char *tokens[],void *params[]) 
+{
+  out("VPExterior \"%s\" ",name);
   writePL(n,tokens,params);
 }
 
@@ -1009,6 +1033,9 @@ void    CRibOut::RiAttributeV(char *name,int n,char *tokens[],void *params[])
         attributeCheckString(RI_SPECULARHITMODE)
         attributeCheckString(RI_TRANSMISSIONHITMODE)
         attributeCheckString(RI_CAMERAHITMODE)
+        attributeCheckString(RI_STRATEGY)
+        attributeCheckString(RI_VOLUMEINTERSECTIONSTRATEGY)
+        attributeCheckFloat(RI_VOLUMEINTERSECTIONPRIORITY,1)
         attributeEndCheck
     }
   } 

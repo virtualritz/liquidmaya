@@ -85,9 +85,10 @@ class liqVolumeNode : public MPxNode
     static MObject aRmanDefaults;
     static MObject aRmanArraySizes;
     static MObject aRmanLifCmds;
-	static MObject aRmanMethods;
-	static MObject aRmanIsOutput;
-	static MObject aRmanAccept;
+
+	  static MObject aRmanMethods;
+	  static MObject aRmanIsOutput;
+	  static MObject aRmanAccept;
 
     static MObject aPreviewPrimitive;
     static MObject aPreviewCustomPrimitive;
@@ -96,12 +97,19 @@ class liqVolumeNode : public MPxNode
     static MObject aPreviewShadingRate;
     static MObject aPreviewBackplane;
 
+    static MObject aVolumeType;
+    static MObject aVisiblePoints;
+
+    static MObject aColor;
+    static MObject aOpacity;
+    static MObject aTransparency; // Needed to get Open GL transparency updated in "5" mode
 
     static MObject aOutputInShadow;
     static MObject aShaderSpace;
     static MObject aRefreshPreview;
 
-	static MObject aPreviewGamma;
+	  static MObject aPreviewGamma;
+
     // Output attributes
     static MObject aOutColor;
     static MObject aAssignedObjects;

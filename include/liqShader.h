@@ -47,19 +47,19 @@ using namespace std;
 class liqShader : public liqGenericShader
 {
 public :
-    liqShader();
-    liqShader( const liqShader & src );
-    liqShader & operator=( const liqShader & src );
+    liqShader ();
+    liqShader ( const liqShader & src );
+    liqShader & operator= ( const liqShader & src );
     //liqShader ( MObject shaderObj );
     liqShader ( MObject shaderObj, bool outputAllParameters=false );
-    virtual ~liqShader();
+    virtual ~liqShader ();
     //MStatus liqShaderParseVectorAttr( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType );
     //MStatus liqShaderParseVectorArrayAttr( const MFnDependencyNode& shaderNode, const string& argName, ParameterType pType, unsigned int arraySize );
 
-	void appendCoShader(MObject coshader, MPlug plug);
-	void *write(bool shortShaderNames, unsigned int indentLevel, SHADER_TYPE forceAs=SHADER_TYPE_UNKNOWN);
-	void *write(bool shortShaderNames, unsigned int indentLevel, vector<MString> &yetExportedShaders, SHADER_TYPE forceAs=SHADER_TYPE_UNKNOWN);
-	void writeRibAttributes(MFnDependencyNode node, SHADER_TYPE shaderType);
+	void appendCoShader ( MObject coshader, MPlug plug );
+	void *write ( bool shortShaderNames, unsigned int indentLevel, SHADER_TYPE forceAs=SHADER_TYPE_UNKNOWN );
+	void *write ( bool shortShaderNames, unsigned int indentLevel, vector<MString> &yetExportedShaders, SHADER_TYPE forceAs=SHADER_TYPE_UNKNOWN );
+	void writeRibAttributes ( MFnDependencyNode &node, SHADER_TYPE shaderType );
 
 	//void writeAsCoShader(bool shortShaderNames, unsigned int indentLevel);
 	void outputIndentation(unsigned int indentLevel);
@@ -67,10 +67,10 @@ public :
     // void freeShader( void ); -- not needed anymore. vector calls the dtors itself when going out of scope
     // int numTPV; -- handled by tokenPointerArray.size() now
 
-	virtual bool isShader();
-	virtual bool isSwitcher();
-	virtual liqShader* asShader();
-	virtual liqSwitcher* asSwitcher();
+	virtual bool isShader ();
+	virtual bool isSwitcher ();
+	virtual liqShader* asShader ();
+	virtual liqSwitcher* asSwitcher ();
 //    string      name;
     string      file;
 //    RtColor     rmColor;
@@ -82,6 +82,8 @@ public :
 //    bool        outputInShadow;
 //    bool        hasErrors;
     SHADER_TYPE shader_type;
+    VOLUME_TYPE volume_type;
+    bool        useVisiblePoints; // New for PPMAN 16.x: use VP.. shader version
     MString     shaderSpace;
 //    MString     shaderHandler;
     int         evaluateAtEveryFrame;

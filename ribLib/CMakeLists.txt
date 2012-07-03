@@ -68,8 +68,8 @@ if(UNIX)
 endif(UNIX)
 if(WIN32)
 	add_definitions(-DWINNT) 
-	add_definitions(-DZLIB_WINAPI)
-	add_definitions(-DZLIB_DLL )
+	#add_definitions(-DZLIB_WINAPI)
+	#add_definitions(-DZLIB_DLL )
 endif(WIN32)
 
 file(GLOB src RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
@@ -91,6 +91,7 @@ add_definitions( -D_BOOL )
 add_definitions( -DREQUIRE_IOSTREAM ) 
 add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
 add_definitions( -D_LIB )
+
 add_definitions( -DHAVE_ZLIB )
 add_definitions( -DYY_NO_UNISTD_H )
 
